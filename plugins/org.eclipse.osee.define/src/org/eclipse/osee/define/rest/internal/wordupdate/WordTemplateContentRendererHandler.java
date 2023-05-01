@@ -16,15 +16,16 @@ package org.eclipse.osee.define.rest.internal.wordupdate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.operations.publishing.PublishingUtils;
 import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactSpecification;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -58,9 +59,10 @@ public class WordTemplateContentRendererHandler {
       this.publishingUtils = new PublishingUtils(orcsApi);
    }
 
-   public Pair<String, Set<String>> renderWordMLForArtifact(ArtifactReadable artifact, WordTemplateContentData wtcData) {
+   public Pair<String, Set<String>> renderWordMLForArtifact(ArtifactReadable artifact,
+      WordTemplateContentData wtcData) {
 
-      String data =
+      CharSequence data =
          artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.EXCLUDE_DELETED, null);
 
       if (Objects.isNull(data) && wtcData.getIsEdit()) {
@@ -81,12 +83,12 @@ public class WordTemplateContentRendererHandler {
              */
 
             data = "";
-            data = WordMlLinkHandler.link(this.queryFactory, wtcData.getLinkType(), artifact, data, wtcData.getTxId(),
-               unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
+            data = WordMlLinkHandler.link(this.queryFactory, wtcData.getLinkType(), artifact, data.toString(),
+               wtcData.getTxId(), unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
             data = WordCoreUtilServer.reassignBookMarkID(data).toString();
-            data = WordCoreUtilServer.removeNewLines(data);
+            //data = WordCoreUtilServer.removeNewLines(data);
 
-            return new Pair<>(data, unknownGuids);
+            return new Pair<>(data.toString(), unknownGuids);
          }
 
          return null;
@@ -95,29 +97,31 @@ public class WordTemplateContentRendererHandler {
       //The artifact has WordTemplateContent data
 
       //Change the BinData Id so images do not get overridden by the other images
-      data = WordCoreUtilServer.reassignBinDataID(data);
+      data = WordCoreUtil.replaceBinaryDataIdentifiers(data);
 
       if (wtcData.getArtIsChanged()) {
-         data = WordCoreUtilServer.appendInlineChangeTag(data);
+         data = WordCoreUtil.appendInlineChangeTag(data);
       }
-      data = WordCoreUtilServer.removeNewLines(data);
+      //data = WordCoreUtilServer.removeNewLines(data);
 
-      data = WordMlLinkHandler.link(this.queryFactory, wtcData.getLinkType(), artifact, data, wtcData.getTxId(),
-         unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
+      data = WordMlLinkHandler.link(this.queryFactory, wtcData.getLinkType(), artifact, data.toString(),
+         wtcData.getTxId(), unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
       data = WordCoreUtilServer.reassignBookMarkID(data).toString();
 
       // if no extra paragraphs have been added this will replace the normal footer
       var charSequenceData = WordCoreUtil.removeFootersAndNoDataRightsStatements(data);
       data = WordCoreUtil.replaceEmptySectionBreaksWithPageBreaks(charSequenceData).toString();
 
-      if (wtcData.getIsEdit() && !data.contains("<w:tbl>")) {
-         int lastIndex = data.lastIndexOf("<w:p wsp:rsidR=");
+      var dataString = data.toString();
+
+      if (wtcData.getIsEdit() && !dataString.contains("<w:tbl>")) {
+         int lastIndex = dataString.lastIndexOf("<w:p wsp:rsidR=");
 
          if (lastIndex != -1) {
             // temp should equal <w:p wsp:rsidR ..</w:p> ...
-            String temp = data.substring(lastIndex);
+            String temp = dataString.substring(lastIndex);
             temp = temp.replaceAll("<w:p\\s[^>]*>(<w:pPr><w:spacing[^>]*></w:spacing></w:pPr>)?</w:p>", "");
-            data = data.substring(0, lastIndex) + temp;
+            dataString = dataString.substring(0, lastIndex) + temp;
          }
       }
 
@@ -133,20 +137,20 @@ public class WordTemplateContentRendererHandler {
                new WordMLApplicabilityHandler(this.orcsApi, this.logger, wtcData.getBranch(), wtcData.getViewId());
          }
 
-         data = data.replaceAll(PL_STYLE_WITH_RETURN, "");
-         data = data.replaceAll(PL_STYLE, "");
-         data = data.replaceAll(PL_HIGHLIGHT, "");
-         data = applicHandler.previewValidApplicabilityContent(data);
-         data = data.replaceAll(EMPTY_PARAGRAPHS, "");
+         dataString = dataString.replaceAll(PL_STYLE_WITH_RETURN, "");
+         dataString = dataString.replaceAll(PL_STYLE, "");
+         dataString = dataString.replaceAll(PL_HIGHLIGHT, "");
+         dataString = applicHandler.previewValidApplicabilityContent(dataString);
+         dataString = dataString.replaceAll(EMPTY_PARAGRAPHS, "");
       }
 
-      data = data.concat(wtcData.getFooter());
+      dataString = dataString.concat(wtcData.getFooter());
 
       if (!wtcData.getIsEdit()) {
-         data = data.replaceAll(PGNUMTYPE_START_1, "");
+         dataString = dataString.replaceAll(PGNUMTYPE_START_1, "");
       }
 
-      return new Pair<>(data, unknownGuids);
+      return new Pair<>(dataString, unknownGuids);
 
    }
 
@@ -156,14 +160,22 @@ public class WordTemplateContentRendererHandler {
          ( wtcData.isTxIdValid()
               ? this.publishingUtils.getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes
                    (
-                     wtcData.getBranch(),                      /* branchId      */
-                     ArtifactId.valueOf( wtcData.getArtId() ), /* artifactId    */
+                      new ArtifactSpecification
+                             (
+                               wtcData.getBranch(),                      /* branchId      */
+                               wtcData.getViewId(),                      /* viewId        */
+                               ArtifactId.valueOf( wtcData.getArtId() )  /* artifactId    */
+                             ),
                      wtcData.getTxId()                         /* transactionId */
                    )
               : this.publishingUtils.getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes
                    (
-                     wtcData.getBranch(),                      /* branchId      */
-                     ArtifactId.valueOf( wtcData.getArtId() )  /* artifactId    */
+                      new ArtifactSpecification
+                             (
+                                wtcData.getBranch(),                      /* branchId      */
+                                wtcData.getViewId(),                      /* viewId        */
+                                ArtifactId.valueOf( wtcData.getArtId() )  /* artifactId    */
+                             )
                    )
          )
          .map

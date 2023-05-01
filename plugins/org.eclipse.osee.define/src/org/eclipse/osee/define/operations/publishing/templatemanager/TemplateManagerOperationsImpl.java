@@ -14,6 +14,7 @@
 package org.eclipse.osee.define.operations.publishing.templatemanager;
 
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyType;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateSafeNames;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.util.OsgiUtils;
 import org.eclipse.osee.define.util.Validation;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -241,7 +243,7 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
       }
       //@formatter:on
 
-      var publishingTemplateCacheKey = PublishingTemplateCacheKey.valueOf(primaryKey);
+      var publishingTemplateCacheKey = PublishingTemplateKeyType.valueOf(primaryKey);
 
       switch (publishingTemplateCacheKey) {
          case NAME:
@@ -285,7 +287,7 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
          }
 
          default:
-            return null;
+            return PublishingTemplate.SENTINEL;
       }
    }
 
@@ -294,17 +296,21 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     */
 
    @Override
-   public PublishingTemplateSafeNames getPublishingTemplateSafeNames() {
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
       //@formatter:off
-      return
-         new PublishingTemplateSafeNames
-                (
-                  this.publishingTemplateProviders.stream()
-                     .map( PublishingTemplateProvider::getPublishingTemplateSafeNames )
-                     .flatMap( List::stream )
-                     .collect( Collectors.toList() )
-                );
+      var publishingTemplateKeyGroupList =
+         this.publishingTemplateProviders.stream()
+         .map( PublishingTemplateProvider::getPublishingTemplateKeyGroups )
+         .map( PublishingTemplateKeyGroups::getPublishingTemplateKeyGroupList )
+         .flatMap( List::stream )
+         .collect( Collectors.toList() );
       //@formatter:on
+
+      Collections.sort(publishingTemplateKeyGroupList);
+
+      var publishingTemplateSafeNames = new PublishingTemplateKeyGroups(publishingTemplateKeyGroupList);
+
+      return publishingTemplateSafeNames;
    }
 
    /**

@@ -13,17 +13,22 @@
 
 package org.eclipse.osee.define.operations.publishing.templatemanager;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.eclipse.osee.define.api.publishing.templatemanager.InvalidRendererOptionsException;
 import org.eclipse.osee.define.api.publishing.templatemanager.InvalidWordMlTemplateException;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
-import org.eclipse.osee.define.api.publishing.templatemanager.RendererOptions;
-import org.eclipse.osee.define.api.publishing.templatemanager.TemplateContent;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyType;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateScalarKey;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateVectorKey;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.publishing.InvalidRendererOptionsException;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
+import org.eclipse.osee.framework.core.publishing.RendererOptions;
+import org.eclipse.osee.framework.core.publishing.TemplateContent;
+import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.xml.sax.SAXParseException;
 
@@ -35,6 +40,10 @@ import org.xml.sax.SAXParseException;
 
 class ArtifactPublishingTemplate implements PublishingTemplateInternal {
 
+   //@formatter:off
+   private final EnumMap<PublishingTemplateKeyType,Iterable<PublishingTemplateScalarKey>> keyExtractors;
+   //@formatter:on
+
    /**
     * Saves the {@link ArtifactReadable} containing the Publishing Template.
     */
@@ -45,13 +54,13 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
     * A {@link String} representation of the OSEE Artifact Identifier.
     */
 
-   private final String identifier;
+   private final PublishingTemplateScalarKey identifier;
 
    /**
     * The OSEE Artifact name.
     */
 
-   private final String name;
+   private final PublishingTemplateScalarKey name;
 
    /**
     * Saves the parsed JSON Renderer Options from the OSEE Artifact.
@@ -69,13 +78,13 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
     * Saves an unmodifiable list of the Publishing Template Artifact's TemplateMatchCritera attribute values.
     */
 
-   private final List<String> templateMatchCriteria;
+   private final PublishingTemplateVectorKey matchCriteria;
 
    /**
-    * Saves the Whole Word Content extracted from the OSEE Artifact that is related as Supporting Info.
+    * Saves the safe name of the Publishing Template's Artifact
     */
 
-   private String style;
+   private final PublishingTemplateScalarKey safeName;
 
    /**
     * Parses an {@link ArtifactReadable} into an {@link ArtifactPublishingTemplate}.
@@ -88,21 +97,70 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
 
    ArtifactPublishingTemplate(ArtifactReadable artifactReadable) {
 
-      this.artifactReadable = Objects.requireNonNull(artifactReadable);
+      /*
+       * Validate the template artifact
+       */
 
-      this.identifier = "AT-" + this.artifactReadable.getIdString();
+      this.artifactReadable = Objects.requireNonNull(artifactReadable,
+         "ArtifactPublishingTemplate::new, parameter \"artifactReadable\" cannot be null.");
 
-      this.name = this.artifactReadable.getName();
+      /*
+       * Check for alternate styles
+       */
+
+      String styles = null;
+
+      try {
+         //@formatter:off
+         var templateRelatedArtifacts =
+            this.artifactReadable.getRelated(CoreRelationTypes.SupportingInfo_SupportingInfo).getList();
+
+         styles =
+            ( templateRelatedArtifacts.size() == 1 )
+               ? templateRelatedArtifacts.get(0).getAttributeValuesAsString( CoreAttributeTypes.WholeWordContent )
+               : null;
+         //@formatter:on
+      } catch (Exception e) {
+
+         styles = null;
+
+      }
+
+      //@formatter:off
+      this.keyExtractors = new EnumMap<>( PublishingTemplateKeyType.class );
+      this.keyExtractors.put( PublishingTemplateKeyType.IDENTIFIER,     this.getIdentifierKeyExtractor()    );
+      this.keyExtractors.put( PublishingTemplateKeyType.MATCH_CRITERIA, this.getMatchCriteriaKeyExtractor() );
+      this.keyExtractors.put( PublishingTemplateKeyType.NAME,           this.getNameKeyExtractor()          );
+      this.keyExtractors.put( PublishingTemplateKeyType.SAFE_NAME,      this.getSafeNameKeyExtractor()      );
+      //@formatter:on
+
+      this.identifier = new PublishingTemplateScalarKey("AT-" + this.artifactReadable.getIdString(),
+         PublishingTemplateKeyType.IDENTIFIER);
+
+      this.matchCriteria = this.buildTemplateMatchCriteriaList();
+
+      this.name = new PublishingTemplateScalarKey(this.artifactReadable.getName(), PublishingTemplateKeyType.NAME);
+
+      this.safeName =
+         new PublishingTemplateScalarKey(this.artifactReadable.getSafeName(), PublishingTemplateKeyType.SAFE_NAME);
 
       try {
          this.rendererOptions = RendererOptions.create(
             this.artifactReadable.getAttributeValuesAsString(CoreAttributeTypes.RendererOptions));
       } catch (InvalidRendererOptionsException e) {
-         e.setPublishingTemplateInformation(this.identifier, this.name);
+         e.setPublishingTemplateInformation(this.identifier.getKey(), this.name.getKey());
          throw e;
       }
 
-      var templateXml = this.artifactReadable.getAttributeValuesAsString(CoreAttributeTypes.WholeWordContent);
+      CharSequence templateXml = this.artifactReadable.getAttributeValuesAsString(CoreAttributeTypes.WholeWordContent);
+
+      /*
+       * If alternate styles were found with a supporting info link, replace the template styles
+       */
+
+      if (Objects.nonNull(styles)) {
+         templateXml = WordCoreUtil.replaceStyles(templateXml, styles);
+      }
 
       this.templateContent = new TemplateContent(templateXml);
 
@@ -130,20 +188,8 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
                .orElse( "Template Word ML XML parsing failed." );
          //@formatter:on
 
-         throw new InvalidWordMlTemplateException(this.identifier, this.name, message, templateXml);
-      }
-
-      this.templateMatchCriteria = this.buildTemplateMatchCriteriaList();
-
-      try {
-         var templateRelatedArtifacts =
-            this.artifactReadable.getRelated(CoreRelationTypes.SupportingInfo_SupportingInfo).getList();
-
-         this.style =
-            (templateRelatedArtifacts.size() == 1) ? templateRelatedArtifacts.get(0).getAttributeValuesAsString(
-               CoreAttributeTypes.WholeWordContent) : "";
-      } catch (Exception e) {
-         this.style = "";
+         throw new InvalidWordMlTemplateException(this.identifier.getKey(), this.name.getKey(), message,
+            templateXml.toString());
       }
 
    }
@@ -155,15 +201,20 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
     * @return on success a {@link List} of the Publishing Template's match criteria; otherwise, an empty {@link List}.
     */
 
-   private List<String> buildTemplateMatchCriteriaList() {
+   private PublishingTemplateVectorKey buildTemplateMatchCriteriaList() {
       try {
          var matchCriteriaObjectList =
             this.artifactReadable.getAttributeValues(CoreAttributeTypes.TemplateMatchCriteria);
+         //@formatter:off
          var matchCriteriaList =
-            matchCriteriaObjectList.stream().map(Object::toString).collect(Collectors.toUnmodifiableList());
-         return matchCriteriaList;
+            matchCriteriaObjectList
+               .stream()
+               .map( ( matchCriteria ) -> new PublishingTemplateScalarKey( matchCriteria.toString(), PublishingTemplateKeyType.MATCH_CRITERIA ) )
+               .collect( Collectors.toUnmodifiableList() );
+         return new PublishingTemplateVectorKey( matchCriteriaList );
       } catch (Exception e) {
-         return List.of();
+         //TODO: non-selectable template
+         return new PublishingTemplateVectorKey( List.of() );
       }
    }
 
@@ -177,10 +228,9 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
       return
          new PublishingTemplate
                 (
-                   this.identifier,
-                   this.name,
+                   this.identifier.getKey(),
+                   this.name.getKey(),
                    this.rendererOptions,
-                   this.style,
                    this.templateContent
                 );
       //@formatter:on
@@ -191,8 +241,13 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
     */
 
    @Override
-   public String getIdentifier() {
+   public PublishingTemplateScalarKey getIdentifier() {
       return this.identifier;
+   }
+
+   @Override
+   public Iterable<PublishingTemplateScalarKey> getKeyIterable(PublishingTemplateKeyType keyType) {
+      return this.keyExtractors.get(keyType);
    }
 
    /**
@@ -200,7 +255,7 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
     */
 
    @Override
-   public String getName() {
+   public PublishingTemplateScalarKey getName() {
       return this.name;
    }
 
@@ -218,17 +273,8 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
     */
 
    @Override
-   public String getSafeName() {
-      return this.artifactReadable.getSafeName();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public String getStyle() {
-      return this.style;
+   public PublishingTemplateScalarKey getSafeName() {
+      return this.safeName;
    }
 
    /**
@@ -248,8 +294,8 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
     */
 
    @Override
-   public List<String> getTemplateMatchCriteria() {
-      return this.templateMatchCriteria;
+   public PublishingTemplateVectorKey getMatchCriteria() {
+      return this.matchCriteria;
    }
 
    /**
@@ -270,8 +316,7 @@ class ArtifactPublishingTemplate implements PublishingTemplateInternal {
          .segment( "Artifact Readable",       this.artifactReadable           )
          .segment( "Identifier",              this.identifier                 )
          .segment( "Name",                    this.name                       )
-         .segment( "Style",                   this.style                      )
-         .segment( "Template Match Criteria", this.templateMatchCriteria      )
+         .segment( "Template Match Criteria", this.matchCriteria      )
          .toMessage( this.rendererOptions )
          .toMessage( this.templateContent )
          ;

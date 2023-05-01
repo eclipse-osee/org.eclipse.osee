@@ -57,7 +57,7 @@ public final class GUID {
       return encodedString.replaceAll("/", "_");
    }
 
-   public static boolean isValid(String guid) {
+   public static boolean isValid(CharSequence guid) {
       return Strings.isValid(guid) && pattern.matcher(guid).matches();
    }
 

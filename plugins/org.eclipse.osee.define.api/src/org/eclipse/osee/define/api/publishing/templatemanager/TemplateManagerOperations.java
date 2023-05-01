@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.define.api.publishing.templatemanager;
 
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
+
 /**
  * Interface for the Define Operations Template Manager Service.
  *
@@ -66,7 +68,7 @@ public interface TemplateManagerOperations {
     * @return a POJO containing a list of the publishing template safe names.
     */
 
-   PublishingTemplateSafeNames getPublishingTemplateSafeNames();
+   PublishingTemplateKeyGroups getPublishingTemplateKeyGroups();
 
 }
 

@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.regex.TokenMatcher;
 import org.eclipse.osee.framework.jdk.core.util.regex.TokenPattern;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
@@ -170,6 +171,15 @@ public class WordCoreUtil {
       "EjjjUKqKBgAAcAAdqkooqG76sAooooAKKKKAP//Z";
    // @formatter:on
 
+   private static final Pattern BINARY_DATA_IDENTIFIER_PATTERN = Pattern.compile("wordml://(.+?)[.]");
+   private static String BINARY_DATA_IDENTIFIER_TEMPLATE_PART_A = "wordml://";
+   private static String BINARY_DATA_IDENTIFIER_TEMPLATE_PART_B = ".";
+   //@formatter:off
+   private static int BINARY_DATA_IDENTIFIER_TEMPLATE_LENGTH =
+        WordCoreUtil.BINARY_DATA_IDENTIFIER_TEMPLATE_PART_A.length()
+      + WordCoreUtil.BINARY_DATA_IDENTIFIER_TEMPLATE_PART_B.length();
+   //@formatter:on
+
    /**
     * Word ML bold style
     */
@@ -273,6 +283,12 @@ public class WordCoreUtil {
       ;
    //@formatter:on
 
+   public static final String CHANGE_TAG = "[*] ";
+   public static final int CHANGE_TAG_LENGTH = CHANGE_TAG.length();
+
+   public static final String CHANGE_TAG_WORDML =
+      "<w:r><w:rPr><w:color w:val=\"#FF0000\"/></w:rPr><w:t>" + CHANGE_TAG + "</w:t></w:r>";
+
    public static final String CONFIGAPP = "configuration";
 
    public static final String CONFIGGRPAPP = "configurationgroup";
@@ -306,6 +322,10 @@ public class WordCoreUtil {
     */
 
    public static final String DOCUMENT_END = "</w:wordDocument>";
+
+   private static final Pattern EMBEDDED_OBJECT_NO_REMOVAL_PATTERN = Pattern.compile("w:embeddedObjPresent=\"no\"");
+
+   private static final StringBuilder EMBEDDED_OBJECT_YES = new StringBuilder("w:embeddedObjPresent=\"yes\"");
 
    public static final String FEATUREAPP = "feature";
 
@@ -398,6 +418,8 @@ public class WordCoreUtil {
       + HYPERLINK_DOCUMENT_TEMPLATE_PART_C.length()
       ;
    //@formatter:on
+
+   private static final Pattern IS_ARTIFACT_ID_PATTERN = Pattern.compile("^[0-9]{1,19}$");
 
    /**
     * INITIAL HEADING NUMBER REGEX template used to replace the initial list sequence numbers in the list definitions
@@ -549,6 +571,10 @@ public class WordCoreUtil {
     */
 
    public static final String NO_PROOF = "<w:noProof/>";
+
+   private static final String OLE_END = "</w:docOleData>";
+
+   private static final String OLE_START = "<w:docOleData>";
 
    public static final String OSEE_BOOKMARK_REGEX =
       "^<aml:annotation[^<>]+w:name=\"OSEE\\.([^\"]*)\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/><aml:annotation[^<>]+Word.Bookmark.End\\\"/>";
@@ -840,6 +866,12 @@ public class WordCoreUtil {
    public static final String PARAGRAPH_END = "</w:p>";
 
    /**
+    *
+    */
+
+   private static final Pattern PARAGRAPH_PATTERN = Pattern.compile("<w:p( .*?)?>");
+
+   /**
     * Word ML paragraph presentation
     */
 
@@ -948,6 +980,12 @@ public class WordCoreUtil {
    //@formatter:on
 
    /**
+    *
+    */
+
+   private static final String RENDERER_OPTION_FORMAT_TOKEN = ">x<";
+
+   /**
     * {@link Pattern} to test Word ML for the presence of review comments.
     */
 
@@ -1032,6 +1070,18 @@ public class WordCoreUtil {
    public static final String RUN_PRESENTATION_END = "</w:rPr>";
 
    /**
+    * Word ML run and text start
+    */
+
+   public static final String RUN_TEXT = "<w:r><w:t>";
+
+   /**
+    * Word ML text run end
+    */
+
+   public static final String RUN_TEXT_END = "</w:t></w:r>";
+
+   /**
     * @deprecated Used to search for the start of a table row in {@link WordMLApplicabilityHandler} and
     * {@link BolcApplicabilityOps}.
     */
@@ -1071,6 +1121,9 @@ public class WordCoreUtil {
 
    public static final String SECTION_PRESENTATION_END = "</w:sectPr>";
 
+   private static final String STYLES_END = "</w:styles>";
+   private static final Pattern STYLES_END_REMOVAL_PATTERN = Pattern.compile("</w:styles>");
+
    @SuppressWarnings("unused")
    private static final String SUB_DOC =
       "<wx:sect><w:p><w:pPr><w:sectPr><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></w:pPr></w:p><w:subDoc w:link=\"" + WordCoreUtil.FILE_NAME + "\"/></wx:sect><wx:sect><wx:sub-section><w:p><w:pPr><w:pStyle w:val=\"Heading1\"/></w:pPr></w:p><w:sectPr><w:type w:val=\"continuous\"/><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></wx:sub-section></wx:sect>";
@@ -1086,6 +1139,12 @@ public class WordCoreUtil {
     */
 
    public static final String SUBSECTION_END = "</wx:sub-section>";
+
+   /**
+    * Regular expression used to remove the style definitions from a Publishing Template.
+    */
+
+   private static final Pattern STYLES_REMOVAL_PATTERN = Pattern.compile("<w:styles>.*?</w:styles>");
 
    /**
     * Word ML table
@@ -1443,6 +1502,69 @@ public class WordCoreUtil {
       //@formatter:on
 
       return replacerText;
+   }
+
+   /**
+    * Inserts the provided <code>oleData</code> into the <code>input</code> after the styles section.
+    *
+    * @param input the Word ML to be processed.
+    * @param oleData the OLE Data to be inserted.
+    * @return a {@link CharSequece} with the <code>oleData</code> inserted.
+    */
+
+   public static CharSequence addOleDataToEndOfStyle(CharSequence input, CharSequence oleData) {
+      //@formatter:off
+      var size =
+           WordCoreUtil.STYLES_END.length()
+         + WordCoreUtil.OLE_START.length()
+         + oleData.length()
+         + WordCoreUtil.OLE_END.length();
+
+      var output =
+         WordCoreUtil.replacer
+            (
+               input,
+               STYLES_END_REMOVAL_PATTERN,
+               ( matcher ) ->
+               {
+                  return
+                     new StringBuilder( size )
+                            .append( WordCoreUtil.STYLES_END )
+                            .append( WordCoreUtil.OLE_START )
+                            .append( oleData )
+                            .append( WordCoreUtil.OLE_END );
+               }
+            );
+      //@formatter:on
+
+      return output;
+   }
+
+   /**
+    * Currently OSEE is using {@link #CHANGE_TAG} to signify changes on that content. This method is used to append that
+    * tag along with red text formatting. The WordML must be added inside the first paragraph tag in the content in
+    * order to achieve proper formatting.
+    */
+
+   public static CharSequence appendInlineChangeTag(CharSequence content) {
+      Matcher paragraphMatcher = WordCoreUtil.PARAGRAPH_PATTERN.matcher(content);
+      if (paragraphMatcher.find()) {
+         StringBuilder strB = new StringBuilder();
+         strB.append(content.subSequence(0, paragraphMatcher.end()));
+         strB.append(CHANGE_TAG_WORDML);
+         strB.append(content.subSequence(paragraphMatcher.end(), content.length()));
+         content = strB;
+      }
+      return content;
+   }
+
+   public static StringBuilder appendInlineChangeTagToHeadingText(CharSequence headingText) {
+      //@formatter:off
+      return
+         new StringBuilder( headingText.length() + WordCoreUtil.CHANGE_TAG_LENGTH )
+                .append( WordCoreUtil.CHANGE_TAG )
+                .append( headingText );
+      //@formatter:on
    }
 
    public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch,
@@ -2092,6 +2214,14 @@ public class WordCoreUtil {
       return false;
    }
 
+   public static boolean isLinkReferenceAnArtifactId(CharSequence linkReference) {
+      return WordCoreUtil.IS_ARTIFACT_ID_PATTERN.matcher(linkReference).matches();
+   }
+
+   public static boolean isLinkReferenceAnGuid(CharSequence linkReference) {
+      return GUID.isValid(linkReference);
+   }
+
    private static boolean isInvalidConfigurationBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
       if (applicabilityBlock.getType() != ApplicabilityType.Configuration) {
          return true;
@@ -2121,6 +2251,18 @@ public class WordCoreUtil {
       }
 
       return false;
+   }
+
+   /**
+    * Predicate to determine if the insert here token in a Publishing Template is NOT for artifacts.
+    *
+    * @param templateContent the Publishing Template Word ML to test.
+    * @return <code>true</code>, when the publishing template does not contain an insert here token for artifacts;
+    * otherwise, <code>false</code>.
+    */
+
+   public static boolean isNotArtifactPublishingTemplateInsertToken(CharSequence templateContent) {
+      return !PublishingTemplateInsertTokenType.ARTIFACT.equals(WordCoreUtil.getInsertHereTokenType(templateContent));
    }
 
    private static boolean isValidConfigurationBracket(String beginConfig, Set<String> allValidConfigurations) {
@@ -2404,6 +2546,63 @@ public class WordCoreUtil {
    }
 
    /**
+    * @return the content with the bin data ID being reassigned. Note: The bin data Id needs to be reassigned to allow
+    * multi edits of artifacts with images. Else if 2 images have the same ID the first image will be printed duplicate
+    * times.
+    */
+
+   public static CharSequence replaceBinaryDataIdentifiers(CharSequence input) {
+
+      var guidMap = new HashMap<String, String>();
+
+      //@formatter:off
+      var output =
+         WordCoreUtil.replacer
+            (
+               input,
+               WordCoreUtil.BINARY_DATA_IDENTIFIER_PATTERN,
+               ( matcher ) ->
+               {
+                  var oldGuid = matcher.group( 1 );
+                  var newGuid = guidMap.get( oldGuid );
+                  if( Objects.isNull( newGuid ) ) {
+                     newGuid = GUID.create();
+                     guidMap.put(oldGuid, newGuid);
+                  }
+                  var newBinaryDataIdentifier =
+                     new StringBuilder( WordCoreUtil.BINARY_DATA_IDENTIFIER_TEMPLATE_LENGTH + newGuid.length() )
+                            .append( WordCoreUtil.BINARY_DATA_IDENTIFIER_TEMPLATE_PART_A )
+                            .append( newGuid )
+                            .append( WordCoreUtil.BINARY_DATA_IDENTIFIER_TEMPLATE_PART_B );
+                  return newBinaryDataIdentifier;
+               }
+            );
+      //@formatter:on
+      return output;
+   }
+
+   /**
+    * Replace any occurrences of an OLE attribute with a no value with an OLE attribute with a yes value.
+    *
+    * @param input the Word ML to be processed.
+    * @return a {@link CharSequence} with the OLE no attributes replaced with OLE yes attributes.
+    */
+
+   public static CharSequence replaceEmbeddedObjectNoWithYes(CharSequence input) {
+
+      //@formatter:off
+      var output =
+         WordCoreUtil.replacer
+            (
+               input,
+               WordCoreUtil.EMBEDDED_OBJECT_NO_REMOVAL_PATTERN,
+               ( matcher ) -> WordCoreUtil.EMBEDDED_OBJECT_YES
+            );
+      //@formatter:on
+      return output;
+   }
+
+   /**
     * Searches the Word ML for empty section breaks and replaces them with page breaks.
     *
     * @param input the Word ML to process.
@@ -2422,6 +2621,125 @@ public class WordCoreUtil {
                {
                   return WordCoreUtil.PAGE_BREAK;
                }
+            );
+      //@formatter:on
+      return output;
+   }
+
+   /**
+    * When <code>rendererOptionTemplate</code> contains the Renderer Option Template replacement token ( "&gt;x&lt;" ),
+    * the 'x' in the Renderer Option Template replacement token is replaced with the provided <code>text</code> after
+    * XML encoding; otherwise, the provided <code>text</code> is XML encoded.
+    *
+    * @param rendererOptionTemplate the WordML template from the Renderer Options.
+    * @param text the text to be XML encoded an inserted into the template.
+    * @return when the <code>rendererOptionTemplate</code> is valid, a {@link CharSequence} containing the
+    * <code>rendererOptionTemplate</code> with the XML encoded <code>text</code> inserted; otherwise, the XML encoding
+    * of the provided <code>text</code>.
+    */
+
+   public static CharSequence replaceRendererOptionToken(String labelTemplate, String formatTemplate, CharSequence name,
+      CharSequence value) {
+
+      //@formatter:off
+      int x = labelTemplate.indexOf( WordCoreUtil.RENDERER_OPTION_FORMAT_TOKEN );
+      x = x >= 0 ? x + 1 : x;
+
+      int y = formatTemplate.indexOf( WordCoreUtil.RENDERER_OPTION_FORMAT_TOKEN );
+      y = y >= 0 ? y + 1 : y;
+
+      int size =   labelTemplate.length()
+                 + name.length()
+                 + formatTemplate.length()
+                 + value.length()
+                 + WordCoreUtil.RUN_TEXT.length()
+                 + WordCoreUtil.RUN_TEXT_END.length();
+
+      var stringBuilder = new StringBuilder( size * 2 );
+
+      int l =   ( labelTemplate.length() >   0 ? 1 : 0 )
+              + ( x                      != -1 ? 2 : 0 );
+
+      int f =   ( formatTemplate.length() >   0 ? 1 : 0 )
+              + ( y                       != -1 ? 2 : 0 );
+
+
+      switch(l) {
+         default: // no label, no token
+         {
+            stringBuilder
+               .append( WordCoreUtil.RUN_TEXT )
+               .append( XmlEncoderDecoder.textToXml( name ) )
+               .append( ": " );
+         }
+         break;
+
+         case 1: // label, no token
+         {
+            stringBuilder
+               .append( labelTemplate );
+         }
+         break;
+
+         case 3: // label, token
+         {
+            stringBuilder
+               .append( labelTemplate.subSequence( 0, x ) )
+               .append( XmlEncoderDecoder.textToXml( name ) )
+               .append( labelTemplate.subSequence( x + 1, labelTemplate.length() ) );
+         }
+         break;
+      }
+
+      switch(f) {
+         default: // no format, no token
+         {
+            if( l != 0 ) {
+               stringBuilder
+                  .append( WordCoreUtil.RUN_TEXT );
+            }
+            stringBuilder
+               .append( XmlEncoderDecoder.textToXml( value ) );
+         }
+         break;
+
+         case 3:  // format token
+            stringBuilder
+               .append( formatTemplate.subSequence( 0, y ) )
+               .append( XmlEncoderDecoder.textToXml( value ) )
+               .append( formatTemplate.subSequence( y + 1, formatTemplate.length() ) );
+      }
+
+      if( f != 3 ) {
+         stringBuilder
+            .append( WordCoreUtil.RUN_TEXT_END );
+      }
+
+      return stringBuilder;
+
+      //@formatter:on
+   }
+
+   /**
+    * Removes the style definitions from a publishing template and replaces them with alternate styles. The replacement
+    * {@link CharSequence} must include the opening and closing Word ML style tags.
+    *
+    * @param input the publishing template to replace styles in.
+    * @param newStyles the alternate style definitions.
+    * @return the publishing template with the style definitions replaced.
+    */
+
+   public static CharSequence replaceStyles(CharSequence input, CharSequence newStyles) {
+
+      //@formatter:off
+      var output =
+         WordCoreUtil.replacer
+            (
+               input,
+               WordCoreUtil.STYLES_REMOVAL_PATTERN,
+               ( matcher ) -> ( input instanceof StringBuilder )
+                                 ? (StringBuilder) newStyles
+                                 : new StringBuilder( newStyles.length() ).append( newStyles )
             );
       //@formatter:on
       return output;
@@ -2649,6 +2967,7 @@ public class WordCoreUtil {
    public static String textOnly(String str) {
       return XmlEncoderDecoder.xmlToText(str, XmlEncoderDecoder.REMOVE_TAGS).toString();
    }
+
 }
 
 /* EOF */

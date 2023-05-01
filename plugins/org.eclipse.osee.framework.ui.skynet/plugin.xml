@@ -1614,11 +1614,13 @@
 
 
    <extension
-         point="org.eclipse.osee.framework.skynet.core.OseeValidator">
+      point = "org.eclipse.osee.framework.skynet.core.OseeValidator">
+      
       <OseeValidator
-            classname="org.eclipse.osee.framework.ui.skynet.templates.TemplateArtifactValidator">
-      </OseeValidator>
+         classname="org.eclipse.osee.framework.ui.skynet.templates.TemplateArtifactValidator"/>
+         
    </extension>
+   
    <extension
          id="DeleteInvalidAttributeTypes"
          name="DeleteInvalidAttributeTypes"

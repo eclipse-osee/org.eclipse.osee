@@ -83,6 +83,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  *
  * @author Roberto E. Escobar
  */
+
 public class WordMlLinkHandler {
 
    private static final Pattern OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL);
@@ -110,7 +111,8 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String unlink(QueryFactory queryFactory, LinkType sourceLinkType, ArtifactReadable source, String content) {
+   public static String unlink(QueryFactory queryFactory, LinkType sourceLinkType, ArtifactReadable source,
+      String content) {
       LinkType linkType = checkLinkType(sourceLinkType);
       String modified = content;
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
@@ -127,7 +129,9 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl) {
+
+   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content,
+      TransactionId txId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl) {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -270,7 +274,8 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks, TransactionId txId) {
+   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch,
+      List<String> guidsFromLinks, TransactionId txId) {
       QueryBuilder query;
       Matcher matcher = IS_GUID.matcher(guidsFromLinks.get(0));
       if (matcher.find()) {
@@ -299,7 +304,9 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId, Set<String> unknown, PresentationType presentationType, String permanentUrl) {
+   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source,
+      String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId,
+      Set<String> unknown, PresentationType presentationType, String permanentUrl) {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;

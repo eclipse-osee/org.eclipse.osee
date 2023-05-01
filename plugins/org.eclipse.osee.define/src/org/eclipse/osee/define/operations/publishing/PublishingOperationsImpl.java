@@ -25,7 +25,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.api.DefineOperations;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
-import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.define.api.publishing.PublishingOperations;
@@ -42,7 +41,10 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,32 +72,32 @@ public class PublishingOperationsImpl implements PublishingOperations {
 
       PREVIEW_WITH_FOLDERS
          (
-            "Publish Preview With Folders",                     /* Thread Name */
-            new PublishingOptions                               /* Publishing Options */
-                   (
-                      PublishingOperationsImpl.includeFolders,  /* excludeFolders */
-                      LinkType.INTERNAL_DOC_REFERENCE_USE_NAME, /* linkType */
-                      9                                         /* msWordHeadingDepth */
-                   )
+           "Publish Preview With Folders",                     /* Thread Name */
+           RendererMap.of                                      /* Publishing Options */
+              (
+                RendererOption.EXCLUDE_FOLDERS,    false,
+                RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+                RendererOption.MAX_OUTLINE_DEPTH,  9
+              )
          ),
 
-         PREVIEW_WITHOUT_FOLDERS
+      PREVIEW_WITHOUT_FOLDERS
          (
-            "Publish Preview Without Folders",                  /* Thread Name        */
-            new PublishingOptions                               /* Publishing Options */
-                   (
-                      PublishingOperationsImpl.excludeFolders,  /* excludeFolders     */
-                      LinkType.INTERNAL_DOC_REFERENCE_USE_NAME, /* linkType           */
-                      9                                         /* msWordHeadingDepth */
-                   )
+           "Publish Preview Without Folders",                  /* Thread Name        */
+           RendererMap.of                                     /* Publishing Options */
+              (
+                RendererOption.EXCLUDE_FOLDERS,    true,
+                RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+                RendererOption.MAX_OUTLINE_DEPTH,  9
+              )
          );
       //@formatter:on
 
       /**
-       * Saves the {@link PublishingOptions} for the {@link DocumentType}.
+       * Saves the {@link RendererMap} for the {@link DocumentType}.
        */
 
-      private PublishingOptions publishingOptions;
+      private RendererMap publishingOptions;
 
       /**
        * Saves the basename for the thread used to publish a document of the {@link DocumentType}.
@@ -107,10 +109,10 @@ public class PublishingOperationsImpl implements PublishingOperations {
        * Creates a {@link DocumentType} member and saves the configuration data for the document type.
        *
        * @param threadName the basename for publishing documents of the {@link DocumentType}.
-       * @param publishingOptions the {@link PublishingOptions} for publishing document of the {@link DocumentType}.
+       * @param publishingOptions the {@link RendererMap} for publishing document of the {@link DocumentType}.
        */
 
-      DocumentType(String threadName, PublishingOptions publishingOptions) {
+      DocumentType(String threadName, RendererMap publishingOptions) {
 
          this.threadName = threadName;
          this.publishingOptions = publishingOptions;
@@ -123,7 +125,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
        * @return the {@link PublishingOptions} for the {@link DocumentType}.
        */
 
-      PublishingOptions getPublishingOptions() {
+      RendererMap getPublishingOptions() {
          return this.publishingOptions;
       }
 
@@ -172,7 +174,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
     * @return the single {@link PublishingOperationsImpl} object.
     */
 
-   public synchronized static PublishingOperationsImpl create(DefineOperations defineOperations, OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin) {
+   public synchronized static PublishingOperationsImpl create(DefineOperations defineOperations, OrcsApi orcsApi,
+      AtsApi atsApi, Log logger, EventAdmin eventAdmin) {
 
       //@formatter:off
       return
@@ -229,7 +232,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
+   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder,
+      ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
 
       Message message = null;
 
@@ -313,7 +317,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact,
+      ArtifactId view) {
 
       Message message = null;
 
@@ -371,7 +376,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts, ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts,
+      ArtifactId view) {
 
       Message message = null;
 
@@ -460,7 +466,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
       //@formatter:on
    }
 
-   private Attachment msWordPreviewInternal(MsWordPreviewRequestData msWordPreviewRequestData, boolean folderInclusion) {
+   private Attachment msWordPreviewInternal(MsWordPreviewRequestData msWordPreviewRequestData,
+      boolean folderInclusion) {
 
       //@formatter:off
       var branchId = msWordPreviewRequestData.getBranchId();
@@ -505,17 +512,21 @@ public class PublishingOperationsImpl implements PublishingOperations {
 
       try ( var writer = new OutputStreamWriter(outputStream) ) {
 
-         var publisher =
-            new GeneralPublishingWordTemplateProcessorServer
-                   (
-                      publishingOptions,
-                      publishingTemplate,
-                      writer,
-                      orcsApi,
-                      atsApi
-                   );
-
-         publisher.publish( publishArtifacts );
+         new GeneralPublishingWordTemplateProcessorServer
+                (
+                  orcsApi,
+                  atsApi
+                )
+             .configure
+                (
+                   publishingTemplate,
+                   publishingOptions
+                )
+             .applyTemplate
+                (
+                   publishArtifacts,
+                   writer
+                );
 
       } catch (Exception e) {
 
@@ -525,8 +536,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
                       new Message()
                              .title( "PublishingOperationsImpl::msWordPreviewIntenal, Failed to publish document." )
                              .indentInc()
-                             .segment( "Publishing Branch Id", publishingOptions.branch.getIdString() )
-                             .segment( "Publishing View Id",   publishingOptions.view.getIdString()   )
+                             .segment( "Publishing Branch Id", branchId )
+                             .segment( "Publishing View Id",   viewId   )
                              .segment( "Publish Artifacts",    Objects.nonNull(publishArtifacts)
                                                                   ? (publishArtifacts.size() > 0)
                                                                        ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining(", ", "[ ", " ]"))
@@ -570,7 +581,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
+   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact,
+      ArtifactId view) {
 
       Message message = null;
 
@@ -614,17 +626,21 @@ public class PublishingOperationsImpl implements PublishingOperations {
 
       try ( var writer = new OutputStreamWriter( outputStream ) ) {
 
-         var publisher =
-            new WordTemplateProcessorServer
-                   (
-                      publishingOptions,
-                      publishingTemplate,
-                      writer,
-                      orcsApi,
-                      atsApi
-                   );
-
-         publisher.publish( publishArtifacts );
+         new WordTemplateProcessorServer
+                (
+                  orcsApi,
+                  atsApi
+                )
+             .configure
+                (
+                   publishingTemplate,
+                   publishingOptions
+                )
+             .applyTemplate
+                (
+                   publishArtifacts,
+                   writer
+                );
 
       } catch (Exception e) {
          throw
@@ -633,8 +649,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
                      new Message()
                             .title( "PublishingOperationsImpl::msWordTemplatePublish, Failed to publish document." )
                             .indentInc()
-                            .segment( "Publishing Branch Id", publishingOptions.branch.getIdString() )
-                            .segment( "Publishing View Id",   publishingOptions.view.getIdString()   )
+                            .segment( "Publishing Branch Id", branch.getIdString() )
+                            .segment( "Publishing View Id",   view.getIdString()   )
                             .segment( "Publish Artifacts",    Objects.nonNull( publishArtifacts )
                                                                  ? (publishArtifacts.size() > 0)
                                                                       ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining( ", ", "[ ", " ]" ) )
@@ -670,10 +686,11 @@ public class PublishingOperationsImpl implements PublishingOperations {
          "<w:highlight w:val=\"light-gray\"></w:highlight><w:shd w:color=\"auto\" w:fill=\"BFBFBF\" w:val=\"clear\"></w:shd>";
       String EMPTY_PARAGRAPHS = "<w:r wsp:rsidRPr=\"\\d+\"><w:t></w:t></w:r>";
 
-      data = WordCoreUtilServer.reassignBinDataID(data);
-      data = WordMlLinkHandler.renderPlainTextWithoutLinks(orcsApi.getQueryFactory(), branchId, data);
+      var dataCharSequence = WordCoreUtil.replaceBinaryDataIdentifiers(data);
+      data = WordMlLinkHandler.renderPlainTextWithoutLinks(orcsApi.getQueryFactory(), branchId,
+         dataCharSequence.toString());
       data = WordCoreUtilServer.reassignBookMarkID(data).toString();
-      data = WordCoreUtilServer.removeNewLines(data);
+      //data = WordCoreUtilServer.removeNewLines(data);
 
       // if no extra paragraphs have been added this will replace the normal footer
       var charSequenceData = WordCoreUtil.removeFootersAndNoDataRightsStatements(data);

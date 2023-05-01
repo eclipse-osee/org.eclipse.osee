@@ -183,9 +183,6 @@ public enum RendererOption {
 
    SKIP_ERRORS("Skip Errors", OptionType.Boolean),
 
-   @Deprecated
-   TEMPLATE_ARTIFACT("Template Artifact", OptionType.ArtifactId),
-
    TEMPLATE_ONLY("Template Only", OptionType.Boolean),
 
    /*

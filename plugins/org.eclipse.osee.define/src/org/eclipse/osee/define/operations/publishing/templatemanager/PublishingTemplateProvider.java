@@ -13,11 +13,11 @@
 
 package org.eclipse.osee.define.operations.publishing.templatemanager;
 
-import java.util.List;
 import java.util.Optional;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyType;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
-import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 
 /**
  * Implementations of this interface can offer to provide {@link PublishingTemplate}s for publishing requests. The
@@ -37,11 +37,11 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 interface PublishingTemplateProvider {
 
    /**
-    * When the {@link PublishingTemplateProvider} is the preferred {@link PublishingTemplateProvider} for requests with
-    * the specified {@link PresentationType}, the applicability rating is boosted by this amount.
+    * When the Publishing Template Request is by identifier and the identifier prefix matches the identifier prefix for
+    * the {@link PublishingTemplateProvider} the highest applicability rating is returned.
     */
 
-   static final int PRESENTATION_TYPE_BONUS = 10;
+   static final int IDENTIFIER_PREFIX_MATCH = 1000;
 
    /**
     * This {@link PublishingTemplateProvider} may provide a publishing template when no other
@@ -90,6 +90,8 @@ interface PublishingTemplateProvider {
     * <dd>Secondary Key: the publishing template safe name.</dd>
     * <dt>Primary Key: &quot;IDENTIFIER&quot;</dt>
     * <dd>Secondary Key: the publishing template identifier.</dd>
+    * <dt>Primary Key" &quot;MATCH_CRITERIA&quot;</dt>
+    * <dd>Secondary Key: the publishing template match criteria.</dd>
     * </dl>
     *
     * @param primaryKey the primary search key.
@@ -97,7 +99,7 @@ interface PublishingTemplateProvider {
     * @return the first found {@link PublishingTemplate}.
     */
 
-   Optional<PublishingTemplateInternal> getTemplate(PublishingTemplateCacheKey primarykey, String secondaryKey);
+   Optional<PublishingTemplateInternal> getTemplate(PublishingTemplateKeyType primarykey, String secondaryKey);
 
    /**
     * Determines the applicability of the {@link PublishingTemplateProvider} implementation to the
@@ -112,13 +114,13 @@ interface PublishingTemplateProvider {
    int getApplicabilityRating(PublishingTemplateRequest publishingTemplateRequest);
 
    /**
-    * Gets a list of all the Publishing Template Safe Names for the Publishing Templates that maybe provided by this
+    * Gets a list of all the Publishing Template Key Groups for the Publishing Templates that maybe provided by this
     * {@link PublishingTemplateProvider}.
     *
-    * @return a list of the Publishing Template Safe Names.
+    * @return a list of the Publishing Template Key Groups.
     */
 
-   List<String> getPublishingTemplateSafeNames();
+   PublishingTemplateKeyGroups getPublishingTemplateKeyGroups();
 }
 
 /* EOF */

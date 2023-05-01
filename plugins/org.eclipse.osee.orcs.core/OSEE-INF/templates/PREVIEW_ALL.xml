@@ -133,6 +133,9 @@
          </w:pPr>
          <w:rPr>
             <wx:font wx:val="Arial"/>
+            <w:i-cs/>
+            <w:sz w:val="16"/>
+            <w:sz-cs w:val="16"/>
          </w:rPr>
       </w:style>
 
@@ -420,24 +423,16 @@
 
    <w:body>
 
-      <wx:sect>
+         <w:sect>
+            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>_TEMPLATE_NAME_</w:t></w:r></w:p>
+            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Acme Corporation</w:t></w:r></w:p>
+            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>1234 W. World Road</w:t></w:r></w:p>
+            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Jersey City, NJ 07002</w:t></w:r></w:p>
+         </w:sect>
 
-         INSERT_ARTIFACT_HERE
-
-         <w:p/>
-
-         <w:sectPr>
-
-            <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
-            <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="432" w:footer="432" w:gutter="0"/>
-            <w:pgNumType w:start="1"/>
-            <w:cols w:space="475"/>
-            <w:noEndnote/>
-            <w:docGrid w:line-pitch="360"/>
-
-         </w:sectPr>
-
-      </wx:sect>
+         <w:sect>
+            INSERT_ARTIFACT_HERE
+         </w:sect>
 
    </w:body>
 

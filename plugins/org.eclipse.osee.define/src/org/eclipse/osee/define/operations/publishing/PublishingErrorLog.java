@@ -17,8 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.define.api.publishing.PublishingArtifactError;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.HasArtifactType;
 import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
@@ -53,26 +53,26 @@ public class PublishingErrorLog {
    }
 
    /**
-    * Creates and appends to the log a new {@link PublishingArtifactError} with the specified {@link NamedId} and
-    * {@link HasArtifactType} thing and message.
+    * Creates and appends to the log a new {@link PublishingArtifactError} with the specified {@link NamedId} thing and
+    * message.
     *
-    * @param thing object implementing the {@link NamedId} and {@link HasArtifactType} interfaces.
+    * @param thing object implementing the {@link NamedId} interfaces.
     * @param message a description of the error.
     */
 
-   public <T extends NamedId & HasArtifactType> void error(T thing, String message) {
+   public <T extends Id> void error(T thing, String message) {
       this.publishingErrors.add(new PublishingArtifactError(thing, message));
    }
 
    /**
     * Creates and appends to the log a new {@link PublishingArtifactError} for the specified objects implementing the
-    * {@link NamedId} and {@link HasArtifactType} interfaces.
+    * {@link Id} interface.
     *
-    * @param things a {@link List} of objects implementing the {@link NamedId} and {@link HasArtifactType} interfaces.
+    * @param things a {@link List} of objects implementing the {@link Id} interface.
     * @param message a description of the error.
     */
 
-   public <T extends NamedId & HasArtifactType> void error(List<T> things, String message) {
+   public <T extends Id> void error(List<T> things, String message) {
       this.publishingErrors.add(new PublishingArtifactError(things, message));
    }
 

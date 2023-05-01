@@ -41,7 +41,7 @@ public class WordTemplateProcessorTest {
 
    @Before
    public void setUpProcessor() {
-      processor = new WordTemplateProcessorClient(null);
+      processor = new WordTemplateProcessorClient();
       excludeTokens = new ArrayList<>();
       excludeTokens.add(CoreArtifactTypes.ImplementationDetailsMsWord);
       processor.setExcludedArtifactTypeForTest(excludeTokens);

@@ -17,11 +17,16 @@ import java.util.Set;
 import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
-import org.eclipse.osee.define.api.WordTemplateContentData;
 import org.eclipse.osee.define.api.WordUpdateChange;
 import org.eclipse.osee.define.api.WordUpdateData;
 import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
+import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 
@@ -39,6 +44,12 @@ public class PublishingRequestHandler {
     */
 
    private static PublishingRequestHandler instance;
+
+   /**
+    * Caches the {@link TemplateManagerEndpoint}.
+    */
+
+   private final TemplateManagerEndpoint templateManagerEndpoint;
 
    /*
     * Creates the singleton instance, thread safe
@@ -60,6 +71,91 @@ public class PublishingRequestHandler {
 
    private PublishingRequestHandler() {
       this.publishingEndpoint = ServiceUtil.getOseeClient().getPublishingEndpoint();
+      this.templateManagerEndpoint = ServiceUtil.getOseeClient().getTemplateManagerEndpoint();
+   }
+
+   /**
+    * Calls the Publishing Template Manager REST API to delete the Publishing Template Cache.
+    *
+    * @throws OseeWebApplicationException when the REST API call fails.
+    */
+
+   public static void deletePublishingTemplateCache() {
+      try {
+         PublishingRequestHandler.instance.templateManagerEndpoint.deleteCache();
+      } catch (Exception e) {
+         //@formatter:off
+         throw
+            new OseeWebApplicationException
+                   (
+                      e,
+                      Status.INTERNAL_SERVER_ERROR,
+                      new Message()
+                             .title( "PublishingRequestHandler::deletePublishingTemplateCache, server error." )
+                             .indentInc()
+                             .reasonFollows(e)
+                             .toString()
+                   );
+         //@formatter:on
+      }
+   }
+
+   /**
+    * Calls the Publishing Template Manager REST API to get a Publishing Template.
+    *
+    * @param PublishingTemplateRequest the {@link PublishingTemplateRequest} data.
+    * @returns the request publishing template as a {@link PublishingTemplate}.
+    * @throws OseeWebApplicationException when a Publishing Template is not returned.
+    */
+
+   public static PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest) {
+      try {
+         var publishingTemplate =
+            PublishingRequestHandler.instance.templateManagerEndpoint.getPublishingTemplate(publishingTemplateRequest);
+         return publishingTemplate;
+      } catch (Exception e) {
+         //@formatter:off
+         throw
+            new OseeWebApplicationException
+                   (
+                      e,
+                      Status.INTERNAL_SERVER_ERROR,
+                      new Message()
+                             .title( "PublishingRequestHandler::getPublishingTemplate, server error." )
+                             .indentInc()
+                             .segment( "Publishing Template Request", publishingTemplateRequest )
+                             .reasonFollows(e)
+                             .toString()
+                   );
+         //@formatter:on
+      }
+   }
+
+   /**
+    * Gets a sorted list of the Publishing Templates and their associated identifiers.
+    *
+    * @return a {@link PublishingTemplateKeyGroups} structure containing a sorted list of Publishing Templates.
+    */
+
+   public static PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
+      try {
+         return PublishingRequestHandler.instance.templateManagerEndpoint.getPublishingTemplateKeyGroups();
+      } catch (Exception e) {
+         //@formatter:off
+         throw
+            new OseeWebApplicationException
+                   (
+                      e,
+                      Status.INTERNAL_SERVER_ERROR,
+                      new Message()
+                             .title( "PublishingRequestHandler::getPublishingTemplateKeyGroups, server error." )
+                             .indentInc()
+                             .reasonFollows(e)
+                             .toString()
+                   );
+         //@formatter:on
+      }
+
    }
 
    /**

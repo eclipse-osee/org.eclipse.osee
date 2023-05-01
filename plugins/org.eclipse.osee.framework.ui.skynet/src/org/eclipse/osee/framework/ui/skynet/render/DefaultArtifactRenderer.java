@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,6 +55,7 @@ import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordRenderArtifactWrapperClientImpl;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -459,7 +462,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
 
       if (attributeType.equals(CoreAttributeTypes.RelationOrder)) {
          wordMl.endParagraph();
-         String data = renderRelationOrder(artifact);
+         String data = renderRelationOrder(new WordRenderArtifactWrapperClientImpl(artifact));
          wordMl.addWordMl(data);
       } else {
          String valueList = artifact.getAttributesToString(attributeType);
@@ -497,7 +500,8 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
       return returnValue;
    }
 
-   private String renderRelationOrder(Artifact artifact) {
+   public String renderRelationOrder(ArtifactReadable wrappedArtifact) {
+      Artifact artifact = ((WordRenderArtifactWrapperClientImpl) wrappedArtifact).getArtifact();
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
       RelationOrderRenderer renderer = new RelationOrderRenderer(guidResolver);
@@ -519,6 +523,33 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
    @Override
    public boolean supportsCompare() {
       return false;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Message toMessage(int indent, Message message) {
+
+      var outMessage = Objects.nonNull(message) ? message : new Message();
+
+      //@formatter:off
+      outMessage
+         .indent( indent )
+         .title( this.getClass().getSimpleName() )
+         .indentInc()
+         .segment( "Name", this.getName() )
+         ;
+
+      super.toMessage( indent + 1, outMessage );
+
+      outMessage
+         .indentDec()
+         ;
+      //@formatter:on
+
+      return outMessage;
    }
 
 }

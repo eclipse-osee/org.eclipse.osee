@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.define.api.publishing.templatemanager;
+package org.eclipse.osee.framework.core.publishing;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class TemplateContent implements ToMessage {
     * Saves the publishing template's XML (Word ML) as a string.
     */
 
-   private String templateString;
+   private CharSequence templateString;
 
    /**
     * Flag to indicate if an attempt has been made to parse the member {@link #templateString} into an XML DOM.
@@ -75,9 +75,9 @@ public class TemplateContent implements ToMessage {
     * @throws NullPointerException when the parameter <code>templateString</code> is <code>null</code>.
     */
 
-   public TemplateContent(String templateString) {
-      this.templateString =
-         Objects.requireNonNull(templateString, "TemplateContent::new, parameter \"templateString\" cannot be null.");
+   public TemplateContent(CharSequence templateString) {
+      this.templateString = Objects.requireNonNull(templateString,
+         "TemplateContent::new, parameter \"templateString\" cannot be null.").toString();
       this.templateStringParsed = false;
       this.templateXmlOptional = Optional.empty();
       this.templateStringParseErrorOptional = Optional.empty();
@@ -105,7 +105,7 @@ public class TemplateContent implements ToMessage {
     * @throws IllegalStateException when the member {@link #templateString} has not been set.
     */
 
-   public String getTemplateString() {
+   public CharSequence getTemplateString() {
       if (Objects.isNull(this.templateString)) {
          throw new IllegalStateException(
             "TemplateContent::getTemplateString, the member \"templateString\" has not been set.");
@@ -157,6 +157,7 @@ public class TemplateContent implements ToMessage {
     * @return <code>true</code>, when the Word ML XML {@link String} has been set; otherwise, <code>false</code>.
     */
 
+   @JsonIgnore
    public boolean isValid() {
 
       return Objects.nonNull(this.templateString);
@@ -167,9 +168,9 @@ public class TemplateContent implements ToMessage {
     */
 
    private void parseTemplateString() {
-      if (!this.templateString.isBlank()) {
+      if (this.templateString.length() > 0) {
          var publishingXmlUtils = new PublishingXmlUtils();
-         this.templateXmlOptional = publishingXmlUtils.parse(this.templateString);
+         this.templateXmlOptional = publishingXmlUtils.parse(this.templateString.toString());
          if (publishingXmlUtils.isKo()) {
             this.templateStringParseErrorOptional = publishingXmlUtils.getLastError();
          }
@@ -185,19 +186,32 @@ public class TemplateContent implements ToMessage {
     * @throws NullPointerException when the parameter <code>templateString</code> is <code>null</code>.
     */
 
-   public void setTemplateString(String templateString) {
+   public void setTemplateString(CharSequence templateString) {
       if (Objects.nonNull(this.templateString)) {
          throw new IllegalStateException(
             "TemplateContent::setTemplateString, the member \"templateString\" has already been set.");
       }
-      this.templateString =
-         Objects.requireNonNull(templateString, "TemplateContent::new, parameter \"templateString\" cannot be null.");
+      this.templateString = Objects.requireNonNull(templateString,
+         "TemplateContent::setTemplateString, parameter \"templateString\" cannot be null.");
+   }
+
+   /**
+    * This method is used by the {@link PublishingTemplate#update} method to replace the Word ML content.
+    *
+    * @param templateString the new template content string.
+    */
+
+   @JsonIgnore
+   void replace(CharSequence templateString) {
+      this.templateString = Objects.requireNonNull(templateString,
+         "TemplateContent::replace, parameter \"templateString\" cannot be null.");
    }
 
    /**
     * {@inheritDoc}
     */
 
+   @JsonIgnore
    @Override
    public Message toMessage(int indent, Message message) {
       var outMessage = Objects.nonNull(message) ? message : new Message();
@@ -230,6 +244,7 @@ public class TemplateContent implements ToMessage {
     * {@inheritDoc}
     */
 
+   @JsonIgnore
    @Override
    public String toString() {
       return this.toMessage(0, (Message) null).toString();

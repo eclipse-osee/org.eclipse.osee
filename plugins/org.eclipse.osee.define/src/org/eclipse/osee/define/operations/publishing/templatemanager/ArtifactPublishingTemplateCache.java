@@ -13,12 +13,17 @@
 
 package org.eclipse.osee.define.operations.publishing.templatemanager;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.eclipse.osee.define.operations.publishing.PublishingUtils;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -37,10 +42,10 @@ class ArtifactPublishingTemplateCache extends AbstractPublishingTemplateCache {
    private static ArtifactPublishingTemplateCache artifactPublishingTemplateCache = null;
 
    /**
-    * Saves a handle to the {@link OrcsApi} service used to obtain OSEE Artifacts from the database.
+    * Saves a handle to the {@link PublishingUtils} instance used to obtain OSEE Artifacts from the database.
     */
 
-   private final OrcsApi orcsApi;
+   private final PublishingUtils publishingUtils;
 
    /**
     * Creates a new empty instance of the {@link ArtifactPublishingTemplateCache}. The constructor is private to prevent
@@ -52,7 +57,7 @@ class ArtifactPublishingTemplateCache extends AbstractPublishingTemplateCache {
 
    private ArtifactPublishingTemplateCache(Log logger, OrcsApi orcsApi) {
       super(logger);
-      this.orcsApi = orcsApi;
+      this.publishingUtils = new PublishingUtils(orcsApi);
    }
 
    /**
@@ -100,23 +105,42 @@ class ArtifactPublishingTemplateCache extends AbstractPublishingTemplateCache {
     */
 
    @Override
-   synchronized public void loadTemplates() {
+   synchronized public List<PublishingTemplateInternal> loadTemplates() {
 
-      if (Objects.isNull(this.list)) {
-         //@formatter:off
-         this.list =
-            this.orcsApi.getQueryFactory()
-               .fromBranch( COMMON )
-               .andIsOfType(CoreArtifactTypes.RendererTemplateWholeWord)
-               .getResults()
-               .getList()
-               .stream()
-               .map( this::createPublishingTemplate )
-               .filter( Optional::isPresent )
-               .map( Optional::get )
-               .collect( Collectors.toUnmodifiableList() );
+      //@formatter:off
+      return
+         this.publishingUtils
+            .getArtifactReadablesByType
+               (
+                  new BranchSpecification( CoreBranches.COMMON ),
+                  CoreArtifactTypes.RendererTemplateWholeWord
+               )
+            .orElseThrow
+               (
+                  () ->
+                  {
+                     var cause     = this.publishingUtils.getLastCause();
+                     var exception = PublishingUtils.Cause.OK.equals( cause )
+                                        ? null
+                                        : this.publishingUtils.getLastError();
+
+                     var message =
+                        new Message()
+                               .title( "ArtifactPublishingTemplateCache::loadTemplates, no Publishing Templates found." )
+                               .indentInc()
+                               .segment( "Query Result", cause )
+                               .reasonFollowsIfPresent( exception )
+                               .toString();
+
+                     return new OseeCoreException( message, exception );
+                  }
+               )
+            .stream()
+            .map( this::createPublishingTemplate )
+            .filter( Optional::isPresent )
+            .map( Optional::get )
+            .collect( Collectors.toUnmodifiableList() );
          //@formatter:on
-      }
    }
 
 }

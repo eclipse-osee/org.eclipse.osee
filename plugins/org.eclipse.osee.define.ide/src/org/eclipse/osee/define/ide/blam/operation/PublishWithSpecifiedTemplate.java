@@ -31,28 +31,34 @@ import static org.eclipse.osee.framework.core.publishing.RendererOption.TRANSACT
 import static org.eclipse.osee.framework.core.publishing.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.USE_TEMPLATE_ONCE;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.VIEW;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.WAS_BRANCH;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroup;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
@@ -61,7 +67,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
-import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -80,64 +85,253 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Jeff C. Phillips
  * @author Theron Virgin
+ * @author Loren K. Ashley
  */
+
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
    private static String ARTIFACTS = "Artifacts";
-   private static String PARENT_TEMPLATE = "Parent Template";
-   private static String CHILD_TEMPLATE = "Child Template";
+   private static String SECONDARY_TEMPLATE = "Child Template";
    private static String DATA_RIGHTS = "Data Rights";
    private static String NOT_SELECTED = "--select--";
+   private static String PRIMARY_TEMPLATE = "Parent Template";
 
-   private List<Artifact> templates;
-   private BranchId branch;
+   private XListDropViewer artifactsWidget;
+   private BranchId branchId;
    private Map<Long, String> branchViews;
 
+   private XCombo branchViewWidget;
    private XBranchSelectWidget branchWidget;
    private XCombo childWidget;
-   private XCombo branchViewWidget;
-   private XListDropViewer artifactsWidget;
    private XCombo dataRightsWidget;
+
+   /**
+    * Saves a {@link Map} of the Publishing Template Manager's cache keys for each Publishing Template by the Publishing
+    * Template's name.
+    */
+
+   private Map<String, PublishingTemplateKeyGroup> publishingTemplateKeyGroupBySafeNameMap;
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Collection<XNavItemCat> getCategories() {
+      return Arrays.asList(XNavigateItem.DEFINE);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public String getDescriptionUsage() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("<form>Use a template to publish a document or diff the document against a different version.<br/>");
+      sb.append("Select Parameters<br/>");
+      sb.append("<li>Select Update Paragraph Numbers if authorized to update them</li>");
+      sb.append("<li>Choose whether or not you want the UUIDs published</li>");
+      sb.append("<li>Select the Document Link format(s)</li>");
+      sb.append("<li>Choose artifact type(s) to exclude</li>");
+      sb.append("<li>Select Parent or Parent/Child (for SRS) template.  Only use non-recursive templates</li>");
+      sb.append(
+         "<li>Drag &amp; Drop the IS Artifacts into the box OR write an Orcs Query that returns a list of Artifact Ids</li>");
+      sb.append("<li>Decide to Publish as Diff and select WAS branch as desired</li>");
+      sb.append("<br/>Click the play button at the top right or in the Execute section.</form>");
+      return sb.toString();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
 
    @Override
    public String getName() {
       return "Publish With Specified Template";
    }
 
+   /**
+    * Makes the server REST API call to obtain the Publishing Template with the provided <code>safeName</code>.
+    *
+    * @param safeName the safe name of the Publishing Template to get.
+    * @return the {@link PublishingTemplate}.
+    * @throws OseeCoreException when unable to obtain the Publishing Template.
+    */
+
+   private PublishingTemplate getTemplate(String safeName) {
+
+      try {
+         var publishingTemplateKeyGroup = this.publishingTemplateKeyGroupBySafeNameMap.get(safeName);
+         var publishingTemplateIdentifier = publishingTemplateKeyGroup.getIdentifier().getKey();
+         var publishingTemplateRequest = new PublishingTemplateRequest(publishingTemplateIdentifier);
+         var publishingTemplate = PublishingRequestHandler.getPublishingTemplate(publishingTemplateRequest);
+         return publishingTemplate;
+      } catch (Exception e) {
+         //@formatter:off
+         throw
+            new OseeCoreException
+                   (
+                      new Message()
+                             .title( "Unable to obtain the selected Publishing Template." )
+                             .indentInc()
+                             .segment( "Publishing Template Name", safeName )
+                             .reasonFollows( e )
+                             .toString(),
+                      e
+                   );
+         //@formatter:on
+      }
+   }
+
+   @Override
+   public String getXWidgetsXml() {
+
+      /*
+       * Don't call server Publishing Template Manager until the BLAM is ready to display to the user.
+       */
+
+      /*
+       * This is used to build a comma list of the publishing template names for the publishing template selection
+       * widgets.
+       */
+
+      final var publishingTemplateNameCommaList = new StringBuilder(2048);
+
+      /*
+       * The Publishing Template Manager will provide a listing of all the publishing templates it has cached and all of
+       * the cache keys associated with each template. A map is built with the cache keys for each publishing template
+       * keyed by the publishing template name.
+       */
+
+      //@formatter:off
+      this.publishingTemplateKeyGroupBySafeNameMap =
+         PublishingRequestHandler.getPublishingTemplateKeyGroups()
+            .getPublishingTemplateKeyGroupList()
+            .stream()
+            .peek
+               (
+                  ( publishingTemplateKeyGroup ) ->
+                      publishingTemplateNameCommaList
+                         .append( publishingTemplateKeyGroup.getSafeName().getKey() )
+                         .append( "," )
+               )
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        ( publishingTemplateKeyGroup ) -> publishingTemplateKeyGroup.getSafeName().getKey(),
+                        ( publishingTemplateKeyGroup ) -> publishingTemplateKeyGroup
+                     )
+               );
+      //@formatter:on
+
+      /*
+       * Remove trailing comma
+       */
+
+      publishingTemplateNameCommaList.setLength(publishingTemplateNameCommaList.length() - 1);
+
+      var publishingTemplateSafeNameCommaList = XmlEncoderDecoder.textToXml(publishingTemplateNameCommaList);
+
+      StringBuilder builder = new StringBuilder();
+      builder.append(String.format(
+         "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         RendererOption.UPDATE_PARAGRAPH_NUMBERS.getKey()));
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         RendererOption.INCLUDE_UUIDS.getKey()));
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" defaultValue=\"true\"/>",
+         RendererOption.USE_ARTIFACT_NAMES.getKey()));
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         RendererOption.USE_PARAGRAPH_NUMBERS.getKey()));
+      builder.append(String.format("<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"%s\" />",
+         RendererOption.EXCLUDE_ARTIFACT_TYPES.getKey()));
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
+      builder.append(publishingTemplateSafeNameCommaList);
+
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", PRIMARY_TEMPLATE));
+      builder.append("<XWidget xwidgetType=\"XCombo(");
+      builder.append(publishingTemplateSafeNameCommaList);
+
+      builder.append(String.format(
+         ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
+         SECONDARY_TEMPLATE));
+      builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", ARTIFACTS));
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", RendererOption.VIEW.getKey()));
+
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         RendererOption.OVERRIDE_DATA_RIGHTS.getKey()));
+      builder.append("<XWidget xwidgetType=\"XCombo(");
+      for (DataRightsClassification classification : DataRightsClassification.values()) {
+         builder.append(classification.getDataRightsClassification());
+         builder.append(",");
+      }
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", DATA_RIGHTS));
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         RendererOption.PUBLISH_DIFF.getKey()));
+      builder.append(String.format("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>",
+         RendererOption.WAS_BRANCH.getKey()));
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a WAS branch is selected, diffs will be between selected IS artifacts and current version on WAS branch\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"If a WAS branch is NOT selected, diffs will be between selected IS artifacts and baseline version on IS branch\"/>");
+      builder.append("</xWidgets>");
+
+      return builder.toString();
+   }
+
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-
-      populateTemplateList();
 
       /*
        * Templates
        */
 
-      Artifact parent = getTemplate(variableMap.getString(PARENT_TEMPLATE));
+      var primaryPublishingTemplateSafeName = variableMap.getString(PublishWithSpecifiedTemplate.PRIMARY_TEMPLATE);
 
-      if (parent == null) {
+      if (Strings.isInvalidOrBlank(primaryPublishingTemplateSafeName)) {
          throw new OseeArgumentException("Must select a Parent Template");
       }
 
-      Artifact child = getTemplate(variableMap.getString(CHILD_TEMPLATE));
+      var primaryPublishingTemplate = this.getTemplate(primaryPublishingTemplateSafeName);
+
+      var secondaryPublishingTemplateSafeName = variableMap.getString(PublishWithSpecifiedTemplate.SECONDARY_TEMPLATE);
+
+      //@formatter:off
+      var secondaryPublishingTemplate =
+         Strings.isValidAndNonBlank( secondaryPublishingTemplateSafeName )
+            ? this.getTemplate( secondaryPublishingTemplateSafeName )
+            : null;
+      //@formatter:on
 
       /*
        * Artifacts
        */
 
-      List<Artifact> artifacts = variableMap.getArtifacts(ARTIFACTS);
+      List<Artifact> artifacts = variableMap.getArtifacts(PublishWithSpecifiedTemplate.ARTIFACTS);
 
       /*
        * Find Is Branch
        */
 
       if (artifacts != null && !artifacts.isEmpty()) {
-         branch = artifacts.get(0).getBranch();
+         branchId = artifacts.get(0).getBranch();
       } else {
          throw new OseeArgumentException("Must provide an artifact");
       }
 
-      if (branch == null) {
+      if (branchId == null) {
          throw new OseeArgumentException("Cannot determine IS branch.");
       }
 
@@ -159,7 +353,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
        * Check Was Branch
        */
 
-      var wasBranchId = variableMap.getValue(WAS_BRANCH.getKey());
+      var wasBranchId = variableMap.getValue(RendererOption.WAS_BRANCH.getKey());
       wasBranchId = Objects.nonNull(wasBranchId) ? wasBranchId : BranchId.SENTINEL;
 
       /*
@@ -167,7 +361,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
        */
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
+         TransactionManager.createTransaction(branchId, "BLAM: Publish with specified template");
 
       if (Objects.isNull(transaction)) {
          throw new OseeCoreException("Failed to create transaction.");
@@ -233,7 +427,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       RendererMap rendererOptionsMap =
          new EnumRendererMap
             (
-              BRANCH,                   branch,
+              BRANCH,                   branchId,
               VIEW,                     viewId,
               COMPARE_BRANCH,           wasBranchId,
               TRANSACTION_OPTION,       transaction,
@@ -295,7 +489,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       if (result.get()) {
 
-         renderer.publish(parent, child, artifacts);
+         renderer.publish(primaryPublishingTemplate, secondaryPublishingTemplate, artifacts);
 
          if( Objects.nonNull(transaction) ) {
             transaction.execute();
@@ -305,88 +499,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             monitor.done();
          }
       }
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("<form>Use a template to publish a document or diff the document against a different version.<br/>");
-      sb.append("Select Parameters<br/>");
-      sb.append("<li>Select Update Paragraph Numbers if authorized to update them</li>");
-      sb.append("<li>Choose whether or not you want the UUIDs published</li>");
-      sb.append("<li>Select the Document Link format(s)</li>");
-      sb.append("<li>Choose artifact type(s) to exclude</li>");
-      sb.append("<li>Select Parent or Parent/Child (for SRS) template.  Only use non-recursive templates</li>");
-      sb.append(
-         "<li>Drag &amp; Drop the IS Artifacts into the box OR write an Orcs Query that returns a list of Artifact Ids</li>");
-      sb.append("<li>Decide to Publish as Diff and select WAS branch as desired</li>");
-      sb.append("<br/>Click the play button at the top right or in the Execute section.</form>");
-      return sb.toString();
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      populateTemplateList();
-      StringBuilder builder = new StringBuilder();
-      builder.append(String.format(
-         "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         RendererOption.UPDATE_PARAGRAPH_NUMBERS.getKey()));
-      builder.append(String.format(
-         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         RendererOption.INCLUDE_UUIDS.getKey()));
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
-      builder.append(String.format(
-         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" defaultValue=\"true\"/>",
-         RendererOption.USE_ARTIFACT_NAMES.getKey()));
-      builder.append(String.format(
-         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         RendererOption.USE_PARAGRAPH_NUMBERS.getKey()));
-      builder.append(String.format("<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"%s\" />",
-         RendererOption.EXCLUDE_ARTIFACT_TYPES.getKey()));
-
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
-      for (Artifact art : templates) {
-         builder.append(art.getSafeName());
-         builder.append(",");
-      }
-      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", PARENT_TEMPLATE));
-      builder.append("<XWidget xwidgetType=\"XCombo(");
-      for (Artifact art : templates) {
-         builder.append(art.getSafeName());
-         builder.append(",");
-      }
-
-      builder.append(String.format(
-         ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
-         CHILD_TEMPLATE));
-      builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", ARTIFACTS));
-
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
-      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", RendererOption.VIEW.getKey()));
-
-      builder.append(String.format(
-         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         RendererOption.OVERRIDE_DATA_RIGHTS.getKey()));
-      builder.append("<XWidget xwidgetType=\"XCombo(");
-      for (DataRightsClassification classification : DataRightsClassification.values()) {
-         builder.append(classification.getDataRightsClassification());
-         builder.append(",");
-      }
-      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", DATA_RIGHTS));
-
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
-      builder.append(String.format(
-         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         RendererOption.PUBLISH_DIFF.getKey()));
-      builder.append(String.format("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>",
-         RendererOption.WAS_BRANCH.getKey()));
-      builder.append(
-         "<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a WAS branch is selected, diffs will be between selected IS artifacts and current version on WAS branch\"/>");
-      builder.append(
-         "<XWidget xwidgetType=\"XLabel\" displayName=\"If a WAS branch is NOT selected, diffs will be between selected IS artifacts and baseline version on IS branch\"/>");
-      builder.append("</xWidgets>");
-
-      return builder.toString();
    }
 
    @Override
@@ -412,7 +524,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             }
 
          });
-      } else if (xWidget.getLabel().equals(PARENT_TEMPLATE)) {
+      } else if (xWidget.getLabel().equals(PRIMARY_TEMPLATE)) {
          final XCombo parentCombo = (XCombo) xWidget;
          parentCombo.addModifyListener(new ModifyListener() {
 
@@ -434,7 +546,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
                }
             }
          });
-      } else if (xWidget.getLabel().equals(CHILD_TEMPLATE)) {
+      } else if (xWidget.getLabel().equals(SECONDARY_TEMPLATE)) {
          childWidget = (XCombo) xWidget;
          childWidget.setEnabled(false);
       } else if (xWidget.getLabel().equals(ARTIFACTS)) {
@@ -493,25 +605,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          dataRightsWidget = (XCombo) xWidget;
          dataRightsWidget.setEnabled(false);
       }
-   }
-
-   private void populateTemplateList() {
-      templates = TemplateManager.getAllTemplates();
-      Collections.sort(templates);
-   }
-
-   private Artifact getTemplate(String templateName) {
-      for (Artifact artifact : templates) {
-         if (artifact.getSafeName().equals(templateName)) {
-            return artifact;
-         }
-      }
-      return Artifact.SENTINEL;
-   }
-
-   @Override
-   public Collection<XNavItemCat> getCategories() {
-      return Arrays.asList(XNavigateItem.DEFINE);
    }
 
 }

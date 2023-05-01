@@ -259,8 +259,8 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
       RendererMap rendererOptions) {
       var rating = MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
-      if (PresentationType.PREVIEW_SERVER.equals(presentationType)) {
-         rating++;
+      if (!PresentationType.PREVIEW_SERVER.equals(presentationType)) {
+         rating--;
       }
       return rating;
    }

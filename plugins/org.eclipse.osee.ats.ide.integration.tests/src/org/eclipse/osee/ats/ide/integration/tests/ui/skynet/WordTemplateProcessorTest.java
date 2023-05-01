@@ -13,32 +13,32 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RendererTemplateWholeWord;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.io.File;
 import java.io.IOException;
+import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
+import org.eclipse.osee.client.test.framework.NoPopUpsRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.junit.After;
 import org.junit.Assert;
@@ -77,6 +77,7 @@ public class WordTemplateProcessorTest {
          .outerRule( new NotProductionDataStoreRule() )
          .around( new ExitDatabaseInitializationRule() )
          .around( TestUserRules.createInPublishingGroupTestRule() )
+         .around( new NoPopUpsRule() )
          ;
    //@formatter:on
 
@@ -108,7 +109,7 @@ public class WordTemplateProcessorTest {
    private static String F_WITH_PUBLISH_INLINE;
    private static String F_WITHOUT_PUBLISH_INLINE;
 
-   ArtifactId recurseTemplate;
+   String recurseTemplateIdentifier;
 
    @BeforeClass
    public static void loadTestFiles() throws Exception {
@@ -130,8 +131,25 @@ public class WordTemplateProcessorTest {
 
       BranchManager.createWorkingBranch(SAW_Bld_1, branch);
 
-      recurseTemplate = ArtifactQuery.getArtifactFromTypeAndName(RendererTemplateWholeWord,
-         DefaultDbInitTasks.PREVIEW_ALL_RECURSE, COMMON);
+      var oseeClient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
+
+      var templateManagerEndpoint = oseeClient.getTemplateManagerEndpoint();
+
+      //@formatter:off
+      var recurseTemplateRequest =
+         new PublishingTemplateRequest
+                (
+                   "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer",
+                   "",
+                   PresentationType.PREVIEW.name(),
+                   "PREVIEW_ALL_RECURSE"
+                );
+      //@formatter:on
+
+      var recurseTemplate = templateManagerEndpoint.getPublishingTemplate(recurseTemplateRequest);
+
+      this.recurseTemplateIdentifier = recurseTemplate.getIdentifier();
+
       myRootArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, branch, "WordTemplateProcessorTest_Root");
 
@@ -213,7 +231,8 @@ public class WordTemplateProcessorTest {
    }
 
    private void checkPreviewContents(Artifact artifact, String expected, String notExpected) throws IOException {
-      var rendererOptions = new EnumRendererMap(RendererOption.TEMPLATE_ARTIFACT, recurseTemplate);
+      var rendererOptions = new EnumRendererMap();
+      rendererOptions.setRendererOption(RendererOption.PUBLISHING_TEMPLATE_IDENTIFIER, this.recurseTemplateIdentifier);
       String filePath = RendererManager.open(myRootArtifact, PresentationType.PREVIEW, rendererOptions);
 
       String fileContents = Lib.fileToString(new File(filePath));

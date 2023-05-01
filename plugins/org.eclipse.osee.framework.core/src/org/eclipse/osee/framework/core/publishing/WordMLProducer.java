@@ -154,6 +154,68 @@ public class WordMLProducer {
       this.append(WordCoreUtil.PARAGRAPH_STYLE_TEMPLATE_PART_B);
    }
 
+   /**
+    * Appends the following to the Word ML output:
+    * <ul>
+    * <li>&lt;w:r&gt;&lt;w:t&gt;</li>
+    * <li>XML escaped <code>text</code></li>
+    * <li>&lt;/w:t&gt;&lt;/w:r&gt;</li>
+    * </ul>
+    *
+    * @param text the text for the run.
+    */
+
+   public void addRunWithTextEscape(CharSequence text) {
+
+      var xmlEncodedText = XmlEncoderDecoder.textToXml(text);
+
+      this.startRun();
+      this.startText();
+      this.append(xmlEncodedText);
+      this.endText();
+      this.endRun();
+   }
+
+   /**
+    * Appends the following to the Word ML output:
+    * <ul>
+    * <li>&lt;w:r&gt;&lt;w:t&gt;</li>
+    * <li>The concatenation of each element of the <code>texts</code> array after being XML escaped.</li>
+    * <li>&lt;/w:t&gt;&lt;/w:r&gt;</li>
+    * </ul>
+    *
+    * @param texts an array of the text segments for the run.
+    */
+
+   public void addRunWithTextEscape(CharSequence... texts) {
+
+      if (Objects.isNull(texts) || texts.length == 0) {
+         return;
+      }
+
+      this.startRun();
+      this.startText();
+
+      for (var text : texts) {
+         var xmlEncodedText = XmlEncoderDecoder.textToXml(text);
+         this.append(xmlEncodedText);
+      }
+
+      this.endText();
+      this.endRun();
+   }
+
+   /**
+    * Appends the following to the Word ML output:
+    * <ul>
+    * <li>&lt;w:r&gt;&lt;w:t&gt;</li>
+    * <li><code>text</code></li>
+    * <li>&lt;/w:t&gt;&lt;/w:r&gt;</li>
+    * </ul>
+    *
+    * @param text the text for the run.
+    */
+
    public void addRunWithTextNoEscape(CharSequence text) {
       this.startRun();
       this.startText();
@@ -161,6 +223,17 @@ public class WordMLProducer {
       this.endText();
       this.endRun();
    }
+
+   /**
+    * Appends the following to the Word ML output:
+    * <ul>
+    * <li>&lt;w:r&gt;&lt;w:t&gt;</li>
+    * <li>The concatenation of each element of the <code>texts</code> array.</li>
+    * <li>&lt;/w:t&gt;&lt;/w:r&gt;</li>
+    * </ul>
+    *
+    * @param texts an array of the text segments for the run.
+    */
 
    public void addRunWithTextNoEscape(CharSequence... texts) {
 
@@ -400,7 +473,7 @@ public class WordMLProducer {
 
    public void endTable() {
       this.append(WordCoreUtil.TABLE_END);
-      this.append(WordCoreUtil.SUBSECTION_END);
+      this.endSubSection();
    }
 
    public void endTableColumn() {
@@ -630,7 +703,7 @@ public class WordMLProducer {
    }
 
    public void startTable() {
-      this.append(WordCoreUtil.SUBSECTION);
+      this.startSubSection();
       this.append(WordCoreUtil.TABLE);
    }
 

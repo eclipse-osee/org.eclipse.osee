@@ -860,6 +860,32 @@ public class Message {
    }
 
    /**
+    * Adds a multi-line segment generated from the specified object's {@link ToMessage#toMessage} method.
+    *
+    * @param toMessage an object implementing the {@link ToMessage} interface.
+    * @return this {@link Message}.
+    */
+
+   public Message segmentToMessage(ToMessage toMessage) {
+      return toMessage.toMessage(this.indent, this);
+   }
+
+   /**
+    * Adds a multi-line segment with a title generated from the specified object's {@link ToMessage#toMessage} method.
+    *
+    * @param toMessage an object implementing the {@link ToMessage} interface.
+    * @return this {@link Message}.
+    */
+
+   public Message segmentToMessage(CharSequence title, ToMessage toMessage) {
+      this.title(title);
+      this.indentInc();
+      toMessage.toMessage(this.indent, this);
+      this.indentDec();
+      return this;
+   }
+
+   /**
     * Adds a new segment line with the value string generated from a {@link List}. This method behaves as though the
     * following method were called:
     *

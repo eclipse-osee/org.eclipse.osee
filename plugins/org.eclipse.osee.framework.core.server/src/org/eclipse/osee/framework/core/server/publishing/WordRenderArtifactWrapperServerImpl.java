@@ -461,6 +461,15 @@ public class WordRenderArtifactWrapperServerImpl implements PublishingArtifact {
     */
 
    @Override
+   public String getGuid() {
+      return this.artifact.getGuid();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public Long getId() {
       return this.artifact.getId();
    }
