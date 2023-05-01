@@ -259,6 +259,7 @@ public abstract class AbstractWordCompare implements IComparator {
       var artifacts = Collections.singletonList( artifact );
 
       var path = RendererUtil.makeRenderPath( prefix.concat( "/results" ) );
+
       var diffPath =
          RenderingUtil
             .getRenderFile

@@ -13,16 +13,13 @@
 
 package org.eclipse.osee.define.operations.publishing;
 
-import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.define.api.publishing.PublishingOptions;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.enums.DataRightsClassification;
-import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.core.server.publishing.WordRenderArtifactWrapperServerImpl;
@@ -41,15 +38,12 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
    /**
     * Creates a new instance for a publish.
     *
-    * @param publishingOptions a structure similar to the client side {@link RendererMap} with publishing options.
-    * @param publishingTemplate the {@link PublishingTemplate} to generate the Word Document with.
-    * @param writer rendered Word ML is sent to this {@link Writer}.
     * @param orcsApi handle to the {@link OrcsApi} used by super class.
     * @param atsApi handle to the {@link AtsApi} used by super class to access logging facilities.
     */
 
-   public GeneralPublishingWordTemplateProcessorServer(PublishingOptions publishingOptions, PublishingTemplate publishingTemplate, Writer writer, OrcsApi orcsApi, AtsApi atsApi) {
-      super(publishingOptions, publishingTemplate, writer, orcsApi, atsApi);
+   public GeneralPublishingWordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi) {
+      super(orcsApi, atsApi);
    }
 
    /**
@@ -71,8 +65,14 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
    @Override
    protected void processArtifactSet(List<ArtifactReadable> artifacts, WordMLProducer wordMl) {
 
-      var includeEmptyHeaders = this.templatePublishingData.getOutliningOptions().isIncludeEmptyHeaders();
-      var recurseChildren = this.templatePublishingData.getOutliningOptions().isRecurseChildren();
+      var recurseChildren = this.publishingTemplate.getRendererOptions().getOutliningOptions()[0].isRecurseChildren();
+
+      var includeEmptyHeaders =
+         this.publishingTemplate.getRendererOptions().getOutliningOptions()[0].isIncludeEmptyHeaders();
+
+      if (Objects.isNull(includeEmptyHeaders)) {
+         includeEmptyHeaders = !this.renderer.isRendererOptionSetAndFalse(RendererOption.PUBLISH_EMPTY_HEADERS);
+      }
 
       if (!includeEmptyHeaders && recurseChildren) {
          this.populateEmptyHeaders(artifacts);
@@ -103,13 +103,13 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
                 * The publishing branch
                 */
 
-               this.publishingOptions.branch,
+               this.branchId,
 
                /*
                 * Recursion logic
                 */
 
-               this.templatePublishingData.getOutliningOptions().isRecurseChildren(),
+               recurseChildren,
 
                /*
                 * Not Historical, false -> accept descendants of historical artifacts and historical descendants
@@ -121,9 +121,7 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
                 * Data rights classification override
                 */
 
-               DataRightsClassification.isValid(this.publishingOptions.overrideDataRights)
-                  ? this.publishingOptions.overrideDataRights
-                  : "invalid",
+               this.overrideClassification,
 
                /*
                 * When recursing, this tester accepts all descendant artifacts

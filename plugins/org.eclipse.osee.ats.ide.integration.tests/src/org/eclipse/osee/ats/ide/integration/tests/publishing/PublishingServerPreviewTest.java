@@ -1113,23 +1113,16 @@ public class PublishingServerPreviewTest {
 
       Assert.assertEquals
          (
-            "Second Paragraph is expected to have two text.",
-            2,
+            "Second Paragraph is expected to have one text.",
+            1,
             wordTextList.size()
          );
 
       Assert.assertEquals
          (
             "Attribute Label does not match.",
-            "Description: ",
+            "Description: This folder contains artifacts for publishing preview tests.",
             wordTextList.get( 0 ).get().getText()
-         );
-
-      Assert.assertEquals
-         (
-            "Attribute Value does not match.",
-            "This folder contains artifacts for publishing preview tests.",
-            wordTextList.get( 1 ).get().getText()
          );
       //@formatter:on
    }
@@ -1254,21 +1247,10 @@ public class PublishingServerPreviewTest {
 
       Assert.assertEquals
          (
-            "Fourth Paragraph is expected to have no texts.",
+            "Fourth Paragraph is not expected to have texts.",
             0,
             wordTextList.size()
          );
-
-
-
-
-
-
-
-
-
-
-
 
 
       wordTextList = this.getWordTextList( 0 /* section */, 2 /* sub-section */, 0 /* paragraph */ );

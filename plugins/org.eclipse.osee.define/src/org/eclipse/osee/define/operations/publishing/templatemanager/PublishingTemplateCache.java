@@ -15,7 +15,9 @@ package org.eclipse.osee.define.operations.publishing.templatemanager;
 
 import java.util.List;
 import java.util.Optional;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyType;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 
 /**
  * A common Publishing Template Cache interface to be used by caching {@link PublishingTemplateProvider}
@@ -63,15 +65,16 @@ interface PublishingTemplateCache {
     * @return the first found {@link PublishingTemplate}.
     */
 
-   Optional<PublishingTemplateInternal> findFirstTemplate(PublishingTemplateCacheKey primaryKey, String secondaryKey);
+   Optional<PublishingTemplateInternal> findFirstTemplate(PublishingTemplateKeyType primaryKey, String secondaryKey);
 
    /**
-    * Gets an unordered unmodifiable {@link List} of the SafeNames of the Publishing Templates held by this cache.
+    * Gets an unordered unmodifiable {@link List} of the {@link PublishingTemplateKeyGroups} for each publishing
+    * template held by the cache.
     *
-    * @return a {@link List} of Publishing Template Safe Names.
+    * @return an unmodifiable {@link List} of the {@link PublishingTemplateKeyGroups} held by the cache.
     */
 
-   List<String> getPublishingTemplateSafeNames();
+   PublishingTemplateKeyGroups getPublishingTemplateKeyGroups();
 }
 
 /* EOF */

@@ -262,17 +262,16 @@ public class WordCoreUtilClient {
       return sb.toString();
    }
 
-   public final static String removeGUIDFromTemplate(String template) {
-      String newTemplate = "";
+   public final static CharSequence removeGUIDFromTemplate(CharSequence template) {
 
-      String[] splitsBeforeAndAfter = template.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
+      String[] splitsBeforeAndAfter =
+         template.toString().split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
 
       if (splitsBeforeAndAfter.length == 3) {
-         newTemplate = splitsBeforeAndAfter[0] + " " + splitsBeforeAndAfter[2];
+         return splitsBeforeAndAfter[0] + " " + splitsBeforeAndAfter[2];
       } else {
-         newTemplate = template;
+         return template;
       }
-      return newTemplate;
    }
 
    public final static String removeWordMarkupSmartTags(String wordMarkup) {

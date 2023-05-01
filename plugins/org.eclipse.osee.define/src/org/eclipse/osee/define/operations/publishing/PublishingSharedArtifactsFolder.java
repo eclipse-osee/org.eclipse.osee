@@ -17,11 +17,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactSpecification;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchSpecification;
 
 /**
  * A Shared Publishing Folder is an artifact with children that are selected by an attribute with a specified value and
@@ -154,7 +156,7 @@ public abstract class PublishingSharedArtifactsFolder {
       var sharedFolderOptional =
          ( sharedFolderArtifactToken instanceof ArtifactReadable )
               ? Optional.of( (ArtifactReadable) sharedFolderArtifactToken )
-              : publishingUtils.getArtifactReadableByIdentifierFilteredForView( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken );
+              : publishingUtils.getArtifactReadableByIdentifier( new ArtifactSpecification( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken ) );
 
       if( sharedFolderOptional.isEmpty() ) {
          return
@@ -188,8 +190,7 @@ public abstract class PublishingSharedArtifactsFolder {
                return
                   publishingUtils.getRecursiveChildenArtifactReadablesByAttributeTypeAndAttributeValue
                      (
-                        publishingBranchId,
-                        publishingBranchId.getViewId(),
+                        new BranchSpecification( publishingBranchId ),
                         sharedFolderArtifactToken,
                         childAttributeTypeId,
                         attributeValue
@@ -293,7 +294,7 @@ public abstract class PublishingSharedArtifactsFolder {
       var sharedFolderOptional =
          ( sharedFolderArtifactToken instanceof ArtifactReadable )
               ? Optional.of( (ArtifactReadable) sharedFolderArtifactToken )
-              : publishingUtils.getArtifactReadableByIdentifierFilteredForView( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken );
+              : publishingUtils.getArtifactReadableByIdentifier( new ArtifactSpecification( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken ) );
 
       if( sharedFolderOptional.isEmpty() ) {
          return
@@ -327,8 +328,7 @@ public abstract class PublishingSharedArtifactsFolder {
                return
                   publishingUtils.getRecursiveChildenArtifactReadablesOfTypeByAttributeTypeAndAttributeValue
                      (
-                       publishingBranchId,
-                       publishingBranchId.getViewId(),
+                       new BranchSpecification( publishingBranchId ),
                        sharedFolderArtifactToken,
                        childArtifactTypeToken,
                        childAttributeTypeId,

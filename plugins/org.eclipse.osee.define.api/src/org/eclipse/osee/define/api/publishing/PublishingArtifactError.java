@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.HasArtifactType;
 import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
 
@@ -28,12 +29,12 @@ public class PublishingArtifactError {
    private final List<Object> things;
    private final String errorDescription;
 
-   public <T extends NamedId & HasArtifactType> PublishingArtifactError(T thing, String errorDescription) {
+   public <T extends Id> PublishingArtifactError(T thing, String errorDescription) {
       this.things = List.of(thing);
       this.errorDescription = errorDescription;
    }
 
-   public <T extends NamedId & HasArtifactType> PublishingArtifactError(List<T> things, String errorDescription) {
+   public <T extends Id> PublishingArtifactError(List<T> things, String errorDescription) {
       this.things = List.of(things);
       this.errorDescription = errorDescription;
    }
@@ -56,9 +57,13 @@ public class PublishingArtifactError {
 
       for( var thing : this.things ) {
 
-         var identifier       = ((NamedId)         thing).getId().toString();
-         var name             = ((NamedId)         thing).getName();
-         var artifactTypeName = ((HasArtifactType) thing).getArtifactType().getName();
+         var identifier       = ((Id) thing).getId().toString();
+         var name             = ( thing instanceof NamedId )
+                                   ? ((NamedId) thing).getName()
+                                   : "(no name information)";
+         var artifactTypeName = ( thing instanceof HasArtifactType )
+                                   ? ((HasArtifactType) thing).getArtifactType().getName()
+                                   : "(no type information)";
 
          stringBuilder
             .append( indent1 ).append( "Artifact:" ).append( "\n" )
@@ -78,18 +83,33 @@ public class PublishingArtifactError {
          );
 
       var thingIdentifiers =
-         this.things.stream()
-            .map( ( thing ) -> ((NamedId) thing).getId().toString() )
+         this.things
+            .stream()
+            .map( ( thing ) -> ((Id) thing).getId().toString() )
             .collect( Collectors.joining("\n") );
 
       var thingNames =
-         this.things.stream()
-            .map( ( thing ) -> ((NamedId) thing).getName() )
+         this.things
+            .stream()
+            .map
+               (
+                  ( thing ) ->
+                     ( thing instanceof NamedId )
+                        ? ((NamedId) thing).getName()
+                        : "(no name information)"
+               )
             .collect( Collectors.joining("\n") );
 
       var thingArtifactTypes =
-         this.things.stream()
-            .map( ( thing ) -> ((HasArtifactType) thing).getArtifactType().getName() )
+         this.things
+            .stream()
+            .map
+               (
+                  ( thing ) ->
+                     ( thing instanceof HasArtifactType )
+                        ? ((HasArtifactType) thing).getArtifactType().getName()
+                        : "(no type information)"
+               )
             .collect( Collectors.joining( "\n" ) );
 
       WordMLProducer.addErrorRow

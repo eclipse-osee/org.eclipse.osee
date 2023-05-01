@@ -122,7 +122,8 @@ public class MSWordTemplateRendererUtils {
     * @return the determined applicability rating.
     */
 
-   public static int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public static int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       //@formatter:off
 
       /*

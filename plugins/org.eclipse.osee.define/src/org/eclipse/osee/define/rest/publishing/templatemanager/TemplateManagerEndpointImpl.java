@@ -19,13 +19,13 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateSafeNames;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
 import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.rest.DefineApplication;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 
 /**
  * Implementation of the {@link TemplateManagerEndpoint} interface contains the methods that are invoked when a REST API
@@ -131,11 +131,11 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
     */
 
    @Override
-   public PublishingTemplateSafeNames getPublishingTemplateSafeNames() {
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplateSafeNames();
+         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplateKeyGroups();
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (Exception e) {

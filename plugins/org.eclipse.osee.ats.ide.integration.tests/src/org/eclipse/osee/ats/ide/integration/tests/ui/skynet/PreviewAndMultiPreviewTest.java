@@ -801,7 +801,7 @@ public class PreviewAndMultiPreviewTest {
       } catch (Exception exception) {
 
          Asserts.assertException("Exception type or message is not as expected.", OseeCoreException.class,
-            "Unable to find a valid template match.", exception);
+            "Failed to find a Publishing Template.", exception);
          //@formatter:on
       }
    }

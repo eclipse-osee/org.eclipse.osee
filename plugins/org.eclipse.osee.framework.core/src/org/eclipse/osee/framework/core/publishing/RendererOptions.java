@@ -11,17 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api.publishing.templatemanager;
+package org.eclipse.osee.framework.core.publishing;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import org.eclipse.osee.framework.core.publishing.AttributeOptions;
-import org.eclipse.osee.framework.core.publishing.MetadataOptions;
-import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
@@ -134,6 +132,7 @@ public class RendererOptions implements ToMessage {
          "RendererOptions::new, parameter \"outliningOptions\" cannot be null.");
    }
 
+   @JsonIgnore
    public void defaults() {
       if (Objects.isNull(this.attributeOptions)) {
          this.attributeOptions = new AttributeOptions[0];
@@ -141,7 +140,7 @@ public class RendererOptions implements ToMessage {
          Arrays.stream(this.attributeOptions).forEach(AttributeOptions::defaults);
       }
       if (Objects.isNull(this.elementType)) {
-         this.elementType = "";
+         this.elementType = "Artifact";
       }
       if (Objects.isNull(this.metadataOptions)) {
          this.metadataOptions = new MetadataOptions[0];
@@ -200,6 +199,7 @@ public class RendererOptions implements ToMessage {
       return this.outliningOptions;
    }
 
+   @JsonIgnore
    public boolean isValid() {
 
       //@formatter:off

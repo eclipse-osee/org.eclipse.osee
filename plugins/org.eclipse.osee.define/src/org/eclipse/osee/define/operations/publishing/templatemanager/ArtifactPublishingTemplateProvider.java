@@ -52,7 +52,14 @@ public class ArtifactPublishingTemplateProvider extends AbstractPublishingTempla
 
    @Override
    public int getApplicabilityRating(PublishingTemplateRequest publishingTemplateRequest) {
-      return PublishingTemplateProvider.DEFAULT_MATCH;
+      //@formatter:off
+      return
+         !publishingTemplateRequest.isByOptions()
+            ? publishingTemplateRequest.getTemplateId().startsWith("AT-")
+                 ? PublishingTemplateProvider.IDENTIFIER_PREFIX_MATCH
+                 : PublishingTemplateProvider.NO_MATCH
+            : PublishingTemplateProvider.DEFAULT_MATCH;
+      //@formatter:on
    }
 
 }

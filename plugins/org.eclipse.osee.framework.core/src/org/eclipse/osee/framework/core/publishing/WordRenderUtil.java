@@ -13,19 +13,31 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * This class implements publishing and rendering methods in a client/server agnostic way. This allows for the
@@ -66,6 +78,38 @@ public class WordRenderUtil {
    }
 
    /**
+    * A functional interface for a method to be called once it has been determined that an attribute will be rendered.
+    */
+
+   @FunctionalInterface
+   public interface AttributeProcessor {
+
+      /**
+       * The {@link #process} method of the {@link AttributeProcessor} implementation that was passed to the
+       * {@link WordRenderUtil#processAttributes} method is called when it is determined that an attribute will be
+       * rendered.
+       *
+       * @param attributeOptions the {@link AttributeOptions} array element from the {@link RendererOptions} that
+       * applies to the attribute to be rendered.
+       * @param attributeType the type of attribute to be rendered.
+       * @param allAttributes the render all attributes flag.
+       */
+
+      void process(AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttributes);
+   }
+
+   /**
+    * A functional interface for a method to lookup the {@link AttributeTypeToken} for an attribute by the attribute's
+    * name. The implementation of this interface is called by {@link WordRenderUtil#processAttributes} to obtain
+    * {@link AttributeTypeToken}s.
+    */
+
+   @FunctionalInterface
+   public interface AttributeTypeFunction extends Function<String, AttributeTypeToken> {
+      //methods are inherited.
+   }
+
+   /**
     * A functional interface used to obtain the data rights for artifacts in the publish.
     */
 
@@ -82,6 +126,53 @@ public class WordRenderUtil {
 
       DataRightResult getDataRights(BranchId branchId, String overrideCalssification, List<ArtifactId> artifacts);
    }
+
+   /**
+    * A functional interface for a supplier for a sequence of {@link AttributeTypeToken}s for an artifact in rendering
+    * order.
+    */
+
+   @FunctionalInterface
+   public interface OrderedAttributeTypeSupplier extends Supplier<Iterable<AttributeTypeToken>> {
+      //methods are inherited.
+   }
+
+   /**
+    * A functional interface to get the rendered relation order table for an artifact.
+    */
+
+   @FunctionalInterface
+   public interface RelationOrderFunction extends Function<ArtifactReadable, String> {
+      //methods are inherited.
+   }
+
+   @FunctionalInterface
+   public interface RenderWordTemplateContentOperation extends Function<WordTemplateContentData, Pair<String, Set<String>>> {
+      //methods are inherited.
+   }
+
+   @FunctionalInterface
+   public interface ExceptionHandler extends Consumer<Throwable> {
+      //methods are inherited.
+   }
+
+   /**
+    * An allowed value for a metadata "attribute" name.
+    */
+
+   private static final String APPLICABILITY = "Applicability";
+
+   /**
+    * An allowed value for a metadata "attribute" name.
+    */
+
+   private static final String ARTIFACT_ID = "Artifact Id";
+
+   /**
+    * An allowed value for a metadata "attribute" name.
+    */
+
+   private static final String ARTIFACT_TYPE = "Artifact Type";
 
    /**
     * Get the data rights for artifacts in the publish.
@@ -102,7 +193,9 @@ public class WordRenderUtil {
     * @throws OseeCoreException when a failure occurred obtaining the data rights.
     */
 
-   public static Optional<DataRightContentBuilder> getDataRights(List<PublishingArtifact> artifacts, BranchId branchId, boolean recurse, boolean notHistorical, String overrideClassification, ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider) {
+   public static Optional<DataRightContentBuilder> getDataRights(List<PublishingArtifact> artifacts, BranchId branchId,
+      boolean recurse, boolean notHistorical, String overrideClassification,
+      ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider) {
 
       //@formatter:off
       assert
@@ -208,7 +301,8 @@ public class WordRenderUtil {
     * descendants.
     */
 
-   public static List<PublishingArtifact> getPublishArtifacts(List<PublishingArtifact> artifacts, boolean recursive, boolean notHistorical, ArtifactAcceptor descendantArtifactAcceptor) {
+   public static List<PublishingArtifact> getPublishArtifacts(List<PublishingArtifact> artifacts, boolean recursive,
+      boolean notHistorical, ArtifactAcceptor descendantArtifactAcceptor) {
 
       if (Objects.isNull(artifacts) || artifacts.isEmpty()) {
          return null;
@@ -245,6 +339,50 @@ public class WordRenderUtil {
    }
 
    /**
+    * Determines the starting paragraph number as follows:
+    * <dl>
+    * <dt>The <code>artifact</code> or <code>publishingTemplate</code> are <code>null</code>:</dt>
+    * <dd>"1"</dd>
+    * <dt>The <code>publishingTemplate</code> does not contain an insert artifact here token:</dt>
+    * <dd>"1"</dd>
+    * <dt>The contents of the {@link CoreAttributeTypes#ParagraphNumber} attribute of the <code>artifact</code> is
+    * invalid:</dt>
+    * <dd>"1"</dd>
+    * <dt>Otherwise:</dt>
+    * <dd>The contents of the {@link CoreAttributeTypes#ParagraphNumber} attribute.</dd>
+    * </dl>
+    *
+    * @param artifact the first artifact selected for the publish.
+    * @param publishingTemplate the {@link PublishingTemplate} for the publish.
+    * @return the starting paragraph number.
+    */
+
+   public static String getStartingParagraphNumber(ArtifactReadable artifact, PublishingTemplate publishingTemplate) {
+
+      var startParagraphNumber = "1";
+
+      if (Objects.isNull(publishingTemplate) || Objects.isNull(artifact)) {
+         return startParagraphNumber;
+      }
+
+      if (publishingTemplate.test(WordCoreUtil::isNotArtifactPublishingTemplateInsertToken)) {
+         return startParagraphNumber;
+      }
+
+      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+         return startParagraphNumber;
+      }
+
+      var paragraphNumber = artifact.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber, "");
+
+      if (Strings.isInvalidOrBlank(paragraphNumber)) {
+         return startParagraphNumber;
+      }
+
+      return paragraphNumber;
+   }
+
+   /**
     * Recursively loads the next level of artifacts for {@link #getPublishArtifacts}.
     *
     * @param allArtifacts level artifacts are appended to this list.
@@ -260,7 +398,9 @@ public class WordRenderUtil {
     * {@link DescendantArtifactAcceptor} will excluded from the output list.
     */
 
-   private static void loadChildrenRecursive(List<PublishingArtifact> allArtifacts, Set<ArtifactId> checkSet, List<PublishingArtifact> levelArtifacts, int outlineLevel, boolean recurse, boolean notHistorical, ArtifactAcceptor descendantArtifactAcceptor) {
+   private static void loadChildrenRecursive(List<PublishingArtifact> allArtifacts, Set<ArtifactId> checkSet,
+      List<PublishingArtifact> levelArtifacts, int outlineLevel, boolean recurse, boolean notHistorical,
+      ArtifactAcceptor descendantArtifactAcceptor) {
 
       var artifactIterator = levelArtifacts.iterator();
       PublishingArtifact artifact = null;
@@ -318,6 +458,392 @@ public class WordRenderUtil {
          }
       }
 
+   }
+
+   /**
+    * Loops through each attribute element that is to be printed, if * (all attributes), it loops through every valid
+    * attribute on that artifact. Also makes sure not to print the headingAttributeType if outlining is enabled.
+    * Otherwise it only runs for the specific attribute element. In this default implementation the presentation type is
+    * preview.
+    *
+    * @param attributeOptionsArray a list of the {@link AttributeOptions} from the {@link RendererOptions} for the
+    * publish.
+    * @param attributeProcessor a callback method to render and attribute.
+    * @param attributeTypeFunction a callback method to look up an {@link AttributeTypeToken} by an attribute name.
+    * @param orderedAttributeTypeSupplier a supplier method to get a list of the attributes in rendering order for the
+    * artifact.
+    * @param artifact the artifact whose attributes are to be rendered.
+    * @param headingAttributeType the {@link AttributeTypeToken} used to identify artifacts that are headings.
+    * @param renderAllAttributes the publishing render all attributes flag.
+    * @param outlining the outlining mode flag.
+    */
+
+   //@formatter:off
+   public static void
+      processAttributes
+         (
+            List<AttributeOptions> attributeOptionsArray,
+            AttributeProcessor attributeProcessor,
+            AttributeTypeFunction attributeTypeFunction,
+            OrderedAttributeTypeSupplier orderedAttributeTypeSupplier,
+            ArtifactReadable artifact,
+            AttributeTypeToken headingAttributeType,
+            boolean renderAllAttributes,
+            boolean outlining
+         ) {
+
+      for (var attributeOptions : attributeOptionsArray) {
+
+         var attributeName = attributeOptions.getAttributeName();
+
+         if (renderAllAttributes || "*".equals(attributeName)) {
+
+            /*
+             * RendererOption is set to process all attributes or all attributes were specified in the publishing
+             * template renderer options.
+             */
+
+            for (var attributeType : orderedAttributeTypeSupplier.get() ) {
+
+               /*
+                * When outlining and the attribute type is for a heading, skip it. The heading has already been
+                * processed.
+                */
+
+               if (outlining && attributeType.equals( headingAttributeType )) {
+                  continue;
+               }
+
+               //@formatter:off
+               attributeProcessor.process
+                  (
+                     attributeOptions,
+                     attributeType,
+                     true
+                  );
+               //@formatter:on
+            }
+
+         } else {
+
+            /**
+             * Not processing all attributes and a specific attribute was specified in the publishing template renderer
+             * options.
+             * <p>
+             * Since the publishing template explicitly specified the attribute it will be processed without regard to
+             * the outlining setting or whether the attribute type is for a heading.
+             */
+
+            var attributeType = attributeTypeFunction.apply(attributeName);
+
+            if (artifact.isAttributeTypeValid(attributeType)) {
+
+               //@formatter:off
+               attributeProcessor.process
+                  (
+                     attributeOptions,
+                     attributeType,
+                     false
+                  );
+               //@formatter:on
+            }
+
+         }
+
+      }
+   }
+
+   /**
+    * Renders the metadata attributes.
+    *
+    * @param metadataOptionsArray an array of the {@link MetadataOptions} definitions for the metadata attributes to be
+    * rendered.
+    * @param applicabilityTokens a {@link Map} of the applicability tokens by applicability identifiers for rendering
+    * the "Applicability" metadata attribute.
+    * @param artifact the client or server artifact wrapped in an {@link ArtifactReadable}.
+    * @param wordMl the {@link WordMLProducer} to render the attributes with.
+    */
+
+   public static void processMetadataOptions(MetadataOptions[] metadataOptionsArray,
+      Map<ApplicabilityId, ApplicabilityToken> applicabilityTokens, ArtifactReadable artifact, WordMLProducer wordMl) {
+
+      //@formatter:off
+      if (Objects.nonNull(metadataOptionsArray)) {
+
+         Arrays.asList( metadataOptionsArray )
+            .forEach
+               (
+                  (element) ->
+                  {
+
+                      String name = element.getType();
+                      String format = element.getFormat();
+                      String label = element.getLabel();
+                      String value;
+
+                      switch( name )
+                      {
+                         case WordRenderUtil.APPLICABILITY:
+                         {
+                            ApplicabilityToken applicabilityToken;
+
+                            value = artifact.getApplicability().isValid()
+                                       ? Objects.nonNull( applicabilityToken = applicabilityTokens.get(artifact.getApplicability() ) )
+                                            ? applicabilityToken.getName()
+                                            : artifact.getApplicability().getIdString()
+                                       : "unknown";
+                         }
+                         break;
+
+                         case WordRenderUtil.ARTIFACT_TYPE:
+                         {
+                            value = artifact.getArtifactType().getName();
+                         }
+                         break;
+
+                         case WordRenderUtil.ARTIFACT_ID:
+                         {
+                            value = artifact.getIdString();
+                         }
+                         break;
+
+                         default:
+                         {
+                            value = "";
+                         }
+                      }
+
+                      wordMl.startParagraph();
+                      wordMl.addWordMl( WordCoreUtil.replaceRendererOptionToken( label, format, name, value ) );
+                      wordMl.endParagraph();
+                  }
+               );
+      }
+   }
+
+   /**
+    * The default attribute render for non-WordML attributes. Attributes are formatted with the "label" and "format"
+    * sub-templates specified for the attribute in the Publishing Template Renderer Options. When a sub-template is not
+    * provided the attribute name or value is rendered as plain text in the Word ML. The
+    * {@link CoreAttributeTypes#RelationOrder} attribute requires special processing and the
+    * {@link RelationOrderFuntion} is used as a callback to render that attribute.
+    *
+    * @param attributeType the attribute to be rendered.
+    * @param relationOrderFunction a {@link RelationOrderFunction} used to render the
+    * {@link CoreAttributeTypes#RelationOrder} attribute.
+    * @param artifact the artifact's whose attribute is to be rendered.
+    * @param wordMl the generated Word ML is written to the {@link WordMLProducer}.
+    * @param label the label template from the Publishing Template Renderer Options for the attribute.
+    * @param format the format template from the Publishing Template Renderer Options for the attribute.
+    */
+
+   public static void renderAttribute(AttributeTypeToken attributeType, RelationOrderFunction relationOrderFunction, ArtifactReadable artifact, WordMLProducer wordMl, String label, String format) {
+
+      var name = attributeType.getUnqualifiedName();
+
+      if (attributeType.equals(CoreAttributeTypes.RelationOrder)) {
+
+         if (Objects.isNull(relationOrderFunction)) {
+
+            /*
+             * Just skip it, when a RelationOrderSupplier was not provided.
+             */
+
+            return;
+         }
+
+         /*
+          * Render Relation Order
+          */
+
+         wordMl.startParagraph();
+         wordMl.addRunWithTextEscape(name);
+         wordMl.endParagraph();
+
+         /*
+          * Data will contain a sub-section with a table.
+          */
+
+         String data = relationOrderFunction.apply(artifact);
+
+         wordMl.addWordMl(data);
+
+      } else {
+
+         /*
+          * Render Label: Value
+          */
+
+         var value = artifact.getAttributeValuesAsString(attributeType);
+
+         wordMl.startParagraph();
+         wordMl.addWordMl(WordCoreUtil.replaceRendererOptionToken(label, format, name, value));
+         wordMl.endParagraph();
+      }
+   }
+
+
+   //@formatter:off
+   public static String
+      renderWordAttribute
+         (
+            ArtifactReadable                   artifact,
+            ArtifactId                         viewId,
+            WordMLProducer                     wordMl,
+            RendererMap                        rendererMap,
+            PresentationType                   presentationType,
+            String                             label,
+            String                             footer,
+            String                             permanentLinkUrl,
+            boolean                            artifactIsChanged,
+            TransactionToken                   historicalArtifactTransactionToken,
+            Set<String>                        unknownGuids,
+            RenderWordTemplateContentOperation renderWordTemplateContentOperation,
+            ExceptionHandler                   exceptionHandler
+         )
+   {
+      if ( Objects.nonNull(wordMl ) && Strings.isValidAndNonBlank(label) ) {
+         wordMl.addParagraph(label);
+      }
+
+      var artifactId = ArtifactId.create( artifact );
+      var branchId = BranchId.valueOf( artifact.getBranch().getId() );
+
+      WordTemplateContentData wtcData = new WordTemplateContentData();
+      wtcData.setArtId( artifactId );
+      wtcData.setBranch( branchId );
+      wtcData.setViewId( viewId );
+      wtcData.setFooter(presentationType != PresentationType.SPECIALIZED_EDIT ? footer : "");
+      wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
+      wtcData.setLinkType( rendererMap.getRendererOptionValue( RendererOption.LINK_TYPE ) );
+      wtcData.setPresentationType(presentationType);
+      wtcData.setTxId( historicalArtifactTransactionToken );
+      wtcData.setPermanentLinkUrl(permanentLinkUrl);
+      wtcData.setArtIsChanged( artifactIsChanged );
+
+      String wordMlContentDataAndFooter = "";
+
+      try {
+
+
+
+         var content = renderWordTemplateContentOperation.apply( wtcData );
+         if( Objects.nonNull( content ) ) {
+            wordMlContentDataAndFooter = content.getFirst();
+            var contentUnknownGuids = content.getSecond();
+            if( !contentUnknownGuids.isEmpty() ) {
+               unknownGuids.addAll( content.getSecond() );
+            }
+         }
+      } catch( Exception e ) {
+
+         if( Objects.nonNull( wordMl ) ) {
+
+            wordMl.addParagraphNoEscape( "Failed to parse content for artifact." );
+            wordMl.startParagraph();
+            wordMl.addRunWithTextEscape( "Artifact: ", artifact.toStringWithId() );
+            wordMl.endParagraph();
+            wordMl.startParagraph();
+            wordMl.addRunWithTextEscape( "Branch: ", branchId.toString() );
+            wordMl.endParagraph();
+         }
+
+         var renderException =
+            new OseeCoreException
+                   (
+                     new Message()
+                            .title( "Failed to parse content for artifact." )
+                            .indentInc()
+                            .segment( "Artifact", artifact.toStringWithId() )
+                            .segment( "Branch",   branchId  )
+                            .reasonFollowsWithTrace( e )
+                            .toString(),
+                     e
+                   );
+
+         if( Objects.nonNull( exceptionHandler ) ) {
+            exceptionHandler.accept( renderException );
+         }
+      }
+
+      if( Objects.nonNull( wordMl ) ) {
+
+         if( PresentationType.SPECIALIZED_EDIT.equals( presentationType ) ) {
+
+            wordMl.addEditParagraphNoEscape(WordCoreUtil.getStartEditImage(artifact.getGuid()));
+
+            if( Objects.nonNull( wordMlContentDataAndFooter ) ) {
+               wordMl.addWordMl( wordMlContentDataAndFooter );
+            }
+
+            wordMl.addEditParagraphNoEscape(WordCoreUtil.getEndEditImage(artifact.getGuid()));
+
+         } else {
+
+            if( Objects.nonNull( wordMlContentDataAndFooter ) ) {
+
+               wordMl.addWordMl( wordMlContentDataAndFooter );
+
+               if( WordCoreUtil.containsLists( wordMlContentDataAndFooter) ) {
+
+                  wordMl.resetListValue();
+
+               }
+
+            } else {
+
+               if( Objects.nonNull( footer ) ) {
+
+                  wordMl.addWordMl( footer );
+
+               }
+
+            }
+
+         }
+
+      }
+
+      return wordMlContentDataAndFooter;
+   }
+   //@formatter:on
+
+   /**
+    * Prepares a publishing template by doing the following:
+    * <ul>
+    * <li>Removes Word ML page number tags for page 1.</li>
+    * <li>Sets the initial list sequence numbers for the starting number of the publish.</li>
+    * </ul>
+    *
+    * @param publishingTemplate the {@link PublishingTemplate} to prepare.
+    * @param artifact the artifact to be published.
+    * @param wordMl the {@link WordMLProducer} for the publish is initialized with the starting paragraph number.
+    * @param outlineNumber when not <code>null</code> or blank, is used as the starting paragraph number.
+    * @param maxOutline the maximum number of outlining levels allowed for the publish.
+    */
+
+   public static void setupPublishingTemplate(PublishingTemplate publishingTemplate, ArtifactReadable artifact,
+      WordMLProducer wordMl, String outlineNumber, String outlineType, int maxOutline) {
+
+      //@formatter:off
+      publishingTemplate.update( WordCoreUtil::cleanupPageNumberTypeStart1 );
+
+      final var finalOutlineNumber =
+         Strings.isInvalidOrBlank( outlineNumber )
+            ? WordRenderUtil.getStartingParagraphNumber( artifact, publishingTemplate )
+            : outlineNumber;
+
+       publishingTemplate.update
+          (
+            (tc) -> WordCoreUtil.initializePublishingTemplateOutliningNumbers( finalOutlineNumber, tc, outlineType )
+          );
+
+       wordMl.setNextParagraphNumberTo( finalOutlineNumber );
+
+       if( maxOutline < 9 ) {
+          wordMl.setMaxOutlineLevel( maxOutline );
+       }
+       //@formatter:on
    }
 
 }

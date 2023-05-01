@@ -205,7 +205,6 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-
    public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers) {
 
       Message message = null;

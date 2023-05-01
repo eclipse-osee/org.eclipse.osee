@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyType;
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.logger.Log;
@@ -72,7 +74,7 @@ abstract class AbstractPublishingTemplateProvider implements PublishingTemplateP
       if (publishingTemplateRequest.isByOptions()) {
          //@formatter:off
          return
-            this.publishingTemplateCache.findFirstTemplate( PublishingTemplateCacheKey.NAME, publishingTemplateRequest.getOption() ).or
+            this.publishingTemplateCache.findFirstTemplate( PublishingTemplateKeyType.NAME, publishingTemplateRequest.getOption() ).or
                (
                   () -> this.publishingTemplateCache.findFirstTemplateByMatchCriteria
                            (
@@ -82,7 +84,7 @@ abstract class AbstractPublishingTemplateProvider implements PublishingTemplateP
          //@formatter:on
       }
 
-      return this.publishingTemplateCache.findFirstTemplate(PublishingTemplateCacheKey.IDENTIFIER,
+      return this.publishingTemplateCache.findFirstTemplate(PublishingTemplateKeyType.IDENTIFIER,
          publishingTemplateRequest.getTemplateId());
    }
 
@@ -91,13 +93,13 @@ abstract class AbstractPublishingTemplateProvider implements PublishingTemplateP
     */
 
    @Override
-   public Optional<PublishingTemplateInternal> getTemplate(PublishingTemplateCacheKey primaryKey, String secondaryKey) {
+   public Optional<PublishingTemplateInternal> getTemplate(PublishingTemplateKeyType primaryKey, String secondaryKey) {
 
       return this.publishingTemplateCache.findFirstTemplate(primaryKey, secondaryKey);
    }
 
    /**
-    * Builds an ordered list of the expected Publishing Template match criteria form the
+    * Builds an ordered list of the expected Publishing Template match criteria from the
     * {@link PublishingTemplateRequest} as follows:
     * <dl>
     * <dt>When options "publishingArtifactTypeName" and "option" are present:</dt>
@@ -172,8 +174,8 @@ abstract class AbstractPublishingTemplateProvider implements PublishingTemplateP
     */
 
    @Override
-   public List<String> getPublishingTemplateSafeNames() {
-      return this.publishingTemplateCache.getPublishingTemplateSafeNames();
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
+      return this.publishingTemplateCache.getPublishingTemplateKeyGroups();
    }
 
 }

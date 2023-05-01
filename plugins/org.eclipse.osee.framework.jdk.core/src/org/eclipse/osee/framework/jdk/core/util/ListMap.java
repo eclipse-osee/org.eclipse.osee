@@ -13,12 +13,21 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.util.AbstractCollection;
+import java.util.AbstractSet;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -122,6 +131,822 @@ public class ListMap<K, V> {
    }
 
    /**
+    * Implements a view of the {@link ListMap} that implements the {@link List} interface.
+    */
+
+   final class ListView implements List<V> {
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>value</code> is <code>null</code>.
+       * @throws UnsupportedOperationException when a key extractor function was not provided to the constructor.
+       */
+
+      @Override
+      public void add(int index, V value) {
+
+         Objects.requireNonNull(value, "ListMap.ListView::add, parameter \"value\" cannot be null.");
+
+         if (Objects.isNull(ListMap.this.keyExtractor)) {
+            throw new UnsupportedOperationException(
+               "ListMap.ListView::add(), a key extractor function is not available.");
+         }
+
+         ListMap.this.put(ListMap.this.keyExtractor.apply(value), value, index);
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>value</code> is <code>null</code>.
+       * @throws UnsupportedOperationException when a key extractor function was not provided to the constructor.
+       */
+
+      @Override
+      public boolean add(V value) {
+
+         Objects.requireNonNull(value, "ListMap.ListView::add, parameter \"value\" cannot be null.");
+
+         if (Objects.isNull(ListMap.this.keyExtractor)) {
+            throw new UnsupportedOperationException(
+               "ListMap.ListView::add(), a key extractor function is not available.");
+         }
+
+         var key = ListMap.this.keyExtractor.apply(value);
+         var currentValue = ListMap.this.map.get(key);
+
+         if (Objects.isNull(value)) {
+            ListMap.this.put(key, value);
+            return true;
+         }
+
+         if (currentValue.equals(value)) {
+            return false;
+         }
+
+         ListMap.this.put(key, value);
+
+         return true;
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>value</code> is <code>null</code>.
+       * @throws UnsupportedOperationException when a key extractor function was not provided to the constructor.
+       */
+
+      @Override
+      public boolean addAll(Collection<? extends V> collection) {
+
+         Objects.requireNonNull(collection, "ListMap.ListView::addAll, parameter \"collection\" cannot be null.");
+
+         if (Objects.isNull(ListMap.this.keyExtractor)) {
+            throw new UnsupportedOperationException(
+               "ListMap.ListView::addAll(), a key extractor function is not available.");
+         }
+
+         if (collection.isEmpty()) {
+            return false;
+         }
+
+         for (var value : collection) {
+
+            ListMap.this.put(ListMap.this.keyExtractor.apply(value), value);
+         }
+
+         return true;
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @implNote Functional but not efficient.
+       * @throws NullPointerException when <code>value</code> is <code>null</code>.
+       * @throws UnsupportedOperationException when a key extractor function was not provided to the constructor.
+       * @throws IndexOutOfBoundsException when <code>index</code> is less than zero or greater than size.
+       */
+
+      @Override
+      public boolean addAll(int index, Collection<? extends V> collection) {
+
+         Objects.requireNonNull(collection, "ListMap.ListView::addAll, parameter \"collection\" cannot be null.");
+
+         if (Objects.isNull(ListMap.this.keyExtractor)) {
+            throw new UnsupportedOperationException(
+               "ListMap.ListView::addAll(), a key extractor function is not available.");
+         }
+
+         if ((index < 0) || (index > ListMap.this.size())) {
+            throw new IndexOutOfBoundsException();
+         }
+
+         if (collection.isEmpty()) {
+            return false;
+         }
+
+         for (var value : collection) {
+
+            ListMap.this.put(ListMap.this.keyExtractor.apply(value), value, index++);
+         }
+
+         return true;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public void clear() {
+         ListMap.this.clear();
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>object</code> is <code>null</code>.
+       * @throws ClassCastException when <code>object</code> does not extend <code>V</code>.
+       */
+
+      @Override
+      public boolean contains(Object object) {
+
+         Objects.requireNonNull(object, "ListMap.ListView::contains, parameter \"object\" cannot be null.");
+
+         @SuppressWarnings("unchecked")
+         var value = (V) object;
+
+         if (Objects.nonNull(ListMap.this.keyExtractor)) {
+            var key = ListMap.this.keyExtractor.apply(value);
+            return ListMap.this.map.containsKey(key);
+         }
+
+         for (var entry : ListMap.this.list) {
+            if (value.equals(entry.getValue())) {
+               return true;
+            }
+         }
+
+         return false;
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>collection</code> is <code>null</code>.
+       */
+
+      @Override
+      public boolean containsAll(Collection<?> collection) {
+
+         Objects.requireNonNull(collection, "ListMap.ListView::addAll, parameter \"collection\" cannot be null.");
+
+         for (var object : collection) {
+            if (!this.contains(object)) {
+               return false;
+            }
+         }
+
+         return true;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public V get(int index) {
+
+         if (ListMap.this.outOfBounds(index)) {
+            //@formatter:off
+            throw
+               new IndexOutOfBoundsException
+                      (
+                         new Message()
+                                .title( "ListMap.ListView::get, index is out of bounds." )
+                                .indentInc()
+                                .segment( "index", index )
+                                .segment( "List Map Size", ListMap.this.size() )
+                                .toString()
+                      );
+            //@formatter:on
+         }
+
+         return ListMap.this.get(index).orElse(null);
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws ClassCastException when <code>object</code> does not implement <code>V</code>.
+       */
+
+      @Override
+      public int indexOf(Object object) {
+
+         @SuppressWarnings("unchecked")
+         var value = (V) object;
+
+         return ListMap.this.findValue(value).map(Element::getPosition).orElse(-1);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public boolean isEmpty() {
+         return ListMap.this.isEmpty();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Iterator<V> iterator() {
+         //@formatter:off
+         return
+            new Iterator<V>() {
+
+               /**
+                * Get an {@link Iterator} from the {@link ListMap#list}.
+                */
+
+               Iterator<Element<K,V>> entryIterator = ListMap.this.list.iterator();
+
+               /**
+                * {@inheritDoc}
+                */
+
+               @Override
+               public boolean hasNext() {
+                  return this.entryIterator.hasNext();
+               }
+
+               /**
+                * {@inheritDoc}
+                */
+
+               @Override
+               public V next() {
+                  var element = this.entryIterator.next();
+                  return element.getValue();
+               }
+
+               /**
+                * {@inheritDoc}
+                */
+
+               @Override
+               public void remove() {
+                  this.entryIterator.remove();
+               }
+
+            };
+         //@formatter:on
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public int lastIndexOf(Object o) {
+         throw new UnsupportedOperationException();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public ListIterator<V> listIterator() {
+         throw new UnsupportedOperationException();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public ListIterator<V> listIterator(int index) {
+         throw new UnsupportedOperationException();
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws IndexOutOfBoundsException when <code>index</code> is less than zero or greater than or equal to the
+       * {@link ListMap} size.
+       */
+
+      @Override
+      public V remove(int index) {
+
+         if (ListMap.this.outOfBounds(index)) {
+            //@formatter:off
+            throw
+               new IndexOutOfBoundsException
+                      (
+                         new Message()
+                                .title( "ListMap.ListView::remove, index is out of bounds." )
+                                .indentInc()
+                                .segment( "index", index )
+                                .segment( "List Map Size", ListMap.this.size() )
+                                .toString()
+                      );
+            //@formatter:on
+         }
+
+         var element = ListMap.this.list.get(index);
+
+         var rv = element.getValue();
+
+         ListMap.this.remove(element.getKey());
+
+         return rv;
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>object</code> is <code>null</code>.
+       * @throws ClassCastException when <code>object</code> does not implement <code>V</code>.
+       */
+
+      @Override
+      public boolean remove(Object object) {
+
+         Objects.requireNonNull(object, "ListMap.ListView::remove, parameter \"object\" cannot be null.");
+
+         @SuppressWarnings("unchecked")
+         var value = (V) object;
+
+         //@formatter:off
+         return
+            ListMap.this
+               .findValue( value )
+               .map( ( element ) -> ListMap.this.remove( element.getKey() ) )
+               .isPresent();
+         //@formatter:on
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>collection</code> or a member of the <code>collection</code> is
+       * <code>null</code>.
+       * @throws ClassCastException when a member of <code>collection<code> does not implement <code>V</code>.
+       */
+
+      @Override
+      public boolean removeAll(Collection<?> collection) {
+
+         Objects.requireNonNull(collection, "ListMap.ListView::remove, parameter \"collection\" cannot be null.");
+
+         var result = false;
+
+         for (var object : collection) {
+            result |= this.remove(object);
+         }
+
+         return result;
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>collection</code> is <code>null</code>.
+       */
+
+      @Override
+      public boolean retainAll(Collection<?> collection) {
+
+         var result = false;
+
+         for (var element : ListMap.this.list) {
+
+            if (!collection.contains(element.getValue())) {
+               result |= ListMap.this.remove(element.getKey()).isPresent();
+            }
+         }
+
+         return result;
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>value</code> is <code>null</code>.
+       * @throws IndexOutOfBoundsException when <code>index</code> is less than zero or greater than or equal to the
+       * {@link ListMap} size.
+       */
+
+      @Override
+      public V set(int index, V value) {
+
+         Objects.requireNonNull(value, "ListMap.ListView::set, parameter \"value\" cannot be null.");
+
+         if (ListMap.this.outOfBounds(index)) {
+            //@formatter:off
+            throw
+               new IndexOutOfBoundsException
+                      (
+                         new Message()
+                                .title( "ListMap.ListView::remove, index is out of bounds." )
+                                .indentInc()
+                                .segment( "index", index )
+                                .segment( "List Map Size", ListMap.this.size() )
+                                .toString()
+                      );
+            //@formatter:on
+         }
+
+         var oldElement = ListMap.this.list.get(index);
+         var newElement = new Element<K, V>(oldElement.getKey(), value, index);
+         ListMap.this.list.set(index, newElement);
+         return oldElement.getValue();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public int size() {
+         return ListMap.this.size();
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws UnsupportedOperationException
+       */
+
+      @Override
+      public List<V> subList(int fromIndex, int toIndex) {
+         throw new UnsupportedOperationException();
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws UnsupportedOperationException
+       */
+
+      @Override
+      public Object[] toArray() {
+         throw new UnsupportedOperationException();
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws UnsupportedOperationException
+       */
+
+      @Override
+      public <T> T[] toArray(T[] a) {
+         throw new UnsupportedOperationException();
+      }
+
+   }
+
+   /**
+    * Implements a view of the {@link ListMap} that implements the {@link Map} interface.
+    */
+
+   final class MapView implements Map<K, V> {
+
+      /**
+       * Implements a {@link Set} of {@link Map.Entry} view of the {@link ListMap} {@link Map} view.
+       */
+
+      final class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+
+         /**
+          * {@inheritDoc}
+          */
+
+         @Override
+         public Iterator<Entry<K, V>> iterator() {
+            //@formatter:off
+            return
+               new Iterator<Map.Entry<K,V>>() {
+
+                  /**
+                   * Get an {@link Iterator} from the {@link ListMap#list}.
+                   */
+
+                  Iterator<Element<K,V>> entryIterator = ListMap.this.list.iterator();
+
+                  /**
+                   * {@inheritDoc}
+                   */
+
+                  @Override
+                  public boolean hasNext() {
+                     return this.entryIterator.hasNext();
+                  }
+
+                  /**
+                   * {@inheritDoc}
+                   */
+
+                  @Override
+                  public Entry<K, V> next() {
+                     var element = this.entryIterator.next();
+                     var entry = new Map.Entry<K,V>() {
+                        Element<K,V> entryElement = element;
+
+                        @Override
+                        public K getKey() {
+                           return this.entryElement.getKey();
+                        }
+
+                        @Override
+                        public V getValue() {
+                           return this.entryElement.getValue();
+                        }
+
+                        @Override
+                        public V setValue(V value) {
+                           throw new UnsupportedOperationException();
+                        }
+
+                     };
+
+                     return entry;
+                  }
+
+                  /**
+                   * {@inheritDoc}
+                   */
+
+                  @Override
+                  public void remove() {
+                     this.entryIterator.remove();
+                  }
+
+               };
+            //@formatter:on
+         }
+
+         /**
+          * {@inheritDoc}
+          */
+
+         @Override
+         public int size() {
+            return ListMap.this.map.size();
+         }
+
+      }
+
+      /**
+       * Implements a {@link Set} view of the values in the {@link ListMap}.
+       */
+
+      final class ValueSet extends AbstractCollection<V> {
+
+         /**
+          * {@inheritDoc}
+          */
+
+         @Override
+         public Iterator<V> iterator() {
+            //@formatter:off
+            return
+               new Iterator<V>() {
+
+                  /**
+                   * Get an {@link Iterator} from the {@link ListMap#list}.
+                   */
+
+                  Iterator<Element<K,V>> entryIterator = ListMap.this.list.iterator();
+
+                  /**
+                   * {@inheritDoc}
+                   */
+
+                  @Override
+                  public boolean hasNext() {
+                     return this.entryIterator.hasNext();
+                  }
+
+                  /**
+                   * {@inheritDoc}
+                   */
+
+                  @Override
+                  public V next() {
+                     var element = this.entryIterator.next();
+                     var value = element.getValue();
+                     return value;
+                  }
+
+                  /**
+                   * {@inheritDoc}
+                   */
+
+                  @Override
+                  public void remove() {
+                     this.entryIterator.remove();
+                  }
+            };
+            //@formatter:on
+         }
+
+         /**
+          * {@inheritDoc}
+          */
+
+         @Override
+         public int size() {
+            return ListMap.this.map.size();
+         }
+
+      }
+
+      /**
+       * Caches the entry set view.
+       */
+
+      private transient Set<Map.Entry<K, V>> entrySet = null;
+
+      /**
+       * Caches the value set view.
+       */
+
+      private transient Collection<V> valueSet = null;
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public void clear() {
+         ListMap.this.clear();
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>key</code> is <code>null</code>.
+       */
+
+      @Override
+      public boolean containsKey(Object key) {
+         Objects.requireNonNull(key, "ListMap.MapView::containsKey, parameter \"key\" cannot be null.");
+         return ListMap.this.map.containsKey(key);
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>object</code> is <code>null</code>.
+       * @throws ClassCastException when <code>object</code> does not implement <code>V</code>.
+       */
+
+      @Override
+      public boolean containsValue(Object object) {
+
+         Objects.requireNonNull(object, "ListMap.MapView::containsValue, parameter \"object\" cannot be null.");
+
+         @SuppressWarnings("unchecked")
+         var value = (V) object;
+
+         if (Objects.nonNull(ListMap.this.keyExtractor)) {
+            var key = ListMap.this.keyExtractor.apply(value);
+            return ListMap.this.map.containsKey(key);
+         }
+
+         for (var entry : ListMap.this.list) {
+            if (value.equals(entry.getValue())) {
+               return true;
+            }
+         }
+
+         return false;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Set<Entry<K, V>> entrySet() {
+      //@formatter:off
+         return
+            Objects.nonNull( this.entrySet )
+               ? this.entrySet
+               : ( this.entrySet = new EntrySet() );
+         //@formatter:on
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>key</code> is <code>null</code>.
+       * @throws ClassCastException when <code>key</code> does not implement <code>K</code>.
+       */
+
+      @Override
+      public V get(Object key) {
+
+         Objects.requireNonNull(key, "ListMap.MapView::get, parameter \"key\" cannot be null.");
+
+         @SuppressWarnings("unchecked")
+         var kKey = (K) key;
+
+         return ListMap.this.get(kKey).orElse(null);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public boolean isEmpty() {
+         return ListMap.this.isEmpty();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Set<K> keySet() {
+         return Collections.unmodifiableSet(ListMap.this.map.keySet());
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>key</code> or <code>value</code> are <code>null</code>.
+       */
+
+      @Override
+      public V put(K key, V value) {
+         Objects.requireNonNull(key, "ListMap.MapView::put, parameter \"key\" cannot be null.");
+         Objects.requireNonNull(value, "ListMap.MapView::put, parameter \"value\" cannot be null.");
+         return ListMap.this.put(key, value).orElse(null);
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>map</code> is <code>null</code>.
+       */
+
+      @Override
+      public void putAll(Map<? extends K, ? extends V> map) {
+         ListMap.this.putAll(map);
+      }
+
+      /**
+       * {@inheritDoc}
+       *
+       * @throws NullPointerException when <code>key</code> is <code>null</code>.
+       * @throws ClassCastException when <code>key</code> does not implement <code>K</code>.
+       */
+
+      @Override
+      public V remove(Object key) {
+         @SuppressWarnings("unchecked")
+         var kKey = (K) key;
+         return ListMap.this.remove(kKey).orElse(null);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public int size() {
+         return ListMap.this.size();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Collection<V> values() {
+         //@formatter:off
+         return
+            Objects.nonNull( this.valueSet )
+               ? this.valueSet
+               : ( this.valueSet = new ValueSet() );
+         //@formatter:on
+      }
+
+   }
+
+   /**
     * The default initial capacity for the internal map and list.
     */
 
@@ -160,12 +985,23 @@ public class ListMap<K, V> {
    private final ArrayList<Element<K, V>> list;
 
    /**
+    * Caches the {@link ListView}.
+    */
+
+   private transient List<V> listView;
+
+   /**
     * The map used to store the {@link Element} objects. The user provided value is wrapped in an {@link Element} along
     * with the key and list index position the {@link Element} will be stored at. The {@link Element} is stored in this
     * map using the user provided key.
     */
 
    private final HashMap<K, Element<K, V>> map;
+
+   /**
+    * Caches the {@link MapView}.
+    */
+   private transient Map<K, V> mapView;
 
    /**
     * The minimum number of remaining {@link Element} objects that must be left for iteration to allow a
@@ -234,14 +1070,16 @@ public class ListMap<K, V> {
       this.cursor = -1;
       this.safety = 0;
       this.keyExtractor = keyExtractor;
+      this.mapView = null;
+      this.listView = null;
    }
 
    /**
-    * Gets a {@link Stream} of the {@link ListMap} {@link Elements} starting at the end of the list and proceeding to
-    * the beginning of the list.
+    * Gets a {@link Stream} of the {@link ListMap} {@link Element} objects starting at the end of the list and
+    * proceeding to the beginning of the list.
     *
     * @param parallel <code>true</code> for parallel {@link Stream} and <code>false</code> for serial {@link Stream}.
-    * @return a {@link Stream} of the {@link ListMap} {@link Elements} in reverse order.
+    * @return a {@link Stream} of the {@link ListMap} {@link Element} objects in reverse order.
     */
 
    public Stream<Element<K, V>> backwardsStream(boolean parallel) {
@@ -258,13 +1096,13 @@ public class ListMap<K, V> {
    }
 
    /**
-    * Gets a {@link Stream} of the {@link ListMap} {@link Elements} starting at the <code>index</code> position and
-    * proceeding to the beginning of the list.
+    * Gets a {@link Stream} of the {@link ListMap} {@link Element} objects starting at the <code>index</code> position
+    * and proceeding to the beginning of the list.
     *
     * @param parallel <code>true</code> for parallel {@link Stream} and <code>false</code> for serial {@link Stream}.
     * @return when <code>index</code> is in bounds and not at the start, a {@link Stream} of the {@link ListMap}
-    * {@link Elements} starting at the {@link Element} at the <code>index</code> position in reverse order; otherwise,
-    * and empty {@link Stream}.
+    * {@link Element} objects starting at the {@link Element} at the <code>index</code> position in reverse order;
+    * otherwise, and empty {@link Stream}.
     */
 
    public Stream<Element<K, V>> backwardsStream(int index, boolean parallel) {
@@ -282,8 +1120,8 @@ public class ListMap<K, V> {
    }
 
    /**
-    * Gets a {@link Stream} of the {@link ListMap} {@link Elements} starting with the {@Element} that is associated with
-    * <code>key</code> and proceeding to the beginning of the list.
+    * Gets a {@link Stream} of the {@link ListMap} {@link Element} objects starting with the {@Element} that is
+    * associated with <code>key</code> and proceeding to the beginning of the list.
     *
     * @param parallel <code>true</code> for parallel {@link Stream} and <code>false</code> for serial {@link Stream}.
     * @return when <code>key</code> is associated with an {@link Element} and that {@link Element} is not at the start,
@@ -306,11 +1144,39 @@ public class ListMap<K, V> {
    }
 
    /**
-    * Gets a {@link Stream} of the {@link ListMap} {@link Elements} starting at the start of the list and proceeding to
-    * the end of the list.
+    * Removes all of the entries from the {@link ListMap}.
+    *
+    * @implNote Clearing the {@link ListMap} does not reduce it's memory size.
+    */
+
+   public void clear() {
+      this.cursor = -1;
+      this.map.clear();
+      this.list.clear();
+   }
+
+   private Optional<Element<K, V>> findValue(V value) {
+
+      if (Objects.nonNull(this.keyExtractor)) {
+         var key = this.keyExtractor.apply(value);
+         return Optional.of(this.map.get(key));
+      }
+
+      for (var element : this.list) {
+         if (element.getValue().equals(value)) {
+            return Optional.of(element);
+         }
+      }
+
+      return Optional.empty();
+   }
+
+   /**
+    * Gets a {@link Stream} of the {@link ListMap} {@link Element} objects starting at the start of the list and
+    * proceeding to the end of the list.
     *
     * @param parallel <code>true</code> for parallel {@link Stream} and <code>false</code> for serial {@link Stream}.
-    * @return a {@link Stream} of the {@link ListMap} {@link Elements} in order.
+    * @return a {@link Stream} of the {@link ListMap} {@link Element} objects in order.
     */
 
    public Stream<Element<K, V>> forwardStream(boolean parallel) {
@@ -1169,6 +2035,46 @@ public class ListMap<K, V> {
    }
 
    /**
+    * Predicate to determine if the {@link ListMap} is empty.
+    *
+    * @return <code>true</code> when the {@link ListMap} is empty; otherwise, <code>false</code>.
+    */
+
+   public boolean isEmpty() {
+      return this.list.isEmpty();
+   }
+
+   /**
+    * Gets a view of the {@link ListMap} implementing the {@link List} interface.
+    *
+    * @return a {@link List} view.
+    */
+
+   public List<V> listView() {
+      //@formatter:off
+      return
+         Objects.nonNull( this.listView )
+            ? this.listView
+            : ( this.listView = new ListView() );
+      //@formatter:off
+   }
+
+   /**
+    * Gets a view of the {@link ListMap} implementing the {@link Map} interface.
+    *
+    * @return a {@link Map} view.
+    */
+
+   public Map<K,V> mapView() {
+      //@formatter:off
+      return
+         Objects.nonNull( this.mapView )
+            ? this.mapView
+            : ( this.mapView = new MapView() );
+      //@formatter:on
+   }
+
+   /**
     * Predicate to determine if the <code>index</code> is outside the list bounds
     *
     * @param index the index to test.
@@ -1259,6 +2165,68 @@ public class ListMap<K, V> {
    }
 
    /**
+    * The <code>key</code> is associated with the <code>value</code>. If the map already contains an entry for the key,
+    * the old value is replaced with the new value, the old value is returned, and this list position of the entry is
+    * not changed. When an existing value was not replaced, the new entry is inserted into the list at the position
+    * specified by <code>index</code>.
+    *
+    * @param key the key for the map entry.
+    * @param value the value for the map entry.
+    * @param index when a new entry is added to the map, the position on the list for the new entry.
+    * @return when an old value was replaced, an {@link Optional} with the old value; otherwise, an empty
+    * {@link Optional}.
+    * @throws NullPointerException when either of the parameters <code>key</code> or <code>value</code> is
+    * <code>null</code>.
+    * @throws IndexOutOfBoundsException when the <code>index</code> is less than zero or greater than the size of the
+    * {@link ListMap}.
+    */
+
+   public Optional<V> put(K key, V value, int index) {
+
+      Objects.requireNonNull(key, "ListMap::put, parameter \"key\" cannot be null.");
+      Objects.requireNonNull(value, "ListMap::put parameter \"value\" cannot be null.");
+
+      if ((index < 0) || (index > this.list.size())) {
+         throw new IndexOutOfBoundsException("ListMap::put parameter \"index\" is out of bounds.");
+      }
+
+      var oldElement = this.map.get(key);
+
+      if (Objects.nonNull(oldElement)) {
+
+         /*
+          * Replace the old element with the new data
+          */
+
+         var position = oldElement.getPosition();
+
+         var element = new Element<K, V>(key, value, position);
+
+         this.map.put(key, element);
+         this.list.set(position, element);
+         this.safety++;
+         this.cursor = position;
+
+         return Optional.of(oldElement.getValue());
+      }
+
+      var element = new Element<K, V>(key, value, index);
+
+      this.map.put(key, element);
+      this.list.add(index, element);
+      this.safety++;
+      this.cursor = index;
+
+      for (var i = index + 1; i < this.list.size(); i++) {
+         var oldListElement = this.list.get(i);
+         var newListElement = new Element<K, V>(oldListElement.getKey(), oldListElement.getValue(), i);
+         this.list.set(i, newListElement);
+      }
+
+      return Optional.empty();
+   }
+
+   /**
     * Uses the key extractor {@link Function} passed to the constructor to extract a key from the provided
     * <code>value</code> and associates the <code>value</code> with the extracted key. If the map already contains an
     * entry for the key, the old value is replaced with the new value and the old value is returned. When a value is
@@ -1281,6 +2249,77 @@ public class ListMap<K, V> {
       Objects.requireNonNull(value, "ListMap::put parameter \"value\" cannot be null.");
 
       return this.put(this.keyExtractor.apply(value), value);
+   }
+
+   /**
+    * Adds all of the values from the provided <code>list</code>. The key extractor {@link Function} passed to the
+    * constructor is used to extract a key from each of the values on the <code>list</code>. If the map already contains
+    * an entry for a key, the old value is replaced with the value from the <code>list</code>.
+    *
+    * @param list the values to be added to this {@link ListMap}.
+    */
+
+   public void putAll(List<? extends V> list) {
+
+      if (Objects.isNull(this.keyExtractor)) {
+         throw new UnsupportedOperationException(
+            "ListMap::putAll(List<V> list), a key extractor function is not available.");
+      }
+
+      list.forEach((value) -> this.put(this.keyExtractor.apply(value), value));
+   }
+
+   /**
+    * Adds all of the key value pairs from the provided {@link ListMap}. If this {@link ListMap} already contains an
+    * entry for a key from the <code>listMap</code>, the value in this {@link ListMap} will be replaced by the value
+    * from <code>listMap</code>.
+    *
+    * @param listMap the mappings to be stored in this {@link ListMap}.
+    */
+
+   public void putAll(ListMap<? extends K, ? extends V> listMap) {
+      listMap.list.forEach((entry) -> this.put(entry.getKey(), entry.getValue()));
+   }
+
+   /**
+    * Adds all of the key value pairs from the provided {@link Map}. If the {@link ListMap} already contains an entry
+    * for a key from the {@link Map}, <code>map</code>, the value in the {@link ListMap} will be replaced by the value
+    * from <code>map</code>.
+    *
+    * @param map the mappings to be stored in this {@link ListMap}.
+    */
+
+   public void putAll(Map<? extends K, ? extends V> map) {
+      map.entrySet().forEach((entry) -> this.put(entry.getKey(), entry.getValue()));
+   }
+
+   /**
+    * Removes the entry associated with the provided <code>key</code> from the {@link ListMap}.
+    *
+    * @param key the key for the entry to be removed.
+    * @return when an entry exists in the {@link ListMap} for the provided <code>key</code>, an {@link Optional} with
+    * the value associated with the key; otherwise, an empty {@link Optional}.
+    */
+
+   public Optional<V> remove(K key) {
+
+      if (Objects.isNull(key)) {
+         return Optional.empty();
+      }
+
+      this.cursor = -1;
+
+      var element = this.map.remove(key);
+
+      if (Objects.isNull(element)) {
+         return Optional.empty();
+      }
+
+      var position = element.getPosition();
+
+      this.list.remove(position);
+
+      return Optional.of(element.getValue());
    }
 
    /**

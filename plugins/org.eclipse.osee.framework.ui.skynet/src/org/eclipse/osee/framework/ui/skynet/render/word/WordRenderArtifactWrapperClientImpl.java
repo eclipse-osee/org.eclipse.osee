@@ -278,7 +278,8 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
@@ -463,6 +464,15 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
+   public String getGuid() {
+      return this.artifact.getGuid();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public Long getId() {
       return this.artifact.getId();
    }
@@ -558,7 +568,8 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
-   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag) {
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 

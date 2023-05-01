@@ -23,6 +23,7 @@ import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactSpecification;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -162,7 +163,8 @@ public class AttachmentFactory {
     * @return the newly created {@link Attachment}.
     */
 
-   public Attachment create(InputStream inputStream, CharSequence id, BranchToken branchToken, ArtifactToken artifactToken, CharSequence... segments) {
+   public Attachment create(InputStream inputStream, CharSequence id, BranchToken branchToken,
+      ArtifactToken artifactToken, CharSequence... segments) {
       var branchName = Objects.nonNull(branchToken) ? branchToken.getName() : null;
       var artifactName = Objects.nonNull(artifactToken) ? artifactToken.getName() : null;
       var attachment = this.create(inputStream, id, branchName, artifactName, segments);
@@ -186,7 +188,8 @@ public class AttachmentFactory {
     * @return the newly created {@link Attachment}.
     */
 
-   public Attachment create(InputStream inputStream, CharSequence id, BranchId branchId, ArtifactId artifactId, CharSequence... segments) {
+   public Attachment create(InputStream inputStream, CharSequence id, BranchId branchId, ArtifactId artifactId,
+      CharSequence... segments) {
 
       //@formatter:off
       if(    Objects.isNull( this.publishingUtils )
@@ -221,7 +224,7 @@ public class AttachmentFactory {
 
          artifactName =
             Objects.nonNull( artifactId ) && artifactId.isValid()
-               ? this.publishingUtils.getArtifactReadableByIdentifierFilteredForView( branchId, branchId.getViewId(), artifactId )
+               ? this.publishingUtils.getArtifactReadableByIdentifier( new ArtifactSpecification( branchId, branchId.getViewId(), artifactId ) )
                     .map( ArtifactReadable::getName )
                     .orElse( this.defaultName )
                : this.defaultName;
@@ -250,7 +253,8 @@ public class AttachmentFactory {
     * @return the newly created {@link Attachment}.
     */
 
-   public Attachment create(InputStream inputStream, CharSequence id, CharSequence branchName, CharSequence filename, CharSequence... segments) {
+   public Attachment create(InputStream inputStream, CharSequence id, CharSequence branchName, CharSequence filename,
+      CharSequence... segments) {
 
       var attachmentBuilder = new AttachmentBuilder();
 

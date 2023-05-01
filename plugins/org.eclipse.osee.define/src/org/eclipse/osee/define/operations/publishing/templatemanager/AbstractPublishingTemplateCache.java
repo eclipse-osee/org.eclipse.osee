@@ -15,12 +15,15 @@ package org.eclipse.osee.define.operations.publishing.templatemanager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyType;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateScalarKey;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateVectorKey;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
@@ -36,18 +39,20 @@ import org.eclipse.osee.logger.Log;
 abstract class AbstractPublishingTemplateCache implements PublishingTemplateCache {
 
    /**
-    * The primary map used for caching
+    * The primary map used for caching. <code>null</code> is a sentinel value used to indicate the cache has not yet
+    * been loaded or has been deleted.
     */
 
    protected RankMap<List<PublishingTemplateInternal>> keyMap;
 
    /**
-    * Extensions of this class must populate this member with an unordered {@link List} of the Publishing Templates to
-    * be held by the {@link AbstractPublishingTemplateClass}. <code>null</code> is a sentinel value used to indicate the
-    * cache has not yet been loaded or has been deleted.
+    * Saves a list of the {@link PublishingTemplateInternal} objects provided by the extension of this class. The list
+    * is saved so that a list of Publishing Template Key Groups can be returned with out duplicates. The
+    * {@link PublishingTemplateInternal} object will be stored in the map under each of their primary and secondary key
+    * sets. So streaming the map {@link #keyMap} values will result in many duplicates in the stream.
     */
 
-   protected List<PublishingTemplateInternal> list;
+   private List<PublishingTemplateInternal> list;
 
    /**
     * Saves a handle to the {@link Log} service.
@@ -77,44 +82,39 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
 
    private void addToKeyMap(PublishingTemplateInternal publishingTemplateInternal) {
 
-      for (var primaryKey : PublishingTemplateCacheKey.values()) {
+      for (var primaryKey : PublishingTemplateKeyType.values()) {
 
-         var secondaryKeyIterable = new Iterable<String>() {
-
-            @Override
-            public Iterator<String> iterator() {
-               return primaryKey.extractKey(publishingTemplateInternal);
-            }
-
-         };
+         var secondaryKeyIterable = publishingTemplateInternal.getKeyIterable(primaryKey);
 
          for (var secondaryKey : secondaryKeyIterable) {
 
-            var publishingTemplateInternalListOptional = this.keyMap.get(primaryKey, secondaryKey);
-
-            if (!publishingTemplateInternalListOptional.isPresent()) {
-
-               var publishingTemplateInternalList = new ArrayList<PublishingTemplateInternal>();
-               publishingTemplateInternalList.add(publishingTemplateInternal);
-               this.keyMap.associate(publishingTemplateInternalList, primaryKey, secondaryKey);
-
-            } else {
-
-               publishingTemplateInternalListOptional.get().add(publishingTemplateInternal);
-
-            }
+            //@formatter:off
+            this.keyMap
+               .get( primaryKey, secondaryKey )
+               .ifPresentOrElse
+                  (
+                     ( publishingTemplateInternalList ) -> publishingTemplateInternalList.add( publishingTemplateInternal ),
+                     () ->
+                     {
+                        var publishingTemplateInternalList = new ArrayList<PublishingTemplateInternal>();
+                        publishingTemplateInternalList.add(publishingTemplateInternal);
+                        this.keyMap.associate(publishingTemplateInternalList, primaryKey, secondaryKey);
+                     }
+                  );
+            //@formatter:on
          }
       }
    }
 
    /**
-    * Sorts the Publishing Templates associated with a match criteria by the Publishing Template names.
+    * Sorts the Publishing Templates associated with the same primary and secondary key pair by the Publishing Template
+    * names.
     */
 
    private void sortMatchCritera() {
 
       //@formatter:off
-      this.keyMap.stream( PublishingTemplateCacheKey.MATCH_CRITERIA )
+      this.keyMap.stream()
          .filter( ( publishingTemplateInternalList ) -> publishingTemplateInternalList.size() > 1 )
          .forEach
             (
@@ -129,17 +129,18 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
                                                           }
                                                         )
             );
-      //@formatter:on
+         //@formatter:on
    }
 
    /**
-    * Logs a message for each for Match Criteria where more than one {@link PublishingTemplateInternal} matches.
+    * Logs a message for each for Primary and Secondary key pair where more than one {@link PublishingTemplateInternal}
+    * matches.
     */
 
-   private void logDuplicateMatchCritera() {
+   private void logDuplicates() {
 
       //@formatter:off
-      this.keyMap.streamEntries( PublishingTemplateCacheKey.MATCH_CRITERIA )
+      this.keyMap.streamEntries( )
          .filter( ( entry ) -> entry.getValue().size() > 1 )
          .forEach
             (
@@ -149,7 +150,9 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
                      return;
                   }
 
-                  var matchCriteria = entry.getKey(1);
+                  var primaryKey = (PublishingTemplateKeyType) entry.getKey(0);
+                  var secondaryKey = entry.getKey(1);
+
                   var publishingTemplateInternalList = entry.getValue();
 
                   var primaryTemplateName = publishingTemplateInternalList.get(0).getName();
@@ -158,15 +161,15 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
                   var message =
                      new Message()
                             .blank()
-                            .title( "PublishingTemplateProvider has detected a conflict with a Match Criteria." )
+                            .title( "PublishingTemplateProvider has detected a conflict." )
                             .indentInc()
-                            .segment( "Match Criteria", matchCriteria )
+                            .segment( "Key Type", primaryKey )
+                            .segment( "Publishing Template Key", secondaryKey )
                             .title( "The Publishing Template That Will Be Used" )
                             .indentInc()
                             .segment( "Name",       primaryTemplateName       )
                             .segment( "Identifier", primaryTemplateIdentifier )
                             .indentDec()
-                            .segmentIndexedList( "Matching Publishing Templates", publishingTemplateInternalList )
                             ;
 
                   this.logger.infoNoFormat( null, message.toString() );
@@ -189,18 +192,31 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
          return;
       }
 
-      this.loadTemplates();
+      this.list = this.loadTemplates();
 
       @SuppressWarnings("unchecked")
-      var keyMap = new RankHashMap<List<PublishingTemplateInternal>>("KeyMap", 2, 256, 0.75f,
-         new Predicate[] {(o) -> o instanceof PublishingTemplateCacheKey, (o) -> o instanceof String});
+      //@formatter:off
+      var keyMap =
+         new RankHashMap<List<PublishingTemplateInternal>>
+                (
+                   "KeyMap",
+                   2,
+                   256,
+                   0.75f,
+                   new Predicate[]
+                      {
+                         (o) -> o instanceof PublishingTemplateKeyType,
+                         (o) -> ( o instanceof PublishingTemplateScalarKey ) || ( o instanceof PublishingTemplateVectorKey )
+                      }
+                );
+      //@formatter:on
       this.keyMap = keyMap;
 
       this.list.stream().forEach(this::addToKeyMap);
 
       this.sortMatchCritera();
 
-      this.logDuplicateMatchCritera();
+      this.logDuplicates();
    }
 
    /**
@@ -209,9 +225,8 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
 
    @Override
    public void deleteCache() {
-      this.list = null;
       this.keyMap = null;
-      //      this.matchCriteriaMap = null;
+      this.list = null;
    }
 
    /**
@@ -219,7 +234,7 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
     */
 
    @Override
-   public Optional<PublishingTemplateInternal> findFirstTemplate(PublishingTemplateCacheKey key, String identifier) {
+   public Optional<PublishingTemplateInternal> findFirstTemplate(PublishingTemplateKeyType key, String identifier) {
 
       this.loadCacheIfNeeded();
 
@@ -229,7 +244,12 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
 
       //@formatter:off
       var firstTemplate =
-         this.keyMap.get(key, identifier)
+         this.keyMap
+            .get
+               (
+                  key,
+                  new PublishingTemplateScalarKey( identifier, key )
+               )
             .map( (templateList) -> templateList.size() > 0 ? templateList.get( 0 ) : null );
       //@formatter:on
 
@@ -248,7 +268,8 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
       //@formatter:off
       var firstTemplate =
          matchCriteria.stream()
-            .map( ( matchCriterion ) -> this.keyMap.get( PublishingTemplateCacheKey.MATCH_CRITERIA, matchCriterion ) )
+            .map( ( matchCriterionString ) -> new PublishingTemplateScalarKey( matchCriterionString, PublishingTemplateKeyType.MATCH_CRITERIA ) )
+            .map( ( matchCriterionKey ) -> this.keyMap.get( PublishingTemplateKeyType.MATCH_CRITERIA, matchCriterionKey ) )
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst()
@@ -264,18 +285,18 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
     */
 
    @Override
-   public List<String> getPublishingTemplateSafeNames() {
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
 
       this.loadCacheIfNeeded();
 
       //@formatter:off
-      var publishingTemplateSafeNames =
+      var publishingTemplateKeyGroupList =
          this.list.stream()
-            .map( PublishingTemplateInternal::getSafeName )
+            .map( PublishingTemplateInternal::getPublishingTemplateKeyGroup )
             .collect( Collectors.toUnmodifiableList() );
       //@formatter:on
 
-      return publishingTemplateSafeNames;
+      return new PublishingTemplateKeyGroups(publishingTemplateKeyGroupList);
    }
 
    /**
@@ -285,7 +306,7 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
     */
 
    protected boolean isCacheLoaded() {
-      return Objects.nonNull(this.list);
+      return Objects.nonNull(this.keyMap);
    }
 
    /**
@@ -303,7 +324,7 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
     * {@link List} saved with the member {@link #list}.
     */
 
-   abstract protected void loadTemplates();
+   abstract protected List<PublishingTemplateInternal> loadTemplates();
 
 }
 

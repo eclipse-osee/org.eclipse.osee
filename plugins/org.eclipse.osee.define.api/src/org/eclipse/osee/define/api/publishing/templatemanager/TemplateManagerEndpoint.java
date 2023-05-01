@@ -21,6 +21,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
@@ -94,19 +95,21 @@ public interface TemplateManagerEndpoint {
    //@formatter:on
 
    /**
-    * Gets a list of all publishing template safe names from all publishing template providers. This method is provided
-    * for building client GUI list of publishing templates for selection by the user. The selection list will be
-    * ambiguous for publishing templates with the same safe name.
+    * Gets a list of all the keys for the Publishing Templates cached by the Publishing Template Manager. This method is
+    * provided for building a client GUI list of publishing templates for selection by the user. The
+    * {@link PublishingTemplateKeyGroup} objects within the {@link PublishingTemplateKeyGroups} object will be sorted by
+    * the value of the safe name key. The selection list will be ambiguous for publishing templates with the same safe
+    * name.
     *
-    * @return a POJO containing a list of the publishing template safe names.
+    * @return a list of the keys used for caching the Publishing Templates.
     */
 
    @GET
-   @Path("getPublishingTemplateSafeNames")
+   @Path("getPublishingTemplateKeyGroups")
    @Produces({MediaType.APPLICATION_JSON})
    //@formatter:off
-   PublishingTemplateSafeNames
-      getPublishingTemplateSafeNames();
+   PublishingTemplateKeyGroups
+      getPublishingTemplateKeyGroups();
    //@formatter:on
 
 }

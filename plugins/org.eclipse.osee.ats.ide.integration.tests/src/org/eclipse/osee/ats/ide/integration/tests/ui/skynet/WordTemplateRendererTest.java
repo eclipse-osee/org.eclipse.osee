@@ -19,18 +19,20 @@ import static org.eclipse.osee.framework.core.publishing.RendererOption.COMPARE_
 import static org.eclipse.osee.framework.core.publishing.RendererOption.LINK_TYPE;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.PUBLISH_DIFF;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.RESULT_PATH_RETURN;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.TRANSACTION_OPTION;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.USE_TEMPLATE_ONCE;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.IntPredicate;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.PublishingTemplateSetterImpl;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
@@ -39,30 +41,32 @@ import org.eclipse.osee.client.test.framework.NotForEclipseOrgRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
-import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
+import org.eclipse.osee.orcs.core.util.PublishingTemplate;
+import org.eclipse.osee.orcs.core.util.PublishingTemplateMatchCriterion;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -75,47 +79,11 @@ import org.junit.rules.TestRule;
 
 /**
  * @author Mark Joy
+ * @author Loren K. Ashley
  * @link: MSWordTemplateClientRenderer
  */
 
 public class WordTemplateRendererTest {
-
-   /**
-    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
-    * the following:
-    * <dl>
-    * <dt>Not Production Data Store Rule</dt>
-    * <dd>This rule is used to prevent modification of a production database.</dd>
-    * <dt>ExitDatabaseInitializationRule</dt>
-    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
-    * <dt>In Publishing Group Test Rule</dt>
-    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
-    * {@Link UserToken} cache has been flushed.</dd>
-    * <dt>NoPopUpsRule</dt>
-    * <dd>Prevents word documents from being launched for the user during tests.</dd>
-    * </dl>
-    */
-
-   //@formatter:off
-   @ClassRule
-   public static TestRule classRuleChain =
-      RuleChain
-         .outerRule( new NotProductionDataStoreRule() )
-         .around( new ExitDatabaseInitializationRule() )
-         .around( TestUserRules.createInPublishingGroupTestRule() )
-         .around( new NoPopUpsRule() )
-         .around( new NotForEclipseOrgRule() ) //<--ToDo: Remove with TW22315
-         ;
-   //@formatter:on
-
-   @Rule
-   public TestInfo method = new TestInfo();
-
-   @Rule
-   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
-
-   @Rule
-   public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
    private static class Check {
 
@@ -183,136 +151,324 @@ public class WordTemplateRendererTest {
 
    private static final String beginLinkInsert = "</w:t></w:r>OSEE_LINK(";
    private static final String beginWordString = "<w:p><w:r><w:t>";
+   /**
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    * <dt>In Publishing Group Test Rule</dt>
+    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
+    * {@Link UserToken} cache has been flushed.</dd>
+    * <dt>NoPopUpsRule</dt>
+    * <dd>Prevents word documents from being launched for the user during tests.</dd>
+    * </dl>
+    */
+
+   //@formatter:off
+   @ClassRule
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         .around( TestUserRules.createInPublishingGroupTestRule() )
+         .around( new NoPopUpsRule() )
+         .around( new NotForEclipseOrgRule() ) //<--ToDo: Remove with TW22315
+         ;
+   //@formatter:on
    private static final String endLinkInsert = ")<w:r><w:t>";
    private static final String endWordString = "</w:t></w:r></w:p>";
    private static final Pattern findBlankPage = Pattern.compile("This page is intentionally left blank");
    private static final Pattern findHlinks =
       Pattern.compile("<w:hlink w:dest=\".*?\"", Pattern.DOTALL | Pattern.MULTILINE);
+
    private static final Pattern findSetRsidR = Pattern.compile("wsp:rsidR=\".*?\"", Pattern.DOTALL | Pattern.MULTILINE);
+
    private static final Pattern findSetRsidRDefault =
       Pattern.compile("wsp:rsidRDefault=\".*?\"", Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static String MASTER_ID_RENDERER_OPTIONS;
-   private static String MASTER_RENDERER_OPTIONS;
-   private static String MASTER_TEMPLATE_STRING;
+   private static final String PRIMARY_TEMPLATE = "SRS Primary Template";;
 
-   private static String MASTER_TEMPLATE_STRING_IDANDNAME;
-   private static String MASTER_TEMPLATE_STRING_IDONLY;
-   private static String RECURSE_TEMPLATE_STRING;
-   private static String RECURSIVE_RENDERER_OPTIONS;
+   private static final String PRIMARY_TEMPLATE_ID = "SRS Primary Template ID Only";;
 
-   private static String SINGLE_ATTRIBUTE_RENDERER_OPTIONS;
-   private static String SINGLE_RENDERER_OPTIONS;
-   private static String SINGLE_TEMPLATE_STRING;
-   private static String SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING;
-   private static String SLAVE_RENDERER_OPTIONS;
-   private static String SLAVE_TEMPLATE_STRING;
+   private static final String PRIMARY_TEMPLATE_ID_NAME = "SRS Primary Template ID and Name";
+
+   /**
+    * Defines the publishing templates for the tests. The templates will be created on the Common Branch under the "OSEE
+    * Configuration/Document Templates" folder.
+    */
+
+   //@formatter:off
+   private static Supplier<List<PublishingTemplate>> publishingTemplatesSupplier = new Supplier<> () {
+
+      @Override
+      public List<PublishingTemplate> get() {
+         return
+
+      List.of
+         (
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.RECURSE_TEMPLATE,                                             /* Name                       */
+                      "RecursiveRendererOptions.json",                                                       /* Template Content File Name */
+                      "wordrenderer_recurse.xml",                                                            /* Renderer Options File Name */
+                      List.of                                                                                /* Match Criteria             */
+                      (
+                         new PublishingTemplateMatchCriterion
+                                (
+                                   RENDERER_ID_WORD,                                                         /* Renderer Identifier */
+                                   PresentationType.PREVIEW.name(),                                          /* Presentation Type   */
+                                   RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()          /* Option */
+                                ),
+
+                         new PublishingTemplateMatchCriterion
+                                (
+                                   RENDERER_ID_MS_WORD_TEMPLATE_CLIENT_RENDERER,                             /* Renderer Identifier */
+                                   PresentationType.PREVIEW.name(),                                          /* Presentation Type   */
+                                   RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()          /* Option */
+                                )
+                      )
+                   ),
+
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.SINGLE_TEMPLATE,                                              /* Name                       */
+                      "SingleRendererOptions.json",                                                          /* Renderer Options File Name */
+                      "wordrenderer_single.xml",                                                             /* Template Content File Name */
+                      List.of                                                                                /* Match Criteria             */
+                      (
+                      )
+                   ),
+
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES,                                   /* Name                       */
+                      "SingleAttributeRendererOptions.json",                                                 /* Renderer Options File Name */
+                      "wordrenderer_single_attrib.xml",                                                      /* Template Content File Name */
+                      List.of                                                                                /* Match Criteria             */
+                      (
+                      )
+                   ),
+
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.PRIMARY_TEMPLATE,                                             /* Name                       */
+                      "PrimaryRendererOptions.json",                                                          /* Renderer Options File Name */
+                      "wordrenderer_primary.xml",                                                            /* Template Content File Name */
+                      List.of                                                                                /* Match Criteria             */
+                      (
+                      )
+                   ),
+
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.PRIMARY_TEMPLATE_ID,                                          /* Name                       */
+                      "PrimaryIdRendererOptions.json",                                                        /* Renderer Options File Name */
+                      "wordrenderer_primary-idonly.xml",                                                     /* Template Content File Name */
+                      List.of                                                                                /* Match Criteria             */
+                      (
+                      )
+                   ),
+
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.PRIMARY_TEMPLATE_ID_NAME,                                     /* Name                       */
+                      "PrimaryIdRendererOptions.json",                                                        /* Renderer Options File Name */
+                      "wordrenderer_primary-idandname.xml",                                                  /* Template Content File Name */
+                      List.of                                                                                /* Match Criteria             */
+                      (
+                      )
+                   ),
+
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.SECONDARY_TEMPLATE,                                           /* Name                       */
+                      "SecondaryRendererOptions.json",                                                           /* Renderer Options File Name */
+                      "wordrenderer_secondary.xml",                                                          /* Template Content File Name */
+                      List.of                                                                                /* Match Criteria             */
+                      (
+                      )
+                   )
+
+         );
+      }
+   };
+
+   //@formatter:on
+   private static final String RECURSE_TEMPLATE = "Recurse Template";
+
+   private static String RENDERER_ID_MS_WORD_TEMPLATE_CLIENT_RENDERER =
+      "org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer";
+
+   private static String RENDERER_ID_WORD = "org.eclipse.osee.framework.ui.skynet.word";
+
+   private static final String SECONDARY_TEMPLATE = "SRS Secondary Template";
+
+   private static final String SINGLE_TEMPLATE = "Single Template";
+
+   private static final String SINGLE_TEMPLATE_ATTRIBUTES = "Single With Attributes";
 
    private static final String tabString = "wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"";
-   private static String getResourceData(String relativePath) throws IOException {
-      String value = Lib.fileToString(WordTemplateProcessorTest.class, "support/" + relativePath);
-      Assert.assertTrue(Strings.isValid(value));
-      return value;
-   }
+
+   /**
+    * Map of the {@link PublishingTemplate} objects for the tests that were read back from the Publishing Template
+    * Manager.
+    */
+
+   private static Map<String, org.eclipse.osee.framework.core.publishing.PublishingTemplate> templateMap;
 
    @BeforeClass
    public static void loadTemplateInfo() throws Exception {
-      RECURSE_TEMPLATE_STRING = getResourceData("wordrenderer_recurse.xml");
-      SINGLE_TEMPLATE_STRING = getResourceData("wordrenderer_single.xml");
-      SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING = getResourceData("wordrenderer_single_attrib.xml");
-      MASTER_TEMPLATE_STRING = getResourceData("wordrenderer_master.xml");
-      MASTER_TEMPLATE_STRING_IDONLY = getResourceData("wordrenderer_master-idonly.xml");
-      MASTER_TEMPLATE_STRING_IDANDNAME = getResourceData("wordrenderer_master-idandname.xml");
-      SLAVE_TEMPLATE_STRING = getResourceData("wordrenderer_slave.xml");
-
-      MASTER_ID_RENDERER_OPTIONS = getResourceData("MasterIdRendererOptions.json");
-      MASTER_RENDERER_OPTIONS = getResourceData("MasterRendererOptions.json");
-      RECURSIVE_RENDERER_OPTIONS = getResourceData("RecursiveRendererOptions.json");
-      SINGLE_ATTRIBUTE_RENDERER_OPTIONS = getResourceData("SingleAttributeRendererOptions.json");
-      SINGLE_RENDERER_OPTIONS = getResourceData("SingleRendererOptions.json");
-      SLAVE_RENDERER_OPTIONS = getResourceData("SlaveRendererOptions.json");
+      WordTemplateRendererTest.setupTemplates();
    }
-   private final List<Check> basicDocumentChecks = List.of(
-      new Check((testName) -> String.format("%s, Expected 1. Introduction", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 1.1 Background", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> !mergeFlag),
+   /**
+    * Creates the Publishing Template Artifacts on the Common Branch, deletes the Publishing Template Manager's cache,
+    * and then loads the Publishing Templates from the Publishing Template Manager.
+    */
 
-      new Check((testName) -> String.format("%s, Expected 1.2 Scope", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true),
+   private static void setupTemplates() {
+      //@formatter:off
+      var relationEndpoint = ServiceUtil.getOseeClient().getRelationEndpoint( CoreBranches.COMMON );
 
-      new Check((testName) -> String.format("%s, Expected 2. Notes", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true),
+      var publishingTemplateSetter = new PublishingTemplateSetterImpl( relationEndpoint );
 
-      new Check((testName) -> String.format("%s, Expected 2.1 More Notes", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true),
+      var publishingTemplateList =
+         PublishingTemplate
+            .load
+               (
+                  WordTemplateRendererTest.publishingTemplatesSupplier,
+                  publishingTemplateSetter::set,
+                  WordTemplateRendererTest.class,
+                  false
+               );
 
-      new Check((testName) -> String.format("%s, Expected 3. Subsystem", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true),
+      PublishingRequestHandler.deletePublishingTemplateCache();
 
-      new Check((testName) -> String.format("%s, Expected 3.1 Hardware", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> !fieldcodeFlag),
-
-      new Check((testName) -> String.format("%s, Expected 3.1.1 Hardware Functions", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true),
-
-      new Check((testName) -> String.format("%s, Expected 3.2 Software", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true),
-
-      new Check((testName) -> String.format("%s, Expected 3.2.1 Software Functions", testName), (period, altString,
-         pubString) -> "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
-         (mergeFlag, fieldcodeFlag) -> true));
-   private String content;
-   private String contentPath;
-   private Artifact docFolder;
-   private Artifact masterTemplate;
-   private Artifact masterTemplate_idAndName;
-   private Artifact masterTemplate_idOnly;
-
-   private Artifact recurseTemplate;
-
-   private MSWordTemplateClientRenderer renderer;
-
-   private BranchToken rootBranch;;
-
-   private Artifact singleTemplate;;
-
-   private Artifact singleTemplateAttrib;
-
-   private Artifact slaveTemplate;
-
-   private Artifact swReqFolder;
-   private Artifact templateFolder;
+      WordTemplateRendererTest.templateMap =
+         publishingTemplateList
+            .stream()
+            .map( PublishingTemplate::getPublishingTemplateRequest )
+            .map( PublishingRequestHandler::getPublishingTemplate )
+            .filter( org.eclipse.osee.framework.core.publishing.PublishingTemplate::isNotSentinel )
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        org.eclipse.osee.framework.core.publishing.PublishingTemplate::getName,
+                        Function.identity()
+                     )
+               );
+      //@formatter:on
+   }
 
    //@formatter:off
-   private final List<Check> testBlankWordTemplateContentChecks =
+   private final List<Check> basicDocumentChecks =
       List.of
          (
             new Check
                    (
-                      ( testName )                     -> "Expected 1. Volume 4",
-                      ( period, altString, pubString ) -> "<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4 [MERGED]</w:t></w:r>",
-                      ( mergeFlag, fieldcodeFlag )     -> true
+                     (testName)                     -> String.format("%s, Expected 1. Introduction", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
                    ),
 
             new Check
                    (
-                      ( testName )                     -> "Expected 2.",
-                      ( period, altString, pubString ) -> "<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Intro</w:t></w:r>",
-                      ( mergeFlag, fieldcodeFlag )     -> true
-                   )
-         );
-   //@formatter:on
+                     (testName)                     -> String.format("%s, Expected 1.1 Background", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> !mergeFlag
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 1.2 Scope", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 2. Notes", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 2.1 More Notes", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 3. Subsystem", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 3.1 Hardware", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> !fieldcodeFlag
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 3.1.1 Hardware Functions", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 3.2 Software", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 3.2.1 Software Functions", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true)
+                   );
+    //@formatter:on
+
+   private String content;
+
+   private String contentPath;;
+
+   private Artifact docFolder;
+   private Artifact childDocFolder;
+
+   @Rule
+   public TestInfo method = new TestInfo();
+
+   @Rule
+   public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
+
+   private MSWordTemplateClientRenderer renderer;
+
+   private BranchToken rootBranch;
+
+   private Artifact swReqFolder;
+
+   private Artifact templateFolder;
 
    private BranchToken updateBranch;
 
@@ -357,6 +513,86 @@ public class WordTemplateRendererTest {
          //@formatter:on
          Assert.assertTrue(message, false);
       }
+   }
+
+   private void checkLinks(int expectedLinkCount) {
+
+      Matcher findHyperLinksMatcher = findHlinks.matcher(this.content);
+
+      int counter = 0;
+
+      var contentFolderPath = Paths.get(this.contentPath).getParent();
+
+      while (findHyperLinksMatcher.find()) {
+
+         String hfile = findHyperLinksMatcher.group();
+         hfile = hfile.substring(17, hfile.length() - 1);
+
+         var testFilePath = contentFolderPath.resolve(hfile);
+
+         if (!testFilePath.toFile().exists()) {
+            //@formatter:off
+            throw
+               new AssertionError
+                      (
+                         new Message()
+                                .title( "Linked file does not exist." )
+                                .indentInc()
+                                .segment( "Test Name",    this.method.getTestName() )
+                                .segment( "Content File", this.contentPath          )
+                                .segment( "Linked File",  testFilePath              )
+                                .segment( "Document",     this.content              )
+                                .toString()
+                      );
+            //@formatter:on
+         }
+
+         counter++;
+
+      }
+
+      if (counter != expectedLinkCount) {
+         //@formatter:off
+         throw
+            new AssertionError
+                   (
+                      new Message()
+                             .title( "Did not find the expected number of hyperlinks in the document." )
+                             .indentInc()
+                             .segment( "Test Name",      this.method.getTestName() )
+                             .segment( "Content File",   this.contentPath          )
+                             .segment( "Expected Count", expectedLinkCount         )
+                             .segment( "Actual Count",   counter                   )
+                             .segment( "Document",       this.content              )
+                             .toString()
+                   );
+         //@formatter:on
+
+      }
+
+   }
+
+   private void documentCheck(List<Check> checks, String filePath, String document, String pubString) {
+
+      var altString = pubString.isEmpty() ? "  \"" : "\" ";
+      var period = pubString.isEmpty() ? "." : "";
+
+      //@formatter:off
+      checks.forEach
+         (
+            ( check ) -> check.perform
+                            (
+                               method.getQualifiedTestName(), /* testName       */
+                               this.contentPath,              /* document path  */
+                               this.content,                  /* document       */
+                               period,                        /* period         */
+                               altString,                     /* altString      */
+                               pubString,                     /* pubString      */
+                               false,                         /* mergeFlag      */
+                               false                          /* fieldcoderFlag */
+                            )
+         );
+      //@formatter:on
    }
 
    private String getFileAsString(String filePath) throws IOException {
@@ -411,36 +647,34 @@ public class WordTemplateRendererTest {
 
    }
 
+
    private void modifyOption(RendererOption optName, Object optValue) {
-      if(Objects.nonNull(optValue)) {
       this.renderer.setRendererOption(optName, optValue);
-      } else {
-         this.renderer.removeRendererOption(optName);
-      }
    }
+
+
 
    @Before
    public void setUp() {
       // Establish default option settings
       //@formatter:off
-      RendererMap rendererOptionsMap =
+      EnumRendererMap rendererOptionsMap =
          new EnumRendererMap
-            (
-              RendererOption.PUBLISH_DIFF,             true,
-              RendererOption.LINK_TYPE,                LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
-              RendererOption.UPDATE_PARAGRAPH_NUMBERS, false,
-              RendererOption.SKIP_ERRORS,              true,
-              RendererOption.EXCLUDE_FOLDERS,          true,
-              RendererOption.EXCLUDE_ARTIFACT_TYPES,   new ArrayList<ArtifactTypeToken>(),
-              RendererOption.RECURSE_ON_LOAD,          true,
-              RendererOption.MAINTAIN_ORDER,           true,
-              RendererOption.USE_TEMPLATE_ONCE,        true,
-              RendererOption.FIRST_TIME,               true,
-              RendererOption.NO_DISPLAY,               true,
-              RendererOption.PUBLISH_EMPTY_HEADERS,    true
-            );
+                (
+                  RendererOption.PUBLISH_DIFF,             true,
+                  RendererOption.LINK_TYPE,                LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+                  RendererOption.UPDATE_PARAGRAPH_NUMBERS, false,
+                  RendererOption.SKIP_ERRORS,              true,
+                  RendererOption.EXCLUDE_FOLDERS,          true,
+                  RendererOption.RECURSE_ON_LOAD,          true,
+                  RendererOption.MAINTAIN_ORDER,           true,
+                  RendererOption.USE_TEMPLATE_ONCE,        true,
+                  RendererOption.FIRST_TIME,               true,
+                  RendererOption.NO_DISPLAY,               true,
+                  RendererOption.PUBLISH_EMPTY_HEADERS,    true
+                );
       //@formatter:on
-      renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
+      this.renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
@@ -457,7 +691,6 @@ public class WordTemplateRendererTest {
       programRoot.addChild(templateFolder);
       programRoot.addChild(swReqFolder);
 
-      setupTemplates(templateFolder, rootBranch);
       templateFolder.persist("TEMPLATE FOLDER SETUP");
 
       setUpDocFolder(docFolder, rootBranch);
@@ -599,7 +832,6 @@ public class WordTemplateRendererTest {
       Artifact notes = ArtifactQuery.getArtifactFromId(docFolder.getDescendant("Notes"), updateBranch);
       notes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "Notes are great for small topics, and the link " + beginLinkInsert + hdwrGuid + endLinkInsert + " too." + endWordString);
-
       notes.persist(onChildTx);
       onChildTx.execute();
    }
@@ -648,60 +880,6 @@ public class WordTemplateRendererTest {
          beginWordString + "This is the Ventilation crew station requirements." + endWordString);
    }
 
-   // Create the folder to store the templates
-   private void setupTemplates(Artifact folder, BranchToken branch) {
-      recurseTemplate =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Recurse Template");
-      recurseTemplate.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent, RECURSE_TEMPLATE_STRING);
-      recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
-         "org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
-      recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
-         "org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
-      recurseTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
-
-      singleTemplate =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Single Template");
-      singleTemplate.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent, SINGLE_TEMPLATE_STRING);
-      singleTemplate.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_RENDERER_OPTIONS);
-
-      singleTemplateAttrib =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "Single With Attributes");
-      singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent,
-         SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING);
-      singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_ATTRIBUTE_RENDERER_OPTIONS);
-
-      masterTemplate =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsMaster Template");
-      masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, MASTER_TEMPLATE_STRING);
-      masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_RENDERER_OPTIONS);
-
-      masterTemplate_idOnly = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch,
-         "srsMaster Template ID only");
-      masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
-         MASTER_TEMPLATE_STRING_IDONLY);
-      masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_ID_RENDERER_OPTIONS);
-
-      masterTemplate_idAndName = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch,
-         "srsMaster Template ID and name");
-      masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
-         MASTER_TEMPLATE_STRING_IDANDNAME);
-      masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions,
-         MASTER_ID_RENDERER_OPTIONS);
-
-      slaveTemplate =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplateWholeWord, branch, "srsSlave Template");
-      slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, SLAVE_TEMPLATE_STRING);
-      slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, SLAVE_RENDERER_OPTIONS);
-
-      folder.addChild(recurseTemplate);
-      folder.addChild(singleTemplate);
-      folder.addChild(singleTemplateAttrib);
-      folder.addChild(masterTemplate);
-      folder.addChild(masterTemplate_idOnly);
-      folder.addChild(masterTemplate_idAndName);
-      folder.addChild(slaveTemplate);
-   }
-
    @After
    public void tearDown() throws Exception {
       if (BranchManager.branchExists(updateBranch)) {
@@ -715,11 +893,32 @@ public class WordTemplateRendererTest {
    @Test
    public void testBlankWordTemplateContent() {
 
+      //@formatter:off
+      var checks =
+         List.of
+            (
+               new Check
+                      (
+                         ( testName )                     -> "Expected 1. Volume 4",
+                         ( period, altString, pubString ) -> "<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4 [MERGED]</w:t></w:r>",
+                         ( mergeFlag, fieldcodeFlag )     -> true
+                      ),
+
+               new Check
+                      (
+                         ( testName )                     -> "Expected 2.",
+                         ( period, altString, pubString ) -> "<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Intro</w:t></w:r>",
+                         ( mergeFlag, fieldcodeFlag )     -> true
+                      )
+            );
+      //@formatter:on
+
       /*
        * Create "Root Branch"
        */
 
-      BranchToken rootBranch = BranchManager.createTopLevelBranch("Root Branch");
+      var rootBranch = BranchManager.createTopLevelBranch("Root Branch");
+
       Artifact volume4ArtifactRootBranch = null;
 
       {
@@ -731,61 +930,92 @@ public class WordTemplateRendererTest {
           *    |
           *    +- "Intro" (HeadingMsWord)
           */
-         //@formatter:on
 
-         ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-            rootBranch, PermissionEnum.FULLACCESS);
+         ServiceUtil
+            .getOseeClient()
+            .getAccessControlService()
+            .setPermission
+               (
+                  UserManager.getUser( DemoUsers.Joe_Smith ),
+                  rootBranch,
+                  PermissionEnum.FULLACCESS
+               );
 
-         SkynetTransaction tx = TransactionManager.createTransaction(rootBranch, method.getQualifiedTestName());
+         var tx = TransactionManager.createTransaction( rootBranch, method.getQualifiedTestName() );
 
-         volume4ArtifactRootBranch =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBranch, "Volume 4");
-         volume4ArtifactRootBranch.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1");
-         volume4ArtifactRootBranch.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
-            "<w:p><w:r><w:t>Volume 4 on the Root Branch.</w:t></w:r></w:p>");
+         volume4ArtifactRootBranch = ArtifactTypeManager.addArtifact( CoreArtifactTypes.HeadingMsWord, rootBranch, "Volume 4" );
 
-         volume4ArtifactRootBranch.persist(tx);
+         volume4ArtifactRootBranch.setSoleAttributeValue
+            (
+               CoreAttributeTypes.ParagraphNumber,
+               "1"
+            );
 
-         Artifact introArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, rootBranch, "Intro");
-         introArt.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
-            "<w:p><w:r><w:t>Intro on the Root Branch.</w:t></w:r></w:p>");
+         volume4ArtifactRootBranch.setSoleAttributeFromString
+            (
+               CoreAttributeTypes.WordTemplateContent,
+               "<w:p><w:r><w:t>Volume 4 on the Root Branch.</w:t></w:r></w:p>"
+            );
 
-         volume4ArtifactRootBranch.addChild(introArt);
-         introArt.persist(tx);
+         volume4ArtifactRootBranch.persist( tx );
+
+         var introArt = ArtifactTypeManager.addArtifact( CoreArtifactTypes.HeadingMsWord, rootBranch, "Intro" );
+
+         introArt.setSoleAttributeFromString
+            (
+               CoreAttributeTypes.WordTemplateContent,
+               "<w:p><w:r><w:t>Intro on the Root Branch.</w:t></w:r></w:p>"
+            );
+
+         volume4ArtifactRootBranch.addChild( introArt );
+
+         introArt.persist( tx );
          tx.execute();
+         //@formatter:on
       }
 
       /*
        * Create "Middle Branch"
        */
 
-      BranchId middleBranch = BranchManager.createWorkingBranch(rootBranch, "Middle Branch");
+      var middleBranch = BranchManager.createWorkingBranch(rootBranch, "Middle Branch");
 
       {
+         //@formatter:off
          /*
           * Get the "Volume 4" artifact on the "Middle Branch" and set the WordTemplateContent to a space.
           */
 
-         Artifact volume4ArtifactMiddleBranch =
-            ArtifactQuery.getArtifactFromId(volume4ArtifactRootBranch, middleBranch);
+         var volume4ArtifactMiddleBranch = ArtifactQuery.getArtifactFromId( volume4ArtifactRootBranch, middleBranch );
 
-         volume4ArtifactMiddleBranch.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
-            "<w:p><w:r><w:t>Volume 4 on the Middle Branch.</w:t></w:r></w:p>");
-         volume4ArtifactMiddleBranch.persist("Added Volume 4 artifact on the Middle Branch.");
+         volume4ArtifactMiddleBranch.setSoleAttributeFromString
+            (
+               CoreAttributeTypes.WordTemplateContent,
+               "<w:p><w:r><w:t>Volume 4 on the Middle Branch.</w:t></w:r></w:p>"
+            );
+
+         volume4ArtifactMiddleBranch.persist( "Added Volume 4 artifact on the Middle Branch." );
+         //@formatter:on
       }
 
       /*
        * Create "Child Branch"
        */
 
-      BranchId childBranch = BranchManager.createWorkingBranch(middleBranch, "Child Branch");
+      var childBranch = BranchManager.createWorkingBranch(middleBranch, "Child Branch");
 
-      Artifact volume4ArtifactChildBranch = ArtifactQuery.getArtifactFromId(volume4ArtifactRootBranch, childBranch);
+      var volume4ArtifactChildBranch = ArtifactQuery.getArtifactFromId(volume4ArtifactRootBranch, childBranch);
 
       {
-         volume4ArtifactChildBranch.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
-            "<w:p><w:r><w:t>Volume 4 on the Child Branch.</w:t></w:r></w:p>");
-         volume4ArtifactChildBranch.persist("Added Volume 4 artifact on the Child Branch.");
+         //@formatter:off
+         volume4ArtifactChildBranch.setSoleAttributeFromString
+            (
+               CoreAttributeTypes.WordTemplateContent,
+               "<w:p><w:r><w:t>Volume 4 on the Child Branch.</w:t></w:r></w:p>"
+            );
+
+         volume4ArtifactChildBranch.persist( "Added Volume 4 artifact on the Child Branch." );
+         //@formatter:on
       }
 
       /*
@@ -793,67 +1023,91 @@ public class WordTemplateRendererTest {
        */
 
       this.renderer.setRendererOption(BRANCH, childBranch);
-      this.renderer.setRendererOption(PUBLISH_DIFF, true);
       this.renderer.setRendererOption(COMPARE_BRANCH, rootBranch);
+      this.renderer.setRendererOption(PUBLISH_DIFF, true);
 
-      this.renderer.publish(singleTemplate, null, Collections.singletonList(volume4ArtifactChildBranch));
+      var artifacts = List.of(volume4ArtifactChildBranch);
 
-      /*
-       * Check publish results
-       */
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
+
+      this.renderer.publish(template, null, artifacts);
 
       this.loadContent();
 
-      //@formatter:off
-      var testName = method.getQualifiedTestName();
-      var altString = "  \"";
-      var period = ".";
-
-      testBlankWordTemplateContentChecks.forEach
-         (
-            ( check ) -> check.perform(testName,this.contentPath, this.content, period, altString, "", false, false )
-         );
-      //@formatter:on
+      this.documentCheck(checks, this.contentPath, this.content, "");
    }
 
    @Test
    public void testPublishDiffWithFieldCodes() {
+
+      //@formatter:off
+      var checks =
+         List.of
+            (
+               new Check
+                      (
+                        ( testName )                     -> "Field Code Diff not as expected",
+                        ( period, altString, pubString ) -> "<w:fldChar w:fldCharType=\"begin\"/>",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      )
+
+            );
+      //@formatter:on
+
       this.modifyOption(BRANCH, updateBranch);
       this.modifyOption(PUBLISH_DIFF, true);
-      List<Artifact> artifacts = new ArrayList<>();
-      setupFieldCodeChange();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-      artifacts.add(updateDoc);
 
-      this.renderer.publish(singleTemplate, null, artifacts);
+      this.setupFieldCodeChange();
+
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
+
+      this.renderer.publish(template, null, artifacts);
 
       this.loadContent();
 
       this.basicDocumentCheck(this.contentPath, this.content, "", false, true);
 
-      Assert.assertTrue("Field Code Diff not as expected",
-         this.content.contains("<w:fldChar w:fldCharType=\"begin\"/>"));
+      this.documentCheck(checks, this.contentPath, this.content, "");
    }
 
    @Test
    public void testPublishDiffWithOutFieldCodes() {
+
+      //@formatter:off
+      var checks =
+         List.of
+            (
+               new Check
+                      (
+                        ( testName )                     -> "Appears to have Field Code Diff",
+                        ( period, altString, pubString ) -> "<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      )
+
+            );
+      //@formatter:on
+
       try {
          this.modifyOption(BRANCH, updateBranch);
          this.modifyOption(PUBLISH_DIFF, true);
-         List<Artifact> artifacts = new ArrayList<>();
+
          setupFieldCodeChange();
          UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
-         Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-         artifacts.add(updateDoc);
 
-         this.renderer.publish(singleTemplate, null, artifacts);
+         var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+
+         var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
+
+         this.renderer.publish(template, null, artifacts);
 
          this.loadContent();
 
          this.basicDocumentCheck(this.contentPath, this.content, "", false, true);
 
-         Assert.assertTrue("Appears to have Field Code Diff",
-            this.content.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware"));
+         this.documentCheck(checks, this.contentPath, this.content, "");
+
       } finally {
          UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "false");
       }
@@ -864,25 +1118,17 @@ public class WordTemplateRendererTest {
 
       this.modifyOption(BRANCH, updateBranch);
       this.modifyOption(PUBLISH_DIFF, false);
-      List<Artifact> artifacts = new ArrayList<>();
-      artifacts.add(swReqFolder);
 
-      this.renderer.publish(masterTemplate, slaveTemplate, artifacts);
+      var artifacts = List.of(this.swReqFolder);
+
+      var primaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.PRIMARY_TEMPLATE);
+      var secondaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SECONDARY_TEMPLATE);
+
+      this.renderer.publish(primaryTemplate, secondaryTemplate, artifacts);
 
       this.loadContent();
 
-      Matcher m = findHlinks.matcher(this.content);
-      int counter = 0;
-      int indx = this.contentPath.lastIndexOf(File.separator);
-      String justPath = this.contentPath.substring(0, indx + 1);
-      while (m.find()) {
-         String hfile = m.group();
-         hfile = hfile.substring(17, hfile.length() - 1);
-         File testFile = new File(justPath + hfile);
-         Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
-         counter++;
-      }
-      Assert.assertTrue("Did not find links to 3 files.", counter == 3);
+      this.checkLinks(3);
    }
 
    @Test
@@ -890,25 +1136,17 @@ public class WordTemplateRendererTest {
 
       this.modifyOption(BRANCH, updateBranch);
       this.modifyOption(PUBLISH_DIFF, false);
-      List<Artifact> artifacts = new ArrayList<>();
-      artifacts.add(swReqFolder);
 
-      this.renderer.publish(masterTemplate_idAndName, slaveTemplate, artifacts);
+      var artifacts = List.of(this.swReqFolder);
+
+      var primaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.PRIMARY_TEMPLATE_ID_NAME);
+      var secondaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SECONDARY_TEMPLATE);
+
+      this.renderer.publish(primaryTemplate, secondaryTemplate, artifacts);
 
       this.loadContent();
 
-      Matcher m = findHlinks.matcher(this.content);
-      int counter = 0;
-      int indx = this.contentPath.lastIndexOf(File.separator);
-      String justPath = this.contentPath.substring(0, indx + 1);
-      while (m.find()) {
-         String hfile = m.group();
-         hfile = hfile.substring(17, hfile.length() - 1);
-         File testFile = new File(justPath + hfile);
-         Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
-         counter++;
-      }
-      Assert.assertTrue("Did not find links to 3 files.", counter == 3);
+      this.checkLinks(3);
    }
 
    @Test
@@ -916,25 +1154,17 @@ public class WordTemplateRendererTest {
 
       this.modifyOption(BRANCH, updateBranch);
       this.modifyOption(PUBLISH_DIFF, false);
-      List<Artifact> artifacts = new ArrayList<>();
-      artifacts.add(swReqFolder);
 
-      this.renderer.publish(masterTemplate_idOnly, slaveTemplate, artifacts);
+      var artifacts = List.of(this.swReqFolder);
+
+      var primaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.PRIMARY_TEMPLATE_ID);
+      var secondaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SECONDARY_TEMPLATE);
+
+      this.renderer.publish(primaryTemplate, secondaryTemplate, artifacts);
 
       this.loadContent();
 
-      Matcher m = findHlinks.matcher(this.content);
-      int counter = 0;
-      int indx = this.contentPath.lastIndexOf(File.separator);
-      String justPath = this.contentPath.substring(0, indx + 1);
-      while (m.find()) {
-         String hfile = m.group();
-         hfile = hfile.substring(17, hfile.length() - 1);
-         File testFile = new File(justPath + hfile);
-         Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
-         counter++;
-      }
-      Assert.assertTrue("Did not find links to 3 files.", counter == 3);
+      this.checkLinks(3);
    }
 
    @Test
@@ -942,11 +1172,12 @@ public class WordTemplateRendererTest {
 
       this.modifyOption(BRANCH, updateBranch);
       this.modifyOption(PUBLISH_DIFF, true);
-      List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-      artifacts.add(updateDoc);
 
-      this.renderer.publish(singleTemplate, null, artifacts);
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
+
+      this.renderer.publish(template, null, artifacts);
 
       this.loadContent();
 
@@ -960,11 +1191,12 @@ public class WordTemplateRendererTest {
       this.modifyOption(PUBLISH_DIFF, true);
       this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       this.modifyOption(USE_TEMPLATE_ONCE, false);
-      List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-      artifacts.add(updateDoc);
 
-      this.renderer.publish(singleTemplateAttrib, null, artifacts);
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES);
+
+      this.renderer.publish(template, null, artifacts);
 
       this.loadContent();
 
@@ -975,20 +1207,176 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffLinks() {
+      //@formatter:off
+      var checks =
+         List.of
+            (
+               new Check
+                      (
+                          ( testName )                     -> "Paragraph Number & Name Link not found",
+                          ( period, altString, pubString ) -> "<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>",
+                          ( mergeFlag, fieldcodeFlag )     -> true
+                      ),
+
+                new Check
+                      (
+                          ( testName ) ->                     "Original Paragram Numbering for Notes is incorrect",
+                          ( period, altString, pubString ) -> "<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t>Paragraph Number: 3</w:t></w:r>",
+                          ( mergeFlag, fieldcodeFlag )     -> true,
+                          true
+                      ),
+                new Check
+                      (
+                          ( testName )                     -> "Original Paragram Numbering for More Notes is incorrect",
+                          ( period, altString, pubString ) -> "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t>Paragraph Number: 3.1</w:t></w:r>",
+                          ( mergeFlag, fieldcodeFlag )     -> true,
+                          true
+                      )
+      );
+      //@formatter:on
+
       this.modifyOption(BRANCH, updateBranch);
       this.modifyOption(PUBLISH_DIFF, true);
-      this.modifyOption(COMPARE_BRANCH, null);
       this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
-      List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-      artifacts.add(updateDoc);
 
-      this.renderer.publish(singleTemplateAttrib, null, artifacts);
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES);
+
+      this.renderer.publish(template, null, artifacts);
 
       this.loadContent();
 
       this.basicDocumentCheck(this.contentPath, this.content, "", false, false);
 
+      this.documentCheck(checks, this.contentPath, this.content, "");
+
+      this.blankPageCounter(1);
+   }
+
+   @Test
+   public void testPublishWithDiffMerge() {
+
+      //@formatter:off
+      var checks =
+         List.of
+            (
+               new Check
+                      (
+                        ( testName )                     -> "Merge content \"paragraph describes\" added not found.",
+                        ( period, altString, pubString ) -> "<aml:content><w:r><w:t>paragraph describes</w:t></w:r></aml:content>",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      ),
+
+               new Check
+                      (
+                        ( testName )                     -> "Merge content \"is\" deleted not found.",
+                        ( period, altString, pubString ) -> "<aml:content><w:r><w:delText>is</w:delText></w:r></aml:content>",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      ),
+
+               new Check
+                      (
+                        ( testName )                     -> "Merge content \" the background of the \" not changed not found.",
+                        ( period, altString, pubString ) -> "</aml:annotation><w:r><w:t> the background of the </w:t></w:r><aml:annotation",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      ),
+
+               new Check
+                      (
+                        ( testName )                     -> "Merge content \"doc\" added not found.",
+                        ( period, altString, pubString ) -> "<aml:content><w:r><w:t>doc</w:t></w:r></aml:content>",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      ),
+
+               new Check
+                      (
+                        ( testName )                     -> "Merge content \"document\" deleted not found.",
+                        ( period, altString, pubString ) -> "<aml:content><w:r><w:delText>document</w:delText></w:r></aml:content>",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      ),
+
+               new Check
+                      (
+                        ( testName )                     -> "Paragraph Number only Link not found",
+                        ( period, altString, pubString ) -> "<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1</w:t></w:r>",
+                        ( mergeFlag, fieldcodeFlag )     -> true
+                      )
+
+            );
+      //@formatter:on
+
+      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(PUBLISH_DIFF, true);
+      this.modifyOption(COMPARE_BRANCH, rootBranch);
+      this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
+
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
+
+      this.renderer.publish(template, null, artifacts);
+
+      this.loadContent();
+
+      this.basicDocumentCheck(this.contentPath, this.content, "", true, false);
+
+      this.documentCheck(checks, this.contentPath, this.content, "");
+   }
+
+   @Test
+   public void testPublishWithDiffRecurseTemplate() {
+
+      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(PUBLISH_DIFF, true);
+
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.RECURSE_TEMPLATE);
+
+      this.renderer.publish(template, null, artifacts);
+
+      this.loadContent();
+
+      this.basicDocumentCheck(this.contentPath, this.content, "", false, false);
+   }
+
+   @Test
+   public void testPublishWithoutDiff() {
+
+      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(PUBLISH_DIFF, false);
+
+      var artifacts = List.of(this.docFolder);
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
+
+      this.renderer.publish(template, null, artifacts);
+
+      this.loadContent();
+
+      this.basicDocumentCheck(this.contentPath, this.content, tabString, false, false);
+   }
+
+   @Test
+   public void testPublishWithoutDiffRecurseTemplate() {
+
+      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(PUBLISH_DIFF, false);
+
+      var artifacts = List.of(this.docFolder);
+
+      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.RECURSE_TEMPLATE);
+
+      this.renderer.publish(template, null, artifacts);
+
+      this.loadContent();
+
+      this.basicDocumentCheck(this.contentPath, this.content, tabString, false, false);
+   }
+
+   @Test
+   public void testPublishWithoutDiffUpdateParagraphNumbers() {
       //@formatter:off
       var checks =
          List.of
@@ -1002,158 +1390,41 @@ public class WordTemplateRendererTest {
 
                 new Check
                        (
-                          ( testName ) ->                     "Original Paragram Numbering for Notes is incorrect",
-                          ( period, altString, pubString ) -> "<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t> Paragraph Number: 3</w:t></w:r>",
+                          ( testName ) ->                     "Paragraph Number 2 is not updated",
+                          ( period, altString, pubString ) -> "<w:p><w:r><w:t>Paragraph Number: 2</w:t></w:r></w:p>",
                           ( mergeFlag, fieldcodeFlag )     -> true,
                           true
                        ),
                 new Check
                        (
-                          ( testName )                     -> "Original Paragram Numbering for More Notes is incorrect",
-                          ( period, altString, pubString ) -> "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t> Paragraph Number: 3.1</w:t></w:r>",
+                          ( testName )                     -> "Paragraph Number 2.1 is not updated",
+                          ( period, altString, pubString ) -> "<w:p><w:r><w:t>Paragraph Number: 2.1</w:t></w:r></w:p>",
                           ( mergeFlag, fieldcodeFlag )     -> true,
                           true
                        )
-
-
       );
       //@formatter:on
 
-      //@formatter:off
-      checks.forEach
-         (
-            ( check ) -> check.perform
-                            (
-                               method.getQualifiedTestName(), /* testName       */
-                               this.contentPath,              /* document path  */
-                               this.content,                  /* document       */
-                               "",                            /* period         */
-                               "",                            /* altString      */
-                               "",                            /* pubString      */
-                               false,                         /* mergeFlag      */
-                               false                          /* fieldcoderFlag */
-                            )
-         );
-      //@formatter:on
+      SkynetTransaction transaction = TransactionManager.createTransaction(updateBranch, method.getQualifiedTestName());
 
-      this.blankPageCounter(1);
-   }
+      this.modifyOption(RendererOption.BRANCH, updateBranch);
+      this.modifyOption(RendererOption.TRANSACTION_OPTION, transaction);
+      this.modifyOption(RendererOption.PUBLISH_DIFF, false);
+      this.modifyOption(RendererOption.LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
+      this.modifyOption(RendererOption.UPDATE_PARAGRAPH_NUMBERS, true);
 
-   @Test
-   public void testPublishWithDiffMerge() {
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
 
-      this.modifyOption(BRANCH, updateBranch);
-      this.modifyOption(PUBLISH_DIFF, true);
-      this.modifyOption(COMPARE_BRANCH, rootBranch);
-      this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
-      List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-      artifacts.add(updateDoc);
+      var publishingTemplate =
+         WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES);
 
-      this.renderer.publish(singleTemplate, null, artifacts);
-
-      this.loadContent();
-
-      this.basicDocumentCheck(this.contentPath, this.content, "", true, false);
-
-      String testString;
-
-      testString = "<aml:content><w:r><w:t>paragraph describes</w:t></w:r></aml:content>";
-      Assert.assertTrue("Merge content \"paragraph describes\" added not found.", this.content.contains(testString));
-
-      testString = "<aml:content><w:r><w:delText>is</w:delText></w:r></aml:content>";
-      Assert.assertTrue("Merge content \"is\" deleted not found.", this.content.contains(testString));
-
-      testString = "</aml:annotation><w:r><w:t> the background of the </w:t></w:r><aml:annotation";
-      Assert.assertTrue("Merge content \" the background of the \" not changed not found.",
-         this.content.contains(testString));
-
-      testString = "<aml:content><w:r><w:t>doc</w:t></w:r></aml:content>";
-      Assert.assertTrue("Merge content \"doc\" added not found.", this.content.contains(testString));
-
-      testString = "<aml:content><w:r><w:delText>document</w:delText></w:r></aml:content>";
-      Assert.assertTrue("Merge content \"document\" deleted not found.", this.content.contains(testString));
-
-      Assert.assertTrue("Paragraph Number only Link not found",
-         this.content.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1</w:t></w:r>"));
-   }
-
-   @Test
-   public void testPublishWithDiffRecurseTemplate() {
-
-      this.modifyOption(BRANCH, updateBranch);
-      this.modifyOption(PUBLISH_DIFF, true);
-      List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-      artifacts.add(updateDoc);
-
-      this.renderer.publish(recurseTemplate, null, artifacts);
-
-      this.loadContent();
-
-      this.basicDocumentCheck(this.contentPath, this.content, "", false, false);
-   }
-
-   @Test
-   public void testPublishWithoutDiff() {
-
-      this.modifyOption(BRANCH, updateBranch);
-      this.modifyOption(PUBLISH_DIFF, false);
-      List<Artifact> artifacts = new ArrayList<>();
-      artifacts.add(docFolder);
-
-      this.renderer.publish(singleTemplate, null, artifacts);
-
-      this.loadContent();
-
-      this.basicDocumentCheck(this.contentPath, this.content, tabString, false, false);
-   }
-
-   //@formatter:off
-
-
-   @Test
-   public void testPublishWithoutDiffRecurseTemplate() {
-      this.modifyOption(BRANCH, updateBranch);
-      this.modifyOption(PUBLISH_DIFF, false);
-      List<Artifact> artifacts = new ArrayList<>();
-      artifacts.add(docFolder);
-
-      this.renderer.publish(recurseTemplate, null, artifacts);
-
-      this.loadContent();
-
-      this.basicDocumentCheck(this.contentPath, this.content, tabString, false, false);
-   }
-
-   //@formatter:on
-
-   @Test
-   public void testPublishWithoutDiffUpdateParagraphNumbers() {
-
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(updateBranch, String.format("%s", method.getQualifiedTestName()));
-      this.modifyOption(BRANCH, updateBranch);
-      this.modifyOption(TRANSACTION_OPTION, transaction);
-      this.modifyOption(PUBLISH_DIFF, false);
-      this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
-      this.modifyOption(UPDATE_PARAGRAPH_NUMBERS, true);
-      List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
-      artifacts.add(updateDoc);
-
-      this.renderer.publish(singleTemplateAttrib, null, artifacts);
+      this.renderer.publish(publishingTemplate, null, artifacts);
 
       this.loadContent();
 
       this.basicDocumentCheck(this.contentPath, this.content, tabString, false, false);
 
-      Assert.assertTrue("Paragraph Number & Name Link not found",
-         this.content.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>"));
-      Assert.assertTrue("Paragraph Number 2 is not updated",
-         this.content.contains("<w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
-      Assert.assertTrue("Paragraph Number 2.1 is not updated",
-         this.content.contains("<w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2.1</w:t></w:r>"));
+      this.documentCheck(checks, this.contentPath, this.content, "");
 
       this.blankPageCounter(1);
    }

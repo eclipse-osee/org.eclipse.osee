@@ -13,12 +13,19 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 public class OutliningOptions implements ToMessage {
+
+   private enum IncludeEmptyHeaders {
+      INCLUDE,
+      EXCLUDE,
+      UNSPECIFIED;
+   }
 
    @JsonProperty("ArtifactName")
    private String artifactName;
@@ -27,7 +34,7 @@ public class OutliningOptions implements ToMessage {
    private String headingAttributeType;
 
    @JsonProperty("IncludeEmptyHeaders")
-   private Boolean includeEmptyHeaders;
+   private IncludeEmptyHeaders includeEmptyHeaders;
 
    @JsonProperty("OutlineNumber")
    private String outlineNumber;
@@ -64,8 +71,13 @@ public class OutliningOptions implements ToMessage {
          Objects.requireNonNull(artifactType, "OutliningOptions::new, parameter \"artifactName\" cannot be null.");
       this.headingAttributeType = Objects.requireNonNull(headingAttributeType,
          "OutliningOptions::new, parameter \"headingAttributeType\" cannot be null.");
-      this.includeEmptyHeaders = Objects.requireNonNull(includeEmptyHeaders,
-         "OutliningOptions::new, parameter \"includeEmptyHeaders\" cannot be null.");
+      //@formatter:off
+      this.includeEmptyHeaders = Objects.nonNull( includeEmptyHeaders )
+                                    ? includeEmptyHeaders
+                                         ? IncludeEmptyHeaders.INCLUDE
+                                         : IncludeEmptyHeaders.EXCLUDE
+                                    : IncludeEmptyHeaders.UNSPECIFIED;
+      //@formatter:on
       this.outlineNumber =
          Objects.requireNonNull(outlineNumber, "OutliningOptions::new, parameter \"outlineNumber\" cannot be null.");
       this.outlineOnlyHeaderFolders = Objects.requireNonNull(outlineOnlyHeaderFolders,
@@ -88,7 +100,7 @@ public class OutliningOptions implements ToMessage {
          this.headingAttributeType = "";
       }
       if (Objects.isNull(this.includeEmptyHeaders)) {
-         this.includeEmptyHeaders = true;
+         this.includeEmptyHeaders = IncludeEmptyHeaders.UNSPECIFIED;
       }
       if (Objects.isNull(this.outlineNumber)) {
          this.outlineNumber = "";
@@ -134,12 +146,19 @@ public class OutliningOptions implements ToMessage {
       return this.outlineNumber;
    }
 
-   public boolean isIncludeEmptyHeaders() {
+   public Boolean isIncludeEmptyHeaders() {
       if (Objects.isNull(this.includeEmptyHeaders)) {
          throw new IllegalStateException(
             "OutliningOptions::isIncludeEmptyHeaders, the member \"includeEmptyHeaders\" has not been set.");
       }
-      return this.includeEmptyHeaders;
+      switch (this.includeEmptyHeaders) {
+         case INCLUDE:
+            return true;
+         case EXCLUDE:
+            return false;
+         default:
+            return null;
+      }
    }
 
    public boolean isOutlineOnlyHeaderFolders() {
@@ -181,6 +200,7 @@ public class OutliningOptions implements ToMessage {
       return this.templateFooter;
    }
 
+   @JsonIgnore
    public boolean isValid() {
       //@formatter:off
       return
@@ -219,8 +239,13 @@ public class OutliningOptions implements ToMessage {
          throw new IllegalStateException(
             "OutliningOptions::setIncludeEmptyHeaders, member \"includeEmptyHeaders\" has already been set.");
       }
-      this.includeEmptyHeaders = Objects.requireNonNull(includeEmptyHeaders,
-         "OutliningOptions::new, parameter \"includeEmptyHeaders\" cannot be null.");
+      //@formatter:off
+      this.includeEmptyHeaders = Objects.nonNull( includeEmptyHeaders )
+                                    ? includeEmptyHeaders
+                                         ? IncludeEmptyHeaders.INCLUDE
+                                         : IncludeEmptyHeaders.EXCLUDE
+                                    : IncludeEmptyHeaders.UNSPECIFIED;
+      //@formatter:on
    }
 
    public void setOutlineNumber(String outlineNumber) {

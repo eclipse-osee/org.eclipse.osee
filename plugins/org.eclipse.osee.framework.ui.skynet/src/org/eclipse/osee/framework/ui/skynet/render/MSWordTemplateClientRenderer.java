@@ -18,16 +18,16 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
+import java.util.stream.Collectors;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.define.api.WordTemplateContentData;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -35,28 +35,27 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.core.util.LinkType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
-import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessorClient;
-import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -119,10 +118,6 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "xml";
 
-   private static final String EMBEDDED_OBJECT_NO = "w:embeddedObjPresent=\"no\"";
-
-   private static final String EMBEDDED_OBJECT_YES = "w:embeddedObjPresent=\"yes\"";
-
    /**
     * The {@link ImageDescriptor} used to draw the icon for this renderer's command icon.
     */
@@ -134,9 +129,6 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
     */
 
    private static List<MenuCmdDef> menuCommandDefinitions;
-
-   private static final String OLE_END = "</w:docOleData>";
-   private static final String OLE_START = "<w:docOleData>";
 
    /**
     * The program extension for MS Word documents.
@@ -161,10 +153,6 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
     */
 
    private static final String RENDERER_NAME = "Client Side MS Word Edit";
-
-   private static final String STYLES = "<w:styles>.*?</w:styles>";
-
-   private static final String STYLES_END = "</w:styles>";
 
    /**
     * The {@link Program} used to invoke MS Word.
@@ -277,7 +265,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    public MSWordTemplateClientRenderer(RendererMap options) {
       super(options);
       this.comparator = new WordTemplateCompare(this);
-      this.templateProcessor = new WordTemplateProcessorClient(this);
+      this.templateProcessor = new WordTemplateProcessorClient();
       this.menuCommands = MSWordTemplateClientRenderer.menuCommandDefinitions;
       this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
    }
@@ -301,7 +289,11 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
       RendererMap rendererOptions) {
-      return MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
+      var rating = MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
+      if (!PresentationType.PREVIEW.equals(presentationType)) {
+         rating--;
+      }
+      return rating;
    }
 
    /**
@@ -357,77 +349,52 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
 
-      final List<Artifact> notMultiEditableArtifacts = new LinkedList<>();
-      Artifact template;
-      String templateContent = "";
-      String templateOptions = "";
-      String templateStyles = "";
+      //@formatter:off
+      var firstArtifactOrNull =
+         ( Objects.nonNull(artifacts) && !artifacts.isEmpty() )
+            ? artifacts.get(0)
+            : null;
+      //@formatter:on
 
-      if (artifacts.isEmpty()) {
-         //  Still need to get a default template with a null artifact list
-         template = getTemplate(null, presentationType);
-         if (template != null) {
-            templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
-            templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
+      var publishingTemplate = this.getTemplate(firstArtifactOrNull, presentationType);
 
-            List<Artifact> templateRelatedArtifacts =
-               template.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
-
-            if (templateRelatedArtifacts.size() == 1) {
-               templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
-                  CoreAttributeTypes.WholeWordContent, "");
-            } else if (templateRelatedArtifacts.size() > 1) {
-               OseeLog.log(this.getClass(), Level.INFO,
-                  "More than one style relation currently not supported. Defaulting to styles defined in the template.");
-            }
-         }
-      } else {
-         Artifact firstArtifact = artifacts.iterator().next();
-         template = getTemplate(firstArtifact, presentationType);
-         if (template != null) {
-            templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
-            templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
-
-            List<Artifact> templateRelatedArtifacts =
-               template.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
-
-            if (templateRelatedArtifacts.size() == 1) {
-               templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
-                  CoreAttributeTypes.WholeWordContent, "");
-            } else if (templateRelatedArtifacts.size() > 1) {
-               OseeLog.log(this.getClass(), Level.INFO,
-                  "More than one style relation currently not supported. Defaulting to styles defined in the template.");
-            }
-         }
+      if (Objects.nonNull(firstArtifactOrNull)) {
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
+
             // currently we can't support the editing of multiple artifacts with OLE data
-            for (Artifact artifact : artifacts) {
-               if (!artifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
-                  notMultiEditableArtifacts.add(artifact);
-               }
-            }
-            displayNotMultiEditArtifacts(notMultiEditableArtifacts,
-               "Do not support editing of multiple artifacts with OLE data");
+
+            //@formatter:off
+            var notMultiEditableArtifacts =
+               artifacts
+                  .stream()
+                  .filter( ( artifact ) -> !artifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("") )
+                  .collect( Collectors.toList() );
+
+            this.displayNotMultiEditArtifacts
+               (
+                  notMultiEditableArtifacts,
+                  "Do not support editing of multiple artifacts with OLE data"
+               );
+            //@formatter:on
+
             artifacts.removeAll(notMultiEditableArtifacts);
+
          } else { // support OLE data when appropriate
-            if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
-               templateContent = templateContent.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
 
-               //Add in new template styles now so OLE Data doesn't get lost
-               if (!templateStyles.isEmpty()) {
-                  templateContent = templateContent.replace(STYLES, templateStyles);
-                  templateStyles = "";
-               }
+            if (!firstArtifactOrNull.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
 
-               templateContent = templateContent.replaceAll(STYLES_END,
-                  STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData,
-                     "") + OLE_END);
+               var oleData = firstArtifactOrNull.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "");
+
+               publishingTemplate.update(WordCoreUtil::replaceEmbeddedObjectNoWithYes);
+
+               publishingTemplate.update((tc) -> WordCoreUtil.addOleDataToEndOfStyle(tc, oleData));
             }
          }
+
       }
 
-      templateContent = WordCoreUtilClient.removeGUIDFromTemplate(templateContent);
+      publishingTemplate.update(WordCoreUtilClient::removeGUIDFromTemplate);
 
       //@formatter:off
       var outputStream = ( (Boolean) this.getRendererOptionValue(RendererOption.CLIENT_RENDERER_CAN_STREAM) )
@@ -435,56 +402,172 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
                             : (OutputStream) null;
 
       return
-         this.templateProcessor.applyTemplate
-            (
-               artifacts,                                                      /* Artifacts          */
-               templateContent,                                                /* Template Content   */
-               templateOptions,                                                /* Template Options   */
-               templateStyles,                                                 /* Template Styles    */
-               null,                                                           /* Folder, IContainer */
-               null,                                                           /* Outline Number     */
-               (String) getRendererOptionValue(RendererOption.OUTLINE_TYPE),   /* Outline Type       */
-               presentationType,                                               /* Presentation Type  */
-               outputStream                                                    /* Output Stream      */
-            );
+         this.templateProcessor
+            .configure
+               (
+                  this,                                                           /* Renderer                      */
+                  publishingTemplate,                                             /* Primary Publishing Template   */
+                  null,                                                           /* Secondary Publishing Template */
+                  null,                                                           /* Folder, IContainer            */
+                  null,                                                           /* Outline Number                */
+                  presentationType                                                /* Presentation Type             */
+               )
+            .applyTemplate
+               (
+                  artifacts,                                                      /* Artifacts     */
+                  outputStream                                                    /* Output Stream */
+               );
+      //@formatter:on
    }
 
-   protected Artifact getTemplate(Artifact artifact, PresentationType presentationType) {
-      // if USE_TEMPLATE_ONCE then only the first two artifacts will use the whole template (since they are diff'd with each other)
-      // The settings from the template are stored previously and will be used, just not the content of the Word template
+   /**
+    * When the renderer option {@RendererOption#USE_TEMPLATE_ONCE} is <code>true</code> then only the first two
+    * artifacts will use the whole template, since the first two are diff'd with each other.
+    *
+    * <pre>
+    * Request Publishing Template By:
+    *
+    * Identifier when:
+    *
+    *      Template Artifact is Valid
+    *  &&  Use Template Once is False
+    *
+    *            --OR--
+    *
+    *      Template Artifact is Valid
+    *  &&  Use Template Once is True
+    *  &&  First Time or Second Time flag is True
+    *
+    * Match Criteria when:
+    *
+    *      Template Artifact is Invalid
+    *
+    *            --OR--
+    *
+    *      Template Artifact is Valid
+    *  &&  Template Use Once is True
+    *  &&  On at least the Third Iteration
+    * </pre>
+    *
+    * @param artifact the name of the artifact is used in the template match criteria. This parameter may be
+    * <code>null</code>.
+    * @param presentationType the type of presentation being made to the user.
+    * @return The selected {@link PublishingTemplate}.
+    * @throws OseeCoreException when a Publishing Template is not found.
+    */
+
+   protected PublishingTemplate getTemplate(Artifact artifact, PresentationType presentationType) {
 
       boolean useTemplateOnce = (boolean) getRendererOptionValue(RendererOption.USE_TEMPLATE_ONCE);
       boolean firstTime = (boolean) getRendererOptionValue(RendererOption.FIRST_TIME);
       boolean secondTime = (boolean) getRendererOptionValue(RendererOption.SECOND_TIME);
-      String option = (String) getRendererOptionValue(RendererOption.TEMPLATE_OPTION);
-      ArtifactId templateArt = (ArtifactId) getRendererOptionValue(RendererOption.TEMPLATE_ARTIFACT);
 
-      if (option != null && option.toString().isEmpty()) {
-         option = null;
-      }
+      var publishingTemplateIdentifier = (String) getRendererOptionValue(RendererOption.PUBLISHING_TEMPLATE_IDENTIFIER);
 
-      if (templateArt != null && templateArt.isValid() && (!useTemplateOnce || useTemplateOnce && (firstTime || secondTime))) {
+      /*
+       * Determine if selection is by identifier or match criteria
+       */
+
+      //@formatter:off
+      if (
+
+              Strings.isValidAndNonBlank( publishingTemplateIdentifier )
+           && ( !useTemplateOnce || firstTime || secondTime )
+
+         ) {
+      //@formatter:on
+
          if (useTemplateOnce) {
+
             if (secondTime) {
-               setRendererOption(RendererOption.SECOND_TIME, false);
+               this.setRendererOption(RendererOption.SECOND_TIME, false);
             }
+
             if (firstTime) {
-               setRendererOption(RendererOption.FIRST_TIME, false);
-               setRendererOption(RendererOption.SECOND_TIME, true);
+               this.setRendererOption(RendererOption.FIRST_TIME, false);
+               this.setRendererOption(RendererOption.SECOND_TIME, true);
             }
+
          }
 
-         if (templateArt instanceof Artifact) {
-            return (Artifact) templateArt;
-         } else {
-            return ArtifactQuery.getArtifactFromId(templateArt, CoreBranches.COMMON);
-         }
+         /*
+          * Request the publishing template using the saved identifier.
+          */
 
+         var publishingTemplateRequest = new PublishingTemplateRequest(publishingTemplateIdentifier);
+
+         var publishingTemplate = this.getTemplateCallServer(publishingTemplateRequest);
+
+         return publishingTemplate;
       }
-      if (useTemplateOnce && !firstTime && !secondTime) {
-         option = null;
+
+      /*
+       * Remove option from the Publishing Template match criteria when it is null, blank, or useTemplateOnce is enable
+       * and this is at least the third template to be fetched.
+       */
+
+      //@formatter:off
+      var option =
+         ( !useTemplateOnce || firstTime || secondTime )
+            ? (String) getRendererOptionValue(RendererOption.TEMPLATE_OPTION)
+            : null;
+            //@formatter:on
+
+      option = Strings.isValidAndNonBlank(option) ? option : null;
+
+      /*
+       * Artifact type name is part of the template match criteria strings.
+       */
+
+      var artifactTypeName = Objects.nonNull(artifact) ? artifact.getArtifactTypeName() : "";
+
+      /*
+       * Request the publishing template using match criteria.
+       */
+
+      //@formatter:off
+      var publishingTemplateRequest =
+         new PublishingTemplateRequest
+                (
+                   this.getIdentifier(),               /* Renderer Id                */
+                   artifactTypeName,                   /* Publish Artifact Type Name */
+                   presentationType.name(),            /* Presentation Type          */
+                   option                              /* Option                     */
+                );
+      //@formatter:on
+
+      var publishingTemplate = this.getTemplateCallServer(publishingTemplateRequest);
+
+      return publishingTemplate;
+   }
+
+   /**
+    * Makes the server call to obtain a publishing template. Server exceptions are handled in PublishingRequestHandler.
+    * An OseeCoreException is throw here when a Publishing Template was not found.
+    *
+    * @param publishingTemplateRequest the request data
+    * @return the publishing template.
+    * @throws OseeCoreException when a Publishing Template is not found.
+    */
+
+   private PublishingTemplate getTemplateCallServer(PublishingTemplateRequest publishingTemplateRequest) {
+
+      var publishingTemplate = PublishingRequestHandler.getPublishingTemplate(publishingTemplateRequest);
+
+      if (publishingTemplate.isSentinel()) {
+         //@formatter:off
+         throw
+            new OseeCoreException
+                   (
+                      new Message()
+                             .title( "MSWordTemplateClientRenderer:getTemplateCallServer, Failed to find a Publishing Template." )
+                             .indentInc()
+                             .segment( "Publishing Template Request", publishingTemplateRequest )
+                             .toString()
+                   );
       }
-      return TemplateManager.getTemplate(this, artifact, presentationType, option);
+
+      return publishingTemplate;
    }
 
    @Override
@@ -503,13 +586,27 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
 
 
-   public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) {
-      this.templateProcessor.publishWithNestedTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
+   public void publish( PublishingTemplate primaryPublishingTemplate, PublishingTemplate secondaryPublishingTemplate, List<Artifact> artifacts) {
+      //@formatter:off
+      this.templateProcessor
+         .configure
+            (
+               this,
+               primaryPublishingTemplate,
+               secondaryPublishingTemplate,
+               null,
+               null,
+               null
+            )
+         .publishWithNestedTemplates
+            (
+               artifacts
+            );
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
-      WordMLProducer wordMl = producer;
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer wordMl, String format, String label, String footer) {
+
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
          String data = null;
@@ -555,7 +652,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-            OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
+
             wordMl.addEditParagraphNoEscape(WordCoreUtil.getStartEditImage(artifact.getGuid()));
             wordMl.addWordMl(data);
             wordMl.addEditParagraphNoEscape(WordCoreUtil.getEndEditImage(artifact.getGuid()));

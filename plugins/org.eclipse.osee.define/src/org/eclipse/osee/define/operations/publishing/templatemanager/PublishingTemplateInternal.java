@@ -16,9 +16,13 @@ package org.eclipse.osee.define.operations.publishing.templatemanager;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate;
-import org.eclipse.osee.define.api.publishing.templatemanager.RendererOptions;
-import org.eclipse.osee.define.api.publishing.templatemanager.TemplateContent;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroup;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyType;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateScalarKey;
+import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateVectorKey;
+import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
+import org.eclipse.osee.framework.core.publishing.RendererOptions;
+import org.eclipse.osee.framework.core.publishing.TemplateContent;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -44,7 +48,7 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return publishing template identifier.
     */
 
-   String getIdentifier();
+   PublishingTemplateScalarKey getIdentifier();
 
    /**
     * Gets a scalar key supplier as an {@link Iterator} for the Publishing Template's identifier.
@@ -52,8 +56,8 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return an {@link Iterator} that returns the Publishing Template's identifier.
     */
 
-   default Iterator<String> getIdentifierKeyExtractor() {
-      return this.makeScalarKeyIterator(this::getIdentifier);
+   default Iterable<PublishingTemplateScalarKey> getIdentifierKeyExtractor() {
+      return this.makeScalarKeyIterable(this::getIdentifier);
    }
 
    /**
@@ -62,7 +66,7 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return the name of the publishing template.
     */
 
-   String getName();
+   PublishingTemplateScalarKey getName();
 
    /**
     * Gets a scalar key supplier as an {@link Iterator} for the Publishing Template's name.
@@ -70,8 +74,27 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return an {@link Iterator} that returns the Publishing Template's name.
     */
 
-   default Iterator<String> getNameKeyExtractor() {
-      return this.makeScalarKeyIterator(this::getName);
+   Iterable<PublishingTemplateScalarKey> getKeyIterable(PublishingTemplateKeyType keyType);
+
+   /**
+    * Gets a scalar key supplier as an {@link Iterator} for the Publishing Template's name.
+    *
+    * @return an {@link Iterator} that returns the Publishing Template's name.
+    */
+
+   default Iterable<PublishingTemplateScalarKey> getNameKeyExtractor() {
+      return this.makeScalarKeyIterable(this::getName);
+   }
+
+   /**
+    * Gets a new {@link PublishingTemplateKeyGroup} with all the cache keys for the publishing template.
+    *
+    * @return a {@link PublishingTemplateKeyGroup} will all of the publishing template cache keys.
+    */
+
+   default PublishingTemplateKeyGroup getPublishingTemplateKeyGroup() {
+      return new PublishingTemplateKeyGroup(this.getIdentifier(), this.getMatchCriteria(), this.getName(),
+         this.getSafeName());
    }
 
    /**
@@ -88,7 +111,7 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return the name of the publishing template.
     */
 
-   String getSafeName();
+   PublishingTemplateScalarKey getSafeName();
 
    /**
     * Gets a scalar key supplier as an {@link Iterator} for the Publishing Template's safe name.
@@ -96,17 +119,9 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return an {@link Iterator} that returns the Publishing Template's safe name.
     */
 
-   default Iterator<String> getSafeNameKeyExtractor() {
-      return this.makeScalarKeyIterator(this::getSafeName);
+   default Iterable<PublishingTemplateScalarKey> getSafeNameKeyExtractor() {
+      return this.makeScalarKeyIterable(this::getSafeName);
    }
-
-   /**
-    * Gets the publishing template's style string.
-    *
-    * @return the publishing style string.
-    */
-
-   String getStyle();
 
    /**
     * Gets the publishing template's WordML content as a {@link String}.
@@ -122,7 +137,7 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return a {@link List} of the Publishing Template's match criteria {@link String}s.
     */
 
-   List<String> getTemplateMatchCriteria();
+   PublishingTemplateVectorKey getMatchCriteria();
 
    /**
     * Gets a vector key supplier as an {@link Iterator} for the Publishing Template's match criteria.
@@ -130,33 +145,45 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return an {@link Iterator} that returns the Publishing Template's match criteria.
     */
 
-   default Iterator<String> getTemplateMatchCriteriaKeyExtractor() {
-      return this.makeVectorKeyIterator(this::getTemplateMatchCriteria);
+   default Iterable<PublishingTemplateScalarKey> getMatchCriteriaKeyExtractor() {
+      return this.makeVectorKeyIterable(this::getMatchCriteria);
    }
 
    /**
     * Makes a new {@link Iterator} for scalar keys.
     *
-    * @param keySupplier the scalar key supplier.
+    * @param scalarKeySupplier the scalar key supplier.
     * @return an {@link Iterator} that returns only one value, the value from the <code>keySupplier</code>.
     */
 
-   default Iterator<String> makeScalarKeyIterator(Supplier<String> keySupplier) {
-      return new Iterator<String>() {
-
-         boolean first = true;
-
-         @Override
-         public boolean hasNext() {
-            return this.first;
-         }
+   default Iterable<PublishingTemplateScalarKey> makeScalarKeyIterable(Supplier<PublishingTemplateScalarKey> scalarKeySupplier) {
+      //@formatter:off
+      return
+         new Iterable<PublishingTemplateScalarKey> () {
 
          @Override
-         public String next() {
-            this.first = false;
-            return keySupplier.get();
+         public Iterator<PublishingTemplateScalarKey> iterator() {
+
+            return
+               new Iterator<PublishingTemplateScalarKey>() {
+
+                  boolean first = true;
+                  Supplier<PublishingTemplateScalarKey> iteratorKeySupplier = scalarKeySupplier;
+
+                  @Override
+                  public boolean hasNext() {
+                     return this.first;
+                  }
+
+                  @Override
+                  public PublishingTemplateScalarKey next() {
+                     this.first = false;
+                     return this.iteratorKeySupplier.get();
+                  }
+               };
          }
       };
+      //@formatter:on
    }
 
    /**
@@ -166,8 +193,16 @@ interface PublishingTemplateInternal extends ToMessage {
     * @return an {@link Iterator} that returns keys on the key vector provided by the <code>keyListSupplier</code>.
     */
 
-   default Iterator<String> makeVectorKeyIterator(Supplier<List<String>> keyListSupplier) {
-      return keyListSupplier.get().iterator();
+   default Iterable<PublishingTemplateScalarKey> makeVectorKeyIterable(Supplier<PublishingTemplateVectorKey> vectorKeySupplier) {
+      //@formatter:off
+      return
+         new Iterable<PublishingTemplateScalarKey> () {
+
+         @Override
+         public Iterator<PublishingTemplateScalarKey> iterator() {
+            return vectorKeySupplier.get().getKey().iterator();
+         }
+      };
    }
 
 }
