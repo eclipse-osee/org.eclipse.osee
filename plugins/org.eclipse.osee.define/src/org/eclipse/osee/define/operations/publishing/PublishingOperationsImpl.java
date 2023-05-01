@@ -506,7 +506,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
       try ( var writer = new OutputStreamWriter(outputStream) ) {
 
          var publisher =
-            new MSWordPreviewPublisher
+            new GeneralPublishingWordTemplateProcessorServer
                    (
                       publishingOptions,
                       publishingTemplate,
@@ -615,7 +615,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
       try ( var writer = new OutputStreamWriter( outputStream ) ) {
 
          var publisher =
-            new MSWordTemplatePublisher
+            new WordTemplateProcessorServer
                    (
                       publishingOptions,
                       publishingTemplate,

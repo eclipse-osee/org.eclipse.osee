@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessorClient;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public class WordTemplateProcessorTest {
 
-   WordTemplateProcessor processor;
+   WordTemplateProcessorClient processor;
    List<ArtifactTypeToken> excludeTokens;
    Artifact softReqFolder;
    List<Artifact> requirements;
@@ -41,7 +41,7 @@ public class WordTemplateProcessorTest {
 
    @Before
    public void setUpProcessor() {
-      processor = new WordTemplateProcessor(null);
+      processor = new WordTemplateProcessorClient(null);
       excludeTokens = new ArrayList<>();
       excludeTokens.add(CoreArtifactTypes.ImplementationDetailsMsWord);
       processor.setExcludedArtifactTypeForTest(excludeTokens);

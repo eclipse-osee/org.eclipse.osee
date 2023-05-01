@@ -455,7 +455,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public Collection<ArtifactId> getChildrentIds() {
+   public Collection<ArtifactId> getChildrenIds() {
       throw new UnsupportedOperationException();
    }
 

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api.publishing.datarights;
+package org.eclipse.osee.framework.core.publishing;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;

@@ -356,7 +356,7 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
     */
 
    @Override
-   public Collection<ArtifactId> getChildrentIds() {
+   public Collection<ArtifactId> getChildrenIds() {
       throw new UnsupportedOperationException();
    }
 

@@ -18,9 +18,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.eclipse.osee.define.api.publishing.datarights.DataRight;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightAnchor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.publishing.DataRight;
+import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 

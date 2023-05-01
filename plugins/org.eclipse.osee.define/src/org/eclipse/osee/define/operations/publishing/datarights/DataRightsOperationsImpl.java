@@ -16,14 +16,14 @@ package org.eclipse.osee.define.operations.publishing.datarights;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightAnchor;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightResult;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsOperations;
 import org.eclipse.osee.define.util.Validation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
+import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -193,8 +193,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, BranchId branchIdentifier) {
-      return getDataRights(artifactIdentifiers, branchIdentifier, "");
+   public DataRightResult getDataRights(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers) {
+      return getDataRights(branchIdentifier, "", artifactIdentifiers);
    }
 
    /**
@@ -205,7 +205,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, BranchId branchIdentifier, String overrideClassification) {
+   public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers) {
 
       Message message = null;
 

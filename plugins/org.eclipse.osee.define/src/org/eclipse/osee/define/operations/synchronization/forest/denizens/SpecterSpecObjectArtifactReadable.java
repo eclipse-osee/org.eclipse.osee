@@ -284,7 +284,7 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
     */
 
    @Override
-   public Collection<ArtifactId> getChildrentIds() {
+   public Collection<ArtifactId> getChildrenIds() {
       throw new UnsupportedOperationException();
    }
 

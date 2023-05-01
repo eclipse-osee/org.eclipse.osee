@@ -19,7 +19,7 @@ package org.eclipse.osee.framework.core.xml.publishing;
  * @author Loren K. Ashley
  */
 
-public class WordSubSectionList extends AbstractElementList<WordSection, WordSubSection> {
+public class WordSubSectionList extends AbstractElementList<AbstractElement, WordSubSection> {
 
    /**
     * Creates a new open and empty list for {@link WordSubSection}s.
@@ -34,13 +34,17 @@ public class WordSubSectionList extends AbstractElementList<WordSection, WordSub
       super(wordSection);
    }
 
+   WordSubSectionList(WordSubSection wordSubSection) {
+      super(wordSubSection);
+   }
+
    /**
     * Gets the containing (parent) {@link WordSection}.
     *
     * @return the containing {@link WordSection}.
     */
 
-   public WordSection getWordSection() {
+   public AbstractElement getWordSection() {
       return this.getParent();
    }
 

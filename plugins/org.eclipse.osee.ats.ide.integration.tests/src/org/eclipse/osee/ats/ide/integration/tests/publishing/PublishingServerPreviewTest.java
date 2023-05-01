@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.publishing;
 
+import com.google.common.collect.Streams;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -197,7 +198,80 @@ public class PublishingServerPreviewTest {
                                )
                      ),
                   List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+               ),
+
+               new BasicArtifactInfoRecord
+               (
+                  4,                                                                                /* Identifier                             (Integer)                               */
+                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                  "Preview Artifacts Folder With Data Rights",                                      /* Artifact Name                          (String)                                */
+                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                     (
+                        new BasicAttributeSpecification
+                               (
+                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                 List.of( "This folder contains artifacts for publishing preview tests." ), /* Test Attribute Values                  (List<Object>)                          */
+                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                               )
+                     ),
+                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+               ),
+
+            new BasicArtifactInfoRecord
+               (
+                  5,                                                                                /* Identifier                             (Integer)                               */
+                  4,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                  "Requirement A",                                                                  /* Artifact Name                          (String)                                */
+                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                     (
+                        new BasicAttributeSpecification
+                               (
+                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                 List.of( "This is Requirement A's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
+                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                               ),
+                        new BasicAttributeSpecification
+                               (
+                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                 List.of( "<w:p><w:r><w:t>This is Requirement A's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
+                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                               )
+                     ),
+                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+               ),
+
+            new BasicArtifactInfoRecord
+               (
+                  6,                                                                                /* Identifier                             (Integer)                               */
+                  4,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                  "Requirement B",                                                                  /* Artifact Name                          (String)                                */
+                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                     (
+                        new BasicAttributeSpecification
+                               (
+                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                 List.of( "This is Requirement B's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
+                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                               ),
+                        new BasicAttributeSpecification
+                               (
+                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                 List.of( "<w:p><w:r><w:t>This is Requirement B's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
+                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                               ),
+                        new BasicAttributeSpecification
+                               (
+                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                 List.of( "Restricted Rights" ),                                    /* Test Attribute Values                  (List<Object>)                          */
+                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                               )
+                     ),
+                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                )
+
          );
 
    /**
@@ -641,7 +715,8 @@ public class PublishingServerPreviewTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement, String documentString) {
+   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement,
+      String documentString) {
 
       var error = publishingXmlUtils.getLastError();
 
@@ -692,6 +767,8 @@ public class PublishingServerPreviewTest {
     */
 
    List<WordSubSectionList> wordSubSectionList;
+
+   WordSubSectionList firstWordSubSectionSubSectionList;
 
    /**
     * Saves an encapsulation of a list of the first level "&lt;w:p&gt;" elements in each first level
@@ -819,25 +896,58 @@ public class PublishingServerPreviewTest {
                )
             .collect( Collectors.toList() );
 
+      /*
+       * If any sections were found
+       */
+
+      this.firstWordSubSectionSubSectionList = null;
+
+      if( !this.wordSubSectionList.isEmpty() ) {
+
+         /*
+          * Get the sub-section list for the first section
+          */
+
+         var firstWordSubSectionList = this.wordSubSectionList.get(0);
+
+         if( firstWordSubSectionList.size() > 0 ) {
+
+            var firstWordSubSection = firstWordSubSectionList.get(0).get();
+
+            this.firstWordSubSectionSubSectionList =
+               PublishingServerPreviewTest.publishingXmlUtils.parseWordSubSectionListFromWordSubSection( firstWordSubSection )
+                  .orElseThrow
+                     (
+                        () -> PublishingServerPreviewTest.buildAssertionError
+                                 (
+                                    PublishingServerPreviewTest.publishingXmlUtils,
+                                    "Failed to parse Word Sub-Section List from First Word Sub-Section.",
+                                    this.documentString
+                                 )
+                     );
+         }
+      }
+
       this.wordParagraphListForEachSubSection =
          this.wordSubSectionList.stream()
             .map
                (
-                  ( wordSubSectionList ) -> wordSubSectionList.stream()
-                                               .map
-                                                  (
-                                                    ( wordSubSection ) -> PublishingServerPreviewTest.publishingXmlUtils.parseWordParagraphListFromWordSubSection( wordSubSection )
-                                                                             .orElseThrow
-                                                                                (
-                                                                                  () -> PublishingServerPreviewTest.buildAssertionError
-                                                                                           (
-                                                                                             PublishingServerPreviewTest.publishingXmlUtils,
-                                                                                             "Failed to parse Word Sub-Section List from Word Section.",
-                                                                                             documentString
-                                                                                           )
-                                                                                )
-                                                  )
-                                               .collect( Collectors.toList() )
+                  ( wordSubSectionList ) ->
+                     Streams.concat( wordSubSectionList.stream(), this.firstWordSubSectionSubSectionList.stream() )
+                        .map
+                           (
+                              ( wordSubSection ) -> PublishingServerPreviewTest.publishingXmlUtils.parseImmediateChildrenWordParagraphListFromWordSubSection( wordSubSection )
+                                                       .orElseThrow
+                                                          (
+                                                             () -> PublishingServerPreviewTest.buildAssertionError
+                                                                      (
+                                                                         PublishingServerPreviewTest.publishingXmlUtils,
+                                                                         "Failed to parse Word Sub-Section List from Word Section.",
+                                                                         documentString
+                                                                      )
+                                                          )
+                           )
+                        .collect( Collectors.toList() )
                )
             .collect( Collectors.toList() );
    }
@@ -1021,6 +1131,237 @@ public class PublishingServerPreviewTest {
             "This folder contains artifacts for publishing preview tests.",
             wordTextList.get( 1 ).get().getText()
          );
+      //@formatter:on
+   }
+
+   @Test
+   public void testMsWordPreviewServerFolderRecursiveWithRestrictedRightsRequirementB() {
+
+      //@formatter:off
+      var msWordPreviewRequestData =
+         new MsWordPreviewRequestData
+                (
+                   new PublishingTemplateRequest
+                          (
+                             "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
+                             CoreArtifactTypes.Folder.getName(),
+                             PresentationType.PREVIEW_SERVER.name(),
+                             "SERVER_PREVIEW_TEST_D"
+                          ),
+                   PublishingServerPreviewTest.rootBranchId,
+                   List.of( ArtifactId.valueOf( PublishingServerPreviewTest.builderRecordMap.get( 4 ).get() ) )
+                );
+
+      this.publishPreview( msWordPreviewRequestData );
+
+      Assert.assertEquals
+         (
+            "Only one un-nested \"<wx:sect>\" expected in the \"<w:body>\".",
+            1,
+            this.wordSectionList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "Only one un-nested \"<wx:sub-section>\" expected in \"<xw:sect>\"( 0 ).",
+            1,
+            this.wordSubSectionList.get( 0 ).size()
+         );
+
+      Assert.assertNotNull
+         (
+            "Two nested \"<wx:sub-section>\" are expected in the first \"<wx:sub-section>\" of the first \"<wx:sect>\".",
+            this.firstWordSubSectionSubSectionList
+         );
+
+      Assert.assertEquals
+         (
+            "Two nested \"<wx:sub-section>\" are expected in the first \"<wx:sub-section>\" of the first \"<wx:sect>\".",
+            2,
+            this.firstWordSubSectionSubSectionList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "One un-nested \"<w:p>\" expected in \"<wx:sub-section>\"( 0, 0 ).",
+            1,
+            this.wordParagraphListForEachSubSection.get( 0 ).get( 0 ).size()
+         );
+
+      Assert.assertEquals
+      (
+         "Three un-nested \"<w:p>\" expected in \"<wx:sub-section>\"( 0, 1 ).",
+         3,
+         this.wordParagraphListForEachSubSection.get( 0 ).get( 1 ).size()
+      );
+
+      Assert.assertEquals
+      (
+         "Three un-nested \"<w:p>\" expected in \"<wx:sub-section>\"( 0, 2 ).",
+         3,
+         this.wordParagraphListForEachSubSection.get( 0 ).get( 2 ).size()
+      );
+
+      var wordTextList = this.getWordTextList( 0 /* section */, 0 /* sub-section */, 0 /* paragraph */ );
+
+      Assert.assertEquals
+         (
+            "First Paragraph is expected to have one text.",
+            1,
+            wordTextList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "Artifact title does not match.",
+            "Preview Artifacts Folder With Data Rights",
+            wordTextList.get( 0 ).get().getText()
+         );
+
+      wordTextList = this.getWordTextList( 0 /* section */, 1 /* sub-section */, 0 /* paragraph */ );
+
+      Assert.assertEquals
+         (
+            "Second Paragraph is expected to have one text.",
+            1,
+            wordTextList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "Artifact title does not match.",
+            "Requirement A",
+            wordTextList.get( 0 ).get().getText()
+         );
+
+      wordTextList = this.getWordTextList( 0 /* section */, 1 /* sub-section */, 1 /* paragraph */ );
+
+      Assert.assertEquals
+         (
+            "Third Paragraph is expected to have one text.",
+            1,
+            wordTextList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "Artifact title does not match.",
+            "This is Requirement A's WordTemplateContent.",
+            wordTextList.get( 0 ).get().getText()
+         );
+
+      wordTextList = this.getWordTextList( 0 /* section */, 1 /* sub-section */, 2 /* paragraph */ );
+
+      Assert.assertEquals
+         (
+            "Fourth Paragraph is expected to have no texts.",
+            0,
+            wordTextList.size()
+         );
+
+
+
+
+
+
+
+
+
+
+
+
+
+      wordTextList = this.getWordTextList( 0 /* section */, 2 /* sub-section */, 0 /* paragraph */ );
+
+      Assert.assertEquals
+         (
+            "Fifth Paragraph is expected to have one text.",
+            1,
+            wordTextList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "Artifact title does not match.",
+            "Requirement B",
+            wordTextList.get( 0 ).get().getText()
+         );
+
+      wordTextList = this.getWordTextList( 0 /* section */, 2 /* sub-section */, 1 /* paragraph */ );
+
+      Assert.assertEquals
+         (
+            "Sixth Paragraph is expected to have one text.",
+            1,
+            wordTextList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "Artifact title does not match.",
+            "This is Requirement B's WordTemplateContent.",
+            wordTextList.get( 0 ).get().getText()
+         );
+
+      wordTextList = this.getWordTextList( 0 /* section */, 2 /* sub-section */, 2 /* paragraph */ );
+
+      Assert.assertEquals
+         (
+            "Seventh Paragraph is expected to have seven texts.",
+            7,
+            wordTextList.size()
+         );
+
+      Assert.assertEquals
+         (
+            "Footer text does not match.",
+            "5",
+            wordTextList.get( 0 ).get().getText()
+         );
+
+      Assert.assertEquals
+         (
+            "Footer text does not match.",
+            "RESTRICTED RIGHTS – EXPORT CONTROLLED INFORMATION\n            ",
+            wordTextList.get( 1 ).get().getText()
+         );
+
+      Assert.assertEquals
+         (
+            "Footer text does not match.",
+            "Contract No.: W58RGZ-15-C-0025",
+            wordTextList.get( 2 ).get().getText()
+         );
+
+      Assert.assertEquals
+         (
+            "Footer text does not match.",
+            "Contractor Name: Acme Corporation",
+            wordTextList.get( 3 ).get().getText()
+         );
+
+      Assert.assertEquals
+         (
+            "Footer text does not match.",
+            "Contractor Address: 1234 W. World Road; Jersey City, NJ 07002",
+            wordTextList.get( 4 ).get().getText()
+         );
+
+      Assert.assertEquals
+         (
+            "Footer text does not match.",
+            "The Government's rights to use, modify, reproduce, release, perform, display, or disclose this software are restricted by paragraph (b)(3) of the Rights in Noncommercial Computer Software and Noncommercial Computer Software Documentation clause contained in the above identified contract. Any reproduction of software or portions thereof marked with this legend must also reproduce the markings.  Any person, other than the Government, who has been provided access to such software must promptly notify the above named Contractor.",
+            wordTextList.get( 5 ).get().getText()
+         );
+
+      Assert.assertEquals
+         (
+            "Footer text does not match.",
+            "Copyright (c) 2017 – Acme Corporation",
+            wordTextList.get( 6 ).get().getText()
+         );
+
+
       //@formatter:on
    }
 
