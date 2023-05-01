@@ -20,6 +20,7 @@ Import-Package: javax.servlet,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.core.publishing,
  org.eclipse.osee.framework.core.sql,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.core.util.result,
@@ -34,5 +35,6 @@ Import-Package: javax.servlet,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.osgi.framework
-Export-Package: org.eclipse.osee.framework.core.server
+Export-Package: org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.core.server.publishing
 Service-Component: OSGI-INF/*.xml

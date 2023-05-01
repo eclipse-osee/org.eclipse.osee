@@ -18,6 +18,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
+import org.eclipse.osee.framework.core.publishing.DataRightResult;
 
 /**
  * This interface defines the methods for obtaining the data rights for a sequence of artifacts.
@@ -54,28 +56,28 @@ public interface DataRightsOperations {
     *    dataRightAnchorsResult = {@link #getDataRights(List, BranchId, String) getDataRights}( artifactIdentifiers, branchIdentifier, "" );
     * </pre>
     *
-    * @param artifactIdentifiers an ordered list of the artifacts by identifier to analyze.
     * @param branchIdentifier the branch to obtain the artifacts from.
+    * @param artifactIdentifiers an ordered list of the artifacts by identifier to analyze.
     * @return a {@link DataRightAnchor} map supplier.
     * @see {@link DataRightsOperations}.
     * @implNote This method is for REST API calls and Operations calls.
     */
 
-   DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, BranchId branchIdentifier);
+   DataRightResult getDataRights(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers);
 
    /**
     * Gets the data rights, page orientation, and sequence flags for the specified publish artifacts.
     *
-    * @param artifactIdentifiers an ordered list of the artifacts by identifier to analyze.
     * @param branchIdentifier the branch to obtain the artifacts from.
     * @param overrideClassification when specified, this will be used as each artifact's data right classification
     * instead of the classification specified by the artifacts data rights attributes.
+    * @param artifactIdentifiers an ordered list of the artifacts by identifier to analyze.
     * @return a {@link DataRightAnchor} map supplier.
     * @see {@link DataRightsOperations}.
     * @implNote This method is for REST API calls and Operations calls.
     */
 
-   DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, BranchId branchIdentifier, String overrideClassification);
+   DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers);
 
    /**
     * Gets the data rights, page orientation, and sequence flags for the specified publish artifacts.

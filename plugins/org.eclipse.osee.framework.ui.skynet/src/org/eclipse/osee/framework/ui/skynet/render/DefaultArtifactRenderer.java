@@ -521,21 +521,4 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
       return false;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
-   //   @Override
-   //   private void updateOption(RendererOption key, Object value) {
-   //      if (Objects.isNull(key)) {
-   //         return;
-   //      }
-   //
-   //      if (Objects.nonNull(value)) {
-   //         this.rendererOptions.put(key, value);
-   //      } else {
-   //         this.rendererOptions.remove(key);
-   //      }
-   //   }
-
 }

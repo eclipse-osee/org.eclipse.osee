@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.publishing.DataRightResult;
 
 /**
  * The interface defines the REST API end points for obtaining the data rights for a sequence of artifacts.

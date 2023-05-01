@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.render.word;
+package org.eclipse.osee.framework.core.server.publishing;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -42,10 +42,9 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * A client-side implementation of the {@link PublishingArtifact} interface for {@link Artifact} objects.
+ * A server-side implementation of the {@link PublishingArtifact} interface for {@link Artifact} objects.
  *
  * @implNote This wrapper class is used to consolidate duplicated publishing code between the server and the client.
  * Only the {@link ArtifactReadable} super interface methods needed for the code consolidation have been implemented.
@@ -53,31 +52,31 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Loren K. Ashley
  */
 
-public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
+public class WordRenderArtifactWrapperServerImpl implements PublishingArtifact {
 
    /**
     * The wrapped {@link Artifact}.
     */
 
-   private final Artifact artifact;
+   private final ArtifactReadable artifact;
 
    /**
     * Set <code>false</code> when this artifact is the last artifact at it's hierarchy level.
     */
 
-   boolean endsSection;
+   private boolean endsSection;
 
    /**
     * Set to the hierarchical depth of the artifact.
     */
 
-   int outlineLevel;
+   private int outlineLevel;
 
    /**
     * Set <code>true</code> when this artifact is the first artifact at it's hierarchy level.
     */
 
-   boolean startsSection;
+   private boolean startsSection;
 
    /**
     * Creates a new client/server agnostic wrapper for the {@link Artifact}.
@@ -85,7 +84,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     * @param artifact the {@link Artifact} to wrap.
     */
 
-   public WordRenderArtifactWrapperClientImpl(Artifact artifact) {
+   public WordRenderArtifactWrapperServerImpl(ArtifactReadable artifact) {
       this.artifact = artifact;
       this.outlineLevel = 0;
       this.startsSection = false;
@@ -147,7 +146,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    @Override
    public ApplicabilityId getApplicability() {
-      return this.artifact.getApplicablityId();
+      return this.artifact.getApplicability();
    }
 
    /**
@@ -165,7 +164,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     * @return the wrapped {@link Artifact}.
     */
 
-   public Artifact getArtifact() {
+   public ArtifactReadable getArtifact() {
       return this.artifact;
    }
 
@@ -262,8 +261,6 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    /**
     * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
     */
 
    @Override
@@ -323,7 +320,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    @Override
    public String getAttributeValuesAsString(AttributeTypeToken attributeType) {
-      return this.artifact.getAttributesToString(attributeType);
+      return this.artifact.getAttributeValuesAsString(attributeType);
    }
 
    /**
@@ -334,13 +331,13 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    @Override
    public BranchToken getBranch() {
-      return this.artifact.getBranchToken();
+      return this.artifact.getBranch();
    }
 
    /**
     * {@inheritDoc}
     *
-    * @implNote The returned children are implemented with {@WordRenderArtifactWrapperClientImpl} objects. The outline
+    * @implNote The returned children are implemented with {@WordRenderArtifactWrapperServerImpl} objects. The outline
     * level is set to one more that the outline level of this artifact. The start of section flag is set for the first
     * child and the end of section flag is set for the last child.
     */
@@ -355,7 +352,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
          this.artifact
             .getChildren()
             .stream()
-            .map(WordRenderArtifactWrapperClientImpl::new)
+            .map(WordRenderArtifactWrapperServerImpl::new)
             .peek( ( artifact ) -> artifact.setOutlineLevel( childOutlineLevel ) )
             .collect(Collectors.toCollection(LinkedList::new));
       //@formatter:on
@@ -420,7 +417,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
          this.artifact
             .getDescendants()
             .stream()
-            .map(WordRenderArtifactWrapperClientImpl::new)
+            .map(WordRenderArtifactWrapperServerImpl::new)
             .collect(Collectors.toList());
       //@formatter:on
    }
@@ -526,7 +523,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
    public ArtifactReadable getParent() {
       var parent = this.artifact.getParent();
 
-      return (Objects.nonNull(parent)) ? new WordRenderArtifactWrapperClientImpl(parent) : null;
+      return (Objects.nonNull(parent)) ? new WordRenderArtifactWrapperServerImpl(parent) : null;
    }
 
    /**
@@ -705,6 +702,8 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    /**
     * {@inheritDoc}
+    *
+    * @throws UnsupportedOperationException method has not been implemented.
     */
 
    @Override
@@ -718,7 +717,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
-      return this.artifact.getAttributeTypes();
+      return this.artifact.getValidAttributeTypes();
    }
 
    /**
@@ -845,7 +844,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
       //@formatter:off
       outMessage
          .indent( indent )
-         .title( "PublishingArtifact (WordRenderArtifactWrapperClientImpl)" )
+         .title( "PublishingArtifact (WordRenderArtifactWrapperServerImpl)" )
          .indentInc()
          .segment( "Identifier",    this.getIdString()         )
          .segment( "Name",          this.getName()             )
@@ -856,7 +855,6 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
          .indentDec()
          ;
       //@formatter:on
-
       return outMessage;
    }
 

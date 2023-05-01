@@ -191,7 +191,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<IRelationLink> getRelations(RelationTypeSide relationTypeSide);
 
-   Collection<ArtifactId> getChildrentIds();
+   Collection<ArtifactId> getChildrenIds();
 
    List<ArtifactId> getRelatedIds(RelationTypeSide relationTypeSide);
 
@@ -429,7 +429,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       }
 
       @Override
-      public Collection<ArtifactId> getChildrentIds() {
+      public Collection<ArtifactId> getChildrenIds() {
          return null;
       }
 

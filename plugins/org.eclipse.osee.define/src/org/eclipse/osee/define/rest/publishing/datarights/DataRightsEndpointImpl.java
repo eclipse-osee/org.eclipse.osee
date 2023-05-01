@@ -20,13 +20,13 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightResult;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.rest.DefineApplication;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.publishing.DataRightResult;
 
 /**
  * Implementation of the {@link DataRightsEndpoint} interface contains the methods that are invoked when a REST API call
@@ -90,7 +90,7 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return defineOperations.getDataRightsOperations().getDataRights(artifactIdentifiers, branchIdentifier);
+         return defineOperations.getDataRightsOperations().getDataRights(branchIdentifier, artifactIdentifiers);
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -114,8 +114,8 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return defineOperations.getDataRightsOperations().getDataRights(artifactIdentifiers, branchIdentifier,
-            overrideClassification);
+         return defineOperations.getDataRightsOperations().getDataRights(branchIdentifier, overrideClassification,
+            artifactIdentifiers);
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {

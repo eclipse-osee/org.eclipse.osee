@@ -577,6 +577,50 @@ public class PublishingXmlUtils {
 
    }
 
+   //@formatter:off
+   private <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
+      parseImmediateChildrenAbstractElementList
+         (
+            P                       parent,
+            Function<P,L>           listFactory,
+            BiFunction<P,Element,C> childFactory,
+            String                  childTagName
+         ) {
+   //@formatter:on
+
+      var list = listFactory.apply(parent);
+
+      try {
+
+         /*
+          * Collect all child elements with the specified tag. This will include nested occurrences also.
+          */
+
+         var childNodeList = parent.getElement().getChildNodes();
+
+         for (var i = 0; i < childNodeList.getLength(); i++) {
+            var childNode = childNodeList.item(i);
+
+            if (Node.ELEMENT_NODE != childNode.getNodeType()) {
+               continue;
+            }
+
+            var childElement = (Element) childNode;
+
+            if (childTagName.equals(childElement.getNodeName())) {
+               var child = childFactory.apply(parent, childElement);
+               list.add(child);
+            }
+         }
+
+         return list;
+
+      } finally {
+         list.close();
+      }
+
+   }
+
    /**
     * Finds the immediate child element of the {@link WordDocument} that contains the Word ML document body and creates
     * a {@link WordBody} object to reference the Word body element.
@@ -651,7 +695,7 @@ public class PublishingXmlUtils {
 
    /**
     * Parses the first level Word paragraphs from a sub-section of a Word ML document. The found paragraphs are not
-    * necessarily immediate children of the document body, but are not nested within another section.
+    * necessarily immediate children of the sub-section, but are not nested within another paragraph.
     *
     * @param wordSubSection the {@link WordSubSection} handle to the Word ML sub-section.
     * @return on successful completion, an {@link Optional} with a possibly empty {@link WordParagraphList}; otherwise,
@@ -664,6 +708,31 @@ public class PublishingXmlUtils {
 
       try {
          var wordParagraphList = this.parseNonNestedAbstractElementList(wordSubSection, WordParagraphList::new,
+            WordParagraph::new, PublishingXmlUtils.ParagraphTagName);
+         wordSubSection.setChild(wordParagraphList);
+         return Optional.of(wordParagraphList);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+   }
+
+   /**
+    * Parses the first level immediate children Word paragraphs from a sub-section of a Word ML document. The found
+    * paragraphs are not necessarily immediate children of the sub-section, but are not nested within another paragraph.
+    *
+    * @param wordSubSection the {@link WordSubSection} handle to the Word ML sub-section.
+    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordParagraphList}; otherwise,
+    * an empty {@link Optional}.
+    */
+
+   public Optional<WordParagraphList> parseImmediateChildrenWordParagraphListFromWordSubSection(WordSubSection wordSubSection) {
+
+      this.startOperation();
+
+      try {
+         var wordParagraphList = this.parseImmediateChildrenAbstractElementList(wordSubSection, WordParagraphList::new,
             WordParagraph::new, PublishingXmlUtils.ParagraphTagName);
          wordSubSection.setChild(wordParagraphList);
          return Optional.of(wordParagraphList);
@@ -716,6 +785,22 @@ public class PublishingXmlUtils {
          var wordSubSectionList = this.parseNonNestedAbstractElementList(wordSection, WordSubSectionList::new,
             WordSubSection::new, PublishingXmlUtils.SubSectionTagName);
          wordSection.setChild(wordSubSectionList);
+         return Optional.of(wordSubSectionList);
+      } catch (Exception e) {
+         this.lastCause.set(Cause.ERROR);
+         this.lastError.set(e);
+         return Optional.empty();
+      }
+   }
+
+   public Optional<WordSubSectionList> parseWordSubSectionListFromWordSubSection(WordSubSection wordSubSection) {
+
+      this.startOperation();
+
+      try {
+         var wordSubSectionList = this.parseNonNestedAbstractElementList(wordSubSection, WordSubSectionList::new,
+            WordSubSection::new, PublishingXmlUtils.SubSectionTagName);
+         wordSubSection.setChild(wordSubSectionList);
          return Optional.of(wordSubSectionList);
       } catch (Exception e) {
          this.lastCause.set(Cause.ERROR);

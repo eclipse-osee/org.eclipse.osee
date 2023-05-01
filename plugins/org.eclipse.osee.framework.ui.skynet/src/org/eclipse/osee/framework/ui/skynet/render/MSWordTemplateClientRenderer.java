@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessorClient;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -268,7 +268,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
    private final IComparator comparator;
 
-   private final WordTemplateProcessor templateProcessor;
+   private final WordTemplateProcessorClient templateProcessor;
 
    public MSWordTemplateClientRenderer() {
       this(null);
@@ -277,7 +277,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    public MSWordTemplateClientRenderer(RendererMap options) {
       super(options);
       this.comparator = new WordTemplateCompare(this);
-      this.templateProcessor = new WordTemplateProcessor(this);
+      this.templateProcessor = new WordTemplateProcessorClient(this);
       this.menuCommands = MSWordTemplateClientRenderer.menuCommandDefinitions;
       this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
    }
