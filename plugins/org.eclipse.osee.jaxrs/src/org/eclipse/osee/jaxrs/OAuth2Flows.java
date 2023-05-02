@@ -76,7 +76,8 @@ public class OAuth2Flows {
       return OAuthUtils.generateRandomTokenKey();
    }
 
-   public ClientAccessToken authorizationCodeFlow(JaxRsConfirmAccessHandler handler, String state, String scope, String redirectUri) {
+   public ClientAccessToken authorizationCodeFlow(JaxRsConfirmAccessHandler handler, String state, String scope,
+      String redirectUri) {
       String sessionCookie = null;
       AuthFlowResponse response = requestAuthorizationGrant(state, scope, redirectUri);
       if (response.isAuthData()) {
@@ -111,7 +112,7 @@ public class OAuth2Flows {
    }
 
    protected AuthFlowResponse requestAuthorizationGrant(String state, String scope, String redirectUri) {
-      UriBuilder builder = OAuthClientUtils.getAuthorizationURIBuilder(authorizeUri, client.getKey(), scope);
+      UriBuilder builder = OAuthClientUtils.getAuthorizationURIBuilder(authorizeUri, client.getClientId(), scope);
       if (redirectUri != null) {
          builder.queryParam(OAuthConstants.REDIRECT_URI, redirectUri);
       }
@@ -119,7 +120,7 @@ public class OAuth2Flows {
          builder.queryParam(OAuthConstants.STATE, state);
       }
       // confidential clients
-      builder.queryParam(OAuthConstants.CLIENT_SECRET, client.getSecret());
+      builder.queryParam(OAuthConstants.CLIENT_SECRET, client.getClientSecret());
 
       URI authorizationURI = builder.build();
       Response response = transport.sendAuthorizationCodeRequest(owner, authorizationURI);
@@ -145,7 +146,8 @@ public class OAuth2Flows {
       }
    }
 
-   protected AuthFlowResponse confirmAccess(JaxRsConfirmAccessHandler handler, OAuthAuthorizationData authData, String sessionCookie) {
+   protected AuthFlowResponse confirmAccess(JaxRsConfirmAccessHandler handler, OAuthAuthorizationData authData,
+      String sessionCookie) {
       ConfirmAccessRequest request = newAccessConfirmRequest(authData);
       ConfirmAccessResponse ownerResponse = handler.onConfirmAccess(request);
       Form form = newAccessConfirmForm(authData, ownerResponse);
@@ -181,7 +183,8 @@ public class OAuth2Flows {
       }
    }
 
-   protected ClientAccessToken exchangeCodeForToken(String sessionCookie, String authCode, String state, String scope, String redirectUri) {
+   protected ClientAccessToken exchangeCodeForToken(String sessionCookie, String authCode, String state, String scope,
+      String redirectUri) {
       Map<String, String> extraParams = new HashMap<>();
       if (state != null) {
          extraParams.put(OAuthConstants.STATE, state);
@@ -339,7 +342,7 @@ public class OAuth2Flows {
 
       @Override
       public boolean isDefault() {
-         return perm.isDefault();
+         return perm.isDefaultPermission();
       }
 
       @Override

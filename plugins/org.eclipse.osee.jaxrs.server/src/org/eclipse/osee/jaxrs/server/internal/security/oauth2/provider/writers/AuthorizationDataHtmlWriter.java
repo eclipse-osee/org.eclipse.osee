@@ -97,7 +97,8 @@ public class AuthorizationDataHtmlWriter extends AbstractHtmlWriter<OAuthAuthori
    private void addItem(InputFields input, OAuthPermission perm) {
       String permissionName = perm.getPermission();
       String key = String.format("%s_status", permissionName);
-      input.add(key, InputType.checkbox, permissionName, perm.getDescription(), "", "allow", perm.isDefault());
+      input.add(key, InputType.checkbox, permissionName, perm.getDescription(), "", "allow",
+         perm.isDefaultPermission());
    }
 
 }
