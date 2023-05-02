@@ -355,7 +355,7 @@ public class OAuthEncryption {
             state.append(tokenizeString(p.getDescription()));
             state.append(".");
             // 9.3
-            state.append(p.isDefault());
+            state.append(p.isDefaultPermission());
             state.append(".");
             // 9.4
             state.append(p.getHttpVerbs().toString());

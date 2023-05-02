@@ -160,7 +160,7 @@ public class OseeOAuthContextProvider implements ContextProvider<OseeOAuthContex
 
       @Override
       public boolean isDefault() {
-         return permission.isDefault();
+         return permission.isDefaultPermission();
       }
 
       @Override
