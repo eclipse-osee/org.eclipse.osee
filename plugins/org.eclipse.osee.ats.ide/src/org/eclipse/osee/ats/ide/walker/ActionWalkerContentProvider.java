@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -137,6 +138,10 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
                   }
                } else {
                   objs.addAll(AtsApiService.get().getTaskService().getTasks(teamArt));
+               }
+               List<Artifact> deriveTos = teamArt.getRelatedArtifacts(AtsRelationTypes.Derive_To);
+               if (!deriveTos.isEmpty()) {
+                  objs.addAll(deriveTos);
                }
             }
             return objs.toArray();
