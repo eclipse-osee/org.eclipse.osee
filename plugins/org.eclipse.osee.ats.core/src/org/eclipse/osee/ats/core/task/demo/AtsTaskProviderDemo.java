@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.task.demo;
 
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.task.related.AutoGenVersion;
 import org.eclipse.osee.ats.api.task.related.IAutoGenTaskData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.task.AbstractAtsTaskProvider;
 
 /**
@@ -38,7 +39,8 @@ public class AtsTaskProviderDemo extends AbstractAtsTaskProvider {
    }
 
    @Override
-   public AutoGenVersion getAutoGenTaskVersionToSet(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch) {
+   public AutoGenVersion getAutoGenTaskVersionToSet(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      ChangeReportTaskMatch taskMatch) {
       if (crttwd.getDestTeamWf() != null && (crttwd.getDestTeamWf().getArtifactType().equals(
          DemoArtifactTypes.DemoCodeTeamWorkflow) || crttwd.getDestTeamWf().getArtifactType().equals(
             DemoArtifactTypes.DemoTestTeamWorkflow))) {
@@ -46,8 +48,9 @@ public class AtsTaskProviderDemo extends AbstractAtsTaskProvider {
       }
       if (crttwd.getDestTeamDef() != null) {
          IAtsTeamDefinition destTeamDef =
-            atsApi.getConfigService().getConfigurations().getIdToTeamDef().get(crttwd.getDestTeamDef().getId());
-         IAtsProgram program = atsApi.getProgramService().getProgram(destTeamDef);
+            AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(
+               crttwd.getDestTeamDef().getId());
+         IAtsProgram program = AtsApiService.get().getProgramService().getProgram(destTeamDef);
          if (program != null && program.equals(DemoArtifactToken.SAW_Program)) {
             return AutoGenVersionDemo.Demo;
          }

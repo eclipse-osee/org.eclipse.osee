@@ -4,6 +4,5 @@
    <service>
       <provide interface="org.eclipse.osee.ats.api.task.IAtsTaskProvider"/>
    </service>
-   <reference bind="setAtsApi" cardinality="1..1" interface="org.eclipse.osee.ats.api.AtsApi" name="AtsApi" policy="static"/>
   
 </scr:component>
