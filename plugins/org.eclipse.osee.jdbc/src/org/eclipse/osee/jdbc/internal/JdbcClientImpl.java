@@ -127,7 +127,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public int runBatchUpdate(JdbcConnection connection, String query, Iterable<Object[]> dataList) throws JdbcException {
+   public int runBatchUpdate(JdbcConnection connection, String query, Iterable<Object[]> dataList)
+      throws JdbcException {
       if (connection == null) {
          return runBatchUpdate(query, dataList);
       }
@@ -325,7 +326,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public int runQueryWithMaxFetchSize(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data) {
+   public int runQueryWithMaxFetchSize(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query,
+      Object... data) {
       return runQuery(connection, consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, data);
    }
 
@@ -342,7 +344,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data) {
+   public int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, int fetchSize, String query,
+      Object... data) {
       int rowCount = 0;
       try (JdbcStatement stmt = getStatement(connection)) {
          stmt.runPreparedQuery(fetchSize, query, data);
@@ -410,6 +413,10 @@ public final class JdbcClientImpl implements JdbcClient {
          String value = stmt.getObject(1).toString();
          toReturn = Boolean.parseBoolean(value);
       } else if (BaseId.class.isAssignableFrom(clazz)) {
+         if (defaultValue == null) {
+            throw new OseeCoreException(
+               "In JdbcClientImpl.fetch, the parameter \"default\" is null which is dereferenced");
+         }
          toReturn = ((BaseId) defaultValue).clone(stmt.getLong(1));
       } else {
          throw new OseeArgumentException("Unsupported type: %s", clazz.getName());
@@ -428,7 +435,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public <R> R fetch(JdbcConnection connection, R defaultValue, Function<JdbcStatement, R> function, String query, Object... data) {
+   public <R> R fetch(JdbcConnection connection, R defaultValue, Function<JdbcStatement, R> function, String query,
+      Object... data) {
       try (JdbcStatement chStmt = getStatement(connection)) {
          chStmt.runPreparedQuery(1, query, data);
          if (chStmt.next()) {
@@ -439,12 +447,14 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data) {
+   public <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function,
+      String query, Object... data) {
       return fetchOrException(null, exSupplier, function, query, data);
    }
 
    @Override
-   public <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data) {
+   public <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier,
+      Function<JdbcStatement, R> function, String query, Object... data) {
       try (JdbcStatement chStmt = getStatement(connection)) {
          chStmt.runPreparedQuery(1, query, data);
          if (chStmt.next()) {
@@ -649,14 +659,16 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public void deferredForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
+   public void deferredForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable,
+      SqlColumn refColumn) {
       String defered =
          getDbType().matches(JdbcDbType.oracle, JdbcDbType.postgresql) ? " DEFERRABLE INITIALLY DEFERRED" : "";
       alterForeignKeyConstraint(constraintName, table, column, refTable, refColumn, defered);
    }
 
    @Override
-   public void alterForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable, SqlColumn refColumn, String defered) {
+   public void alterForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable,
+      SqlColumn refColumn, String defered) {
       String statement = String.format("ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY(%s) REFERENCES %s(%s)%s", table,
          constraintName, column, refTable, refColumn, defered);
       runPreparedUpdate(statement);

@@ -81,6 +81,12 @@ public class WorkItemNotificationProcessor {
       for (Long id : event.getIds()) {
          IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(id);
 
+         if (workItem == null) {
+            logger.error(
+               "In WorkItemNotificationProcessor.run, the local variable \\\"workItem\\\" is null which is dereferenced");
+            continue;
+         }
+
          if (types.contains(AtsNotifyType.Originator)) {
             try {
                AtsUser originator = workItem.getCreatedBy();
@@ -94,8 +100,7 @@ public class WorkItemNotificationProcessor {
                         AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), Arrays.asList(originator),
                            getIdString(workItem), AtsNotifyType.Originator.name(), url, cancelUrl,
                            String.format("You have been set as the originator of [%s] state [%s] titled [%s]",
-                              workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
-                              workItem.getName())));
+                              workItem.getArtifactTypeName(), workItem.getCurrentStateName(), workItem.getName())));
                   }
                }
             } catch (OseeCoreException ex) {
@@ -119,8 +124,7 @@ public class WorkItemNotificationProcessor {
                      getFromUser(event), assignees, getIdString(workItem), AtsNotifyType.Assigned.name(),
                      getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
                      String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
-                        workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
-                        workItem.getName())));
+                        workItem.getArtifactTypeName(), workItem.getCurrentStateName(), workItem.getName())));
                }
             } catch (OseeCoreException ex) {
                logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
@@ -138,8 +142,7 @@ public class WorkItemNotificationProcessor {
                      getFromUser(event), subscribed, getIdString(workItem), AtsNotifyType.Subscribed.name(),
                      getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
                      String.format("[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
-                        workItem.getArtifactTypeName(), workItem.getName(),
-                        workItem.getCurrentStateName())));
+                        workItem.getArtifactTypeName(), workItem.getName(), workItem.getCurrentStateName())));
                }
             } catch (OseeCoreException ex) {
                logger.error(ex, "Error processing Subscribed for workItem [%s] and event [%s]",
@@ -162,19 +165,18 @@ public class WorkItemNotificationProcessor {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
                            workItem.getCurrentStateName(), getUrl(workItem, atsApi),
-                           getCancelUrl(notifications, workItem, atsApi),
-                           String.format("[%s] titled [%s] is [%s]", workItem.getArtifactTypeName(), workItem.getName(),
-                              workItem.getCurrentStateName())));
+                           getCancelUrl(notifications, workItem, atsApi), String.format("[%s] titled [%s] is [%s]",
+                              workItem.getArtifactTypeName(), workItem.getName(), workItem.getCurrentStateName())));
                      }
                      if (stateType.isCancelled()) {
-                        notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                           getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                           workItem.getCurrentStateName(), getUrl(workItem, atsApi),
-                           getCancelUrl(notifications, workItem, atsApi),
-                           String.format("[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
-                              workItem.getArtifactTypeName(), workItem.getName(),
-                              workItem.getCurrentStateName(), workItem.getCancelledFromState(),
-                              DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()), workItem.getCancelledReason())));
+                        notifications.addNotificationEvent(
+                           AtsNotificationEventFactory.getNotificationEvent(getFromUser(event),
+                              Arrays.asList(originator), getIdString(workItem), workItem.getCurrentStateName(),
+                              getUrl(workItem, atsApi), getCancelUrl(notifications, workItem, atsApi),
+                              String.format("[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
+                                 workItem.getArtifactTypeName(), workItem.getName(), workItem.getCurrentStateName(),
+                                 workItem.getCancelledFromState(), DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()),
+                                 workItem.getCancelledReason())));
                      }
                   }
                }
@@ -251,7 +253,8 @@ public class WorkItemNotificationProcessor {
       return arts;
    }
 
-   private boolean isOriginatorDifferentThanCancelledOrCompletedBy(IAtsWorkItem workItem, AtsUser fromUser, AtsUser originator) {
+   private boolean isOriginatorDifferentThanCancelledOrCompletedBy(IAtsWorkItem workItem, AtsUser fromUser,
+      AtsUser originator) {
       boolean different = true;
       if (fromUser.equals(originator)) {
          different = false;

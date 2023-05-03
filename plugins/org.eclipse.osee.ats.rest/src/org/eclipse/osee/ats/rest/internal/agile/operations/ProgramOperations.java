@@ -51,6 +51,10 @@ public class ProgramOperations {
    }
 
    public AtwNode getAtwTree(IAgileProgram program) {
+      if (program == null) {
+         throw new OseeCoreException(
+            "In ProgramOperations.getAtwTree, the parameter \"program\" is null which is dereferenced");
+      }
       ArtifactToken progArt = atsApi.getQueryService().getArtifact(program.getId());
       AtwNode progNode = handleArtifactAndChildren(progArt, null);
       progNode.setExpanded(true);
@@ -86,12 +90,13 @@ public class ProgramOperations {
       return progItem;
    }
 
-   private List<UiGridProgItem> handleProgArtifactAndChildren(ArtifactToken artifact, UiGridProgItem parentNode, int level, LinkedList<UiGridProgItem> items) {
+   private List<UiGridProgItem> handleProgArtifactAndChildren(ArtifactToken artifact, UiGridProgItem parentNode,
+      int level, LinkedList<UiGridProgItem> items) {
       UiGridProgItem item = getProgItemFromArt(artifact, level);
       if (level >= 0) {
          items.add(item);
       }
-      if (artifact.isOfType( AtsArtifactTypes.AgileStory)) {
+      if (artifact.isOfType(AtsArtifactTypes.AgileStory)) {
          if (artifact.getName().contains("up")) {
             item.setAgilePoints("Large");
          } else if (artifact.getName().contains("forward")) {
@@ -162,27 +167,27 @@ public class ProgramOperations {
    }
 
    private String getImage(ArtifactToken artifact) {
-      if (artifact.isOfType( AtsArtifactTypes.AgileProgramBacklog)) {
+      if (artifact.isOfType(AtsArtifactTypes.AgileProgramBacklog)) {
          return IMG_BASE_PATH + "agileProgramBacklog.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileProgram)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileProgram)) {
          return IMG_BASE_PATH + "agileProgram.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileProgramBacklogItem)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileProgramBacklogItem)) {
          return IMG_BASE_PATH + "agileProgramBacklogItem.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileProgramFeature)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileProgramFeature)) {
          return IMG_BASE_PATH + "agileProgramFeature.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileStory)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileStory)) {
          return IMG_BASE_PATH + "agileStory.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileSprint)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
          return IMG_BASE_PATH + "agileSprint.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileBacklog)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileBacklog)) {
          return IMG_BASE_PATH + "agileBacklog.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileTeam)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileTeam)) {
          return IMG_BASE_PATH + "agileTeam.gif";
-      } else if (artifact.isOfType( AtsArtifactTypes.AgileFeatureGroup)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
          return IMG_BASE_PATH + "agileFeatureGroup.gif";
-      } else if (artifact.isOfType( CoreArtifactTypes.GeneralDocument)) {
+      } else if (artifact.isOfType(CoreArtifactTypes.GeneralDocument)) {
          return IMG_BASE_PATH + "generalDoc.gif";
-      } else if (artifact.isOfType( CoreArtifactTypes.Folder)) {
+      } else if (artifact.isOfType(CoreArtifactTypes.Folder)) {
          return IMG_BASE_PATH + "folder.gif";
       }
       return null;

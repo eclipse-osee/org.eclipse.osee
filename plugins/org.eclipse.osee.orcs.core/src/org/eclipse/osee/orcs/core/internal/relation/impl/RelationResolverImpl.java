@@ -46,9 +46,10 @@ public class RelationResolverImpl implements RelationResolver {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends Artifact> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides) {
+   public <T extends Artifact> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links,
+      RelationSide... sides) {
       List<T> toReturn = Collections.emptyList();
-      if (!links.isEmpty()) {
+      if (links != null && !links.isEmpty()) {
          Set<ArtifactId> toLoad = null;
          LinkedHashMap<ArtifactId, T> items = new LinkedHashMap<>();
          for (Relation relation : links) {

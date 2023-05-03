@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -44,6 +45,10 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
       ArtifactId rootId) {
       ArtifactToken realArtifact = findExistingArtifact(roughArtifact, branch);
 
+      if (realArtifact == null) {
+         throw new OseeCoreException(
+            "In DoorsIdResolver.resolve, the local variable \"realArtifacr\" is null which is dereferenced");
+      }
       if (realArtifact.isValid()) {
          getTranslator().translate(transaction, roughArtifact, realArtifact);
       }

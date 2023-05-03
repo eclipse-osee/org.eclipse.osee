@@ -526,9 +526,6 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public DispoAnnotationData getDispoAnnotationById(BranchId branch, String itemId, String annotationId) {
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
-      if (dispoItem == null) {
-         return null;
-      }
       List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
       return DispoUtil.getById(annotationsList, annotationId);
    }

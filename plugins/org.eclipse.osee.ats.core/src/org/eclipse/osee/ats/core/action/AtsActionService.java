@@ -312,7 +312,9 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
+   public ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority,
+      boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate,
+      AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
       ActionResult result = null;
       try {
          Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
@@ -366,7 +368,8 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public IAtsAction createAction(String title, String desc, ChangeTypes changeType, String priority, boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
+   public IAtsAction createAction(String title, String desc, ChangeTypes changeType, String priority,
+      boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
       ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = atsApi.getWorkItemService().getAction(actionArt);
       IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
@@ -384,7 +387,9 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef,
+      Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate,
+      AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
       Conditions.assertNotNull(teamDef, "Team Definition can not be null");
       WorkDefinition workDef =
          atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef, newActionListeners);
@@ -449,7 +454,10 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef,
+      Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate,
+      AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners,
+      IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
       WorkDefinition workDef = null;
       // Determine of any osgi registered listeners want to provide work def
@@ -550,7 +558,8 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes) {
+   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends AtsUser> assignees, Date createdDate,
+      AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes) {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");
       Conditions.checkNotNull(changes, "changes");
@@ -598,7 +607,8 @@ public class AtsActionService implements IAtsActionService {
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
     */
    @Override
-   public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsGoal handledGoal, IAtsChangeSet changes) {
+   public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf,
+      Collection<IAtsActionableItem> actionableItems, IAtsGoal handledGoal, IAtsChangeSet changes) {
       // Auto-add this team artifact to configured goals
       IRelationResolver relationResolver = atsApi.getRelationResolver();
       for (IAtsGoal goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal,
@@ -647,7 +657,8 @@ public class AtsActionService implements IAtsActionService {
    /**
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
-   public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeTypes changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
+   public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeTypes changeType,
+      String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
       changes.setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, title);
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
@@ -686,7 +697,8 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public void setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener, IAtsChangeSet changes) {
+   public void setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener,
+      IAtsChangeSet changes) {
       AtsIdProvider atsIdProvider =
          new AtsIdProvider(atsApi.getSequenceProvider(), atsApi.getAttributeResolver(), newObject, teamDef);
       atsIdProvider.setWorkItemListener(workItemListener);
@@ -731,9 +743,15 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public IAtsGoal createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
+   public IAtsGoal createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition,
+      IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
       ArtifactToken art = changes.createArtifact(artifactType, title);
       IAtsGoal goal = atsApi.getWorkItemService().getGoal(art);
+
+      if (goal == null) {
+         throw new OseeCoreException(
+            "In AtsActionService.createGoal, the local vairable \"goal\" is null which is dereferenced");
+      }
 
       Conditions.assertNotNull(teamDef, "Team Definition can not be null for %s", goal.toStringWithId());
       atsApi.getActionService().setAtsId(goal, teamDef, workItemListener, changes);

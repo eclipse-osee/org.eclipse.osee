@@ -511,6 +511,10 @@ public final class DevProgressMetrics implements StreamingOutput {
       for (IAtsTask task : tasks) {
          try {
             StateDefinition state = stateNameToDefinition(task, iterationDate);
+            if (state == null) {
+               throw new OseeCoreException(
+                  "In DevProgressMetrics.getTaskCompleted, the local variable \"state\" is null which is dereferenced");
+            }
             if ((task.isCompleted() && task.getCompletedDate().before(iterationDate)) || state.getName().equals(
                "No_Change")) {
                completedTasks++;

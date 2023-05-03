@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
@@ -364,7 +365,8 @@ public class OrcsStorageImpl implements Storage {
       tx.commit();
    }
 
-   private void updateSingleItem(ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag) {
+   private void updateSingleItem(ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx,
+      boolean resetRerunFlag) {
       Date lastUpdate = newItemData.getLastUpdate();
       String name = newItemData.getName();
       Map<String, Discrepancy> newDiscrepancies = newItemData.getDiscrepanciesList();
@@ -451,7 +453,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation) {
+   public void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag,
+      String operation) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, operation);
       boolean isCommitNeeded = false;
 
@@ -491,7 +494,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Collection<DispoItem> findDispoItemByAnnoationText(BranchId branch, String setId, String keyword, boolean isDetailed) {
+   public Collection<DispoItem> findDispoItemByAnnoationText(BranchId branch, String setId, String keyword,
+      boolean isDetailed) {
       ArtifactReadable dispoSetArt = findDispoArtifact(branch, setId);
 
       Set<DispoItem> toReturn = new HashSet<>();
@@ -513,13 +517,10 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public DispoItem findDispoItemById(BranchId branch, String itemId) {
+   public @NonNull DispoItem findDispoItemById(BranchId branch, String itemId) {
       DispoItem toReturn = null;
       ArtifactReadable dispoArtifact = findDispoArtifact(branch, itemId);
-      if (dispoArtifact.isValid()) {
-         toReturn = new DispoItemArtifact(dispoArtifact);
-      }
-
+      toReturn = new DispoItemArtifact(dispoArtifact);
       return toReturn;
    }
 

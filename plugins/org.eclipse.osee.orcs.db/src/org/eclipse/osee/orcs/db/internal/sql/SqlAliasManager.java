@@ -87,6 +87,9 @@ public class SqlAliasManager {
 
    public String getPreviousAlias(String prefix) {
       AliasSet aliasByLevel = getAliasByLevel(0);
+      if (aliasByLevel == null) {
+         return "";
+      }
       List<String> aliases = aliasByLevel.getAliases(prefix);
       if (aliases.isEmpty() || aliases.size() == 1) {
          return "";
@@ -97,6 +100,11 @@ public class SqlAliasManager {
 
    public String getLastAlias(String prefix) {
       AliasSet aliasByLevel = getAliasByLevel(0);
+
+      if (aliasByLevel == null) {
+         return "";
+      }
+
       List<String> aliases = aliasByLevel.getAliases(prefix);
       if (aliases.isEmpty() || aliases.size() == 1) {
          return "";

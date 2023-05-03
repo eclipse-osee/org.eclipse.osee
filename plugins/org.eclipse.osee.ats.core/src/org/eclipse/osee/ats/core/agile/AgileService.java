@@ -503,6 +503,9 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileBacklog getAgileBacklog(IAgileTeam team) {
+      if (team == null) {
+         return null;
+      }
       ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, team.getId());
       if (teamFolder == null) {
          return null;
@@ -775,7 +778,8 @@ public class AgileService implements IAgileService {
       return results;
    }
 
-   public static void createUpdateBurnChart(IAgileSprintHtmlOperation operation, long teamId, long sprintId, AtsApi atsApi, IAtsChangeSet changes, IAgileSprint sprint) {
+   public static void createUpdateBurnChart(IAgileSprintHtmlOperation operation, long teamId, long sprintId,
+      AtsApi atsApi, IAtsChangeSet changes, IAgileSprint sprint) {
       String html = operation.getReportHtml(teamId, sprintId);
 
       ArtifactId burndownArt =
@@ -814,9 +818,14 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem, JaxAgileProgramFeature jaxFeature) {
+   public IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem,
+      JaxAgileProgramFeature jaxFeature) {
       AgileProgramOperations ops = new AgileProgramOperations(atsApi);
       IAgileProgramFeature feature = ops.createAgileProgramFeature(programBacklogItem, jaxFeature);
+      if (feature == null) {
+         throw new OseeCoreException(
+            "In AgileService.createAgileProgramFeature, the local variable \"feature\" is null which gets returned");
+      }
       return feature;
    }
 
@@ -834,14 +843,16 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram, JaxAgileProgramBacklog jaxProgramBacklog) {
+   public IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram,
+      JaxAgileProgramBacklog jaxProgramBacklog) {
       AgileProgramOperations ops = new AgileProgramOperations(atsApi);
       IAgileProgramBacklog progBacklog = ops.createAgileProgramBacklog(agileProgram, jaxProgramBacklog);
       return progBacklog;
    }
 
    @Override
-   public IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog programBacklog, JaxAgileProgramBacklogItem jaxProgramBacklogItem) {
+   public IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog programBacklog,
+      JaxAgileProgramBacklogItem jaxProgramBacklogItem) {
       AgileProgramOperations ops = new AgileProgramOperations(atsApi);
       IAgileProgramBacklogItem progBacklogItem =
          ops.createAgileProgramBacklogItem(programBacklog, jaxProgramBacklogItem);

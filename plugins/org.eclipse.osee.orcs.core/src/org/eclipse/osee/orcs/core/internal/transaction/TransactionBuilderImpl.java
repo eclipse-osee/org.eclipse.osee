@@ -168,7 +168,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId, ApplicabilityId appId) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId,
+      ApplicabilityId appId) {
       validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, artifactId, appId);
    }
@@ -180,7 +181,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid, ApplicabilityId appId) {
+   public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid,
+      ApplicabilityId appId) {
       validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, guid, appId);
    }
@@ -218,7 +220,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeToken> attributesToDuplicate) {
+   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact,
+      Collection<AttributeTypeToken> attributesToDuplicate) {
       for (AttributeTypeToken typeToken : attributesToDuplicate) {
          checkPermissionsForLoginId(typeToken);
       }
@@ -227,7 +230,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeToken> attributesToDuplicate) {
+   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId,
+      Collection<AttributeTypeToken> attributesToDuplicate) {
       for (AttributeTypeToken typeToken : attributesToDuplicate) {
          checkPermissionsForLoginId(typeToken);
       }
@@ -275,7 +279,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType, UserToken user, T value) {
+   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType, UserToken user,
+      T value) {
       checkPermissionsForLoginId(attributeType, user);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
@@ -283,7 +288,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <T> AttributeId createAttributeNoAccess(ArtifactId sourceArtifact, AttributeTypeToken attributeType, T value) {
+   public <T> AttributeId createAttributeNoAccess(ArtifactId sourceArtifact, AttributeTypeToken attributeType,
+      T value) {
       if (!OseeProperties.isInTest()) {
          throw new OseeArgumentException("createAttributeNoAccess can only be used in tests or bootstrapping");
       }
@@ -301,7 +307,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeToken attributeType, InputStream stream) {
+   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeToken attributeType,
+      InputStream stream) {
       checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
@@ -323,7 +330,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<T> values) {
+   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeToken attributeType,
+      Collection<T> values) {
       checkPermissionsForLoginId(attributeType);
 
       validateBuilder();
@@ -361,7 +369,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType, Collection<String> values) {
+   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeToken attributeType,
+      Collection<String> values) {
       checkPermissionsForLoginId(attributeType);
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
@@ -465,8 +474,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType) {
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale,
+      RelationSorter sortType) {
       validateBuilder();
+
+      if (relType == null) {
+         throw new OseeCoreException(
+            "In TransactionBuilderImpl.related, parameter \"relType\" is null which is dereferenced");
+      }
       if (relType.isNewRelationTable()) {
          relate(relType, artA, artB, ArtifactId.SENTINEL, "end", 0, 0);
       } else {
@@ -475,12 +490,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact, String insertType, int afterIndex, int beforeIndex) {
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String insertType, int afterIndex, int beforeIndex) {
       relate(relType, artA, artB, relatedArtifact, insertType, afterIndex, beforeIndex);
    }
 
    @Override
-   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact, String afterArtifact) {
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String afterArtifact) {
       Integer afterIndex = 0;
       Integer beforeIndex = 0;
       String insertType = afterArtifact;
@@ -516,7 +533,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    }
 
-   private void relate(RelationTypeToken relType, ArtifactId artA, ArtifactId artB, ArtifactId relationArt, String insertType, int afterIndex, int beforeIndex) {
+   private void relate(RelationTypeToken relType, ArtifactId artA, ArtifactId artB, ArtifactId relationArt,
+      String insertType, int afterIndex, int beforeIndex) {
       int minOrder = 0;
       int maxOrder = 0;
       int relOrder = 0;
@@ -558,7 +576,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide, List<? extends ArtifactId> artifacts) {
+   public void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide,
+      List<? extends ArtifactId> artifacts) {
       validateBuilder();
       txManager.setRelationsAndOrder(txData, artifact, relationSide, artifacts);
    }
@@ -589,7 +608,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ApplicabilityId applicId) {
+   public void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB,
+      ApplicabilityId applicId) {
       validateBuilder();
       txManager.setRelationApplicabilityId(txData, artA, relType, artB, applicId);
    }
@@ -632,7 +652,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          txData.getBranch());
    }
 
-   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryFactory queryFactory, BranchId branch, ArtifactId id) {
+   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryFactory queryFactory, BranchId branch,
+      ArtifactId id) {
       return queryFactory.fromBranch(branch).includeDeletedArtifacts().andId(id).getResults().getOneOrDefault(
          ArtifactReadable.SENTINEL);
    }
@@ -799,7 +820,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <E1, E2, E3, E4> boolean deleteTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
+   public <E1, E2, E3, E4> boolean deleteTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2,
+      E3 element3, E4 element4) {
       validateBuilder();
       return false;
    }
