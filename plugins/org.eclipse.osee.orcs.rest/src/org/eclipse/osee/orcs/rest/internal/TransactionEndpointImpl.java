@@ -28,9 +28,12 @@ import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
+import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
+import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -77,6 +80,18 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public List<ChangeItem> compareTxs(TransactionId txId1, TransactionId txId2) {
       return orcsApi.getTransactionFactory().compareTxs(txId1, txId2);
+   }
+
+   @Override
+   public TransactionBuilderData exportTxsDiff(TransactionId txId1, TransactionId txId2) {
+
+      TransactionBuilderDataFactory tbdf = new TransactionBuilderDataFactory(orcsApi);
+      try {
+         return tbdf.loadFromChanges(txId1, txId2);
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+
    }
 
    @Override

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -51,6 +52,11 @@ public interface TransactionEndpoint {
    @Path("{tx-id1}/diff/{tx-id2}")
    @Produces({MediaType.APPLICATION_JSON})
    List<ChangeItem> compareTxs(@PathParam("tx-id1") TransactionId txId1, @PathParam("tx-id2") TransactionId txId2);
+
+   @GET
+   @Path("export/from/{tx-id1}/to/{tx-id2}")
+   @Produces({MediaType.APPLICATION_JSON})
+   TransactionBuilderData exportTxsDiff(@PathParam("tx-id1") TransactionId txId1, @PathParam("tx-id2") TransactionId txId2);
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
