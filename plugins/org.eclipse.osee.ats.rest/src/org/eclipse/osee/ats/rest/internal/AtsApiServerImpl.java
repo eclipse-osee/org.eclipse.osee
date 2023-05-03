@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.branch.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
+import org.eclipse.osee.ats.rest.internal.config.ConvertToStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
@@ -116,6 +117,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
       addAtsDatabaseConversion(new ConvertStateNotesFromXmlToJson(logger, jdbcService.getClient(), orcsApi, this));
+      addAtsDatabaseConversion(new ConvertToStateAndAssigneeAttributes(this));
 
       notificationService = new AtsNotificationServiceImpl(this);
 
@@ -211,7 +213,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       return customizations;
    }
 
-   private void addCustomizationsFromArts(String namespace, List<CustomizeData> customizations, ArtifactId customizationArt) {
+   private void addCustomizationsFromArts(String namespace, List<CustomizeData> customizations,
+      ArtifactId customizationArt) {
       for (String custXml : getAttributeResolver().getAttributesToStringList(customizationArt,
          CoreAttributeTypes.XViewerCustomization)) {
          if (custXml.contains("\"" + namespace + "\"") || custXml.contains("." + namespace + "\"")) {

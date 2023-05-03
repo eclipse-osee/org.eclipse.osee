@@ -398,7 +398,8 @@ public class AtsHealthCheckOperation {
    private class TestTeamWorkflows implements IAtsHealthCheck {
 
       @Override
-      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
          if (workItem.isTeamWorkflow()) {
             IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
             try {
@@ -436,9 +437,10 @@ public class AtsHealthCheckOperation {
       return badIds;
    }
 
-   private class TestAssignees implements IAtsHealthCheck {
+   public static class TestAssignees implements IAtsHealthCheck {
       @Override
-      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
          if (workItem.isInWork()) {
             String currentStatename =
                atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
@@ -473,27 +475,31 @@ public class AtsHealthCheckOperation {
     *
     * @author Donald G. Dunne
     */
-   private class TestCurrentState implements IAtsHealthCheck {
+   public static class TestCurrentState implements IAtsHealthCheck {
       @Override
-      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
-         if (workItem.isInWork()) {
-            String currentStatename =
-               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
-            currentStatename = currentStatename.replaceFirst(";.*$", "");
-            WorkDefinition workDef = workItem.getWorkDefinition();
-            if (workDef.getStateByName(currentStatename) == null) {
-               results.log(artifact, "TestCurrentStateIsInWorkDef",
-                  String.format("Error: Current State [%s] not valid for Work Definition [%s] for " + //
-                     artifact.toStringWithId(), currentStatename, workDef.getName()));
-            }
-            String currStateNameAttr =
-               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, "");
-            if (!currentStatename.equals(currStateNameAttr)) {
-               changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStatename);
-               results.log(artifact, "TestCurrentStateIsInWorkDef", String.format(
-                  "Info: Updated Current State Name attr to [%s] for %s", currentStatename, workItem.toStringWithId()));
-            }
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         //         if (workItem.isInWork()) {  // ADD BACK IN BEFORE MERGE
+         String currentStatename =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
+         currentStatename = currentStatename.replaceFirst(";.*$", "");
+         WorkDefinition workDef = workItem.getWorkDefinition();
+         if (workDef == null) {
+            results.log(artifact, "TestCurrentStateIsInWorkDef", String.format("Error: Work Definition null for %s", //
+               workItem.toStringWithId()));
+         } else if (workDef.getStateByName(currentStatename) == null) {
+            results.log(artifact, "TestCurrentStateIsInWorkDef",
+               String.format("Error: Current State [%s] not valid for Work Definition [%s] for " + //
+                  artifact.toStringWithId(), currentStatename, workDef.getName()));
          }
+         String currStateNameAttr =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, "");
+         if (!currentStatename.equals(currStateNameAttr)) {
+            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStatename);
+            results.log(artifact, "TestCurrentStateIsInWorkDef", String.format(
+               "Info: Updated Current State Name attr to [%s] for %s", currentStatename, workItem.toStringWithId()));
+         }
+         //         }  // ADD BACK IN BEFORE MERGE
          return true;
       }
    }
@@ -691,7 +697,8 @@ public class AtsHealthCheckOperation {
    private class TestStateMgrAndDupStates implements IAtsHealthCheck {
 
       @Override
-      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
          List<String> foundStates = new ArrayList<>();
          for (String stateAttr : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
             AtsAttributeTypes.State)) {
@@ -730,7 +737,8 @@ public class AtsHealthCheckOperation {
    private class TestWorkflowTeamDefinition implements IAtsHealthCheck {
 
       @Override
-      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
          ArtifactId teamDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(artifact,
             AtsAttributeTypes.TeamDefinitionReference, ArtifactToken.SENTINEL);
          if (teamDefArt.isValid() && !atsApi.getConfigService().getConfigurations().getIdToTeamDef().containsKey(
