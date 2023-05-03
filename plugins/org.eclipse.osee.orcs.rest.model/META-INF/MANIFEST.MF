@@ -8,10 +8,12 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
+ org.eclipse.osee.orcs.rest.model.transaction,
  org.eclipse.osee.orcs.rest.model.writer,
  org.eclipse.osee.orcs.rest.model.writer.config,
  org.eclipse.osee.orcs.rest.model.writer.reader
-Import-Package: com.fasterxml.jackson.databind,
+Import-Package: com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.annotation,
  io.swagger.v3.oas.annotations,
  io.swagger.v3.oas.annotations.media,
