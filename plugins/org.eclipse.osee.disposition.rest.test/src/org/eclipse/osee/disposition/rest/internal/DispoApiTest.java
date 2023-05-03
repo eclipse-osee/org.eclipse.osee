@@ -16,6 +16,7 @@ package org.eclipse.osee.disposition.rest.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -28,6 +29,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.disposition.model.CiItemData;
+import org.eclipse.osee.disposition.model.CiSetData;
+import org.eclipse.osee.disposition.model.CiTestPoint;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -39,10 +43,12 @@ import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.TmoImporter;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.LisFileParser;
+import org.eclipse.osee.disposition.rest.resources.ContinuousIntegrationResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -110,6 +116,12 @@ public class DispoApiTest {
    private LisFileParser lisImporter;
    @Mock
    private OrcsApi orcsApi;
+   @Mock
+   private CiItemData mockCiItemData;
+   @Mock
+   private CiSetData mockCiSetData;
+   @Mock
+   private CiTestPoint mockCiTestPoint;
 
    private final ArtifactId mockArtId = ArtifactId.valueOf(2351315L);
 
@@ -124,6 +136,8 @@ public class DispoApiTest {
 
       when(mockBranch.getName()).thenReturn("branchName");
       when(storage.findUserByName(null)).thenReturn(author);
+      when(mockCiItemData.getSetData()).thenReturn(mockCiSetData);
+      when(mockCiItemData.getTestPoints()).thenReturn(mockCiTestPoint);
 
       dispoApi.setDataFactory(dataFactory);
       dispoApi.setDispoConnector(dispoConnector);
@@ -143,6 +157,16 @@ public class DispoApiTest {
             return object;
          }
       };
+   }
+
+   @Test
+   public void testNullResponseEntities() {
+      ContinuousIntegrationResource cir = new ContinuousIntegrationResource(dispoApi);
+      try {
+         cir.createDispoAnnotation(mockCiItemData, DemoUsers.Joe_Smith.getUserId());
+      } catch (IllegalStateException ise) {
+         fail("IllegalStateException thrown: " + ise.getMessage());
+      }
    }
 
    @Test
