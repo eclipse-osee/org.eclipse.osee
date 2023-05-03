@@ -77,7 +77,7 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
 
    public String getSoleAttributeValue(String typeName) {
       Collection<String> values = getAttributeValueList(typeName);
-      return values != null && !values.isEmpty() ? values.iterator().next() : null;
+      return values != null && !values.isEmpty() ? values.iterator().next() : "";
    }
 
    public Collection<String> getAttributeValueList(AttributeTypeToken attributeType) {

@@ -270,8 +270,10 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          }
          RendererManager.clearCaches();
 
-         boolean result = useCompareEditorForTextCompares.getSelection();
-         UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
+         if (useCompareEditorForTextCompares != null) {
+            boolean result = useCompareEditorForTextCompares.getSelection();
+            UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
+         }
          boolean resultServerLink = useServerLinks.getSelection();
          UserManager.setSetting(USE_SERVER_LINKS, String.valueOf(resultServerLink));
 
@@ -280,7 +282,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             UserManager.setShowTokenForChangeName(set);
          }
          if (useCompareEditorForTextCompares != null) {
-            result = useCompareEditorForTextCompares.getSelection();
+            boolean result = useCompareEditorForTextCompares.getSelection();
             UserManager.setSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT, String.valueOf(result));
          }
          if (compareEditorTextBox != null) {

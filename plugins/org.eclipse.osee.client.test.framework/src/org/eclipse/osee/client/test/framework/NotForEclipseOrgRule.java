@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.client.test.framework;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -34,18 +33,17 @@ public class NotForEclipseOrgRule implements TestRule {
     * Flag indicates if tests are OK to be run.
     */
 
-   private static Boolean okToRun = null;
+   private static final Boolean okToRun = NotForEclipseOrgRule.setOkToRun();
 
    /**
     * Creates a new {@link TestRule} and sets the {@link #okToRun} flag if it has not already been set.
     */
 
    public NotForEclipseOrgRule() {
-      NotForEclipseOrgRule.setOkToRun();
    }
 
    @Override
-   public Statement apply(Statement base, Description description) {
+   public synchronized Statement apply(Statement base, Description description) {
       //@formatter:off
       return
          new Statement() {
@@ -67,13 +65,11 @@ public class NotForEclipseOrgRule implements TestRule {
     * property "os.name" contains "windows"; otherwise, the flag will be set <code>false</code>.
     */
 
-   private synchronized static void setOkToRun() {
-      if (Objects.isNull(NotForEclipseOrgRule.okToRun)) {
-         var osName = System.getProperty("os.name");
-         var pattern = Pattern.compile("(?i:windows)");
-         var matcher = pattern.matcher(osName);
-         NotForEclipseOrgRule.okToRun = matcher.find();
-      }
+   private static boolean setOkToRun() {
+      var osName = System.getProperty("os.name");
+      var pattern = Pattern.compile("(?i:windows)");
+      var matcher = pattern.matcher(osName);
+      return matcher.find();
    }
 }
 

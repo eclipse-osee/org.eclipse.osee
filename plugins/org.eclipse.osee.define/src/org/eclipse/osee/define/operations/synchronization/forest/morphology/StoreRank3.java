@@ -264,7 +264,7 @@ class StoreRank3 implements Store {
       var hierarchyTree = this.hierarchyTrees.get(keys[0]);
 
       if (Objects.isNull(hierarchyTree)) {
-         return null;
+         return Optional.empty();
       }
 
       var keyCount = Objects.nonNull(keys) ? keys.length : 0;

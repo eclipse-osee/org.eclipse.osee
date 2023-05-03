@@ -107,6 +107,12 @@ public class TransactionFactoryImpl implements TransactionFactory {
       TransactionBuilderImpl orcsTxn =
          new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, orcsApi, keyValueOps);
       orcsTxn.setComment(comment);
+
+      if (author == null) {
+         throw new OseeCoreException(
+            "In TransactionFactoryImpl.createTransaction, the parameter \"author\" is null which is dereferenced");
+      }
+
       UserToken user = orcsApi.userService().getUser(author.getId());
       orcsTxn.setAuthor(user);
       return orcsTxn;

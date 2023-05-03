@@ -57,13 +57,15 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz) {
+   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType,
+      Class<T> clazz) {
       return getRelated(atsObject, relationType, DeletionFlag.EXCLUDE_DELETED, clazz);
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, DeletionFlag flag, Class<T> clazz) {
+   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType,
+      DeletionFlag flag, Class<T> clazz) {
       List<T> results = new ArrayList<>();
       if (atsObject == null || atsObject.isInvalid()) {
          return results;
@@ -207,9 +209,15 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeToken artifactType) {
+   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType,
+      ArtifactTypeToken artifactType) {
       List<ArtifactToken> results = new LinkedList<>();
       Artifact art = getArtifact(artifact);
+
+      if (art == null) {
+         return results;
+      }
+
       for (ArtifactToken related : art.getRelatedArtifacts(relationType)) {
          if (atsApi.getQueryService().getArtifact(related).isOfType(artifactType)) {
             results.add(related);
@@ -233,6 +241,11 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    public List<ArtifactId> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide) {
       List<ArtifactId> related = new LinkedList<>();
       Artifact art = getArtifact(artifact);
+
+      if (art == null) {
+         return related;
+      }
+
       for (Artifact rel : art.getRelatedArtifacts(relationTypeSide)) {
          related.add(rel);
       }

@@ -76,6 +76,7 @@ public class DoorsBestFitArtifactResolver extends NewArtifactImportResolver {
          List<String> splitIds = Arrays.asList(legacyIds.split(","));
          String roughLegacyIds = roughArt.getRoughAttribute(CoreAttributeTypes.LegacyId.getName());
          List<String> splitRoughIds = Arrays.asList(roughLegacyIds.split(","));
+
          for (String splitId : splitIds) {
             if (!splitRoughIds.contains(splitId)) {
                allContained = false;

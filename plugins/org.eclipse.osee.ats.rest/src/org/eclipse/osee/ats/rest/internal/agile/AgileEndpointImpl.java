@@ -231,7 +231,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return result;
    }
 
-   private JaxProgramBaseItem updateProgramItem(IAgileProgram program, JaxProgramBaseItem newItem, String itemName, ArtifactTypeToken artifactType, ArtifactToken parentArtifact) {
+   private JaxProgramBaseItem updateProgramItem(IAgileProgram program, JaxProgramBaseItem newItem, String itemName,
+      ArtifactTypeToken artifactType, ArtifactToken parentArtifact) {
 
       if (newItem.getType().equals(UpdateType.New)) {
          if (!Strings.isValid(newItem.getTitle())) {
@@ -290,7 +291,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("program/{programId}/backlogitem")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxProgramBacklogItemUpdate updateProgramBacklogItem(@PathParam("programId") long programId, JaxProgramBacklogItemUpdate pBacklogItem) {
+   public JaxProgramBacklogItemUpdate updateProgramBacklogItem(@PathParam("programId") long programId,
+      JaxProgramBacklogItemUpdate pBacklogItem) {
       IAgileProgram program = atsApi.getAgileService().getAgileProgram(programId);
       if (program == null) {
          pBacklogItem.getResults().errorf("Program Id %s not found", programId);
@@ -299,6 +301,11 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ArtifactToken programBacklog = atsApi.getAgileService().getAgileProgramBacklogArt(program);
       JaxProgramBaseItem baseItem = updateProgramItem(program, pBacklogItem,
          AtsArtifactTypes.AgileProgramBacklogItem.getName(), AtsArtifactTypes.AgileProgramBacklogItem, programBacklog);
+
+      if (programBacklog == null) {
+         pBacklogItem.getResults().errorf("\"programBacklog\" is null", programId);
+         return pBacklogItem;
+      }
 
       JaxAgileProgramBacklogItem newItem = JaxAgileProgramBacklogItem.construct(programBacklog.getId(),
          ArtifactToken.valueOf(ArtifactId.valueOf(baseItem.getNewId()), pBacklogItem.getTitle()));
@@ -324,7 +331,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("program/{programId}/feature")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxProgramFeatureUpdate updateProgramFeature(@PathParam("programId") long programId, JaxProgramFeatureUpdate featureItem) {
+   public JaxProgramFeatureUpdate updateProgramFeature(@PathParam("programId") long programId,
+      JaxProgramFeatureUpdate featureItem) {
       IAgileProgram program = atsApi.getAgileService().getAgileProgram(programId);
       if (program == null) {
          featureItem.getResults().errorf("Program Id %s not found", programId);
@@ -362,6 +370,11 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
       IAgileProgramBacklogItem programBacklogItem =
          atsApi.getAgileService().getAgileProgramBacklogItem(newProgramFeature.getProgramBacklogItemId());
+
+      if (programBacklogItem == null) {
+         throw new RuntimeException(
+            "In AgileEndpointImpl.createProgramFeature, the local variable \"programBacklogItem\" is null which is dereferenced");
+      }
 
       IAgileProgramFeature programFeature = atsApi.getAgileService().createAgileProgramFeature(
          programBacklogItem.getId(), newProgramFeature.getName(), guid, id);
@@ -768,7 +781,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("team/{teamId}/sprint/{sprintId}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, AgileSprintData sprintData) {
+   public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId,
+      AgileSprintData sprintData) {
       XResultData results = new XResultData();
       AgileSprintData data = SprintUtil.updateAgileSprintData(atsApi, teamId, sprintId, sprintData, results);
       return data;
@@ -785,7 +799,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("team/{teamId}/sprint/{sprintId}/config")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public SprintConfigurations updateSprintConfig(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, SprintConfigurations sprintConfig) {
+   public SprintConfigurations updateSprintConfig(@PathParam("teamId") long teamId,
+      @PathParam("sprintId") long sprintId, SprintConfigurations sprintConfig) {
       SprintConfigOperations ops = new SprintConfigOperations(atsApi);
       ops.update(sprintConfig);
       return sprintConfig;
@@ -996,6 +1011,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    private JaxAgileBacklog toJaxBacklog(IAgileBacklog backlog) {
       JaxAgileBacklog result = new JaxAgileBacklog();
+
+      if (backlog == null) {
+         throw new RuntimeException(
+            "In AgileEndpointImpl.toJaxBacklog, the parameter \"backlog\" is null which is dereferenced");
+      }
+
       result.setActive(backlog.isActive());
       result.setActive(backlog.isActive());
       result.setName(backlog.getName());

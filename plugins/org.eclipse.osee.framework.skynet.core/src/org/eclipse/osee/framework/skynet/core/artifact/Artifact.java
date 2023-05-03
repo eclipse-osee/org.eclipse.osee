@@ -458,7 +458,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       }
    }
 
-   private void getDescendants(Collection<Artifact> descendants, ArtifactTypeToken[] excludedArtifacts, DeletionFlag includeDeleted) {
+   private void getDescendants(Collection<Artifact> descendants, ArtifactTypeToken[] excludedArtifacts,
+      DeletionFlag includeDeleted) {
       for (Artifact child : getChildren(includeDeleted)) {
          if (!child.isOfType(excludedArtifacts)) {
             descendants.add(child);
@@ -500,19 +501,24 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return attribute;
    }
 
-   private <T> Attribute<T> initializeAttribute(AttributeTypeId attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) {
+   private <T> Attribute<T> initializeAttribute(AttributeTypeId attributeType, ModificationType modificationType,
+      boolean markDirty, boolean setDefaultValue) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty,
          setDefaultValue);
       return attribute;
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, int attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, int attributeId,
+      GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty,
+      Object... data) {
       return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType,
          applicabilityId, markDirty, data);
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, AttributeId attributeId, GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, AttributeId attributeId,
+      GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty,
+      Object... data) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
          markDirty, false);
@@ -733,7 +739,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
 
-   public final String getSoleAttributeValueAsString(AttributeTypeToken attributeType, String defaultReturnValue) throws MultipleAttributesExist {
+   public final String getSoleAttributeValueAsString(AttributeTypeToken attributeType, String defaultReturnValue)
+      throws MultipleAttributesExist {
       String toReturn = defaultReturnValue;
       if (attributeType.isArtifactId()) {
          List<Attribute<Object>> soleAttributes = getAttributes(attributeType);
@@ -1306,6 +1313,10 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * </p>
     */
    public final void persist(SkynetTransaction managedTransaction) {
+      if (managedTransaction == null) {
+         throw new OseeCoreException(
+            "In Artifact.persist, parameter \"managedTransaction\" is null which is dereferenced");
+      }
       managedTransaction.addArtifact(this);
    }
 
@@ -1372,7 +1383,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       linksLoaded = loaded;
    }
 
-   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact, String rationale) {
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact,
+      String rationale) {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
 
       int relOrder = 0;
@@ -1383,7 +1395,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          rationale, relOrder, ArtifactId.SENTINEL);
    }
 
-   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact, int relOrder, ArtifactId relArtId) {
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact,
+      int relOrder, ArtifactId relArtId) {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(), "",
          relOrder, relArtId);
@@ -1399,7 +1412,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       addRelation(sorterId, relationSide, artifact, null);
    }
 
-   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd, String rationale) {
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact,
+      boolean insertAfterTarget, Artifact itemToAdd, String rationale) {
       boolean sideA = relationEnumeration.getSide().isSideA();
       Artifact artifactA = sideA ? itemToAdd : this;
       Artifact artifactB = sideA ? this : itemToAdd;
@@ -1409,7 +1423,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
    }
 
-   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd, int relOrder, ArtifactId relArtId) {
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact,
+      boolean insertAfterTarget, Artifact itemToAdd, int relOrder, ArtifactId relArtId) {
       boolean sideA = relationEnumeration.getSide().isSideA();
       Artifact artifactA = sideA ? itemToAdd : this;
       Artifact artifactB = sideA ? this : itemToAdd;
@@ -1431,7 +1446,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       }
    }
 
-   public final void setRelationOrder(RelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd) {
+   public final void setRelationOrder(RelationTypeSide relationEnumeration, Artifact targetArtifact,
+      boolean insertAfterTarget, Artifact itemToAdd) {
       List<Artifact> currentOrder = getRelatedArtifacts(relationEnumeration, Artifact.class);
       // target artifact doesn't exist
       if (!currentOrder.contains(targetArtifact)) {
@@ -1461,7 +1477,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       }
    }
 
-   private int getNewRelOrder(List<RelationLink> relations, RelationTypeSide relationEnumeration, Artifact targetArtifact, Artifact itemToAdd) {
+   private int getNewRelOrder(List<RelationLink> relations, RelationTypeSide relationEnumeration,
+      Artifact targetArtifact, Artifact itemToAdd) {
       String insertType = "end";
       int afterIndex = 0;
       int beforeIndex = 0;
@@ -1511,7 +1528,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
     */
-   public final void setRelations(RelationSorter sorterId, RelationTypeSide relationSide, Collection<? extends Artifact> artifacts) {
+   public final void setRelations(RelationSorter sorterId, RelationTypeSide relationSide,
+      Collection<? extends Artifact> artifacts) {
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Remove relations that have been removed
       for (Artifact artifact : currentlyRelated) {
@@ -1600,7 +1618,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return duplicate(branch, getArtifactType(), excludeAttributeTypes);
    }
 
-   public final Artifact duplicate(BranchToken branch, ArtifactTypeToken newType, Collection<AttributeTypeId> excludeAttributeTypes) {
+   public final Artifact duplicate(BranchToken branch, ArtifactTypeToken newType,
+      Collection<AttributeTypeId> excludeAttributeTypes) {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(newType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
@@ -1805,7 +1824,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(GammaId gammaId, TransactionToken transactionId, ModificationType modType, ApplicabilityId applicabilityId, boolean historical, boolean useBackingData) {
+   void internalSetPersistenceData(GammaId gammaId, TransactionToken transactionId, ModificationType modType,
+      ApplicabilityId applicabilityId, boolean historical, boolean useBackingData) {
       this.gammaId = gammaId;
       this.transaction = transactionId;
       this.historical = historical;

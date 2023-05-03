@@ -104,6 +104,7 @@ public class JdbcServiceImpl implements JdbcService {
 
          JdbcClientBuilder builder = JdbcClientBuilder.newBuilder(props);
          if (hasServerConfig(props)) {
+
             JdbcServerConfig serverConfig = server.getConfig();
             if (!Strings.isValid(builder.getDbUri())) {
                builder = builder.fromType(JdbcDriverType.hsql, serverConfig.getDbName(), serverConfig.getDbPort());

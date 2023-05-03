@@ -129,7 +129,8 @@ public class AgileFactory {
       return team;
    }
 
-   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, long teamId, String name, String guid, Long id) {
+   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, long teamId, String name,
+      String guid, Long id) {
       JaxAgileFeatureGroup feature = new JaxAgileFeatureGroup();
       feature.setName(name);
       feature.setId(id);
@@ -138,7 +139,8 @@ public class AgileFactory {
       return createAgileFeatureGroup(logger, atsApi, feature);
    }
 
-   public static IAgileProgramFeature createAgileProgramFeature(Log logger, AtsApi atsApi, long programBacklogItemId, String name, String guid, Long id) {
+   public static IAgileProgramFeature createAgileProgramFeature(Log logger, AtsApi atsApi, long programBacklogItemId,
+      String name, String guid, Long id) {
       JaxAgileProgramFeature feature = new JaxAgileProgramFeature();
       feature.setName(name);
       feature.setId(id);
@@ -147,7 +149,8 @@ public class AgileFactory {
       return createAgileProgramFeature(logger, atsApi, feature);
    }
 
-   public static IAgileProgramFeature createAgileProgramFeature(Log logger, AtsApi atsApi, JaxAgileProgramFeature newProgramFeature) {
+   public static IAgileProgramFeature createAgileProgramFeature(Log logger, AtsApi atsApi,
+      JaxAgileProgramFeature newProgramFeature) {
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program Feature");
 
       ArtifactId programFeature = changes.createArtifact(AtsArtifactTypes.AgileProgramFeature,
@@ -166,7 +169,8 @@ public class AgileFactory {
       return new AgileProgramFeature(logger, atsApi, atsApi.getQueryService().getArtifact(artifact));
    }
 
-   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, JaxAgileFeatureGroup newFeatureGroup) {
+   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi,
+      JaxAgileFeatureGroup newFeatureGroup) {
       ArtifactId userArt = atsApi.getQueryService().getArtifact((IAtsObject) atsApi.getUserService().getCurrentUser());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Feature Group");
@@ -264,6 +268,12 @@ public class AgileFactory {
 
    public static JaxAgileTeam createJaxTeam(IAgileTeam agileTeam) {
       JaxAgileTeam created = new JaxAgileTeam();
+
+      if (agileTeam == null) {
+         throw new RuntimeException(
+            "In AgileFactory.createJaxTeam, the parameter \"agileTeam\" is null which is dereferenced");
+      }
+
       created.setName(agileTeam.getName());
       created.setId(agileTeam.getId());
       created.setActive(agileTeam.isActive());
