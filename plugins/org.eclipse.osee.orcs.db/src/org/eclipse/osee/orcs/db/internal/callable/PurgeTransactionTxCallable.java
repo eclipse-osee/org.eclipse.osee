@@ -77,7 +77,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    private final SqlJoinFactory joinFactory;
    private final Collection<? extends TransactionId> txIdsToDelete;
    private final ActivityLog activityLog;
-   private int previousItem;
+   private Long previousItem;
    private String previousItemId4;
 
    public PurgeTransactionTxCallable(ActivityLog activityLog, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends TransactionId> txIdsToDelete) {
@@ -85,7 +85,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       this.activityLog = activityLog;
       this.joinFactory = joinFactory;
       this.txIdsToDelete = txIdsToDelete;
-      previousItem = -1;
+      previousItem = -1L;
       previousItemId4 = "-1";
    }
 
@@ -170,7 +170,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          try (IdJoinQuery joinQuery = entry.getValue()) {
 
             Consumer<JdbcStatement> consumer = stmt -> {
-               int currentItem = stmt.getInt("item_id");
+               Long currentItem = stmt.getLong("item_id");
 
                if (previousItem != currentItem) {
                   ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
