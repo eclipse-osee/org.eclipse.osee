@@ -232,6 +232,8 @@ public interface UserService {
 
    void setUserForCurrentThread(UserId accountId);
 
+   void removeUserFromCurrentThread();
+
    void setUserLoading(boolean loading);
 
    default IUserGroup getUserGroupOrSentinel(IUserGroupArtifactToken userGroup) {
