@@ -36,6 +36,12 @@ public class AuthenticationResponseFilter implements ContainerResponseFilter {
     */
    @Override
    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
+
+      /*
+       * Remove the thread -> user mapping when a request is done. Since threads are reused from a pool, if the mapping
+       * is kept around it's possible that a future request on a thread can act as the previous user rather than the
+       * user making the new request on that thread.
+       */
       orcsApi.userService().removeUserFromCurrentThread();
    }
 }
