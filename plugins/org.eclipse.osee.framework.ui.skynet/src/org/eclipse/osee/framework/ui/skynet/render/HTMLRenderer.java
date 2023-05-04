@@ -87,8 +87,7 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    public HTMLRenderer() {
-      super();
-      this.comparator = new HTMLDiffRenderer();
+      this(null);
    }
 
    @Override
@@ -129,7 +128,8 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       int toReturn = NO_MATCH;
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.HtmlContent)) {
          if (presentationType.matches(PresentationType.PREVIEW, PresentationType.DIFF)) {
@@ -149,7 +149,8 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.PlainTextContent);
    }
 

@@ -184,17 +184,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
    private final SynchronizationEndpoint synchronizationEndpoint;
 
    public MarkdownRenderer() {
-      super();
-      this.comparator = new MarkdownDiffRenderer();
-      this.menuCommands = MarkdownRenderer.menuCommandDefinitions;
-      if (MarkdownRenderer.LOCAL & MarkdownRenderer.CAN_STREAM) {
-         this.synchronizationEndpoint =
-            OsgiUtil.getService(this.getClass(), OseeClient.class).getSynchronizationEndpoint();
-         this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, true);
-      } else {
-         this.synchronizationEndpoint = null;
-         this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, false);
-      }
+      this(null);
    }
 
    public MarkdownRenderer(RendererMap rendererOptions) {
@@ -249,7 +239,8 @@ public class MarkdownRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       if (artifact.isOfType(CoreArtifactTypes.Markdown) || artifact.isAttributeTypeValid(
          CoreAttributeTypes.PrimaryAttribute)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
@@ -389,7 +380,8 @@ public class MarkdownRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.MarkdownContent);
    }
 

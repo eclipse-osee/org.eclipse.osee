@@ -48,7 +48,7 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
    }
 
    public GraphitiRenderer() {
-      super();
+      this(null);
    }
 
    @Override
@@ -67,7 +67,8 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       int rating = IRenderer.NO_MATCH;
       if (artifact.isOfType(CoreArtifactTypes.ModelDiagram)) {
          if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT, PREVIEW, DEFAULT_OPEN, SPECIALIZED_EDIT)) {

@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED
 import static org.eclipse.osee.framework.core.publishing.RendererOption.OPEN_OPTION;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
-import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
@@ -46,11 +44,12 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
    }
 
    public AtsWorldEditorRenderer() {
-      super();
+      this(null);
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       if (artifact.isHistorical() || presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
          return NO_MATCH;
       }

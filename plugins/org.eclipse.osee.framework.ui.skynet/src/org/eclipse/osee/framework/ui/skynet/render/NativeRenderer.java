@@ -83,8 +83,7 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    public NativeRenderer() {
-      super();
-      this.comparator = new NativeWordCompare(this);
+      this(null);
    }
 
    @Override
@@ -114,7 +113,8 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
             return PRESENTATION_SUBTYPE_MATCH;
@@ -187,7 +187,8 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.NativeContent);
    }
 

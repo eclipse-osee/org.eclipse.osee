@@ -271,11 +271,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    private final WordTemplateProcessor templateProcessor;
 
    public MSWordTemplateClientRenderer() {
-      super();
-      this.comparator = new WordTemplateCompare(this);
-      this.templateProcessor = new WordTemplateProcessor(this);
-      this.menuCommands = MSWordTemplateClientRenderer.menuCommandDefinitions;
-      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
+      this(null);
    }
 
    public MSWordTemplateClientRenderer(RendererMap options) {
@@ -303,7 +299,8 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       return MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
    }
 

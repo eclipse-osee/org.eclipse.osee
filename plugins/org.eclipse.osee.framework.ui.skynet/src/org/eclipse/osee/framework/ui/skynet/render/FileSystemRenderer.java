@@ -71,7 +71,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private Thread rendererThread;
 
    public FileSystemRenderer() {
-      super();
+      this(null);
    }
 
    public FileSystemRenderer(RendererMap rendererOptions) {
@@ -276,7 +276,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
    public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts);
 
-   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType);
+   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType);
 
    /**
     * {@inheritDoc}
@@ -518,7 +519,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * @return an {@link IFile} handle to the file the render's output was written to.
     */
 
-   private IFile renderToFileInternal(List<Artifact> artifacts, BranchToken branchToken, PresentationType presentationType, String pathPrefix, InputStream renderInputStream) {
+   private IFile renderToFileInternal(List<Artifact> artifacts, BranchToken branchToken,
+      PresentationType presentationType, String pathPrefix, InputStream renderInputStream) {
 
       /*
        * Get a handle to the content file. This creates all the sub-directories in the user workspace to where the

@@ -45,7 +45,7 @@ public class AtsWfeRenderer extends DefaultArtifactRenderer {
    }
 
    public AtsWfeRenderer() {
-      super();
+      this(null);
    }
 
    @Override
@@ -70,7 +70,8 @@ public class AtsWfeRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
 
       if (!artifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT,
          PRODUCE_ATTRIBUTE) && artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
