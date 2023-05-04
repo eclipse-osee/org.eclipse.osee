@@ -132,7 +132,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited, ArtifactTypeToken... artifactType) {
+   public Collection<ArtifactToken> getArtifacts(BranchId branch, boolean includeInherited,
+      ArtifactTypeToken... artifactType) {
       if (includeInherited) {
          return Collections.castAll(query.fromBranch(branch).andIsOfType(artifactType).getResults().getList());
       } else {
@@ -146,7 +147,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getRelatedToTokens(BranchToken branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
+   public Collection<ArtifactToken> getRelatedToTokens(BranchToken branch, ArtifactId artifact,
+      RelationTypeSide relationType, ArtifactTypeId artifactType) {
       HashCollection<ArtifactId, ArtifactToken> tokenMap = TokenSearchOperations.getArtifactTokenListFromRelated(branch,
          java.util.Collections.singleton(artifact), artifactType, relationType, orcsApi, jdbcClient);
       Collection<ArtifactToken> result = tokenMap.getValues(artifact);
@@ -162,6 +164,15 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       try {
          if (artifact instanceof ArtifactReadable) {
             result = (ArtifactReadable) artifact;
+         } else if (artifact instanceof ArtifactToken) {
+            if (((ArtifactToken) artifact).getBranch().isInvalid()) {
+               result = (ArtifactReadable) atsApi.getQueryService().getArtifact(artifact, atsApi.getAtsBranch(),
+                  DeletionFlag.EXCLUDE_DELETED);
+            } else {
+               ArtifactToken artTok = (ArtifactToken) artifact;
+               result = (ArtifactReadable) atsApi.getQueryService().getArtifact(artTok, artTok.getBranch(),
+                  DeletionFlag.EXCLUDE_DELETED);
+            }
          } else if (artifact instanceof IAtsObject) {
             IAtsObject atsObject = (IAtsObject) artifact;
             if (atsObject.getStoreObject() instanceof ArtifactReadable) {
@@ -170,6 +181,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
                result = getArtifact(atsObject.getId());
             }
          } else {
+
             result = getArtifact(artifact.getId());
          }
       } catch (ArtifactDoesNotExist ex) {
@@ -235,7 +247,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag) {
+   public ArtifactToken getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
@@ -251,39 +264,46 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch, DeletionFlag deletionFlag) {
+   public List<ArtifactToken> getArtifactsFromTypeWithInheritence(ArtifactTypeToken artifactType, BranchId branch,
+      DeletionFlag deletionFlag) {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).includeDeletedArtifacts(
             deletionFlag == DeletionFlag.INCLUDE_DELETED).getResults().getList());
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeId artifactType,
+      AttributeTypeId attributeType, String attributeValue, BranchId branch) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactToken> attributeValues, BranchId branch) {
+   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType,
+      Collection<ArtifactToken> attributeValues, BranchId branch) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate) {
+   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType,
+      Collection<String> attributeValues, BranchId branch, int artifactCountEstimate) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch) {
+   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeToken artifactType,
+      AttributeTypeId attributeType, Set<ArtifactToken> ids, BranchId branch) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public Collection<? extends ArtifactToken> getArtifactsFromAttributeKeywords(BranchId branch, String userId, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType) {
+   public Collection<? extends ArtifactToken> getArtifactsFromAttributeKeywords(BranchId branch, String userId,
+      boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean caseSensitive, AttributeTypeString... attrType) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifactIds, BranchToken branch, DeletionFlag deletionFlag) {
+   public Collection<ArtifactToken> getArtifactsById(Collection<ArtifactId> artifactIds, BranchToken branch,
+      DeletionFlag deletionFlag) {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).andIds(artifactIds).includeDeletedArtifacts(
             deletionFlag == DeletionFlag.INCLUDE_DELETED).getResults().getList());
@@ -303,13 +323,15 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeToken attributeType, Collection<String> values, int estimatedCount) {
+   public List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeToken attributeType,
+      Collection<String> values, int estimatedCount) {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).and(attributeType, values).getResults().getList());
    }
 
    @Override
-   public ArtifactToken getArtifactFromTypeAndAttribute(ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String value, BranchId branch) {
+   public ArtifactToken getArtifactFromTypeAndAttribute(ArtifactTypeToken artifactType,
+      AttributeTypeToken attributeType, String value, BranchId branch) {
       return orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).and(attributeType,
          Arrays.asList(value)).getResults().getOneOrNull();
    }
@@ -321,7 +343,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, AttributeTypeToken attrType, String value, BranchToken branch) {
+   public Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, AttributeTypeToken attrType, String value,
+      BranchToken branch) {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).and(attrType, Arrays.asList(value)).getResults().getList());
    }
