@@ -168,7 +168,8 @@ public class UserServiceImpl implements UserService {
       return this.getUser().getRoles();
    }
 
-   private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact, TransactionBuilder tx, ArtifactToken userGroupHeader) {
+   private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact,
+      TransactionBuilder tx, ArtifactToken userGroupHeader) {
       ArtifactToken userGroupArt = userGroupToArtifact.get(userGroup);
       if (userGroupArt == null) {
          userGroupArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrNull();
@@ -318,6 +319,11 @@ public class UserServiceImpl implements UserService {
       }
    }
 
+   @Override
+   public void removeUserFromCurrentThread() {
+      threadToUser.remove(Thread.currentThread());
+   }
+
    private UserToken toUser(ArtifactReadable userArtifact) {
       try {
          List<ArtifactReadable> groups =
@@ -342,4 +348,5 @@ public class UserServiceImpl implements UserService {
    public void setUserLoading(boolean loading) {
       ;
    }
+
 }

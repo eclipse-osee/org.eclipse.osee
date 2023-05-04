@@ -207,6 +207,11 @@ public class UserServiceImpl implements UserService {
    }
 
    @Override
+   public void removeUserFromCurrentThread() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
    public void setUserLoading(boolean loading) {
       this.loading = loading;
    }
