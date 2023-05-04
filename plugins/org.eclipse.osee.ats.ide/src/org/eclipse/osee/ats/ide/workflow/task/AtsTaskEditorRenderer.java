@@ -40,7 +40,7 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    }
 
    public AtsTaskEditorRenderer() {
-      super();
+      this(null);
    }
 
    private static final String Option_TASK_WORLD_EDITOR = "task.world.editor.option";
@@ -51,7 +51,8 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       if (artifact.isOfType(AtsArtifactTypes.Task) && !artifact.isHistorical() && !presentationType.matches(
          GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
          if (Option_TASK_WORLD_EDITOR.equals(rendererOptions.getRendererOptionValue(OPEN_OPTION))) {

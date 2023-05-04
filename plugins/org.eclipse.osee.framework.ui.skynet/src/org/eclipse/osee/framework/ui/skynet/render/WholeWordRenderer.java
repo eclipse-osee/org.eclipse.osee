@@ -176,8 +176,7 @@ public class WholeWordRenderer extends FileSystemRenderer {
     */
 
    public WholeWordRenderer() {
-      super();
-      this.comparator = new WholeWordCompare(this);
+      this(null);
    }
 
    /**
@@ -263,7 +262,8 @@ public class WholeWordRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       //@formatter:off
       if (
               !presentationType.matches

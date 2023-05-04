@@ -41,7 +41,7 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    }
 
    public UrlRenderer() {
-      super();
+      this(null);
    }
 
    @Override
@@ -60,7 +60,8 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       if (!presentationType.matches(GENERALIZED_EDIT,
          GENERAL_REQUESTED) && artifact.getAttributeCount(ContentUrl) > 0) {
          if (presentationType.equals(WEB_PREVIEW)) {

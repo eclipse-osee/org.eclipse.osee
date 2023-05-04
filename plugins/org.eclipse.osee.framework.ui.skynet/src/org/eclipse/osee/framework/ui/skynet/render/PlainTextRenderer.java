@@ -142,10 +142,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    private final IComparator comparator;
 
    public PlainTextRenderer() {
-      super();
-      this.comparator = new PlainTextDiffRenderer();
-      this.menuCommands = PlainTextRenderer.menuCommandDefinitions;
-      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, PlainTextRenderer.CAN_STREAM);
+      this(null);
    }
 
    public PlainTextRenderer(RendererMap rendererOptions) {
@@ -168,7 +165,8 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.PlainTextContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN, PRODUCE_ATTRIBUTE, DIFF)) {
             return PRESENTATION_SUBTYPE_MATCH;
@@ -283,7 +281,8 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.PlainTextContent);
    }
 

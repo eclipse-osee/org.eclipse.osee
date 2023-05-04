@@ -56,11 +56,12 @@ public class AtsOpenWithTaskRenderer extends DefaultArtifactRenderer {
    }
 
    public AtsOpenWithTaskRenderer() {
-      super();
+      this(null);
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       int rating = NO_MATCH;
       try {
          if (artifact instanceof IAtsTask && AtsApiService.get().getTaskRelatedService().isAutoGenChangeReportRelatedTask(

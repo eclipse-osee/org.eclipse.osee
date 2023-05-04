@@ -89,7 +89,7 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    public JavaRenderer() {
-      super();
+      this(null);
    }
 
    /**
@@ -130,7 +130,8 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       int toReturn = NO_MATCH;
       if (artifact.isOfType(CoreArtifactTypes.TestCase)) {
          if (presentationType.matches(PresentationType.SPECIALIZED_EDIT, PresentationType.DEFAULT_OPEN)) {
@@ -256,7 +257,8 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       throw new UnsupportedOperationException();
    }
 

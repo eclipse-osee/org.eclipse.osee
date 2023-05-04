@@ -59,7 +59,7 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer {
    }
 
    public OpenOfficeWriterRenderer() {
-      super();
+      this(null);
    }
 
    @Override
@@ -119,12 +119,14 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       return NO_MATCH;
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       throw new UnsupportedOperationException();
    }
 }

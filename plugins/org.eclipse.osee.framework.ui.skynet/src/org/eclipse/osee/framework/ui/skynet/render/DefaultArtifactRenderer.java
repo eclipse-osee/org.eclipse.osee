@@ -199,7 +199,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
    protected List<MenuCmdDef> menuCommands;
 
    public DefaultArtifactRenderer() {
-      super();
+      this(null);
    }
 
    public DefaultArtifactRenderer(RendererMap rendererMap) {
@@ -238,7 +238,8 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
       if (presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_TYPE;
       }
@@ -306,7 +307,8 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes) {
+   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact,
+      Collection<? extends AttributeTypeToken> attributeTypes) {
 
       ArrayList<AttributeTypeToken> orderedAttributeTypes = new ArrayList<>(attributeTypes.size());
 
@@ -436,7 +438,8 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType,
+      WordMLProducer producer, String format, String label, String footer) {
       WordMLProducer wordMl = producer;
       boolean allAttrs = (boolean) this.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES);
 
@@ -476,7 +479,8 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, final String defaultValue) {
+   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact,
+      PresentationType presentationType, final String defaultValue) {
       String returnValue = defaultValue;
       if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT)) {
          if (artifact == null) {
