@@ -271,6 +271,13 @@ export class ActionStateButtonService {
 															} else {
 																this.uiService.updated =
 																	true;
+																this.branchedRouter.position =
+																	{
+																		type: 'baseline',
+																		id: commitObs
+																			.tx
+																			.branchId,
+																	};
 															}
 														}
 													)
