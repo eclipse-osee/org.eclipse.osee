@@ -1,0 +1,91 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container>
+	<h2 class="mat-headline-5">Build Trace Report</h2>
+	<h2 class="mat-headline-7">Enter one or more search criteria:</h2>
+	<div class="tw-flex tw-items-center tw-gap-2">
+		<ng-container>
+			<mat-form-field>
+				<mat-label>WorkFlow ID(s)</mat-label>
+				<input
+					matInput
+					type="text"
+					[(ngModel)]="workflowNum"
+					#input />
+			</mat-form-field>
+		</ng-container>
+		<ng-container>
+			<mat-form-field>
+				<mat-label>WorkFlow Description...</mat-label>
+				<input
+					matInput
+					type="text"
+					[(ngModel)]="workflowDesc"
+					#input />
+			</mat-form-field>
+		</ng-container>
+		<ng-container *ngIf="programs | async as _programs">
+			<mat-form-field
+				class="form-fields-container"
+				appearance="fill">
+				<mat-label>{{ programSelectionText | async }}</mat-label>
+				<mat-select
+					(selectionChange)="selectProgram($event)"
+					[disabled]="_programs.length === 0"
+					[value]="programSelection | async"
+					required>
+					<mat-option
+						*ngFor="let option of _programs"
+						[value]="option"
+						[id]="option.guid!">
+						{{ option.name }}</mat-option
+					>
+				</mat-select>
+			</mat-form-field>
+		</ng-container>
+		<ng-container *ngIf="programSelection | async">
+			<mat-form-field
+				*ngIf="builds | async as _builds"
+				class="form-fields-container"
+				appearance="fill">
+				<mat-label>{{ buildSelectionText | async }}</mat-label>
+				<mat-select
+					[ngModel]="selectedBuild | async"
+					(ngModelChange)="setSelectedBuild($event)"
+					[disabled]="_builds.length === 0"
+					required>
+					<mat-option
+						*ngFor="let option of _builds"
+						[value]="option"
+						[id]="option.guid!">
+						{{ option.name }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</ng-container>
+		<button
+			mat-raised-button
+			(click)="startGenerateReport()"
+			color="primary"
+			class="reports-form-button">
+			Generate Report
+		</button>
+		<button
+			mat-raised-button
+			(click)="reset()"
+			color="primary"
+			class="reports-form-button">
+			Reset
+		</button>
+	</div>
+</ng-container>

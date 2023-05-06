@@ -391,6 +391,8 @@ public interface CoreArtifactTypes {
       .exactlyOne(EndpointUrl)
       .exactlyOne(ConnectionRequired));
 
+   ArtifactTypeToken DiffReportEndPoint = osee.add(osee.artifactType(8247460208362207697L, "DIFF Report End Point", false, Artifact).exactlyOne(EndpointUrl));
+
    ArtifactTypeToken ProductType = osee.add(osee.artifactType(7274800616985881194L, "Product Type", false, Artifact));
 
    ArtifactTypeToken RootArtifact = osee.add(osee.artifactType(10L, "Root Artifact", false, Artifact));

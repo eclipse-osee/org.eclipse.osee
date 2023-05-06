@@ -25,6 +25,10 @@ export const routes: Routes = [
 		outlet: 'TopLevelNav',
 	},
 	{
+		path: 'diff-report',
+		loadChildren: () => import('./diff-report/diff-report.routes'),
+	},
+	{
 		path: 'ple',
 		loadChildren: () => import('./ple/ple.routes'),
 	},
