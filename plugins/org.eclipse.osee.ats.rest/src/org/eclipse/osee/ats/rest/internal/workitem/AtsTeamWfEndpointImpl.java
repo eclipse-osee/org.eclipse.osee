@@ -36,15 +36,20 @@ import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
@@ -53,9 +58,11 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
    private final AtsApi atsApi;
+   private final OrcsApi orcsApi;
 
-   public AtsTeamWfEndpointImpl(AtsApi atsApi) {
+   public AtsTeamWfEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -250,5 +257,13 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       }
 
       return changeTypes;
+   }
+
+   @Override
+   public DiffReportEndpointDto getDiffReportEndpoint() {
+      ArtifactReadable art =
+         orcsApi.getQueryFactory().fromBranch(BranchId.valueOf(CoreBranches.COMMON.getId())).andIsOfType(
+            CoreArtifactTypes.DiffReportEndPoint).asArtifactOrSentinel();
+      return new DiffReportEndpointDto(art);
    }
 }

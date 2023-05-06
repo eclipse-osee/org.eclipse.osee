@@ -1,0 +1,91 @@
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($config-or-theme) {
+	// Extract the color configuration in case a theme has been passed.
+	// This allows consumers to either pass a theme object or a color configuration.
+	$config: mat.get-color-config($config-or-theme);
+
+	// Extract the palettes you need from the theme definition.
+	$primary: map.get($config, primary);
+	$accent: map.get($config, accent);
+	$warn: map.get($config, warn);
+	$background: map.get($config, background);
+	$foreground: map.get($config, foreground);
+	$success: map.get($config, success);
+	$is-dark: map.get($config, is-dark);
+
+	// Define any styles affected by the theme.
+	.header-cell {
+		justify-content: center;
+		text-align: center;
+		border: 0.2rem solid mat.get-color-from-palette($primary);
+	}
+
+	.element-detail {
+		overflow: hidden;
+		justify-content: left;
+		border-left: 0.1rem solid mat.get-color-from-palette($primary);
+		border-right: 0.1rem solid mat.get-color-from-palette($primary);
+	}
+
+	.detail-table {
+		background: mat.get-color-from-palette($accent);
+		text-align: left;
+		width: '100%';
+	}
+
+	td {
+		height: 0;
+		padding: 0;
+		padding-left: 0.5rem;
+		padding-right: 0.2rem;
+		border-bottom: 0.1rem solid mat.get-color-from-palette($primary);
+		border-left: 0.1rem solid mat.get-color-from-palette($primary);
+		border-right: 0.1rem solid mat.get-color-from-palette($primary);
+	}
+
+	.light-button {
+		height: 3rem;
+		width: 8rem;
+		font-size: 110%;
+		border-style: solid;
+		border-color: mat.get-color-from-palette($primary);
+		background-color: mat.get-color-from-palette($foreground);
+	}
+
+	.queue-element-detail {
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+@mixin typography-themed($config-or-theme) {
+	$config: mat.get-typography-config($config-or-theme);
+}
+
+@mixin material-theme($config) {
+	$color: mat.get-color-config($config);
+	$typography: mat.get-typography-config($config);
+
+	@if $color {
+		@include color($color);
+	}
+	@if $typography {
+		@include typography-themed($typography);
+	}
+}
