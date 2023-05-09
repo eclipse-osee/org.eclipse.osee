@@ -24,7 +24,7 @@ public interface IAtsNotificationService {
 
    void sendNotifications(AtsNotificationCollector notifications);
 
-   void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String body);
+   void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String htmlBody);
 
    boolean isNotificationsEnabled();
 
@@ -34,6 +34,7 @@ public interface IAtsNotificationService {
 
    void setJournalSubscribedUsers(IAtsWorkItem workItem, Collection<AtsUser> users);
 
-   void sendNotifications(String fromEmail, String toEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents);
+   void sendNotifications(String fromEmail, String toEmail, String subject, String body,
+      Collection<? extends AtsNotificationEvent> notificationEvents);
 
 }

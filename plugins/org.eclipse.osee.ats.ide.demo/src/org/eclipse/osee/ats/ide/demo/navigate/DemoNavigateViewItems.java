@@ -237,11 +237,7 @@ public class DemoNavigateViewItems implements XNavigateItemProvider {
       IAtsTeamDefinition results = null;
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
-         try {
-            results = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(team);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
+         results = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(team);
       }
       return results;
    }
