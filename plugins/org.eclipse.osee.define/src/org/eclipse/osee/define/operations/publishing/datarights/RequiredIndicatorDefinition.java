@@ -14,6 +14,7 @@
 package org.eclipse.osee.define.operations.publishing.datarights;
 
 import java.util.Objects;
+import org.eclipse.osee.framework.core.publishing.RequiredIndicatorFrequencyIndicator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**

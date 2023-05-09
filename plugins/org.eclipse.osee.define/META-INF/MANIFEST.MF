@@ -106,7 +106,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.service.event
 DynamicImport-Package: org.eclipse.jgit.transport
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.define.operations.publishing, 
+Export-Package: org.eclipse.osee.define.operations.publishing,
  org.eclipse.osee.define.rest.importing.operations,
  org.eclipse.osee.define.rest.importing.parsers,
  org.eclipse.osee.define.rest.importing.resolvers,

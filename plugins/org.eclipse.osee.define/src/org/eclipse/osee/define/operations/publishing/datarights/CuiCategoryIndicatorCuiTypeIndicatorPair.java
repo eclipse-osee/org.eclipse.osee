@@ -14,6 +14,8 @@
 package org.eclipse.osee.define.operations.publishing.datarights;
 
 import java.util.Objects;
+import org.eclipse.osee.framework.core.publishing.CuiCategoryIndicator;
+import org.eclipse.osee.framework.core.publishing.CuiTypeIndicator;
 
 /**
  * Saves a CUI Category and it's associated CUI Type.
