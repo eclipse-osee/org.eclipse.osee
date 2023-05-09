@@ -18,22 +18,41 @@ import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.token.DataClassificationAttributeType.DataClassificationEnum;
+import org.eclipse.osee.framework.core.publishing.CuiCategoryIndicator;
+import org.eclipse.osee.framework.core.publishing.CuiTypeIndicator;
 
 /**
  * @author Murshed Alam
  */
 public class DataClassificationAttributeType extends AttributeTypeEnum<DataClassificationEnum> {
 
-   public final DataClassificationEnum CUI = new DataClassificationEnum(0, "CUI");
-   public final DataClassificationEnum Unspecified = new DataClassificationEnum(1, "Unspecified");
+   public final DataClassificationEnum[] cuiCategoryCuiTypeEnumList =
+      new DataClassificationEnum[CuiCategoryIndicator.values().length * CuiTypeIndicator.values().length];
+
+   private final CuiCategoryIndicator[] categories = CuiCategoryIndicator.values();
+   private final CuiTypeIndicator[] types = CuiTypeIndicator.values();
+   private static int count = 0;
 
    public DataClassificationAttributeType(NamespaceToken namespace, int enumCount) {
-      super(4024614255972662076L, namespace, "Data Classification", MediaType.TEXT_PLAIN, "",
+      super(4024614255972662076L, namespace, "CUI Category And CUI Type", MediaType.TEXT_PLAIN, "",
          TaggerTypeToken.PlainTextTagger, enumCount);
+
+      for (int i = 0; i < this.categories.length; i++) {
+         for (int j = 0; j < this.types.length; j++) {
+            //@formatter:off
+            this.cuiCategoryCuiTypeEnumList[count] =
+               new DataClassificationEnum(count,
+                  this.categories[i].name()
+                                    .concat(" - ")
+                                    .concat(this.types[j].name()));
+            //@formatter:on
+            count++;
+         }
+      }
    }
 
    public DataClassificationAttributeType() {
-      this(NamespaceToken.OSEE, 2);
+      this(NamespaceToken.OSEE, count);
    }
 
    public class DataClassificationEnum extends EnumToken {

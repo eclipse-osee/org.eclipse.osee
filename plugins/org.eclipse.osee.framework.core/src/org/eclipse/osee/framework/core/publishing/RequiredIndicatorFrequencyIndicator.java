@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.operations.publishing.datarights;
+package org.eclipse.osee.framework.core.publishing;
 
 /**
  * Required statements can be placed on the title page, in the page header, and/or the page footer. Head and footer

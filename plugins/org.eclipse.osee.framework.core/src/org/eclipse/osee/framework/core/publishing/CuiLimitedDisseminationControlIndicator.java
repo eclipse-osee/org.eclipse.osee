@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.operations.publishing.datarights;
+package org.eclipse.osee.framework.core.publishing;
 
 /**
  * An enumeration of the CUI Limited Dissemination Controls. Only designating agencies can apply or approve limited

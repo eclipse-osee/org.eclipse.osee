@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.operations.publishing.datarights;
+package org.eclipse.osee.framework.core.publishing;
 
 /**
  * CUI Types are either CUI Basic or CUI Specified. CUI Basic information is handled according to the basic CUI rules.

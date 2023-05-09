@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.operations.publishing.datarights;
+package org.eclipse.osee.framework.core.publishing;
 
 import java.util.Objects;
 import org.eclipse.osee.framework.jdk.core.util.Message;

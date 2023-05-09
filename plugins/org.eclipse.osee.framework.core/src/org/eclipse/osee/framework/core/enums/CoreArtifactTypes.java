@@ -28,6 +28,8 @@ public interface CoreArtifactTypes {
       .any(Annotation)
       .zeroOrOne(ContentUrl)
       .any(DataClassification)
+      .any(DataRightsCuiLimitedDisseminationControl)
+      .any(DataRightsTrigraphCountryCode)
       .zeroOrOne(DataClassificationRationale)
       .zeroOrOne(Description)
       .exactlyOne(Name, "unnamed")
@@ -50,7 +52,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken AbstractImplementationDetails = osee.add(osee.artifactType(921211884L, "Abstract Implementation Details", true, Artifact)
       .zeroOrOne(DataRightsBasis)
-      .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
+      .any(DataRightsClassification, DataRightsClassification.Unspecified)
       .atLeastOne(Partition, Partition.Unspecified)
       .zeroOrOne(PotentialSecurityImpact)
       .zeroOrOne(SubjectMatterExpert)
@@ -79,7 +81,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken CodeUnit = osee.add(osee.artifactType(58L, "Code Unit", false, Artifact)
       .zeroOrOne(DataRightsBasis)
-      .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
+      .any(DataRightsClassification, DataRightsClassification.Unspecified)
       .exactlyOne(FileSystemPath)
       .zeroOrOne(SubjectMatterExpert));
 
@@ -90,6 +92,18 @@ public interface CoreArtifactTypes {
       .zeroOrOne(FACEProfile, FACEProfile.Unspecified)
       .zeroOrOne(FACESegment, FACESegment.Unspecified)
       .zeroOrOne(FACEVersion, FACEVersion.Unspecified));
+
+   ArtifactTypeToken DataRightsConfiguration = osee.add(osee.artifactType(1679213104L, "Data Rights Configuration", false, Artifact)
+      .any(DataClassification)
+      .any(DataRightsCuiLimitedDisseminationControl)
+      .any(DataRightsTrigraphCountryCode)
+      .any(DataRightsRequiredIndicator));
+
+   ArtifactTypeToken DataRightsRequiredIndicatorConfiguration = osee.add(osee.artifactType(1747427168L, "Required Indicator Configuration", false, Artifact)
+      .exactlyOne(DataRightsRequiredIndicatorTitleStatement)
+      .exactlyOne(DataRightsRequiredIndicatorHeaderStatement)
+      .exactlyOne(DataRightsRequiredIndicatorFooterStatement)
+      .any(DataRightsRequiredIndicatorFrequency));
 
    ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Artifact));
 
@@ -157,7 +171,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken DesignMsWord = osee.add(osee.artifactType(346L, "Design - MS Word", false, MsWordTemplate)
       .zeroOrOne(DataRightsBasis)
-      .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
+      .any(DataRightsClassification, DataRightsClassification.Unspecified)
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId)
       .any(DoorsModId)
@@ -179,7 +193,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken HeadingMsWord = osee.add(osee.artifactType(56L, "Heading - MS Word", false, MsWordTemplate, AbstractHeading)
       .zeroOrOne(DataRightsBasis)
-      .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified));
+      .any(DataRightsClassification, DataRightsClassification.Unspecified));
 
    ArtifactTypeToken ImplementationDetailsMsWord = osee.add(osee.artifactType(26L, "Implementation Details - MS Word", false, MsWordTemplate, AbstractImplementationDetails));
 
@@ -224,7 +238,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken PlainTextDataRights = osee.add(osee.artifactType(4527862492986312222L, "Plain Text With Data Rights", false, PlainText)
       .zeroOrOne(DataRightsBasis)
-      .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
+      .any(DataRightsClassification, DataRightsClassification.Unspecified)
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId)
       .zeroOrOne(PageOrientation, PageOrientation.Portrait));
@@ -234,14 +248,15 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken RendererTemplateWholeWord = osee.add(osee.artifactType(9L, "Renderer Template - Whole Word", false, MsWordWholeDocument)
       .exactlyOne(RendererOptions, "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}")
-      .any(TemplateMatchCriteria));
+      .any(TemplateMatchCriteria)
+      .exactlyOne(PublishingTemplateDataRightsConfigurationNameReference));
 
    ArtifactTypeToken ReportTemplate = osee.add(osee.artifactType(63228787744062L, "Report Template", false, Artifact)
       .zeroOrOne(CoreAttributeTypes.JavaCode));
 
    ArtifactTypeToken Requirement = osee.add(osee.artifactType(21L, "Requirement", false, Artifact)
       .zeroOrOne(DataRightsBasis)
-      .zeroOrOne(DataRightsClassification, DataRightsClassification.Unspecified)
+      .any(DataRightsClassification, DataRightsClassification.Unspecified)
       .zeroOrOne(SubjectMatterExpert)
       .zeroOrOne(MarkdownContent)
       .zeroOrOne(Extension));

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.operations.publishing.datarights;
+package org.eclipse.osee.framework.core.publishing;
 
 /**
  * An enumeration of the supported CUI Categories. Only add categories that are listed in CUI Registry which can be

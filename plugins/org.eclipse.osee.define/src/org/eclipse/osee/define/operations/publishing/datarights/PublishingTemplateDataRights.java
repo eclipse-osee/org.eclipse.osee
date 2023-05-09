@@ -16,6 +16,7 @@ package org.eclipse.osee.define.operations.publishing.datarights;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.Objects;
+import org.eclipse.osee.framework.core.publishing.CuiLimitedDisseminationControlIndicator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**

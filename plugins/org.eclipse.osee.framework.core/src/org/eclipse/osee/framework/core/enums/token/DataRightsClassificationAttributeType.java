@@ -37,7 +37,7 @@ public class DataRightsClassificationAttributeType extends AttributeTypeEnum<Dat
       new DataRightsClassificationEnum(6, "Export Controlled ITAR");
 
    public DataRightsClassificationAttributeType(NamespaceToken namespace, int enumCount) {
-      super(1152921504606847317L, namespace, "Data Rights Classification", MediaType.TEXT_PLAIN,
+      super(1152921504606847317L, namespace, "Required Indicators", MediaType.TEXT_PLAIN,
          "Restricted Rights:  Rights are retained by the company\n\nRestricted Rights Mixed:  contains some Restricted Rights that need separation of content with other rights\n\nOther:  does not contain content with Restricted Rights\n\nUnspecified: not yet specified",
          TaggerTypeToken.PlainTextTagger, enumCount);
    }
