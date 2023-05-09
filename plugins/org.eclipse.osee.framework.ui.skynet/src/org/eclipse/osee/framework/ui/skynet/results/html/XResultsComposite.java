@@ -23,12 +23,21 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.ProgressAdapter;
+import org.eclipse.swt.browser.ProgressEvent;
+import org.eclipse.swt.browser.StatusTextEvent;
+import org.eclipse.swt.browser.StatusTextListener;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -48,6 +57,11 @@ public class XResultsComposite extends Composite {
    protected Browser browser;
    private String htmlText;
    private String title = "";
+   protected String browserSelection;
+   private static String COPYSCRIPT =
+      "document.onmouseup = function() { if (window.getSelection) { window.status = 'COPYSCRIPT'+window.getSelection(); } " //
+         + "else if (document.getSelection) { window.status = 'COPYSCRIPT'+document.getSelection(); } else if (document.selection) { " //
+         + "window.status = 'COPYSCRIPT'+document.selection.createRange().text; }; window.status=''; }";
 
    public XResultsComposite(Composite parent, int style) {
       super(parent, style);
@@ -68,6 +82,20 @@ public class XResultsComposite extends Composite {
          browser.addLocationListener(new XResultBrowserListener());
          browser.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
          browser.setMenu(getPopup(parent));
+         browser.addProgressListener(new ProgressAdapter() {
+            @Override
+            public void completed(ProgressEvent event) {
+               browser.execute(COPYSCRIPT);
+            }
+         });
+         browser.addStatusTextListener(new StatusTextListener() {
+            @Override
+            public void changed(StatusTextEvent event) {
+               if (event.text.startsWith("COPYSCRIPT")) {
+                  browserSelection = event.text.substring("COPYSCRIPT".length());
+               }
+            }
+         });
       } catch (SWTError e) {
          // do nothing
       }
@@ -88,7 +116,28 @@ public class XResultsComposite extends Composite {
       Menu menu = new Menu(comp);
 
       MenuItem item = new MenuItem(menu, SWT.NONE);
+      item.setText("Copy");
+      item.setImage(ImageManager.getImage(FrameworkImage.COPYTOCLIPBOARD));
+      item.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Clipboard clipboard = new Clipboard(null);
+            try {
+               if (Strings.isValid(browserSelection)) {
+                  clipboard.setContents(new Object[] {browserSelection}, new Transfer[] {TextTransfer.getInstance()});
+               }
+            } finally {
+               clipboard.dispose();
+            }
+         }
+      });
+
+      new MenuItem(menu, SWT.SEPARATOR);
+
+      item = new MenuItem(menu, SWT.NONE);
       item.setText("View Source");
+      item.setImage(ImageManager.getImage(FrameworkImage.DOCUMENT));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -109,6 +158,7 @@ public class XResultsComposite extends Composite {
 
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Print");
+      item.setImage(ImageManager.getImage(FrameworkImage.PRINT));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -123,6 +173,7 @@ public class XResultsComposite extends Composite {
 
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Email");
+      item.setImage(ImageManager.getImage(FrameworkImage.EMAIL));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -139,6 +190,7 @@ public class XResultsComposite extends Composite {
       });
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Export Table");
+      item.setImage(ImageManager.getImage(FrameworkImage.EXPORT_TABLE));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -148,6 +200,7 @@ public class XResultsComposite extends Composite {
       });
       item = new MenuItem(menu, SWT.NONE);
       item.setText("Save to File");
+      item.setImage(ImageManager.getImage(FrameworkImage.SAVE));
       item.addSelectionListener(new SelectionAdapter() {
 
          @Override

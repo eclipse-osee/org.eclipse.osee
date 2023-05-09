@@ -26,4 +26,8 @@ public class EmailUtil {
       return email != null && addressPattern.matcher(email).matches();
    }
 
+   public static boolean isEmailInValid(String email) {
+      return !isEmailValid(email);
+   }
+
 }
