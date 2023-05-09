@@ -77,13 +77,11 @@ public class XTransitionToStateComboWidget extends XComboViewer implements Artif
             defaultPage.add(defaultToState);
             setSelected(defaultPage);
          }
-         if (awa.getStateDefinition().getStateType().isCancelledState() && Strings.isValid(
-            awa.getCancelledFromState())) {
+         if (awa.getStateDefinition().isCancelled() && Strings.isValid(awa.getCancelledFromState())) {
             defaultPage.add(awa.getStateDefinitionByName(awa.getCancelledFromState()));
             setSelected(defaultPage);
          }
-         if (awa.getStateDefinition().getStateType().isCompletedState() && Strings.isValid(
-            awa.getCompletedFromState())) {
+         if (awa.getStateDefinition().isCompleted() && Strings.isValid(awa.getCompletedFromState())) {
             defaultPage.add(awa.getStateDefinitionByName(awa.getCompletedFromState()));
             setSelected(defaultPage);
          }

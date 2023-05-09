@@ -547,14 +547,14 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
       // Add default toState or complete/cancelled return states
       if (currState.getToStates().isEmpty()) {
-         if (currState.getStateType().isCompletedState()) {
+         if (currState.isCompleted()) {
             StateDefinition completedFromState =
                workItem.getWorkDefinition().getStateByName(workItem.getCompletedFromState());
             if (completedFromState != null && !allPages.contains(completedFromState)) {
                allPages.add(completedFromState);
             }
          }
-         if (currState.getStateType().isCancelledState()) {
+         if (currState.isCancelled()) {
             StateDefinition cancelledFromState =
                workItem.getWorkDefinition().getStateByName(workItem.getCancelledFromState());
             if (cancelledFromState != null && !allPages.contains(cancelledFromState)) {

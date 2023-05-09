@@ -42,9 +42,10 @@ public class AtsCommitBranchWhenCompleteHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
       try {
-         if (workItem instanceof IAtsTeamWorkflow && toState.getStateType().isCompleted()) {
+         if (workItem instanceof IAtsTeamWorkflow && toState.isCompleted()) {
             BranchToken branch =
                AtsApiService.get().getBranchService().getWorkingBranch((IAtsTeamWorkflow) workItem, true);
             if (branch != null && branch.isValid() && !AtsApiService.get().getBranchService().isArchived(branch)) {

@@ -24,4 +24,11 @@ public interface IStateToken extends Named {
 
    public StateType getStateType();
 
+   public boolean isCompleted();
+
+   public boolean isCancelled();
+
+   public boolean isWorking();
+
+   public boolean isCompletedOrCancelled();
 }

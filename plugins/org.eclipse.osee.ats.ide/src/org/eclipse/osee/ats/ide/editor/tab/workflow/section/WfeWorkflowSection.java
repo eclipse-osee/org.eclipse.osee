@@ -115,7 +115,7 @@ public class WfeWorkflowSection extends SectionPart {
 
    private void refreshStateTitle() {
       String currentStateTitle =
-         getCurrentStateTitle(sma, statePage.getName(), isCurrentState(), statePage.getStateType().isCancelledState());
+         getCurrentStateTitle(sma, statePage.getName(), isCurrentState(), statePage.isCancelled());
       section.setText(currentStateTitle);
       if (sma.isInState(statePage)) {
          section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
@@ -180,14 +180,14 @@ public class WfeWorkflowSection extends SectionPart {
       }
 
       // If no layout specified, use default
-      if (statePage.getStateType().isCompletedOrCancelledState() && statePage.getStateDefinition().getLayoutItems().isEmpty()) {
+      if (statePage.isCompletedOrCancelled() && statePage.getStateDefinition().getLayoutItems().isEmpty()) {
          Composite completeComp = new Composite(workComp, SWT.None);
          GridLayout layout = new GridLayout(1, false);
          completeComp.setLayout(layout);
          completeComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         if (statePage.getStateType().isCancelledState()) {
+         if (statePage.isCancelled()) {
             createCancelledPageWidgets(completeComp);
-         } else if (statePage.getStateType().isCompletedState()) {
+         } else if (statePage.isCompleted()) {
             createCompletedPageWidgets(completeComp);
          }
       }
@@ -326,7 +326,8 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
-   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName, boolean isCurrentState, boolean isCancelledState) {
+   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName,
+      boolean isCurrentState, boolean isCancelledState) {
       StringBuffer sb = new StringBuffer(statePageName);
       if (isCurrentState && !sma.isCompleted() && !sma.isCancelled()) {
          sb.append(" - Current State");

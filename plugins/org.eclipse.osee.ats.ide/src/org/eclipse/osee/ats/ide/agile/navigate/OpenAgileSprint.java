@@ -88,7 +88,7 @@ public class OpenAgileSprint extends XNavigateItemAction {
             StateType e1StateType = ((IAtsWorkItem) e1).getCurrentStateType();
             StateType e2StateType = ((IAtsWorkItem) e2).getCurrentStateType();
             if (e1StateType != e2StateType) {
-               if (e1StateType.isInWork()) {
+               if (e1StateType.isWorking()) {
                   return -1;
                } else {
                   return 1;

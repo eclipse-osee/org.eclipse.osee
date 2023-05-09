@@ -177,7 +177,8 @@ public class WfeTransitionHeader extends Composite {
       }
    }
 
-   public static StateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable, StateDefinition toStateDef) {
+   public static StateDefinition handleChangeTransitionToState(AbstractWorkflowArtifact awa, final boolean isEditable,
+      StateDefinition toStateDef) {
       List<StateDefinition> states = AtsApiService.get().getWorkItemService().getAllToStates(awa);
       ListSelectionDialogNoSave dialog =
          new ListSelectionDialogNoSave(Collections.castAll(states), Displays.getActiveShell().getShell(),
@@ -224,7 +225,8 @@ public class WfeTransitionHeader extends Composite {
       handleTransitionButtonSelection(workItem, isEditable, toStateDef, editor, this);
    }
 
-   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable, StateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
+   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable,
+      StateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
       ITransitionHelper helper = new TransitionHelperAdapter(AtsApiService.get()) {
 
          @Override
@@ -254,7 +256,7 @@ public class WfeTransitionHeader extends Composite {
                   try {
                      toStateDef =
                         AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(awa, getToStateName());
-                     if (toStateDef.getStateType().isCancelledState()) {
+                     if (toStateDef.isCancelled()) {
                         EntryDialog cancelDialog;
                         boolean useCancelledReasonEnumDialog =
                            toStateDef.getStateOptions().contains(StateOption.USE_CANCELLED_REASON_ENUM_DIALOG);
@@ -434,7 +436,7 @@ public class WfeTransitionHeader extends Composite {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
          return;
       }
-      if (userSelectedTransitionToState.getStateType().isCompletedOrCancelledState()) {
+      if (userSelectedTransitionToState.isCompletedOrCancelled()) {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }

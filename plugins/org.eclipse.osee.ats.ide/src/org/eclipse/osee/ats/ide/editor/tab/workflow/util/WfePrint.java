@@ -161,10 +161,10 @@ public class WfePrint extends Action {
       for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(sma)) {
          if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
             // Don't show completed or cancelled state if not currently those state
-            if (statePage.getStateType().isCompletedState() && !sma.isCompleted()) {
+            if (statePage.isCompleted() && !sma.isCompleted()) {
                continue;
             }
-            if (statePage.getStateType().isCancelledState() && !sma.isCancelled()) {
+            if (statePage.isCancelled() && !sma.isCancelled()) {
                continue;
             }
             StringBuffer notesSb = new StringBuffer();

@@ -108,15 +108,15 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    }
 
    default boolean isInWork() {
-      return getStateDefinition().getStateType().isWorkingState();
+      return getStateDefinition().isWorking();
    }
 
    default boolean isCompleted() {
-      return getStateDefinition().getStateType().isCompletedState();
+      return getStateDefinition().isCompleted();
    }
 
    default boolean isCancelled() {
-      return getStateDefinition().getStateType().isCancelledState();
+      return getStateDefinition().isCancelled();
    }
 
    default boolean isCompletedOrCancelled() {

@@ -34,7 +34,7 @@ public class AgileSprint extends WorkItem implements IAgileSprint {
 
    @Override
    public boolean isActive() {
-      return getCurrentStateType().isInWork();
+      return getCurrentStateType().isWorking();
    }
 
    @Override

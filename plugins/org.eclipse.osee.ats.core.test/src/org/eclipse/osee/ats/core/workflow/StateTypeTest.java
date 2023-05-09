@@ -26,18 +26,18 @@ public class StateTypeTest {
 
    @Test
    public void test() {
-      Assert.assertTrue(StateType.Working.isWorkingState());
-      Assert.assertFalse(StateType.Completed.isWorkingState());
-      Assert.assertFalse(StateType.Cancelled.isWorkingState());
+      Assert.assertTrue(StateType.Working.isWorking());
+      Assert.assertFalse(StateType.Completed.isWorking());
+      Assert.assertFalse(StateType.Cancelled.isWorking());
 
-      Assert.assertFalse(StateType.Working.isCancelledState());
-      Assert.assertFalse(StateType.Working.isCompletedState());
-      Assert.assertFalse(StateType.Working.isCompletedOrCancelledState());
+      Assert.assertFalse(StateType.Working.isCancelled());
+      Assert.assertFalse(StateType.Working.isCompleted());
+      Assert.assertFalse(StateType.Working.isCompletedOrCancelled());
 
-      Assert.assertTrue(StateType.Completed.isCompletedState());
-      Assert.assertTrue(StateType.Completed.isCompletedOrCancelledState());
-      Assert.assertTrue(StateType.Cancelled.isCancelledState());
-      Assert.assertTrue(StateType.Cancelled.isCompletedOrCancelledState());
+      Assert.assertTrue(StateType.Completed.isCompleted());
+      Assert.assertTrue(StateType.Completed.isCompletedOrCancelled());
+      Assert.assertTrue(StateType.Cancelled.isCancelled());
+      Assert.assertTrue(StateType.Cancelled.isCompletedOrCancelled());
    }
 
    @Test

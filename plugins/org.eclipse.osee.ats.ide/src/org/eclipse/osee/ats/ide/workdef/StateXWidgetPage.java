@@ -83,7 +83,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
             item.xWidgetCreated(xWidget, toolkit, stateDefinition, art, isEditable);
@@ -92,7 +93,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {
             Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, isEditable);
@@ -115,7 +117,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return false;
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
+   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
+      XModifiedListener xModListener, boolean isEditable) {
       dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
    }
@@ -161,6 +164,26 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return stateDefinition.getStateType();
    }
 
+   @Override
+   public boolean isCompleted() {
+      return getStateType().isCompleted();
+   }
+
+   @Override
+   public boolean isCancelled() {
+      return getStateType().isCancelled();
+   }
+
+   @Override
+   public boolean isWorking() {
+      return getStateType().isWorking();
+   }
+
+   @Override
+   public boolean isCompletedOrCancelled() {
+      return getStateType().isCompletedOrCancelled();
+   }
+
    public StateDefinition getStateDefinition() {
       return stateDefinition;
    }
@@ -184,11 +207,12 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    public boolean isCurrentNonCompleteCancelledState(AbstractWorkflowArtifact sma) {
-      return isCurrentState(sma) && !getStateType().isCompletedOrCancelledState();
+      return isCurrentState(sma) && !isCompletedOrCancelled();
    }
 
    @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit,
+      Artifact art, XModifiedListener xModListener, boolean isEditable) {
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
          String description = "";
@@ -233,7 +257,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       }
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, StateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, StateDefinition stateDefinition,
+      XModifiedListener xModListener, boolean isEditable) {
       // Check extension points for page creation
       if (art != null) {
          for (IAtsWorkItemHookIde item : AtsApiService.get().getWorkItemServiceIde().getWorkItemHooksIde()) {

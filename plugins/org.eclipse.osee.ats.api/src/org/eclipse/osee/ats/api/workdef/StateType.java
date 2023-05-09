@@ -21,35 +21,19 @@ public enum StateType {
    Completed,
    Cancelled;
 
-   public boolean isCompletedState() {
+   public boolean isCompleted() {
       return this == Completed;
    }
 
-   public boolean isCompleted() {
-      return isCompletedState();
-   }
-
-   public boolean isCompletedOrCancelledState() {
-      return isCompletedState() || isCancelledState();
-   }
-
    public boolean isCompletedOrCancelled() {
-      return isCompletedOrCancelledState();
-   }
-
-   public boolean isCancelledState() {
-      return this == Cancelled;
+      return isCompleted() || isCancelled();
    }
 
    public boolean isCancelled() {
-      return isCancelledState();
+      return this == Cancelled;
    }
 
-   public boolean isWorkingState() {
+   public boolean isWorking() {
       return this == Working;
-   }
-
-   public boolean isInWork() {
-      return isWorkingState();
    }
 }
