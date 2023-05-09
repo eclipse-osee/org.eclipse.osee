@@ -57,7 +57,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    @Override
    public boolean isActive() {
-      return getCurrentStateType().isInWork();
+      return getCurrentStateType().isWorking();
    }
 
    @Override

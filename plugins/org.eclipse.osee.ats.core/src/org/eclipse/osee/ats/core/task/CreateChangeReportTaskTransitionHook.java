@@ -40,11 +40,12 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
       if (!workItem.isTeamWorkflow()) {
          return;
       }
-      if (!toState.getStateType().isCompleted()) {
+      if (!toState.isCompleted()) {
          return;
       }
       Thread thread = new Thread("Create/Update Tasks") {
@@ -69,7 +70,8 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
       }
    }
 
-   public static ChangeReportTaskData runChangeReportTaskOperation(IAtsWorkItem workItem, AtsTaskDefToken taskDefToken, boolean finalTaskGen, IAtsChangeSet changes, AtsUser asUser) {
+   public static ChangeReportTaskData runChangeReportTaskOperation(IAtsWorkItem workItem, AtsTaskDefToken taskDefToken,
+      boolean finalTaskGen, IAtsChangeSet changes, AtsUser asUser) {
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(workItem.getStoreObject());

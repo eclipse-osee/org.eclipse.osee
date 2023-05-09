@@ -47,10 +47,11 @@ public class AtsWriteDiffWhenCompleteHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
       try {
          if (workItem instanceof IAtsTeamWorkflow && workItem.isWorkType(
-            WorkType.Requirements) && toState.getStateType().isCompleted()) {
+            WorkType.Requirements) && toState.isCompleted()) {
             BranchToken branch =
                AtsApiService.get().getBranchService().getWorkingBranch((IAtsTeamWorkflow) workItem, true);
             if (AtsApiService.get().getBranchService().branchExists(branch) && branch != null && branch.isValid()) {

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link StateTypeAdapter}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class StateTypeAdapterTest {
@@ -63,20 +63,20 @@ public class StateTypeAdapterTest {
    @Test
    public void testCompletedCancelledWorking() {
       TestState state = new TestState("Endorse", StateType.Working);
-      Assert.assertTrue(state.getStateType().isWorkingState());
-      Assert.assertFalse(state.getStateType().isCancelledState());
-      Assert.assertFalse(state.getStateType().isCompletedState());
-      Assert.assertFalse(state.getStateType().isCompletedOrCancelledState());
+      Assert.assertTrue(state.isWorking());
+      Assert.assertFalse(state.isCancelled());
+      Assert.assertFalse(state.isCompleted());
+      Assert.assertFalse(state.isCompletedOrCancelled());
 
       state = new TestState("Endorse", StateType.Cancelled);
-      Assert.assertFalse(state.getStateType().isWorkingState());
-      Assert.assertTrue(state.getStateType().isCancelledState());
-      Assert.assertTrue(state.getStateType().isCompletedOrCancelledState());
+      Assert.assertFalse(state.isWorking());
+      Assert.assertTrue(state.isCancelled());
+      Assert.assertTrue(state.isCompletedOrCancelled());
 
       state = new TestState("Endorse", StateType.Completed);
-      Assert.assertFalse(state.getStateType().isWorkingState());
-      Assert.assertTrue(state.getStateType().isCompletedState());
-      Assert.assertTrue(state.getStateType().isCompletedOrCancelledState());
+      Assert.assertFalse(state.isWorking());
+      Assert.assertTrue(state.isCompleted());
+      Assert.assertTrue(state.isCompletedOrCancelled());
    }
 
    @Test

@@ -57,6 +57,26 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
       return StateType;
    }
 
+   @Override
+   public boolean isCompleted() {
+      return getStateType().isCompleted();
+   }
+
+   @Override
+   public boolean isCancelled() {
+      return getStateType().isCancelled();
+   }
+
+   @Override
+   public boolean isWorking() {
+      return getStateType().isWorking();
+   }
+
+   @Override
+   public boolean isCompletedOrCancelled() {
+      return getStateType().isCompletedOrCancelled();
+   }
+
    public void setLayoutItems(List<LayoutItem> layoutToSet) {
       this.stateItems = layoutToSet;
    }

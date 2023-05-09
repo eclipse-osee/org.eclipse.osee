@@ -94,7 +94,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
             items.remove(workItem);
          } else if (currentStateType.isCancelled() && !types.contains(StateType.Cancelled)) {
             items.remove(workItem);
-         } else if (currentStateType.isInWork() && !types.contains(StateType.Working)) {
+         } else if (currentStateType.isWorking() && !types.contains(StateType.Working)) {
             items.remove(workItem);
          }
       }

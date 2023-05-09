@@ -206,7 +206,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public boolean isInWork() {
-      return stateType.isInWork();
+      return stateType.isWorking();
    }
 
    @Override

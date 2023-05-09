@@ -256,7 +256,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isInWork() {
-      return getCurrentStateType().isInWork();
+      return getCurrentStateType().isWorking();
    }
 
    @Override

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
 
    public boolean isTransitionToComplete(StateDefinition toStateDef) {
-      return toStateDef.getStateType().isCompletedState();
+      return toStateDef.isCompleted();
    }
 
    public boolean isRequiredForTransition(WidgetDefinition widgetDef) {
@@ -48,7 +48,8 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return provider.isEmpty();
    }
 
-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef) {
+   public WidgetResult validateWidgetIsRequired(IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef) {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, "[%s] is required for transition",
             widgetDef.getName());
@@ -60,7 +61,8 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
+   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider,
+      WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi);
 
    public WidgetResult isValidDate(IValueProvider valueProvider, WidgetDefinition widgetDef) {
       if (valueProvider.getDateValues() == null) {

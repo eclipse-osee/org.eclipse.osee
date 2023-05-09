@@ -132,7 +132,7 @@ public class StateManager implements IAtsStateManager {
       if (assignees == null) {
          return;
       }
-      if (stateType.isCompletedOrCancelledState()) {
+      if (stateType.isCompletedOrCancelled()) {
          if (assignees.isEmpty()) {
             return;
          }

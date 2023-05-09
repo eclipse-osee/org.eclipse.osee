@@ -85,8 +85,7 @@ public class StateDefBuilder {
    }
 
    public StateDefBuilder andToStates(StateToken... stateTokens) {
-      if (state.getStateType().isCompletedOrCancelled() && !hasOption(
-         WorkDefBuilderOption.OVERRIDE_COMP_CANC_TO_STATE_CHECK)) {
+      if (state.isCompletedOrCancelled() && !hasOption(WorkDefBuilderOption.OVERRIDE_COMP_CANC_TO_STATE_CHECK)) {
          rd.errorf("Completed/Cancelled sate [%s] shouldn't have toStates for Work Def %s\n", state.getName(),
             workDef.getName());
       }
@@ -144,7 +143,8 @@ public class StateDefBuilder {
     * @param currItems to loop through looking for attrTypeLocation; will recurse through CompositeLayoutItems
     * @param found is true if attrTypeLocation was found
     */
-   private void insertLayoutAfter(List<LayoutItem> newItems, AttributeTypeToken attrTypeLocation, List<LayoutItem> currItems, AtomicBoolean found, LayoutItem... insertLayoutItems) {
+   private void insertLayoutAfter(List<LayoutItem> newItems, AttributeTypeToken attrTypeLocation,
+      List<LayoutItem> currItems, AtomicBoolean found, LayoutItem... insertLayoutItems) {
       for (LayoutItem currItem : currItems) {
          newItems.add(currItem);
          if (currItem instanceof WidgetDefinition) {

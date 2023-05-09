@@ -125,18 +125,18 @@ public class StateDefinitionTest {
       StateDefinition state = new StateDefinition("endorse");
       state.setStateType(StateType.Working);
 
-      Assert.assertTrue(state.getStateType().isWorkingState());
-      Assert.assertFalse(state.getStateType().isCancelledState());
-      Assert.assertFalse(state.getStateType().isCompletedState());
-      Assert.assertFalse(state.getStateType().isCompletedOrCancelledState());
+      Assert.assertTrue(state.isWorking());
+      Assert.assertFalse(state.isCancelled());
+      Assert.assertFalse(state.isCompleted());
+      Assert.assertFalse(state.isCompletedOrCancelled());
 
       state.setStateType(StateType.Completed);
-      Assert.assertTrue(StateType.Completed.isCompletedState());
-      Assert.assertTrue(StateType.Completed.isCompletedOrCancelledState());
+      Assert.assertTrue(StateType.Completed.isCompleted());
+      Assert.assertTrue(StateType.Completed.isCompletedOrCancelled());
 
       state.setStateType(StateType.Cancelled);
-      Assert.assertTrue(StateType.Cancelled.isCancelledState());
-      Assert.assertTrue(StateType.Cancelled.isCompletedOrCancelledState());
+      Assert.assertTrue(StateType.Cancelled.isCancelled());
+      Assert.assertTrue(StateType.Cancelled.isCompletedOrCancelled());
    }
 
    @Test

@@ -62,7 +62,8 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  * @author Donald G. Dunne
  */
 public class TransitionToMenu {
-   public static MenuManager createTransitionToMenuManager(final XViewer xViewer, String name, final Set<Artifact> workflowArtifacts) {
+   public static MenuManager createTransitionToMenuManager(final XViewer xViewer, String name,
+      final Set<Artifact> workflowArtifacts) {
       MenuManager editMenuManager =
          new MenuManager(name, ImageManager.getImageDescriptor(AtsImage.TRANSITION), "transition-to");
       final Set<IAtsWorkItem> workItems = new HashSet<>();
@@ -127,7 +128,8 @@ public class TransitionToMenu {
       return editMenuManager;
    }
 
-   private static String getTransitionToString(String stateDefName, boolean multipleWorkDefinitions, Map<String, StateDefinition> stateNameToStateDef) {
+   private static String getTransitionToString(String stateDefName, boolean multipleWorkDefinitions,
+      Map<String, StateDefinition> stateNameToStateDef) {
       if (multipleWorkDefinitions) {
          return stateDefName;
       } else {
@@ -145,7 +147,7 @@ public class TransitionToMenu {
    }
 
    private static String getStateTypeName(StateDefinition stateDef) {
-      return stateDef.getStateType().isWorkingState() || stateDef.getName().equals(
+      return stateDef.isWorking() || stateDef.getName().equals(
          TeamState.Completed.getName()) || stateDef.getName().equals(
             TeamState.Cancelled.getName()) ? "" : " (" + stateDef.getStateType().name() + ")";
    }
@@ -182,7 +184,7 @@ public class TransitionToMenu {
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
-                  if (stateDef != null && stateDef.getStateType().isCancelledState()) {
+                  if (stateDef != null && stateDef.isCancelled()) {
                      EntryDialog cancelDialog;
                      boolean useEntryCancelWidgetDialog = false;
                      for (LayoutItem layoutItem : stateDef.getLayoutItems()) {

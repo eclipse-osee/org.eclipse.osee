@@ -152,7 +152,8 @@ public class WfePromptChangeStatusTest {
       assertTrue(result.isTrue());
    }
 
-   private static void validateWorkflows(Collection<? extends AbstractWorkflowArtifact> awas, String stateName, int totalPercent, double hoursSpent) throws Exception {
+   private static void validateWorkflows(Collection<? extends AbstractWorkflowArtifact> awas, String stateName,
+      int totalPercent, double hoursSpent) throws Exception {
       for (AbstractWorkflowArtifact awa : awas) {
          assertEquals("Current State wrong for " + awa.getAtsId(), awa.getCurrentStateName(), stateName);
          if (awa.isCompletedOrCancelled()) {
@@ -175,7 +176,7 @@ public class WfePromptChangeStatusTest {
    }
 
    private static boolean isCompletedCancelledState(AbstractWorkflowArtifact aba, String stateName) {
-      return aba.getWorkDefinition().getStateByName(stateName).getStateType().isCompletedOrCancelledState();
+      return aba.getWorkDefinition().getStateByName(stateName).isCompletedOrCancelled();
    }
 
 }

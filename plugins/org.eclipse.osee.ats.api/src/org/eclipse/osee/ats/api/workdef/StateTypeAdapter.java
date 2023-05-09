@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 /**
  * Provides enum like capabilities to Work Pages (like ordinal, values and valueOf) while providing for the inheritance
  * of classes.
- * 
+ *
  * @author Donald G. Dunne
  */
 public abstract class StateTypeAdapter implements IStateToken {
@@ -34,8 +34,7 @@ public abstract class StateTypeAdapter implements IStateToken {
    private static CompositeKeyHashMap<Class<?>, String, StateTypeAdapter> classAndNameToPage =
       new CompositeKeyHashMap<>();
    private static final Map<StateTypeAdapter, Integer> pageToOrdinal = new HashMap<>(10);
-   private static final Map<Class<?>, List<StateTypeAdapter>> classToPages =
-      new HashMap<>();
+   private static final Map<Class<?>, List<StateTypeAdapter>> classToPages = new HashMap<>();
    private static final CountingMap<Class<?>> classToOrdinalCount = new CountingMap<>(20);
    private String description;
    private final String pageName;
@@ -91,6 +90,26 @@ public abstract class StateTypeAdapter implements IStateToken {
    @Override
    public StateType getStateType() {
       return StateType;
+   }
+
+   @Override
+   public boolean isCompleted() {
+      return getStateType().isCompleted();
+   }
+
+   @Override
+   public boolean isCancelled() {
+      return getStateType().isCancelled();
+   }
+
+   @Override
+   public boolean isWorking() {
+      return getStateType().isWorking();
+   }
+
+   @Override
+   public boolean isCompletedOrCancelled() {
+      return getStateType().isCompletedOrCancelled();
    }
 
    public void setDescription(String description) {
