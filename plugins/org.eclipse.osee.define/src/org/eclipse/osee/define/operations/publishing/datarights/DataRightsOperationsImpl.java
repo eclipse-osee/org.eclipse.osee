@@ -205,11 +205,13 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
+
    public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers) {
 
       Message message = null;
 
       //@formatter:off
+      //coverity[var_deref_model : SUPPRESS]
       message =
          Validation.verifyStreamableParameter
             (
@@ -286,7 +288,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
+   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers,
+      Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
 
       Message message = null;
 
@@ -433,7 +436,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @throws OseeCoreException when a failure occurs loading the publishing artifacts from the database.
     */
 
-   private Map<ArtifactId, ArtifactReadable> loadArtifactMap(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers) {
+   private Map<ArtifactId, ArtifactReadable> loadArtifactMap(BranchId branchIdentifier,
+      List<ArtifactId> artifactIdentifiers) {
 
       try {
          return this.queryFactory.fromBranch(branchIdentifier).andIds(artifactIdentifiers).asArtifactMap();
@@ -457,7 +461,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @return a {@link DataRightEntryList}.
     */
 
-   private DataRightEntryList populateRequest(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
+   private DataRightEntryList populateRequest(List<ArtifactId> artifactIdentifiers,
+      Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
 
       try (var dataRightEntryList = new DataRightEntryList(overrideClassification)) {
 

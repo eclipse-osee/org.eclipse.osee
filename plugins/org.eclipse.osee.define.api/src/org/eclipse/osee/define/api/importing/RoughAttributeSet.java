@@ -24,9 +24,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.api.importing.RoughAttributeSet.RoughAttribute;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
@@ -95,10 +97,10 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
       return list != null ? list : defaultList;
    }
 
-   public Collection<String> getAttributeValueList(String attributeTypeName) {
+   public @NonNull Collection<String> getAttributeValueList(String attributeTypeName) {
       Collection<RoughAttribute> roughAttributes = attributes.get(new CaseInsensitiveString(attributeTypeName));
       if (roughAttributes == null) {
-         return null;
+         return List.of();
       }
       Collection<String> values = new ArrayList<>();
       for (RoughAttribute attribute : roughAttributes) {

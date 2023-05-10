@@ -12,10 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.define.operations.synchronization.identifier;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 /**
@@ -67,7 +67,7 @@ public class IdentifierTrackerPatternMatching implements IdentifierTracker {
 
    IdentifierTrackerPatternMatching(IdentifierType identifierType) {
       this.identifierType = Objects.requireNonNull(identifierType);
-      this.allocatedIdentifiers = new HashMap<>();
+      this.allocatedIdentifiers = new ConcurrentHashMap<>();
       this.identifierCount = 0L;
       this.stringBuilder = new StringBuilder();
       this.primaryIdentifierPattern =

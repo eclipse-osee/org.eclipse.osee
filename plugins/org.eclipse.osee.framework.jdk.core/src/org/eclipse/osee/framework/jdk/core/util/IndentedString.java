@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Generates strings of spaces for use as indents in log or debug messages.
@@ -74,7 +75,7 @@ public class IndentedString {
     * The indent level of the largest indent string produced.
     */
 
-   private int largestIndent;
+   private final AtomicInteger largestIndent;
 
    /**
     * Create and initialize the single {@link IndentedString} object.
@@ -83,7 +84,7 @@ public class IndentedString {
    private IndentedString() {
       this.indentStrings = new ArrayList<String>(IndentedString.initialIndentStringCount);
       this.indentStrings.add("");
-      this.largestIndent = 0;
+      this.largestIndent = new AtomicInteger(0);
       var size = IndentedString.indentAmount * (IndentedString.initialIndentStringCount - 1);
       size = size > 1024 ? size : 1024;
       this.indentBuffer = new StringBuilder(size);
@@ -100,19 +101,19 @@ public class IndentedString {
 
       indent = indent >= 0 ? indent : 0;
 
-      if (indent <= this.largestIndent) {
+      if (indent <= this.largestIndent.get()) {
          return this.indentStrings.get(indent);
       }
 
       synchronized (IndentedString.indentedString) {
-         int start = largestIndent + 1;
+         int start = largestIndent.get() + 1;
          int end = indent;
 
          for (int newIndent = start; newIndent <= end; newIndent++) {
             this.indentStrings.add(newIndent, this.indentBuffer.append(IndentedString.indentedUnitString).toString());
          }
 
-         this.largestIndent = indent;
+         this.largestIndent.set(indent);
       }
 
       return this.indentStrings.get(indent);

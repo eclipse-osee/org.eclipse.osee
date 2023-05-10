@@ -16,6 +16,7 @@ package org.eclipse.osee.define.operations.synchronization.forest;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.operations.synchronization.LinkType;
 import org.eclipse.osee.define.operations.synchronization.SynchronizationArtifactBuilder;
 import org.eclipse.osee.define.operations.synchronization.UnexpectedGroveThingTypeException;
@@ -59,7 +60,7 @@ public interface GroveThing extends ToMessage {
     * @return the foreign hierarchy thing.
     */
 
-   Object getForeignHierarchy();
+   Optional<Object> getForeignHierarchy();
 
    /**
     * Get the foreign thing saved in this container.
@@ -67,12 +68,13 @@ public interface GroveThing extends ToMessage {
     * @return the foreign thing.
     */
 
-   Object getForeignThing();
+   Optional<Object> getForeignThing();
 
    /**
     * Gets the unique {@link Identifier} for the {@link GroveThing}.
     */
 
+   @NonNull
    Identifier getIdentifier();
 
    /**

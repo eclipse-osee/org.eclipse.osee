@@ -15,6 +15,7 @@ package org.eclipse.osee.define.rest.importing.resolvers;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.osee.define.api.importing.ReqNumbering;
 import org.eclipse.osee.define.api.importing.RoughArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -39,7 +40,8 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public ArtifactToken resolve(RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
+   public ArtifactToken resolve(RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId,
+      ArtifactId rootId) {
       ArtifactToken realArtifact = findExistingArtifact(roughArtifact, branch);
 
       if (realArtifact.isValid()) {
@@ -70,11 +72,16 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
    private ArtifactToken findExistingArtifact(RoughArtifact roughArtifact, BranchId branch) {
       Collection<String> doorsIDs =
          roughArtifact.getAttributes().getAttributeValueList(CoreAttributeTypes.DoorsId.getName());
+
+      if (Objects.isNull(doorsIDs)) {
+         return ArtifactToken.SENTINEL;
+      }
+
       doorsIDs.remove(roughArtifact.getName());
 
       if (doorsIDs.size() < 1) {
          // when creating, there will only be the one ID in the list, this is a create case
-         return null;
+         return ArtifactToken.SENTINEL;
       }
       return roughArtifact.getOrcsApi().getQueryFactory().fromBranch(branch).andAttributeIs(CoreAttributeTypes.DoorsId,
          doorsIDs.iterator().next()).asArtifactTokenOrSentinel();

@@ -307,11 +307,15 @@ public class RendererOptions implements ToMessage {
                ;
                break;
 
+            break;
+
          case "NestedTemplate":
 
             outMessage
                .segmentIndexedArray( "NestedTemplates",   this.nestedTemplates  )
                ;
+
+            break;
       }
 
       outMessage

@@ -49,6 +49,7 @@ import org.eclipse.osee.define.operations.synchronization.forest.denizens.Native
 import org.eclipse.osee.define.operations.synchronization.identifier.Identifier;
 import org.eclipse.osee.define.operations.synchronization.identifier.IdentifierType;
 import org.eclipse.osee.define.operations.synchronization.identifier.IdentifierTypeGroup;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EnumBiConsumerMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumConsumerMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumFunctionMap;
@@ -311,9 +312,16 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       // HeaderGroveThing
 
+      //@formatter:off
       headerGrove.stream().forEach((headerGroveThing) -> {
-         this.reqIf.setTheHeader((ReqIFHeader) headerGroveThing.getForeignThing());
+         headerGroveThing
+            .getForeignThing()
+            .ifPresent
+               (
+                  ( foreignThing ) -> this.reqIf.setTheHeader( (ReqIFHeader) foreignThing )
+               );
       });
+      //@formatter:on
 
       // Content
 
@@ -325,26 +333,46 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var reqifDatatypeDefinitionList = reqifContent.getDatatypes();
 
-      datatypeDefinitionGrove.stream().forEach(dataTypeDefinitionGroveThing -> {
+      //@formatter:off
+      datatypeDefinitionGrove.stream()
+         .forEach
+            (
+               ( dataTypeDefinitionGroveThing ) ->
+               {
+                  dataTypeDefinitionGroveThing
+                     .getForeignThing()
+                     .ifPresent
+                        (
+                           ( foreignThing ) ->
+                           {
+                              var reqifDatatypeDefinition = (DatatypeDefinition) foreignThing;
 
-         var reqifDatatypeDefinition = (DatatypeDefinition) dataTypeDefinitionGroveThing.getForeignThing();
+                              if (((NativeDataTypeKey) dataTypeDefinitionGroveThing.getNativeThing()).isEnumerated()) {
 
-         if (((NativeDataTypeKey) dataTypeDefinitionGroveThing.getNativeThing()).isEnumerated()) {
-            var reqifDatatypeDefinitionEnumeration = (DatatypeDefinitionEnumeration) reqifDatatypeDefinition;
-            var reqifSpecifiedValues = reqifDatatypeDefinitionEnumeration.getSpecifiedValues();
+                                 var reqifDatatypeDefinitionEnumeration = (DatatypeDefinitionEnumeration) reqifDatatypeDefinition;
+                                 var reqifSpecifiedValues = reqifDatatypeDefinitionEnumeration.getSpecifiedValues();
 
-            dataTypeDefinitionGroveThing.streamLinks(IdentifierType.ENUM_VALUE).forEach((enumValueGroveThing) -> {
+                                 dataTypeDefinitionGroveThing.streamLinks(IdentifierType.ENUM_VALUE)
+                                    .forEach
+                                       (
+                                          (enumValueGroveThing) ->
+                                          {
+                                             enumValueGroveThing
+                                                .getForeignThing()
+                                                .ifPresent
+                                                   (
+                                                      ( enumValue ) -> reqifSpecifiedValues.add( (EnumValue) enumValue )
+                                                   );
+                                          }
+                                       );
+                              }
 
-               var reqifEnumValue = (EnumValue) enumValueGroveThing.getForeignThing();
-
-               reqifSpecifiedValues.add(reqifEnumValue);
-
-            });
-         }
-
-         reqifDatatypeDefinitionList.add(reqifDatatypeDefinition);
-
-      });
+                              reqifDatatypeDefinitionList.add(reqifDatatypeDefinition);
+                           }
+                        );
+               }
+            );
+      //@formatter:on
 
       //Specification Types, Spec Object Types, & Spec Relation Types
 
@@ -366,30 +394,40 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
              (
                 ( groveThing ) ->
                 {
-                   var reqifSpecType = (SpecType) groveThing.getForeignThing();
+                   var reqifSpecType = (SpecType) groveThing.getForeignThing().get();
 
                    reqifSpecTypeList.add(reqifSpecType);
 
                    var reqifAttributeDefinitionList = reqifSpecType.getSpecAttributes();
 
-                   groveThing.streamLinks(IdentifierType.ATTRIBUTE_DEFINITION).forEach
+                   groveThing
+                      .streamLinks( IdentifierType.ATTRIBUTE_DEFINITION )
+                      .forEach
                       (
-                         ( attributeDefinition ) ->
+                         ( attributeDefinitionGroveThing ) ->
                          {
-                            reqifAttributeDefinitionList.add((AttributeDefinition) attributeDefinition.getForeignThing());
+                            attributeDefinitionGroveThing
+                               .getForeignThing()
+                               .ifPresent
+                                  (
+                                     ( foreignThing ) ->
+                                     {
+                                        var reqifAttributeDefinition = (AttributeDefinition) foreignThing;
 
-                            var reqifAttributeDefinition = (AttributeDefinition) attributeDefinition.getForeignThing();
+                                        reqifAttributeDefinitionList.add( reqifAttributeDefinition );
 
-                            var datatypeDefinition = attributeDefinition.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
-                            var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
-                            var reqifDatatypeDefinition = (DatatypeDefinition) datatypeDefinition.getForeignThing();
+                                        var datatypeDefinition = attributeDefinitionGroveThing.getLinkScalar(IdentifierType.DATA_TYPE_DEFINITION).get();
+                                        var nativeDataType = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
+                                        var reqifDatatypeDefinition = (DatatypeDefinition) datatypeDefinition.getForeignThing().get();
 
-                            ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.accept
-                               (
-                                 nativeDataType,
-                                 reqifAttributeDefinition,
-                                 reqifDatatypeDefinition
-                               );
+                                        ReqIFSynchronizationArtifactBuilder.reqifAttachDatatypeDefinitionToAttributeDefinitionMap.accept
+                                           (
+                                             nativeDataType,
+                                             reqifAttributeDefinition,
+                                             reqifDatatypeDefinition
+                                           );
+                                     }
+                                  );
                          }
                       );
                 }
@@ -400,17 +438,37 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var reqifSpecificationList = reqifContent.getSpecifications();
 
-      specificationGrove.stream().forEach((specificationGroveThing) -> {
+      //@formatter:off
+      specificationGrove.stream()
+         .forEach
+            (
+               ( specificationGroveThing ) ->
+               {
+                  //var reqifSpecification = (Specification) specificationGroveThing.getForeignThing().get();
+                  specificationGroveThing
+                     .getForeignThing()
+                     .ifPresent
+                        (
+                           ( foreignThing ) ->
+                           {
+                              var reqifSpecification = (Specification) foreignThing;
 
-         var reqifSpecification = (Specification) specificationGroveThing.getForeignThing();
+                              specificationGroveThing
+                                 .getLinkScalar( IdentifierType.SPECIFICATION_TYPE )
+                                 .flatMap( GroveThing::getForeignThing )
+                                 .ifPresent
+                                    (
+                                       ( specificationTypeForeignThing ) ->
+                                          reqifSpecification.setType( (SpecificationType) specificationTypeForeignThing )
+                                    );
 
-         var commonObjectType = specificationGroveThing.getLinkScalar(IdentifierType.SPECIFICATION_TYPE).get();
-         var reqifSpecificationType = (SpecificationType) commonObjectType.getForeignThing();
+                              reqifSpecificationList.add(reqifSpecification);
+                           }
+                        );
 
-         reqifSpecification.setType(reqifSpecificationType);
-
-         reqifSpecificationList.add(reqifSpecification);
-      });
+               }
+            );
+      //@formatter:on
 
       //Spec Objects
 
@@ -436,14 +494,31 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
             (
                ( specObjectGroveThing ) ->
                {
-                  var reqifSpecObject     = (SpecObject) specObjectGroveThing.getForeignThing();
+                  specObjectGroveThing
+                     .getForeignThing()
+                     .ifPresent
+                        (
+                           ( foreignThing ) ->
+                           {
+                              var reqifSpecObject = (SpecObject) foreignThing;
 
-                  var commonObjectType    = specObjectGroveThing.getLinkScalar(IdentifierType.SPEC_OBJECT_TYPE).get();
-                  var reqifSpecObjectType = (SpecObjectType) commonObjectType.getForeignThing();
+                              specObjectGroveThing
+                                 .getLinkScalar( IdentifierType.SPEC_OBJECT_TYPE )
+                                 .ifPresent
+                                    (
+                                       ( commonObjectType ) ->
 
-                  reqifSpecObject.setType(reqifSpecObjectType);
+                                          commonObjectType
+                                             .getForeignThing()
+                                             .ifPresent
+                                                (
+                                                   ( specObjectType ) -> reqifSpecObject.setType( (SpecObjectType) specObjectType )
+                                                )
+                                    );
 
-                  reqifSpecObjectList.add(reqifSpecObject);
+                              reqifSpecObjectList.add( reqifSpecObject );
+                           }
+                        );
                }
             );
       //@formatter:on
@@ -451,35 +526,42 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
       //Spec Relations
 
       var reqifSpecRelationList = reqifContent.getSpecRelations();
+      //@formatter:off
+      specRelationGrove.stream().forEach
+         (
+            (specRelationGroveThing) ->
+            {
+               specRelationGroveThing
+                  .getForeignThing()
+                  .ifPresent
+                     (
+                        ( reqIfSpecRelationForeignThing ) ->
+                        {
+                           var reqifSpecRelation = (SpecRelation) reqIfSpecRelationForeignThing;
 
-      specRelationGrove.stream().forEach((specRelationGroveThing) -> {
-         //@formatter:off
-         var reqifSpecRelation         = (SpecRelation) specRelationGroveThing.getForeignThing();
+                           specRelationGroveThing
+                              .getLinkScalar( IdentifierType.SPEC_RELATION_TYPE )
+                              .flatMap( GroveThing::getForeignThing )
+                              .ifPresent( ( foreignThing ) -> reqifSpecRelation.setType( (SpecRelationType) foreignThing ) );
 
-         var commonObjectType          = specRelationGroveThing.getLinkScalar(IdentifierType.SPEC_RELATION_TYPE).get();
-         var reqifSpecRelationType     = (SpecRelationType) commonObjectType.getForeignThing();
+                           specRelationGroveThing
+                              .getLinkVectorElement( IdentifierTypeGroup.RELATABLE_OBJECT, 0 )
+                              .flatMap( GroveThing::getForeignThing )
+                              .filter( ( foreignThing ) -> foreignThing instanceof SpecObject )
+                              .ifPresent( ( foreignThing ) -> reqifSpecRelation.setSource( (SpecObject) foreignThing ) );
 
-         reqifSpecRelation.setType( reqifSpecRelationType );
+                           specRelationGroveThing
+                              .getLinkVectorElement( IdentifierTypeGroup.RELATABLE_OBJECT, 1 )
+                              .flatMap( GroveThing::getForeignThing )
+                              .filter( ( foreignThing ) -> foreignThing instanceof SpecObject )
+                              .ifPresent( ( foreignThing ) -> reqifSpecRelation.setTarget( (SpecObject) foreignThing ) );
 
-         var sideASpecObjectGroveThing = specRelationGroveThing.getLinkVectorElement(IdentifierTypeGroup.RELATABLE_OBJECT, 0).get();
-         var sideBSpecObjectGroveThing = specRelationGroveThing.getLinkVectorElement(IdentifierTypeGroup.RELATABLE_OBJECT, 1).get();
-
-         var reqifSideAThing = sideASpecObjectGroveThing.getForeignThing();
-         var reqifSideBThing = sideBSpecObjectGroveThing.getForeignThing();
-
-         if( reqifSideAThing instanceof SpecObject )
-         {
-            reqifSpecRelation.setSource( (SpecObject) reqifSideAThing );
-         }
-
-         if( reqifSideBThing instanceof SpecObject )
-         {
-            reqifSpecRelation.setTarget( (SpecObject) reqifSideBThing );
-         }
-
-         reqifSpecRelationList.add(reqifSpecRelation);
-         //@formatter:on
-      });
+                           reqifSpecRelationList.add(reqifSpecRelation);
+                        }
+                     );
+            }
+         );
+      //@formatter:on
 
       //Values
 
@@ -493,16 +575,18 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
          (
             ( attributeValueGroveThing ) ->
             {
-               var reqifAttributeValue = (AttributeValue) attributeValueGroveThing.getForeignThing();
+               var reqifAttributeValue = (AttributeValue) attributeValueGroveThing.getForeignThing().get();
 
                /*
                 * Attach value to SpecificationGroveThing or SpecObjectGroveThing
                 */
 
-               var commonObject                   = attributeValueGroveThing.getParent( -1 ).get();
-               var reqifSpecElementWithAttributes = (SpecElementWithAttributes) commonObject.getForeignThing();
-               var reqifAttributeValueList        = reqifSpecElementWithAttributes.getValues();
-               reqifAttributeValueList.add( reqifAttributeValue );
+               var commonObject = attributeValueGroveThing.getParent( -1 ).get();
+
+               commonObject
+                  .getForeignThing()
+                  .map( ( foreignThing ) -> ((SpecElementWithAttributes) foreignThing).getValues() )
+                  .ifPresent( ( reqifAttributeValueList ) -> reqifAttributeValueList.add( reqifAttributeValue ) );
 
                /*
                 * Attach value to its attribute definition
@@ -511,7 +595,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
                var attributeDefinition      = attributeValueGroveThing.getLinkScalar( IdentifierType.ATTRIBUTE_DEFINITION ).get();
                var datatypeDefinition       = attributeDefinition.getLinkScalar( IdentifierType.DATA_TYPE_DEFINITION ).get();
                var nativeDataType           = ((NativeDataTypeKey) datatypeDefinition.getNativeThing()).getNativeDataType();
-               var reqifAttributeDefinition = (AttributeDefinition) attributeDefinition.getForeignThing();
+               var reqifAttributeDefinition = (AttributeDefinition) attributeDefinition.getForeignThing().get();
 
                ReqIFSynchronizationArtifactBuilder.reqifAttachAttributeDefinitionToAttributeValueMap.accept
                   (
@@ -546,8 +630,11 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
                 * Get the ReqIF Specification and children list
                 */
 
-               var reqifSpecification         = (Specification) specificationGroveThing.getForeignThing();
-               var reqifSpecificationChildren = reqifSpecification.getChildren();
+               var reqifSpecificationChildren =
+                  specificationGroveThing
+                     .getForeignThing()
+                     .map( ( foreignThing ) -> ((Specification) foreignThing).getChildren() )
+                     .get();
 
                assert
                     reqifSpecificationChildren.size() == 0
@@ -593,11 +680,13 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
                             * it in the Grove Thing
                             */
 
-                           var reqifSpecObject      = (SpecObject) specObjectGroveThing.getForeignThing();
                            var reqifSpecHierarchy   = ReqIF10Factory.eINSTANCE.createSpecHierarchy();
                            var reqifChildren        = reqifSpecHierarchy.getChildren();
 
-                           reqifSpecHierarchy.setObject( reqifSpecObject );
+                           specObjectGroveThing
+                              .getForeignThing()
+                              .ifPresent( ( foreignThing ) -> reqifSpecHierarchy.setObject((SpecObject) foreignThing ));
+
                            specObjectGroveThing.setForeignHierarchy( reqifChildren );
 
                            /*
@@ -606,11 +695,17 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
                             * object for the Spec Object to the parent's ReqIF child list.
                             */
 
-                           @SuppressWarnings( "unchecked" )
-                           var parentReqifChildren = (EList<SpecHierarchy>) parentGroveThing.getForeignHierarchy();
-
-                           parentReqifChildren.add( reqifSpecHierarchy );
-
+                           parentGroveThing
+                              .getForeignHierarchy()
+                              .ifPresent
+                                 (
+                                    ( foreignHierarchy ) ->
+                                    {
+                                       @SuppressWarnings( "unchecked" )
+                                       var parentReqifChildren = (EList<SpecHierarchy>) foreignHierarchy;
+                                       parentReqifChildren.add( reqifSpecHierarchy );
+                                    }
+                                 );
                         }
                      );
             }
@@ -652,16 +747,19 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       this.attributeValueCount = new AtomicLong();
 
-      var resourceSet = new ResourceSetImpl();
-
-      resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("reqif",
-         new ReqIF10ResourceFactoryImpl());
-
-      var uri = URI.createFileURI("i.reqif");
-
-      var resource = resourceSet.createResource(uri);
+      Resource resource;
 
       try {
+         var resourceSet = new ResourceSetImpl();
+
+         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("reqif",
+            new ReqIF10ResourceFactoryImpl());
+
+         var uri = URI.createFileURI("i.reqif");
+
+         resource = resourceSet.createResource(uri);
+
+         //coverity[null_method_call: FALSE]
          resource.load(inputStream, null);
       } catch (IOException e) {
          //Invalid XML will be caught here
@@ -671,8 +769,14 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
          if (cause instanceof SAXParseException) {
             throw new SynchronizationArtifactParseException((SAXParseException) cause);
          }
-
-         throw new RuntimeException("Resource Load Failed", e);
+         //@formatter:off
+         throw
+            new OseeCoreException
+                   (
+                      "ReqIFSynchronizationArtifactBuilder::deserialize, Resource load from input stream failed.",
+                      e
+                   );
+         //@formatter:on
       }
 
       /*
@@ -688,7 +792,7 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       var eObjectList = resource.getContents();
 
-      if (Objects.isNull(eObjectList)) {
+      if (eObjectList.size() == 0) {
          throw new SynchronizationArtifactParseException("Failed to get ReqIF contents.");
       }
 
@@ -700,15 +804,23 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
       this.reqIf = (ReqIF) rootEObject;
 
+      var coreContent = this.reqIf.getCoreContent();
+
+      if (Objects.isNull(coreContent)) {
+         this.specObjectMap = Map.of();
+         return;
+      }
+
       /*
        * Index the hierarchical information for Spec Objects
        */
 
-      var specObjects = this.reqIf.getCoreContent().getSpecObjects();
+      var specObjects = coreContent.getSpecObjects();
+      var specifications = coreContent.getSpecifications();
 
       //@formatter:off
       this.specObjectMap =
-         this.reqIf.getCoreContent().getSpecifications().stream()
+         specifications.stream()
             .flatMap
                (
                   ( specification ) ->
@@ -738,8 +850,15 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public Optional<String> getAttributeDefinition(GroveThing attributeValueGroveThing) {
-      return AttributeValueUtils.getAttributeDefinitionIdentifier(
-         (AttributeValue) attributeValueGroveThing.getForeignThing());
+      //@formatter:off
+      return
+         attributeValueGroveThing
+            .getForeignThing()
+            .flatMap
+               (
+                  ( foreignThing ) -> AttributeValueUtils.getAttributeDefinitionIdentifier( (AttributeValue) foreignThing )
+               );
+      //@formatter:on
    }
 
    /**
@@ -748,8 +867,14 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public Stream<String> getAttributeDefinitions(GroveThing specTypeGroveThing) {
-      return ((SpecType) specTypeGroveThing.getForeignThing()).getSpecAttributes().stream().map(
-         AttributeDefinition::getIdentifier);
+      //@formatter:off
+      return
+         specTypeGroveThing
+            .getForeignThing()
+            .map( ( foreignThing ) -> ((SpecType) foreignThing).getSpecAttributes().stream() )
+            .orElse( Stream.empty() )
+            .map( AttributeDefinition::getIdentifier );
+      //@formatter:on
    }
 
    /**
@@ -758,8 +883,12 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public Optional<String> getDatatypeDefinition(GroveThing attributeDefinitionGroveThing) {
-      return AttributeDefinitionUtils.getDatatypeDefinitionIdentifier(
-         (AttributeDefinition) attributeDefinitionGroveThing.getForeignThing());
+      //@formatter:off
+      return
+         attributeDefinitionGroveThing
+            .getForeignThing()
+            .flatMap( ( foreignThing ) -> AttributeDefinitionUtils.getDatatypeDefinitionIdentifier( (AttributeDefinition) foreignThing ) );
+      //@formatter:on
    }
 
    /**
@@ -768,14 +897,19 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public Stream<String> getEnumValues(GroveThing datatypeDefinitionGroveThing) {
-      var datatypeDefinition = (DatatypeDefinition) datatypeDefinitionGroveThing.getForeignThing();
-
-      if (!(datatypeDefinition instanceof DatatypeDefinitionEnumeration)) {
-         return Stream.empty();
-      }
-
-      return ((DatatypeDefinitionEnumeration) datatypeDefinition).getSpecifiedValues().stream().map(
-         Identifiable::getIdentifier);
+      //@formatter:off
+      return
+         datatypeDefinitionGroveThing
+            .getForeignThing()
+            .map
+               (
+                  ( foreignThing ) -> foreignThing instanceof DatatypeDefinitionEnumeration
+                                         ? ((DatatypeDefinitionEnumeration) foreignThing).getSpecifiedValues().stream()
+                                         : Stream.<EnumValue>empty()
+               )
+            .get()
+            .map( EnumValue::getIdentifier );
+      //@formatter:on
    }
 
    /**
@@ -801,7 +935,13 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public Optional<String> getSpecificationType(GroveThing specificationGroveThing) {
-      return Optional.ofNullable(((Specification) specificationGroveThing.getForeignThing()).getType().getIdentifier());
+      //@formatter:off
+      return
+         specificationGroveThing
+            .getForeignThing()
+            .map( ( foreignThing ) -> ((Specification) foreignThing).getType() )
+            .map( SpecificationType::getIdentifier );
+      //@formatter:on
    }
 
    /**
@@ -809,20 +949,21 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
     */
 
    @Override
-   public Optional<ForeignThingFamily> getSpecObject(GroveThing specRelationGroveThing, RelationshipTerminal relationshipTerminal) {
-      try {
-         var specRelation = (SpecRelation) specRelationGroveThing.getForeignThing();
-         //@formatter:off
-         var specObjectIdentifierString =
-                  relationshipTerminal.equals( RelationshipTerminal.SOURCE )
-                     ? specRelation.getSource().getIdentifier()
-                     : specRelation.getTarget().getIdentifier();
-
-         return Optional.ofNullable( this.specObjectMap.get( specObjectIdentifierString ) );
-         //@formatter:on
-      } catch (Exception e) {
-         return Optional.empty();
-      }
+   public Optional<ForeignThingFamily> getSpecObject(GroveThing specRelationGroveThing,
+      RelationshipTerminal relationshipTerminal) {
+      //@formatter:off
+      return
+         specRelationGroveThing
+            .getForeignThing()
+            .map
+               (
+                  ( foreignThing ) -> relationshipTerminal.equals( RelationshipTerminal.SOURCE )
+                                         ? ((SpecRelation) foreignThing).getSource()
+                                         : ((SpecRelation) foreignThing).getTarget()
+               )
+            .map( SpecObject::getIdentifier )
+            .map( ( specObjectIdentifierString ) -> this.specObjectMap.get( specObjectIdentifierString ) );
+      //@formatter:on
    }
 
    /**
@@ -831,7 +972,14 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public Optional<String> getSpecObjectType(GroveThing specObjectGroveThing) {
-      return Optional.ofNullable(((SpecObject) specObjectGroveThing.getForeignThing()).getType().getIdentifier());
+      //@formatter:off
+      return
+         specObjectGroveThing
+            .getForeignThing()
+            .map( ( foreignThing ) -> ((SpecObject) foreignThing).getType() )
+            .map( SpecObjectType::getIdentifier );
+      //@formatter:on
+
    }
 
    /**
@@ -840,7 +988,13 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public Optional<String> getSpecRelationType(GroveThing specRelationGroveThing) {
-      return Optional.ofNullable(((SpecRelation) specRelationGroveThing.getForeignThing()).getType().getIdentifier());
+      //@formatter:off
+      return
+         specRelationGroveThing
+            .getForeignThing()
+            .map( ( foreignThing ) -> ((SpecRelation) foreignThing).getType() )
+            .map( SpecRelationType::getIdentifier );
+      //@formatter:on
    }
 
    /**
@@ -849,7 +1003,17 @@ public class ReqIFSynchronizationArtifactBuilder implements SynchronizationArtif
 
    @Override
    public boolean isEnumerated(GroveThing attributeValueGroveThing) {
-      return attributeValueGroveThing.getForeignThing() instanceof AttributeValueEnumeration;
+      //@formatter:off
+      return
+         attributeValueGroveThing
+            .getForeignThing()
+            .map
+               (
+                  ( foreignThing ) -> foreignThing instanceof AttributeValueEnumeration
+               )
+            .orElse( false );
+      //@formatter:on
+
    }
 
    /**

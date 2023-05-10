@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.operations.synchronization.LinkType;
 import org.eclipse.osee.define.operations.synchronization.UnexpectedGroveThingTypeException;
 import org.eclipse.osee.define.operations.synchronization.forest.GroveThing;
@@ -313,8 +314,8 @@ public class AbstractGroveThing implements GroveThing {
     */
 
    @Override
-   public Object getForeignHierarchy() {
-      return this.foreignHierarchy;
+   public Optional<Object> getForeignHierarchy() {
+      return Optional.ofNullable(this.foreignHierarchy);
    }
 
    /**
@@ -322,8 +323,8 @@ public class AbstractGroveThing implements GroveThing {
     */
 
    @Override
-   public Object getForeignThing() {
-      return this.foreignThing;
+   public Optional<Object> getForeignThing() {
+      return Optional.ofNullable(this.foreignThing);
    }
 
    /**
@@ -400,8 +401,9 @@ public class AbstractGroveThing implements GroveThing {
     * {@inheritDoc}
     */
 
+   @SuppressWarnings("null")
    @Override
-   public Identifier getIdentifier() {
+   public @NonNull Identifier getIdentifier() {
       return this.primaryKeys[this.rank() - 1];
    }
 

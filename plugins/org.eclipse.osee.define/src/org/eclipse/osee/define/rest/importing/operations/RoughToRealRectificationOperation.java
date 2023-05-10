@@ -100,14 +100,21 @@ public class RoughToRealRectificationOperation {
                   String toAdd = candidateParent.replace("-", ".");
                   knownArtsByReqNum.put(toAdd, ArtifactToken.valueOf(newParent, toAdd));
                }
+
                ArtifactId art = artifactResolver.resolve(roughArtifact, branchId, newParent, newParent);
-               String addedArtReqNum =
-                  roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName()).replace("-", ".");
-               knownArtsByReqNum.put(addedArtReqNum, ArtifactToken.valueOf(art, addedArtReqNum));
+
                if (art == null) {
                   results.errorf("Artifact %s with Doors ID %s not found", roughArtifact.getName(),
                      roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsId.getName()));
+
+                  continue;
                }
+
+               String addedArtReqNum =
+                  roughArtifact.getRoughAttribute(CoreAttributeTypes.DoorsHierarchy.getName()).replace("-", ".");
+
+               knownArtsByReqNum.put(addedArtReqNum, ArtifactToken.valueOf(art, addedArtReqNum));
+
             }
          }
       }

@@ -55,21 +55,18 @@ public class AbstractMapGrove implements Grove {
 
    /**
     * Creates a new empty grove. The rank of the primary store is determined from the length of the
-    * <code>identifierTypes</code> array. The rank of the native store is determined from the length of the
-    * <code>nativeKeyTypes</code> array. Primary store rank can be from {@link #minPrimaryRank} to
+    * <code>primaryKeyValidators</code> array. The rank of the native store is determined from the length of the
+    * <code>nativeKeyValidators</code> array. Primary store rank can be from {@link #minPrimaryRank} to
     * {@link #maxPrimaryRank} and native store rank can be from {@link #minNativeRank} to {@link #maxNativeRank}. The
-    * <code>identifierType</code> and <code>nativeKeyTypes</code> arrays are used to validate keys when assertions are
-    * enabled. Primary keys are all {@link Identifier} objects. Each {@link Identifier} has a type specified with a
-    * member of the {@link IdentifierType} enumeration. The <code>identifierTypes</code> array is an array of arrays
-    * with an element for each rank of the primary store. Each array element of the <code>identifierTypes</code> array
-    * contains the {@link IdentifierType}s that are acceptable for keys which match the same rank as the array element.
-    * For each rank of native key only one class type is accepted. The <code>nativeKeyTypes</code> array contains the
-    * acceptable class for native keys which match the same rank as the array element.
+    * <code>primaryKeyValidators</code> and <code>nativeKeyValidators</code> arrays are used to validate keys when
+    * assertions are enabled. The index position of the {@link Predicate} in the <code>primaryKeyValidators</code> or
+    * <code>nativeKeyValidators</code> array corresponds with the rank of the key it is used to validate.
     *
     * @param identifierType the {@link IdentifierType} the {@link Grove} is associated with.
-    * @param identifierTypes the expected {@link IdentifierType}s of keys for the grove's {@link Store} using primary
-    * keys.
-    * @param nativeKeyTYpes the expected key types for the grove's {@link Store} using native keys.
+    * @param groveThingProvidesNativeKeys set to <code>true</code> when the {@link GroveThing}s stored in the
+    * {@link Grove} can provide native keys.
+    * @param primaryKeyValidators an array of {@link Predicate}s used to validate the primary keys.
+    * @param nativeKeyValidators an array of {@link Predicate}s used to validate the native keys.
     * @throws NullPointerException when the parameter <code>identifierType</code> is <code>null</code>.
     */
 
@@ -122,11 +119,28 @@ public class AbstractMapGrove implements Grove {
 
    /**
     * {@inheritDoc}
+    *
+    * @throws IllegalStateException {@inheritDoc}
     */
 
    @Override
    public boolean containsByNativeKeys(Object... nativeKeys) {
-      return Objects.nonNull(this.nativeStore) ? this.nativeStore.contains(nativeKeys) : false;
+
+      if (Objects.isNull(this.nativeStore)) {
+         //@formatter:off
+         throw
+            new IllegalStateException
+                   (
+                      new Message()
+                             .title( "AbstractMapGrove::getByNativeKeys, Grove was not created with support for native keys." )
+                             .indentInc()
+                             .segment( "Grove Identifier Type", this.identifierType )
+                             .toString()
+                   );
+         //@formatter:on
+      }
+
+      return this.nativeStore.contains(nativeKeys);
    }
 
    /**
@@ -187,10 +201,26 @@ public class AbstractMapGrove implements Grove {
 
    /**
     * {@inheritDoc}
+    *
+    * @throws IllegalStateException {@inheritDoc}
     */
 
    @Override
    public Optional<GroveThing> getByNativeKeys(Object... nativeKeys) {
+
+      if( Objects.isNull( this.nativeStore ) ) {
+         //@formatter:off
+         throw
+            new IllegalStateException
+                   (
+                      new Message()
+                             .title( "AbstractMapGrove::getByNativeKeys, Grove was not created with support for native keys." )
+                             .indentInc()
+                             .segment( "Grove Identifier Type", this.identifierType )
+                             .toString()
+                   );
+         //@formatter:on
+      }
 
       return this.nativeStore.get(nativeKeys);
    }
@@ -198,13 +228,33 @@ public class AbstractMapGrove implements Grove {
    /**
     * {@inheritDoc}
     *
+    * @throws IllegalStateException {@inheritDoc}
     * @throws GroveThingNotFoundWithNativeKeysException {@inheritDoc}
     */
 
    @Override
    public GroveThing getByNativeKeysOrElseThrow(Object... nativeKeys) {
 
-      return this.nativeStore.get(nativeKeys).orElseThrow( () -> new GroveThingNotFoundWithNativeKeysException( this, nativeKeys ) );
+      if (Objects.isNull(this.nativeStore)) {
+         //@formatter:off
+         throw
+            new IllegalStateException
+                   (
+                      new Message()
+                             .title( "AbstractMapGrove::getByNativeKeys, Grove was not created with support for native keys." )
+                             .indentInc()
+                             .segment( "Grove Identifier Type", this.identifierType )
+                             .toString()
+                   );
+         //@formatter:on
+      }
+
+      //@formatter:off
+      return
+         this.nativeStore
+            .get( nativeKeys )
+            .orElseThrow( () -> new GroveThingNotFoundWithNativeKeysException( this, nativeKeys ) );
+      //@formatter:on
    }
 
    /**
@@ -232,7 +282,7 @@ public class AbstractMapGrove implements Grove {
 
    @Override
    public int nativeRank() {
-      return Objects.nonNull( this.nativeStore ) ? this.nativeStore.rank() : 0;
+      return Objects.nonNull(this.nativeStore) ? this.nativeStore.rank() : 0;
    }
 
    /**

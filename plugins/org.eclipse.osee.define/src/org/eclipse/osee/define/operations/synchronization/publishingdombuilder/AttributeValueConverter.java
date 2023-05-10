@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.define.operations.synchronization.UnexpectedGroveThingTypeException;
@@ -59,7 +60,9 @@ public class AttributeValueConverter {
                                                             var enumValueGroveThingList = (List<GroveThing>) value;
                                                             var attributeValue =
                                                                enumValueGroveThingList.stream()
-                                                                  .map( ( enumValueGroveThing ) -> (String) enumValueGroveThing.getForeignThing() )
+                                                                  .map( GroveThing::getForeignThing )
+                                                                  .filter( Optional::isPresent )
+                                                                  .map( ( optionalEnumValue ) -> (String) optionalEnumValue.get() )
                                                                   .collect( Collectors.joining( "," ) );
                                                             return attributeValue;
                                                           } ),

@@ -111,19 +111,12 @@ public class PublishingDomBuilder implements SynchronizationArtifactBuilder {
        * Create a new Document from each Specification
        */
 
-      forest.streamGroves
-         (
-            StreamEntry.create( IdentifierType.SPECIFICATION )
-         )
-      .forEach
-         (
-            ( specificationGroveThing ) ->
-            {
-               var document = (Document) specificationGroveThing.getForeignThing();
-
-               this.documentMap.appendDocumentToDocumentMap( this.documentMap.getIdentifier(), document );
-            }
-         );
+      forest
+         .streamGroves( StreamEntry.create( IdentifierType.SPECIFICATION ) )
+         .map( GroveThing::getForeignThing )
+         .filter( Optional::isPresent )
+         .map( ( optionalDocument ) -> (Document) optionalDocument.get() )
+         .forEach( ( document ) -> this.documentMap.appendDocumentToDocumentMap( this.documentMap.getIdentifier(), document ) );
 
       /*
        * Synchronization Artifact Spec Objects
@@ -131,39 +124,40 @@ public class PublishingDomBuilder implements SynchronizationArtifactBuilder {
        * Create a new DocumentObject from each Spec Object and attach them to their containing Documents.
        */
 
-      forest.streamGroves
-         (
-            StreamEntry.create( IdentifierType.SPECIFICATION )
-         )
-      .forEach
-         (
-            ( specificationGroveThing ) ->
-            {
-               var specificationGroveThingIdentifier = specificationGroveThing.getIdentifier();
+      forest
+         .streamGroves( StreamEntry.create( IdentifierType.SPECIFICATION ) )
+         .map( GroveThing::getIdentifier )
+         .flatMap( specObjectGrove::streamIdentifiersDeep )
+         .filter( ( identifier ) -> identifier.getType().equals( IdentifierType.SPEC_OBJECT ) )
+         .map( specObjectGrove::getByUniquePrimaryKey )
+         .filter( Optional::isPresent )
+         .map( Optional::get )
+         .forEach
+            (
+               ( specObjectGroveThing ) ->
+               {
+                  var parentGroveThing = specObjectGroveThing.getParent(-1).get();
 
-               specObjectGrove.streamIdentifiersDeep( specificationGroveThingIdentifier )
-                  .filter( ( identifier ) -> identifier.getType().equals( IdentifierType.SPEC_OBJECT ) )
-                  .forEach
-                     (
-                        ( specObjectIdentifier ) ->
-                        {
-                           var specObjectGroveThing = specObjectGrove.getByUniquePrimaryKey( specObjectIdentifier ).get();
+                  var parentGroveThingIdentifier = parentGroveThing.getIdentifier();
 
-                           var parentGroveThing = specObjectGroveThing.getParent(-1).get();
+                  specObjectGroveThing
+                     .getForeignThing()
+                     .ifPresent
+                        (
+                           ( foreignThing ) ->
+                           {
+                              var documentObject = (DocumentObject) foreignThing;
 
-                           var parentGroveThingIdentifier = parentGroveThing.getIdentifier();
+                              if( parentGroveThingIdentifier.isType( IdentifierType.SPECIFICATION ) ) {
+                                 this.documentMap.appendDocumentObjectToDocument( parentGroveThingIdentifier, documentObject );
+                              } else {
+                                 this.documentMap.appendDocumentObjectToDocumentObject( parentGroveThingIdentifier, documentObject );
+                              }
 
-                           var documentObject = (DocumentObject) specObjectGroveThing.getForeignThing();
-
-                           if( parentGroveThingIdentifier.isType( IdentifierType.SPECIFICATION ) ) {
-                              this.documentMap.appendDocumentObjectToDocument( parentGroveThingIdentifier, documentObject );
-                           } else {
-                              this.documentMap.appendDocumentObjectToDocumentObject( parentGroveThingIdentifier, documentObject );
                            }
-                        }
-                     );
-            }
-         );
+                        );
+               }
+            );
 
       /*
        * Synchronization Artifact Definition
@@ -223,7 +217,7 @@ public class PublishingDomBuilder implements SynchronizationArtifactBuilder {
                 * Get the Publishing DOM AttributeValue
                 */
 
-               var attributeValue = (AttributeValue) attributeValueGroveThing.getForeignThing();
+               var attributeValue = (AttributeValue) attributeValueGroveThing.getForeignThing().get();
 
                /*
                 * Get the Synchronization Artifact Identifier for the Synchronization Artifact Spec Object Type that is the parent
@@ -240,7 +234,7 @@ public class PublishingDomBuilder implements SynchronizationArtifactBuilder {
 
                var attributeDefinitionGroveThing = attributeValueGroveThing.getLinkScalar( IdentifierType.ATTRIBUTE_DEFINITION ).get();
                var nativeAttributeDefinition     = (AttributeTypeGeneric<?>) attributeDefinitionGroveThing.getNativeThing();
-               var attributeDefinition = (AttributeDefinition) attributeDefinitionGroveThing.getForeignThing();
+               var attributeDefinition = (AttributeDefinition) attributeDefinitionGroveThing.getForeignThing().get();
 
                /*
                 * Is the Native OSEE Attribute Definition for the "PrimaryAttribute"?
@@ -422,7 +416,8 @@ public class PublishingDomBuilder implements SynchronizationArtifactBuilder {
     */
 
    @Override
-   public Optional<ForeignThingFamily> getSpecObject(GroveThing specRelationGroveThing, RelationshipTerminal relationshipTerminal) {
+   public Optional<ForeignThingFamily> getSpecObject(GroveThing specRelationGroveThing,
+      RelationshipTerminal relationshipTerminal) {
       throw new UnsupportedOperationException();
    }
 

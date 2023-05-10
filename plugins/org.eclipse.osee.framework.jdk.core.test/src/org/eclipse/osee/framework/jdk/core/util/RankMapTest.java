@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -134,8 +133,17 @@ public class RankMapTest {
    @Before
    public void testSetup() {
 
+      /*
+       * assume assertions are disabled
+       */
+
       this.assertionsEnabled = false;
-      assert this.assertionsEnabled = true;
+
+      /*
+       * if assertions are enabled this test will have the side-effect of setting this.assertionsEnabled to true.
+       */
+
+      assert (this.assertionsEnabled = true) == true;
 
       this.rankMap = this.rankMapSupplier.get();
       this.anotherRankMap = this.rankMapSupplier.get();
@@ -433,7 +441,7 @@ public class RankMapTest {
       Assert.assertEquals(this.rankMap.size(), entryCounter.get());
    }
 
-   @SuppressWarnings({"unlikely-arg-type","CollectionIncompatibleType"})
+   @SuppressWarnings({"unlikely-arg-type", "CollectionIncompatibleType"})
    @Test
    public void testEntrySetContainsBadObject() {
       var entrySet = this.rankMap.entrySet();
