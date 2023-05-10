@@ -182,7 +182,8 @@ public final class GitOperationsImpl implements GitOperations {
       configurateAuthentication(gitRepoUrl, transportCommand, passphrase);
    }
 
-   private void configurateAuthentication(String gitRepoUrl, TransportCommand<?, ?> transportCommand, String passphrase) {
+   private void configurateAuthentication(String gitRepoUrl, TransportCommand<?, ?> transportCommand,
+      String passphrase) {
       if (gitRepoUrl.startsWith("ssh")) {
          configureSsh(transportCommand, passphrase);
       } else {
@@ -246,22 +247,26 @@ public final class GitOperationsImpl implements GitOperations {
    }
 
    @Override
-   public ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone, String passphrase) {
+   public ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone,
+      String passphrase) {
       ArtifactReadable repoArtifact = clone(gitRepoUrl, branch, gitBranchName, clone, passphrase);
       return updateGitTrackingBranch(branch, repoArtifact, gitBranchName, !clone, passphrase, true, false);
    }
 
    @Override
-   public ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, String gitBranchName, boolean fetch, String passphrase, boolean initialImport, boolean shallowImport) {
-      Repository jgitRepo = getLocalRepoReference(repoArtifact.getSoleAttributeValue(FileSystemPath));
-      if (fetch) {
-         fetch(jgitRepo, passphrase);
-      }
-      if (gitBranchName == null) {
-         gitBranchName = repoArtifact.getSoleAttributeValue(DefaultTrackingBranch);
-      }
+   public ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, String gitBranchName,
+      boolean fetch, String passphrase, boolean initialImport, boolean shallowImport) {
 
-      try {
+      try (Repository jgitRepo = getLocalRepoReference(repoArtifact.getSoleAttributeValue(FileSystemPath))) {
+
+         if (fetch) {
+            fetch(jgitRepo, passphrase);
+         }
+
+         if (gitBranchName == null) {
+            gitBranchName = repoArtifact.getSoleAttributeValue(DefaultTrackingBranch);
+         }
+
          String fromString = "remotes/origin/" + gitBranchName;
          ObjectId from = jgitRepo.resolve(fromString);
          if (from == null) {
@@ -309,7 +314,8 @@ public final class GitOperationsImpl implements GitOperations {
    }
 
    @Override
-   public List<String> getChangeIdBetweenTags(BranchId branch, ArtifactReadable repoArtifact, String startTag, String endTag) {
+   public List<String> getChangeIdBetweenTags(BranchId branch, ArtifactReadable repoArtifact, String startTag,
+      String endTag) {
 
       Repository jgitRepo = getLocalRepoReference(repoArtifact.getSoleAttributeValue(FileSystemPath));
       /* fetch second arg (passPhrase) provide a key or password to enter repo. Here we have no pass phrase. */
@@ -360,7 +366,8 @@ public final class GitOperationsImpl implements GitOperations {
       return allGitBranches;
    }
 
-   public ArtifactReadable clone(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone, String passphrase) {
+   public ArtifactReadable clone(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone,
+      String passphrase) {
       String serverDataLocation = systemPrefs.getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       String repoName = gitRepoUrl.substring(gitRepoUrl.lastIndexOf('/') + 1).replaceAll("\\.git$", "");
       File localPath = new File(serverDataLocation + File.separator + "git", repoName);
@@ -401,7 +408,8 @@ public final class GitOperationsImpl implements GitOperations {
       return queryFactory.fromBranch(branch).andId(repoArtifact).getArtifact();
    }
 
-   private TransactionToken walkTree(ArtifactReadable repoArtifact, Repository jgitRepo, ObjectId to, ObjectId from, BranchId branch, HistoryImportStrategy importStrategy, boolean shallowImport) {
+   private TransactionToken walkTree(ArtifactReadable repoArtifact, Repository jgitRepo, ObjectId to, ObjectId from,
+      BranchId branch, HistoryImportStrategy importStrategy, boolean shallowImport) {
 
       try (RevWalk revWalk = new RevWalk(jgitRepo)) {
 
@@ -488,7 +496,8 @@ public final class GitOperationsImpl implements GitOperations {
       }
    }
 
-   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactReadable repoArtifact, RevCommit revCommit, BranchId branch, HistoryImportStrategy importStrategy, boolean shallowImport) {
+   private ArtifactId parseGitCommit(ObjectReader objectReader, DiffFormatter df, ArtifactReadable repoArtifact,
+      RevCommit revCommit, BranchId branch, HistoryImportStrategy importStrategy, boolean shallowImport) {
       try {
          TransactionBuilder tx = importStrategy.getTransactionBuilder(orcsApi, branch);
          ArtifactId commitArtifact = ArtifactId.SENTINEL;
@@ -506,7 +515,9 @@ public final class GitOperationsImpl implements GitOperations {
       }
    }
 
-   private void importFileChanges(ObjectReader objectReader, DiffFormatter df, ArtifactId repoArtifact, RevCommit revCommit, String commitSHA, ArtifactId commitArtifact, BranchId branch, TransactionBuilder tx, HistoryImportStrategy importStrategy) {
+   private void importFileChanges(ObjectReader objectReader, DiffFormatter df, ArtifactId repoArtifact,
+      RevCommit revCommit, String commitSHA, ArtifactId commitArtifact, BranchId branch, TransactionBuilder tx,
+      HistoryImportStrategy importStrategy) {
       if (revCommit.getParents().length > 1) {
          return;
       }

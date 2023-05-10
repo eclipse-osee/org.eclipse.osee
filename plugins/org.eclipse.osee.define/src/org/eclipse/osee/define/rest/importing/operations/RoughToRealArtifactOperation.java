@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.api.importing.IArtifactExtractor;
 import org.eclipse.osee.define.api.importing.RoughArtifact;
 import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
@@ -59,11 +61,12 @@ public class RoughToRealArtifactOperation {
    private final HashMap<String, HashMap<ArtifactReadable, ArtifactId>> doorsIdArtIdMap;
    private static final Pattern referencePattern = Pattern.compile("\\[[^\\[]*\\]");
 
-   public RoughToRealArtifactOperation(OrcsApi orcsApi, XResultData results, TransactionBuilder transaction, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
+   public RoughToRealArtifactOperation(OrcsApi orcsApi, XResultData results, @NonNull TransactionBuilder transaction, ArtifactReadable destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
       this.results = results;
       this.orcsApi = orcsApi;
       this.rawData = rawData;
-      this.transaction = transaction;
+      this.transaction = Objects.requireNonNull(transaction,
+         "RoughToRealArtifactOperation::new, parameter \"transaction\" cannot be null.");
       this.artifactResolver = artifactResolver;
       this.destinationArtifact = destinationArtifact;
       this.importArtifactOrder = USER_DEFINED;

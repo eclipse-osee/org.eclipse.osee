@@ -76,6 +76,8 @@ public interface Grove extends ToMessage {
     * @param primaryKeys an array of the primary keys. The number of keys specified should match the rank of the grove.
     * @return <code>true</code>, when the {@link Grove} contains a {@link GroveThing} associated with the provided keys;
     * otherwise, <code>false</code>.
+    * @throws IllegalStateException when the {@link Grove} was created for {@link GroveThing} implementations that do
+    * not provide native keys.
     */
 
    boolean containsByPrimaryKeys(Identifier... primaryKeys);
@@ -111,6 +113,8 @@ public interface Grove extends ToMessage {
     * @param nativeKeys an array of the native keys. The number of keys specified should match the rank of the grove.
     * @return when the map contains a {@link GroveThing} associated with the provided native key set, an
     * {@link Optional} containing the associated {@link GroveThing}; otherwise, and empty {@link Optional}.
+    * @throws IllegalStateException when the {@link Grove} was created for {@link GroveThing} implementations that do
+    * not provide native keys.
     */
 
    Optional<GroveThing> getByNativeKeys(Object... nativeKeys);
@@ -122,6 +126,8 @@ public interface Grove extends ToMessage {
     *
     * @param nativeKeys an array of the native keys. The number of keys specified should match the rank of the grove.
     * @return the associated {@link GroveThing}
+    * @throws IllegalStateException when the {@link Grove} was created for {@link GroveThing} implementations that do
+    * not provide native keys.
     * @throws GroveThingNotFoundWithNativeKeysException when the {@link Grove} does not contain a {@link GroveThing}
     * associated with the provided <code>nativeKeys</code>.
     */

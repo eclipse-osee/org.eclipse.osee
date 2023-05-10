@@ -15,6 +15,7 @@ package org.eclipse.osee.define.api.importing;
 
 import java.io.FileFilter;
 import java.net.URI;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -29,7 +30,8 @@ public interface IArtifactExtractor {
 
    public abstract String getDescription();
 
-   public abstract XResultData process(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception;
+   public abstract @NonNull XResultData process(OrcsApi orcsApi, @NonNull XResultData results, URI source,
+      RoughArtifactCollector collector) throws Exception;
 
    public abstract FileFilter getFileFilter();
 

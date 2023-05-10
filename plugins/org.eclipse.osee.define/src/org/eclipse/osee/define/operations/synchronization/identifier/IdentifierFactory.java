@@ -18,6 +18,7 @@ import java.util.EnumMap;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * This class implements a factory for creating the primary {@link Identifier} objects used in a Synchronization
@@ -33,7 +34,8 @@ import java.util.function.Function;
 public class IdentifierFactory {
 
    /**
-    * Saves the type (export/{@link IdentifierFactoryType#COUNTING} or import/{@link IdentifierFactoryType#PATTERN_MATCHING}).
+    * Saves the type (export/{@link IdentifierFactoryType#COUNTING} or
+    * import/{@link IdentifierFactoryType#PATTERN_MATCHING}).
     */
 
    IdentifierFactoryType identifierFactoryType;
@@ -84,7 +86,8 @@ public class IdentifierFactory {
     * imports.
     */
 
-   public Identifier createIdentifier(IdentifierType identifierType) {
+   @SuppressWarnings("null")
+   public @NonNull Identifier createIdentifier(IdentifierType identifierType) {
       if (this.identifierFactoryType != IdentifierFactoryType.COUNTING) {
          throw new IllegalStateException();
       }
@@ -102,7 +105,8 @@ public class IdentifierFactory {
     * exports.
     */
 
-   public Identifier createIdentifier(IdentifierType identifierType, String foreignIdentifier) {
+   @SuppressWarnings("null")
+   public @NonNull Identifier createIdentifier(IdentifierType identifierType, String foreignIdentifier) {
       if (this.identifierFactoryType != IdentifierFactoryType.PATTERN_MATCHING) {
          throw new IllegalStateException();
       }
@@ -119,7 +123,8 @@ public class IdentifierFactory {
     * exports.
     */
 
-   public Optional<Identifier> getPrimaryIdentifierByForeignIdentifierString(IdentifierType identifierType, String foreignIdentifierString) {
+   public Optional<Identifier> getPrimaryIdentifierByForeignIdentifierString(IdentifierType identifierType,
+      String foreignIdentifierString) {
       if (this.identifierFactoryType != IdentifierFactoryType.PATTERN_MATCHING) {
          throw new IllegalStateException();
       }

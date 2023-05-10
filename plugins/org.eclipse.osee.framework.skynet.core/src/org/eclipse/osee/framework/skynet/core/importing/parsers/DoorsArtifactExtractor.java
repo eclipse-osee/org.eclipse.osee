@@ -106,11 +106,13 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
+   public void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector)
+      throws Exception {
       doExtraction(logger, source, collector, "");
    }
 
-   public void doExtraction(OperationLogger logger, URI source, RoughArtifactCollector collector, String documentApplicabilty) {
+   public void doExtraction(OperationLogger logger, URI source, RoughArtifactCollector collector,
+      String documentApplicabilty) {
 
       InputStream htmlStream = null;
       try {
@@ -357,7 +359,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             }
             iPos = nextItem + 1;
          }
-         theChars = stringBuilderToChars(returnString);
       }
       // find the insertion point for list end
       String tokenToInsert = LIST_ITEM_END_TAG + "</ol>";
@@ -488,7 +489,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private int findNextListItem(char[] theChars, int iPos, boolean isNumeric, boolean isLowerCase, int currentNumber, String currentLetter, listData listData) {
+   private int findNextListItem(char[] theChars, int iPos, boolean isNumeric, boolean isLowerCase, int currentNumber,
+      String currentLetter, listData listData) {
       //@formatter:off
       /****************************************************************************
        * Now the tricky part.  We are looking for

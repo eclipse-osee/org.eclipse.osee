@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.define.api.importing;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -52,7 +53,9 @@ public interface IArtifactExtractorDelegate {
     * and initialize it with data from the content, or to append the content to the last, or a prior created
     * RoughArtifact.
     */
-   public XResultData processContent(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph);
+   public XResultData processContent(OrcsApi orcsApi, @NonNull XResultData results, RoughArtifactCollector collector,
+      boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle,
+      String content, boolean isParagraph);
 
    public void finish();
 

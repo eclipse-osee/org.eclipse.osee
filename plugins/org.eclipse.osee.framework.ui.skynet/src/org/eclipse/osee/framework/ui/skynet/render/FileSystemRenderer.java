@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -167,12 +167,13 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       this.rendererThread = null;
    }
 
-   public IFile copyToNewFile(Artifact artifact, PresentationType presentationType, IFile file) {
+   public @NonNull IFile copyToNewFile(Artifact artifact, @NonNull PresentationType presentationType,
+      @NonNull IFile file) {
 
       Objects.requireNonNull(presentationType,
          "FileSystemRender::renderToFile, parameter \"presentationType\" cannot be null.");
 
-      Objects.requireNonNull(presentationType, "FileSystemRender::renderToFile, parameter \"file\" cannot be null.");
+      Objects.requireNonNull(file, "FileSystemRender::renderToFile, parameter \"file\" cannot be null.");
 
       /*
        * Make the artifact into a list
@@ -191,27 +192,37 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       var branchToken = Objects.nonNull(artifact) ? artifact.getBranchToken() : BranchToken.SENTINEL;
 
       /*
-       * Get the input stream
+       * Copy the file contents
        */
 
-      InputStream inputStream;
-      try {
-         inputStream = file.getContents();
-      } catch (CoreException ex) {
-         throw new OseeCoreException("There was an issue copying the file given, creating a new version");
+      try (var inputStream = file.getContents()) {
+         //@formatter:off
+         return
+            this.renderToFileInternal
+               (
+                  artifacts,
+                  branchToken,
+                  presentationType,
+                  null,
+                  inputStream
+               );
+         //@formatter:on
+      } catch (Exception e) {
+         //@formatter:off
+         throw
+            new OseeCoreException
+                  (
+                     new Message()
+                            .title( "FileSystemRenderer::copyToNewFile, Failed to copy file." )
+                            .indentInc()
+                            .segment( "Artifact",         artifact            )
+                            .segment( "PresentationType", presentationType    )
+                            .segment( "File", file.getFullPath().toOSString() )
+                            .reasonFollowsWithTrace( e )
+                            .toString(),
+                     e
+                  );
       }
-
-      //@formatter:off
-      return
-         this.renderToFileInternal
-            (
-               artifacts,
-               branchToken,
-               presentationType,
-               null,
-               inputStream
-            );
-      //@formatter:on
    }
 
    /**
@@ -410,18 +421,15 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
        * Get the Renderer's output
        */
 
-      InputStream inputStream;
+      if ((Boolean) this.getRendererOptionValue(RendererOption.CLIENT_RENDERER_CAN_STREAM)) {
 
-      try {
+         /*
+          * It's a client side renderer that supports streaming (writing to a PipedOutputStream).
+          */
 
-         if ((Boolean) this.getRendererOptionValue(RendererOption.CLIENT_RENDERER_CAN_STREAM)) {
+         try (var pipedInputStream = new PipedInputStream();
+            var pipedOutputStream = new PipedOutputStream(pipedInputStream);) {
 
-            /*
-             * It's a client side renderer that supports streaming (writing to a PipedOutputStream).
-             */
-
-            var pipedInputStream = new PipedInputStream();
-            var pipedOutputStream = new PipedOutputStream(pipedInputStream);
             this.setRendererOption(RendererOption.OUTPUT_STREAM, pipedOutputStream);
             var renderer = this;
 
@@ -469,39 +477,61 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
             this.rendererPipeCloseException = null;
             rendererThread.start();
 
-            inputStream = pipedInputStream;
-
-         } else {
-
             /*
-             * It's a server side render that provides the input stream from the REST API to read from. Or, it's a
-             * client side render that wrote to a buffer and the provided an input stream that reads from the buffer.
+             * Save renderer output to the content file and setup file monitoring
              */
 
-            inputStream = this.getRenderInputStream(presentationType, artifacts); /* abstract */
+            return renderToFileInternal(artifactsNoNulls, branchToken, presentationType, subdirectoryPath,
+               pipedInputStream);
 
+         } catch (Exception e) {
+            //@formatter:off
+            throw
+               new OseeCoreException
+                      (
+                         new Message()
+                                .title( "FileSystemRenderer::renderToFile, Failed to get renderer input stream." )
+                                .indentInc()
+                                .segment( "Renderer", this.getName() )
+                                .reasonFollowsWithTrace( e )
+                                .toString(),
+                         e
+                      );
+            //@formatter:on
          }
-      } catch (Exception e) {
-         //@formatter:off
-         throw
-            new OseeCoreException
-                   (
-                      new Message()
-                             .title( "FileSystemRenderer::renderToFile, Failed to get renderer input stream." )
-                             .indentInc()
-                             .segment( "Renderer", this.getName() )
-                             .reasonFollowsWithTrace( e )
-                             .toString(),
-                      e
-                   );
-         //@formatter:on
+
+      } else {
+
+         /*
+          * It's a server side render that provides the input stream from the REST API to read from. Or, it's a client
+          * side render that wrote to a buffer and then provided an input stream that reads from the buffer.
+          */
+
+         try (var inputStream = this.getRenderInputStream(presentationType, artifacts); /* abstract */) {
+
+            /*
+             * Save renderer output to the content file and setup file monitoring
+             */
+
+            return renderToFileInternal(artifactsNoNulls, branchToken, presentationType, subdirectoryPath, inputStream);
+
+         } catch (Exception e) {
+            //@formatter:off
+               throw
+                  new OseeCoreException
+                         (
+                            new Message()
+                                   .title( "FileSystemRenderer::renderToFile, Failed to renderer file for non-streaming renderer." )
+                                   .indentInc()
+                                   .segment( "Renderer", this.getName() )
+                                   .reasonFollowsWithTrace( e )
+                                   .toString(),
+                            e
+                         );
+               //@formatter:on
+         }
       }
 
-      /*
-       * Save renderer output to the content file and setup file monitoring
-       */
-
-      return renderToFileInternal(artifactsNoNulls, branchToken, presentationType, subdirectoryPath, inputStream);
    }
 
    /**
@@ -517,6 +547,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * the workspace presentation folder.
     * @param renderInputStream the output from the {@link IRenderer} implementation.
     * @return an {@link IFile} handle to the file the render's output was written to.
+    * @throws OseeCoreException when unable to create the {@link IFile} handle or an error occurs writing the file.
     */
 
    private IFile renderToFileInternal(List<Artifact> artifacts, BranchToken branchToken,

@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.operations.synchronization.Direction;
 import org.eclipse.osee.define.operations.synchronization.LinkType;
 import org.eclipse.osee.define.operations.synchronization.forest.GroveThing;
@@ -109,7 +110,7 @@ public class StoreTest {
 
       private final int rank;
       private final int nativeRank;
-      private final Identifier identifier;
+      private final @NonNull Identifier identifier;
       private Object foreignThing;
       private final Object nativeThing;
       private final Object[] primaryKeys;
@@ -134,17 +135,17 @@ public class StoreTest {
       }
 
       @Override
-      public Object getForeignHierarchy() {
-         return null;
+      public Optional<Object> getForeignHierarchy() {
+         return Optional.empty();
       }
 
       @Override
-      public Object getForeignThing() {
-         return this.foreignThing;
+      public Optional<Object> getForeignThing() {
+         return Optional.of(this.foreignThing);
       }
 
       @Override
-      public Identifier getIdentifier() {
+      public @NonNull Identifier getIdentifier() {
          return this.identifier;
       }
 

@@ -19,6 +19,7 @@ import static org.eclipse.osee.framework.core.enums.CoreUserGroups.DefaultArtifa
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.EarnedValueUser;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAccessAdmin;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAdmin;
+import static org.eclipse.osee.framework.core.enums.CoreUserGroups.Publishing;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -75,6 +76,8 @@ public class DemoUsers implements BootstrapUserProvider {
       create(645633521L, "Kay Wheeler", "kayw@google.com", "2323", true, AgileUser, EarnedValueUser);
    public static final UserToken Inactive_Steve =
       create(5808093L, "Inactive Steve", "insactiveSteve@google.com", "2424", false, AgileUser, EarnedValueUser);
+   public static final UserToken Choe_Yun_ui =
+      create(1961856040L, "Choe Yun-ui", "yunuic@google.com", "1234", true, Arrays.asList("1234AD"), Publishing);
 
    public static final String Joe_Smith_And_Kay_Jones =
       DemoUsers.Joe_Smith.getName() + "; " + DemoUsers.Kay_Jones.getName();

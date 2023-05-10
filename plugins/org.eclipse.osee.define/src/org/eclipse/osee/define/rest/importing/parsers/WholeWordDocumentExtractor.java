@@ -16,12 +16,13 @@ package org.eclipse.osee.define.rest.importing.parsers;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
+import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.api.importing.RoughArtifact;
 import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.api.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -32,14 +33,22 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
-      if (source == null) {
-         throw new OseeArgumentException("importFile can not be null");
-      }
+   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, @NonNull URI source,
+      RoughArtifactCollector collector) throws Exception {
+
+      Objects.requireNonNull(results,
+         "WholeWordDocumentExtractor::extractFromSource, parameter \"results\" cannot be null.");
+
+      Objects.requireNonNull(source,
+         "WholeWordDocumentExtractor::extractFromSource, parameter \"source\" cannot be null.");
+
       RoughArtifact roughArtifact = new RoughArtifact(orcsApi, results, RoughArtifactKind.PRIMARY,
          Lib.removeExtension(new File(source).getName()));
+
       collector.addRoughArtifact(roughArtifact);
+
       roughArtifact.addAttribute(CoreAttributeTypes.WholeWordContent, source);
+
       return results;
    }
 

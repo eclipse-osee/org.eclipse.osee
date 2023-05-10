@@ -21,9 +21,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.api.importing.IArtifactExtractorDelegate;
 import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
@@ -104,7 +106,10 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws IOException {
+   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, URI source,
+      RoughArtifactCollector collector) throws IOException {
+      Objects.requireNonNull(results, "WordOutlineExtractor::extractFromSource, parameter \"results\" cannot be null.");
+
       Reader reader = null;
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
