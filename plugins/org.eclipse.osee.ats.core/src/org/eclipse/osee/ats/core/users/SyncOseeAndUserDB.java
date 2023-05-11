@@ -15,8 +15,10 @@ package org.eclipse.osee.ats.core.users;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -64,8 +66,8 @@ public abstract class SyncOseeAndUserDB {
    protected IAtsChangeSet changes;
    protected List<String> ignoreStaticIds;
 
-   public SyncOseeAndUserDB(boolean persist, boolean debug, JdbcClient jdbcClient, AtsApi atsApi) {
-      this.jdbcClient = jdbcClient;
+   public SyncOseeAndUserDB(boolean persist, boolean debug, AtsApi atsApi) {
+      this.jdbcClient = atsApi.getJdbcService().getClient();
       this.atsApi = atsApi;
       this.persist = persist;
       this.debug = debug;
@@ -100,48 +102,59 @@ public abstract class SyncOseeAndUserDB {
          time.end();
 
          /////////////////////////////////////////////
-         ///////////// FIX IF PERSIST
-         /////////////////////////////////////////////
-
-         if (persist) {
-            changes = atsApi.createChangeSet(getTitle());
-         }
-
-         // Test that user is inactive in user db - FIX AVAILABLE
-         time = new ElapsedTime("testCauseWentInactive", debug);
-         testInactiveCauseWentInactive(regUsers);
-         time.end();
-
-         // Test that user has accessed in minimal time (180 days) - FIX AND EMAILS AVAILABLE
-         time = new ElapsedTime("testCauseHaveNotAccessed", debug);
-         testInactiveCauseHaveNotAccessed(regUsers);
-         time.end();
-
-         // Test that user is in appropriate UserGroups - FIX AVAILABLE
-         time = new ElapsedTime("testUserGroups", debug);
-         testUserGroups(regUsers);
-         time.end();
-
-         // Test that user has attributes updated from the User DB - FIX AVAILABLE
-         time = new ElapsedTime("testUserAttributes", debug);
-         testUserAttributes(regUsers);
-         time.end();
-
-         if (changes != null && persist) {
-            TransactionToken tx = changes.executeIfNeeded();
-            results.logf("\nChanges persisted with Transaction %s\n", tx.getIdString());
-         } else {
-            results.logf("\nReport Only - Changes NOT persisted\n");
-         }
-
-         /////////////////////////////////////////////
          ///////////// REPORT ONLY
          /////////////////////////////////////////////
 
          // Test if there duplicate users with same name - REPORT ONLY
-         time = new ElapsedTime("testForDuplicates", debug);
-         testForDuplicates(regUsers);
-         time.end();
+         //         time = new ElapsedTime("testForDuplicates", debug);
+         //         testForDuplicates(regUsers);
+         //         time.end();
+
+         // If this test fails, no other checks are done cause these have to finish first
+         if (results.isErrors()) {
+            results.logf("\nError: Error: Error: Sync aborted cause duplicates found; <b>RESOLVE THESE FIRST!!</b>\n");
+         } else {
+
+            /////////////////////////////////////////////
+            ///////////// FIX IF PERSIST
+            /////////////////////////////////////////////
+
+            if (persist) {
+               changes = atsApi.createChangeSet(getTitle());
+            }
+
+            // Test that user is inactive in user db - FIX AVAILABLE
+            //            time = new ElapsedTime("testCauseWentInactive", debug);
+            //            testInactiveCauseWentInactive(regUsers);
+            //            time.end();
+            //
+            //            // Test that user has accessed in minimal time (180 days) - FIX AND EMAILS AVAILABLE
+            //            time = new ElapsedTime("testCauseHaveNotAccessed", debug);
+            //            testInactiveCauseHaveNotAccessed(regUsers);
+            //            time.end();
+            //
+            //            // Test that user is in appropriate UserGroups - FIX AVAILABLE
+            //            time = new ElapsedTime("testUserGroups", debug);
+            //            testUserGroups(regUsers);
+            //            time.end();
+
+            // Test that user has attributes updated from the User DB - FIX AVAILABLE
+            time = new ElapsedTime("testUserAttributes", debug);
+            testUserAttributes(regUsers);
+            time.end();
+
+         }
+
+         if (changes != null && persist) {
+            TransactionToken tx = changes.executeIfNeeded();
+            if (tx != null) {
+               results.logf("\nChanges persisted with Transaction %s\n", tx.getIdString());
+            } else {
+               results.logf("\nNo Changes to Persist\n");
+            }
+         } else {
+            results.logf("\nReport Only - Changes NOT persisted\n");
+         }
 
          results.log("\nProcessed " + users.size() + " users!\n");
       } catch (Exception ex) {
@@ -181,9 +194,16 @@ public abstract class SyncOseeAndUserDB {
             String wssoMail = atsUser.getEmail();
             String wssoPhone = atsUser.getPhone();
 
+            // User most likely left the company as they're not found in company db; How detect this better?
+            if (Strings.isInvalid(wssoUserName)) {
+               results.errorf("Can't retrieve user by UserId for %s; AtsUser is %s", user.toString(),
+                  atsUser.toStringFull());
+               continue;
+            }
+
             // Verify/update loginId attribute
-            if (!user.getLoginIds().contains(wssoLoginId) && Strings.isValid(wssoLoginId)) {
-               results.errorf("[%s] login ids [%s] appear invalid; should be [%s] - NO FIX\n", user.toStringWithId(),
+            if (debug && !user.getLoginIds().contains(wssoLoginId) && Strings.isValid(wssoLoginId)) {
+               results.warningf("[%s] login ids [%s] appear invalid; should be [%s] - NO FIX\n", user.toStringWithId(),
                   user.getLoginIds(), wssoLoginId);
                /**
                 * At this time, login ids will not be sync'd as they should have managers approval and manually fixed
@@ -207,14 +227,14 @@ public abstract class SyncOseeAndUserDB {
                      user.getEmail());
                   if (persist) {
                      changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Email, wssoMail);
-                     results.log("Fixed");
+                     results.logf("Fixed Email to %s\n", wssoMail);
                   }
                }
             }
 
             String phone =
                atsApi.getAttributeResolver().getSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Phone, "");
-            if (!wssoPhone.equals(phone)) {
+            if (Strings.isValid(wssoPhone) && !wssoPhone.equals(phone)) {
                results.warningf("[%s] wsso.phone [%s] != user.phone [%s]\n", user.toStringWithId(), wssoPhone, phone);
                if (persist) {
                   changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Phone, wssoPhone);
@@ -256,11 +276,11 @@ public abstract class SyncOseeAndUserDB {
          if (atsUser != null) {
             // Only change OSEE user when WssoUser = InActive and OSEE User == Active
             if (user.isActive() && !atsUser.isActive()) {
-               results.errorf("User [%s] User.active [%s] != WssoUser.active [%s]\n", user.toStringWithId(),
+               results.warningf("User [%s] User.active [%s] != WssoUser.active [%s]\n", user.toStringWithId(),
                   user.isActive(), atsUser.isActive());
                if (persist) {
                   changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Active, atsUser.isActive());
-                  results.log("Fixed");
+                  results.logf("Fixed Active to %s\n", atsUser.isActive());
                }
                continue;
             }
@@ -269,7 +289,7 @@ public abstract class SyncOseeAndUserDB {
    }
 
    private void testInactiveCauseHaveNotAccessed(List<UserToken> regUsers) throws Exception {
-      results.logf("getDaysTillFirstInActiveNotice %s\n", getDaysTillFirstInActiveNotice());
+      results.logf("\ngetDaysTillFirstInActiveNotice %s\n", getDaysTillFirstInActiveNotice());
       results.logf("getDaysTillLastInActiveNotice %s\n", getDaysTillLastInActiveNotice());
       results.logf("getDaysTillInActive %s\n\n", getDaysTillInActive());
       for (UserToken user : regUsers) {
@@ -292,7 +312,7 @@ public abstract class SyncOseeAndUserDB {
    }
 
    private void disableUserAccount(UserToken user, int leastDaysOfActivity) {
-      results.errorf("De-Activate User not logged in for > %s days was %s for %s userId %s\n", getDaysTillInActive(),
+      results.warningf("De-Activate User not logged in for > %s days was %s for %s userId %s\n", getDaysTillInActive(),
          leastDaysOfActivity, user.toStringWithId(), user.getUserId());
       if (persist) {
          changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Active, false);
@@ -311,7 +331,7 @@ public abstract class SyncOseeAndUserDB {
       int firstOrLastDaysInt = first ? getDaysTillFirstInActiveNotice() : getDaysTillLastInActiveNotice();
       String firstOrLastStaticId = first ? FIRST_NOTIFICATION_STATIC_ID : SECOND_NOTIFICATION_STATIC_ID;
 
-      results.errorf("Email %s Notice to User not logged in for > %s days was %s for %s userId %s\n", firstOrLastStr,
+      results.warningf("Email %s Notice to User not logged in for > %s days was %s for %s userId %s\n", firstOrLastStr,
          firstOrLastDaysInt, leastDaysOfActivity, user.toStringWithId(), user.getUserId());
 
       if (persist) {
@@ -365,7 +385,7 @@ public abstract class SyncOseeAndUserDB {
       }
 
       // Check last change to user artifact
-      ArtifactReadable art = (ArtifactReadable) atsApi.getQueryService().getArtifact(user);
+      ArtifactToken art = atsApi.getQueryService().getArtifact(user);
       Date date = getTxDate(art);
       int userArtDaysInActive = DateUtil.getWorkingDaysBetween(date, new Date());
 
@@ -390,17 +410,30 @@ public abstract class SyncOseeAndUserDB {
    }
 
    protected void testForDuplicates(List<UserToken> regUsers) throws Exception {
+      Set<Long> duplicates = new HashSet<>();
       Map<String, UserToken> userIdMap = new TreeMap<>();
       Map<String, UserToken> nameMap = new TreeMap<>();
+      boolean error = false;
       for (UserToken user : regUsers) {
+         UserToken userIdInMap = userIdMap.get(user.getUserId());
          if (userIdMap.containsKey(user.getUserId())) {
-            results.errorf("[%s] and [%s] have same userIds\n", user, userIdMap.get(user.getUserId()));
+            results.errorf("[%s] and [%s] have SAME USERIDs\n", user, userIdMap.get(user.getUserId()));
+            duplicates.add(userIdInMap.getId());
+            duplicates.add(user.getId());
+            error = true;
          }
+         UserToken nameInMap = nameMap.get(user.getName());
          if (nameMap.containsKey(user.getName()) && !ignoreDupNames.contains(user.getArtifact())) {
-            results.errorf("[%s] and [%s] have same names\n", user, nameMap.get(user.getName()));
+            results.errorf("[%s] and [%s] have SAME NAMES\n", user, nameMap.get(user.getName()));
+            duplicates.add(nameInMap.getId());
+            duplicates.add(user.getId());
+            error = true;
          }
          nameMap.put(user.getName(), user);
          userIdMap.put(user.getUserId(), user);
+      }
+      if (error) {
+         results.logf("\nDuplicates: %s\n", Collections.toString(",", duplicates));
       }
    }
 
@@ -412,7 +445,9 @@ public abstract class SyncOseeAndUserDB {
       UserToken user = UserToken.create(art.getId(), art.getName(), email, userId, active, loginIds,
          java.util.Collections.emptyList());
       user.setArtifact(art);
-      if (((ArtifactReadable) art).getTags().contains(IGNORE_DUP_NAMES)) {
+
+      if (atsApi.getAttributeResolver().getAttributesToStringListFromArt(art, CoreAttributeTypes.StaticId).contains(
+         IGNORE_DUP_NAMES)) {
          ignoreDupNames.add((ArtifactReadable) art);
       }
       return user;

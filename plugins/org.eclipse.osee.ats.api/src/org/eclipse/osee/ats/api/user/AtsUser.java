@@ -94,6 +94,10 @@ public class AtsUser extends JaxAtsObject implements IAtsObject, UserId {
       return CoreArtifactTypes.User;
    }
 
+   public String toStringFull() {
+      return "AtsUser [userId=" + userId + ", email=" + email + ", phone=" + phone + ", loginIds=" + loginIds + "]";
+   }
+
    @Override
    public String toString() {
       return getName();
