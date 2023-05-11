@@ -44,7 +44,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Megumi Telles
  */
-public class PurgeUser extends AbstractBlam {
+public class PurgeUserBlam extends AbstractBlam {
 
    public final static String FROM_USER = "From User";
    public final static String TO_USER = "To User";
@@ -204,8 +204,8 @@ public class PurgeUser extends AbstractBlam {
    @Override
    public List<XWidgetRendererItem> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
-      wb.andWidget(FROM_USER, "XMembersComboAll").endWidget();
-      wb.andWidget(TO_USER, "XMembersComboAll").endWidget();
+      wb.andWidget(FROM_USER, "XHyperlinkWfdForUserAll").endWidget();
+      wb.andWidget(TO_USER, "XHyperlinkWfdForUserAll").endWidget();
       wb.andXCheckbox("Persist").endWidget();
       return wb.getItems();
    }

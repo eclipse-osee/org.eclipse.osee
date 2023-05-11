@@ -84,6 +84,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttrDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForUser;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForUserAll;
 import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
@@ -135,6 +137,8 @@ public final class FrameworkXWidgetProvider {
       register(XHyperlinkLabelValueSelectionDam.class);
       register(XArtifactSelectWidget.class);
       register(XArtifactSelectWidgetWithSave.class);
+      register(XHyperlinkWfdForUser.class);
+      register(XHyperlinkWfdForUserAll.class);
       return nameToClass;
    }
 
@@ -213,7 +217,8 @@ public final class FrameworkXWidgetProvider {
       return xWidget;
    }
 
-   private AttributeTypeToken getAttributeTypeOrSentinel(XWidgetRendererItem xWidgetLayoutData, XWidget xWidget, OrcsTokenService tokenService) {
+   private AttributeTypeToken getAttributeTypeOrSentinel(XWidgetRendererItem xWidgetLayoutData, XWidget xWidget,
+      OrcsTokenService tokenService) {
       AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
       if (xWidget instanceof AttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
          attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreId());
@@ -224,7 +229,8 @@ public final class FrameworkXWidgetProvider {
       return attributeType;
    }
 
-   public static XWidget getXWidget(XWidgetRendererItem xWidgetLayoutData, String xWidgetName, String name, Artifact artifact) {
+   public static XWidget getXWidget(XWidgetRendererItem xWidgetLayoutData, String xWidgetName, String name,
+      Artifact artifact) {
       XWidget xWidget = null;
       // Look for widget provider to create widget
       Collection<IXWidgetProvider> providers = getXWidgetProviders();

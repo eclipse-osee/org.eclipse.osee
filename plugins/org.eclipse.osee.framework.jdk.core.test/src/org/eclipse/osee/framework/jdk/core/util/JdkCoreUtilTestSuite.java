@@ -44,7 +44,8 @@ import org.junit.runners.Suite;
    UrlQueryTest.class,
    EnumFunctionalInterafaceMapsTest.class,
    DoubleMapTest.class,
-   RankMapTest.class})
+   RankMapTest.class,
+   EmailUtilTest.class})
 public class JdkCoreUtilTestSuite {
    // Test Suite
 }
