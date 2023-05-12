@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -27,10 +25,11 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
+import org.eclipse.osee.orcs.db.internal.search.handlers.ChildrenFollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowSearchSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.PaginationSqlHandler;
@@ -124,7 +123,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    }
 
    private void follow(SqlHandlerFactory handlerFactory, List<String> artWithAliases, String sourceArtTable) {
-      List<SqlHandler<?>> handlers = new ArrayList<>(queryDataCursor.getOnlyCriteriaSet().size());
+      List<SqlHandler<?>> handlers = new ArrayList<>();
       FollowRelationSqlHandler previousFollow = null;
       for (Criteria criteria : queryDataCursor.getOnlyCriteriaSet()) {
          if (criteria instanceof CriteriaRelationTypeFollow) {
@@ -147,6 +146,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             handlers.add(handlerFactory.createHandler(criteria));
          }
       }
+      /*
+       * If new relation type is not used in the parent Query but is used in the child query must add
+       * ChildrenFollowRelationSqlHandler so that union of all artWiths will have same number of columns
+       */
+      if (!newRelationInCriteria(Collections.singletonList(queryDataCursor)) && newRelationInCriteria(
+         queryDataCursor.getChildrenQueryData())) {
+         handlers.add(new ChildrenFollowRelationSqlHandler()); //will be used to add 0 rel_type, 0 rel_order for non-new relation type artWith clauses
+      }
       //sort handlers
       Collections.sort(handlers, HANDLER_COMPARATOR);
       String artWithAlias = write(handlers, "artWith");
@@ -159,13 +166,35 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       queryDataCursor = tempQueryDataCursor;
    }
 
+   private boolean newRelationInCriteria(List<QueryData> queryDatas) {
+
+      for (QueryData queryData : queryDatas) {
+         for (Criteria criteria : queryData.getAllCriteria()) {
+            if (criteria instanceof RelationTypeCriteria) {
+               if (((RelationTypeCriteria) criteria).getType().isNewRelationTable()) {
+                  return true;
+               }
+            }
+         }
+      }
+
+      return false;
+   }
+
    public void build(SqlHandlerFactory handlerFactory) {
       List<String> artWithAliases = new ArrayList<>();
+      /*
+       * with artWith1 as (...), artWith2 as (...), ...
+       */
       follow(handlerFactory, artWithAliases, null);
       String artWithAlias;
+
       if (artWithAliases.size() == 1) {
          artWithAlias = artWithAliases.get(0);
       } else {
+         /*
+          * arts as (select * from artWith1 union select * from artWith2...)
+          */
          artWithAlias = startCommonTableExpression("arts");
          boolean firstAlias = true;
          for (String art : artWithAliases) {
@@ -174,25 +203,10 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             } else {
                firstAlias = false;
             }
-            if (this.output.toString().contains("osee_relation rel")) {
-               String dataString = this.output.toString().replaceAll("\\/\\*.*?\\*\\/", "");
-               Pattern pattern = Pattern.compile(art + "\\sAS\\s\\((.*?)\\)", Pattern.DOTALL);
-               Matcher regexMatcher = pattern.matcher(dataString);
-               if (regexMatcher.find()) {//Finds Matching Pattern in String
-                  if (regexMatcher.group(1).contains("osee_relation rel")) {
-                     write("SELECT " + art + ".* from " + art);
-                  } else if (rootQueryData.getCriteriaByType(CriteriaRelatedTo.class).isEmpty()) {
-                     write("SELECT " + art + ".*, 0 as top_rel_type, 0 as top_rel_order from " + art);
-                  } else {
-                     write("SELECT " + art + ".* from " + art);
-                  }
-               }
-            } else {
-               write("SELECT " + art + ".* from " + art);
-            }
+            write("SELECT " + art + ".* from " + art);
          }
-
       }
+
       if (rootQueryData.isIdQueryType() || (rootQueryData.isCountQueryType() && !rootQueryData.hasCriteriaType(
          CriteriaFollowSearch.class))) {
          fieldAlias = artWithAlias;
@@ -204,14 +218,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             writeRelsCommonTableExpression(artWithAlias);
             writeRelsCommonTableExpression2(artWithAlias);
             if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
-               FollowSearchSqlHandler followSearchHandler = (FollowSearchSqlHandler) handlerFactory.createHandler(
-                  rootQueryData.getCriteriaByType(CriteriaFollowSearch.class).get(0));
-               boolean newRelationUsed = this.output.toString().contains("osee_relation rel");
-               attrSearchAlias =
-                  followSearchHandler.writeFollowSearchCommonTableExpression(this, attsAlias, newRelationUsed,
-                     (rootQueryData.hasCriteriaType(
-                        CriteriaPagination.class) ? rootQueryData.getCriteriaByType(CriteriaPagination.class).get(
-                           0) : null));
+               writeFollowSearchCommonTableExpression(handlerFactory, attsAlias);
             }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
          }
@@ -228,6 +235,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write("SELECT * FROM %s", fieldAlias);
       }
       if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
+
          write(
             " where exists (select 'x' from " + attrSearchAlias + " where " + getJdbcClient().getDbType().getInStringSql(
                fieldAlias + ".art_path",
@@ -267,6 +275,18 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             }
          }
       }
+   }
+
+   private void writeFollowSearchCommonTableExpression(SqlHandlerFactory handlerFactory, String attsAlias) {
+
+      FollowSearchSqlHandler followSearchHandler = (FollowSearchSqlHandler) handlerFactory.createHandler(
+         rootQueryData.getCriteriaByType(CriteriaFollowSearch.class).get(0));
+
+      boolean newRelationUsed = newRelationInCriteria(
+         Collections.singletonList(queryDataCursor)) || newRelationInCriteria(queryDataCursor.getChildrenQueryData());
+      attrSearchAlias = followSearchHandler.writeFollowSearchCommonTableExpression(this, attsAlias, newRelationUsed,
+         (rootQueryData.hasCriteriaType(
+            CriteriaPagination.class) ? rootQueryData.getCriteriaByType(CriteriaPagination.class).get(0) : null));
    }
 
    private void writeFieldsCommonTableExpression(String artWithAlias, String attsAlias) {
@@ -389,13 +409,14 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
             writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
          }
-
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
+
       } else if (relsAlias != null) {
          writeSelectFields(relsAlias, "*", artAlias, "art_type_id");
          write(" AS other_art_type_id");
+
       } else if (rels2Alias != null) {
          writeSelectFields(rels2Alias, "*", artAlias, "art_type_id");
          write(" AS other_art_type_id");
