@@ -25,6 +25,7 @@ import {
 	transactionBuilderMock,
 	transactionMock,
 } from '@osee/shared/transactions/testing';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 
 describe('TypesService', () => {
 	let service: TypesService;
@@ -115,7 +116,9 @@ describe('TypesService', () => {
 				10 +
 				'/types/filter/' +
 				'' +
-				'?count=10&pageNum=1'
+				'?count=10&pageNum=1' +
+				'&orderByAttributeType=' +
+				ATTRIBUTETYPEIDENUM.NAME
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});

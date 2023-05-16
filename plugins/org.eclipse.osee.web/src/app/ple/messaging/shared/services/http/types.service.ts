@@ -57,6 +57,7 @@ export class TypesService {
 				params: {
 					count: pageSize,
 					pageNum: pageNum,
+					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},
 			}
 		);
