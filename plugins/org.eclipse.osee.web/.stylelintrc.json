@@ -9,6 +9,12 @@
 			{
 				"ignorePseudoElements": ["ng-deep"]
 			}
+		],
+		"selector-type-no-unknown": [
+			true,
+			{
+				"ignoreTypes": ["markdown"]
+			}
 		]
 	}
 }

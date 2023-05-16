@@ -10,3 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+@mixin markdown-styles {
+	markdown ::ng-deep {
+		ul {
+			list-style: unset;
+		}
+	}
+}
