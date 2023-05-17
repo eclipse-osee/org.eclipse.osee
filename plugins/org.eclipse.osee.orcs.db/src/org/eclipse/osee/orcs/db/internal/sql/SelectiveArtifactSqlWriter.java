@@ -227,7 +227,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
 
       if (rootQueryData.isCountQueryType()) {
          if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
-            write("select count(distinct art_id) from %s", fieldAlias);
+            write("select count(distinct " + fieldAlias + ".art_id) from %s", fieldAlias);
          } else {
             write("SELECT count(*) FROM %s", fieldAlias);
          }
@@ -235,30 +235,28 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write("SELECT * FROM %s", fieldAlias);
       }
       if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
-
-         write(
-            " where exists (select 'x' from " + attrSearchAlias + " where " + getJdbcClient().getDbType().getInStringSql(
-               fieldAlias + ".art_path",
-               "','||" + attrSearchAlias + ".art_id||','") + " > 0 or " + getJdbcClient().getDbType().getInStringSql(
-                  attrSearchAlias + ".art_path",
-                  "','||" + fieldAlias + ".art_id||','") + " > 0 or " + getJdbcClient().getDbType().getInStringSql(
-                     attrSearchAlias + ".art_path", "','||" + fieldAlias + ".other_art_id||','") + " > 0 )");
+         write(", " + attrSearchAlias);
+         write(" where (" + getJdbcClient().getDbType().getInStringSql(fieldAlias + ".art_path",
+            "','||" + attrSearchAlias + ".art_id||','") + " > 0 or " + getJdbcClient().getDbType().getInStringSql(
+               attrSearchAlias + ".art_path",
+               "','||" + fieldAlias + ".art_id||','") + " > 0 or " + getJdbcClient().getDbType().getInStringSql(
+                  attrSearchAlias + ".art_path", "','||" + fieldAlias + ".other_art_id||','") + " > 0 ) ");
 
       }
       if (rootQueryData.isCountQueryType() && rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
-         write(" and top = 1");
+         write(" and " + fieldAlias + ".top = 1");
       }
       if (!rootQueryData.isCountQueryType()) {
          if (parentWriter == null && !rootQueryData.isSelectQueryType()) {
-            write(" ORDER BY art_id");
+            write(" ORDER BY " + fieldAlias + ".art_id");
          } else if (this.rels2Alias != null) {
             write(" ORDER BY ");
-            write("top desc");
+            write(fieldAlias + ".top desc");
             if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
                "RELATION AND ATTRIBUTE")) {
-               write(", CASE WHEN fields1.type_id = ");
+               write(", CASE WHEN " + fieldAlias + ".type_id = ");
                write(this.rootQueryData.orderByAttribute().getIdString());
-               write(" THEN fields1.VALUE ELSE \n");
+               write(" THEN " + fieldAlias + ".VALUE ELSE \n");
                write("'");
                write(new String(new char[4000]).replace('\0', 'Z'));
                write("'");
@@ -267,9 +265,11 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             if (this.rootQueryData.orderMechanism().equals("RELATION") || this.rootQueryData.orderMechanism().equals(
                "RELATION AND ATTRIBUTE")) {
                if (this.output.toString().contains("top_rel_type")) {
-                  write(", top_rel_type, top_rel_order, rel_order");
+                  write(
+                     ", " + fieldAlias + ".top_rel_type, " + fieldAlias + ".top_rel_order, " + fieldAlias + ".rel_order");
                } else {
-                  write(", case when other_art_id = 0 then other_art_id else 1 end, rel_order");
+                  write(
+                     ", case when " + fieldAlias + ".other_art_id = 0 then " + fieldAlias + ".other_art_id else 1 end, " + fieldAlias + ".rel_order");
                }
 
             }
