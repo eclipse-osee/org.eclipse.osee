@@ -74,6 +74,39 @@ export class SubMessagesService {
 			}
 		);
 	}
+
+	getPaginatedSubmessagesByName(
+		branchId: string,
+		name: string,
+		count: number,
+		pageNum: string | number
+	) {
+		return this.http.get<Required<subMessage>[]>(
+			apiURL + '/mim/branch/' + branchId + '/submessages/filter/name',
+			{
+				params: {
+					name: name,
+					pageNum: pageNum,
+					count: count,
+				},
+			}
+		);
+	}
+
+	getSubmessagesByNameCount(branchId: string, name: string) {
+		return this.http.get<number>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/submessages/filter/name/count',
+			{
+				params: {
+					name: name,
+				},
+			}
+		);
+	}
+
 	createMessageRelation(
 		messageId: string,
 		subMessageId?: string,

@@ -27,9 +27,15 @@ public interface InterfaceStructureCountEndpoint {
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
    /**
-    * Gets List of filtered Platform Types
+    * Gets count of filtered structures
     *
     * @return List of platform types
     */
    int getStructures(@QueryParam("filter") String filter);
+
+   @GET
+   @Path("name")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getStructuresByNameCount(@QueryParam("name") String name);
+
 }

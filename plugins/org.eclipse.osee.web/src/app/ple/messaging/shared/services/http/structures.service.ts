@@ -41,6 +41,35 @@ export class StructuresService {
 		);
 	}
 
+	getPaginatedStructuresFilteredByName(
+		branchId: string,
+		name: string,
+		count: number,
+		pageNum: string | number
+	) {
+		return this.http.get<Required<structure[]>>(
+			apiURL + '/mim/branch/' + branchId + '/structures/name',
+			{
+				params: {
+					count: count,
+					pageNum: pageNum,
+					name: name,
+				},
+			}
+		);
+	}
+
+	getStructuresFilteredByNameCount(branchId: string, name: string) {
+		return this.http.get<number>(
+			apiURL + '/mim/branch/' + branchId + '/structures/name/count',
+			{
+				params: {
+					name: name,
+				},
+			}
+		);
+	}
+
 	getPaginatedFilteredStructures(
 		branchId: string,
 		filter: string,

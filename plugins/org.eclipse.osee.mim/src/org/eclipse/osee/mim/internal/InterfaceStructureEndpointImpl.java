@@ -41,7 +41,8 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
    }
 
    @Override
-   public Collection<InterfaceStructureToken> getAllStructures(String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+   public Collection<InterfaceStructureToken> getAllStructures(String filter, ArtifactId viewId, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (subMessageId.getId() == 0) {
          return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));

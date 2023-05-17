@@ -64,11 +64,11 @@ import {
 	TypesUIService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
 	templateUrl: './add-element-dialog.component.html',
-	styleUrls: ['./add-element-dialog.component.sass'],
 	standalone: true,
 	imports: [
 		MatDialogModule,
@@ -87,15 +87,13 @@ import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 		MatSelectModule,
 		MatOptionModule,
 		MatTooltipModule,
+		MatAutocompleteModule,
 		AsyncPipe,
 		NgIf,
 		NgFor,
 	],
 })
 export class AddElementDialogComponent implements OnInit {
-	availableElements = (pageNum: number | string) =>
-		this.structures.getPaginatedElements(pageNum);
-	storedId: string = '-1';
 	loadingTypes = false;
 	types = this.structures.types;
 	typeDialogOpen = false;
@@ -104,6 +102,28 @@ export class AddElementDialogComponent implements OnInit {
 	private query = new BehaviorSubject<MimQuery<PlatformType> | undefined>(
 		undefined
 	);
+
+	paginationSize = 10;
+	elementSearch = new BehaviorSubject<string>('');
+	selectedElement: element | undefined = undefined;
+
+	availableElements = this.elementSearch.pipe(
+		debounceTime(250),
+		map(
+			(search) => (pageNum: number | string) =>
+				this.structures.getPaginatedElementsByName(
+					search,
+					this.paginationSize,
+					pageNum
+				)
+		)
+	);
+
+	availableElementsCount = this.elementSearch.pipe(
+		debounceTime(250),
+		switchMap((search) => this.structures.getElementsByNameCount(search))
+	);
+
 	availableTypes = combineLatest([this.queryMode, this.query]).pipe(
 		debounceTime(100),
 		switchMap(([mode, query]) =>
@@ -180,18 +200,35 @@ export class AddElementDialogComponent implements OnInit {
 		this.queryMode.next(true);
 	}
 
+	applySearchTerm(searchTerm: Event) {
+		const value = (searchTerm.target as HTMLInputElement).value;
+		this.elementSearch.next(value);
+	}
+
 	createNew() {
 		this.data.element.id = '-1';
+		this.selectedElement = undefined;
 	}
-	storeId(value: element) {
-		this.storedId = value.id || '-1';
+	selectExistingElement(element: element) {
+		this.selectedElement = element;
+	}
+
+	getElementOptionToolTip(element: element) {
+		let tooltip = '';
+		if (element.logicalType) {
+			tooltip += element.logicalType + '\n\n';
+		}
+		tooltip += element.description;
+		return tooltip;
 	}
 
 	moveToStep(index: number, stepper: MatStepper) {
 		stepper.selectedIndex = index - 1;
 	}
 	moveToReview(stepper: MatStepper) {
-		this.data.element.id = this.storedId;
+		if (this.selectedElement) {
+			this.data.element = this.selectedElement;
+		}
 		this.moveToStep(3, stepper);
 	}
 	openPlatformTypeDialog(event?: Event) {

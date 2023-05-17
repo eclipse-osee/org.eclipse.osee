@@ -100,6 +100,7 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	private _value: Subject<T> = new Subject();
 	private _immediateValue: Subject<T> = new Subject();
 	private _units: Subject<string> = new Subject();
+	paginationSize = 10;
 	_element: Partial<element> = {
 		id: this.elementId,
 	};
@@ -185,23 +186,38 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	 * State of when auto complete is initial opened to defer data loading
 	 */
 	openTypeAutoComplete = new ReplaySubject<void>();
-	filteredTypes = (pageNum: string | number) =>
-		this.openTypeAutoComplete.pipe(
-			distinctUntilChanged(),
-			switchMap((_) =>
-				this._typeValue.pipe(
-					debounceTime(500),
-					switchMap((typeAhead) =>
+
+	filteredTypes = this.openTypeAutoComplete.pipe(
+		distinctUntilChanged(),
+		switchMap((_) =>
+			this._typeValue.pipe(
+				debounceTime(500),
+				map(
+					(typeAhead) => (pageNum: string | number) =>
 						this.structureService.getPaginatedFilteredTypes(
 							this.isString(typeAhead)
 								? typeAhead.toLowerCase()
 								: (typeAhead as unknown as string),
+							this.paginationSize,
 							pageNum
 						)
-					)
 				)
 			)
-		);
+		)
+	);
+
+	filteredTypesCount = this.openTypeAutoComplete.pipe(
+		distinctUntilChanged(),
+		switchMap((_) =>
+			this._typeValue.pipe(
+				debounceTime(500),
+				switchMap((search) =>
+					this.structureService.getFilteredTypesCount(search)
+				)
+			)
+		)
+	);
+
 	private _type: Subject<PlatformType> = new Subject();
 	private _sendType = this._type.pipe(
 		share(),
@@ -251,23 +267,11 @@ export class EditElementFieldComponent<T extends keyof element = any>
 
 	updateTypeAhead(value: any) {
 		this._typeValue.next(value);
-		this.filteredTypes = (pageNum: string | number) =>
-			this.openTypeAutoComplete.pipe(
-				distinctUntilChanged(),
-				switchMap((_) =>
-					this._typeValue.pipe(
-						debounceTime(500),
-						switchMap((typeAhead) =>
-							this.structureService.getPaginatedFilteredTypes(
-								this.isString(typeAhead)
-									? typeAhead.toLowerCase()
-									: (typeAhead as unknown as string),
-								pageNum
-							)
-						)
-					)
-				)
-			);
+	}
+
+	applySearch(searchTerm: Event) {
+		const value = (searchTerm.target as HTMLInputElement).value;
+		this._typeValue.next(value);
 	}
 
 	compareApplics(o1: any, o2: any) {

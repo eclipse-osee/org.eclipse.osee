@@ -99,9 +99,9 @@ describe('AddSubMessageDialogComponent', () => {
 		expect(component.data.subMessage.id).toEqual('-1');
 	});
 
-	it('should store the id', () => {
-		component.storeId(dummySubmessage);
-		expect(component.storedId).toEqual('10');
+	it('should store the selected submessage', () => {
+		component.selectExistingSubmessage(dummySubmessage);
+		expect(component.selectedSubmessage).toEqual(dummySubmessage);
 	});
 
 	it('should movetoStep 3', () => {

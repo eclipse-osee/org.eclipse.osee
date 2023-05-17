@@ -33,7 +33,6 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 @Component({
 	selector: 'osee-edit-connection-dialog',
 	templateUrl: './edit-connection-dialog.component.html',
-	styleUrls: ['./edit-connection-dialog.component.sass'],
 	standalone: true,
 	imports: [
 		MatDialogModule,
@@ -52,8 +51,12 @@ export class EditConnectionDialogComponent implements OnDestroy {
 	private _done = new Subject();
 	title: string = '';
 	applics = this.graphService.applic;
+	paginationSize = 5;
 	transportTypes = (pageNum: string | number) =>
-		this.transportTypeService.getPaginatedTypes(pageNum, 3);
+		this.transportTypeService.getPaginatedTypes(
+			pageNum,
+			this.paginationSize
+		);
 	constructor(
 		public dialogRef: MatDialogRef<EditConnectionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: connection,

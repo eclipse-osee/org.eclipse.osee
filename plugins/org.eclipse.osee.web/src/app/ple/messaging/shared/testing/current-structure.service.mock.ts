@@ -141,9 +141,13 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	availableElements: undefined,
 	getPaginatedFilteredTypes: function (
 		filter: string,
+		count: number,
 		pageNum: string | number
 	): Observable<PlatformType[]> {
-		throw new Error('Function not implemented.');
+		return of(platformTypesMock);
+	},
+	getFilteredTypesCount(filter: string) {
+		return of(10);
 	},
 	set difference(id: changeInstance[]) {},
 	DiffMode: false,

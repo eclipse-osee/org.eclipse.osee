@@ -42,12 +42,14 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElements(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<InterfaceStructureElementToken> getElements(long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       return this.elementApi.getAll(branch, pageNum, pageSize, orderByAttributeType);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElements(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<InterfaceStructureElementToken> getElements(String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       return this.elementApi.getFiltered(branch, filter, pageNum, pageSize, orderByAttributeType);
    }
 
@@ -71,6 +73,16 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
    @Override
    public Collection<InterfaceStructureElementTokenWithPath> getElementsByType(String filter) {
       return this.elementApi.getElementsByTypeFilter(branch, filter);
+   }
+
+   @Override
+   public Collection<InterfaceStructureElementToken> getElementsByName(String name, long pageNum, long pageSize) {
+      return this.elementApi.getElementsByName(branch, name, pageNum, pageSize);
+   }
+
+   @Override
+   public int getElementsByNameCount(String name) {
+      return this.elementApi.getElementsByNameCount(branch, name);
    }
 
 }

@@ -39,7 +39,8 @@ public interface InterfaceElementSearchEndpoint {
     *
     * @return list of elements
     */
-   Collection<InterfaceStructureElementToken> getElements(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceStructureElementToken> getElements(@QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("filter/{filter}")
@@ -49,7 +50,9 @@ public interface InterfaceElementSearchEndpoint {
     *
     * @return List of elements
     */
-   Collection<InterfaceStructureElementToken> getElements(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceStructureElementToken> getElements(@PathParam("filter") String filter,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    /**
     * Gets list of elements utilizing platform type
@@ -82,4 +85,15 @@ public interface InterfaceElementSearchEndpoint {
    @Path("types/filter/{filter}")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<InterfaceStructureElementTokenWithPath> getElementsByType(@PathParam("filter") String filter);
+
+   @GET
+   @Path("name")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<InterfaceStructureElementToken> getElementsByName(@QueryParam("name") String name,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+
+   @GET
+   @Path("name/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getElementsByNameCount(@QueryParam("name") String name);
 }

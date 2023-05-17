@@ -115,9 +115,9 @@ describe('AddStructureDialogComponent', () => {
 		expect(component.data.structure.id).toEqual('-1');
 	});
 
-	it('should store the id', () => {
-		component.storeId(dummyStructure);
-		expect(component.storedId).toEqual('10');
+	it('should store the selected structure', () => {
+		component.selectExistingStructure(dummyStructure);
+		expect(component.selectedStructure).toEqual(dummyStructure);
 	});
 
 	it('should movetoStep 3', () => {

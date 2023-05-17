@@ -32,6 +32,9 @@ import {
 import type { structure } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { AddStructureDialog } from './add-structure-dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { BehaviorSubject, debounceTime, map, switchMap } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-messaging-add-structure-dialog',
@@ -46,18 +49,41 @@ import { AddStructureDialog } from './add-structure-dialog';
 		MatFormFieldModule,
 		MatSelectModule,
 		MatInputModule,
+		MatAutocompleteModule,
 		MatSlideToggleModule,
 		MatOptionLoadingComponent,
+		MatTooltipModule,
 		NgIf,
 		NgFor,
 		AsyncPipe,
 	],
 })
 export class AddStructureDialogComponent {
-	availableStructures = (pageNum: number | string) =>
-		this.structures.getPaginatedStructures(pageNum);
 	categories = this.enumService.categories;
-	storedId: string = '-1';
+	paginationSize: number = 50;
+
+	selectedStructure: structure | undefined;
+	structureSearch = new BehaviorSubject<string>('');
+
+	availableStructures = this.structureSearch.pipe(
+		debounceTime(250),
+		map(
+			(search) => (pageNum: number | string) =>
+				this.structures.getPaginatedStructuresFilteredByName(
+					search,
+					this.paginationSize,
+					pageNum
+				)
+		)
+	);
+
+	availableStructuresCount = this.structureSearch.pipe(
+		debounceTime(250),
+		switchMap((search) =>
+			this.structures.getStructuresFilteredByNameCount(search)
+		)
+	);
+
 	constructor(
 		@Inject(STRUCTURE_SERVICE_TOKEN)
 		private structures: CurrentStructureService,
@@ -65,20 +91,29 @@ export class AddStructureDialogComponent {
 		@Inject(MAT_DIALOG_DATA) public data: AddStructureDialog,
 		private enumService: EnumsService
 	) {}
+
 	moveToStep(index: number, stepper: MatStepper) {
 		stepper.selectedIndex = index - 1;
 	}
 
 	createNew() {
 		this.data.structure.id = '-1';
-	}
-
-	storeId(value: structure) {
-		this.storedId = value.id || '-1';
+		this.selectedStructure = undefined;
 	}
 
 	moveToReview(stepper: MatStepper) {
-		this.data.structure.id = this.storedId;
+		if (this.selectedStructure) {
+			this.data.structure = this.selectedStructure;
+		}
 		this.moveToStep(3, stepper);
+	}
+
+	applySearchTerm(searchTerm: Event) {
+		const value = (searchTerm.target as HTMLInputElement).value;
+		this.structureSearch.next(value);
+	}
+
+	selectExistingStructure(structure: structure) {
+		this.selectedStructure = structure;
 	}
 }

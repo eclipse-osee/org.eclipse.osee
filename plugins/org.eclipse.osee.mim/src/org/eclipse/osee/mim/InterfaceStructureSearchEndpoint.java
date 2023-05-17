@@ -29,6 +29,19 @@ public interface InterfaceStructureSearchEndpoint {
 
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<InterfaceStructureToken> getStructures(@QueryParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceStructureToken> getStructures(@QueryParam("filter") String filter,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+
+   @GET
+   @Path("name")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<InterfaceStructureToken> getStructuresByName(@QueryParam("name") String name,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+
+   @GET
+   @Path("name/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getStructuresByNameCount(@QueryParam("name") String name);
 
 }

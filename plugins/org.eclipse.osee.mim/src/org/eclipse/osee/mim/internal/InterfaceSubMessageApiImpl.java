@@ -86,7 +86,8 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllByRelationAndFilter(BranchId branch, ArtifactId messageId, String filter) {
+   public Collection<InterfaceSubMessageToken> getAllByRelationAndFilter(BranchId branch, ArtifactId messageId,
+      String filter) {
       try {
          return this.getAccessor().getAllByRelationAndFilter(branch,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, filter, subMessageAttributes,
@@ -154,17 +155,20 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceSubMessageToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<InterfaceSubMessageToken> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+      long pageNum, long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -175,27 +179,32 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize) {
+   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum,
+      long pageSize) {
       return this.getAllByRelation(branch, messageId, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize) {
+   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum,
+      long pageSize) {
       return this.getAllByFilter(branch, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId,
+      AttributeTypeId orderByAttribute) {
       return this.getAllByRelation(branch, messageId, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter,
+      AttributeTypeId orderByAttribute) {
       return this.getAllByFilter(branch, filter, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
             messageId, pageNum, pageSize);
@@ -207,7 +216,8 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return this.getAccessor().getAllByFilter(branch, filter, subMessageAttributes, pageNum, pageSize,
             orderByAttribute);
@@ -234,7 +244,8 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceSubMessageToken> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       try {
          return this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttribute);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -242,6 +253,22 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public List<InterfaceSubMessageToken> getAllByName(BranchId branch, String name, long pageNum, long pageSize) {
+      try {
+         return (List<InterfaceSubMessageToken>) this.getAccessor().getAll(branch, new LinkedList<>(), name,
+            Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize, CoreAttributeTypes.Name);
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return new LinkedList<>();
+      }
+   }
+
+   @Override
+   public int getAllByNameCount(BranchId branch, String name) {
+      return this.getAccessor().getAllByFilterAndCount(branch, name, Arrays.asList(CoreAttributeTypes.Name));
    }
 
 }
