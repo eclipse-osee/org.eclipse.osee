@@ -53,7 +53,8 @@ public class FollowSearchSqlHandler extends SqlHandler<CriteriaFollowSearch> {
       return SqlHandlerPriority.FOLLOW_SEARCH.ordinal();
    }
 
-   public String writeFollowSearchCommonTableExpression(AbstractSqlWriter writer, String attAlias, boolean newRelation, CriteriaPagination pagination) {
+   public String writeFollowSearchCommonTableExpression(AbstractSqlWriter writer, String attAlias, boolean newRelation,
+      CriteriaPagination pagination) {
       attrSearchAlias = writer.startCommonTableExpression("attrSearch");
       List<String> values = new ArrayList<>(criteria.getValues());
       List<AttributeTypeId> types = new ArrayList<>(criteria.getTypes());
@@ -84,13 +85,13 @@ WHERE
          writer.write(", top, top_rel_type, top_rel_order");
       }
       if (pagination != null && writer.getJdbcClient().getDbType().isPaginationOrderingSupported()) {
-         writer.write(", row_number() over (order by top");
+         writer.write(", dense_rank() over (order by top");
          if (newRelation) {
             writer.write(", top_rel_type, top_rel_order");
          }
-         writer.write(") rn from " + attAlias);
+         writer.write(") rn2 from " + attAlias);
       } else if (pagination != null) {
-         writer.write(", row_number() over () rn from " + attAlias);
+         writer.write(", row_number() over () rn2 from " + attAlias); //hsql does not support dense_rank
       } else {
          writer.write(" from " + attAlias);
       }
@@ -111,7 +112,7 @@ WHERE
          Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
          Long upperBound =
             tempLowerBound == 0 ? lowerBound + pagination.getPageSize() : lowerBound + pagination.getPageSize() - 1L;
-         writer.write(" ) t1 where rn between " + lowerBound + " and " + upperBound + " ");
+         writer.write(" ) t1 where rn2 between " + lowerBound + " and " + upperBound + " ");
       } else {
          writer.write(" ) t1 ");
       }
