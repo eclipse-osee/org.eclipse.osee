@@ -88,7 +88,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch) {
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds,
+      BranchId branch) {
       return applicabilityDsQuery.getApplicabilityTokens(artIds, branch);
    }
 
@@ -163,6 +164,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          feature.setMultiValued(art.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued, false));
          feature.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
          feature.setData(featureArt);
+         feature.setProductApplicabilities(art.getAttributeValues(CoreAttributeTypes.ProductApplicability));
          featureDefinition.add(feature);
       }
 
@@ -414,7 +416,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds, BranchId branch) {
+   public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs,
+      List<ApplicabilityId> applicabilityIds, BranchId branch) {
       ArrayList<BranchId> toReturn = new ArrayList<>();
       if (injectDateMs == null || removalDateMs == null || applicabilityIds == null) {
          return toReturn;
@@ -452,7 +455,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds, BranchId branch) {
+   public List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx,
+      List<ApplicabilityId> applicabilityIds, BranchId branch) {
 
       long timeInjectionMs = transactionQuery.andTxId(injectionTx).getResults().getExactlyOne().getDate().getTime();
       long timeRemovalMs = removalTx.isInvalid() ? -1 : transactionQuery.andTxId(
@@ -467,7 +471,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic, List<ArtifactTypeToken> arts, List<AttributeTypeToken> attrs) {
+   public List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic,
+      List<ArtifactTypeToken> arts, List<AttributeTypeToken> attrs) {
       List<ApplicabilityUseResultToken> result = new ArrayList<>();
       Collection<ApplicabilityToken> allApps = getApplicabilityTokens(branch).values();
 
@@ -489,7 +494,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
    }
 
-   private void searchApplicUsage(BranchId branch, List<ApplicabilityUseResultToken> result, List<ArtifactTypeToken> arts, List<AttributeTypeToken> attrs, ApplicabilityToken appToken) {
+   private void searchApplicUsage(BranchId branch, List<ApplicabilityUseResultToken> result,
+      List<ArtifactTypeToken> arts, List<AttributeTypeToken> attrs, ApplicabilityToken appToken) {
       String applic = appToken.getName();
       String featureName = "";
       String configName = "";
