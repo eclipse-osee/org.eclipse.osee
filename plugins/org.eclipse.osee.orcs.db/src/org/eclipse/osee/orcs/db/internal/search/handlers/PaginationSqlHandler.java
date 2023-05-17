@@ -14,6 +14,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -32,14 +33,18 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
 
    @Override
    public void startWithPreSelect(AbstractSqlWriter writer) {
-      if (criteria.isValid()) {
+      boolean hasFollowSearch = writer.getRootQueryData().getChildrenQueryData().stream().anyMatch(
+         a -> a.getAllCriteria().stream().anyMatch(b -> b.getClass().equals(CriteriaFollowSearch.class)));
+      if (!hasFollowSearch && criteria.isValid()) {
          writer.write("SELECT * FROM (\n");
       }
    }
 
    @Override
    public void endWithPreSelect(AbstractSqlWriter writer) {
-      if (criteria.isValid()) {
+      boolean hasFollowSearch = writer.getRootQueryData().getChildrenQueryData().stream().anyMatch(
+         a -> a.getAllCriteria().stream().anyMatch(b -> b.getClass().equals(CriteriaFollowSearch.class)));
+      if (!hasFollowSearch && criteria.isValid()) {
          Long tempLowerBound = (criteria.getPageNum() - 1) * criteria.getPageSize();
          Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
          Long upperBound =

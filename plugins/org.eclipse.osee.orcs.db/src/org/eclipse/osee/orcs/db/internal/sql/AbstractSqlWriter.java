@@ -602,4 +602,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
    public List<String> getTableEntries() {
       return tableEntries;
    }
+
+   public QueryData getRootQueryData() {
+      return rootQueryData;
+   }
 }
