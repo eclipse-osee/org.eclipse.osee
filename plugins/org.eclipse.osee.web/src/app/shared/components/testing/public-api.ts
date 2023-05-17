@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from '../mat-option-loading/testing/mat-option-loading.component';
+export * from '../mat-option-loading/testing/mat-option-loading.component.mock';
 export * from '../action-state-button/action-drop-down/action-drop-down.mock.component';
 export * from '../branch-picker/branch-picker/branch-picker.mock.component';
 export * from '../branch-undo-button/branch-undo-button.component.mock';

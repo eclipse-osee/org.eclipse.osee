@@ -60,21 +60,34 @@ export class TypesUIService {
 		return this._types;
 	}
 
-	getPaginatedFilteredTypes(filterString: string, pageNum: string) {
+	getPaginatedFilteredTypes(
+		filterString: string,
+		count: number,
+		pageNum: string
+	) {
 		return this._ui.id.pipe(
+			take(1),
 			filter((id) => id !== ''),
-			share(),
 			switchMap((id) =>
-				this._typesService
-					.getPaginatedFilteredTypes(filterString, id, pageNum)
-					.pipe(
-						repeatWhen((_) => this._ui.update),
-						share()
-					)
-			),
-			shareReplay({ bufferSize: 1, refCount: true })
+				this._typesService.getPaginatedFilteredTypes(
+					filterString,
+					id,
+					count,
+					pageNum
+				)
+			)
 		);
 	}
+
+	getFilteredTypesCount(filterString: string) {
+		return this._ui.id.pipe(
+			filter((id) => id !== ''),
+			switchMap((id) =>
+				this._typesService.getFilteredTypesCount(filterString, id)
+			)
+		);
+	}
+
 	getType(typeId: string) {
 		return this._ui.id.pipe(
 			take(1),

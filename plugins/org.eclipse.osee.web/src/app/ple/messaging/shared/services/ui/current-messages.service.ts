@@ -434,6 +434,33 @@ export class CurrentMessagesService {
 		);
 	}
 
+	getPaginatedSubmessagesByName(
+		name: string,
+		count: number,
+		pageNum: string | number
+	) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.subMessageService.getPaginatedSubmessagesByName(
+					id,
+					name,
+					count,
+					pageNum
+				)
+			)
+		);
+	}
+
+	getSubmessagesByNameCount(name: string) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.subMessageService.getSubmessagesByNameCount(id, name)
+			)
+		);
+	}
+
 	private mergeMessages(message: messageWithChanges, parentMessage: message) {
 		message.name = parentMessage.name;
 		message.description = parentMessage.description;
@@ -558,7 +585,7 @@ export class CurrentMessagesService {
 			take(1),
 			switchMap(([branch, connection, viewId]) =>
 				this.messageService
-					.getMessage(branch, messageId, connection, viewId)
+					.getMessage(branch, connection, messageId, viewId)
 					.pipe(
 						take(1),
 						switchMap((foundMessage) =>

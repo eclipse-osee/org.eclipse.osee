@@ -45,14 +45,10 @@ import {
 	catchError,
 	combineLatest,
 	concatMap,
-	distinct,
 	filter,
-	from,
 	ignoreElements,
-	map,
 	Observable,
 	of,
-	pipe,
 	ReplaySubject,
 	scan,
 	Subject,
@@ -70,7 +66,6 @@ import { paginationMode } from '../internal/pagination-options';
 @Component({
 	selector: 'osee-mat-option-loading',
 	templateUrl: './mat-option-loading.component.html',
-	styleUrls: ['./mat-option-loading.component.sass'],
 	standalone: true,
 	imports: [
 		MatOptionModule,
@@ -87,21 +82,28 @@ export class MatOptionLoadingComponent<T>
 	implements OnInit, AfterViewInit, OnDestroy, OnChanges
 {
 	/**
+	 * Total number of items that should come from the paginated data source
+	 */
+	@Input() count: number = -1;
+
+	/**
 	 * Input data source that is used to display available options, and also the desired observable to paginate
 	 *
 	 * Note: only use the Observable<T[]> signature when in a non-paginated case.
 	 */
 	@Input() data!:
-		| (() => Observable<T[]>)
 		| ((pageNum: number | string) => Observable<T[]>)
 		| Observable<T[]>;
-	_options!: Observable<T[]>;
-	error!: Observable<string>;
-	@ViewChildren(MatOption) protected options!: QueryList<MatOption>;
+
 	/**
 	 * Whether or not to disable the select while loading options
 	 */
 	@Input() disableSelect = false;
+
+	/**
+	 * Name of the objects being returned, eg. Platform Types, Messages etc.
+	 */
+	@Input() objectName = 'options';
 
 	/**
 	 * Pagination mode:
@@ -116,7 +118,6 @@ export class MatOptionLoadingComponent<T>
 
 	/**
 	 * Number of rows to expect per each query.
-	 * Highest value that should be put in here is 5. Anything more than this and you'll get two scrollbars.
 	 */
 	@Input() paginationSize: number = 5;
 
@@ -125,41 +126,41 @@ export class MatOptionLoadingComponent<T>
 	 */
 	@Input() rateLimit: number = 500;
 
-	private _paginationSubject = new BehaviorSubject<number | string>(1);
+	private _currentPageNumber = new BehaviorSubject<number | string>(1);
+	private _done = new Subject<void>();
 
+	@ViewChildren(MatOption) protected options!: QueryList<MatOption>;
 	@ContentChild(TemplateRef) template!: TemplateRef<T>;
+	_paginationComplete = new BehaviorSubject<boolean>(false);
+	_options!: Observable<T[]>;
+	error!: Observable<string>;
+
 	@ContentChildren(MatOption)
 	protected resolvedOptions!: QueryList<MatOption>;
 	@ViewChild(CdkVirtualScrollViewport, { static: false })
 	cdkVirtualScrollViewPort!: CdkVirtualScrollViewport;
-	_paginationComplete = new BehaviorSubject<boolean>(false);
-	/**
-	 * Name of the objects being returned, eg. Platform Types, Messages etc.
-	 */
-	@Input() objectName = 'options';
-	private _done = new Subject<void>();
 
 	private _autoPaginate = timer(0, 250).pipe(
-		filter((v) => this.cdkVirtualScrollViewPort !== undefined),
-		filter((x) => this.paginationMode === 'AUTO'),
 		filter(
-			(event) =>
+			(_) =>
+				this.paginationMode === 'AUTO' &&
+				this.cdkVirtualScrollViewPort !== undefined &&
 				this.cdkVirtualScrollViewPort.getRenderedRange().end ===
-				this.cdkVirtualScrollViewPort.getDataLength()
+					this.cdkVirtualScrollViewPort.getDataLength()
 		),
-		switchMap((x) => this._paginationComplete),
+		switchMap((_) => this._paginationComplete),
 		filter((complete) => complete === false),
 		auditTime(this.rateLimit),
-		tap((pos) => this.createPaginationEvent()),
-		tap(() => this.cdkVirtualScrollViewPort.checkViewportSize()),
+		tap((_) => this.createPaginationEvent()),
+		tap((_) => this.cdkVirtualScrollViewPort.checkViewportSize()),
 		takeUntil(this._done)
 	);
 	private _autoPaginateSubscription: Subscription | undefined = undefined;
 	private _dataSubject = new ReplaySubject<
-		| (() => Observable<T[]>)
-		| ((pageNum: number | string) => Observable<T[]>)
-		| Observable<T[]>
+		((pageNum: number | string) => Observable<T[]>) | Observable<T[]>
 	>();
+	private _count: BehaviorSubject<number> = new BehaviorSubject<number>(-1);
+
 	constructor(
 		@Host()
 		@Optional()
@@ -168,6 +169,7 @@ export class MatOptionLoadingComponent<T>
 		@Optional()
 		private _parentAutoComplete: MatAutocomplete // Angular apparently doesn't like DI'ing multiple types
 	) {}
+
 	ngOnChanges(changes: SimpleChanges): void {
 		//turn subscription on or off based on auto mode to keep the polling off in manual/no-paginate modes.
 		if (
@@ -182,7 +184,12 @@ export class MatOptionLoadingComponent<T>
 			this._autoPaginateSubscription.unsubscribe();
 			this._autoPaginateSubscription = undefined;
 		}
-		this._dataSubject.next(changes.data.currentValue);
+		if (changes.data) {
+			this._dataSubject.next(changes.data.currentValue);
+		}
+		if (changes.count) {
+			this._count.next(changes.count.currentValue);
+		}
 	}
 	ngOnDestroy(): void {
 		this._done.next();
@@ -192,98 +199,108 @@ export class MatOptionLoadingComponent<T>
 	 * @TODO shareReplay observables need to be handled, or mat-select with delayed values needs to be handled
 	 */
 	ngOnInit(): void {
-		this._options = this._dataSubject.pipe(
+		this._options = combineLatest([this._dataSubject, this._count]).pipe(
 			debounceTime(500),
-			switchMap((query) =>
-				this._paginationSubject.pipe(
-					switchMap((pageNum) => {
-						if (this._isNotObservable(query)) {
-							if (this._isNotPaginatedFunctionObservable(query)) {
-								return query.call(this).pipe(
-									tap(() => {
-										this._paginationComplete.next(true);
-									})
-								);
-							}
-							return query.call(this, pageNum).pipe(
-								tap((results) => {
-									if (results.length < this.paginationSize) {
-										this._paginationComplete.next(true);
-									}
-								})
-							);
-						}
-						return query.pipe(
-							tap(() => {
-								this._paginationComplete.next(true);
-							})
-						);
-					}),
-					this._isNotObservable(query) &&
-						!this._isNotPaginatedFunctionObservable(query)
-						? pipe(
-								concatMap((elements) => from(elements)),
-								scan((acc, curr) => {
-									if (acc.length === 0) {
-										return [curr];
-									}
-									const deDupedArr = acc.filter(
-										(value, index, array) =>
-											array.findIndex(
-												(value2) =>
-													JSON.stringify(value) ===
-													JSON.stringify(value2)
-											) === index
+			tap((_) => {
+				this._currentPageNumber.next(1);
+				this._paginationComplete.next(false);
+			}),
+			switchMap(([query, count]) =>
+				this._currentPageNumber.pipe(
+					switchMap((pageNum) =>
+						this._paginationComplete.pipe(
+							filter((complete) => complete === false),
+							// This needs to be a concatmap in order to complete all of the page emissions
+							// in order. The catch with concatmap is if the query does not complete, or the
+							// observable stays hot, the it will not move on to the next page.
+							// If the options aren't paginating, make sure there's a take(1) on the source
+							// observable and that it's completing.
+							concatMap((_) => {
+								if (this._isNotObservable(query)) {
+									return query.call(this, pageNum).pipe(
+										tap((results) => {
+											if (
+												results.length <
+												this.paginationSize
+											) {
+												this._paginationComplete.next(
+													true
+												);
+											}
+										})
 									);
-									if (
-										(acc.length / this.paginationSize >
-											this._paginationSubject.getValue() ||
-											acc.length / this.paginationSize <
-												this._paginationSubject.getValue()) &&
-										Number.isInteger(
-											acc.length / this.paginationSize
-										)
-									) {
-										//reset the pagination
-										this._paginationSubject.next(1);
-										this._paginationComplete.next(false);
-										return [];
-									} else if (
-										deDupedArr.length !== acc.length
-									) {
-										//reset the pagination
-										const split = acc.slice(
-											this._getDuplicatedIndex(acc) - 1,
-											acc.length
-										);
-										this._paginationSubject.next(1);
-										this._paginationComplete.next(false);
-										return split;
-									}
+								}
+								this._paginationComplete.next(true);
+								return query;
+							})
+						)
+					),
+					scan((acc, curr) => {
+						// For plain non-paginated observables, return the initial query results.
+						if (!this._isNotObservable(query)) {
+							return curr;
+						}
 
-									return [...acc, curr];
-								}, [] as T[]),
-								map((valueArray) =>
-									valueArray.filter(
-										(value, index, array) =>
-											array.findIndex(
-												(value2) =>
-													JSON.stringify(value) ===
-													JSON.stringify(value2)
-											) === index
-									)
-								)
-						  )
-						: pipe()
+						if (count < 0) {
+							if (acc.length === 0) {
+								return [...curr];
+							} else if (curr.length === 0) {
+								this._paginationComplete.next(true);
+								return acc;
+							}
+
+							const deDupedArr = [...acc, ...curr].filter(
+								(value, index, array) =>
+									array.findIndex(
+										(value2) =>
+											JSON.stringify(value) ===
+											JSON.stringify(value2)
+									) === index
+							);
+
+							if (
+								(acc.length + curr.length) /
+									this.paginationSize !==
+									this._currentPageNumber.getValue() &&
+								Number.isInteger(
+									(acc.length + curr.length) /
+										this.paginationSize
+								) &&
+								curr.length !== 0
+							) {
+								//reset the pagination
+								this._currentPageNumber.next(1);
+								this._paginationComplete.next(false);
+								return [];
+							} else if (
+								deDupedArr.length !==
+								acc.length + curr.length
+							) {
+								const split: T[] = acc.slice(
+									this._getDuplicatedIndex(acc) - 1,
+									acc.length + curr.length
+								);
+								return split;
+							}
+						} else if (acc.length + curr.length >= count) {
+							this._paginationComplete.next(true);
+						}
+						return [...acc, ...curr];
+					}, [] as T[])
 				)
 			)
 		);
+
 		this.error = this._options.pipe(
 			ignoreElements(),
 			catchError((err) =>
 				err ? of('Error when fetching data from OSEE server') : of()
 			)
 		);
+	}
+
+	getHeightPx(itemSize: number, optLength: number) {
+		return itemSize * Math.min(5, Math.max(optLength, 1));
 	}
 
 	private _getDuplicatedIndex(value: T[]) {
@@ -368,28 +385,15 @@ export class MatOptionLoadingComponent<T>
 	}
 
 	private _isNotObservable(
-		value:
-			| (() => Observable<T[]>)
-			| ((pageNum: number | string) => Observable<T[]>)
-			| Observable<T[]>
-	): value is
-		| (() => Observable<T[]>)
-		| ((pageNum: number | string) => Observable<T[]>) {
+		value: ((pageNum: number | string) => Observable<T[]>) | Observable<T[]>
+	): value is (pageNum: number | string) => Observable<T[]> {
 		return !('subscribe' in value);
-	}
-
-	private _isNotPaginatedFunctionObservable(
-		value:
-			| (() => Observable<T[]>)
-			| ((pageNum: number | string) => Observable<T[]>)
-	): value is () => Observable<T[]> {
-		return value.length === 0;
 	}
 
 	createPaginationEvent() {
 		if (this.paginationMode !== 'OFF') {
-			this._paginationSubject.next(
-				Number(this._paginationSubject.getValue()) + 1
+			this._currentPageNumber.next(
+				Number(this._currentPageNumber.getValue()) + 1
 			);
 		}
 	}

@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.EnumerationSetEndpoint;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
@@ -32,8 +33,12 @@ public class EnumerationSetEndpointImpl implements EnumerationSetEndpoint {
    }
 
    @Override
-   public List<InterfaceEnumerationSet> getEnumSets() {
-      return enumSetApi.getAll(branch);
+   public List<InterfaceEnumerationSet> getEnumSets(AttributeTypeToken orderByAttributeTypeId) {
+      AttributeTypeToken orderBy = orderByAttributeTypeId;
+      if (orderByAttributeTypeId == null) {
+         orderBy = AttributeTypeToken.SENTINEL;
+      }
+      return enumSetApi.getAll(branch, orderBy);
    }
 
    @Override

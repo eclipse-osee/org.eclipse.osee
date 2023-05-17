@@ -67,15 +67,46 @@ export class ElementService {
 	getPaginatedFilteredElements(
 		branchId: string,
 		filter: string,
+		count: number,
 		pageNum: string
 	) {
 		return this.http.get<element[]>(
 			apiURL + `/mim/branch/${branchId}/elements/filter/${filter}`,
 			{
 				params: {
-					count: 3,
+					count: count,
 					pageNum: pageNum,
 					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+				},
+			}
+		);
+	}
+
+	getPaginatedElementsByName(
+		branchId: string,
+		name: string,
+		count: number,
+		pageNum: string | number
+	) {
+		return this.http.get<element[]>(
+			apiURL + '/mim/branch/' + branchId + '/elements/name',
+			{
+				params: {
+					name: name,
+					count: count,
+					pageNum: pageNum,
+					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+				},
+			}
+		);
+	}
+
+	getElementsByNameCount(branchId: string, name: string) {
+		return this.http.get<number>(
+			apiURL + '/mim/branch/' + branchId + '/elements/name/count',
+			{
+				params: {
+					name: name,
 				},
 			}
 		);

@@ -80,13 +80,14 @@ export class TypesService {
 	getPaginatedFilteredTypes(
 		filter: string,
 		branchId: string,
+		count: number,
 		pageNum: string
 	): Observable<PlatformType[]> {
 		return this.http.get<PlatformType[]>(
 			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter,
 			{
 				params: {
-					count: 3,
+					count: count,
 					pageNum: pageNum,
 					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},

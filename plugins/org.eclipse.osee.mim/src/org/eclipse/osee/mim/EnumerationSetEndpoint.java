@@ -17,8 +17,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 
 /**
@@ -29,7 +31,7 @@ public interface EnumerationSetEndpoint {
 
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
-   List<InterfaceEnumerationSet> getEnumSets();
+   List<InterfaceEnumerationSet> getEnumSets(@QueryParam("orderBy") AttributeTypeToken orderByAttribute);
 
    @GET()
    @Path("{id}")

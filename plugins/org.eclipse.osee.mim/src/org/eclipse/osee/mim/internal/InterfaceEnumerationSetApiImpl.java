@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
@@ -111,17 +113,20 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceEnumerationSet> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+      long pageNum, long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -142,18 +147,16 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
    }
 
    @Override
-   public List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<InterfaceEnumerationSet> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       try {
-         List<InterfaceEnumerationSet> enumSet =
-            (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttribute);
-         for (InterfaceEnumerationSet set : enumSet) {
-            set.setEnumerations(
-               (List<InterfaceEnumeration>) this.interfaceEnumerationApi.getAccessor().getAllByRelation(branch,
-                  CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(set.getId())));
-         }
+         List<InterfaceEnumerationSet> enumSet = (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch,
+            Arrays.asList(CoreRelationTypes.InterfaceEnumeration_EnumerationState), pageNum, pageSize,
+            CoreAttributeTypes.Name);
          return enumSet;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<>();
    }

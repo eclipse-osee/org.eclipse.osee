@@ -36,7 +36,6 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 @Component({
 	selector: 'osee-create-connection-dialog',
 	templateUrl: './create-connection-dialog.component.html',
-	styleUrls: ['./create-connection-dialog.component.sass'],
 	standalone: true,
 	imports: [
 		MatDialogModule,
@@ -51,14 +50,15 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 })
 export class CreateConnectionDialogComponent implements OnDestroy {
 	private _done = new Subject();
+	paginationSize = 5;
+
 	nodes = (pageNum: string | number) =>
-		this.graphService.getPaginatedNodes(pageNum, 3).pipe(
+		this.graphService.getPaginatedNodes(pageNum, this.paginationSize).pipe(
 			switchMap((nodes) =>
 				of(nodes).pipe(
 					concatMap((n) =>
 						from(n).pipe(filter((node) => node.id !== this.data.id))
 					),
-
 					take(nodes.length),
 					reduce((acc, curr) => [...acc, curr], [] as node[])
 				)
@@ -74,7 +74,10 @@ export class CreateConnectionDialogComponent implements OnDestroy {
 	};
 
 	transportTypes = (pageNum: string | number) =>
-		this.transportTypeService.getPaginatedTypes(pageNum, 3);
+		this.transportTypeService.getPaginatedTypes(
+			pageNum,
+			this.paginationSize
+		);
 	constructor(
 		private graphService: CurrentGraphService,
 		private transportTypeService: CurrentTransportTypeService,

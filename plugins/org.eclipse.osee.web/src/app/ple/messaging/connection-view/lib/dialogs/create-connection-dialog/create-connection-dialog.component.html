@@ -14,7 +14,7 @@
 <mat-dialog-content>
 	<mat-form-field
 		id="connection-name-field"
-		class="full-width">
+		class="tw-w-full">
 		<mat-label>Add a Name</mat-label>
 		<input
 			matInput
@@ -27,7 +27,7 @@
 	<br />
 	<mat-form-field
 		id="connection-description-field"
-		class="full-width">
+		class="tw-w-full">
 		<mat-label>Add a Description</mat-label>
 		<input
 			matInput
@@ -39,7 +39,7 @@
 	<br />
 	<mat-form-field
 		id="connection-transport-type-selector"
-		class="full-width">
+		class="tw-w-full">
 		<mat-label>Select a Transport Type</mat-label>
 		<mat-select
 			[(ngModel)]="newConnection.connection.transportType"
@@ -50,7 +50,7 @@
 				[data]="transportTypes"
 				objectName="Transport Types"
 				paginationMode="AUTO"
-				[paginationSize]="3">
+				[paginationSize]="paginationSize">
 				<ng-template let-option>
 					<mat-option
 						[value]="option"
@@ -66,7 +66,7 @@
 	<br />
 	<mat-form-field
 		id="connection-node-selector"
-		class="full-width">
+		class="tw-w-full">
 		<mat-label>Select a Node to Connect To</mat-label>
 		<mat-select
 			[(ngModel)]="newConnection.nodeId"
@@ -75,7 +75,7 @@
 				[data]="nodes"
 				objectName="Nodes"
 				paginationMode="AUTO"
-				[paginationSize]="3">
+				[paginationSize]="paginationSize">
 				<ng-template let-option>
 					<mat-option
 						[value]="option.id"

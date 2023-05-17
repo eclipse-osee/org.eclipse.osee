@@ -17,50 +17,62 @@
 	<mat-step
 		label="Select Sub Message options"
 		#step1>
-		<div class="form-container">
+		<div class="tw-flex tw-items-center tw-justify-between">
 			<button
 				mat-raised-button
 				color="primary"
 				matStepperNext
 				(click)="createNew()"
-				class="create-button"
+				class="tw-w-full tw-p-6"
 				data-cy="create-new-btn">
 				Create new Sub Message
 			</button>
-			<p style="width: 100%; text-align: center">or</p>
-			<mat-form-field style="width: 100%">
-				<mat-label>Select a Sub Message to Add to Message</mat-label>
-				<mat-select
-					[(ngModel)]="data.subMessage"
-					(selectionChange)="storeId($event.value)">
-					<osee-mat-option-loading
-						[data]="availableSubMessages"
-						objectName="SubMessages"
-						paginationMode="AUTO"
-						[paginationSize]="3">
-						<ng-template let-option>
-							<mat-option
-								[value]="option"
-								[id]="
-									option !== undefined &&
-									option.id !== undefined
-										? option.id
-										: ''
-								">
-								{{ option.name }}
-							</mat-option>
-						</ng-template>
-					</osee-mat-option-loading>
-				</mat-select>
+
+			<p class="tw-w-full tw-text-center">or</p>
+
+			<mat-form-field
+				class="tw-w-full"
+				appearance="fill"
+				subscriptSizing="dynamic">
+				<mat-label>Select an existing Submessage</mat-label>
+				<input
+					type="text"
+					matInput
+					[matAutocomplete]="auto"
+					(keyup)="applySearchTerm($event)"
+					name="autocomplete-text" />
+				<mat-autocomplete #auto="matAutocomplete">
+					<ng-container
+						*ngIf="availableSubMessages | async as submessages">
+						<osee-mat-option-loading
+							[data]="submessages"
+							[count]="(availableSubMessagesCount | async) || -1"
+							objectName="Submessages"
+							paginationMode="AUTO"
+							[paginationSize]="paginationSize">
+							<ng-template let-option>
+								<mat-option
+									[value]="option.name"
+									(click)="selectExistingSubmessage(option)"
+									[matTooltip]="option.description"
+									matTooltipShowDelay="250">
+									{{ option.name }}
+								</mat-option>
+							</ng-template>
+						</osee-mat-option-loading>
+					</ng-container>
+				</mat-autocomplete>
 			</mat-form-field>
 		</div>
-		<button
-			mat-raised-button
-			color="primary"
-			*ngIf="data.subMessage?.id && data.subMessage?.id !== '-1'"
-			(click)="moveToReview(stepper)">
-			Proceed to Review
-		</button>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				color="primary"
+				*ngIf="selectedSubmessage"
+				(click)="moveToReview(stepper)">
+				Proceed to Review
+			</button>
+		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
 		label="Define Sub Message"

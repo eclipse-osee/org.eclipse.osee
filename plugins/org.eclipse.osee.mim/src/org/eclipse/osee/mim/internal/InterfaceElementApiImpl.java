@@ -78,6 +78,12 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       return relations;
    }
 
+   private List<RelationTypeSide> getFullRelationTypeSideList() {
+      return Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+         CoreRelationTypes.InterfaceEnumeration_EnumerationState);
+   }
+
    private ArtifactAccessor<InterfaceStructureElementToken> getAccessor() {
       return this.accessor;
    }
@@ -99,7 +105,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId) {
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId,
+      ArtifactId viewId) {
       return this.getAllRelated(branch, structureId, viewId, 0L, 0L);
    }
 
@@ -134,11 +141,13 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       return InterfaceStructureElementToken.SENTINEL;
    }
 
-   private InterfaceStructureElementToken defaultSetUpElement(BranchId branch, InterfaceStructureElementToken element, InterfaceStructureElementToken previousElement) {
+   private InterfaceStructureElementToken defaultSetUpElement(BranchId branch, InterfaceStructureElementToken element,
+      InterfaceStructureElementToken previousElement) {
       return this.defaultSetUpElement(branch, element, previousElement, PlatformTypeToken.SENTINEL);
    }
 
-   private InterfaceStructureElementToken defaultSetUpElement(BranchId branch, InterfaceStructureElementToken element, InterfaceStructureElementToken previousElement, PlatformTypeToken defaultPlatformType) {
+   private InterfaceStructureElementToken defaultSetUpElement(BranchId branch, InterfaceStructureElementToken element,
+      InterfaceStructureElementToken previousElement, PlatformTypeToken defaultPlatformType) {
       try {
          PlatformTypeToken platformType;
          if (defaultPlatformType.isInvalid()) {
@@ -177,11 +186,13 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       return element;
    }
 
-   private List<InterfaceStructureElementToken> parseElements(BranchId branch, List<InterfaceStructureElementToken> elements) {
+   private List<InterfaceStructureElementToken> parseElements(BranchId branch,
+      List<InterfaceStructureElementToken> elements) {
       return this.parseElements(branch, elements, PlatformTypeToken.SENTINEL);
    }
 
-   private List<InterfaceStructureElementToken> parseElements(BranchId branch, List<InterfaceStructureElementToken> elements, PlatformTypeToken defaultPlatformType) {
+   private List<InterfaceStructureElementToken> parseElements(BranchId branch,
+      List<InterfaceStructureElementToken> elements, PlatformTypeToken defaultPlatformType) {
       Iterator<InterfaceStructureElementToken> elementIterator = elements.iterator();
       List<InterfaceStructureElementToken> tempElements = new LinkedList<>();
       if (elements.size() >= 2) {
@@ -245,6 +256,24 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
+   public List<InterfaceStructureElementToken> getElementsByName(BranchId branch, String name, long pageNum,
+      long pageSize) {
+      try {
+         return (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch,
+            Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType), name,
+            Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize, CoreAttributeTypes.Name);
+      } catch (Exception ex) {
+         System.out.println(ex);
+         return new LinkedList<>();
+      }
+   }
+
+   @Override
+   public int getElementsByNameCount(BranchId branch, String name) {
+      return this.getAccessor().getAllByFilterAndCount(branch, name, Arrays.asList(CoreAttributeTypes.Name));
+   }
+
+   @Override
    public List<InterfaceStructureElementTokenWithPath> getElementsByType(BranchId branch) {
       return this.platformApi.getAllWithElementRelations(branch).stream().map(
          type -> type.getArtifactReadable().getRelatedList(
@@ -263,7 +292,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter) {
+   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId,
+      String filter) {
       return this.getAllRelatedAndFilter(branch, structureId, filter, 0L, 0L);
    }
 
@@ -327,37 +357,44 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize) {
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum,
+      long pageSize) {
       return this.getAllRelated(branch, structureId, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId, long pageNum, long pageSize) {
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId,
+      long pageNum, long pageSize) {
       return this.getAllRelated(branch, structureId, viewId, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, long pageNum, long pageSize) {
+   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId,
+      String filter, long pageNum, long pageSize) {
       return this.getAllRelatedAndFilter(branch, structureId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize) {
+   public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum,
+      long pageSize) {
       return this.getFiltered(branch, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+      long pageNum, long pageSize) {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByQuery(branch, query,
@@ -377,12 +414,14 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId,
+      AttributeTypeId orderByAttribute) {
       return this.getAllRelated(branch, structureId, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch, this.getFollowRelationDetails(),
@@ -397,12 +436,14 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute) {
       return this.getAllRelated(branch, structureId, ArtifactId.SENTINEL, pageNum, pageSize, orderByAttribute);
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getAllRelated(BranchId branch, ArtifactId structureId, ArtifactId viewId,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelation(branch,
@@ -418,12 +459,14 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId,
+      String filter, AttributeTypeId orderByAttribute) {
       return this.getAllRelatedAndFilter(branch, structureId, filter, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getAllRelatedAndFilter(BranchId branch, ArtifactId structureId,
+      String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByRelationAndFilter(branch,
@@ -439,12 +482,14 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter,
+      AttributeTypeId orderByAttribute) {
       return this.getFiltered(branch, filter, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<InterfaceStructureElementToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceStructureElementToken> elements =
             (List<InterfaceStructureElementToken>) this.getAccessor().getAllByFilter(branch, filter,

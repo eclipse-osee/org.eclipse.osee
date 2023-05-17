@@ -30,11 +30,25 @@ public interface InterfaceSubMessageFilterEndpoint {
 
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<InterfaceSubMessageToken> getSubMessages(@QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceSubMessageToken> getSubMessages(@QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{filter}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<InterfaceSubMessageToken> getSubMessages(@PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceSubMessageToken> getSubMessages(@PathParam("filter") String filter,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
+   @GET()
+   @Path("name")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<InterfaceSubMessageToken> getSubMessagesByName(@QueryParam("name") String name,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+
+   @GET
+   @Path("name/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getSubMessagesByNameCount(@QueryParam("name") String name);
 }

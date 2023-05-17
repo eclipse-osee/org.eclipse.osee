@@ -46,11 +46,14 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter,
+      AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId,
+      AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter,
+      AttributeTypeId orderByAttribute);
 
    List<InterfaceStructureToken> getAll(BranchId branch, long pageNum, long pageSize);
 
@@ -58,39 +61,55 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize);
 
-   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum, long pageSize);
+   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum,
+      long pageSize);
 
    List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize);
 
-   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize);
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter,
+      long pageNum, long pageSize);
 
    List<InterfaceStructureToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, ArtifactId viewId,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    int getAllRelatedCount(BranchId branch, ArtifactId subMessageId);
 
-   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId viewId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId viewId,
+      String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   List<InterfaceStructureToken> getAllByName(BranchId branch, String name, long pageNum, long pageSize);
+
+   int getAllByNameCount(BranchId branch, String name);
 
    int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter);
 
    InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId);
 
-   InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, ArtifactId viewId);
+   InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId,
+      ArtifactId viewId);
 
-   InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter);
+   InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId,
+      String filter);
 
-   InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId, String filter, ArtifactId viewId);
+   InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId,
+      String filter, ArtifactId viewId);
 
    List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element);
 

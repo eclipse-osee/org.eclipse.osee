@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MockMatOptionLoadingComponent } from '../../../../mat-option-loading/testing/mat-option-loading.component';
+import { MockMatOptionLoadingComponent } from '../../../../mat-option-loading/testing/mat-option-loading.component.mock';
 
 import { BranchSelectorComponent } from './branch-selector.component';
 

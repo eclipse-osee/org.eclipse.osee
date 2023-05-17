@@ -18,40 +18,56 @@
 		label="Select Element options"
 		#step1>
 		<mat-dialog-content>
-			<div class="flex row justify-evenly align-baseline">
+			<div class="tw-flex tw-items-center tw-justify-between">
 				<button
 					mat-raised-button
 					color="primary"
-					class="width-100"
+					class="tw-w-full tw-p-6"
 					matStepperNext
 					(click)="createNew()"
 					data-cy="create-new-btn">
 					Create new Element
 				</button>
-				<p class="width-100 text-center">or</p>
-				<mat-form-field class="width-100">
-					<mat-label>Select an Element to Add to Structure</mat-label>
-					<mat-select
-						[(ngModel)]="data.element"
-						(selectionChange)="storeId($event.value)">
-						<osee-mat-option-loading
-							[data]="availableElements"
-							paginationMode="AUTO"
-							[paginationSize]="3">
-							<ng-template let-option>
-								<mat-option
-									[value]="option"
-									[id]="
-										option !== undefined &&
-										option.id !== undefined
-											? option.id
-											: ''
-									">
-									{{ option.name }}
-								</mat-option>
-							</ng-template>
-						</osee-mat-option-loading>
-					</mat-select>
+
+				<p class="tw-w-full tw-text-center">or</p>
+
+				<mat-form-field
+					class="tw-w-full"
+					appearance="fill"
+					subscriptSizing="dynamic">
+					<mat-label>Select an existing Element</mat-label>
+					<input
+						type="text"
+						matInput
+						[matAutocomplete]="auto"
+						(keyup)="applySearchTerm($event)"
+						name="autocomplete-text" />
+					<mat-autocomplete #auto="matAutocomplete">
+						<ng-container
+							*ngIf="availableElements | async as elements">
+							<osee-mat-option-loading
+								[data]="elements"
+								[count]="(availableElementsCount | async) || -1"
+								objectName="Elements"
+								paginationMode="AUTO"
+								[paginationSize]="paginationSize">
+								<ng-template let-option>
+									<mat-option
+										[value]="option.name"
+										(click)="selectExistingElement(option)"
+										[matTooltip]="
+											getElementOptionToolTip(option)
+										"
+										[matTooltipClass]="
+											'tw-whitespace-pre-line'
+										"
+										matTooltipShowDelay="250">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						</ng-container>
+					</mat-autocomplete>
 				</mat-form-field>
 			</div>
 		</mat-dialog-content>
@@ -59,7 +75,7 @@
 			<button
 				mat-raised-button
 				color="primary"
-				*ngIf="data.element?.id && data.element?.id !== '-1'"
+				*ngIf="selectedElement"
 				(click)="moveToReview(stepper)">
 				Proceed to Review
 			</button>
@@ -70,7 +86,7 @@
 		#step2>
 		<mat-dialog-content>
 			<div style="visibility: visible">
-				<mat-form-field class="width-100">
+				<mat-form-field class="tw-w-full">
 					<mat-label>Name</mat-label>
 					<input
 						matInput
@@ -80,7 +96,7 @@
 					<mat-hint>Name of the element being created</mat-hint>
 				</mat-form-field>
 				<br />
-				<mat-form-field class="width-100">
+				<mat-form-field class="tw-w-full">
 					<mat-label>Description</mat-label>
 					<textarea
 						cdkTextareaAutosize
@@ -93,7 +109,7 @@
 					>
 				</mat-form-field>
 				<br />
-				<mat-form-field class="width-100">
+				<mat-form-field class="tw-w-full">
 					<mat-label>Notes</mat-label>
 					<textarea
 						cdkTextareaAutosize
@@ -106,7 +122,7 @@
 					>
 				</mat-form-field>
 				<br />
-				<mat-form-field class="width-100">
+				<mat-form-field class="tw-w-full">
 					<mat-label>Enum Literals</mat-label>
 					<textarea
 						cdkTextareaAutosize
@@ -117,7 +133,7 @@
 				</mat-form-field>
 				<br />
 				<mat-form-field
-					class="width-100"
+					class="tw-w-full"
 					subscriptSizing="dynamic">
 					<mat-label>Start Index</mat-label>
 					<input
@@ -133,7 +149,7 @@
 				</mat-form-field>
 				<br />
 				<mat-form-field
-					class="width-100"
+					class="tw-w-full"
 					subscriptSizing="dynamic">
 					<mat-label>End Index</mat-label>
 					<input
@@ -163,7 +179,7 @@
 					else loading_types
 				">
 				<mat-form-field
-					class="width-100"
+					class="tw-w-full"
 					subscriptSizing="dynamic">
 					<mat-label>Platform Type</mat-label>
 					<mat-select
@@ -253,7 +269,7 @@
 		label="Review"
 		#step3>
 		<mat-dialog-content>
-			<div class="flex column">
+			<div class="tw-flex tw-flex-col">
 				An element will be related to:
 				<mat-label>{{ data.name }}</mat-label> with the following
 				properties:
@@ -305,11 +321,11 @@
 </mat-horizontal-stepper>
 
 <ng-template #loading_types>
-	<div class="loading-types">
+	<div class="tw-flex tw-items-center">
 		<mat-spinner
 			color="primary"
 			diameter="20"
-			class="loading-spinner"
+			class="tw-pr-4"
 			data-cy="types-loading-spinner"></mat-spinner>
 		<span>Loading Platform Types...</span>
 	</div>

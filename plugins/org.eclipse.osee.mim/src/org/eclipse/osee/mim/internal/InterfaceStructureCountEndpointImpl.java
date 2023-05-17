@@ -42,4 +42,9 @@ public class InterfaceStructureCountEndpointImpl implements InterfaceStructureCo
       }
    }
 
+   @Override
+   public int getStructuresByNameCount(String name) {
+      return this.interfaceStructureApi.getAllByNameCount(branch, name);
+   }
+
 }

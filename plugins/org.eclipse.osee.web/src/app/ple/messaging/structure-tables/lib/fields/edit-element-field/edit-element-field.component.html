@@ -69,14 +69,15 @@
 				</mat-select>
 			</ng-container>
 			<ng-container *ngIf="header === 'platformTypeName2'">
-				<div style="display: flex; flex-direction: row">
+				<div class="tw-flex">
 					<input
 						matInput
-						type="search"
+						type="text"
 						[(ngModel)]="value"
 						[matAutocomplete]="auto"
-						(ngModelChange)="updateTypeAhead(value)"
-						[disabled]="editingDisabled" />
+						(keyup)="applySearch($event)"
+						[disabled]="editingDisabled"
+						(focusin)="autoCompleteOpened()" />
 					<ng-container *ngIf="_location | async as location">
 						<a
 							mat-icon-button
@@ -99,19 +100,22 @@
 					#auto="matAutocomplete"
 					(optionSelected)="updateType($event.option.value)"
 					(opened)="autoCompleteOpened()">
-					<osee-mat-option-loading
-						[data]="filteredTypes"
-						objectName="Types"
-						[paginationSize]="3"
-						paginationMode="AUTO">
-						<ng-template let-option>
-							<mat-option
-								[value]="option"
-								[id]="option.id">
-								{{ option.name }}
-							</mat-option>
-						</ng-template>
-					</osee-mat-option-loading>
+					<ng-container *ngIf="filteredTypes | async as func">
+						<osee-mat-option-loading
+							[data]="func"
+							[count]="(filteredTypesCount | async) || -1"
+							objectName="Types"
+							[paginationSize]="paginationSize"
+							paginationMode="AUTO">
+							<ng-template let-option>
+								<mat-option
+									[value]="option"
+									[id]="option.id">
+									{{ option.name }}
+								</mat-option>
+							</ng-template>
+						</osee-mat-option-loading>
+					</ng-container>
 				</mat-autocomplete>
 			</ng-container>
 			<ng-container *ngIf="header === 'units'">

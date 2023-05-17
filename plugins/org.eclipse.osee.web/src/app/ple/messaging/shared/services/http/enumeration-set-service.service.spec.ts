@@ -25,6 +25,7 @@ import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 
 import { EnumerationSetService } from './enumeration-set.service';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 
 describe('EnumerationSetServiceService', () => {
 	let service: EnumerationSetService;
@@ -138,7 +139,11 @@ describe('EnumerationSetServiceService', () => {
 	it('should fetch an array of enumsets', () => {
 		service.getEnumSets('10').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/mim/branch/' + 10 + '/enumerations/'
+			apiURL +
+				'/mim/branch/' +
+				10 +
+				'/enumerations/?orderBy=' +
+				ATTRIBUTETYPEIDENUM.NAME
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush({});

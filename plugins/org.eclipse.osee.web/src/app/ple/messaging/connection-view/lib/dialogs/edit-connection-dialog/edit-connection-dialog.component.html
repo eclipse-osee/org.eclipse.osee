@@ -40,6 +40,8 @@
 			[compareWith]="compareTransportTypes">
 			<osee-mat-option-loading
 				[data]="transportTypes"
+				paginationMode="AUTO"
+				[paginationSize]="paginationSize"
 				objectName="Transport Types">
 				<ng-template let-option>
 					<mat-option

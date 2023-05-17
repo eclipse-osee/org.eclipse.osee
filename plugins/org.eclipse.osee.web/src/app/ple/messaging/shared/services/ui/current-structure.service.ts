@@ -281,6 +281,33 @@ export abstract class CurrentStructureService {
 		);
 	}
 
+	getPaginatedStructuresFilteredByName(
+		name: string,
+		count: number,
+		pageNum: string | number
+	) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.structure.getPaginatedStructuresFilteredByName(
+					id,
+					name,
+					count,
+					pageNum
+				)
+			)
+		);
+	}
+
+	getStructuresFilteredByNameCount(name: string) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.structure.getStructuresFilteredByNameCount(id, name)
+			)
+		);
+	}
+
 	get availableElements() {
 		return this.BranchId.pipe(
 			take(1),
@@ -295,16 +322,42 @@ export abstract class CurrentStructureService {
 		);
 	}
 
-	getPaginatedElements(pageNum: string | number) {
+	getPaginatedElements(count: number, pageNum: string | number) {
 		return this.BranchId.pipe(
 			take(1),
 			switchMap((id) =>
 				this.elements.getPaginatedFilteredElements(
 					id,
 					'',
+					count,
 					pageNum.toString()
 				)
 			)
+		);
+	}
+
+	getPaginatedElementsByName(
+		name: string,
+		count: number,
+		pageNum: string | number
+	) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.elements.getPaginatedElementsByName(
+					id,
+					name,
+					count,
+					pageNum
+				)
+			)
+		);
+	}
+
+	getElementsByNameCount(name: string) {
+		return this.BranchId.pipe(
+			take(1),
+			switchMap((id) => this.elements.getElementsByNameCount(id, name))
 		);
 	}
 
@@ -312,11 +365,20 @@ export abstract class CurrentStructureService {
 		return this._types;
 	}
 
-	getPaginatedFilteredTypes(filter: string, pageNum: number | string) {
+	getPaginatedFilteredTypes(
+		filter: string,
+		count: number,
+		pageNum: number | string
+	) {
 		return this.typeService.getPaginatedFilteredTypes(
 			filter,
+			count,
 			pageNum.toString()
 		);
+	}
+
+	getFilteredTypesCount(filter: string) {
+		return this.typeService.getFilteredTypesCount(filter);
 	}
 
 	get applic() {

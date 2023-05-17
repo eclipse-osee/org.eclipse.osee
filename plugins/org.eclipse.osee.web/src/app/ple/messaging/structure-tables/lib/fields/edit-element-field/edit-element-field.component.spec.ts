@@ -148,8 +148,9 @@ describe('EditElementFieldComponent', () => {
 			await select.focus();
 			await select.isOpen();
 			await select.enterText('2');
+			const val = await select.getValue();
 			tick(500);
-			expect(await select.getValue()).toBe('First2');
+			expect(val).toBe('First2');
 		}));
 
 		it('should emit an event to parent component', () => {

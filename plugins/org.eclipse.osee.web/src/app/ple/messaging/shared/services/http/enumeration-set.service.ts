@@ -19,7 +19,10 @@ import {
 import { relation, transaction } from '@osee/shared/types';
 import { of } from 'rxjs';
 import { apiURL } from '@osee/environments';
-import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import {
+	ARTIFACTTYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/shared/types/constants';
 import type { enumeration, enumerationSet, enumSet } from '../../types/enum';
 
 @Injectable({
@@ -126,7 +129,12 @@ export class EnumerationSetService {
 
 	getEnumSets(branchId: string) {
 		return this.http.get<enumerationSet[]>(
-			apiURL + '/mim/branch/' + branchId + '/enumerations/'
+			apiURL + '/mim/branch/' + branchId + '/enumerations/',
+			{
+				params: {
+					orderBy: ATTRIBUTETYPEIDENUM.NAME,
+				},
+			}
 		);
 	}
 

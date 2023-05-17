@@ -35,7 +35,8 @@ public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubM
 
    Collection<InterfaceSubMessageToken> getAll(BranchId branch, long pageNum, long pageSize);
 
-   Collection<InterfaceSubMessageToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   Collection<InterfaceSubMessageToken> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
    Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId);
 
@@ -43,17 +44,26 @@ public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubM
 
    Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter);
 
-   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, AttributeTypeId orderByAttribute);
+   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId,
+      AttributeTypeId orderByAttribute);
 
-   Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+   Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter,
+      AttributeTypeId orderByAttribute);
 
-   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize);
+   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum,
+      long pageSize);
 
    Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize);
 
-   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   Collection<InterfaceSubMessageToken> getAllByRelation(BranchId branch, ArtifactId messageId, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute);
 
-   Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   Collection<InterfaceSubMessageToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
+
+   List<InterfaceSubMessageToken> getAllByName(BranchId branch, String name, long pageNum, long pageSize);
+
+   int getAllByNameCount(BranchId branch, String name);
 
    List<InterfaceSubMessageToken> getAllRelatedFromStructure(InterfaceStructureToken structure);
 

@@ -11,54 +11,68 @@
  *     Boeing - initial API and implementation
  -->
 <h1 mat-dialog-title>Add Structure to {{ data.name }}</h1>
-<mat-horizontal-stepper
-	#stepper
-	class="new-submessage-stepper">
+<mat-horizontal-stepper #stepper>
 	<mat-step
 		label="Select Structure options"
 		#step1>
-		<mat-dialog-content class="dialog-content">
-			<button
-				mat-raised-button
-				color="primary"
-				matStepperNext
-				(click)="createNew()"
-				data-cy="create-new-btn"
-				class="create-structure-button">
-				Create new Structure
-			</button>
-			<p style="width: 100%; text-align: center">or</p>
-			<mat-form-field style="width: 100%">
-				<mat-label>Select a Structure to Add to Sub Message</mat-label>
-				<mat-select
-					[(ngModel)]="data.structure"
-					(selectionChange)="storeId($event.value)">
-					<osee-mat-option-loading
-						[data]="availableStructures"
-						objectName="Structures"
-						paginationMode="AUTO"
-						[paginationSize]="3">
-						<ng-template let-option>
-							<mat-option
-								[value]="option"
-								[id]="
-									option !== undefined &&
-									option.id !== undefined
-										? option.id
-										: ''
-								">
-								{{ option.name }}
-							</mat-option>
-						</ng-template>
-					</osee-mat-option-loading>
-				</mat-select>
-			</mat-form-field>
+		<mat-dialog-content>
+			<div class="tw-flex tw-items-center tw-justify-between">
+				<button
+					mat-raised-button
+					color="primary"
+					matStepperNext
+					(click)="createNew()"
+					data-cy="create-new-btn"
+					class="tw-w-full tw-p-6">
+					Create new Structure
+				</button>
+
+				<p class="tw-w-full tw-text-center">or</p>
+
+				<mat-form-field
+					class="tw-w-full"
+					appearance="fill"
+					subscriptSizing="dynamic">
+					<mat-label>Select an existing Structure</mat-label>
+					<input
+						type="text"
+						matInput
+						[matAutocomplete]="auto"
+						(keyup)="applySearchTerm($event)"
+						name="autocomplete-text" />
+					<mat-autocomplete #auto="matAutocomplete">
+						<ng-container
+							*ngIf="availableStructures | async as structures">
+							<osee-mat-option-loading
+								[data]="structures"
+								[count]="
+									(availableStructuresCount | async) || -1
+								"
+								objectName="Structures"
+								paginationMode="AUTO"
+								[paginationSize]="paginationSize">
+								<ng-template let-option>
+									<mat-option
+										[value]="option.name"
+										(click)="
+											selectExistingStructure(option)
+										"
+										[matTooltip]="option.description"
+										matTooltipShowDelay="250">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						</ng-container>
+					</mat-autocomplete>
+				</mat-form-field>
+			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
 			<button
 				mat-raised-button
 				color="primary"
-				*ngIf="data.structure?.id && data.structure?.id !== '-1'"
+				*ngIf="selectedStructure"
 				(click)="moveToReview(stepper)">
 				Proceed to Review
 			</button>
@@ -68,7 +82,7 @@
 		label="Define Structure"
 		#step2>
 		<mat-dialog-content>
-			<div style="display: flex; flex-direction: column">
+			<div class="tw-flex tw-flex-col">
 				<mat-form-field>
 					<mat-label>Name</mat-label>
 					<input

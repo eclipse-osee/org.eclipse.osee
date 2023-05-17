@@ -32,13 +32,26 @@ public class InterfaceSubMessageFilterEndpointImpl implements InterfaceSubMessag
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getSubMessages(long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<InterfaceSubMessageToken> getSubMessages(long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       return this.submessageApi.getAll(branch, pageNum, pageSize, orderByAttributeType);
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getSubMessages(String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<InterfaceSubMessageToken> getSubMessages(String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       return this.submessageApi.getAll(branch, pageNum, pageSize, orderByAttributeType);
+   }
+
+   @Override
+   public Collection<InterfaceSubMessageToken> getSubMessagesByName(String name, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
+      return this.submessageApi.getAllByName(branch, name, pageNum, pageSize);
+   }
+
+   @Override
+   public int getSubMessagesByNameCount(String name) {
+      return this.submessageApi.getAllByNameCount(branch, name);
    }
 
 }
