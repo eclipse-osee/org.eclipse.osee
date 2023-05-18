@@ -26,7 +26,7 @@ your installation.
 -   The above screenshot shows the list of messages which comprise `Connection1`
 -   When user selects the drop down to the left of the message name, the message is expanded to show the submessages of the message
     &nbsp;
-    ![SubMessages]../../../osee/assets/mim/messages_submsgs.jpg)
+    ![SubMessages](../../../osee/assets/mim/messages_submsgs.jpg)
 -   The above screenshot shows the first message expanded to show the SubMessages contained in message `Control Message`
 -   Clicking on the `Go To Message Details` button will open up a new page which shows details of the submessages
     &nbsp;
