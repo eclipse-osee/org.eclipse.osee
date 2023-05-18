@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +20,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
+
 import javax.ws.rs.core.Response;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -110,6 +113,8 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+        	Response res = null;
+        	BufferedWriter bwr = null;
             try {
                String fileLocation = String.format("C:%sUsers%s%s%sDownloads", File.separator, File.separator,
                   System.getProperty("user.name"), File.separator);
@@ -120,7 +125,8 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                endDate = (Date) variableMap.getValue(END_DATE);
                allTime = variableMap.getBoolean(ALL_TIME);
 
-               Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
+
+               res = AtsApiService.get().getServerEndpoints().getMetricsEp().softwareReqVolatility(
                   selectedVersion.getName(), startDate, endDate, allTime);
 
                if (res == null) {
@@ -128,7 +134,7 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                }
 
                String filePath = String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
-               BufferedWriter bwr = new BufferedWriter(new FileWriter(new File(filePath)));
+               bwr = new BufferedWriter(new FileWriter(new File(filePath)));
 
                GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
                StringBuffer sb = new StringBuffer();
@@ -142,6 +148,18 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
                bwr.close();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            finally {
+            	if(res != null) {
+            		res.close();
+            	}
+            	if(bwr != null) {
+            		try {
+						bwr.close();
+					} catch (IOException e) {
+						//do nothing
+					}
+            	}
             }
          };
       });

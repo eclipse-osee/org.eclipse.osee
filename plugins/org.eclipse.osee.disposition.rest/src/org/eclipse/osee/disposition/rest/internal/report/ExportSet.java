@@ -190,7 +190,8 @@ public class ExportSet {
       this.dispoApi = dispoApi;
    }
 
-   public void runDispoReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream, String fileName) {
+   public void runDispoReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream,
+      String fileName) {
       List<DispoItem> items = dispoApi.getDispoItems(branch, setPrimary.getGuid(), true);
 
       try {
@@ -255,7 +256,8 @@ public class ExportSet {
 
    }
 
-   public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream, String fileName) {
+   public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream,
+      String fileName) {
       Map<String, String> resolutionsValueToText = new HashMap<>();
       Set<CoverageLevel> levelsInSet = new HashSet<>();
       List<CoverageLevel> levelsInList = new ArrayList<>();
@@ -751,7 +753,10 @@ public class ExportSet {
       return String.format("%2.2f%% - %d / %d", percent, complete, total);
    }
 
-   private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item, DispoAnnotationData annotation, String setName, Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
+   private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item,
+      DispoAnnotationData annotation, String setName, Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount,
+      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered,
+      Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
       String[] row = new String[columns];
       int index = 0;
       row[index++] = getNameSpace(item, setName);
@@ -781,14 +786,19 @@ public class ExportSet {
          annotation.getLocationRefs(), levelsInSet);
    }
 
-   private void writeRowAnnotationSummary(DispoItem item, DispoAnnotationData annotation, String setName, Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
+   private void writeRowAnnotationSummary(DispoItem item, DispoAnnotationData annotation, String setName,
+      Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount,
+      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered,
+      Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
       String unit = getNormalizedName(item.getName());
       String resolutionType = annotation.getResolutionType();
       calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType, mcdcToCoverageData,
          annotation.getLocationRefs(), levelsInSet);
    }
 
-   private void calculateTotals(Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount, Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, String unit, String resolutionType, Map<String, MCDCCoverageData> mcdcToCoverageData, String location, Set<CoverageLevel> levelsInSet) {
+   private void calculateTotals(Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount,
+      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, String unit, String resolutionType,
+      Map<String, MCDCCoverageData> mcdcToCoverageData, String location, Set<CoverageLevel> levelsInSet) {
       // Determine what level count to increment by location simple number = C, number.T or number.number.RESULT = B, number.number.T = A
       CoverageLevel thisAnnotationsLevel = getLevel(location);
 
@@ -820,6 +830,7 @@ public class ExportSet {
             break;
          case B:
             levelsInSet.add(CoverageLevel.B);
+            break;
          case C: {
             levelsInSet.add(CoverageLevel.C);
             levelToTotalCount.get(thisAnnotationsLevel).inc();
@@ -845,7 +856,9 @@ public class ExportSet {
       return partWithValue.trim().equals("T");
    }
 
-   private void uptickA(Map<String, WrapInt> resolutionTypeToCount, Map<String, Pair<WrapInt, WrapInt>> unitToCovered, WrapInt currentCoveredTotalCount, String unit, String resolutionType, MCDCCoverageData coverageData, String mcdcName, boolean isTruePath) {
+   private void uptickA(Map<String, WrapInt> resolutionTypeToCount, Map<String, Pair<WrapInt, WrapInt>> unitToCovered,
+      WrapInt currentCoveredTotalCount, String unit, String resolutionType, MCDCCoverageData coverageData,
+      String mcdcName, boolean isTruePath) {
       int mcdcValue = 0;
       if (Strings.isValid(resolutionType)) {
          coverageData.addResolutionType(resolutionType);
@@ -883,7 +896,9 @@ public class ExportSet {
       }
    }
 
-   private void uptickBorC(Map<String, WrapInt> resolutionTypeToCount, Map<String, Pair<WrapInt, WrapInt>> unitToCovered, WrapInt currentCoveredTotalCount, String unit, String resolutionType) {
+   private void uptickBorC(Map<String, WrapInt> resolutionTypeToCount,
+      Map<String, Pair<WrapInt, WrapInt>> unitToCovered, WrapInt currentCoveredTotalCount, String unit,
+      String resolutionType) {
       WrapInt count = resolutionTypeToCount.get(resolutionType);
       if (Strings.isValid(resolutionType)) {
          if (count == null) {

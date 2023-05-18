@@ -601,7 +601,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          }
          SearchFilter searchFilter = (SearchFilter) searchTypeList.getData(searchPrimitive);
          searchFilter.loadFromStorageString(filterviewer, type, value, storageString, isNotEnabled);
-         searchFilter.getFilterName();
       }
    }
 

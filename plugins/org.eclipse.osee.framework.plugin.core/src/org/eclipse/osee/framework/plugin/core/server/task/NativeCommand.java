@@ -41,20 +41,30 @@ public class NativeCommand extends Command {
       System.arraycopy(parameters, 0, callAndArgs, 0, parameters.length);
 
       Process process = Runtime.getRuntime().exec(callAndArgs);
-      BufferedReader inError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-      BufferedReader inOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
+      BufferedReader inError = null, inOutput = null;
       ArrayList<String> lines = new ArrayList<>();
       String line = null;
-      while ((line = inOutput.readLine()) != null) {
-         lines.add(line);
-      }
-      inOutput.close();
+      try {
+         inError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+         inOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-      while ((line = inError.readLine()) != null) {
-         lines.add(line);
+         while ((line = inOutput.readLine()) != null) {
+            lines.add(line);
+         }
+         inOutput.close();
+
+         while ((line = inError.readLine()) != null) {
+            lines.add(line);
+         }
+         inError.close();
+      } finally {
+         if (inError != null) {
+            inError.close();
+         }
+         if (inOutput != null) {
+            inOutput.close();
+         }
       }
-      inError.close();
       return lines.toArray(new String[lines.size()]);
    }
 }

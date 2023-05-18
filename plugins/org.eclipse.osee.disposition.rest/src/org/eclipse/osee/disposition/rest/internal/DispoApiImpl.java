@@ -166,7 +166,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotationToCreate, String userName, boolean isCi) {
+   public String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotationToCreate,
+      String userName, boolean isCi) {
       String idOfNewAnnotation = "";
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
@@ -246,7 +247,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean editMassDispositions(BranchId branch, String setId, List<String> ids, String resolutionType, String resolution, String userName) {
+   public boolean editMassDispositions(BranchId branch, String setId, List<String> ids, String resolutionType,
+      String resolution, String userName) {
       boolean wasUpdated = false;
       List<DispoItem> itemsToEdit = massDisposition(branch, setId, ids, resolutionType, resolution);
       if (itemsToEdit.size() > 0) {
@@ -257,7 +259,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName, boolean assignUser) {
+   public boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName,
+      boolean assignUser) {
       boolean wasUpdated = false;
       DispoItem dispoItemToEdit = getQuery().findDispoItemById(branch, itemId);
 
@@ -271,9 +274,9 @@ public class DispoApiImpl implements DispoApi {
    }
 
    private String getFullFilePathFromDispoItemId(BranchId branch, String itemId, DispoItem dispoItemToEdit) {
-      Conditions.notNull(dispoItemToEdit);
-      Conditions.notNull(branch);
-      Conditions.notNull(itemId);
+      Conditions.checkNotNull(dispoItemToEdit, "Dispo Item to Edit");
+      Conditions.checkNotNull(branch, "Branch");
+      Conditions.checkNotNull(itemId, "Item Id");
 
       ArtifactId set = getQuery().getDispoItemParentSet(branch, itemId);
       if (set != null) {
@@ -288,7 +291,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String operation, String userName) {
+   public boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String operation,
+      String userName) {
       boolean wasUpdated = false;
       Set<DispoItem> dispoItems = new HashSet<>();
       List<DispoItem> itemsFromSet = getDispoItems(branch, setId);
@@ -341,7 +345,8 @@ public class DispoApiImpl implements DispoApi {
       return wasUpdated;
    }
 
-   private void editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag, String operation, String userName) {
+   private void editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag,
+      String operation, String userName) {
       UserId author = getQuery().findUserByName(userName);
       getWriter().updateDispoItems(author, branch, dispoItems, resetRerunFlag, operation);
    }
@@ -353,7 +358,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName, boolean isCi) {
+   public boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId,
+      DispoAnnotationData newAnnotation, String userName, boolean isCi) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
@@ -398,15 +404,18 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName, boolean isCi) {
+   public boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName,
+      boolean isCi) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null && (isCi || dispoItem.getAssignee().equalsIgnoreCase(userName))) {
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          DispoAnnotationData annotationToRemove = DispoUtil.getById(annotationsList, annotationId);
+         if (annotationToRemove == null) {
+            return wasUpdated;
+         }
          annotationToRemove.disconnect();
-
          // collapse list so there are no gaps
          List<DispoAnnotationData> newAnnotationsList =
             removeAnnotationFromList(annotationsList, annotationToRemove.getIndex());
@@ -484,7 +493,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public Collection<DispoItem> getDispoItemByAnnotationText(BranchId branch, String setId, String keyword, boolean isDetailed) {
+   public Collection<DispoItem> getDispoItemByAnnotationText(BranchId branch, String setId, String keyword,
+      boolean isDetailed) {
       return getQuery().findDispoItemByAnnoationText(branch, setId, keyword, isDetailed);
    }
 
@@ -495,7 +505,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public List<DispoAnnotationData> getDispoAnnotationsByType(Iterable<DispoAnnotationData> annotationData, String resolutionType) {
+   public List<DispoAnnotationData> getDispoAnnotationsByType(Iterable<DispoAnnotationData> annotationData,
+      String resolutionType) {
       List<DispoAnnotationData> resolutionTypeAnnotations = new ArrayList<>();
       for (DispoAnnotationData dad : annotationData) {
          if (dad.getResolutionType().equals(resolutionType)) {
@@ -515,6 +526,9 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public DispoAnnotationData getDispoAnnotationById(BranchId branch, String itemId, String annotationId) {
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      if (dispoItem == null) {
+         return null;
+      }
       List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
       return DispoUtil.getById(annotationsList, annotationId);
    }
@@ -534,7 +548,8 @@ public class DispoApiImpl implements DispoApi {
       return getQuery().isUniqueSetName(branch, name);
    }
 
-   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, String userName, boolean isIterative) {
+   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, String userName,
+      boolean isIterative) {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
       UserId author = getQuery().findUserByName(userName);
@@ -645,7 +660,8 @@ public class DispoApiImpl implements DispoApi {
       return ret;
    }
 
-   private List<DispoItem> massDisposition(BranchId branch, String setId, List<String> itemIds, String resolutionType, String resolution) {
+   private List<DispoItem> massDisposition(BranchId branch, String setId, List<String> itemIds, String resolutionType,
+      String resolution) {
       List<DispoItem> toEdit = new ArrayList<>();
 
       List<DispoItem> allItemsInSet = getDispoItems(branch, setId);
@@ -711,7 +727,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params, String userName) {
+   public void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch,
+      String destSetId, CopySetParams params, String userName) {
       Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageUuid);
       List<DispoItem> destItems = getDispoItems(destBranch, destSetId);
 
@@ -729,7 +746,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params, String userName) {
+   public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId,
+      CopySetParams params, String userName) {
       DispoConfig dispoConfig = getDispoConfig(branch);
       // If the the validResolutions is empty the copyAllDispositions will
       Set<String> validResolutions = new HashSet<>();
@@ -851,7 +869,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void createDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName) {
+   public void createDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies,
+      String userName) {
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null) {
          Map<String, Discrepancy> discrepancyList = dispoItem.getDiscrepanciesList();
@@ -886,7 +905,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy, String userName) {
+   public boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy,
+      String userName) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null) {
@@ -913,7 +933,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void editDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName) {
+   public void editDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies,
+      String userName) {
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null) {
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();

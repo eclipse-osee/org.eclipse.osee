@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.demo.populate;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -157,10 +158,10 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
          program.persist(transaction);
          country.persist(transaction);
          transaction.execute();
+         List<DemoInsertion> insertions = DemoInsertion.getInsertions();
+         List<DemoInsertionActivity> activities = DemoInsertionActivity.getActivities();
 
          // create and relate insertion and insertion activities
-         DemoInsertion.getInsertions();
-         DemoInsertionActivity.getActivities();
          for (DemoProgram demoProg : DemoCountry.demo.getPrograms()) {
             createInsertions(insertionEp, insertionActivityEp, demoProg);
          }
@@ -183,7 +184,6 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
          createCountry(countryEp, country);
 
          // create and relate programs; these calls ensure that the static tokens are loaded and thus related to proper parents
-         DemoInsertion.getInsertions();
          DemoInsertionActivity.getActivities();
          for (DemoProgram program : country.getPrograms()) {
             createProgram(programEp, program);
@@ -194,7 +194,8 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       }
    }
 
-   private void createInsertions(InsertionEndpointApi insertionEp, InsertionActivityEndpointApi insertionActivityEp, DemoProgram demoProg) throws Exception {
+   private void createInsertions(InsertionEndpointApi insertionEp, InsertionActivityEndpointApi insertionActivityEp,
+      DemoProgram demoProg) throws Exception {
       for (DemoInsertion demoIns : demoProg.getInsertions()) {
          createInsertion(insertionEp, demoIns);
 
@@ -205,7 +206,8 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       }
    }
 
-   private JaxInsertionActivity createInsertionActivity(InsertionActivityEndpointApi insertionActivityEp, DemoInsertionActivity insertionActivity) throws Exception {
+   private JaxInsertionActivity createInsertionActivity(InsertionActivityEndpointApi insertionActivityEp,
+      DemoInsertionActivity insertionActivity) throws Exception {
       JaxInsertionActivity jaxInsertionActivity = new JaxInsertionActivity();
       jaxInsertionActivity.setName(insertionActivity.getName());
       jaxInsertionActivity.setId(insertionActivity.getId());

@@ -93,7 +93,7 @@ public class CreateSiblingAction extends Action {
          }
          IAtsTeamDefinition teamDef = atsApi.getProgramService().getTeamDefHoldingVersions(program);
          // Remove top AI if configured
-         if (!teamDef.getActionableItems().isEmpty()) {
+         if (teamDef.getActionableItems() != null && !teamDef.getActionableItems().isEmpty()) {
             IAtsActionableItem ai = teamDef.getActionableItems().iterator().next();
             validAis.remove(ai);
          }

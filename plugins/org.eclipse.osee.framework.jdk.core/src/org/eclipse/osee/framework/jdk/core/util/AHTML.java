@@ -98,10 +98,11 @@ public class AHTML {
 
    public static String getUrlPageHtml(String urlStr) {
       StringBuffer buffer = new StringBuffer();
+      BufferedReader rd = null;
       try {
          URL url = new URL(urlStr);
          URLConnection connection = url.openConnection();
-         BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+         rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
          String line = null;
          while ((line = rd.readLine()) != null) {
             buffer.append(line);
@@ -111,15 +112,24 @@ public class AHTML {
       } catch (Exception ex) {
          ex.printStackTrace();
          return simplePage("Exception opening url " + ex.getLocalizedMessage());
+      } finally {
+         if (rd != null) {
+            try {
+               rd.close();
+            } catch (IOException ex) {
+               //do nothing
+            }
+         }
       }
    }
 
    public static String getUrlPageHtml(String urlStr, InetSocketAddress addr) {
       StringBuffer buffer = new StringBuffer();
+      BufferedReader rd = null;
       try {
          URL url = new URL(urlStr);
          URLConnection connection = url.openConnection(new Proxy(Proxy.Type.HTTP, addr));
-         BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+         rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
          String line = null;
          while ((line = rd.readLine()) != null) {
             buffer.append(line);
@@ -129,6 +139,14 @@ public class AHTML {
       } catch (Exception ex) {
          ex.printStackTrace();
          return simplePage("Exception opening url " + ex.getLocalizedMessage());
+      } finally {
+         if (rd != null) {
+            try {
+               rd.close();
+            } catch (IOException ex) {
+               //do nothing
+            }
+         }
       }
    }
 

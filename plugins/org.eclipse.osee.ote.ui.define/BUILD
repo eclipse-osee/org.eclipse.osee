@@ -40,25 +40,19 @@ java_library(
 
 filegroup(
     name = "xml_files",
-    srcs =
-          [
-	    "plugin.xml"
-           ]
+    srcs = ["plugin.xml"]
 )
 
 filegroup(
     name = "exsd_files",
-    srcs =
-          [
-            "OSEE-INF/extensionPts/ITestRunReport.exsd",
+    srcs =[ "OSEE-INF/extensionPts/ITestRunReport.exsd",
 	    "OSEE-INF/templates/HtmlActiveTableTemplate"
-           ]
+          ]
 )
 
 filegroup(
     name = "images",
     srcs = glob(["OSEE-INF/images/*"]),
-
 )
 
 java_library(
@@ -76,24 +70,23 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
-		"@maven//:org_apache_cxf_cxf_rt_rs_client",
-		"@maven//:org_eclipse_jgit_org_eclipse_jgit",
-		"@maven//:org_jsoup_jsoup",
-		"@maven//:com_jcraft_jsch",
-		"@maven//:org_eclipse_jdt_org_eclipse_jdt_core",
-		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
+				"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+				"@maven//:org_apache_cxf_cxf_rt_rs_client",
+				"@maven//:org_eclipse_jgit_org_eclipse_jgit",
+				"@maven//:org_jsoup_jsoup",
+				"@maven//:com_jcraft_jsch",
+				"@maven//:org_eclipse_jdt_org_eclipse_jdt_core",
+				"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
-		"@maven//:org_mockito_mockito_core",
-		"@maven//:org_hamcrest_hamcrest_core",
-		"@ext_jars//:eclipse_osgi_services",
-		"@ext_jars//:eclipse_ui",
-		"@ext_jars//:swt",
-		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_equinox_common",
-		"@ext_jars//:apache_commons_lang",
-		"@ext_jars//:eclipse_jdt",
-		"@ext_jars//:nebula"
+				"@maven//:org_mockito_mockito_core",
+				"@maven//:org_hamcrest_hamcrest_core",
+				"@ext_jars//:eclipse_osgi_services",
+				"@ext_jars//:eclipse_ui",
+				"@ext_jars//:swt",
+				"@ext_jars//:jface",
+				"@ext_jars//:eclipse_core",
+				"@ext_jars//:eclipse_equinox_common",
+				"@ext_jars//:apache_commons_lang",
+				"@ext_jars//:nebula"
                 ],
 )
