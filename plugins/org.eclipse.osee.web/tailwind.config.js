@@ -18,6 +18,7 @@ module.exports = {
 		'!./**/_theme.scss',
 	],
 	prefix: 'tw-',
+	important: true,
 	theme: {
 		extend: {
 			colors: {

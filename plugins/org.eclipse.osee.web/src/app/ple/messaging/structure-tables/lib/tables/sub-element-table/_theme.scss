@@ -50,15 +50,6 @@
 		}
 	}
 
-	.message-table-sub-element-row-even-added {
-		@if $is-dark != true {
-			background-color: mat.get-color-from-palette($primary, 100);
-		}
-		@if $is-dark == true {
-			background-color: mat.get-color-from-palette($primary, 600);
-		}
-	}
-
 	.message-table-sub-element-row-odd-added {
 		@if $is-dark != true {
 			background-color: mat.get-color-from-palette($primary, 200);
