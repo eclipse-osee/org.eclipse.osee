@@ -300,7 +300,8 @@ public class TxDataManager {
       return asExternalArtifact(txData, artifact);
    }
 
-   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, String guid, ApplicabilityId appId) {
+   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, String guid,
+      ApplicabilityId appId) {
       checkChangesAllowed(txData);
       Artifact artifact =
          artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, guid, appId);
@@ -308,7 +309,8 @@ public class TxDataManager {
       return asExternalArtifact(txData, artifact);
    }
 
-   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, ArtifactId artifactId) {
+   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name,
+      ArtifactId artifactId) {
       checkChangesAllowed(txData);
       Artifact artifact =
          artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, artifactId);
@@ -316,7 +318,8 @@ public class TxDataManager {
       return asExternalArtifact(txData, artifact);
    }
 
-   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name, ArtifactId artifactId, ApplicabilityId appId) {
+   public ArtifactReadable createArtifact(TxData txData, ArtifactTypeToken artifactType, String name,
+      ArtifactId artifactId, ApplicabilityId appId) {
       checkChangesAllowed(txData);
       Artifact artifact =
          artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, artifactId, appId);
@@ -330,19 +333,22 @@ public class TxDataManager {
       return copyArtifactHelper(txData, source, source.getExistingAttributeTypes());
    }
 
-   public ArtifactReadable copyArtifact(TxData txData, BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeToken> attributesToDuplicate) {
+   public ArtifactReadable copyArtifact(TxData txData, BranchId fromBranch, ArtifactId artifactId,
+      Collection<AttributeTypeToken> attributesToDuplicate) {
       checkChangesAllowed(txData);
       Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
       return copyArtifactHelper(txData, source, attributesToDuplicate);
    }
 
-   private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source, Collection<AttributeTypeToken> attributesToDuplicate) {
+   private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source,
+      Collection<AttributeTypeToken> attributesToDuplicate) {
       Artifact copy =
          artifactFactory.copyArtifact(txData.getSession(), source, attributesToDuplicate, txData.getBranch());
       return asExternalArtifact(txData, copy);
    }
 
-   public ArtifactReadable introduceArtifact(TxData txData, BranchId fromBranch, ArtifactReadable source, ArtifactReadable destination) {
+   public ArtifactReadable introduceArtifact(TxData txData, BranchId fromBranch, ArtifactReadable source,
+      ArtifactReadable destination) {
       checkChangesAllowed(txData);
       Artifact src = getSourceArtifact(txData, fromBranch, source);
       Artifact dest = null;
@@ -359,7 +365,8 @@ public class TxDataManager {
       return asExternalArtifact(txData, dest);
    }
 
-   public ArtifactReadable replaceWithVersion(TxData txData, BranchId fromBranch, ArtifactReadable readable, ArtifactReadable destination) {
+   public ArtifactReadable replaceWithVersion(TxData txData, BranchId fromBranch, ArtifactReadable readable,
+      ArtifactReadable destination) {
       return introduceArtifact(txData, fromBranch, readable, destination);
    }
 
@@ -418,26 +425,30 @@ public class TxDataManager {
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale);
    }
 
-   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, RelationSorter sortType) {
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB,
+      RelationSorter sortType) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, sortType);
    }
 
-   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, String rationale, RelationSorter sortType) {
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, String rationale,
+      RelationSorter sortType) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale, sortType);
    }
 
-   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, ArtifactId relatedArtifact, int relOrder, RelationSorter sortType) {
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB,
+      ArtifactId relatedArtifact, int relOrder, RelationSorter sortType) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, Strings.EMPTY_STRING, sortType,
          relOrder, relatedArtifact, txData);
    }
 
-   public void setRelations(TxData txData, ArtifactId artA, RelationTypeToken type, Iterable<? extends ArtifactId> artBs) {
+   public void setRelations(TxData txData, ArtifactId artA, RelationTypeToken type,
+      Iterable<? extends ArtifactId> artBs) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Set<Artifact> asArtifactBs = Sets.newLinkedHashSet(getForWrite(txData, artBs));
 
@@ -456,7 +467,8 @@ public class TxDataManager {
       }
    }
 
-   public void setRelationsAndOrder(TxData txData, ArtifactId artA, RelationTypeSide relationSide, List<? extends ArtifactId> artBs) {
+   public void setRelationsAndOrder(TxData txData, ArtifactId artA, RelationTypeSide relationSide,
+      List<? extends ArtifactId> artBs) {
       setRelations(txData, artA, relationSide, artBs);
       Artifact asArtifactA = getForWrite(txData, artA);
       List<Artifact> asArtifactBs = new LinkedList<>();
@@ -492,7 +504,14 @@ public class TxDataManager {
       relationManager.unrelateFromAll(txData.getSession(), type, asArtifactA, side);
    }
 
-   public void setRelationApplicabilityId(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, ApplicabilityId applicId) {
+   public void unrelateFromInvalidArtifact(TxData txData, ArtifactId validArt, ArtifactId invalidArt) {
+      Artifact asArtifactA = getForWrite(txData, validArt);
+      relationManager.unrelateFromInvalidArtifact(txData.getSession(), asArtifactA, invalidArt);
+
+   }
+
+   public void setRelationApplicabilityId(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB,
+      ApplicabilityId applicId) {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.setApplicabilityId(asArtifactA, type, asArtifactB, applicId);

@@ -73,7 +73,8 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId);
 
-   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId, ApplicabilityId appId);
+   ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId,
+      ApplicabilityId appId);
 
    ArtifactToken createArtifact(ArtifactToken token);
 
@@ -94,7 +95,8 @@ public interface TransactionBuilder {
 
    ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact);
 
-   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeToken> attributesToDuplicate);
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact,
+      Collection<AttributeTypeToken> attributesToDuplicate);
 
    ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact);
 
@@ -150,9 +152,11 @@ public interface TransactionBuilder {
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType);
 
-   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact, String insertType, int afterIndex, int beforeIndex);
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String insertType, int afterIndex, int beforeIndex);
 
-   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact, String afterArtifact);
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String afterArtifact);
 
    void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs);
 
@@ -163,6 +167,8 @@ public interface TransactionBuilder {
    void unrelateFromAll(ArtifactId art);
 
    void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art);
+
+   void unrelateFromInvalidArtifact(ArtifactId validArt, ArtifactId invalidArt);
 
    void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ApplicabilityId applicId);
 

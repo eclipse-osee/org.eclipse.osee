@@ -608,6 +608,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public void unrelateFromInvalidArtifact(ArtifactId validArt, ArtifactId invalidArt) {
+      txManager.unrelateFromInvalidArtifact(txData, validArt, invalidArt);
+   }
+
+   @Override
    public void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB,
       ApplicabilityId applicId) {
       validateBuilder();

@@ -163,6 +163,15 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
             }
          }
       }
+      if (root.has("deleteInvalidRelations")) {
+         for (JsonNode relation : root.get("deleteInvalidRelations")) {
+            ArtifactId artA = ArtifactId.valueOf(relation.get("validArt").asLong());
+            ArtifactId artB = ArtifactId.valueOf(relation.get("invalidArt").asLong());
+            if (artA.isValid() && artB.isValid()) {
+               tx.unrelateFromInvalidArtifact(artA, artB);
+            }
+         }
+      }
    }
 
    private void addRelations(JsonNode root, Map<String, ArtifactToken> artifactsByKeys, TransactionBuilder tx) {

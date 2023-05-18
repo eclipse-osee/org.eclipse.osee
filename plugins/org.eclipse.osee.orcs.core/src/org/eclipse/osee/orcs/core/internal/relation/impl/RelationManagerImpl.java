@@ -163,12 +163,14 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node, RelationSide side) {
+   public <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node,
+      RelationSide side) {
       return getRelated(session, type, node, side, EXCLUDE_DELETED);
    }
 
    @Override
-   public <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag flag) {
+   public <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node,
+      RelationSide side, DeletionFlag flag) {
       List<Relation> links = getRelations(type, node, side, flag);
       List<T> result = null;
       if (links.isEmpty()) {
@@ -222,17 +224,20 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, RelationSorter sortType) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode,
+      RelationSorter sortType) {
       relate(session, aNode, type, bNode, emptyString(), sortType);
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
+      RelationSorter sortType) {
       relate(session, aNode, type, bNode, rationale, sortType, 0, null, null);
    }
 
    @Override
-   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, int relOrder, ArtifactId relatedArtifact, TxData txData) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
+      RelationSorter sortType, int relOrder, ArtifactId relatedArtifact, TxData txData) {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
       GraphData graph = getGraph(aNode, bNode);
@@ -385,7 +390,8 @@ public class RelationManagerImpl implements RelationManager {
       }
    }
 
-   private ResultSet<Relation> getRelation(Artifact aNode, RelationTypeToken type, Artifact bNode, DeletionFlag inludeDeleted) {
+   private ResultSet<Relation> getRelation(Artifact aNode, RelationTypeToken type, Artifact bNode,
+      DeletionFlag inludeDeleted) {
       GraphData graph = getGraph(aNode, bNode);
       checkNotNull(type, "relationType");
 
@@ -407,11 +413,13 @@ public class RelationManagerImpl implements RelationManager {
       return ResultSets.singleton(relation);
    }
 
-   private List<Relation> getRelations(RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag includeDeleted) {
+   private List<Relation> getRelations(RelationTypeToken type, Artifact node, RelationSide side,
+      DeletionFlag includeDeleted) {
       return getRelations(type, node, side, includeDeleted, null);
    }
 
-   private List<Relation> getRelations(RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag includeDeleted, TxData txData) {
+   private List<Relation> getRelations(RelationTypeToken type, Artifact node, RelationSide side,
+      DeletionFlag includeDeleted, TxData txData) {
       checkNotNull(type, "relationType");
       checkNotNull(side, "relationSide");
       checkNotNull(node, "node");
@@ -445,11 +453,13 @@ public class RelationManagerImpl implements RelationManager {
       REMOVE_FROM_ORDER;
    }
 
-   private void order(OrcsSession session, RelationTypeToken type, Artifact node1, RelationSide side, OrderOp op, Collection<? extends Artifact> node2) {
+   private void order(OrcsSession session, RelationTypeToken type, Artifact node1, RelationSide side, OrderOp op,
+      Collection<? extends Artifact> node2) {
       order(session, type, node1, side, PREEXISTING, op, node2);
    }
 
-   private void order(OrcsSession session, RelationTypeToken type, Artifact node1, RelationSide side, RelationSorter sorterId, OrderOp op, Collection<? extends Artifact> node2) {
+   private void order(OrcsSession session, RelationTypeToken type, Artifact node1, RelationSide side,
+      RelationSorter sorterId, OrderOp op, Collection<? extends Artifact> node2) {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
@@ -537,7 +547,8 @@ public class RelationManagerImpl implements RelationManager {
       relation.setApplicabilityId(applicId);
    }
 
-   private Relation findRelationByRelTypeArtABOrder(RelationNodeAdjacencies adjacencies, RelationTypeToken type, ArtifactId artA, ArtifactId artB, int relOrder) {
+   private Relation findRelationByRelTypeArtABOrder(RelationNodeAdjacencies adjacencies, RelationTypeToken type,
+      ArtifactId artA, ArtifactId artB, int relOrder) {
       for (Relation rel : adjacencies.getAll()) {
          if (type.getIdString().equals(rel.getRelationType().getIdString()) && artA.equals(
             rel.getArtifactIdA()) && artB.equals(rel.getArtifactIdB()) && relOrder == rel.getRelOrder()) {
@@ -554,5 +565,20 @@ public class RelationManagerImpl implements RelationManager {
          }
       }
       return null;
+   }
+
+   @Override
+   public void unrelateFromInvalidArtifact(OrcsSession session, Artifact validArt, ArtifactId invalidArt) {
+      List<Relation> relations = getRelations(validArt, INCLUDE_DELETED);
+      Relation matchRel = relations.stream().filter(
+         relation -> (invalidArt.getIdIntValue() == relation.getArtifactIdA().getIdIntValue())).findAny().orElse(null);
+      if (matchRel == null) {
+         matchRel = relations.stream().filter(
+            relation -> (invalidArt.getIdIntValue() == relation.getArtifactIdB().getIdIntValue())).findAny().orElse(
+               null);
+      }
+      if (matchRel != null) {
+         matchRel.delete();
+      }
    }
 }
