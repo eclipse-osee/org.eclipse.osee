@@ -63,9 +63,11 @@ public interface RelationManager {
 
    <T extends Artifact> ResultSet<T> getChildren(OrcsSession session, Artifact parent);
 
-   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node, RelationSide side);
+   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node,
+      RelationSide side);
 
-   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node, RelationSide side, DeletionFlag flag);
+   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeToken type, Artifact node,
+      RelationSide side, DeletionFlag flag);
 
    ///////////////////////////////////////
 
@@ -77,7 +79,8 @@ public interface RelationManager {
 
    void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, RelationSorter sortType);
 
-   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
+      RelationSorter sortType);
 
    void setRationale(Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale);
 
@@ -102,7 +105,10 @@ public interface RelationManager {
 
    void relate(OrcsSession session, Artifact asArtifactA, RelationTypeToken type, Artifact asArtifactB, TxData txData);
 
-   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale, RelationSorter sortType, int relOrder, ArtifactId relatedArtifact, TxData txData);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
+      RelationSorter sortType, int relOrder, ArtifactId relatedArtifact, TxData txData);
 
    ///////////////////////////////////////
+
+   void unrelateFromInvalidArtifact(OrcsSession session, Artifact validArt, ArtifactId invalidArt);
 }
