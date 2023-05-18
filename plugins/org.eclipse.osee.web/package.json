@@ -43,6 +43,7 @@
 		"@angular/router": "^15.2.0",
 		"@swimlane/ngx-graph": "^8.0.2",
 		"d3-scale": "^4.0.2",
+		"d3-transition": "^3.0.0",
 		"marked": "^4.2.3",
 		"material-design-icons": "^3.0.1",
 		"ngx-markdown": "^15.0.0",
