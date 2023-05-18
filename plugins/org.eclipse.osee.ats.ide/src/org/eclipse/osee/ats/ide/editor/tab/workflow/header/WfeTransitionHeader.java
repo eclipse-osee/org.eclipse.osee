@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -55,7 +54,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -342,33 +340,6 @@ public class WfeTransitionHeader extends Composite {
          }
 
       });
-   }
-
-   public void updateTransitionToAssignees() {
-      Collection<AtsUser> assignees = null;
-      // Determine if the is an override set of assignees
-      for (IAtsWorkItemHook item : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
-         String decisionValueIfApplicable = "";
-         if (workItem.isOfType(
-            AtsArtifactTypes.DecisionReview) && editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
-               AtsAttributeTypes.Decision.getName()) != null) {
-            XComboDam xWidget = (XComboDam) editor.getWorkFlowTab().getCurrentStateSection().getPage().getLayoutData(
-               AtsAttributeTypes.Decision.getName()).getXWidget();
-            if (xWidget != null) {
-               decisionValueIfApplicable = xWidget.get();
-            }
-         }
-         assignees = item.getOverrideTransitionToAssignees(workItem, decisionValueIfApplicable);
-         if (assignees != null) {
-            break;
-         }
-      }
-      // If override set and isn't the same as already selected, update
-      if (assignees != null && !workItem.getTransitionAssignees().equals(assignees)) {
-         workItem.setTransitionAssignees(assignees);
-         editor.onDirtied();
-      }
-      refresh();
    }
 
    public StateDefinition getToState() {

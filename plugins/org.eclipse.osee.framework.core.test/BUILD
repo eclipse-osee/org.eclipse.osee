@@ -23,10 +23,10 @@ java_library(
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
 		"@maven//:org_junit_junit5_api",
+                "@maven//:org_mockito_mockito_core",
 		"@ext_jars//:eclipse_equinox_common", 
 		"@ext_jars//:eclipse_osgi_services",
                 ],
 )
-package(default_visibility = ["//visibility:public"])
 
 

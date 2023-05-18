@@ -322,7 +322,7 @@ public final class Lib {
     * stopAt parent.
     *
     * @param stopAt path of the parent file to stop deleting at
-    * @param file   to delete
+    * @param file to delete
     * @return status <b>true</b> if successful
     */
    public static boolean deleteFileAndEmptyParents(String stopAt, File file) {
@@ -413,7 +413,8 @@ public final class Lib {
    /**
     * efficiently copy contents of inputStream into builder
     */
-   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, String charset, StringBuilder builder) throws IOException {
+   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, String charset,
+      StringBuilder builder) throws IOException {
       InputStreamReader reader = new InputStreamReader(inputStream, charset);
       try {
          char[] chars = new char[8000];
@@ -427,7 +428,8 @@ public final class Lib {
       }
    }
 
-   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, StringBuilder builder) throws IOException {
+   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, StringBuilder builder)
+      throws IOException {
       return inputStreamToStringBuilder(inputStream, "UTF-8", builder);
    }
 
@@ -535,7 +537,7 @@ public final class Lib {
       InputStream inputStream = null;
       try {
          inputStream = new FileInputStream(file);
-         inputStream.read(bytes);
+         int readBytes = inputStream.read(bytes);
       } finally {
          if (inputStream != null) {
             inputStream.close();
@@ -621,13 +623,13 @@ public final class Lib {
     * FROM the process through it's err stream. The "outThread" will be what come from the FROM the process through it's
     * normal output stream. The "inThread" is the stream for issuing commands TO the process.
     *
-    * @param proc   The process whose streams we are setting up
+    * @param proc The process whose streams we are setting up
     * @param output Where all info coming FROM the minicom is sent
-    * @param input  Where all data going TO the minicom is sent
+    * @param input Where all data going TO the minicom is sent
     * @return An array of threads in the following order:<br>
-    *         --index 0 = Err Stream<br>
-    *         --index 1 = output stream<br>
-    *         --index 2 = input stream<br>
+    * --index 0 = Err Stream<br>
+    * --index 1 = output stream<br>
+    * --index 2 = input stream<br>
     */
    public static Thread[] handleMinicomProcess(Process proc, Writer output, Reader input) {
       IOOutputThread errThread =
@@ -658,7 +660,8 @@ public final class Lib {
       return handleProcessNoWait(proc, output, errorWriter, reader, "err", "out");
    }
 
-   public static Thread[] handleProcessNoWait(Process proc, Writer outputWriter, Writer errorWriter, Reader reader, String errName, String outName) {
+   public static Thread[] handleProcessNoWait(Process proc, Writer outputWriter, Writer errorWriter, Reader reader,
+      String errName, String outName) {
       IOOutputThread errThread =
          new IOOutputThread(errorWriter, new BufferedReader(new InputStreamReader(proc.getErrorStream())));
       IOOutputThread outThread =
@@ -806,7 +809,8 @@ public final class Lib {
       }
    }
 
-   public static List<File> recursivelyListFilesAndDirectories(ArrayList<File> fileList, File rootPath, Pattern filePathP, boolean includeDirectories) {
+   public static List<File> recursivelyListFilesAndDirectories(ArrayList<File> fileList, File rootPath,
+      Pattern filePathP, boolean includeDirectories) {
       LinkedList<File> dirList = new LinkedList<>();
       dirList.add(rootPath);
 
@@ -1021,7 +1025,7 @@ public final class Lib {
 
    /**
     * @return The path which was used to load the class file. If the file was loaded from a .jar, then the full path to
-    *         the jar. If the file was loaded from a .class, then the path up to the root of the package.
+    * the jar. If the file was loaded from a .class, then the path up to the root of the package.
     */
    public static String getClassLoadPath(Class<?> base) {
       /*
@@ -1246,7 +1250,7 @@ public final class Lib {
     * Finds the index of the closing bracket for a function.
     *
     * @param start -the index of the character AFTER the opening bracket for the function
-    * @param seq   -sequence containing the local function
+    * @param seq -sequence containing the local function
     * @return -the index of the matching bracket to the opening bracket of this function
     */
    public static int findTheEnd(int start, CharSequence seq) {
@@ -1378,9 +1382,9 @@ public final class Lib {
             Lib.close(jis);
          }
       } else {
-         JarFile jf = new JarFile(jarFile);
-         manifest = jf.getManifest();
-         jf.close();
+         try (JarFile jf = new JarFile(jarFile)) {
+            manifest = jf.getManifest();
+         }
       }
       return manifest.getMainAttributes().getValue("Implementation-Version");
    }
@@ -1501,7 +1505,8 @@ public final class Lib {
       }
    }
 
-   private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream, boolean includeSubDirectories) throws IOException {
+   private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream,
+      boolean includeSubDirectories) throws IOException {
       File[] children = source.listFiles();
       if (children != null) {
          for (File file : children) {
@@ -1516,7 +1521,8 @@ public final class Lib {
       }
    }
 
-   public static void compressDirectory(File directory, String zipTarget, boolean includeSubDirectories) throws IOException, IllegalArgumentException {
+   public static void compressDirectory(File directory, String zipTarget, boolean includeSubDirectories)
+      throws IOException, IllegalArgumentException {
       if (directory.isDirectory() != true) {
          throw new IllegalArgumentException(String.format("Error source is not a directory: [%s]", directory));
       }

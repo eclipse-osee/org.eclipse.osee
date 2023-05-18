@@ -42,6 +42,11 @@ alias(
 )
 
 alias(
+   name = "ats_ide",
+   actual = "//org.eclipse.osee.ats.ide:ats_ide"
+)
+
+alias(
    name = "ats_core",
    actual = "//org.eclipse.osee.ats.core:ats_core"
 )

@@ -312,7 +312,7 @@ public class NestedTemplates implements ToMessage {
          throw new IllegalStateException(
             "NestedTemplates::getSectionNumber, member \"sectionNumber\" has not been set.");
       }
-      return this.outlineType;
+      return this.sectionNumber;
    }
 
    /**

@@ -21,13 +21,6 @@ java_library(
 
 filegroup(
     name = "exsd_files",
-    srcs = 
-	    glob(["OSEE-INF/extensionPts/*.exsd"]),
-        visibility = ["//visibility:public"]
-)
-
-filegroup(
-    name = "exsd_files",
     srcs = glob(["OSEE-INF/extensionPts/*.exsd"]),
 )
 
@@ -59,6 +52,7 @@ java_library(
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
                 "@maven//:org_slf4j_slf4j_api",
                 "@maven//:javax_mail_mail",
+		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",

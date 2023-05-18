@@ -28,7 +28,7 @@ rules_jvm_external_setup()
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
 
-
+load("@rules_jvm_external//:specs.bzl", "maven")
 
 maven_install(
     artifacts = [
@@ -39,7 +39,22 @@ maven_install(
 	"com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.12.1",
         "commons-codec:commons-codec:1.6",
         "org.eclipse.jdt:org.eclipse.jdt.core:3.22.0",
-        "org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.600",
+   #     "org.eclipse.jdt:org.eclipse.jdt.ui:3.21.100",
+	
+# maven.artifact(
+ #           group = "org.eclipse.jdt",
+  #          artifact = "org.eclipse.jdt.ui",
+   #         version = "3.22.0",
+    #        exclusions = [
+     #           maven.exclusion(
+        #            group = "org.eclipse.platform",
+         #           artifact = "org.eclipse.equinox.p2.artifact.repository"
+          #      ),
+                
+           # ]
+       # ),
+
+       "org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.600",
         "javax.ws.rs:javax.ws.rs-api:2.1",
         "javax.activation:activation:1.1",
         "jakarta.xml.bind:jakarta.xml.bind-api:3.0.1",
@@ -64,7 +79,8 @@ maven_install(
 	"org.apache.cxf:cxf-rt-security:3.3.12",
 	"org.apache.cxf:cxf-rt-transports-http:3.3.12",
 	"org.apache.cxf:cxf-rt-rs-service-description:3.3.12",
-   	"org.hsqldb:hsqldb:2.6.1",
+	"org.apache.cxf:cxf-tools-wadlto-jaxrs:2.6.17",
+	"org.hsqldb:hsqldb:2.6.1",
 	"javax.servlet:javax.servlet-api:3.1.0",
 	"org.osgi:org.osgi.service.log:1.5.0",
         "org.osgi:org.osgi.service.component:1.5.0",
@@ -82,6 +98,11 @@ maven_install(
         "org.apache.activemq:activemq-all:5.14.0",
 	"org.glassfish.jaxb:jaxb-runtime:3.0.1"
         ],
+
+#	excluded_artifacts = [
+ #       "org.eclipse.platform:org.eclipse.equinox.p2.artifact.repository",
+  #  ],
+
     repositories = [
         # Private repositories are supported through HTTP Basic auth
         "https://repo1.maven.org/maven2",

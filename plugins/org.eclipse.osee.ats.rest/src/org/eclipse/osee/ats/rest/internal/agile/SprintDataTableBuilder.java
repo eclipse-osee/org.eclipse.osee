@@ -129,7 +129,7 @@ public class SprintDataTableBuilder {
       strs = new LinkedList<>();
       strs.add("UnPlanned Incomplete");
       for (AgileSprintDateData date : burn.getDates()) {
-         if (date.getCompletedUnPlannedPoints() == null) {
+         if (date.getInCompletedUnPlannedPoints() == null) {
             strs.add(N_A);
          } else {
             strs.add(String.valueOf(date.getInCompletedUnPlannedPoints()));

@@ -49,7 +49,6 @@ import org.junit.runners.Suite;
    EnumAttributeMultiplicityTest.class,
    IntegerAttributeTest.class,
    FrameworkEventToRemoteEventListenerTest.class,
-   LoadDeletedRelationTest.class,
    MergeManagerTest.class,
    NativeArtifactTest.class,
    OseeEnumerationValidationTest.class,

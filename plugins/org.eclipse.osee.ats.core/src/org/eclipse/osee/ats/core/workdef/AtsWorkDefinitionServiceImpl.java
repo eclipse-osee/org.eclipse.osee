@@ -252,7 +252,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     */
    @Override
    public WorkDefinition getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review) {
-      Conditions.notNull(review, AtsWorkDefinitionServiceImpl.class.getSimpleName());
+      Conditions.checkNotNull(review, AtsWorkDefinitionServiceImpl.class.getSimpleName());
       WorkDefinition workDef = getWorkDefinitionFromArtifactsAttributeValue(review);
       if (workDef == null) {
          workDef = getDefaultPeerToPeerWorkflowDefinition();
@@ -271,7 +271,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     */
    @Override
    public WorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreated(IAtsTeamWorkflow teamWf) {
-      Conditions.notNull(teamWf, AtsWorkDefinitionServiceImpl.class.getSimpleName());
+      Conditions.checkNotNull(teamWf, AtsWorkDefinitionServiceImpl.class.getSimpleName());
       IAtsTeamDefinition teamDefinition = teamWf.getTeamDefinition();
       WorkDefinition workDef = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(teamDefinition);
       if (workDef == null) {
@@ -286,8 +286,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     * work definition
     */
    @Override
-   public WorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem) {
-      Conditions.notNull(actionableItem, AtsWorkDefinitionServiceImpl.class.getSimpleName());
+   public WorkDefinition getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
+      IAtsActionableItem actionableItem) {
+      Conditions.checkNotNull(actionableItem, AtsWorkDefinitionServiceImpl.class.getSimpleName());
       WorkDefinition workDef = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(
          actionableItem.getAtsApi().getActionableItemService().getTeamDefinitionInherited(actionableItem));
       if (workDef == null) {
@@ -300,8 +301,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     * @return WorkDefinitionMatch of teamDefinition configured with RelatedPeerWorkflowDefinition attribute with recurse
     * up to top teamDefinition or will return no match
     */
-   public WorkDefinition getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(IAtsTeamDefinition teamDef) {
-      Conditions.notNull(teamDef, AtsWorkDefinitionServiceImpl.class.getSimpleName());
+   public WorkDefinition getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(
+      IAtsTeamDefinition teamDef) {
+      Conditions.checkNotNull(teamDef, AtsWorkDefinitionServiceImpl.class.getSimpleName());
       WorkDefinition workDefinition =
          getWorkDefinitionFromAsObject(teamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference);
       if (workDefinition == null || workDefinition.isInvalid()) {
@@ -349,7 +351,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       return widgets;
    }
 
-   private static void getWidgets(StateDefinition stateDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
+   private static void getWidgets(StateDefinition stateDef, List<WidgetDefinition> widgets,
+      List<LayoutItem> layoutItems) {
       for (LayoutItem lItem : layoutItems) {
          if (lItem instanceof CompositeLayoutItem) {
             getWidgets(stateDef, widgets, ((CompositeLayoutItem) lItem).getLayoutItems());
@@ -359,7 +362,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
    }
 
-   private static void getWidgets(HeaderDefinition headerDef, List<WidgetDefinition> widgets, List<LayoutItem> layoutItems) {
+   private static void getWidgets(HeaderDefinition headerDef, List<WidgetDefinition> widgets,
+      List<LayoutItem> layoutItems) {
       for (LayoutItem lItem : layoutItems) {
          if (lItem instanceof CompositeLayoutItem) {
             getWidgets(headerDef, widgets, ((CompositeLayoutItem) lItem).getLayoutItems());
@@ -472,7 +476,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef, Collection<INewActionListener> newActionListeners) {
+   public WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef,
+      Collection<INewActionListener> newActionListeners) {
       Conditions.assertNotNull(teamDef, "Team Definition can not be null");
 
       // If work def id is specified by listener, set as attribute
@@ -520,7 +525,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, WorkDefinition workDefinition, IAtsChangeSet changes) {
+   public void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, WorkDefinition workDefinition,
+      IAtsChangeSet changes) {
       setWorkDefinitionAttrs((IAtsObject) teamDef, workDefinition, changes);
    }
 

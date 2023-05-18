@@ -82,7 +82,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
          if (hasWizardXWidgetExtensions(teamDef)) {
 
-            XLabel label = new XLabel((first ? "" : "\n") + "Extra fields for team \"" + teamDef.getName() + "\"");
+            XLabel label = new XLabel("Extra fields for team \"" + teamDef.getName() + "\"");
             label.createWidgets(comp, 1);
 
             Composite teamComp = new Composite(comp, SWT.BORDER);
@@ -227,7 +227,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       }
    }
 
-   private void wizardCompletedFeatureGroup(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
+   private void wizardCompletedFeatureGroup(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef,
+      IAtsChangeSet changes) {
       XAgileFeatureHyperlinkWidget featureCombo =
          (XAgileFeatureHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.FeatureGroup);
       if (featureCombo != null) {
@@ -237,7 +238,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       }
    }
 
-   private void wizardCompletedTargetedVersion(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
+   private void wizardCompletedTargetedVersion(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef,
+      IAtsChangeSet changes) {
       XTargetedVersionHyperlinkWidget widget =
          (XTargetedVersionHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.TargetedVersion);
       if (widget != null) {
@@ -270,7 +272,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       }
    }
 
-   private void wizardCompletedPointsNumeric(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
+   private void wizardCompletedPointsNumeric(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef,
+      IAtsChangeSet changes) {
       XFloat xFloat = (XFloat) teamDefFieldToWidget.get(teamDef, WizardFields.PointsNumeric);
       if (xFloat != null) {
          String pointsNumeric = xFloat.get();

@@ -40,7 +40,8 @@ java_library(
                 "@maven//:com_fasterxml_jackson_core_jackson_databind",
                 "@maven//:com_fasterxml_jackson_core_jackson_annotations",
                 "@maven//:commons_codec_commons_codec",
-                "@maven//:org_eclipse_jdt_org_eclipse_jdt_annotation",
+                #"@maven//:org_eclipse_jdt_org_eclipse_jdt_ui",
+		"@maven//:org_eclipse_jdt_org_eclipse_jdt_annotation",
                 "@maven//:javax_ws_rs_javax_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
@@ -64,6 +65,5 @@ java_library(
 		"@ext_jars//:jface",
 		"@ext_jars//:eclipse_core",
 		"@ext_jars//:eclipse_equinox_common",
-		"@ext_jars//:eclipse_jdt"
                 ],
 )

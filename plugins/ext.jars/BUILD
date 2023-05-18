@@ -15,6 +15,14 @@ java_import(
 )
 
 java_import(
+        name = "graphiti",
+        jars = [
+                "org.eclipse.graphiti.ui_0.17.0.202005151449.jar",
+                "org.eclipse.graphiti_0.17.0.202005151449.jar"
+       ],
+)
+
+java_import(
         name = "eclipse_core",
         jars = [
                 "org.eclipse.core.runtime_3.18.0.v20200506-2143.jar",
@@ -24,14 +32,12 @@ java_import(
                 "org.eclipse.debug.core_3.15.100.v20200514-0816.jar",
 		"org.eclipse.core.filesystem_1.7.700.v20200110-1734.jar",
 		"org.eclipse.core.filebuffers_3.6.1000.v20200409-1035.jar",
-		"org.eclipse.core.contenttype_3.7.700.v20200517-1644.jar",
-		"org.eclipse.core.filesystem_1.7.700.v20200110-1734.jar",
-		"org.eclipse.core.filebuffers_3.6.1000.v20200409-1035.jar",
-		"org.eclipse.core.expressions_3.6.800.v20200319-0911.jar",
 		"org.eclipse.compare_3.7.1000.v20200511-1203.jar",
 		"org.eclipse.search_3.11.1000.v20200410-1852.jar",
 		"org.eclipse.zest.core_1.5.300.201606061308.jar",
-		"org.eclipse.zest.layouts_1.1.300.201606061308.jar"
+		"org.eclipse.zest.layouts_1.1.300.201606061308.jar",
+		"org.eclipse.draw2d_3.10.100.201606061308.jar",
+		"org.eclipse.gef_3.11.0.201606061308.jar"
        ],
 )
 
@@ -39,9 +45,7 @@ java_import(
         name = "eclipse_osgi_services",
         jars = [
                 "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar",
-               	"org.eclipse.osgi_3.15.300.v20200520-1959.jar"
-                "org.eclipse.osgi_3.15.300.v20200520-1959.jar",
-		"org.eclipse.osgi.compatibility.state_1.1.800.v20200511-1223.jar"
+               	"org.eclipse.osgi_3.15.300.v20200520-1959.jar",
        ],
 )
 
@@ -60,8 +64,9 @@ java_import(
         name = "nebula",
         jars = [
                 "org.eclipse.nebula.widgets.xviewer.core_1.0.0.202212191054.jar",
-		"org.eclipse.nebula.widgets.xviewer_1.1.0.202302231924.jar"
-       ],
+		"org.eclipse.nebula.widgets.xviewer_1.1.0.202302231924.jar",
+		"org.eclipse.nebula.widgets.ganttchart_1.0.0.202303072132.jar"
+	],
 )
 
 java_import(
@@ -92,7 +97,9 @@ java_import(
 		"org.eclipse.emf.ecore.xmi_2.16.0.v20190528-0725.jar",
 		"org.eclipse.emf.ecore.edit_2.13.0.v20190822-1451.jar",
 		"org.eclipse.emf.ecore.change_2.14.0.v20190528-0725.jar",
-       		"org.eclipse.sphinx.emf.serialization_0.13.1.202210010314.jar"
+       		"org.eclipse.sphinx.emf.serialization_0.13.1.202210010314.jar",
+       		"org.eclipse.emf.edit_2.16.0.v20190920-0401.jar",
+       		"org.eclipse.emf.transaction_1.9.1.201805140824.jar"
        ],
 )
 
@@ -131,20 +138,16 @@ java_import(
         jars = [
                 "org.eclipse.ui.forms_3.9.100.v20200413-1417.jar",
                 "org.eclipse.ui.workbench_3.119.0.v20200521-1247.jar",
+                "org.eclipse.ui.workbench.texteditor_3.14.200.v20200421-1954.jar",
 		"org.eclipse.ui_3.117.0.v20200518-1705.jar",
 		"org.eclipse.ui.ide_3.17.100.v20200530-0835.jar",
 		"org.eclipse.ui.views_3.10.300.v20200311-1018.jar",
-		"org.eclipse.ui.workbench.texteditor_3.14.200.v20200421-1954.jar",
-		"org.eclipse.e4.ui.workbench3_0.15.400.v20191216-0805.jar",
-		"org.eclipse.ui.ide_3.17.100.v20200530-0835.jar",
-		"org.eclipse.e4.ui.ide_3.15.100.v20200323-2111.jar",
-		"org.eclipse.ui.views_3.10.300.v20200311-1018.jar",
-		"org.eclipse.ui.workbench.texteditor_3.14.200.v20200421-1954.jar",
-		"org.eclipse.ui.editors_3.13.200.v20200501-2307.jar",
+		"org.eclipse.ui.views.properties.tabbed_3.8.900.v20200513-0930.jar",
+		"org.eclipse.e4.ui.workbench_1.11.300.v20200514-1625.jar",
 		"org.eclipse.ui.console_3.9.200.v20200511-1122.jar",
 		"org.eclipse.debug.ui_3.14.500.v20200520-0842.jar",
+		"org.eclipse.jdt.ui-3.21.100.jar",
 		"org.eclipse.ui.navigator_3.9.300.v20200513-0930.jar",
-		"org.eclipse.e4.ui.workbench_1.11.300.v20200514-1625.jar"
        ],
        
 )
@@ -157,21 +160,6 @@ java_import(
        
 )
 
-java_import(
-        name = "javax",
-        jars = [
-                "javax.mail.glassfish_1.4.1.v201108011116.jar"
-       ],
        
-)
+#)
 
-java_import(
-        name = "eclipse_jdt",
-        jars = [
-		"org.eclipse.jdt.ui_3.21.100.v20200602-0959.jar"
-                "org.eclipse.jdt.compiler.apt_1.3.1000.v20200505-1625.jar",
-		"org.eclipse.jdt.compiler.tool_1.2.900.v20200428-1854.jar",
-		"org.eclipse.jdt.ui_3.21.100.v20200602-0959.jar",
-		"org.eclipse.jdt.core.manipulation_1.14.0.v20200526-0740.jar"
-       ],
-)

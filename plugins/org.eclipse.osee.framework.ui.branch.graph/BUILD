@@ -1,0 +1,82 @@
+java_library(
+    name = "framework_ui_branch_graph",
+	resources = ["OSEE_INF"],
+	srcs = glob(["**/*.java"]),
+	deps = ["java_deps",
+	 	"//framework_core_packages",
+		"//:framework_core_client",
+		"//:framework_plugin_core",
+        "//:framework_ui_swt",
+		"//:framework_ui_skynet",
+		"//:activity_api",
+		"//:framework_messaging_event_res",
+		"//:framework_server_ide_api",
+		"//:framework_core_server",
+		"//:framework_messaging",
+		"//:cache_admin",
+		"//:framework_core_model",
+		"//:jaxrs",
+		"//:orcs",
+		"//:orcs_rest_model",
+		"//:jdbc",
+		"//:framework_server_ide",
+		"//:console_admin",
+		"//:orcs_core",
+		"//:orcs_rest",
+		"//:activity",
+		"//:define_api",
+		"//:framework_resource_management",
+		"//:account_rest_client",
+	 	"//:account_rest_model",
+		"//:framework_help_ui",
+		"//:framework_skynet_core",
+		"//:framework_ui_plugin",
+		"//:ats_api",
+		"//:framework_ui_ws"
+		],
+	visibility = ["//visibility:public"]
+              )
+
+
+
+filegroup(
+    name = "OSEE_INF",
+    srcs = glob(["OSEE-INF/*"])
+)
+
+
+java_library(
+        name = "java_deps",
+        exports = [
+                "@maven//:com_fasterxml_jackson_core_jackson_core",
+                "@maven//:com_fasterxml_jackson_core_jackson_databind",
+                "@maven//:com_fasterxml_jackson_core_jackson_annotations",
+                "@maven//:commons_codec_commons_codec",
+                "@maven//:org_eclipse_jdt_org_eclipse_jdt_annotation",
+                "@maven//:javax_ws_rs_javax_ws_rs_api",
+                "@maven//:javax_activation_activation",
+                "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
+                "@maven//:org_slf4j_slf4j_api",
+                "@maven//:javax_mail_mail",
+                "@maven//:org_antlr_antlr_runtime",
+                "@maven//:com_google_guava_guava",
+				"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+				"@maven//:org_apache_cxf_cxf_rt_rs_client",
+				"@maven//:org_eclipse_jgit_org_eclipse_jgit",
+				"@maven//:org_jsoup_jsoup",
+				"@maven//:com_jcraft_jsch",
+				"@maven//:org_eclipse_jdt_org_eclipse_jdt_core",
+				"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
+                "@maven//:org_apache_activemq_activemq_all",
+				"@maven//:org_mockito_mockito_core",
+				"@maven//:org_hamcrest_hamcrest_core",
+				"@ext_jars//:eclipse_osgi_services",
+				"@ext_jars//:eclipse_ui",
+				"@ext_jars//:swt",
+				"@ext_jars//:jface",
+				"@ext_jars//:eclipse_core",
+				"@ext_jars//:eclipse_equinox_common",
+				"@ext_jars//:apache_commons_lang",
+				"@ext_jars//:nebula"
+	],
+)
