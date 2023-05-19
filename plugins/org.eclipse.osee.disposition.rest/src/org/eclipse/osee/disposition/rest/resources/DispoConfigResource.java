@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -39,6 +43,11 @@ public class DispoConfigResource {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Get Dispo config")
+   @Tag(name = "config")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response getDispoConfig() {
       Response.Status status;
       Response response;

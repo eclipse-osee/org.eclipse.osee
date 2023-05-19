@@ -13,6 +13,12 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -67,7 +73,14 @@ public class DispoProgramResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.TEXT_PLAIN)
-   public Response createProgram(DispoProgamDescriptorData programDescriptor, @QueryParam("userName") String userName) {
+   @Operation(summary = "Create a new Disposition Set given a DispoSetDescriptor")
+   @Tags(value = {@Tag(name = "create"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "OK. Created the Disposition Set"),
+      @ApiResponse(responseCode = "409", description = "Conflict. Tried to create a Disposition Set with same name"),
+      @ApiResponse(responseCode = "400", description = "Bad Request. Did not provide both a Name and a valid Import Path")})
+   public Response createProgram(DispoProgamDescriptorData programDescriptor,
+      @Parameter(description = "The Username") @QueryParam("userName") String userName) {
       String name = "(DISPO)" + programDescriptor.getName();
       Response.Status status;
       Response response;
@@ -101,6 +114,12 @@ public class DispoProgramResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.TEXT_PLAIN)
+   @Operation(summary = "Create a new Disposition Set given a name")
+   @Tags(value = {@Tag(name = "create"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "OK. Created the Disposition Set"),
+      @ApiResponse(responseCode = "409", description = "Conflict. Tried to create a Disposition Set with same name"),
+      @ApiResponse(responseCode = "400", description = "Bad Request. Did not provide both a Name and a valid Import Path")})
    public Response createDispoProgramByName(@PathParam("name") String name, @QueryParam("userName") String userName) {
       DispoProgamDescriptorData programDescriptor = new DispoProgamDescriptorData();
       programDescriptor.setName(name);
@@ -116,6 +135,11 @@ public class DispoProgramResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Get all Disposition Programs as JSON")
+   @Tag(name = "program")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Disposition Programs"),
+      @ApiResponse(responseCode = "400", description = "Not Found. Could not find any Disposition Programs")})
    public Response getAllPrograms() {
       List<BranchToken> allPrograms = dispoApi.getDispoPrograms();
       Collections.sort(allPrograms, new Comparator<BranchToken>() {
@@ -154,7 +178,13 @@ public class DispoProgramResource {
    @GET
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.APPLICATION_JSON)
-   public String getDispoBranchId(@FormParam("name") String branchName) {
+   @Operation(summary = "Get a Branch ID given a Branch name")
+   @Tag(name = "branch")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Branch ID"),
+      @ApiResponse(responseCode = "400", description = "Not Found. Could not find any Branch ID")})
+   public String getDispoBranchId(
+      @Parameter(description = "The Branch name", required = true) @FormParam("name") String branchName) {
       return dispoApi.getDispoProgramIdByName(branchName).getIdString();
    }
 
@@ -172,6 +202,13 @@ public class DispoProgramResource {
    @PUT
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Import All Disposition Sets that are in a given State. Default state is \"NONE\"")
+   @Tags(value = {@Tag(name = "import"), @Tag(name = "sets")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Import successful"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Can't connect to server"),
+      @ApiResponse(responseCode = "405", description = "Method Not Allowed. Invalid permission"),
+      @ApiResponse(responseCode = "415", description = "Unsupported Media Type")})
    public Response importAllDispoSets(String filterState) {
       Response.Status status;
       dispoApi.importAllDispoPrograms(filterState, "OSEE System Auto-Import (All)");
@@ -191,8 +228,15 @@ public class DispoProgramResource {
    @Path("importDispoBranch")
    @PUT
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   public Response importDispoBranchByName(@FormParam("filterState") String filterState,
-      @FormParam("name") String branchName) {
+   @Operation(summary = "Import All Disposition Sets that are in a given Branch and State. Default state is \"NONE\"")
+   @Tags(value = {@Tag(name = "import"), @Tag(name = "branch")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Import successful"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Can't connect to server"),
+      @ApiResponse(responseCode = "415", description = "Unsupported Media Type")})
+   public Response importDispoBranchByName(
+      @Parameter(description = "The Filter state", required = true) @FormParam("filterState") String filterState,
+      @Parameter(description = "The Branch name", required = true) @FormParam("name") String branchName) {
       BranchToken branch = dispoApi.getDispoProgramIdByName(branchName);
       Response.Status status;
       dispoApi.importAllDispoSets(branch, filterState, "OSEE System Auto-Import (Branch)");
@@ -201,17 +245,35 @@ public class DispoProgramResource {
    }
 
    @Path("{branchId}/set")
-   public DispoSetResource getAnnotation(@PathParam("branchId") BranchId branch) {
+   @Operation(summary = "Get Annotation")
+   @Tag(name = "annotation")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Annotation found"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Can't find annotation")})
+   public DispoSetResource getAnnotation(
+      @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
       return new DispoSetResource(dispoApi, branch);
    }
 
    @Path("{branchId}/admin")
-   public DispoAdminResource getDispoSetReport(@PathParam("branchId") BranchId branch) {
+   @Operation(summary = "Get Dispo Set report")
+   @Tag(name = "annotation")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Retrieved Dispo Set report"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Can't find Dispo Set report")})
+   public DispoAdminResource getDispoSetReport(
+      @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
       return new DispoAdminResource(dispoApi, branch);
    }
 
    @Path("{branchId}/config")
-   public DispoConfigResource getDispoDataStore(@PathParam("branchId") BranchId branch) {
+   @Operation(summary = "Get Dispo Datastore")
+   @Tag(name = "annotation")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Retrieved the Dispo Datastore"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Can't find the Dispo Datastore")})
+   public DispoConfigResource getDispoDataStore(
+      @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
       return new DispoConfigResource(dispoApi, branch);
    }
 }

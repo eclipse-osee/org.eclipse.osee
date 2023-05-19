@@ -13,6 +13,11 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -49,7 +54,13 @@ public class DispoItemResource {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Iterable<DispoItem> getAllDispoItems(@QueryParam("isDetailed") Boolean isDetailed) {
+   @Operation(summary = "Get all Dispo Items")
+   @Tag(name = "items")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
+   public Iterable<DispoItem> getAllDispoItems(
+      @Parameter(description = "Is detailed", required = true) @QueryParam("isDetailed") Boolean isDetailed) {
       List<DispoItem> allDispoItems = dispoApi.getDispoItems(branch, setId, isDetailed);
       return allDispoItems;
    }
@@ -65,7 +76,13 @@ public class DispoItemResource {
    @Path("{itemId}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public DispoItem getDispoItemsById(@PathParam("itemId") String itemId) {
+   @Operation(summary = "Get a specific Dispositionable Item given a itemId")
+   @Tag(name = "item")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Dispositionable Item"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Dispositionable Items")})
+   public DispoItem getDispoItemsById(
+      @Parameter(description = "TThe Id of the Dispositionable Item to search for", required = true) @PathParam("itemId") String itemId) {
       return dispoApi.getDispoItemById(branch, itemId);
    }
 
@@ -78,7 +95,13 @@ public class DispoItemResource {
    @GET
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.APPLICATION_JSON)
-   public String getDispoItemId(@FormParam("name") String itemName) {
+   @Operation(summary = "Get an Dispo Item ID given an Item name")
+   @Tag(name = "item")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Item ID"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find Item ID")})
+   public String getDispoItemId(
+      @Parameter(description = "The Item name", required = true) @FormParam("name") String itemName) {
       return dispoApi.getDispoItemIdByName(branch, setId, itemName);
    }
 
@@ -95,8 +118,14 @@ public class DispoItemResource {
    @Path("{itemId}")
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Edit a specific Dispositionable Item given a itemId and new Dispositionable Item Data")
+   @Tag(name = "item")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Dispositionable Item"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not any Dispositionable Items")})
    public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem,
-      @QueryParam("userName") String userName, @QueryParam("assignUser") boolean assignUser) {
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName,
+      @Parameter(description = "Assign User", required = true) @QueryParam("assignUser") boolean assignUser) {
       Response response;
       boolean wasEdited = dispoApi.editDispoItem(branch, itemId, newDispoItem, userName, assignUser);
       if (wasEdited) {
@@ -117,7 +146,14 @@ public class DispoItemResource {
     */
    @Path("{itemId}")
    @DELETE
-   public Response deleteDispoItem(@PathParam("itemId") String itemId, @QueryParam("userName") String userName) {
+   @Operation(summary = "Delete a specific Dispositionable Item given a itemId")
+   @Tag(name = "item")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Deleted Dispositionable Item"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not any Dispositionable Items")})
+   public Response deleteDispoItem(
+      @Parameter(description = "The Id of the Dispositionable Item to search for", required = true) @PathParam("itemId") String itemId,
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response response;
       boolean wasEdited = dispoApi.deleteDispoItem(branch, itemId, userName);
       if (wasEdited) {
@@ -129,7 +165,13 @@ public class DispoItemResource {
    }
 
    @Path("{itemId}/annotation/")
-   public AnnotationResource getAnnotation(@PathParam("itemId") String itemId) {
+   @Operation(summary = "Get Annotation")
+   @Tag(name = "annotation")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
+   public AnnotationResource getAnnotation(
+      @Parameter(description = "The Id of the Dispositionable Item", required = true) @PathParam("itemId") String itemId) {
       return new AnnotationResource(dispoApi, branch, setId, itemId);
    }
 }

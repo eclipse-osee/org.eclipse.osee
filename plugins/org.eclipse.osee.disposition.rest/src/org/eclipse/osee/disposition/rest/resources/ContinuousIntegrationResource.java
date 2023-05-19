@@ -13,6 +13,12 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +60,11 @@ public class ContinuousIntegrationResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Get all Dispo Annotations given a CiSetData object")
+   @Tags(value = {@Tag(name = "ci"), @Tag(name = "annotations")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public HashMap<String, List<DispoAnnotationData>> getAllDispoAnnotations(CiSetData setData) {
       HashMap<String, List<DispoAnnotationData>> allDispoAnnotations = new HashMap<>();
       if (setData != null && Strings.isNumeric(setData.getDispoSetId())) {
@@ -70,7 +81,13 @@ public class ContinuousIntegrationResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public List<DispoAnnotationData> getAllDispoAnnotationsPerItem(CiSetData setData, @PathParam("item") String item) {
+   @Operation(summary = "Get all Dispo Annotations per item given a CiSetData object and specific item")
+   @Tags(value = {@Tag(name = "ci"), @Tag(name = "annotations")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
+   public List<DispoAnnotationData> getAllDispoAnnotationsPerItem(CiSetData setData,
+      @Parameter(description = "The item name", required = true) @PathParam("item") String item) {
       if (setData != null) {
          BranchId branch = BranchId.valueOf(setData.getBranchId());
          String itemId = dispoApi.getDispoItemId(branch, setData.getDispoSetId(), item);
@@ -84,6 +101,11 @@ public class ContinuousIntegrationResource {
    @GET
    @Path("sets")
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Get all existing CI Sets")
+   @Tags(value = {@Tag(name = "ci"), @Tag(name = "sets")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public List<CiSetData> getAllCiSets() {
       return dispoApi.getAllCiSets();
    }
@@ -91,7 +113,13 @@ public class ContinuousIntegrationResource {
    @Path("annotate")
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response createDispoAnnotation(CiItemData data, @QueryParam("userName") String userName) {
+   @Operation(summary = "Create a Dispo Annotation")
+   @Tags(value = {@Tag(name = "create"), @Tag(name = "annotation")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
+   public Response createDispoAnnotation(CiItemData data,
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response response = Response.status(Response.Status.OK).build();
       if (data != null) {
          BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
