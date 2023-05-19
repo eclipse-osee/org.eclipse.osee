@@ -106,9 +106,9 @@ public abstract class SyncOseeAndUserDB {
          /////////////////////////////////////////////
 
          // Test if there duplicate users with same name - REPORT ONLY
-         //         time = new ElapsedTime("testForDuplicates", debug);
-         //         testForDuplicates(regUsers);
-         //         time.end();
+         time = new ElapsedTime("testForDuplicates", debug);
+         testForDuplicates(regUsers);
+         time.end();
 
          // If this test fails, no other checks are done cause these have to finish first
          if (results.isErrors()) {
@@ -124,19 +124,19 @@ public abstract class SyncOseeAndUserDB {
             }
 
             // Test that user is inactive in user db - FIX AVAILABLE
-            //            time = new ElapsedTime("testCauseWentInactive", debug);
-            //            testInactiveCauseWentInactive(regUsers);
-            //            time.end();
-            //
-            //            // Test that user has accessed in minimal time (180 days) - FIX AND EMAILS AVAILABLE
-            //            time = new ElapsedTime("testCauseHaveNotAccessed", debug);
-            //            testInactiveCauseHaveNotAccessed(regUsers);
-            //            time.end();
-            //
-            //            // Test that user is in appropriate UserGroups - FIX AVAILABLE
-            //            time = new ElapsedTime("testUserGroups", debug);
-            //            testUserGroups(regUsers);
-            //            time.end();
+            time = new ElapsedTime("testCauseWentInactive", debug);
+            testInactiveCauseWentInactive(regUsers);
+            time.end();
+
+            // Test that user has accessed in minimal time (180 days) - FIX AND EMAILS AVAILABLE
+            time = new ElapsedTime("testCauseHaveNotAccessed", debug);
+            testInactiveCauseHaveNotAccessed(regUsers);
+            time.end();
+
+            // Test that user is in appropriate UserGroups - FIX AVAILABLE
+            time = new ElapsedTime("testUserGroups", debug);
+            testUserGroups(regUsers);
+            time.end();
 
             // Test that user has attributes updated from the User DB - FIX AVAILABLE
             time = new ElapsedTime("testUserAttributes", debug);
