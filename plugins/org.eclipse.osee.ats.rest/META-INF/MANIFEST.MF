@@ -9,7 +9,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Osee-JaxRs-Resource: OSEE-INF/web/*;path=/ats
 Osee-Template: OSEE-INF/templates/*.html
-Import-Package: com.fasterxml.jackson.core,
+Import-Package: com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.google.common.base,
  javax.activation,
@@ -82,4 +83,5 @@ Require-Bundle: org.eclipse.osee.ats.api,
  org.eclipse.osee.framework.core.server
 Export-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.ats.rest.internal.workitem.sync.jira,
+ org.eclipse.osee.ats.rest.users,
  org.eclipse.osee.ats.rest.util
