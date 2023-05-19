@@ -30,7 +30,6 @@ import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 @Path("enumerations")
 @Swagger
 public interface EnumerationSetEndpoint {
-
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
    List<InterfaceEnumerationSet> getEnumSets(@QueryParam("orderBy") AttributeTypeToken orderByAttribute);

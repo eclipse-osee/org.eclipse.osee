@@ -13,6 +13,12 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -56,7 +62,13 @@ public class AnnotationResource {
     */
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response postDispoAnnotation(DispoAnnotationData annotation, @QueryParam("userName") String userName) {
+   @Operation(summary = "Create a new Annotation given an AnnotationData object")
+   @Tag(name = "annotation")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "Successfully created the Annotation"),
+      @ApiResponse(responseCode = "400", description = "Bad Request. Did not provide a location range")})
+   public Response postDispoAnnotation(DispoAnnotationData annotation,
+      @Parameter(description = "The Username") @QueryParam("userName") String userName) {
       Response.Status status;
       Response response;
       DispoAnnotationData createdAnnotation;
@@ -86,6 +98,11 @@ public class AnnotationResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Get all Annotations for the DisposioableItem")
+   @Tag(name = "annotations")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Annotations"),
+      @ApiResponse(responseCode = "404", description = "Not found. Could not find any Annotations")})
    public Iterable<DispoAnnotationData> getAllDispoAnnotations() {
       return dispoApi.getDispoAnnotations(branch, itemId);
    }
@@ -100,8 +117,13 @@ public class AnnotationResource {
    @Path("resolutionType/{resolutionType}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Get all Annotations for a specific resolution Type for the DisposionableItem")
+   @Tag(name = "annotations")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Annotations"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Annotations")})
    public Iterable<DispoAnnotationData> getAllDispoAnnotationsByType(
-      @PathParam("resolutionType") String resolutionType) {
+      @Parameter(description = "The resolution type", required = true) @PathParam("resolutionType") String resolutionType) {
       Iterable<DispoAnnotationData> annotationData = dispoApi.getDispoAnnotations(branch, itemId);
       return dispoApi.getDispoAnnotationsByType(annotationData, resolutionType);
    }
@@ -117,7 +139,13 @@ public class AnnotationResource {
    @Path("{annotationId}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public DispoAnnotationData getAnnotationByIdJson(@PathParam("annotationId") String annotationId) {
+   @Operation(summary = "Get a specific Annotation given an Id")
+   @Tag(name = "annotation")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Annotation"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find the Annotation")})
+   public DispoAnnotationData getAnnotationByIdJson(
+      @Parameter(description = "The Id of the Annotation to search for", required = true) @PathParam("annotationId") String annotationId) {
       return dispoApi.getDispoAnnotationById(branch, itemId, annotationId);
    }
 
@@ -133,8 +161,15 @@ public class AnnotationResource {
    @Path("{annotationId}")
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoAnnotation(@PathParam("annotationId") String annotationId, DispoAnnotationData newAnnotation,
-      @QueryParam("userName") String userName) {
+   @Operation(summary = "Edit a specific Annotation given an Id and new Annotation Data")
+   @Tags(value = {@Tag(name = "annotation"), @Tag(name = "edit")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Annotation updated"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find the Annotation")})
+   public Response putDispoAnnotation(
+      @Parameter(description = "The Id of the Annotation to update", required = true) @PathParam("annotationId") String annotationId,
+      DispoAnnotationData newAnnotation,
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response response;
       boolean wasEdited = dispoApi.editDispoAnnotation(branch, itemId, annotationId, newAnnotation, userName, false);
       if (wasEdited) {
@@ -156,8 +191,14 @@ public class AnnotationResource {
     */
    @Path("{annotationId}")
    @DELETE
-   public Response deleteDispoAnnotation(@PathParam("annotationId") String annotationId,
-      @QueryParam("userName") String userName) {
+   @Operation(summary = "Delete a specific Annotation given an Id")
+   @Tag(name = "annotation")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find the Annotation")})
+   public Response deleteDispoAnnotation(
+      @Parameter(description = "The Id of the Annotation to delete", required = true) @PathParam("annotationId") String annotationId,
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response response;
       boolean wasEdited = dispoApi.deleteDispoAnnotation(branch, itemId, annotationId, userName, false);
       if (wasEdited) {

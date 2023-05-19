@@ -13,6 +13,12 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -68,7 +74,14 @@ public class DispoSetResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response postDispoSet(DispoSetDescriptorData descriptor, @QueryParam("userName") String userName) {
+   @Operation(summary = "Create a new Disposition Set given a DispoSetDescriptor")
+   @Tags(value = {@Tag(name = "create"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "OK. Created the Disposition Set"),
+      @ApiResponse(responseCode = "409", description = "Conflict. Tried to create a Disposition Set with same name"),
+      @ApiResponse(responseCode = "400", description = "Bad Request. Did not provide both a Name and a valid Import Path")})
+   public Response postDispoSet(DispoSetDescriptorData descriptor,
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response.Status status;
       Response response;
       String name = descriptor.getName();
@@ -109,8 +122,17 @@ public class DispoSetResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response postDispoSetByName(@FormParam("path") String importPath, @PathParam("name") String name,
-      @QueryParam("dispoType") String dispoType, @QueryParam("userName") String userName) {
+   @Operation(summary = "Create a new Disposition Set given a name, dispoType, and path")
+   @Tags(value = {@Tag(name = "create"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "201", description = "OK. Created the Disposition Set"),
+      @ApiResponse(responseCode = "409", description = "Conflict. Tried to create a Disposition Set with same name"),
+      @ApiResponse(responseCode = "400", description = "Bad Request. Did not provide both a Name and a valid Import Path")})
+   public Response postDispoSetByName(
+      @Parameter(description = "String used to specify the directory to populate the set", required = true) @FormParam("path") String importPath,
+      @Parameter(description = "String used to name the Set", required = true) @PathParam("name") String name,
+      @Parameter(description = "String used to specify if using disposition vs coverage", required = true) @QueryParam("dispoType") String dispoType,
+      @QueryParam("userName") String userName) {
       DispoSetDescriptorData descriptor = new DispoSetDescriptorData();
       descriptor.setName(name);
       descriptor.setImportPath(importPath);
@@ -130,7 +152,13 @@ public class DispoSetResource {
    @Path("{setId}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public DispoSet getDispoSetById(@PathParam("setId") String setId) {
+   @Operation(summary = "Get a specific Disposition Set given a setId")
+   @Tag(name = "set")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Disposition Set"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Disposition Sets")})
+   public DispoSet getDispoSetById(
+      @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId) {
       return dispoApi.getDispoSetById(branch, setId);
    }
 
@@ -143,7 +171,13 @@ public class DispoSetResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Iterable<DispoSet> getAllDispoSets(@QueryParam("type") String type) {
+   @Operation(summary = "Get all Disposition Sets on the given branch")
+   @Tag(name = "sets")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Disposition Set"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Disposition Sets")})
+   public Iterable<DispoSet> getAllDispoSets(
+      @Parameter(description = "Dispo Set type", required = true) @QueryParam("type") String type) {
       List<DispoSet> allDispoSets = dispoApi.getDispoSets(branch, type);
       return allDispoSets;
    }
@@ -156,7 +190,13 @@ public class DispoSetResource {
    @Path("toRerun")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getCheckedReruns(@QueryParam("name") String setName) {
+   @Operation(summary = "Get the names of all items in a set that have \"Rerun?\" column checked")
+   @Tag(name = "rerun")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Disposition Set"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Disposition Sets")})
+   public List<String> getCheckedReruns(
+      @Parameter(description = "The Set name", required = true) @QueryParam("name") String setName) {
       String setId = dispoApi.getDispoSetIdByName(branch, setName);
       if (setId == null) {
          return null;
@@ -174,7 +214,13 @@ public class DispoSetResource {
    @GET
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.APPLICATION_JSON)
-   public String getDispoSetId(@FormParam("name") String setName) {
+   @Operation(summary = "Get Set ID given the Set name")
+   @Tag(name = "set")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found Branch/Set ID"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Branch/Set ID")})
+   public String getDispoSetId(
+      @Parameter(description = "The Set name", required = true) @FormParam("name") String setName) {
       return dispoApi.getDispoSetIdByName(branch, setName);
    }
 
@@ -187,7 +233,14 @@ public class DispoSetResource {
    @Path("importDispoSet")
    @PUT
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   public Response putDispoSetByName(@FormParam("name") String setName) {
+   @Operation(summary = "Update Disposition Set given the Set name")
+   @Tags(value = {@Tag(name = "update"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Updated the Disposition Set"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Disposition Sets to update"),
+      @ApiResponse(responseCode = "415", description = "Unsupported Media Type")})
+   public Response putDispoSetByName(
+      @Parameter(description = "The Set name", required = true) @FormParam("name") String setName) {
       DispoSetData newDispositionSet = new DispoSetData();
       newDispositionSet.setOperation(DispoStrings.Operation_Import);
       String setId = dispoApi.getDispoSetIdByName(branch, setName);
@@ -212,8 +265,15 @@ public class DispoSetResource {
    @PUT
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet,
-      @QueryParam("userName") String userName) {
+   @Operation(summary = "Edit a specific Disposition Set given a setId and new Disposition Set Data")
+   @Tags(value = {@Tag(name = "update"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Edited the Disposition Set"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find and edit any Disposition Sets")})
+   public Response putDispoSet(
+      @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId,
+      DispoSetData newDispositionSet,
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.editDispoSet(branch, setId, newDispositionSet, userName);
       status = Status.OK;
@@ -233,8 +293,15 @@ public class DispoSetResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response runMassDisposition(@PathParam("setId") String setId,
-      @QueryParam("resolutionType") String resolutionType, @QueryParam("resolution") String resolution,
+   @Operation(summary = "Edit a specific Disposition Set given a setId and new Disposition Set Data")
+   @Tags(value = {@Tag(name = "edit"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Edited the Disposition Set"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find and edit any Disposition Sets")})
+   public Response runMassDisposition(
+      @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId,
+      @Parameter(description = "The Resolution type", required = true) @QueryParam("resolutionType") String resolutionType,
+      @Parameter(description = "The Resolution", required = true) @QueryParam("resolution") String resolution,
       List<String> itemIds, @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.editMassDispositions(branch, setId, itemIds, resolutionType, resolution, userName);
@@ -253,7 +320,14 @@ public class DispoSetResource {
    @Path("{setId}")
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @DELETE
-   public Response deleteDispoSet(@PathParam("setId") String setId, @QueryParam("userName") String userName) {
+   @Operation(summary = "Delete a specific Disposition Set given a setId")
+   @Tags(value = {@Tag(name = "delete"), @Tag(name = "set")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Deleted the Disposition Set"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find and delete any Disposition Sets")})
+   public Response deleteDispoSet(
+      @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId,
+      @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response.Status status = Status.NOT_FOUND;
       boolean wasDeleted = dispoApi.deleteDispoSet(branch, setId, userName);
       if (wasDeleted) {
@@ -265,12 +339,24 @@ public class DispoSetResource {
    }
 
    @Path("{setId}/file")
-   public DispoSourceFileResource getDispoSourceFiles(@PathParam("setId") String setId) {
+   @Operation(summary = "Get Dispo source files given a Set ID")
+   @Tag(name = "source")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Retrieved DispoSourceFileResource"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Disposition Sets")})
+   public DispoSourceFileResource getDispoSourceFiles(
+      @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId) {
       return new DispoSourceFileResource(dispoApi, branch, setId);
    }
 
    @Path("{setId}/item")
-   public DispoItemResource getDispositionableItems(@PathParam("setId") String setId) {
+   @Operation(summary = "Get Dispo Items given a Set ID")
+   @Tag(name = "items")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Retrieved Dispo Items"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Disposition Sets")})
+   public DispoItemResource getDispositionableItems(
+      @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId) {
       return new DispoItemResource(dispoApi, branch, setId);
    }
 
@@ -285,8 +371,15 @@ public class DispoSetResource {
    @Path("{setId}/search")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Iterable<DispoItem> getDispoItemsByAnnotationText(@PathParam("setId") String setId,
-      @QueryParam("value") String value, @QueryParam("isDetailed") boolean isDetailed) {
+   @Operation(summary = "Get a specific Dispositionable Items given a key word within the Dispositions")
+   @Tag(name = "items")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Retrieved Dispo Items"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Dispositionable Items")})
+   public Iterable<DispoItem> getDispoItemsByAnnotationText(
+      @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId,
+      @Parameter(description = "The Annotation text to search for", required = true) @QueryParam("value") String value,
+      @Parameter(description = "Is detailed", required = true) @QueryParam("isDetailed") boolean isDetailed) {
       Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(branch, setId, value, isDetailed);
       return foundItems;
    }

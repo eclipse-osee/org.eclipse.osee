@@ -13,6 +13,11 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -61,8 +66,14 @@ public class DispoSourceFileResource {
    @Path("{fileName}/{fileNumber}")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getDispoItemsById(@PathParam("fileName") String fileName,
-      @PathParam("fileNumber") String fileNumber) {
+   @Operation(summary = "Get a specific Source File given a file name")
+   @Tag(name = "source")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK. Found source file"),
+      @ApiResponse(responseCode = "404", description = "Not Found. Could not find source file")})
+   public Response getDispoItemsById(
+      @Parameter(description = "The name of the Source File to search for", required = true) @PathParam("fileName") String fileName,
+      @Parameter(description = "The file number to search for", required = true) @PathParam("fileNumber") String fileNumber) {
       if (!fileName.endsWith(".LIS")) {
          fileName = fileName.replaceAll(dispoApi.getConfig().getFileExtRegex(), ".LIS");
       }
