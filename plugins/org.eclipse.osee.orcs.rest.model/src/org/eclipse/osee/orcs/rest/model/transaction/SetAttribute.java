@@ -29,33 +29,18 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"typeId", "value"})
-public class SetAttribute {
+public class SetAttribute extends AttributeTransfer {
 
-   @JsonProperty("typeId")
-   private String typeId;
    @JsonProperty("value")
    private List<String> value;
    @JsonIgnore
    private final Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
-   @JsonProperty("typeId")
-   public String getTypeId() {
-      return typeId;
+   public SetAttribute() {
    }
 
-   @JsonProperty("typeId")
-   public void setTypeId(String typeId) {
-      this.typeId = typeId;
-   }
-
-   @JsonProperty("value")
-   public List<String> getValue() {
-      return value;
-   }
-
-   @JsonProperty("value")
-   public void setValue(List<String> value) {
-      this.value = value;
+   public SetAttribute(String typeId) {
+      this.setTypeId(typeId);
    }
 
    @JsonAnyGetter

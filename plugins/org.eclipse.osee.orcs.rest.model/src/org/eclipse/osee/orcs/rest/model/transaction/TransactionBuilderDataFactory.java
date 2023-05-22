@@ -14,12 +14,14 @@ package org.eclipse.osee.orcs.rest.model.transaction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -176,6 +178,9 @@ public class TransactionBuilderDataFactory {
             }
          } else if (modType.equals(ModificationType.MODIFIED)) {
             artSort = new ArtifactSortContainerModify(art);
+            ModifyArtifact modifiedArt = new ModifyArtifact();
+            modifiedArt.setId(art.getIdString());
+            modifiedArt.setApplicabilityId(change.getCurrentVersion().getApplicabilityToken().getIdString());
             workingArtsById.put(art, artSort);
          } else {
             artSort = new ArtifactSortContainer(art);
@@ -252,10 +257,19 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAttributes(attrs);
             }
-            Attribute attr = new Attribute();
-            attr.setTypeId(change.getItemTypeId().getIdString());
-            attr.setValue(
-               sortArt.getArtifact().getAttributeValuesAsString(AttributeTypeToken.valueOf(attr.getTypeId())));
+
+            // check to see if there is already a SetAttribute for the TypeId
+            // if so, the new value should already be in the list
+            boolean found = false;
+            for (Attribute attr : attrs) {
+               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
+                  found = true;
+               }
+            }
+            if (!found) {
+               attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
+            }
+
          } else if (sortArt instanceof ArtifactSortContainerModify) {
             ModifyArtifact art = ((ArtifactSortContainerModify) sortArt).getModifyArt();
             List<SetAttribute> attrs = art.getSetAttributes();
@@ -263,16 +277,38 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setSetAttributes(attrs);
             }
-            SetAttribute attr = new SetAttribute();
-            attr.setTypeId(change.getItemTypeId().getIdString());
-            attr.setValue(Arrays.asList(
-               sortArt.getArtifact().getAttributeValuesAsString(AttributeTypeToken.valueOf(attr.getTypeId()))));
-            attrs.add(attr);
+            // check to see if there is already a SetAttribute for the TypeId
+            // if so, the new value should already be in the list
+            boolean found = false;
+            for (SetAttribute attr : attrs) {
+               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
+                  found = true;
+               }
+            }
+            if (!found) {
+               attrs.add((SetAttribute) setupTransferArtifact(change, sortArt.getArtifact(), SetAttribute::new));
+            }
          } else {
             results.errorf("incorrect default sort container for modified attribute %s", change.getItemId().toString());
          }
       }
       return tbd;
+   }
+
+   private AttributeTransfer setupTransferArtifact(ChangeItem change, ArtifactReadable art,
+      Function<String, AttributeTransfer> attrTrans) {
+      AttributeTypeGeneric<?> attrType = orcsApi.tokenService().getAttributeType(change.getItemTypeId().getId());
+      AttributeTransfer item = attrTrans.apply(attrType.getIdString());
+
+      if (attrType.isDate()) {
+         List<Date> dates = art.getAttributeValues(attrType);
+         item.setValue(Arrays.asList(Long.valueOf(dates.get(0).getTime()).toString()));
+      } else if (attrType.isInputStream()) {
+         throw new OseeCoreException("Not handling Binary Data");
+      } else {
+         item.setValue(art.fetchAttributesAsStringList(attrType));
+      }
+      return item;
    }
 
    private TransactionBuilderData newAttribute(ChangeItem change, TransactionBuilderData tbd) {
@@ -287,11 +323,17 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAttributes(attrs);
             }
-            Attribute attr = new Attribute();
-            attr.setTypeId(change.getItemTypeId().getIdString());
-            attr.setValue(
-               sortArt.getArtifact().getAttributeValuesAsString(AttributeTypeToken.valueOf(attr.getTypeId())));
-            attrs.add(attr);
+            // check to see if there is already a SetAttribute for the TypeId
+            // if so, the new value should already be in the list
+            boolean found = false;
+            for (Attribute attr : attrs) {
+               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
+                  found = true;
+               }
+            }
+            if (!found) {
+               attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
+            }
          } else if (sortArt instanceof ArtifactSortContainerModify) {
             ModifyArtifact art = ((ArtifactSortContainerModify) sortArt).getModifyArt();
             List<AddAttribute> attrs = art.getAddAttributes();
@@ -299,11 +341,15 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAddAttributes(attrs);
             }
-            AddAttribute attr = new AddAttribute();
-            attr.setTypeId(change.getItemTypeId().getIdString());
-            attr.setValue(Arrays.asList(
-               sortArt.getArtifact().getAttributeValuesAsString(AttributeTypeToken.valueOf(attr.getTypeId()))));
-            attrs.add(attr);
+            boolean found = false;
+            for (AddAttribute attr : attrs) {
+               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
+                  found = true;
+               }
+            }
+            if (!found) {
+               attrs.add((AddAttribute) setupTransferArtifact(change, sortArt.getArtifact(), AddAttribute::new));
+            }
          } else {
             results.errorf("incorrect default sort container for modified attribute %s", change.getItemId().toString());
          }
