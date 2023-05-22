@@ -27,16 +27,20 @@ import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"typeName", "value", "typeId"})
-public class Attribute {
+public class Attribute extends AttributeTransfer {
 
    @JsonProperty("typeName")
    private String typeName;
-   @JsonProperty("value")
-   private String value;
-   @JsonProperty("typeId")
-   private String typeId;
+
    @JsonIgnore
    private final Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
+
+   public Attribute() {
+   }
+
+   public Attribute(String typeId) {
+      this.setTypeId(typeId);
+   }
 
    @JsonProperty("typeName")
    public String getTypeName() {
@@ -46,26 +50,6 @@ public class Attribute {
    @JsonProperty("typeName")
    public void setTypeName(String typeName) {
       this.typeName = typeName;
-   }
-
-   @JsonProperty("value")
-   public String getValue() {
-      return value;
-   }
-
-   @JsonProperty("value")
-   public void setValue(String value) {
-      this.value = value;
-   }
-
-   @JsonProperty("typeId")
-   public String getTypeId() {
-      return typeId;
-   }
-
-   @JsonProperty("typeId")
-   public void setTypeId(String typeId) {
-      this.typeId = typeId;
    }
 
    @JsonAnyGetter

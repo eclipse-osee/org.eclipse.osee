@@ -20,41 +20,22 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"typeId", "value"})
-public class AddAttribute {
+public class AddAttribute extends AttributeTransfer {
 
-   @JsonProperty("typeId")
-   private String typeId;
-   @JsonProperty("value")
-   private List<String> value;
    @JsonIgnore
    private final Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
-   @JsonProperty("typeId")
-   public String getTypeId() {
-      return typeId;
+   public AddAttribute() {
    }
 
-   @JsonProperty("typeId")
-   public void setTypeId(String typeId) {
-      this.typeId = typeId;
-   }
-
-   @JsonProperty("value")
-   public List<String> getValue() {
-      return value;
-   }
-
-   @JsonProperty("value")
-   public void setValue(List<String> value) {
-      this.value = value;
+   public AddAttribute(String typeId) {
+      this.setTypeId(typeId);
    }
 
    @JsonAnyGetter
