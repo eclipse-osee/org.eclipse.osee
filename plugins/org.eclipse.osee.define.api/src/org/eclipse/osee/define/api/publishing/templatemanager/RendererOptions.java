@@ -305,7 +305,6 @@ public class RendererOptions implements ToMessage {
                .segmentIndexedArray( "Metadata Options",  this.metadataOptions  )
                .segmentIndexedArray( "Outlining Options", this.outliningOptions )
                ;
-               break;
 
             break;
 
