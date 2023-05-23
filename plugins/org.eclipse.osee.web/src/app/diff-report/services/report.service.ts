@@ -183,4 +183,17 @@ export class ReportService {
 			);
 		} else return of();
 	}
+
+	downloadAllDatatoCsv(url: string): Observable<String> {
+		var program = this._searchOptions$.value.program;
+		var build = this._searchOptions$.value.build;
+		if (program && build) {
+			return this.http.get<String>(url + '/downloadAllDataToCsv?', {
+				params: {
+					build: build,
+					program: program,
+				},
+			});
+		} else return of();
+	}
 }

@@ -261,14 +261,14 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		}
 	}
 
-	downloadAsCsvFile(csvData: string) {
+	downloadAsCsvFile(csvData: string, filename: string) {
 		let blob = new Blob(['\ufeff' + csvData], {
 			type: 'text/csv;charset=utf-8;',
 		});
 		let dwldLink = document.createElement('a');
 		let url = URL.createObjectURL(blob);
 		dwldLink.setAttribute('href', url);
-		dwldLink.setAttribute('download', 'TraceReport.csv');
+		dwldLink.setAttribute('download', filename);
 		dwldLink.style.visibility = 'hidden';
 		document.body.appendChild(dwldLink);
 		dwldLink.click();
@@ -290,6 +290,14 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		];
 		var updatedRows = this.updateRowsforCSV(this.dataSource.data);
 		let csvData = this.convertRowsToStringForCSV(updatedRows, arrHeader);
-		this.downloadAsCsvFile(csvData);
+		this.downloadAsCsvFile(csvData, 'TraceReport.csv');
+	}
+
+	exportAllDataAsCsv(url: string) {
+		let csvData: string;
+		this.reportService.downloadAllDatatoCsv(url).subscribe((resp: any) => {
+			csvData = resp;
+			this.downloadAsCsvFile(csvData, 'CompleteTraceReport.csv');
+		});
 	}
 }
