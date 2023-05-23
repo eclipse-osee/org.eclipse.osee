@@ -15,6 +15,11 @@
    <feature url="features/org.eclipse.osee.ats.ide.demo.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.ats.ide.demo.feature.source" version="1.0.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
+
+   <feature url="features/org.eclipse.osee.ats.ide.integration.tests.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.ats.ide.integration.tests.feature.source" version="1.0.0.qualifier">
+      <category name="org.eclipse.osee.client.all"/>
+   </feature>
+
    <category-def name="org.eclipse.osee.client.all" label="Eclipse OSEE Client All - (Incubation)">
       <description>
          Eclipse OSEE Client All - (Incubation)

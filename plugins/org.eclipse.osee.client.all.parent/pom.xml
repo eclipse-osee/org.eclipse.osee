@@ -18,6 +18,7 @@
 
 	<modules>
 		<module>../../features/org.eclipse.osee.client.all.feature</module>
+		<module>../../features/org.eclipse.osee.ats.ide.integration.tests.feature</module>
 		<module>../../plugins/org.eclipse.osee.client.all.p2</module>
 
 	</modules>

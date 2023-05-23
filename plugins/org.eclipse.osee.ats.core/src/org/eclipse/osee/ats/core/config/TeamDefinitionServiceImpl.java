@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -53,7 +54,7 @@ public class TeamDefinitionServiceImpl implements IAtsTeamDefinitionService {
    private final AtsApi atsApi;
 
    public TeamDefinitionServiceImpl(AtsApi atsApi) {
-      this.atsApi = atsApi;
+      this.atsApi = Objects.requireNonNull(atsApi, "atsApi must not be null");
    }
 
    @Override
