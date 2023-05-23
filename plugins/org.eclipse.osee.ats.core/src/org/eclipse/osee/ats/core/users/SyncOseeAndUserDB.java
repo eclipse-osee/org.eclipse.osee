@@ -194,10 +194,8 @@ public abstract class SyncOseeAndUserDB {
             String wssoMail = atsUser.getEmail();
             String wssoPhone = atsUser.getPhone();
 
-            // User most likely left the company as they're not found in company db; How detect this better?
+            // No record returned, so nothing to update
             if (Strings.isInvalid(wssoUserName)) {
-               results.errorf("Can't retrieve user by UserId for %s; AtsUser is %s", user.toString(),
-                  atsUser.toStringFull());
                continue;
             }
 
@@ -272,17 +270,30 @@ public abstract class SyncOseeAndUserDB {
 
    private void testInactiveCauseWentInactive(List<UserToken> regUsers) throws Exception {
       for (UserToken user : regUsers) {
+         // Where atsUser is record from company database
          AtsUser atsUser = getUserByUserId(user.getUserId());
          if (atsUser != null) {
-            // Only change OSEE user when WssoUser = InActive and OSEE User == Active
-            if (user.isActive() && !atsUser.isActive()) {
-               results.warningf("User [%s] User.active [%s] != WssoUser.active [%s]\n", user.toStringWithId(),
-                  user.isActive(), atsUser.isActive());
-               if (persist) {
+
+            boolean inActive = false;
+            if (user.isActive()) {
+
+               // No record came back for this user, so set inactive
+               if (Strings.isInvalid(atsUser.getName())) {
+                  results.warningf("WssoUser record not found [%s]; Should set Inactive\n", user.toStringWithId());
+                  inActive = true;
+               }
+
+               // Record came back but WssoUser = InActive and OSEE User == Active, so set inactive
+               else if (!atsUser.isActive()) {
+                  results.warningf("User [%s] User.active [%s] != WssoUser.active [%s]; Should set Inactive\n",
+                     user.toStringWithId(), user.isActive(), atsUser.isActive());
+                  inActive = true;
+               }
+
+               if (inActive && persist) {
                   changes.setSoleAttributeValue(user.getArtifact(), CoreAttributeTypes.Active, atsUser.isActive());
                   results.logf("Fixed Active to %s\n", atsUser.isActive());
                }
-               continue;
             }
          }
       }
