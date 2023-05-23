@@ -33,6 +33,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
 import type { subMessage } from '@osee/messaging/shared/types';
 import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-messaging-edit-sub-message-field',
@@ -50,6 +52,7 @@ import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warn
 		MatOptionModule,
 		MatInputModule,
 		MatSlideToggleModule,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditSubMessageFieldComponent<
@@ -76,9 +79,6 @@ export class EditSubMessageFieldComponent<
 		})
 	);
 
-	applics = this.messageService.applic.pipe(
-		takeUntil(this.messageService.done)
-	);
 	private _focus = new Subject<string | null>();
 	private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
 		scan(
@@ -125,12 +125,38 @@ export class EditSubMessageFieldComponent<
 		this._updateValue.subscribe();
 	}
 	updateSubMessage(value: T) {
+		// this is kind of a hack, need to rethink how to update on focus/ not on focus
+		if (this.header === 'applicability') {
+			this.focusChanged('applicability');
+		}
 		this._value.next(value);
-	}
-	compareApplics(o1: any, o2: any) {
-		return o1.id === o2.id && o1.name === o2.name;
+		if (this.header === 'applicability') {
+			this.focusChanged(null);
+		}
 	}
 	focusChanged(event: string | null) {
 		this._focus.next(event);
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	isApplic(value: unknown): value is applic {
+		return (
+			value !== null &&
+			value !== undefined &&
+			typeof value === 'object' &&
+			'id' in value &&
+			'name' in value &&
+			typeof value.id === 'string' &&
+			typeof value.name === 'string'
+		);
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	returnAsT(value: unknown): T {
+		return value as T;
 	}
 }

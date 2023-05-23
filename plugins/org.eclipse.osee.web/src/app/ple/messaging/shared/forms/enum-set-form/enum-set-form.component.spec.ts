@@ -25,14 +25,15 @@ import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
+import { ApplicabilityListUIService } from '@osee/shared/services';
 import {
 	MockEnumFormUniqueComponent,
 	MockEnumSetUniqueDescriptionDirective,
-	applicabilityListUIServiceMock,
 } from '@osee/messaging/shared/testing';
 
 import { EnumSetFormComponent } from './enum-set-form.component';
+import { applicabilityListUIServiceMock } from '@osee/shared/testing';
+import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 
 @Component({
 	selector: 'osee-test-standalone-form',
@@ -77,6 +78,7 @@ describe('EnumSetFormComponent', () => {
 						NgFor,
 						NgIf,
 						MockEnumSetUniqueDescriptionDirective,
+						MockApplicabilitySelectorComponent,
 					],
 					providers: [
 						{

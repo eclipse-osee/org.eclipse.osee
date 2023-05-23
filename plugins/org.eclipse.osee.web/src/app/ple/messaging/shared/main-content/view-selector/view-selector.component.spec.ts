@@ -12,8 +12,8 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
-import { applicabilityListUIServiceMock } from '@osee/messaging/shared/testing';
+import { ApplicabilityListUIService } from '@osee/shared/services';
+import { applicabilityListUIServiceMock } from '@osee/shared/testing';
 
 import { ViewSelectorComponent } from './view-selector.component';
 

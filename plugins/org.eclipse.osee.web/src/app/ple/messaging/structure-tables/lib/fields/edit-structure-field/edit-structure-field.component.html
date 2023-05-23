@@ -10,7 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
+<ng-container *ngIf="header === 'applicability' && isApplic(value)">
+	<osee-applicability-selector
+		[applicability]="value"
+		(applicabilityChange)="
+			updateStructure(returnAsT($event))
+		"></osee-applicability-selector>
+</ng-container>
 <mat-form-field
+	*ngIf="header !== 'applicability'"
 	cdkMonitorSubtreeFocus
 	(cdkFocusChange)="focusChanged($event)"
 	subscriptSizing="dynamic"
@@ -29,21 +37,6 @@
 					*ngFor="let option of categories | async"
 					[value]="option">
 					{{ option }}
-				</mat-option>
-			</mat-select>
-		</ng-container>
-
-		<ng-container *ngIf="header === 'applicability'">
-			<!-- applicability changes go here -->
-			<mat-select
-				[(ngModel)]="value"
-				(ngModelChange)="updateImmediately(value)"
-				[compareWith]="compareApplics">
-				<mat-option
-					*ngFor="let option of applics | async"
-					[value]="option"
-					[id]="option.id">
-					{{ option.name }}
 				</mat-option>
 			</mat-select>
 		</ng-container>

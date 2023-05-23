@@ -17,7 +17,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
-import { ApplicabilityListService } from '../http/applicability-list.service';
+import { ApplicabilityListService } from '../../../../../shared/services/ple_aware/http/applicability-list.service';
 import { ElementService } from '../http/element.service';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 import { QueryService } from '../http/query.service';
@@ -38,7 +38,6 @@ import {
 	messageServiceMock,
 	typesServiceMock,
 	MimPreferencesServiceMock,
-	applicabilityListServiceMock,
 	QueryServiceMock,
 	elementsMock,
 	platformTypes1,
@@ -52,7 +51,11 @@ import type {
 import { PlatformTypeQuery } from '@osee/messaging/shared/query';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { BranchInfoService } from '@osee/shared/services';
-import { BranchInfoServiceMock, changeReportMock } from '@osee/shared/testing';
+import {
+	applicabilityListServiceMock,
+	BranchInfoServiceMock,
+	changeReportMock,
+} from '@osee/shared/testing';
 
 const servicesUnderTest: {
 	service: typeof CurrentStructureService;

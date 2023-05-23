@@ -17,7 +17,10 @@ import { TestScheduler } from 'rxjs/testing';
 import { CurrentGraphService } from './current-graph.service';
 import { GraphService } from './graph.service';
 import { RouteStateService } from './route-state-service.service';
-import { BranchInfoService } from '@osee/shared/services';
+import {
+	ApplicabilityListService,
+	BranchInfoService,
+} from '@osee/shared/services';
 
 import type { node } from '@osee/messaging/shared/types';
 import { UserDataAccountService } from '@osee/auth';
@@ -27,16 +30,18 @@ import {
 	transactionResultMock,
 } from '@osee/shared/transactions/testing';
 import {
-	applicabilityListServiceMock,
 	MimPreferencesServiceMock,
 	MimPreferencesMock,
 	connectionServiceMock,
 	sharedConnectionServiceMock,
 } from '@osee/messaging/shared/testing';
-import { BranchInfoServiceMock, changeReportMock } from '@osee/shared/testing';
+import {
+	applicabilityListServiceMock,
+	BranchInfoServiceMock,
+	changeReportMock,
+} from '@osee/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
-	ApplicabilityListService,
 	ConnectionService,
 	MimPreferencesService,
 	NodeService,
@@ -477,22 +482,6 @@ describe('CurrentGraphService', () => {
 			routeState.branchId = '10';
 			scheduler
 				.expectObservable(service.preferences)
-				.toBe(expectedMarble, expectedFilterValues);
-		});
-	});
-
-	it('should fetch applicabilities', () => {
-		scheduler.run(() => {
-			const expectedFilterValues = {
-				a: [
-					{ id: '1', name: 'Base' },
-					{ id: '2', name: 'Second' },
-				],
-			};
-			const expectedMarble = 'a';
-			routeState.branchId = '10';
-			scheduler
-				.expectObservable(service.applic)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
 	});

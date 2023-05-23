@@ -31,6 +31,9 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 import { EditNodeDialogComponent } from './edit-node-dialog.component';
 import type { node } from '@osee/messaging/shared/types';
 import { dialogRef } from '@osee/messaging/shared/testing';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 
 describe('EditNodeDialogComponent', () => {
 	let component: EditNodeDialogComponent;
@@ -42,23 +45,43 @@ describe('EditNodeDialogComponent', () => {
 	};
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatDialogModule,
-				MatFormFieldModule,
-				MatSelectModule,
-				MatInputModule,
-				MatButtonModule,
-				NoopAnimationsModule,
-				FormsModule,
-				EditNodeDialogComponent,
-			],
-			providers: [
-				{ provide: MatDialogRef, useValue: dialogRef },
-				{ provide: MAT_DIALOG_DATA, useValue: dialogData },
-				{ provide: CurrentGraphService, useValue: graphServiceMock },
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(EditNodeDialogComponent, {
+			set: {
+				imports: [
+					MatDialogModule,
+					MatFormFieldModule,
+					MatInputModule,
+					FormsModule,
+					MatButtonModule,
+					MatSelectModule,
+					MatOptionModule,
+					AsyncPipe,
+					NgFor,
+					MockApplicabilitySelectorComponent,
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatDialogModule,
+					MatFormFieldModule,
+					MatSelectModule,
+					MatInputModule,
+					MatButtonModule,
+					NoopAnimationsModule,
+					FormsModule,
+					EditNodeDialogComponent,
+				],
+				providers: [
+					{ provide: MatDialogRef, useValue: dialogRef },
+					{ provide: MAT_DIALOG_DATA, useValue: dialogData },
+					{
+						provide: CurrentGraphService,
+						useValue: graphServiceMock,
+					},
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

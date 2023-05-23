@@ -31,11 +31,9 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { apiURL } from '@osee/environments';
 import { EditMessageFieldComponent } from './edit-message-field.component';
-import {
-	ApplicabilityListService,
-	MessageUiService,
-} from '@osee/messaging/shared/services';
-import { applicabilityListServiceMock } from '@osee/messaging/shared/testing';
+import { MessageUiService } from '@osee/messaging/shared/services';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 
 describe('EditMessageFieldComponent', () => {
 	let component: EditMessageFieldComponent;
@@ -90,16 +88,4 @@ describe('EditMessageFieldComponent', () => {
 		const req = httpTestingController.expectOne(apiURL + '/orcs/txs');
 		expect(req.request.method).toEqual('POST');
 	}));
-
-	it('should select an applicability', async () => {
-		uiService.BranchIdString = '8';
-		uiService.connectionIdString = '10';
-		component.focusChanged(null);
-		const spy = spyOn(component, 'updateImmediately').and.callThrough();
-		const select = await loader.getHarness(MatSelectHarness);
-		await select.open();
-		await select.clickOptions({ text: 'Second' });
-		await select.close();
-		expect(spy).toHaveBeenCalled();
-	});
 });

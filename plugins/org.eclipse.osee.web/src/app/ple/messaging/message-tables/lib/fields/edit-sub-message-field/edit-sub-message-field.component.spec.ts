@@ -27,6 +27,11 @@ import {
 	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
 import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
+import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
+import { A11yModule } from '@angular/cdk/a11y';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 describe('EditSubMessageFieldComponent', () => {
 	let component: EditSubMessageFieldComponent;
@@ -45,6 +50,19 @@ describe('EditSubMessageFieldComponent', () => {
 						provide: WarningDialogService,
 						useValue: warningDialogServiceMock,
 					},
+				],
+				imports: [
+					NgIf,
+					NgFor,
+					AsyncPipe,
+					A11yModule,
+					FormsModule,
+					MatFormFieldModule,
+					MatSelectModule,
+					MatOptionModule,
+					MatInputModule,
+					MatSlideToggleModule,
+					MockApplicabilitySelectorComponent,
 				],
 			},
 		})
@@ -84,18 +102,5 @@ describe('EditSubMessageFieldComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
-	});
-
-	it('should update the applicabilities', async () => {
-		let spy = spyOn(component, 'updateSubMessage').and.callThrough();
-		let select = await loader.getHarness(MatSelectHarness);
-		component.focusChanged(null);
-		await select.open();
-		if (await select.isOpen()) {
-			await select.clickOptions({ text: 'Second' });
-			expect(spy).toHaveBeenCalled();
-		} else {
-			expect(spy).not.toHaveBeenCalled();
-		}
 	});
 });

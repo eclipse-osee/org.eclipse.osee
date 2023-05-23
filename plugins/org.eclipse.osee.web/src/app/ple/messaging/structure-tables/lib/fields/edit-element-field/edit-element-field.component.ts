@@ -38,7 +38,10 @@ import {
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import type { element, PlatformType } from '@osee/messaging/shared/types';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
+import {
+	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
 import {
 	Subject,
 	combineLatest,
@@ -55,6 +58,7 @@ import {
 	ReplaySubject,
 } from 'rxjs';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-messaging-edit-element-field',
@@ -79,6 +83,7 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 		AsyncPipe,
 		A11yModule,
 		RouterLink,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditElementFieldComponent<T extends keyof element = any>
@@ -232,7 +237,6 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		)
 	);
 
-	applics = this.structureService.applic;
 	units = () => this.structureService.units;
 	menuPosition = {
 		x: '0',
@@ -255,7 +259,13 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		this._done.next(true);
 	}
 	updateElement(header: string, value: T) {
+		if (this.header === 'applicability') {
+			this.focusChanged('applicability');
+		}
 		this._value.next(value);
+		if (this.header === 'applicability') {
+			this.focusChanged(null);
+		}
 	}
 	updateImmediately(header: string, value: T) {
 		this._immediateValue.next(value);
@@ -274,10 +284,6 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		this._typeValue.next(value);
 	}
 
-	compareApplics(o1: any, o2: any) {
-		return o1.id === o2.id && o1.name === o2.name;
-	}
-
 	openMenu(event: MouseEvent, location: T) {
 		event.preventDefault();
 		this.contextMenu.emit(event);
@@ -293,5 +299,27 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	}
 	autoCompleteOpened() {
 		this.openTypeAutoComplete.next();
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	isApplic(value: unknown): value is applic {
+		return (
+			value !== null &&
+			value !== undefined &&
+			typeof value === 'object' &&
+			'id' in value &&
+			'name' in value &&
+			typeof value.id === 'string' &&
+			typeof value.name === 'string'
+		);
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	returnAsT(value: unknown): T {
+		return value as T;
 	}
 }

@@ -39,7 +39,6 @@ import {
 import { SideNavService } from '@osee/shared/services/layout';
 import { RelationTypeId } from '@osee/shared/types/constants';
 import {
-	ApplicabilityListService,
 	ConnectionService,
 	NodeService,
 	PreferencesUIService,
@@ -111,17 +110,6 @@ export class CurrentGraphService {
 		),
 		shareReplay(1)
 	);
-	private _applics = this.routeStateService.id.pipe(
-		share(),
-		switchMap((id) =>
-			this.applicabilityService.getApplicabilities(id).pipe(
-				repeatWhen((_) => this.updated),
-				share(),
-				shareReplay(1)
-			)
-		),
-		shareReplay(1)
-	);
 	private _branchPrefs = this.preferenceService.BranchPrefs;
 	private _preferences = this.preferenceService.preferences;
 
@@ -134,7 +122,6 @@ export class CurrentGraphService {
 		private nodeService: NodeService,
 		private connectionService: ConnectionService,
 		private routeStateService: RouteStateService,
-		private applicabilityService: ApplicabilityListService,
 		private sideNavService: SideNavService,
 		private preferenceService: PreferencesUIService,
 		private connectionUiService: SharedConnectionUIService
@@ -168,10 +155,6 @@ export class CurrentGraphService {
 
 	get nodeOptions() {
 		return this._nodeOptions;
-	}
-
-	get applic() {
-		return this._applics;
 	}
 
 	get preferences() {

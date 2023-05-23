@@ -11,8 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './affected-artifact.service.mock';
-export * from './applicability-list-ui.service.mock';
-export * from './applicability-list.service.mock';
 export * from './connection-node.response.mock';
 export * from './connection.response.mock';
 export * from './connection.service.mock';

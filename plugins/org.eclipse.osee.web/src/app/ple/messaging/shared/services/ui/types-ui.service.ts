@@ -359,6 +359,15 @@ export class TypesUIService {
 
 	createEnumSet(set: enumerationSet) {
 		const { enumerations, ...body } = set;
+		if (
+			body.applicabilityId === undefined &&
+			body.applicability !== undefined &&
+			body.applicability.id !== undefined &&
+			body.applicability.id !== '-1'
+		) {
+			//make sure applicabilityId is always set
+			body.applicabilityId = body.applicability.id;
+		}
 		const enumSet = this._ui.id.pipe(
 			take(1),
 			filter((id) => id !== ''),

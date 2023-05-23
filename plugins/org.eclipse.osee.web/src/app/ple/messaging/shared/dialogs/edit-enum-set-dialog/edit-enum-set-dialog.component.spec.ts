@@ -32,17 +32,17 @@ import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
 	EnumerationSetService,
-	ApplicabilityListService,
 	MimPreferencesService,
 	TypesService,
 } from '@osee/messaging/shared/services';
 import {
 	MockEditEnumSetFieldComponent,
 	enumerationSetServiceMock,
-	applicabilityListServiceMock,
 	MimPreferencesServiceMock,
 	typesServiceMock,
 } from '@osee/messaging/shared/testing';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 import { of } from 'rxjs';
 import type { enumsetDialogData } from '../../types/EnumSetDialogData';
 

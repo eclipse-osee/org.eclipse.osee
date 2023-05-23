@@ -45,23 +45,11 @@
 			(ngModelChange)="updateEnumSet()"></textarea>
 	</mat-form-field>
 	<br />
-	<mat-form-field
-		id="connection-applicability-selector"
+	<osee-applicability-selector
+		[applicability]="enumSet.applicability"
+		(applicabilityChange)="enumSet.applicability = $event; updateEnumSet()"
 		class="wide-form">
-		<mat-label>Select an Applicability</mat-label>
-		<mat-select
-			[(ngModel)]="enumSet.applicability"
-			name="enumSetApplicability"
-			(ngModelChange)="updateEnumSet()"
-			[compareWith]="compareApplics"
-			required>
-			<mat-option
-				*ngFor="let applic of applics | async"
-				[value]="applic">
-				{{ applic.name }}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
+	</osee-applicability-selector>
 	<osee-enum-form
 		[bitSize]="bitSize"
 		[enumSetName]="enumSet.name"

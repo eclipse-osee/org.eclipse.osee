@@ -17,9 +17,9 @@ import {
 	repeatWhen,
 	shareReplay,
 	filter,
+	take,
 } from 'rxjs/operators';
-import { UiService } from '@osee/shared/services';
-import { ApplicabilityListService } from '../http/applicability-list.service';
+import { ApplicabilityListService, UiService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',
@@ -29,6 +29,17 @@ export class ApplicabilityListUIService {
 		share(),
 		switchMap((id) =>
 			this.applicabilityService.getApplicabilities(id).pipe(
+				repeatWhen((_) => this.ui.update),
+				share()
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
+	private _count = this.ui.id.pipe(
+		share(),
+		switchMap((id) =>
+			this.applicabilityService.getApplicabilityCount(id).pipe(
 				repeatWhen((_) => this.ui.update),
 				share()
 			)
@@ -47,10 +58,46 @@ export class ApplicabilityListUIService {
 	);
 
 	/**
-	 * @todo update the updating observable to have some specificity
+	 * @deprecated
 	 */
 	get applic() {
 		return this._applics;
+	}
+
+	/**
+	 * @deprecated
+	 */
+	get count() {
+		return this._count;
+	}
+
+	getApplicabilities(
+		pageNum: string | number,
+		count: number,
+		filter?: string
+	) {
+		return this.ui.id.pipe(
+			share(),
+			take(1),
+			switchMap((id) =>
+				this.applicabilityService.getApplicabilities(
+					id,
+					true,
+					pageNum,
+					count,
+					filter
+				)
+			)
+		);
+	}
+
+	getApplicabilityCount(filter?: string) {
+		return this.ui.id.pipe(
+			share(),
+			switchMap((id) =>
+				this.applicabilityService.getApplicabilityCount(id, filter)
+			)
+		);
 	}
 
 	get views() {

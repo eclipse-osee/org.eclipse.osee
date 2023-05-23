@@ -19,15 +19,15 @@ import {
 	MimPreferencesService,
 	EnumerationSetService,
 	EnumsService,
-	ApplicabilityListService,
 } from '@osee/messaging/shared/services';
 import {
 	typesServiceMock,
 	MimPreferencesServiceMock,
 	enumerationSetServiceMock,
 	enumsServiceMock,
-	applicabilityListServiceMock,
 } from '@osee/messaging/shared/testing';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { transactionBuilderMock } from '@osee/shared/transactions/testing';
 

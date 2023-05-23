@@ -35,6 +35,8 @@ import {
 	EnumsService,
 } from '@osee/messaging/shared/services';
 import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-messaging-edit-structure-field',
@@ -51,6 +53,7 @@ import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warn
 		NgIf,
 		NgFor,
 		AsyncPipe,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditStructureFieldComponent<
@@ -88,7 +91,7 @@ export class EditStructureFieldComponent<
 		switchMap((val) => this.structureService.partialUpdateStructure(val))
 	);
 	categories = this.enumService.categories;
-	applics = this.structureService.applic;
+
 	private _focus = new Subject<string | null>();
 	private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
 		scan(
@@ -133,16 +136,41 @@ export class EditStructureFieldComponent<
 		this._immediateUpdateValue.subscribe();
 	}
 	updateStructure(value: T) {
+		if (this.header === 'applicability') {
+			this.focusChanged('applicability');
+		}
 		this._value.next(value);
+		if (this.header === 'applicability') {
+			this.focusChanged(null);
+		}
 	}
 	updateImmediately(value: T) {
 		this._immediateValue.next(value);
 	}
 
-	compareApplics(o1: any, o2: any) {
-		return o1.id === o2.id && o1.name === o2.name;
-	}
 	focusChanged(event: string | null) {
 		this._focus.next(event);
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	isApplic(value: unknown): value is applic {
+		return (
+			value !== null &&
+			value !== undefined &&
+			typeof value === 'object' &&
+			'id' in value &&
+			'name' in value &&
+			typeof value.id === 'string' &&
+			typeof value.name === 'string'
+		);
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	returnAsT(value: unknown): T {
+		return value as T;
 	}
 }

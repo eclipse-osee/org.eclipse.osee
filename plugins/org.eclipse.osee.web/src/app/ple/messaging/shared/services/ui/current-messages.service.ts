@@ -27,7 +27,6 @@ import {
 	mergeMap,
 	scan,
 } from 'rxjs/operators';
-import { ApplicabilityListUIService } from './applicability-list-ui.service';
 import { PreferencesUIService } from './preferences-ui.service';
 import { applic } from '@osee/shared/types/applicability';
 import { MessagesService } from '../http/messages.service';
@@ -43,7 +42,10 @@ import {
 	ARTIFACTTYPEIDENUM,
 	RelationTypeId,
 } from '@osee/shared/types/constants';
-import { CurrentBranchInfoService } from '@osee/shared/services';
+import {
+	ApplicabilityListUIService,
+	CurrentBranchInfoService,
+} from '@osee/shared/services';
 import type { ConnectionNode } from '@osee/messaging/shared/types';
 import type {
 	messageWithChanges,

@@ -25,11 +25,13 @@ export interface subMessage {
 export interface subMessageWithChanges extends subMessage {
 	added: boolean;
 	deleted: boolean;
-	changes: {
-		[index: string]: difference | undefined;
-		name?: difference;
-		description?: difference;
-		interfaceSubMessageNumber?: difference;
-		applicability?: difference;
-	};
+	changes: submessageChanges;
+}
+
+export interface submessageChanges {
+	[index: string]: difference | undefined;
+	name?: difference;
+	description?: difference;
+	interfaceSubMessageNumber?: difference;
+	applicability?: difference;
 }

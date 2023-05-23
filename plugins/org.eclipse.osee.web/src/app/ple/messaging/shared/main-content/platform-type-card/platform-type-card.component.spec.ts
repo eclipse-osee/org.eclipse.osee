@@ -30,7 +30,6 @@ import {
 	MimPreferencesServiceMock,
 	enumerationSetServiceMock,
 	enumsServiceMock,
-	applicabilityListServiceMock,
 } from '@osee/messaging/shared/testing';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import type {
@@ -48,12 +47,13 @@ import {
 	MimPreferencesService,
 	EnumerationSetService,
 	EnumsService,
-	ApplicabilityListService,
 } from '@osee/messaging/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { transactionBuilderMock } from '@osee/shared/transactions/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 
 let loader: HarnessLoader;
 

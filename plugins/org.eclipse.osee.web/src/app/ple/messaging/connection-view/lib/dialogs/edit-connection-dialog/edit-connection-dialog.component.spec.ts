@@ -42,7 +42,10 @@ import {
 	enumsServiceMock,
 	CurrentTransportTypeServiceMock,
 } from '@osee/messaging/shared/testing';
-import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import {
+	MockApplicabilitySelectorComponent,
+	MockMatOptionLoadingComponent,
+} from '@osee/shared/components/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { AsyncPipe, NgFor } from '@angular/common';
@@ -75,6 +78,7 @@ describe('EditConnectionDialogComponent', () => {
 					MatInputModule,
 					MatSelectModule,
 					MockMatOptionLoadingComponent,
+					MockApplicabilitySelectorComponent,
 					MatOptionModule,
 					AsyncPipe,
 					NgFor,
@@ -156,19 +160,6 @@ describe('EditConnectionDialogComponent', () => {
 		expect((await select?.getOptions())?.length).toEqual(1);
 		await select?.clickOptions({ text: 'ETHERNET' });
 		expect(await select?.getValueText()).toEqual('ETHERNET');
-	});
-
-	it('should select an applicability', async () => {
-		let form = loader.getHarness(
-			MatFormFieldHarness.with({
-				selector: '#connection-applicability-selector',
-			})
-		);
-		let select = await (await form).getControl(MatSelectHarness);
-		await select?.open();
-		expect((await select?.getOptions())?.length).toEqual(2);
-		await select?.clickOptions({ text: 'Second' });
-		expect(await select?.getValueText()).toEqual('Second');
 	});
 
 	it('should enter a description', async () => {

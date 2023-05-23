@@ -66,10 +66,6 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
 		{ id: '1', name: 'First' },
 		{ id: '2', name: 'Second' },
 	]),
-	applic: of([
-		{ id: '1', name: 'Base' },
-		{ id: '2', name: 'Second' },
-	]),
 	preferences: of(MimPreferencesMock),
 	InDiff: new BehaviorSubject<boolean>(true),
 	differences: new BehaviorSubject<changeInstance[] | undefined>(

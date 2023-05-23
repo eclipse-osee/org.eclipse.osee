@@ -32,9 +32,11 @@ import { transactionToken } from '@osee/shared/types/change-report';
 import { StructuresService } from '../http/structures.service';
 import { ElementService } from '../http/element.service';
 import { TypesUIService } from './types-ui.service';
-import { ApplicabilityListUIService } from './applicability-list-ui.service';
 import { PreferencesUIService } from './preferences-ui.service';
-import { CurrentBranchInfoService } from '@osee/shared/services';
+import {
+	ApplicabilityListUIService,
+	CurrentBranchInfoService,
+} from '@osee/shared/services';
 import { SideNavService } from '@osee/shared/services/layout';
 import { EnumsService } from '../http/enums.service';
 import { QueryService } from '../http/query.service';

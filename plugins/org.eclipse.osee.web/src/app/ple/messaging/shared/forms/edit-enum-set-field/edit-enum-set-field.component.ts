@@ -21,7 +21,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import {
 	EnumerationUIService,
-	ApplicabilityListUIService,
 	PreferencesUIService,
 	TypesUIService,
 } from '@osee/messaging/shared/services';
@@ -42,6 +41,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import { EnumFormComponent } from '../enum-form/enum-form.component';
 import { PlatformTypeSentinel } from './PlatformTypeInstance';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-edit-enum-set-field',
@@ -60,16 +60,16 @@ import { PlatformTypeSentinel } from './PlatformTypeInstance';
 		AsyncPipe,
 		MatTableModule,
 		EnumFormComponent,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditEnumSetFieldComponent implements OnInit {
-	applic = this.applicabilityService.applic;
 	private _updateEnums = new BehaviorSubject<enumeration[]>([]);
 	private _enumSetNameUpdate = new BehaviorSubject<string>('');
 	private _enumSetDescriptionUpdate = new BehaviorSubject<string>('');
 	private _enumSetApplicUpdate = new BehaviorSubject<applic>({
-		id: '1',
-		name: 'Base',
+		id: '-1',
+		name: 'Invalid',
 	});
 	inEditMode = this.preferenceService.inEditMode;
 
@@ -89,7 +89,6 @@ export class EditEnumSetFieldComponent implements OnInit {
 	@Output('unique') _unique = new Subject<boolean>();
 	constructor(
 		private enumSetService: EnumerationUIService,
-		private applicabilityService: ApplicabilityListUIService,
 		private preferenceService: PreferencesUIService,
 		private typeService: TypesUIService
 	) {}
@@ -164,11 +163,6 @@ export class EditEnumSetFieldComponent implements OnInit {
 	setDescription(value: string) {
 		this._enumSetDescriptionUpdate.next(value);
 	}
-
-	compareApplics(o1: applic, o2: applic) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
-	}
-
 	updateEnums(value: enumeration[]) {
 		this._updateEnums.next(value);
 	}

@@ -14,6 +14,7 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -24,7 +25,8 @@ import {
 	EnumsService,
 } from '@osee/messaging/shared/services';
 import type { message } from '@osee/messaging/shared/types';
-import { combineLatest, iif, of, Subject } from 'rxjs';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { combineLatest, iif, of, ReplaySubject, Subject } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
@@ -35,6 +37,8 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs/operators';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-messaging-edit-message-field',
@@ -52,6 +56,9 @@ import {
 		MatOptionModule,
 		MatInputModule,
 		MatSlideToggleModule,
+		MatAutocompleteModule,
+		MatOptionLoadingComponent,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditMessageFieldComponent<
@@ -87,12 +94,8 @@ export class EditMessageFieldComponent<
 			this.messageService.partialUpdateMessage(this._message)
 		)
 	);
-
 	rates = this.enumService.rates.pipe(takeUntil(this.messageService.done));
 	types = this.enumService.types.pipe(takeUntil(this.messageService.done));
-	applics = this.messageService.applic.pipe(
-		takeUntil(this.messageService.done)
-	);
 	periodicities = this.enumService.periodicities.pipe(
 		takeUntil(this.messageService.done)
 	);
@@ -141,11 +144,28 @@ export class EditMessageFieldComponent<
 	updateImmediately(value: T) {
 		this._immediateValue.next(value);
 	}
-
-	compareApplics(o1: any, o2: any) {
-		return o1.id === o2.id && o1.name === o2.name;
-	}
 	focusChanged(event: string | null) {
 		this._focus.next(event);
+	}
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	isApplic(value: unknown): value is applic {
+		return (
+			value !== null &&
+			value !== undefined &&
+			typeof value === 'object' &&
+			'id' in value &&
+			'name' in value &&
+			typeof value.id === 'string' &&
+			typeof value.name === 'string'
+		);
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	returnAsT(value: unknown): T {
+		return value as T;
 	}
 }

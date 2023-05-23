@@ -30,7 +30,6 @@ import {
 	typesServiceMock,
 	enumsServiceMock,
 	enumerationSetServiceMock,
-	applicabilityListServiceMock,
 	platformTypes1,
 	MimPreferencesMock,
 } from '@osee/messaging/shared/testing';
@@ -40,8 +39,9 @@ import {
 	TypesService,
 	EnumsService,
 	EnumerationSetService,
-	ApplicabilityListService,
 } from '@osee/messaging/shared/services';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 
 describe('CurrentTypesServiceService', () => {
 	let service: CurrentTypesService;
