@@ -1,0 +1,59 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-form-field
+	subscriptSizing="dynamic"
+	id="applicability-selector"
+	class="tw-w-full">
+	<input
+		type="text"
+		matInput
+		[required]="required"
+		[ngModel]="filter | async"
+		(focusin)="autoCompleteOpened()"
+		(ngModelChange)="updateTypeAhead($event)"
+		[matAutocomplete]="autoApplicability" />
+	<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+	<mat-autocomplete
+		autoActiveFirstOption
+		#autoApplicability="matAutocomplete"
+		(optionSelected)="updateValue($event.option.value)">
+		<ng-container *ngIf="applicabilities | async as _applics; else loading">
+			<ng-container
+				*ngIf="applicabilityCount | async as _count; else loading">
+				<osee-mat-option-loading
+					[data]="_applics"
+					objectName="applicability"
+					[paginationSize]="3"
+					paginationMode="AUTO"
+					[count]="_count">
+					<ng-template let-option>
+						<mat-option
+							[value]="option"
+							[attr.data-cy]="'option-' + option.name"
+							[value]="option"
+							[id]="option.id">
+							{{ option.name }}
+						</mat-option>
+					</ng-template>
+				</osee-mat-option-loading>
+			</ng-container>
+		</ng-container>
+		<ng-template #loading>
+			<mat-option
+				id="-1"
+				[value]="{ id: '-1', name: 'invalid' }">
+				Loading...
+			</mat-option>
+		</ng-template>
+	</mat-autocomplete>
+</mat-form-field>

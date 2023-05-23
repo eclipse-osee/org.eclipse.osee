@@ -26,6 +26,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { AsyncPipe, NgFor } from '@angular/common';
 import type { nodeData } from '@osee/messaging/shared/types';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-edit-node-dialog',
@@ -42,23 +43,18 @@ import type { nodeData } from '@osee/messaging/shared/types';
 		MatOptionModule,
 		AsyncPipe,
 		NgFor,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditNodeDialogComponent {
 	title: string = '';
-	applics = this.graphService.applic;
 	constructor(
 		public dialogRef: MatDialogRef<EditNodeDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: nodeData,
-		private graphService: CurrentGraphService
+		@Inject(MAT_DIALOG_DATA) public data: nodeData
 	) {
 		this.title = data.name;
 	}
 	onNoClick() {
 		this.dialogRef.close();
-	}
-
-	compareApplics(o1: applic, o2: applic) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
 	}
 }

@@ -20,11 +20,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { applic } from '@osee/shared/types/applicability';
 import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 import { EnumSetUniqueDescriptionDirective } from '@osee/messaging/shared/directives';
 import type { enumeration, enumerationSet } from '@osee/messaging/shared/types';
-import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-enum-set-form',
@@ -44,12 +43,12 @@ import { ApplicabilityListUIService } from '@osee/messaging/shared/services';
 		NgFor,
 		NgIf,
 		EnumSetUniqueDescriptionDirective,
+		ApplicabilitySelectorComponent,
 	],
 	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class EnumSetFormComponent {
 	@Input() bitSize: string = '0';
-	applics = this.applicabilityService.applic;
 	enumSet: enumerationSet = {
 		name: '',
 		description: '',
@@ -68,11 +67,7 @@ export class EnumSetFormComponent {
 		},
 	});
 	@Output('closed') _closeForm = new Subject();
-	constructor(private applicabilityService: ApplicabilityListUIService) {}
 
-	compareApplics(o1: applic, o2: applic) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
-	}
 	updateDescription(value: string) {
 		this.enumSet.description = value;
 	}

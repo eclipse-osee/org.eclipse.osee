@@ -10,32 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
+<ng-container *ngIf="header === 'applicability' && isApplic(value)">
+	<osee-applicability-selector
+		[applicability]="value"
+		(applicabilityChange)="
+			updateSubMessage(returnAsT($event))
+		"></osee-applicability-selector>
+</ng-container>
 <mat-form-field
+	*ngIf="header !== 'applicability'"
 	cdkMonitorSubtreeFocus
 	(cdkFocusChange)="focusChanged($event)"
 	class="wide-form"
 	subscriptSizing="dynamic"
 	color="primary">
-	<ng-container *ngIf="header === 'applicability'; else generalEdit">
-		<ng-container *ngIf="header === 'applicability'">
-			<mat-select
-				[(ngModel)]="value"
-				(ngModelChange)="updateSubMessage(value)"
-				[compareWith]="compareApplics"
-				required>
-				<mat-option
-					*ngFor="let option of applics | async"
-					[value]="option"
-					[id]="option.id">
-					{{ option.name }}
-				</mat-option>
-			</mat-select>
-		</ng-container>
-	</ng-container>
-	<ng-template #generalEdit>
-		<input
-			matInput
-			[(ngModel)]="value"
-			(ngModelChange)="updateSubMessage(value)" />
-	</ng-template>
+	<input
+		matInput
+		[(ngModel)]="value"
+		(ngModelChange)="updateSubMessage(value)" />
 </mat-form-field>

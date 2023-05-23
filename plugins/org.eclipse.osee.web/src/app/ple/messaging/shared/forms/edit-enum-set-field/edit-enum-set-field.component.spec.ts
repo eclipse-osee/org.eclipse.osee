@@ -10,8 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { A11yModule } from '@angular/cdk/a11y';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,20 +28,23 @@ import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
 	QueryService,
 	EnumerationSetService,
-	ApplicabilityListService,
 	MimPreferencesService,
 	TypesService,
 } from '@osee/messaging/shared/services';
 import {
 	QueryServiceMock,
 	enumerationSetServiceMock,
-	applicabilityListServiceMock,
 	MimPreferencesServiceMock,
 	typesServiceMock,
 	MockEnumFormUniqueComponent,
 	platformTypes1,
 } from '@osee/messaging/shared/testing';
-import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import {
+	MockApplicabilitySelectorComponent,
+	MockMatOptionLoadingComponent,
+} from '@osee/shared/components/testing';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 
 import { EditEnumSetFieldComponent } from './edit-enum-set-field.component';
 
@@ -71,6 +76,21 @@ describe('EditEnumSetFieldComponent', () => {
 					},
 					{ provide: TypesService, useValue: typesServiceMock },
 				],
+				imports: [
+					NgIf,
+					NgFor,
+					AsyncPipe,
+					A11yModule,
+					MatIconModule,
+					MatSelectModule,
+					MatInputModule,
+					MatFormFieldModule,
+					FormsModule,
+					MatTableModule,
+					MockMatOptionLoadingComponent,
+					MockEnumFormUniqueComponent,
+					MockApplicabilitySelectorComponent,
+				],
 			},
 		})
 			.configureTestingModule({
@@ -85,6 +105,7 @@ describe('EditEnumSetFieldComponent', () => {
 					NoopAnimationsModule,
 					MockMatOptionLoadingComponent,
 					MockEnumFormUniqueComponent,
+					MockApplicabilitySelectorComponent,
 					EditEnumSetFieldComponent,
 				],
 				providers: [
@@ -129,15 +150,6 @@ describe('EditEnumSetFieldComponent', () => {
 			component.editable = true;
 			component.platformType = platformTypes1[0];
 			fixture.detectChanges();
-		});
-
-		it('should select an applicability', async () => {
-			const spy = spyOn(component, 'setApplicability').and.callThrough();
-			const select = await loader.getHarness(MatSelectHarness);
-			await select.open();
-			const option = await select.getOptions({ text: 'Second' });
-			await option?.[0].click();
-			expect(spy).toHaveBeenCalled();
 		});
 
 		it('should create', () => {

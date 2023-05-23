@@ -18,7 +18,7 @@ import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { BranchInfoService } from '@osee/shared/services';
 import { MessageUiService } from './messages-ui.service';
-import { ApplicabilityListService } from '../http/applicability-list.service';
+import { ApplicabilityListService } from '../../../../../shared/services/ple_aware/http/applicability-list.service';
 import { MessagesService } from '../http/messages.service';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 import { SubMessagesService } from '../http/sub-messages.service';
@@ -26,7 +26,6 @@ import { CurrentMessagesService } from './current-messages.service';
 import {
 	messageServiceMock,
 	subMessageServiceMock,
-	applicabilityListServiceMock,
 	MimPreferencesServiceMock,
 	messagesMock,
 	subMessagesMock,
@@ -35,7 +34,11 @@ import {
 } from '@osee/messaging/shared/testing';
 import type { message, messageWithChanges } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
-import { BranchInfoServiceMock, changeReportMock } from '@osee/shared/testing';
+import {
+	applicabilityListServiceMock,
+	BranchInfoServiceMock,
+	changeReportMock,
+} from '@osee/shared/testing';
 
 describe('CurrentMessagesService', () => {
 	let service: CurrentMessagesService;

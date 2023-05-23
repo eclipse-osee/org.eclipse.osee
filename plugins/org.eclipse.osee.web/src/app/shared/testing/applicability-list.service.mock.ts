@@ -10,26 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { apiURL } from '@osee/environments';
-import { applic } from '@osee/shared/types/applicability';
+import { of } from 'rxjs';
+import { ApplicabilityListService } from '../services/ple_aware/http/applicability-list.service';
 
-@Injectable({
-	providedIn: 'root',
-})
-export class ApplicabilityListService {
-	constructor(private http: HttpClient) {}
-
+export const applicabilityListServiceMock: Partial<ApplicabilityListService> = {
 	getApplicabilities(branchId: string | number) {
-		return this.http.get<applic[]>(
-			apiURL + '/orcs/branch/' + branchId + '/applic'
-		);
-	}
-
+		return of([
+			{ id: '1', name: 'Base' },
+			{ id: '2', name: 'Second' },
+		]);
+	},
 	getViews(branchId: string | number) {
-		return this.http.get<applic[]>(
-			apiURL + '/orcs/branch/' + branchId + '/applic/views'
-		);
-	}
-}
+		return of([
+			{ id: '1', name: 'Product A' },
+			{ id: '2', name: 'Product B' },
+		]);
+	},
+};

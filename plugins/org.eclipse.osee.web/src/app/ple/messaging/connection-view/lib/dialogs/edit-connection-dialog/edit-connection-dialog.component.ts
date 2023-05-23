@@ -28,7 +28,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
+import {
+	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-edit-connection-dialog',
@@ -45,12 +48,12 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 		AsyncPipe,
 		NgFor,
 		MatButtonModule,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditConnectionDialogComponent implements OnDestroy {
 	private _done = new Subject();
 	title: string = '';
-	applics = this.graphService.applic;
 	paginationSize = 5;
 	transportTypes = (pageNum: string | number) =>
 		this.transportTypeService.getPaginatedTypes(
@@ -60,7 +63,6 @@ export class EditConnectionDialogComponent implements OnDestroy {
 	constructor(
 		public dialogRef: MatDialogRef<EditConnectionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: connection,
-		private graphService: CurrentGraphService,
 		private transportTypeService: CurrentTransportTypeService
 	) {
 		this.title = data.name;
@@ -71,10 +73,6 @@ export class EditConnectionDialogComponent implements OnDestroy {
 
 	onNoClick() {
 		this.dialogRef.close();
-	}
-
-	compareApplics(o1: applic, o2: applic) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
 	}
 
 	compareTransportTypes(o1: transportType, o2: transportType) {

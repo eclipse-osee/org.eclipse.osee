@@ -48,7 +48,6 @@ import {
 	typesServiceMock,
 	enumsServiceMock,
 	enumerationSetServiceMock,
-	applicabilityListServiceMock,
 	CurrentStateServiceMock,
 } from '@osee/messaging/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
@@ -57,9 +56,10 @@ import {
 	TypesService,
 	EnumsService,
 	EnumerationSetService,
-	ApplicabilityListService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 
 describe('AddElementDialogComponent', () => {
 	let component: AddElementDialogComponent;

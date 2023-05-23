@@ -26,10 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { validateEnumLengthIsBelowMax } from '@osee/messaging/shared/functions';
-import {
-	ApplicabilityListUIService,
-	CurrentQueryService,
-} from '@osee/messaging/shared/services';
+import { CurrentQueryService } from '@osee/messaging/shared/services';
 import {
 	EnumerationSetQuery,
 	andDescriptionQuery,
@@ -45,6 +42,9 @@ import {
 	debounceTime,
 } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
+import { ApplicabilityListUIService } from '@osee/shared/services';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-enum-form',
@@ -56,15 +56,16 @@ import { applic } from '@osee/shared/types/applicability';
 		MatFormFieldModule,
 		FormsModule,
 		MatInputModule,
+		MatIconModule,
 		MatSelectModule,
 		MatOptionModule,
 		NgFor,
 		AsyncPipe,
 		MatButtonModule,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EnumFormComponent implements OnChanges {
-	applics = this.applicabilityService.applic;
 	dataSource = new MatTableDataSource<enumeration>();
 
 	@Input() bitSize: string = '0';
@@ -110,20 +111,13 @@ export class EnumFormComponent implements OnChanges {
 		),
 		map((results) => (results.length > 0 ? false : true))
 	);
-	constructor(
-		private applicabilityService: ApplicabilityListUIService,
-		private queryService: CurrentQueryService
-	) {}
+	constructor(private queryService: CurrentQueryService) {}
 	ngOnChanges(changes: SimpleChanges): void {
 		this._name.next(this.enumSetName);
 		if (this.dataSource.data.length === 0 && this.preload.length !== 0) {
 			this.dataSource.data = this.preload;
 			this.update();
 		}
-	}
-
-	compareApplics(o1: applic, o2: applic) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
 	}
 
 	addEnum() {

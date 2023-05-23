@@ -20,7 +20,15 @@
 			>reorder</mat-icon
 		>
 	</ng-container>
+	<ng-container *ngIf="header === 'applicability' && isApplic(value)">
+		<osee-applicability-selector
+			[applicability]="value"
+			(applicabilityChange)="
+				updateImmediately('applicability', returnAsT($event))
+			"></osee-applicability-selector>
+	</ng-container>
 	<mat-form-field
+		*ngIf="header !== 'applicability'"
 		cdkMonitorSubtreeFocus
 		(cdkFocusChange)="focusChanged($event)"
 		subscriptSizing="dynamic"
@@ -29,11 +37,7 @@
 			matInput
 			[(ngModel)]="value"
 			(ngModelChange)="updateElement(header, value)"
-			*ngIf="
-				header !== 'platformTypeName2' &&
-				header !== 'applicability' &&
-				header !== 'units'
-			"
+			*ngIf="header !== 'platformTypeName2' && header !== 'units'"
 			[disabled]="
 				editingDisabled ||
 				((header === 'interfaceElementIndexStart' ||
@@ -49,25 +53,7 @@
 			</ng-container>
 		</ng-container>
 		<ng-container
-			*ngIf="
-				header === 'platformTypeName2' ||
-				header === 'applicability' ||
-				header === 'units'
-			">
-			<ng-container *ngIf="header === 'applicability'">
-				<mat-select
-					[(ngModel)]="value"
-					(ngModelChange)="updateImmediately(header, value)"
-					[compareWith]="compareApplics"
-					[disabled]="editingDisabled">
-					<mat-option
-						*ngFor="let option of applics | async"
-						[value]="option"
-						[id]="option.id">
-						{{ option.name }}
-					</mat-option>
-				</mat-select>
-			</ng-container>
+			*ngIf="header === 'platformTypeName2' || header === 'units'">
 			<ng-container *ngIf="header === 'platformTypeName2'">
 				<div class="tw-flex">
 					<input

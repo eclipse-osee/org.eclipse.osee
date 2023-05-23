@@ -76,8 +76,8 @@ describe('EditStructureFieldComponent', () => {
 		uiService = TestBed.inject(StructuresUiService);
 		fixture = TestBed.createComponent(EditStructureFieldComponent);
 		component = fixture.componentInstance;
-		component.header = 'applicability';
-		component.value = { id: '1', name: 'Base' };
+		component.header = 'interfaceStructureCategory';
+		component.value = 'blah';
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
@@ -96,7 +96,7 @@ describe('EditStructureFieldComponent', () => {
 		let select = await loader.getHarness(MatSelectHarness);
 		await select.open();
 		if (await select.isOpen()) {
-			await select.clickOptions({ text: 'Second' });
+			await select.clickOptions({ text: 'N/A' });
 			expect(spy).toHaveBeenCalled();
 		} else {
 			expect(spy).not.toHaveBeenCalled();

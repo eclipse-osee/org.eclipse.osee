@@ -15,7 +15,10 @@
 		<ng-container *ngIf="editMode.value === true">
 			<ng-container *ngIf="enumObs !== undefined">
 				<ng-container *ngIf="enumObs | async as enumerationSet">
-					<mat-form-field *ngIf="enumerationSet.name !== undefined">
+					<mat-form-field
+						*ngIf="enumerationSet.name !== undefined"
+						subscriptSizing="dynamic"
+						class="tw-w-full">
 						<mat-label>Edit Enumeration Set Name</mat-label>
 						<input
 							matInput
@@ -24,7 +27,9 @@
 					</mat-form-field>
 					<br />
 					<mat-form-field
-						*ngIf="enumerationSet.description !== undefined">
+						*ngIf="enumerationSet.description !== undefined"
+						subscriptSizing="dynamic"
+						class="tw-w-full">
 						<mat-label>Edit Enumeration Set Description</mat-label>
 						<textarea
 							matInput
@@ -35,20 +40,15 @@
 							(ngModelChange)="setDescription($event)"></textarea>
 					</mat-form-field>
 					<br />
-					<mat-form-field
+					<ng-container
 						*ngIf="enumerationSet.applicability !== undefined">
-						<mat-label>Change Applicability</mat-label>
-						<mat-select
-							[(ngModel)]="enumerationSet.applicability"
-							(ngModelChange)="setApplicability($event)"
-							[compareWith]="compareApplics">
-							<mat-option
-								*ngFor="let applicability of applic | async"
-								[value]="applicability">
-								{{ applicability.name }}
-							</mat-option>
-						</mat-select>
-					</mat-form-field>
+						<osee-applicability-selector
+							[applicability]="enumerationSet.applicability"
+							(applicabilityChange)="setApplicability($event)"
+							class="tw-w-full">
+						</osee-applicability-selector>
+					</ng-container>
+
 					<br />
 					Enums:
 					<ng-container *ngIf="_type | async as typeData">

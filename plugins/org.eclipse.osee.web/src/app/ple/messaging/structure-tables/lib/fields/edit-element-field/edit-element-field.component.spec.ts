@@ -33,7 +33,10 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import {
+	MockApplicabilitySelectorComponent,
+	MockMatOptionLoadingComponent,
+} from '@osee/shared/components/testing';
 import {
 	enumsServiceMock,
 	warningDialogServiceMock,
@@ -70,6 +73,7 @@ describe('EditElementFieldComponent', () => {
 						RouterLink,
 						NgIf,
 						NgFor,
+						MockApplicabilitySelectorComponent,
 					],
 					providers: [
 						{ provide: EnumsService, useValue: enumsServiceMock },
@@ -100,38 +104,6 @@ describe('EditElementFieldComponent', () => {
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
-	});
-
-	describe('Applicability Editing', () => {
-		beforeEach(() => {
-			component.header = 'applicability';
-			component.value = { id: '1', name: 'Base' };
-			fixture.detectChanges();
-			loader = TestbedHarnessEnvironment.loader(fixture);
-		});
-
-		it('should update the applicability', async () => {
-			let spy = spyOn(component, 'updateImmediately').and.callThrough();
-			let select = await loader.getHarness(MatSelectHarness);
-			await select.open();
-			if (await select.isOpen()) {
-				await select.clickOptions({ text: 'Second' });
-				component.focusChanged(null);
-				expect(spy).toHaveBeenCalled();
-			} else {
-				expect(spy).not.toHaveBeenCalled();
-			}
-		});
-
-		it('should update value', fakeAsync(() => {
-			let spy = spyOn(component, 'updateElement').and.callThrough();
-			component.focusChanged('mouse');
-			component.focusChanged('mouse');
-			component.focusChanged(null);
-			component.updateElement('description', 'v2');
-			tick(500);
-			expect(spy).toHaveBeenCalled();
-		}));
 	});
 
 	describe('Platform Type Editing', () => {

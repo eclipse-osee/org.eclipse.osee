@@ -17,13 +17,12 @@ import { combineLatest, from, iif, of } from 'rxjs';
 import { filter, map, scan, startWith, switchMap } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import {
-	ApplicabilityListService,
 	ConnectionService,
 	ReportsService,
 } from '@osee/messaging/shared/services';
 import type { connection, MimReport } from '@osee/messaging/shared/types';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { UiService } from '@osee/shared/services';
+import { ApplicabilityListService, UiService } from '@osee/shared/services';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';

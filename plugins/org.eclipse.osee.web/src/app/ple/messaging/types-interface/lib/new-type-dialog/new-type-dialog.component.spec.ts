@@ -38,20 +38,20 @@ import {
 	typesServiceMock,
 	enumsServiceMock,
 	enumerationUiServiceMock,
-	applicabilityListUIServiceMock,
 } from '@osee/messaging/shared/testing';
 import {
 	MimPreferencesService,
 	TypesService,
 	EnumsService,
 	EnumerationUIService,
-	ApplicabilityListUIService,
 } from '@osee/messaging/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { transactionBuilderMock } from '@osee/shared/transactions/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { ApplicabilityListUIService } from '@osee/shared/services';
+import { applicabilityListUIServiceMock } from '@osee/shared/testing';
 
 describe('NewTypeDialogComponent', () => {
 	let component: NewTypeDialogComponent;

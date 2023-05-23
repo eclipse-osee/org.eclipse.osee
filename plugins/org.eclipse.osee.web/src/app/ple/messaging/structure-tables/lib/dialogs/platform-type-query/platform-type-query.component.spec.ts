@@ -38,7 +38,6 @@ import {
 	typesServiceMock,
 	enumsServiceMock,
 	enumerationSetServiceMock,
-	applicabilityListServiceMock,
 	platformTypesMock,
 } from '@osee/messaging/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
@@ -47,8 +46,9 @@ import {
 	TypesService,
 	EnumsService,
 	EnumerationSetService,
-	ApplicabilityListService,
 } from '@osee/messaging/shared/services';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 
 describe('PlatformTypeQueryComponent', () => {
 	let component: PlatformTypeQueryComponent;

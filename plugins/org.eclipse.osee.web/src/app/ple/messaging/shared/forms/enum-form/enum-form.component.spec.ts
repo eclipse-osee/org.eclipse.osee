@@ -23,15 +23,11 @@ import { MatTableHarness } from '@angular/material/table/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { EnumFormComponent } from './enum-form.component';
-import {
-	applicabilityListServiceMock,
-	QueryServiceMock,
-} from '@osee/messaging/shared/testing';
-import {
-	ApplicabilityListService,
-	QueryService,
-} from '@osee/messaging/shared/services';
+import { QueryServiceMock } from '@osee/messaging/shared/testing';
+import { QueryService } from '@osee/messaging/shared/services';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 
 describe('EnumFormComponent', () => {
 	let component: EnumFormComponent;
@@ -78,11 +74,9 @@ describe('EnumFormComponent', () => {
 	it('should add an enum', async () => {
 		let table = await loader.getHarness(MatTableHarness);
 		expect(table).toBeDefined();
-		let addButton = await (
-			await await (
-				await table.getFooterRows()
-			)[0].getCells({ columnName: 'applicability' })
-		)[0].getHarness(MatButtonHarness);
+		let addButton = await loader.getHarness(
+			MatButtonHarness.with({ text: new RegExp('add') })
+		);
 		expect(await addButton.isDisabled()).toBe(false);
 		let spy = spyOn(component, 'addEnum').and.callThrough();
 		await addButton.click();
