@@ -28,8 +28,16 @@
 			mat-raised-button
 			class="light-button"
 			(click)="exportDataAsCsv()">
-			Export to CSV
+			Export Displayed Data to CSV
 		</button>
+		<ng-container *ngIf="link | async as _link">
+			<button
+				mat-raised-button
+				class="light-button"
+				(click)="exportAllDataAsCsv(_link)">
+				Export All Data to CSV
+			</button>
+		</ng-container>
 		<div>
 			<mat-form-field>
 				<input
@@ -281,7 +289,7 @@
 			[length]="queryCount | async"
 			[pageIndex]="page"
 			[pageSize]="pageSize"
-			[pageSizeOptions]="[10, 25]"
+			[pageSizeOptions]="[10, 25, 50, 100, 200]"
 			(page)="setPaginatorState($event)"
 			showFirstLastButtons
 			[disabled]="false"></mat-paginator
