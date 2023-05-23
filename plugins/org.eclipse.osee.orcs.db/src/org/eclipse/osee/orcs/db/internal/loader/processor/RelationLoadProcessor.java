@@ -45,7 +45,8 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    }
 
    @Override
-   protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt, Options options) {
+   protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt,
+      Options options) {
       RelationData toReturn = null;
 
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
@@ -80,7 +81,8 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
          toReturn = factory.createRelationData(version, id, relationType, modType, aArtId, bArtId, rationale, applicId);
 
       } else {
-         if (!historical) {
+         // Remove gamma check when SQL is fixed so it doesn't return duplicate rows
+         if (!historical && !condition.previousGammaId.equals(gammaId)) {
             logger.warn(
                "multiple relation versions for branch[%s] rel_type [%s] a_artId[%s] b_artId[%s] previousGammaId[%s] currentGammaId[%s]",
                branch, relationType, aArtId, bArtId, condition.previousGammaId, gammaId);
@@ -110,7 +112,8 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
             bArtId) && previousTypeId.equals(typeId);
       }
 
-      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId, GammaId gammaId) {
+      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId,
+         GammaId gammaId) {
          previousBranchId = branch;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;
