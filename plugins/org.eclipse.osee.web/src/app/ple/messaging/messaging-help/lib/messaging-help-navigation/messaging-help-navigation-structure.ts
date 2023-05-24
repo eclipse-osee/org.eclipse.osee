@@ -71,6 +71,18 @@ export const helpNavigationStructure: navigationElement[] = [
 				icon: 'add',
 				children: [],
 			},
+			{
+				label: 'Add a Message/SubMessage/Structure',
+				cypressLabel: 'help-add-other',
+				pageTitle:
+					'OSEE - MIM - Help - Add a Message/SubMessage/Structure',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: 'add_msg_submsg_struct',
+				icon: 'add',
+				children: [],
+			},
 		],
 	},
 	{
@@ -126,6 +138,17 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'reports',
 		icon: 'insert_drive_file',
+		children: [],
+	},
+	{
+		label: 'Traceability',
+		cypressLabel: 'help-traceability',
+		pageTitle: 'OSEE - MIM - Help - Traceability',
+		isDropdown: false,
+		isDropdownOpen: false,
+		requiredRoles: [],
+		routerLink: 'traceability',
+		icon: 'sync_alt',
 		children: [],
 	},
 ];
