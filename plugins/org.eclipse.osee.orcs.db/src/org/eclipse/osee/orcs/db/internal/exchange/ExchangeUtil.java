@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Objects;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -60,12 +61,14 @@ public class ExchangeUtil {
       return writer;
    }
 
-   public static Pair<Boolean, File> getTempExchangeFile(String exchangePath, Log logger, IResourceLocator locator, IResourceManager resourceManager) {
+   public static Pair<Boolean, File> getTempExchangeFile(String exchangePath, Log logger, IResourceLocator locator,
+      IResourceManager resourceManager) {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
       IResource resource = resourceManager.acquire(locator, new PropertyStore());
       Conditions.checkExpressionFailOnTrue(!resourceManager.exists(locator), "Error locating [%s]",
          locator.getLocation());
+      Objects.requireNonNull(resource, "Resource can not be null");
       File source = new File(resource.getLocation());
       if (source.isFile()) {
          wasZipExtractionRequired = true;
@@ -84,7 +87,8 @@ public class ExchangeUtil {
       return new Pair<>(wasZipExtractionRequired, importSource);
    }
 
-   public static void cleanUpTempExchangeFile(String exchangePath, Log logger, File exchangeSource, boolean wasZipExtractionRequired) {
+   public static void cleanUpTempExchangeFile(String exchangePath, Log logger, File exchangeSource,
+      boolean wasZipExtractionRequired) {
       if (wasZipExtractionRequired && exchangeSource != null && exchangeSource.exists() && !exchangeSource.getAbsolutePath().equals(
          exchangePath)) {
          logger.info("Deleting Branch Import Temp Folder - [%s]", exchangeSource);

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Scanner;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -31,6 +33,7 @@ public class ServerHealthProcesses {
    public String getHtml() {
       StringBuilder sb = new StringBuilder();
       Scanner s = null;
+      InputStream runtimeStream = null;
       try {
          String psResults = "";
          if (Lib.isWindows()) {
@@ -46,7 +49,8 @@ public class ServerHealthProcesses {
             }
          } else {
             sb.append("<h3>Machine processes with java in cmd</h3>");
-            s = new Scanner(Runtime.getRuntime().exec("ps -ef").getInputStream()).useDelimiter("\\A");
+            runtimeStream = Runtime.getRuntime().exec("ps -ef").getInputStream();
+            s = new Scanner(runtimeStream).useDelimiter("\\A");
             psResults = s.hasNext() ? s.next() : "";
 
          }
@@ -60,6 +64,13 @@ public class ServerHealthProcesses {
       } finally {
          if (s != null) {
             s.close();
+         }
+         if (runtimeStream != null) {
+            try {
+               runtimeStream.close();
+            } catch (IOException ex) {
+               //do nothing
+            }
          }
       }
       return AHTML.simplePage(sb.toString());

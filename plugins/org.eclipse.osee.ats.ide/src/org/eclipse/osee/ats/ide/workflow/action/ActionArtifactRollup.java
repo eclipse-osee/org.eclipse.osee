@@ -83,13 +83,13 @@ public class ActionArtifactRollup {
    private void resetTitleOffChildren() {
       String title = null;
       for (IAtsTeamWorkflow team : atsApi.getWorkItemServiceIde().getTeams(action)) {
-         if (Strings.isInValid(title)) {
+         if (title == null || Strings.isInValid(title)) {
             title = team.getName();
          } else if (!title.equals(team.getName())) {
             return;
          }
       }
-      if (!title.equals(action.getName())) {
+      if (title != null && !title.equals(action.getName())) {
          ((Artifact) action.getStoreObject()).setName(title);
       }
    }

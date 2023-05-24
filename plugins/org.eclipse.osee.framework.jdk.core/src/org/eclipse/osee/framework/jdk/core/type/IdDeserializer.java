@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -44,6 +45,7 @@ public class IdDeserializer<T extends Id> extends StdDeserializer<T> {
          String value = readTree.asText();
          id = value.equals("") ? -1L : Long.valueOf(value);
       } else {
+         Objects.requireNonNull(readTree);
          id = readTree.get("id").asLong();
       }
       return creator.apply(id);

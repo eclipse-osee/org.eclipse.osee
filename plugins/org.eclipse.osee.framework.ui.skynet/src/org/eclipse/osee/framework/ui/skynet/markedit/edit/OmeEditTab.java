@@ -92,6 +92,7 @@ public class OmeEditTab extends OmeAbstractTab {
 
    @Override
    public FormEditor getEditor() {
+      super.getEditor();
       return editor;
    }
 

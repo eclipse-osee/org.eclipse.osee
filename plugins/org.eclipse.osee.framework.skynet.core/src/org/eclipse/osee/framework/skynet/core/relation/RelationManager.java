@@ -161,7 +161,7 @@ public class RelationManager {
                }
             }
          }
-         if (!relationType.isNewRelationTable() && sort) {
+         if (Objects.nonNull(relationType) && !relationType.isNewRelationTable() && sort) {
             sort(artifact, relationType, relationSide, relatedArtifacts);
          }
       }

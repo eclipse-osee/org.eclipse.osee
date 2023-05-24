@@ -61,12 +61,8 @@ public class MassXViewerEventManager implements IArtifactEventListener, IArtifac
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      for (IMassViewerEventHandler handler : handlers) {
-         if (handler.isDisposed()) {
-            handlers.remove(handler);
-         }
-      }
 
+      handlers.removeIf(handler -> handler.isDisposed());
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
@@ -120,7 +116,9 @@ public class MassXViewerEventManager implements IArtifactEventListener, IArtifac
 
    @Override
    public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
-      for (IMassViewerEventHandler handler : handlers) {
+      List<IMassViewerEventHandler> list1 = handlers;
+
+      for (IMassViewerEventHandler handler : list1) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }

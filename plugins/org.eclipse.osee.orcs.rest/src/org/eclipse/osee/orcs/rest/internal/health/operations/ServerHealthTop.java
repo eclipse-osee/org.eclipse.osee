@@ -29,11 +29,12 @@ public class ServerHealthTop {
          sb.append(str);
       } else {
          sb.append("<h3>Machine \"top\" results</h3>");
+         InputStream is = null;
          try {
             ProcessBuilder pb = new ProcessBuilder("top", "-n");
             pb.redirectError();
             Process p = pb.start();
-            InputStream is = p.getInputStream();
+            is = p.getInputStream();
             int value = -1;
             while ((value = is.read()) != -1) {
                sb.append((char) value + "</br>");
@@ -43,6 +44,8 @@ public class ServerHealthTop {
             is.close();
          } catch (Exception ex) {
             sb.append(Lib.exceptionToString(ex));
+         } finally {
+            Lib.close(is);
          }
       }
       return AHTML.simplePage(sb.toString());

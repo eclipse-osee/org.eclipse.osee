@@ -121,7 +121,9 @@ public class BranchModule {
          }
 
          @Override
-         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx, OrcsApi orcsApi) {
+         public TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService,
+            Branch source, TransactionToken sourceTx, Branch destination, TransactionToken destinationTx,
+            OrcsApi orcsApi) {
             BranchId mergeBranch = getMergeBranchId(orcsApi.getQueryFactory().branchQuery(), source, destination);
 
             try {
@@ -138,7 +140,8 @@ public class BranchModule {
          }
 
          @Override
-         public List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, OrcsApi orcsApi) {
+         public List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService,
+            TransactionToken sourceTx, TransactionToken destinationTx, OrcsApi orcsApi) {
             BranchId mergeBranch = getMergeBranchId(orcsApi.getQueryFactory().branchQuery(), sourceTx.getBranch(),
                destinationTx.getBranch());
             return new LoadDeltasBetweenTxsOnTheSameBranch(jdbcClient, joinFactory, tokenService, sourceTx,
@@ -146,6 +149,9 @@ public class BranchModule {
          }
 
          private BranchId getMergeBranchId(BranchQuery branchQuery, BranchId source, BranchId destination) {
+            if (branchQuery.andIsMergeFor(source, destination) == null) {
+               return BranchId.SENTINEL;
+            }
             BranchId mergeBranch =
                branchQuery.andIsMergeFor(source, destination).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
 
@@ -156,14 +162,16 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<URI> exportBranch(OrcsSession session, List<? extends BranchId> branches, PropertyStore options, String exportName) {
+         public Callable<URI> exportBranch(OrcsSession session, List<? extends BranchId> branches,
+            PropertyStore options, String exportName) {
             ExportItemFactory factory = new ExportItemFactory(logger, preferences, jdbcClient, resourceManager);
             return new ExportBranchDatabaseCallable(session, factory, joinFactory, preferences, executorAdmin, branches,
                options, exportName);
          }
 
          @Override
-         public Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches, PropertyStore options) {
+         public Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches,
+            PropertyStore options) {
             ImportBranchDatabaseCallable callable = new ImportBranchDatabaseCallable(logger, session, jdbcClient,
                preferences, resourceManager, fileToImport, branches, options);
             return callable;

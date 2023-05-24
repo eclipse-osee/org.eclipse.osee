@@ -104,7 +104,9 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, IAr
 
       // Do not process event if branch is null, deleted or purged.  But, don't want to remove as handler cause another branch may be selected
       final List<IArtifactExplorerEventHandler> handlersToProcess = new ArrayList<>();
-      for (IArtifactExplorerEventHandler handler : handlers) {
+      List<IArtifactExplorerEventHandler> list1 = handlers;
+
+      for (IArtifactExplorerEventHandler handler : list1) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactEvent.getBranch())) {
@@ -174,7 +176,9 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, IAr
 
       // Do not process event if branch is null, deleted or purged.  But, don't want to remove as handler cause another branch may be selected
       final List<IArtifactExplorerEventHandler> handlersToProcess = new ArrayList<>();
-      for (IArtifactExplorerEventHandler handler : handlers) {
+      List<IArtifactExplorerEventHandler> list1 = handlers;
+
+      for (IArtifactExplorerEventHandler handler : list1) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactTopicEvent.getBranch())) {

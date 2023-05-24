@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
+import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -35,8 +36,10 @@ public class TransactionTokenDeserializer extends StdDeserializer<@NonNull Trans
    }
 
    @Override
-   public TransactionToken deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+   public TransactionToken deserialize(JsonParser jp, DeserializationContext ctxt)
+      throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
+      Objects.requireNonNull(readTree);
       return TransactionToken.valueOf(readTree.get("id").asLong(), BranchId.valueOf(readTree.get("branchId").asLong()));
    }
 }

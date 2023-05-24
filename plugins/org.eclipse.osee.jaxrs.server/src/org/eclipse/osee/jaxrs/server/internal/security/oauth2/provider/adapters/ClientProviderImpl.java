@@ -207,18 +207,21 @@ public class ClientProviderImpl implements ClientProvider {
       };
    }
 
-   private static LoadingCache<String, CachedOutputStream> newLogoCache(int cacheMaxSize, long cacheEvictTimeoutMillis) {
+   private static LoadingCache<String, CachedOutputStream> newLogoCache(int cacheMaxSize,
+      long cacheEvictTimeoutMillis) {
       return newCache(new CacheLoader<String, CachedOutputStream>() {
 
          @Override
          public CachedOutputStream load(String uri) throws Exception {
-            CachedOutputStream cos = new CachedOutputStream();
+            CachedOutputStream cos = null;
             InputStream inputStream = null;
             try {
                URL url = new URL(uri);
                inputStream = new BufferedInputStream(url.openStream());
+               cos = new CachedOutputStream();
                IOUtils.copy(inputStream, cos);
             } finally {
+               Lib.close(cos);
                Lib.close(inputStream);
             }
             return cos;
@@ -227,7 +230,8 @@ public class ClientProviderImpl implements ClientProvider {
       }, cacheMaxSize, cacheEvictTimeoutMillis);
    }
 
-   private static <K, V> LoadingCache<K, V> newCache(CacheLoader<K, V> loader, int cacheMaxSize, long cacheEvictTimeoutMillis) {
+   private static <K, V> LoadingCache<K, V> newCache(CacheLoader<K, V> loader, int cacheMaxSize,
+      long cacheEvictTimeoutMillis) {
       return CacheBuilder.newBuilder()//
          .maximumSize(cacheMaxSize)//
          .expireAfterWrite(cacheEvictTimeoutMillis, TimeUnit.MILLISECONDS)//

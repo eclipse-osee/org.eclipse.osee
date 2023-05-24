@@ -104,12 +104,13 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
             chStmt.next();
             int int1 = chStmt.getInt(1);
             if (int1 == 0) {
-               JdbcStatement chStmt2 = jdbcService.getClient().getStatement();
-               chStmt2.runPreparedQuery(GAMMA_IN_TXS_ARCHIVED_EXISTS, id);
-               chStmt2.next();
-               int int2 = chStmt2.getInt(1);
-               if (int2 == 0) {
-                  unUsedIds.add(id);
+               try (JdbcStatement chStmt2 = jdbcService.getClient().getStatement();) {
+                  chStmt2.runPreparedQuery(GAMMA_IN_TXS_ARCHIVED_EXISTS, id);
+                  chStmt2.next();
+                  int int2 = chStmt2.getInt(1);
+                  if (int2 == 0) {
+                     unUsedIds.add(id);
+                  }
                }
             }
          } finally {

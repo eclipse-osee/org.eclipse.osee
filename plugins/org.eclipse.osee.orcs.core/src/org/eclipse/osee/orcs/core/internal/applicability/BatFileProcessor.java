@@ -155,7 +155,8 @@ public class BatFileProcessor {
       return CharBuffer.wrap(toReturn.toCharArray());
    }
 
-   private int startApplicabilityBlock(ApplicabilityType applicabilityType, Matcher matcher, String beginTag, String applicabilityExpression) {
+   private int startApplicabilityBlock(ApplicabilityType applicabilityType, Matcher matcher, String beginTag,
+      String applicabilityExpression) {
       ApplicabilityBlock applicStart = new ApplicabilityBlock(applicabilityType);
       applicStart.setApplicabilityExpression(applicabilityExpression);
       applicStart.setStartInsertIndex(matcher.start());
@@ -165,7 +166,8 @@ public class BatFileProcessor {
       return matcher.end();
    }
 
-   private void checkForMismatchTags(File inFile, String endFeature, String endConfig, String endConfigGrp, String featureElse, String configureElse, String configureGroupElse) throws TagNotPlacedCorrectlyException {
+   private void checkForMismatchTags(File inFile, String endFeature, String endConfig, String endConfigGrp,
+      String featureElse, String configureElse, String configureGroupElse) throws TagNotPlacedCorrectlyException {
       if (applicBlocks.isEmpty()) {
          if (featureElse != null) {
             OseeLog.log(getClass(), Level.INFO,
@@ -222,7 +224,8 @@ public class BatFileProcessor {
       }
    }
 
-   private ApplicabilityBlock finishApplicabilityBlock(String toReturn, Matcher matcher, File inFile) throws IOException {
+   private ApplicabilityBlock finishApplicabilityBlock(String toReturn, Matcher matcher, File inFile)
+      throws IOException {
       ApplicabilityBlock applicBlock = applicBlocks.pop();
       applicBlock.setEndTextIndex(matcher.start());
       applicBlock.setEndInsertIndex(matcher.end());
@@ -292,30 +295,30 @@ public class BatFileProcessor {
 
    private String getCommentedString(String text, String commentPrefix, String commentSuffix) throws IOException {
       Pattern whitespacePattern = Pattern.compile("\\s*");
-      BufferedReader reader = new BufferedReader(new StringReader(text));
       StringBuilder strB = new StringBuilder();
-      String line;
-      String newLine = getNewLineFromFile(text);
-      while ((line = reader.readLine()) != null) {
-         if (!line.isEmpty()) {
-            boolean noPrefix = commentPrefix.isEmpty() ? true : !line.contains(commentPrefix);
-            boolean noSuffix = commentSuffix.isEmpty() ? true : !line.contains(commentSuffix);
-            if (noPrefix && noSuffix) {
-               Matcher match = whitespacePattern.matcher(line);
-               if (match.find()) {
-                  strB.append(match.group());
+      try (BufferedReader reader = new BufferedReader(new StringReader(text));) {
+         String line;
+         String newLine = getNewLineFromFile(text);
+         while ((line = reader.readLine()) != null) {
+            if (!line.isEmpty()) {
+               boolean noPrefix = commentPrefix.isEmpty() ? true : !line.contains(commentPrefix);
+               boolean noSuffix = commentSuffix.isEmpty() ? true : !line.contains(commentSuffix);
+               if (noPrefix && noSuffix) {
+                  Matcher match = whitespacePattern.matcher(line);
+                  if (match.find()) {
+                     strB.append(match.group());
+                  }
+                  strB.append(commentPrefix);
+                  strB.append(line.substring(match.end()));
+                  strB.append(commentSuffix);
+               } else {
+                  strB.append(line);
                }
-               strB.append(commentPrefix);
-               strB.append(line.substring(match.end()));
-               strB.append(commentSuffix);
-            } else {
-               strB.append(line);
             }
+            strB.append(newLine);
          }
-         strB.append(newLine);
-      }
-      reader.close();
 
+      }
       return strB.toString();
    }
 

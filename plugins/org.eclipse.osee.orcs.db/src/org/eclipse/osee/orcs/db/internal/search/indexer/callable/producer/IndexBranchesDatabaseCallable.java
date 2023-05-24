@@ -41,13 +41,17 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    private static final String FIND_ALL_TAGGABLE_ATTRIBUTES =
       "SELECT att.gamma_id FROM osee_join_id oji, osee_attribute att WHERE oji.query_id = ? AND oji.id = att.attr_type_id";
 
+   private static final String FIND_ALL_TAGGABLE_ATTRIBUTES_REPLACE =
+      "SELECT count(1) FROM osee_join_id oji, osee_attribute att WHERE oji.query_id = ? AND oji.id = att.attr_type_id";
+
    private static final String COUNT_ALL_TAGGABLE_ATTRIBUTES =
       FIND_ALL_TAGGABLE_ATTRIBUTES.replace("att.gamma_id", "count(1)");
 
    private static final String FIND_MISSING =
       FIND_ALL_TAGGABLE_ATTRIBUTES + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
 
-   private static final String COUNT_MISSING = FIND_MISSING.replaceFirst("att.gamma_id", "count(1)");
+   private static final String COUNT_MISSING =
+      FIND_ALL_TAGGABLE_ATTRIBUTES_REPLACE + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
 
    private static final String FIND_TAGGABLE_ATTRIBUTES_BY_BRANCH =
       "SELECT DISTINCT att.gamma_id FROM osee_join_id jid1, osee_join_id jid2, osee_txs txs, osee_attribute att WHERE jid1.query_id = ? AND jid1.id = txs.branch_id AND txs.gamma_id = att.gamma_id AND att.attr_type_id = jid2.id and jid2.query_id = ?";
@@ -147,7 +151,8 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       return builder.toString();
    }
 
-   private Triplet<String, String, Object[]> createQueries(Collection<? extends Id> branches, IdJoinQuery branchJoin, IdJoinQuery typeJoin) {
+   private Triplet<String, String, Object[]> createQueries(Collection<? extends Id> branches, IdJoinQuery branchJoin,
+      IdJoinQuery typeJoin) {
       Object[] params;
       String countQuery;
       String searchQuery;

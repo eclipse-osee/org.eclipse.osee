@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
 import javax.ws.rs.core.MultivaluedMap;
@@ -37,8 +39,10 @@ public class ServerHealthExec {
       String cmd = cmds.iterator().next();
       System.err.println(String.format("exec cmd [%s]", cmd));
       Scanner s = null;
+      InputStream runtime = null;
       try {
-         s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+         runtime = Runtime.getRuntime().exec(cmd).getInputStream();
+         s = new Scanner(runtime).useDelimiter("\\A");
          String results = s.hasNext() ? s.next() : "";
          results = String.format("cmd [%s]<br/><br/>%s", cmd, results.replaceAll("\n", "<br/>"));
          return AHTML.simplePage(results);
@@ -49,6 +53,14 @@ public class ServerHealthExec {
          if (s != null) {
             s.close();
          }
+         if (runtime != null) {
+            try {
+               runtime.close();
+            } catch (IOException ex) {
+               //do nothing
+            }
+         }
+
       }
    }
 

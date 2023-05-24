@@ -117,7 +117,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public synchronized void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) {
+   public synchronized void send(MessageID messageId, Object message, Properties properties,
+      OseeMessagingStatusCallback statusCallback) {
       try {
          if (messageId.isTopic()) {
             try {
@@ -135,7 +136,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       }
    }
 
-   private synchronized void sendInternal(MessageID messageId, Object message, Properties properties) throws JMSException {
+   private synchronized void sendInternal(MessageID messageId, Object message, Properties properties)
+      throws JMSException {
       ConsoleDebugSupport support = null;
       try {
          support = ServiceUtility.getConsoleDebugSupport();
@@ -202,7 +204,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+   public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener,
+      OseeMessagingStatusCallback statusCallback) {
       Topic destination;
       try {
          if (isConnectedThrow()) {
@@ -223,7 +226,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
+   public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener, String selector,
+      OseeMessagingStatusCallback statusCallback) {
       Topic destination;
       try {
          if (isConnectedThrow()) {
@@ -250,7 +254,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       this.subscribe(messageId, listener, defaultErrorHandler);
    }
 
-   private Topic getOrCreateTopic(MessageID messageId) throws JMSException {
+   private synchronized Topic getOrCreateTopic(MessageID messageId) throws JMSException {
       Topic topic = topicCache.get(messageId.getId());
       if (topic == null) {
          topic = session.createTopic(messageId.getId());
@@ -259,7 +263,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       return topic;
    }
 
-   private MessageProducer getOrCreateProducer(Topic destination) throws JMSException {
+   private synchronized MessageProducer getOrCreateProducer(Topic destination) throws JMSException {
       MessageProducer producer = messageProducerCache.get(destination);
       if (producer == null) {
          producer = session.createProducer(destination);
@@ -288,7 +292,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+   public void unsubscribe(MessageID messageId, OseeMessagingListener listener,
+      OseeMessagingStatusCallback statusCallback) {
       Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getId());
       List<MessageConsumer> consumersToRemove = new ArrayList<>();
       if (listeners != null) {
@@ -422,7 +427,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    }
 
    @Override
-   public String getSummary() {
+   public synchronized String getSummary() {
       StringBuilder sb = new StringBuilder();
       sb.append(nodeInfo.toString());
       sb.append("\n");

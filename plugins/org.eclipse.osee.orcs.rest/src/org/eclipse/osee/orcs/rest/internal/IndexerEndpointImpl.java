@@ -17,6 +17,7 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import com.google.common.collect.Sets;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -61,6 +62,7 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
    @Override
    public Response indexBranches(String branchIdsStr, boolean missingItemsOnly) {
       List<BranchId> branchIds = Collections.fromString(branchIdsStr, BranchId::valueOf);
+      Objects.requireNonNull(newBranchQuery().andIds(branchIds));
       ResultSet<Branch> results = newBranchQuery().andIds(branchIds).getResults();
       Callable<Integer> op = getIndexer().indexBranches(Sets.newLinkedHashSet(results), missingItemsOnly);
       Integer result = executeCallable(op);

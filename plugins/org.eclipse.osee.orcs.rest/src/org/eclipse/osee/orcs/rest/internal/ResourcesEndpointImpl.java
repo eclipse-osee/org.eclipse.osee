@@ -30,6 +30,7 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -130,7 +131,8 @@ public class ResourcesEndpointImpl implements ResourcesEndpoint {
    }
 
    @Override
-   public Response saveResource(InputStream inputStream, String protocol, String resourceId, String resourceName, boolean overwriteAllowed, boolean compressOnSave) {
+   public Response saveResource(InputStream inputStream, String protocol, String resourceId, String resourceName,
+      boolean overwriteAllowed, boolean compressOnSave) {
       boolean isCompressed = false;
 
       if (!Strings.isValid(resourceName)) {
@@ -169,7 +171,11 @@ public class ResourcesEndpointImpl implements ResourcesEndpoint {
       IResourceLocator locator = resourceManager.save(tempLocator, tempResource, options);
 
       UriInfo uriInfo = getUriInfo();
+      if (locator == null) {
+         throw new OseeCoreException("IResourceLocator is null");
+      }
       URI location = getResourceLocation(uriInfo, locator);
+
       return Response.created(location).build();
    }
 
@@ -257,7 +263,8 @@ public class ResourcesEndpointImpl implements ResourcesEndpoint {
       return contentType;
    }
 
-   private static IResource newResource(final IResourceLocator locator, final boolean isCompressed, final InputStream stream) {
+   private static IResource newResource(final IResourceLocator locator, final boolean isCompressed,
+      final InputStream stream) {
       return new IResource() {
 
          @Override
