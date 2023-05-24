@@ -112,12 +112,14 @@ public class SqlTable extends NamedBase {
          "CONSTRAINT " + key + "_PK PRIMARY KEY (" + Collections.toString(",", Arrays.asList(columns)) + ")");
    }
 
-   public void setForeignKeyConstraint(String constraintName, SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
+   public void setForeignKeyConstraint(String constraintName, SqlColumn column, SqlTable refTable,
+      SqlColumn refColumn) {
       constraints.add(
          "CONSTRAINT " + constraintName + " FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ")");
    }
 
-   public void setForeignKeyConstraintCascadeDelete(String constraintName, SqlColumn column, SqlTable refTable, SqlColumn refColumn) {
+   public void setForeignKeyConstraintCascadeDelete(String constraintName, SqlColumn column, SqlTable refTable,
+      SqlColumn refColumn) {
       constraints.add(
          "CONSTRAINT " + constraintName + " FOREIGN KEY (" + column + ") REFERENCES " + refTable + " (" + refColumn + ") ON DELETE CASCADE");
    }
@@ -127,13 +129,8 @@ public class SqlTable extends NamedBase {
    }
 
    public void createIndex(String indexName, boolean hasIndexTablespace, SqlColumn... columns) {
-      if (hasIndexTablespace) {
-         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(", ",
-            Arrays.asList(columns)) + ")");
-      } else {
-         addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(", ",
-            Arrays.asList(columns)) + ")");
-      }
+      addStatement("CREATE INDEX " + indexName + " ON " + getName() + " (" + Collections.toString(", ",
+         Arrays.asList(columns)) + ")");
    }
 
    public void addStatement(String statement) {

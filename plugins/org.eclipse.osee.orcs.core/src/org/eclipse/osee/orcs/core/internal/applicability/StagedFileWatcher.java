@@ -56,60 +56,58 @@ public class StagedFileWatcher {
    }
 
    public void runWatcher(BlockApplicabilityStageRequest data, String directory) {
-      try (FileSystem defaultFS = FileSystems.getDefault()) {
 
-         try (WatchService watchService = defaultFS.newWatchService()) {
-            Path dir = Paths.get(directory);
-            String customStage = data.getCustomStageDir();
+      try (FileSystem defaultFS = FileSystems.getDefault(); WatchService watchService = defaultFS.newWatchService()) {
 
-            Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
-               @Override
-               public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                  String fileName = dir.getFileName().toString();
-                  if ((!fileName.equals("Staging") || !fileName.equals(customStage))
-                     && !(fileName.startsWith(".") && dir.toFile().isDirectory())) {
-                     WatchKey key = dir.register(watchService, StandardWatchEventKinds.ENTRY_CREATE,
-                        StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
-                     keyMap.put(key, dir);
-                     return FileVisitResult.CONTINUE;
-                  }
-                  return FileVisitResult.SKIP_SUBTREE;
-               }
-            });
+         Path dir = Paths.get(directory);
+         String customStage = data.getCustomStageDir();
 
-            /**
-             * Each time a new WatchKey is gathered upon file change, first all files in that key are added to a list
-             * and then for each registered view the files are processed with the refresh method.
-             */
-            WatchKey key;
-            while ((key = watchService.take()) != null) {
-               List<String> files = new ArrayList<>();
-               for (WatchEvent<?> event : key.pollEvents()) {
-                  Path path = keyMap.get(key);
-                  String filePath = path.resolve((Path) event.context()).toString();
-                  filePath = filePath.replace(directory, "");
-                  files.add(filePath);
+         Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+               String fileName = dir.getFileName().toString();
+               if ((!fileName.equals("Staging") || !fileName.equals(customStage)) && !(fileName.startsWith(
+                  ".") && dir.toFile().isDirectory())) {
+                  WatchKey key = dir.register(watchService, StandardWatchEventKinds.ENTRY_CREATE,
+                     StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
+                  keyMap.put(key, dir);
+                  return FileVisitResult.CONTINUE;
                }
-               for (Map.Entry<ArtifactToken, Pair<String, BlockApplicabilityOps>> entry : viewMap.entrySet()) {
-                  String stagePath = entry.getValue().getFirst();
-                  BlockApplicabilityOps ops = entry.getValue().getSecond();
-                  results.logf("File Watcher has started processing files for %s\n", entry.getKey().getName());
-                  ops.refreshStagedFiles(results, directory, stagePath, customStage, files);
-                  if (results.isErrors()) {
-                     results.warningf("See above for errors while refreshing %s\n", entry.getKey().getName());
-                  }
-                  results.logf("File Watcher has completed file processing for %s\n", entry.getKey().getName());
-               }
-               key.reset();
+               return FileVisitResult.SKIP_SUBTREE;
             }
+         });
 
-         } catch (ClosedWatchServiceException ex) {
-            return;
-         } catch (IOException | InterruptedException ex) {
-            results.error(ex.getMessage());
+         /**
+          * Each time a new WatchKey is gathered upon file change, first all files in that key are added to a list and
+          * then for each registered view the files are processed with the refresh method.
+          */
+         WatchKey key;
+         while ((key = watchService.take()) != null) {
+            List<String> files = new ArrayList<>();
+            for (WatchEvent<?> event : key.pollEvents()) {
+               Path path = keyMap.get(key);
+               String filePath = path.resolve((Path) event.context()).toString();
+               filePath = filePath.replace(directory, "");
+               files.add(filePath);
+            }
+            for (Map.Entry<ArtifactToken, Pair<String, BlockApplicabilityOps>> entry : viewMap.entrySet()) {
+               String stagePath = entry.getValue().getFirst();
+               BlockApplicabilityOps ops = entry.getValue().getSecond();
+               results.logf("File Watcher has started processing files for %s\n", entry.getKey().getName());
+               ops.refreshStagedFiles(results, directory, stagePath, customStage, files);
+               if (results.isErrors()) {
+                  results.warningf("See above for errors while refreshing %s\n", entry.getKey().getName());
+               }
+               results.logf("File Watcher has completed file processing for %s\n", entry.getKey().getName());
+            }
+            key.reset();
          }
-      } catch (IOException ex1) {
-         //  logger.log(Level.SEVERE, ex1.toString(), ex1);
+
+      } catch (ClosedWatchServiceException ex) {
+
+         return;
+      } catch (IOException | InterruptedException ex) {
+         results.error(ex.getMessage());
       }
    }
 

@@ -157,7 +157,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted, boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf, BranchCategoryToken category) {
+   public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted,
+      boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf,
+      BranchCategoryToken category) {
       BranchQueryData options = new BranchQueryData();
       options.setBranchIds(Collections.fromString(branchUuids, ",", BranchId::valueOf));
 
@@ -221,6 +223,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public List<Branch> getBranchesByCategory(BranchCategoryToken id) {
+      if (newBranchQuery().andIsOfCategory(id) == null) {
+         throw new OseeCoreException("Branch Query is of category returns null");
+      }
       return newBranchQuery().andIsOfCategory(id).getResults().getList();
    }
 
@@ -682,7 +687,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return asResponse(modified);
    }
 
-   private void checkAllTxFoundAreOnBranch(String opName, BranchId branch, List<TransactionId> txIds, ResultSet<? extends TransactionId> result) {
+   private void checkAllTxFoundAreOnBranch(String opName, BranchId branch, List<TransactionId> txIds,
+      ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
          List<TransactionId> difference = Collections.setComplement(txIds, result.getList());
          if (!difference.isEmpty()) {

@@ -332,6 +332,9 @@ public class ClientEndpointImpl implements ClientEndpoint {
    }
 
    private String getInfoStr(IdeClientSession session, boolean withLog) {
+      if (session == null) {
+         return "";
+      }
       try {
          boolean alive = isHostAlive(session);
          if (!alive) {

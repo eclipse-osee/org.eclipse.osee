@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -879,6 +880,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       List<AgileItem> items = new LinkedList<>();
       IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintId);
       IAgileTeam team = atsApi.getAgileService().getAgileTeam(teamId);
+      Objects.requireNonNull(team);
       IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(team);
       if (sprint != null) {
          int x = 1;
@@ -958,7 +960,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public Response updateBacklog(long teamId, JaxAgileBacklog newBacklog) {
       IAgileBacklog backlog = atsApi.getAgileService().updateAgileBacklog(newBacklog);
-
+      Objects.requireNonNull(backlog);
       JaxAgileBacklog created = toJaxBacklog(backlog);
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(created.getTeamId())).build();
@@ -989,6 +991,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public List<AgileItem> getBacklogItems(long teamId) {
       List<AgileItem> items = new LinkedList<>();
       IAgileTeam team = atsApi.getAgileService().getAgileTeam(teamId);
+      Objects.requireNonNull(team);
       IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(team);
       if (backlog != null) {
          int x = 1;

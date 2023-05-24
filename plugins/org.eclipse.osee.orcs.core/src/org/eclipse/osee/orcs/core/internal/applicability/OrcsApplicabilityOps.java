@@ -2265,7 +2265,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                results.error("There was a problem reading the cache file given");
                return ops;
             }
-
+            if (cache == null) {
+               results.error("The cache is null");
+               return ops;
+            }
             Long cachedViewId = cache.getViewId();
             if (!cachedViewId.equals(viewId.getId())) {
                results.errorf("The entered view id (%s) does not match up with the cached view id (%s)\n",
@@ -2780,6 +2783,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       String uniqueId = generateUniqueFilePath(serverApplicDir);
       String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, uniqueId);
       String sourceNameDir = String.format("%s%ssource", uniqueIdDir, File.separator);
+      ZipInputStream zis = null;
+      OutputStream outStream = null;
       try {
          new File(uniqueIdDir).mkdir();
          String fileZip = String.format("%s.zip", sourceNameDir);
@@ -2787,11 +2792,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          byte[] buffer = zip.readAllBytes();
          zip.close();
 
-         OutputStream outStream = new FileOutputStream(uploadedZip);
+         outStream = new FileOutputStream(uploadedZip);
          outStream.write(buffer);
          outStream.close();
 
-         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+         zis = new ZipInputStream(new FileInputStream(fileZip));
          ZipEntry zipEntry = zis.getNextEntry();
          File unzipLocation = new File(sourceNameDir);
          unzipLocation.mkdirs();
@@ -2799,21 +2804,23 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             File uploadedDirectory = newFile(unzipLocation, zipEntry);
             if (zipEntry.isDirectory()) {
                if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
+                  zis.close();
                   throw new IOException("Failed to create directory " + uploadedDirectory);
                }
             } else {
                // fix for Windows-created archives
                File parent = uploadedDirectory.getParentFile();
                if (!parent.isDirectory() && !parent.mkdirs()) {
+                  zis.close();
                   throw new IOException("Failed to create directory " + parent);
                }
                // write file content
-               FileOutputStream fos = new FileOutputStream(uploadedDirectory);
-               int len;
-               while ((len = zis.read(buffer)) > 0) {
-                  fos.write(buffer, 0, len);
+               try (FileOutputStream fos = new FileOutputStream(uploadedDirectory);) {
+                  int len;
+                  while ((len = zis.read(buffer)) > 0) {
+                     fos.write(buffer, 0, len);
+                  }
                }
-               fos.close();
             }
             zipEntry = zis.getNextEntry();
          }
@@ -2821,6 +2828,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          zis.close();
       } catch (IOException ex) {
          throw new OseeCoreException(ex, "Unable to upload zip file");
+      } finally {
+         Lib.close(zis);
+         Lib.close(outStream);
       }
 
       return uniqueId;
@@ -2924,13 +2934,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       String uniqueId = generateUniqueFilePath(serverApplicDir);
       String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, uniqueId);
       String sourceNameDir = String.format("%s%ssource", uniqueIdDir, File.separator);
+      OutputStream outStream = null;
       try {
          new File(uniqueIdDir).mkdir();
          String fileZip = String.format("%s.zip", sourceNameDir);
          File uploadedZip = new File(fileZip);
          byte[] buffer = zip.readAllBytes();
 
-         OutputStream outStream = new FileOutputStream(uploadedZip);
+         outStream = new FileOutputStream(uploadedZip);
          outStream.write(buffer);
 
          ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
@@ -2941,21 +2952,24 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             File uploadedDirectory = newFile(unzipLocation, zipEntry);
             if (zipEntry.isDirectory()) {
                if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
+                  zis.close();
                   throw new IOException("Failed to create directory " + uploadedDirectory);
                }
             } else {
                // fix for Windows-created archives
                File parent = uploadedDirectory.getParentFile();
                if (!parent.isDirectory() && !parent.mkdirs()) {
+                  zis.close();
                   throw new IOException("Failed to create directory " + parent);
                }
                // write file content
-               FileOutputStream fos = new FileOutputStream(uploadedDirectory);
-               int len;
-               while ((len = zis.read(buffer)) > 0) {
-                  fos.write(buffer, 0, len);
+               try (FileOutputStream fos = new FileOutputStream(uploadedDirectory);) {
+                  int len;
+                  while ((len = zis.read(buffer)) > 0) {
+                     fos.write(buffer, 0, len);
+                  }
                }
-               fos.close();
+
             }
             zipEntry = zis.getNextEntry();
          }
@@ -2987,6 +3001,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          zis.close();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "BAT Operation Failed");
+      } finally {
+         Lib.close(outStream);
       }
       return uniqueId;
    }

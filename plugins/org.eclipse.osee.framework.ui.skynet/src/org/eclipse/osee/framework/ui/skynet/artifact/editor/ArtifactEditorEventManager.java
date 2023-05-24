@@ -80,7 +80,9 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IArti
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      for (IArtifactEditorEventHandler handler : handlers) {
+      List<IArtifactEditorEventHandler> list1 = handlers;
+
+      for (IArtifactEditorEventHandler handler : list1) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }
@@ -133,7 +135,9 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IArti
 
    @Override
    public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
-      for (IArtifactEditorEventHandler handler : handlers) {
+      List<IArtifactEditorEventHandler> list1 = handlers;
+
+      for (IArtifactEditorEventHandler handler : list1) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }

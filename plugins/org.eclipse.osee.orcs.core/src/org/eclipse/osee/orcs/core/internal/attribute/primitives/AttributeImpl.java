@@ -48,7 +48,8 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    private OrcsTokenService tokenService;
 
    @Override
-   public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue, OrcsTokenService tokenService) {
+   public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData,
+      boolean isDirty, boolean setDefaultValue, OrcsTokenService tokenService) {
       this.containerReference = containerReference;
       this.attributeData = attributeData;
       this.tokenService = tokenService;
@@ -293,6 +294,7 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
 
    @Override
    public boolean equals(Object obj) {
+      super.equals(obj);
       if (obj instanceof Id) {
          return getId().equals(((Id) obj).getId());
       }

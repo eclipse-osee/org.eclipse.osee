@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,7 +25,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.ActionableItemTreeWithChildr
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -89,24 +88,16 @@ public class CreateSiblingAction extends Action {
          IAtsProgram program = atsApi.getProgramService().getProgramById(progArt);
          List<IAtsActionableItem> validAis = new ArrayList<>();
          for (IAtsActionableItem ai : atsApi.getProgramService().getAis(program)) {
-            if (ai.getTags() != null) {
-               if (ai.getTags().contains(BitUtil.BIT_AI)) {
-                  validAis.add(ai);
-               }
-            } else {
-               throw new OseeCoreException("In CreateSiblingAction.run, the method \"getTags\" returns null");
+            if (ai.getTags().contains(BitUtil.BIT_AI)) {
+               validAis.add(ai);
             }
          }
          IAtsTeamDefinition teamDef = atsApi.getProgramService().getTeamDefHoldingVersions(program);
          // Remove top AI if configured
-
-         if (teamDef != null) {
-            Collection<ActionableItem> actionableItems = teamDef.getActionableItems();
-
-            if (actionableItems == null && !actionableItems.isEmpty()) {
-               IAtsActionableItem ai = actionableItems.iterator().next();
-               validAis.remove(ai);
-            }
+         Objects.requireNonNull(teamDef, "teamDef can not be null");
+         if (teamDef.getActionableItems() != null && !teamDef.getActionableItems().isEmpty()) {
+            IAtsActionableItem ai = teamDef.getActionableItems().iterator().next();
+            validAis.remove(ai);
          }
 
          ActionableItemTreeWithChildrenDialog dialog =

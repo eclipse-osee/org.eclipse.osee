@@ -80,11 +80,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener, IArtifac
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      for (WorkflowEditor editor : editors) {
-         if (editor.isDisposed()) {
-            editors.remove(editor);
-         }
-      }
+      editors.removeIf(editor -> editor.isDisposed());
       try {
          if (!artifactEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
             return;
@@ -103,11 +99,8 @@ public class WfeArtifactEventManager implements IArtifactEventListener, IArtifac
 
    @Override
    public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
-      for (WorkflowEditor editor : editors) {
-         if (editor.isDisposed()) {
-            editors.remove(editor);
-         }
-      }
+
+      editors.removeIf(editor -> editor.isDisposed());
       try {
          if (!artifactTopicEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
             return;

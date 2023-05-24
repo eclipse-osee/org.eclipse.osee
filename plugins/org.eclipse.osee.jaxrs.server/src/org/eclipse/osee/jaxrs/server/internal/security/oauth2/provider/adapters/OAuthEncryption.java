@@ -51,7 +51,8 @@ public class OAuthEncryption {
       return encryptCodeGrant(grant, secretKey, null);
    }
 
-   private static String encryptCodeGrant(ServerAuthorizationCodeGrant grant, Key secretKey, KeyProperties props) throws SecurityException {
+   private static String encryptCodeGrant(ServerAuthorizationCodeGrant grant, Key secretKey, KeyProperties props)
+      throws SecurityException {
       String tokenSequence = tokenizeCodeGrant(grant);
 
       return CryptoUtils.encryptSequence(tokenSequence, secretKey, props);
@@ -102,7 +103,8 @@ public class OAuthEncryption {
       return encryptAccessToken(token, secretKey, null);
    }
 
-   private static String encryptAccessToken(ServerAccessToken token, Key secretKey, KeyProperties props) throws SecurityException {
+   private static String encryptAccessToken(ServerAccessToken token, Key secretKey, KeyProperties props)
+      throws SecurityException {
       String tokenSequence = tokenizeServerToken(token);
       return CryptoUtils.encryptSequence(tokenSequence, secretKey, props);
    }
@@ -111,7 +113,8 @@ public class OAuthEncryption {
       return encryptRefreshToken(refreshToken, secretKey, null);
    }
 
-   private static String encryptRefreshToken(RefreshToken token, Key secretKey, KeyProperties props) throws SecurityException {
+   private static String encryptRefreshToken(RefreshToken token, Key secretKey, KeyProperties props)
+      throws SecurityException {
       String tokenSequence = tokenizeRefreshToken(token);
 
       return CryptoUtils.encryptSequence(tokenSequence, secretKey, props);
@@ -121,12 +124,14 @@ public class OAuthEncryption {
       return decryptCodeGrant(provider, grant, secretKey, null);
    }
 
-   private static ServerAuthorizationCodeGrant decryptCodeGrant(OAuthDataProvider provider, String encodedData, Key key, KeyProperties props) throws SecurityException {
+   private static ServerAuthorizationCodeGrant decryptCodeGrant(OAuthDataProvider provider, String encodedData, Key key,
+      KeyProperties props) throws SecurityException {
       String decryptedSequence = CryptoUtils.decryptSequence(encodedData, key, props);
       return recreateCodeGrant(provider, decryptedSequence);
    }
 
-   private static ServerAuthorizationCodeGrant recreateCodeGrant(OAuthDataProvider provider, String decryptedSequence) throws SecurityException {
+   private static ServerAuthorizationCodeGrant recreateCodeGrant(OAuthDataProvider provider, String decryptedSequence)
+      throws SecurityException {
       return recreateCodeGrantInternal(provider, decryptedSequence);
    }
 
@@ -187,7 +192,7 @@ public class OAuthEncryption {
       UserSubject recreateUserSubject = recreateUserSubject(parts[9]);
 
       SessionData toReturn = new SessionData(parts[0]);
-      toReturn.setAccountActive(Boolean.getBoolean(parts[1]));
+      toReturn.setAccountActive(Boolean.valueOf(parts[1]));
       toReturn.setExpiresIn(Long.valueOf(parts[2]));
       toReturn.setIssuedAt(Long.valueOf(parts[3]));
       toReturn.setAccountDisplayName(parts[4]);
@@ -204,16 +209,19 @@ public class OAuthEncryption {
       return accessToken;
    }
 
-   private static ServerAccessToken decryptAccessToken(OAuthDataProvider provider, String encodedData, Key secretKey, KeyProperties props) throws SecurityException {
+   private static ServerAccessToken decryptAccessToken(OAuthDataProvider provider, String encodedData, Key secretKey,
+      KeyProperties props) throws SecurityException {
       String decryptedSequence = CryptoUtils.decryptSequence(encodedData, secretKey, props);
       return recreateAccessToken(provider, encodedData, decryptedSequence);
    }
 
-   private static ServerAccessToken recreateAccessToken(OAuthDataProvider provider, String newTokenKey, String decryptedSequence) throws SecurityException {
+   private static ServerAccessToken recreateAccessToken(OAuthDataProvider provider, String newTokenKey,
+      String decryptedSequence) throws SecurityException {
       return recreateAccessToken(provider, newTokenKey, getParts(decryptedSequence));
    }
 
-   private static ServerAccessToken recreateAccessToken(OAuthDataProvider provider, String newTokenKey, String[] parts) {
+   private static ServerAccessToken recreateAccessToken(OAuthDataProvider provider, String newTokenKey,
+      String[] parts) {
 
       final ServerAccessToken newToken = new ServerAccessToken(provider.getClient(parts[4]), parts[1],
          newTokenKey == null ? parts[0] : newTokenKey, Long.valueOf(parts[2]), Long.valueOf(parts[3])) {
@@ -252,12 +260,14 @@ public class OAuthEncryption {
       return decryptRefreshToken(provider, token, secretKey, null);
    }
 
-   private static RefreshToken decryptRefreshToken(OAuthDataProvider provider, String encodedData, Key key, KeyProperties props) throws SecurityException {
+   private static RefreshToken decryptRefreshToken(OAuthDataProvider provider, String encodedData, Key key,
+      KeyProperties props) throws SecurityException {
       String decryptedSequence = CryptoUtils.decryptSequence(encodedData, key, props);
       return recreateRefreshToken(provider, encodedData, decryptedSequence);
    }
 
-   private static RefreshToken recreateRefreshToken(OAuthDataProvider provider, String newTokenKey, String decryptedSequence) throws SecurityException {
+   private static RefreshToken recreateRefreshToken(OAuthDataProvider provider, String newTokenKey,
+      String decryptedSequence) throws SecurityException {
       String[] parts = getParts(decryptedSequence);
       ServerAccessToken token = recreateAccessToken(provider, newTokenKey, parts);
       return new RefreshToken(token, newTokenKey, parseSimpleList(parts[parts.length - 1]));

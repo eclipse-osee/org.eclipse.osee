@@ -91,10 +91,6 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
 
                String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
                if (relTable != null) {
-                  if (!firstOrderBy) {
-                     writer.write(", ");
-
-                  }
                   writer.write(relTable);
                   writer.write(".rel_type, ");
                   writer.write(relTable);

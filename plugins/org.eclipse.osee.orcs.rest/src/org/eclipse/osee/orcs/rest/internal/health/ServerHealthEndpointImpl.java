@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.internal.health;
 
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -155,13 +156,22 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getTop() throws Exception {
-      Scanner s =
-         new Scanner(Runtime.getRuntime().exec(new String[] {"bash", "-c", "top -n 1"}).getInputStream()).useDelimiter(
-            "\\A");
-      String results = s.hasNext() ? s.next() : "";
-      s.close();
+      String results = "";
+      InputStream runtimeStream = null;
+      Scanner s = null;
+      try {
+         runtimeStream = Runtime.getRuntime().exec(new String[] {"bash", "-c", "top -n 1"}).getInputStream();
+         s = new Scanner(runtimeStream).useDelimiter("\\A");
+         results = s.hasNext() ? s.next() : "";
+      } finally {
+         if (s != null) {
+            s.close();
+         }
+         if (runtimeStream != null) {
+            runtimeStream.close();
+         }
+      }
       return AHTML.simplePage(results);
-      //      return (new ServerStatusTop()).get();
    }
 
    @Path("status")
