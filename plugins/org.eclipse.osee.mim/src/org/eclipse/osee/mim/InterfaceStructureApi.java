@@ -36,9 +36,9 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId);
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId);
 
-   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter);
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId, String filter);
 
    List<InterfaceStructureToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);
 
@@ -49,7 +49,7 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter,
       AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId,
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId,
       AttributeTypeId orderByAttribute);
 
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter,
@@ -64,7 +64,8 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum,
       long pageSize);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize);
+   List<InterfaceStructureToken> getAllRelated(BranchId branch,ArtifactId connectionId, ArtifactId subMessageId, long pageNum, long pageSize
+      );
 
    List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter,
       long pageNum, long pageSize);
@@ -80,18 +81,18 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    List<InterfaceStructureToken> getFilteredWithoutRelations(BranchId branch, String filter, long pageNum,
       long pageSize, AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, long pageNum, long pageSize,
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId subMessageId, ArtifactId viewId,
+   List<InterfaceStructureToken> getAllRelated(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId, ArtifactId viewId,
       long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    int getAllRelatedCount(BranchId branch, ArtifactId subMessageId);
 
-   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, String filter,
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId, String filter,
       long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId viewId,
+   List<InterfaceStructureToken> getAllRelatedAndFilter(BranchId branch,ArtifactId connectionId, ArtifactId subMessageId, ArtifactId viewId,
       String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    List<InterfaceStructureToken> getAllByName(BranchId branch, String name, long pageNum, long pageSize);
@@ -100,21 +101,21 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    int getAllRelatedAndFilterCount(BranchId branch, ArtifactId subMessageId, String filter);
 
-   InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId);
+   InterfaceStructureToken getRelated(BranchId branch,ArtifactId connectionId, ArtifactId subMessageId, ArtifactId structureId);
 
-   InterfaceStructureToken getRelated(BranchId branch, ArtifactId subMessageId, ArtifactId structureId,
+   InterfaceStructureToken getRelated(BranchId branch,ArtifactId connectionId, ArtifactId subMessageId, ArtifactId structureId,
       ArtifactId viewId);
 
-   InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId,
+   InterfaceStructureToken getRelatedAndFilter(BranchId branch,ArtifactId connectionId, ArtifactId subMessageId, ArtifactId structureId,
       String filter);
 
-   InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId subMessageId, ArtifactId structureId,
+   InterfaceStructureToken getRelatedAndFilter(BranchId branch,ArtifactId connectionId, ArtifactId subMessageId, ArtifactId structureId,
       String filter, ArtifactId viewId);
 
    List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element);
 
    InterfaceStructureToken getWithAllParentRelations(BranchId branch, ArtifactId structureId);
 
-   InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId messageId);
+   InterfaceStructureToken getMessageHeaderStructure(BranchId branch,ArtifactId connectionId, ArtifactId messageId);
 
 }

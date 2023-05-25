@@ -17,7 +17,6 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { tap } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
-import { ApplicabilityListService } from '../../../../../shared/services/ple_aware/http/applicability-list.service';
 import { ElementService } from '../http/element.service';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 import { QueryService } from '../http/query.service';
@@ -51,11 +50,7 @@ import type {
 import { PlatformTypeQuery } from '@osee/messaging/shared/query';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { BranchInfoService } from '@osee/shared/services';
-import {
-	applicabilityListServiceMock,
-	BranchInfoServiceMock,
-	changeReportMock,
-} from '@osee/shared/testing';
+import { BranchInfoServiceMock, changeReportMock } from '@osee/shared/testing';
 
 const servicesUnderTest: {
 	service: typeof CurrentStructureService;
@@ -123,10 +118,6 @@ servicesUnderTest.forEach((testCase) => {
 					{
 						provide: MimPreferencesService,
 						useValue: MimPreferencesServiceMock,
-					},
-					{
-						provide: ApplicabilityListService,
-						useValue: applicabilityListServiceMock,
 					},
 					{ provide: StructuresUiService },
 					{
@@ -345,21 +336,6 @@ servicesUnderTest.forEach((testCase) => {
 			});
 		});
 
-		it('should get applicabilities', () => {
-			scheduler.run(() => {
-				let expectedObservable = {
-					a: [
-						{ id: '1', name: 'Base' },
-						{ id: '2', name: 'Second' },
-					],
-				};
-				let expectedMarble = 'a';
-				scheduler
-					.expectObservable(service.applic)
-					.toBe(expectedMarble, expectedObservable);
-			});
-		});
-
 		it('should get types', () => {
 			scheduler.run(() => {
 				service.branchId = '0';
@@ -524,10 +500,6 @@ servicesUnderTest.forEach((testCase) => {
 					{
 						provide: MimPreferencesService,
 						useValue: MimPreferencesServiceMock,
-					},
-					{
-						provide: ApplicabilityListService,
-						useValue: applicabilityListServiceMock,
 					},
 					{ provide: StructuresUiService },
 					{

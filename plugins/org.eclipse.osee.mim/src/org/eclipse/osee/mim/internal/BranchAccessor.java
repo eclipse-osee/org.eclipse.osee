@@ -68,13 +68,15 @@ public class BranchAccessor {
 
    @Path("{branch}/connections/{connectionId}/messages")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceMessageEndpoint getMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId) {
+   public InterfaceMessageEndpoint getMessageEndpoint(@PathParam("branch") BranchId branch,
+      @PathParam("connectionId") ArtifactId connectionId) {
       return new InterfaceMessageEndpointImpl(branch, connectionId, mimApi.getInterfaceMessageApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceSubMessageEndpoint getSubMessageEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId) {
+   public InterfaceSubMessageEndpoint getSubMessageEndpoint(@PathParam("branch") BranchId branch,
+      @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId) {
       return new InterfaceSubMessageEndpointImpl(branch, messageId, mimApi.getInterfaceSubMessageApi());
    }
 
@@ -86,20 +88,27 @@ public class BranchAccessor {
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceStructureEndpoint getStructureEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId) {
-      return new InterfaceStructureEndpointImpl(branch, messageId, subMessageId, mimApi.getInterfaceStructureApi());
+   public InterfaceStructureEndpoint getStructureEndpoint(@PathParam("branch") BranchId branch,
+      @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId,
+      @PathParam("submessageId") ArtifactId subMessageId) {
+      return new InterfaceStructureEndpointImpl(branch, connectionId, messageId, subMessageId,
+         mimApi.getInterfaceStructureApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/count")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceStructureCountEndpoint getStructureCountEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId) {
+   public InterfaceStructureCountEndpoint getStructureCountEndpoint(@PathParam("branch") BranchId branch,
+      @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId,
+      @PathParam("submessageId") ArtifactId subMessageId) {
       return new InterfaceStructureCountEndpointImpl(branch, messageId, subMessageId,
          mimApi.getInterfaceStructureApi());
    }
 
    @Path("{branch}/connections/{connectionId}/messages/{messageId}/submessages/{submessageId}/structures/{structureId}/elements")
    @Produces(MediaType.APPLICATION_JSON)
-   public InterfaceElementEndpoint getElementEndpoint(@PathParam("branch") BranchId branch, @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId, @PathParam("submessageId") ArtifactId subMessageId, @PathParam("structureId") ArtifactId structureId) {
+   public InterfaceElementEndpoint getElementEndpoint(@PathParam("branch") BranchId branch,
+      @PathParam("connectionId") ArtifactId connectionId, @PathParam("messageId") ArtifactId messageId,
+      @PathParam("submessageId") ArtifactId subMessageId, @PathParam("structureId") ArtifactId structureId) {
       return new InterfaceElementEndpointImpl(branch, messageId, subMessageId, structureId,
          mimApi.getInterfaceElementApi());
    }
@@ -195,7 +204,8 @@ public class BranchAccessor {
     */
    @Path("{branch}/view/{viewId}/icd/{id}")
    @Produces(MediaType.APPLICATION_XML)
-   public IcdEndpoint getIcd(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId, @PathParam("id") ArtifactId connectionId) {
+   public IcdEndpoint getIcd(@PathParam("branch") BranchId branch, @PathParam("viewId") ArtifactId viewId,
+      @PathParam("id") ArtifactId connectionId) {
 
       return new IcdEndpointImpl(branch, viewId, connectionId, mimApi);
    }
