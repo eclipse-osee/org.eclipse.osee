@@ -51,6 +51,8 @@ def main(argv):
             continue
 
     if len(findings) > 0:
+        print("\n\n\n")
+        print("--- FINDINGS ---")
         for finding in findings:
             print(finding)
         sys.exit(-1)
