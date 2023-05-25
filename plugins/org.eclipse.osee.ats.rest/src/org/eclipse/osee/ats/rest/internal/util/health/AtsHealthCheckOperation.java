@@ -109,11 +109,13 @@ public class AtsHealthCheckOperation {
       // These load cache, do first
       healthChecks.add(new TestTeamDefinitionsLoad());
       healthChecks.add(new TestActionableItemsLoad());
+
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
       healthChecks.add(new TestStateMgrAndDupStates());
       healthChecks.add(new TestCurrentState());
+      healthChecks.add(new TestClosedWorkflowsWithAssignees());
       healthChecks.add(new TestAssignees());
       healthChecks.add(new TestWorkflowHasAction());
       healthChecks.add(new TestTeamDefinitionsBaslineBranch());
@@ -437,33 +439,59 @@ public class AtsHealthCheckOperation {
       return badIds;
    }
 
+   public class TestClosedWorkflowsWithAssignees implements IAtsHealthCheck {
+
+      @Override
+      public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
+         List<Map<String, String>> artRows =
+            atsApi.getQueryService().query("SELECT ART_ID FROM OSEE_ATTRIBUTE attr, OSEE_TXS txs WHERE " + //
+               "txs.BRANCH_ID = " + atsApi.getAtsBranch().getIdString() + " AND " + //
+               "attr.GAMMA_ID = txs.GAMMA_ID AND " + //
+               "txs.TX_CURRENT = 1 AND " + //
+               "ATTR_TYPE_ID = " + AtsAttributeTypes.CurrentState.getIdString() + " and attr.VALUE LIKE '%<%' AND attr.ART_ID IN ( " + //
+               "   SELECT ART_ID  FROM OSEE_ATTRIBUTE attr, OSEE_TXS txs WHERE" + //
+               "   txs.BRANCH_ID = " + atsApi.getAtsBranch().getIdString() + " AND" + //
+               "   attr.GAMMA_ID = txs.GAMMA_ID AND " + //
+               "   txs.TX_CURRENT = 1 AND " + //
+               "   ATTR_TYPE_ID = " + AtsAttributeTypes.CurrentStateType.getIdString() + " and attr.VALUE IN " + //
+               "   ('Completed','Cancelled')" + //
+               ")");
+         for (Map<String, String> artRow : artRows) {
+            String artIdStr = artRow.get("ART_ID");
+            results.log(ArtifactId.valueOf(artIdStr), "TestClosedWorkflowsWithAssignees",
+               "Closed workflow with assignee(s) " + artIdStr);
+         }
+         return true;
+      }
+
+   }
    public static class TestAssignees implements IAtsHealthCheck {
       @Override
       public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
          IAtsChangeSet changes, IAtsOperationCache cache) {
-         if (workItem.isInWork()) {
-            String currentStatename =
-               atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
-            List<Long> userArtIds = new ArrayList<>();
-            for (AtsUser user : atsApi.getWorkStateFactory().getUsers(currentStatename)) {
-               userArtIds.add(user.getArtifactId().getId());
+         String currentStatename =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
+         List<Long> userArtIds = new ArrayList<>();
+         for (AtsUser user : atsApi.getWorkStateFactory().getUsers(currentStatename)) {
+            userArtIds.add(user.getArtifactId().getId());
+         }
+         List<Long> currUserArtIds = new ArrayList<>();
+         for (String id : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
+            AtsAttributeTypes.CurrentStateAssignee)) {
+            if (Strings.isNumeric(id)) {
+               currUserArtIds.add(Long.valueOf(id));
+            } else {
+               results.log(artifact, "TestAssignees",
+                  String.format("Error: Invalid Current State Assigne [%s] for %s", id, workItem.toStringWithId()));
             }
-            List<Long> currUserArtIds = new ArrayList<>();
-            for (String id : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
-               AtsAttributeTypes.CurrentStateAssignee)) {
-               if (Strings.isNumeric(id)) {
-                  currUserArtIds.add(Long.valueOf(id));
-               } else {
-                  results.log(artifact, "TestAssignees",
-                     String.format("Error: Invalid Current State Assigne [%s] for %s", id, workItem.toStringWithId()));
-               }
-            }
-            if (Collections.setComplement(currUserArtIds,
-               userArtIds).size() > 0 || Collections.setComplement(userArtIds, currUserArtIds).size() > 0) {
+         }
+         if (Collections.setComplement(currUserArtIds, userArtIds).size() > 0 || Collections.setComplement(userArtIds,
+            currUserArtIds).size() > 0) {
+            results.log(artifact, "TestAssignees", String.format(
+               "Info: Updated Current State Assignees attr to [%s] for %s", userArtIds, workItem.toStringWithId()));
+            if (changes != null) {
                changes.setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee,
                   Collections.castAll(userArtIds));
-               results.log(artifact, "TestAssignees", String.format(
-                  "Info: Updated Current State Assignees attr to [%s] for %s", userArtIds, workItem.toStringWithId()));
             }
          }
          return true;
@@ -472,14 +500,11 @@ public class AtsHealthCheckOperation {
 
    /**
     * Test current state in work def and is set in new ats.Current State Name attr
-    *
-    * @author Donald G. Dunne
     */
    public static class TestCurrentState implements IAtsHealthCheck {
       @Override
       public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
          IAtsChangeSet changes, IAtsOperationCache cache) {
-         //         if (workItem.isInWork()) {  // ADD BACK IN BEFORE MERGE
          String currentStatename =
             atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
          currentStatename = currentStatename.replaceFirst(";.*$", "");
@@ -495,11 +520,12 @@ public class AtsHealthCheckOperation {
          String currStateNameAttr =
             atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, "");
          if (!currentStatename.equals(currStateNameAttr)) {
-            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStatename);
             results.log(artifact, "TestCurrentStateIsInWorkDef", String.format(
                "Info: Updated Current State Name attr to [%s] for %s", currentStatename, workItem.toStringWithId()));
+            if (changes != null) {
+               changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStatename);
+            }
          }
-         //         }  // ADD BACK IN BEFORE MERGE
          return true;
       }
    }
