@@ -187,16 +187,23 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
             if (resultAtsArts.size() == 1) {
                artifact = resultAtsArts.iterator().next();
             } else {
-               ListDialog ld = new ListDialog(Displays.getActiveShell());
-               ld.setContentProvider(new ArrayContentProvider());
-               ld.setLabelProvider(new WorkflowLabelProvider());
-               ld.setTitle("Select Workflow");
-               ld.setMessage("Select Workflow");
-               ld.setInput(resultAtsArts);
-               if (ld.open() == 0) {
-                  artifact = AtsApiService.get().getQueryServiceIde().getArtifact(ld.getResult()[0]);
-               } else {
+               if (data.isOpenEach()) {
+                  for (Artifact art : resultAtsArts) {
+                     AtsEditors.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+                  }
                   return;
+               } else {
+                  ListDialog ld = new ListDialog(Displays.getActiveShell());
+                  ld.setContentProvider(new ArrayContentProvider());
+                  ld.setLabelProvider(new WorkflowLabelProvider());
+                  ld.setTitle("Select Workflow");
+                  ld.setMessage("Select Workflow");
+                  ld.setInput(resultAtsArts);
+                  if (ld.open() == 0) {
+                     artifact = AtsApiService.get().getQueryServiceIde().getArtifact(ld.getResult()[0]);
+                  } else {
+                     return;
+                  }
                }
             }
             if (artifact.isOfType(AtsArtifactTypes.Action)) {
@@ -231,8 +238,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       // This does id search
       List<String> validIds = data.getIds();
       if (!validIds.isEmpty()) {
-         artifacts.addAll(
-            Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromIds(validIds)));
+         artifacts.addAll(Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromIds(validIds)));
       }
 
       for (Artifact art : artifacts) {

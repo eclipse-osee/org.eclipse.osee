@@ -17,6 +17,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchOperation;
@@ -54,24 +55,6 @@ public class OpenWorkflowByIdAction extends Action {
    }
 
    @Override
-   public void run() {
-      MultipleIdSearchData data = new MultipleIdSearchData(getText(), AtsEditor.WorkflowEditor);
-      if (Strings.isValid(overrideId)) {
-         data.setEnteredIds(overrideId);
-      }
-      MultipleIdSearchOperation operation = new MultipleIdSearchOperation(data);
-      if (pend) {
-         try {
-            Operations.executeWorkAndCheckStatus(operation);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      } else {
-         Operations.executeAsJob(operation, true);
-      }
-   }
-
-   @Override
    public void runWithEvent(Event event) {
       MultipleIdSearchData data = null;
       // Use clipboard value if CTRL is down on click
@@ -81,6 +64,9 @@ public class OpenWorkflowByIdAction extends Action {
          if (Strings.isValid(str)) {
             data = new MultipleIdSearchData(getText(), AtsEditor.WorkflowEditor);
             data.setEnteredIds(str);
+            data.setIncludeArtIds(true);
+            data.setBranch(AtsApiService.get().getAtsBranch());
+            data.setOpenEach(true);
          }
       }
       // Else, popup entry dialog

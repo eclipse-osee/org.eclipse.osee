@@ -17,6 +17,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditor;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchOperation;
@@ -59,6 +60,8 @@ public class OpenWorldByIdAction extends Action {
          if (Strings.isValid(clipboardStr)) {
             data = new MultipleIdSearchData(getText(), AtsEditor.WorldEditor);
             data.setEnteredIds(clipboardStr);
+            data.setIncludeArtIds(true);
+            data.setBranch(AtsApiService.get().getAtsBranch());
          }
       }
       // Else, popup entry dialog
