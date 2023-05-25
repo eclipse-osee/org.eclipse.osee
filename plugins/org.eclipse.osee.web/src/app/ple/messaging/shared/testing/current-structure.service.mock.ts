@@ -82,10 +82,6 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	addExpandedRow: {} as structure,
 	removeExpandedRow: {} as structure,
 	done: new Subject(),
-	applic: of([
-		{ id: '1', name: 'Base' },
-		{ id: '2', name: 'Second' },
-	]),
 	types: of(platformTypesMock),
 	get preferences() {
 		return of(MimPreferencesMock);

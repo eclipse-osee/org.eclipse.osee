@@ -118,14 +118,14 @@ public class MimApiImpl implements MimApi {
 
       this.interfaceSubMessageApi = new InterfaceSubMessageApiImpl(orcsApi);
       this.interfaceNodeViewApi = new InterfaceNodeViewApiImpl(orcsApi);
-      this.interfaceMessageApi =
-         new InterfaceMessageApiImpl(orcsApi, this.getInterfaceNodeViewApi(), this.getInterfaceSubMessageApi());
+      this.interfaceConnectionViewApi = new InterfaceConnectionViewApiImpl(orcsApi);
+      this.interfaceMessageApi = new InterfaceMessageApiImpl(orcsApi, this.getInterfaceNodeViewApi(),
+         this.getInterfaceSubMessageApi(), this.getInterfaceConnectionViewApi());
       this.interfacePlatformApi = new InterfacePlatformTypeApiImpl(orcsApi);
       this.interfaceElementApi = new InterfaceElementApiImpl(orcsApi, this.interfacePlatformApi);
       this.interfaceElementArrayApi = new InterfaceElementArrayApiImpl(orcsApi);
-      this.interfaceStructureApi = new InterfaceStructureApiImpl(orcsApi, this.getInterfacePlatformTypeApi(),
-         this.getInterfaceElementApi(), this.interfaceMessageApi);
-      this.interfaceConnectionViewApi = new InterfaceConnectionViewApiImpl(orcsApi);
+      this.interfaceStructureApi = new InterfaceStructureApiImpl(orcsApi, this.getInterfaceConnectionViewApi(),
+         this.getInterfacePlatformTypeApi(), this.getInterfaceElementApi(), this.interfaceMessageApi);
       this.interfaceEnumerationApi = new InterfaceEnumerationApiImpl(orcsApi);
       this.interfaceEnumerationSetApi = new InterfaceEnumerationSetApiImpl(orcsApi, interfaceEnumerationApi);
       this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi, interfaceNodeViewApi,

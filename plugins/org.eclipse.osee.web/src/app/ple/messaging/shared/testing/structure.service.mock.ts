@@ -29,7 +29,8 @@ export const structureServiceMock: Partial<StructuresService> = {
 		subMessageId: string,
 		connectionId: string,
 		viewId: string,
-		pageNum: number
+		pageNum: number,
+		pageSize: number
 	) {
 		return of(structuresMock3);
 	},
@@ -88,7 +89,10 @@ export const structureServiceMock3: Partial<StructuresService> & {
 		branchId: string,
 		messageId: string,
 		subMessageId: string,
-		connectionId: string
+		connectionId: string,
+		viewId: string,
+		pageNum: number,
+		pageSize: number
 	) {
 		return of(structuresMock3);
 	},
@@ -147,7 +151,10 @@ export const structureServiceRandomMock: Partial<StructuresService> & {
 		branchId: string,
 		messageId: string,
 		subMessageId: string,
-		connectionId: string
+		connectionId: string,
+		viewId: string,
+		pageNum: number,
+		pageSize: number
 	) {
 		this.i++;
 		return this.i % 2 ? of(structuresMock3) : of(structuresMock2);

@@ -33,10 +33,7 @@ import { StructuresService } from '../http/structures.service';
 import { ElementService } from '../http/element.service';
 import { TypesUIService } from './types-ui.service';
 import { PreferencesUIService } from './preferences-ui.service';
-import {
-	ApplicabilityListUIService,
-	CurrentBranchInfoService,
-} from '@osee/shared/services';
+import { CurrentBranchInfoService } from '@osee/shared/services';
 import { SideNavService } from '@osee/shared/services/layout';
 import { EnumsService } from '../http/enums.service';
 import { QueryService } from '../http/query.service';
@@ -68,7 +65,6 @@ export abstract class CurrentStructureService {
 		protected messages: MessagesService,
 		protected elements: ElementService,
 		protected typeService: TypesUIService,
-		protected applicabilityService: ApplicabilityListUIService,
 		protected preferenceService: PreferencesUIService,
 		protected branchInfoService: CurrentBranchInfoService,
 		protected sideNavService: SideNavService,
@@ -381,10 +377,6 @@ export abstract class CurrentStructureService {
 
 	getFilteredTypesCount(filter: string) {
 		return this.typeService.getFilteredTypesCount(filter);
-	}
-
-	get applic() {
-		return this.applicabilityService.applic;
 	}
 
 	get differences() {

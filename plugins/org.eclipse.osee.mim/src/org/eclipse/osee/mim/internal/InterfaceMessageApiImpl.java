@@ -24,11 +24,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.ArtifactAccessor;
+import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
+import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
@@ -40,14 +43,16 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    private ArtifactAccessor<InterfaceMessageToken> accessor;
    private final InterfaceNodeViewApi nodeApi;
+   private final InterfaceConnectionViewApi connectionApi;
    private final InterfaceSubMessageApi subMessageApi;
    private final List<RelationTypeSide> relations;
    private final List<RelationTypeSide> fullRelations;
    private final List<RelationTypeSide> affectedRelations;
 
-   InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi, InterfaceSubMessageApi subMessageApi) {
+   InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi, InterfaceSubMessageApi subMessageApi, InterfaceConnectionViewApi connectionApi) {
       this.nodeApi = nodeApi;
       this.subMessageApi = subMessageApi;
+      this.connectionApi = connectionApi;
       this.setAccessor(new InterfaceMessageAccessor(orcsApi));
       this.relations = createRelationTypeSideList();
       this.fullRelations = createFullRelationTypeSideList();
@@ -131,7 +136,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId, ArtifactId viewId) {
+   public InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId,
+      ArtifactId viewId) {
       try {
          return this.setUpMessage(branch,
             this.getAccessor().getByRelation(branch, messageId, CoreRelationTypes.InterfaceConnectionContent_Connection,
@@ -216,23 +222,27 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum, long pageSize) {
+   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, long pageNum,
+      long pageSize) {
       return this.getAllForConnection(branch, connectionId, ArtifactId.SENTINEL, pageNum, pageSize,
          AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<InterfaceMessageToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceMessageToken> query(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceMessageToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceMessageToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceMessageToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<InterfaceMessageToken> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+      long pageNum, long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query, this.getFollowRelationDetails(), isExact, pageNum,
             pageSize).stream().map(m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
@@ -249,12 +259,14 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId,
+      AttributeTypeId orderByAttribute) {
       return this.getAllForConnection(branch, connectionId, ArtifactId.SENTINEL, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceMessageToken> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       try {
          return this.getAccessor().getAll(branch, this.getFollowRelationDetails(), pageNum, pageSize,
             orderByAttribute).stream().map(m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
@@ -266,16 +278,16 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceMessageToken> getAllForConnection(BranchId branch, ArtifactId connectionId,
+      ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
+         InterfaceConnection connection = this.connectionApi.get(branch, connectionId);
          List<InterfaceMessageToken> messages =
             this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
                connectionId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute, viewId).stream().map(
                   m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
          messages.stream().forEach(m -> {
-            if (m.getInterfaceMessageType().equals("Operational")) {
-               ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(0, getMessageHeader(m));
-            }
+            this.addHeader(m, connection);
          });
          return messages;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -286,7 +298,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter) {
+   public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId,
+      String filter) {
       return this.getAllForConnectionAndFilter(branch, connectionId, filter, ArtifactId.SENTINEL, 0L, 0L,
          AttributeTypeId.SENTINEL);
    }
@@ -322,25 +335,45 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId,
+      String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       List<InterfaceMessageToken> messages = new LinkedList<InterfaceMessageToken>();
       List<AttributeTypeId> messageAttributes = createMessageAttributes();
       List<AttributeTypeId> subMessageAttributes = createSubMessageAttributes();
       try {
+         InterfaceConnection connection = this.connectionApi.get(branch, connectionId);
          messages = this.getAccessor().getAllByRelationAndFilter(branch,
             CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, filter, messageAttributes,
             this.fullRelations, pageNum, pageSize, orderByAttribute, subMessageAttributes, viewId).stream().map(
                m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
 
          messages.stream().forEach(m -> {
-            if (m.getInterfaceMessageType().equals("Operational")) {
-               ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(0, getMessageHeader(m));
-            }
+            this.addHeader(m, connection);
          });
          return messages;
       } catch (Exception ex) {
          System.out.println(ex);
          return messages;
+      }
+   }
+
+   private void addHeader(InterfaceMessageToken m, InterfaceConnection connection) {
+      if (m.getInterfaceMessageType().equals(
+         connection.getTransportType().getMessageGenerationType()) && connection.getTransportType().isMessageGeneration()) {
+         String position = connection.getTransportType().getMessageGenerationPosition();
+         if (position.equals("LAST")) {
+            ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(getMessageHeader(m));
+            return;
+         }
+         if (position.equals("") || Strings.isNotNumeric(position)) {
+            ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(0, getMessageHeader(m));
+            return;
+         }
+         if (Long.valueOf(position) > m.getSubMessages().size()) {
+            ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(m.getSubMessages().size(), getMessageHeader(m));
+            return;
+         }
+         ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(Integer.valueOf(position), getMessageHeader(m));
       }
    }
 }

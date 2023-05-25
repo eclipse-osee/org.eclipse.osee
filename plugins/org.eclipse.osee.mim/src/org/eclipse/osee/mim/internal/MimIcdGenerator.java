@@ -64,6 +64,7 @@ public class MimIcdGenerator {
 
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
+   private final MimApi mimApi;
    private final InterfaceMessageApi interfaceMessageApi;
    private final InterfaceStructureApi interfaceStructureApi;
    private final InterfaceDifferenceReportApi interfaceDifferenceReportApi;
@@ -77,6 +78,7 @@ public class MimIcdGenerator {
    public MimIcdGenerator(MimApi mimApi) {
       this.orcsApi = mimApi.getOrcsApi();
       this.atsApi = mimApi.getAtsApi();
+      this.mimApi = mimApi;
       this.structuresList = new HashMap<>();
       this.headersList = new HashMap<>();
       this.messageHeaders = new HashMap<>();
@@ -138,8 +140,8 @@ public class MimIcdGenerator {
                messageHeaders.put(ArtifactId.valueOf(message.getId()), header);
                smsgTokens.add(0, header);
 
-               InterfaceStructureToken headerStruct =
-                  interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId()));
+               InterfaceStructureToken headerStruct = interfaceStructureApi.getMessageHeaderStructure(branch,
+                  ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId()));
                messageHeaderStructures.put(header.getName(), headerStruct);
             }
             subMessages.addAll(messageSubMessages);
@@ -147,8 +149,8 @@ public class MimIcdGenerator {
             for (InterfaceSubMessageToken smsg : smsgTokens) {
                List<InterfaceStructureToken> structs = new LinkedList<>();
                if (smsg.getId() == 0) {
-                  structs.add(0,
-                     interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(message.getId())));
+                  structs.add(0, interfaceStructureApi.getMessageHeaderStructure(branch,
+                     ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId())));
                } else {
                   structs.addAll(smsg.getArtifactReadable().getRelated(
                      CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(

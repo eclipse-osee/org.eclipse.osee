@@ -28,12 +28,14 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
 public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoint {
 
    private final BranchId branch;
+   private final ArtifactId connectionId;
    private final ArtifactId messageId;
    private final ArtifactId subMessageId;
    private final InterfaceStructureApi interfaceStructureApi;
 
-   public InterfaceStructureEndpointImpl(BranchId branch, ArtifactId messageId, ArtifactId subMessageId, InterfaceStructureApi interfaceStructureApi) {
+   public InterfaceStructureEndpointImpl(BranchId branch, ArtifactId connectionId, ArtifactId messageId, ArtifactId subMessageId, InterfaceStructureApi interfaceStructureApi) {
       this.branch = branch;
+      this.connectionId = connectionId;
       this.messageId = messageId;
       this.subMessageId = subMessageId;
       this.interfaceStructureApi = interfaceStructureApi;
@@ -45,22 +47,23 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
       long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (subMessageId.getId() == 0) {
-         return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, messageId));
+         return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, connectionId, messageId));
       }
       if (Strings.isValid(filter)) {
-         return this.interfaceStructureApi.getAllRelatedAndFilter(branch, subMessageId, viewId, filter, pageNum,
-            pageSize, orderByAttributeTypeId);
+         return this.interfaceStructureApi.getAllRelatedAndFilter(branch, connectionId, subMessageId, viewId, filter,
+            pageNum, pageSize, orderByAttributeTypeId);
       }
-      return this.interfaceStructureApi.getAllRelated(branch, subMessageId, viewId, pageNum, pageSize,
+      return this.interfaceStructureApi.getAllRelated(branch, connectionId, subMessageId, viewId, pageNum, pageSize,
          orderByAttributeTypeId);
    }
 
    @Override
    public InterfaceStructureToken getStructure(ArtifactId structureId, String filter, ArtifactId viewId) {
       if (Strings.isValid(filter)) {
-         return this.interfaceStructureApi.getRelatedAndFilter(branch, subMessageId, structureId, filter, viewId);
+         return this.interfaceStructureApi.getRelatedAndFilter(branch, connectionId, subMessageId, structureId, filter,
+            viewId);
       }
-      return this.interfaceStructureApi.getRelated(branch, subMessageId, structureId, viewId);
+      return this.interfaceStructureApi.getRelated(branch, connectionId, subMessageId, structureId, viewId);
    }
 
 }

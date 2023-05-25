@@ -380,7 +380,17 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ByteAlignValidationSize)
       .exactlyOne(MessageGeneration)
       .zeroOrOne(MessageGenerationType)
-      .any(MessageGenerationPosition));
+      .any(MessageGenerationPosition)
+      .zeroOrOne(MinimumSubscriberMultiplicity)
+      .zeroOrOne(MaximumSubscriberMultiplicity)
+      .zeroOrOne(MinimumPublisherMultiplicity)
+      .zeroOrOne(MaximumPublisherMultiplicity)
+      .zeroOrOne(InterfaceLevelsToUse)
+      .zeroOrOne(AvailableMessageHeaders)
+      .zeroOrOne(AvailableSubmessageHeaders)
+      .zeroOrOne(AvailableStructureHeaders)
+      .zeroOrOne(AvailableElementHeaders)
+      .zeroOrOne(DashedPresentation));
 
    ArtifactTypeToken IndirectSoftwareRequirementMsWord = osee.add(osee.artifactType(25L, "Indirect Software Requirement - MS Word", false, MsWordTemplate, AbstractSoftwareRequirement));
 
