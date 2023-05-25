@@ -32,6 +32,7 @@ public class MultipleIdSearchData implements IWorldEditorConsumer {
    private String name;
    private WorldEditor worldEditor;
    private final AtsEditor atsEditor;
+   private boolean openEach = false;
 
    public MultipleIdSearchData(String name, AtsEditor atsEditor) {
       this.name = name;
@@ -107,6 +108,14 @@ public class MultipleIdSearchData implements IWorldEditorConsumer {
 
    public AtsEditor getAtsEditor() {
       return atsEditor;
+   }
+
+   public boolean isOpenEach() {
+      return openEach;
+   }
+
+   public void setOpenEach(boolean openEach) {
+      this.openEach = openEach;
    }
 
 }
