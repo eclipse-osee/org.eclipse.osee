@@ -52,12 +52,13 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_E2_BY_TUPLE_TYPE =
       "select distinct e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
 
-   private static final String SELECT_COUNT_E2_BY_TUPLE_TYPE = "select count(*) from (select distinct e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key) t1";
+   private static final String SELECT_COUNT_E2_BY_TUPLE_TYPE =
+      "select count(*) from (select distinct e2, value from osee_txs txs, osee_tuple2 tp2, osee_key_value where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key) t1";
    private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED =
       "select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "ORDER BY osee_key_value.value";
 
    private static final String SELECT_E2_BY_TUPLE_TYPE_PAGINATED =
-      "select * from (select distinct e2, VALUE, row_number() OVER () rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "\n" + ") as applic where rn between ? and ?";
+      "select * from (select distinct e2, VALUE, row_number() OVER () rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "\n" + ") applic where rn between ? and ?";
 
    private static final String SELECT_E2_BY_TUPLE_TYPE_FILTERED =
       "select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n";
@@ -65,21 +66,20 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_COUNT_E2_BY_TUPLE_TYPE_FILTERED =
       "select count(*) from (select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%'))t1  \n";
 
-   
    private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED_FILTERED =
       "select distinct e2, VALUE from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + "ORDER BY osee_key_value.value";
 
    private static final String SELECT_E2_BY_TUPLE_TYPE_PAGINATED_FILTERED =
-      "select * from (select distinct e2, VALUE, row_number() OVER () rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + ") as applic where rn between ? and ?";
+      "select * from (select distinct e2, VALUE, row_number() OVER () rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + ") applic where rn between ? and ?";
 
    /**
     * Note: the following 2 queries are not supported on HSQL due to pagination + ordering not supported on HSQL
     */
    private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED_PAGINATED =
-      "select * from (select distinct e2, VALUE, row_number() OVER (ORDER BY osee_key_value.value) rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "ORDER BY osee_key_value.value) as applic where rn between ? and ?";
+      "select * from (select distinct e2, VALUE, row_number() OVER (ORDER BY osee_key_value.value) rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "ORDER BY osee_key_value.value) applic where rn between ? and ?";
 
    private static final String SELECT_E2_BY_TUPLE_TYPE_ORDERED_PAGINATED_FILTERED =
-      "select * from (select distinct e2, VALUE, row_number() OVER (ORDER BY osee_key_value.value) rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + "ORDER BY osee_key_value.value) as applic where rn between ? and ?";
+      "select * from (select distinct e2, VALUE, row_number() OVER (ORDER BY osee_key_value.value) rn from osee_txs txs, osee_tuple2 tp2, osee_key_value where \n" + "tuple_type = ? and \n" + "tp2.gamma_id = txs.gamma_id and \n" + "branch_id = ? and tx_current = 1 \n" + "and e2 = KEY \n" + "AND \n" + "lower(osee_key_value.value) LIKE lower('%?%')  \n" + "ORDER BY osee_key_value.value) applic where rn between ? and ?";
 
    private static final String SELECT_E2_BY_TUPLE_TYPE_RAW =
       "select distinct e2 from osee_txs txs, osee_tuple2 tp2 where tuple_type = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e1 = ?";
@@ -164,12 +164,14 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
-   public <E1, E2> void getTuple2NamedId(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1, BiConsumer<Long, String> consumer) {
+   public <E1, E2> void getTuple2NamedId(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1,
+      BiConsumer<Long, String> consumer) {
       runQuery(consumer, SELECT_E2_FROM_E1, "e2", tupleType, e1, branchId);
    }
 
    @Override
-   public <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, E1 e1, BranchId branch, BiConsumer<Long, String> consumer) {
+   public <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, E1 e1, BranchId branch,
+      BiConsumer<Long, String> consumer) {
       runQuery(consumer, SELECT_KEY_VALUE_FROM_BRANCH_VIEW, "e2", tupleType, e1, branch);
    }
 
@@ -179,9 +181,10 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
-   public <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, boolean orderByName, String filter, Long pageNum, Long pageSize, BiConsumer<Long, String> consumer) {
+   public <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, boolean orderByName,
+      String filter, Long pageNum, Long pageSize, BiConsumer<Long, String> consumer) {
       if (jdbcClient.getDbType().isPaginationOrderingSupported()) {
-         if (!filter.equals("") && pageNum > 0 && pageSize > 0 && !orderByName) {
+         if (!(filter == null || filter.equals("")) && pageNum > 0 && pageSize > 0 && !orderByName) {
             Long tempLowerBound = (pageNum - 1) * pageSize;
             Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
             Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
@@ -192,10 +195,10 @@ public class TupleQueryImpl implements TupleQuery {
             Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
             Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
             runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_PAGINATED, "e2", tupleType, branchId, lowerBound, upperBound);
-         } else if (!filter.equals("") && !orderByName) {
+         } else if (!(filter == null || filter.equals("")) && !orderByName) {
             runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_FILTERED, filter), "e2",
                tupleType, branchId);
-         } else if (!filter.equals("") && pageNum > 0 && pageSize > 0 && orderByName) {
+         } else if (!(filter == null || filter.equals("")) && pageNum > 0 && pageSize > 0 && orderByName) {
             Long tempLowerBound = (pageNum - 1) * pageSize;
             Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
             Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
@@ -208,7 +211,7 @@ public class TupleQueryImpl implements TupleQuery {
             Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
             runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_ORDERED_PAGINATED, "e2", tupleType, branchId, lowerBound,
                upperBound);
-         } else if (!filter.equals("") && orderByName) {
+         } else if (!(filter == null || filter.equals("")) && orderByName) {
             runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_ORDERED_FILTERED, filter),
                "e2", tupleType, branchId);
          } else if (orderByName) {
@@ -217,7 +220,7 @@ public class TupleQueryImpl implements TupleQuery {
             runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE, "e2", tupleType, branchId);
          }
       } else {
-         if (!filter.equals("") && pageNum > 0 && pageSize > 0 && !orderByName) {
+         if (!(filter == null || filter.equals("")) && pageNum > 0 && pageSize > 0 && !orderByName) {
             Long tempLowerBound = (pageNum - 1) * pageSize;
             Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
             Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
@@ -228,26 +231,30 @@ public class TupleQueryImpl implements TupleQuery {
             Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
             Long upperBound = tempLowerBound == 0 ? lowerBound + pageSize : lowerBound + pageSize - 1L;
             runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_PAGINATED, "e2", tupleType, branchId, lowerBound, upperBound);
-         } else if (!filter.equals("") && !orderByName) {
-            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_FILTERED, "e2", tupleType, branchId, filter);
-         } else if (!filter.equals("") && orderByName) {
-            runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE_ORDERED_FILTERED, "e2", tupleType, branchId, filter);
+         } else if (!(filter == null || filter.equals("")) && !orderByName) {
+            runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_FILTERED, filter), "e2",
+               tupleType, branchId);
+         } else if (!(filter == null || filter.equals("")) && orderByName) {
+            runQuery(consumer, this.getTuple2UniqueE2PairFiltered(SELECT_E2_BY_TUPLE_TYPE_ORDERED_FILTERED, filter),
+               "e2", tupleType, branchId);
          } else {
             runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE, "e2", tupleType, branchId);
          }
       }
    }
-   
+
    @Override
-   public <E1, E2> Long getTuple2UniqueE2PairCount(Tuple2Type<E1, E2> tupleType, BranchId branchId,  String filter) {
-      if(!filter.equals("")) {
-         return Long.valueOf(jdbcClient.fetch(0L, this.getTuple2UniqueE2PairFiltered(SELECT_COUNT_E2_BY_TUPLE_TYPE_FILTERED,filter), tupleType, branchId));
+   public <E1, E2> Long getTuple2UniqueE2PairCount(Tuple2Type<E1, E2> tupleType, BranchId branchId, String filter) {
+      if (!(filter == null || filter.equals(""))) {
+         return Long.valueOf(jdbcClient.fetch(0L,
+            this.getTuple2UniqueE2PairFiltered(SELECT_COUNT_E2_BY_TUPLE_TYPE_FILTERED, filter), tupleType, branchId));
       }
-      return Long.valueOf(jdbcClient.fetch(0L, SELECT_COUNT_E2_BY_TUPLE_TYPE, tupleType,branchId));
+      return Long.valueOf(jdbcClient.fetch(0L, SELECT_COUNT_E2_BY_TUPLE_TYPE, tupleType, branchId));
    }
 
    @Override
-   public <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, BiConsumer<Long, String> consumer) {
+   public <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId,
+      BiConsumer<Long, String> consumer) {
       runQuery(consumer, SELECT_E2_BY_TUPLE_TYPE, "e2", tupleType, branchId);
    }
 
@@ -258,36 +265,42 @@ public class TupleQueryImpl implements TupleQuery {
 
    //////  Tuple3 //////
    @Override
-   public <E1, E2, E3> void getTuple3E1ValueFromType(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, BiConsumer<E1, String> consumer) {
+   public <E1, E2, E3> void getTuple3E1ValueFromType(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId,
+      BiConsumer<E1, String> consumer) {
       jdbcClient.runQuery(stmt -> consumer.accept(e1FromLong(tupleType, stmt), stmt.getString("value")),
          SELECT_TUPLE3_E1_VAL_BY_TYPE, tupleType, branchId);
    }
 
    @Override
-   public <E1, E2, E3> void getTuple3E3ValueFromType(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, BiConsumer<E3, String> consumer) {
+   public <E1, E2, E3> void getTuple3E3ValueFromType(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId,
+      BiConsumer<E3, String> consumer) {
       jdbcClient.runQuery(stmt -> consumer.accept(e3FromLong(tupleType, stmt), stmt.getString("value")),
          SELECT_TUPLE3_E3_VAL_BY_TYPE, tupleType, branchId);
    }
 
    @Override
-   public <E1, E2, E3> void getTuple3E3ValueFromE1(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, Long e1, BiConsumer<E3, String> consumer) {
+   public <E1, E2, E3> void getTuple3E3ValueFromE1(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, Long e1,
+      BiConsumer<E3, String> consumer) {
       jdbcClient.runQuery(stmt -> consumer.accept(e3FromLong(tupleType, stmt), stmt.getString("value")),
          SELECT_TUPLE3_E3_VAL_FROM_E1, tupleType, e1, branchId);
    }
 
    @Override
-   public <E1, E2, E3> void getTuple3GammaFromE1(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, Long e1, Consumer<GammaId> consumer) {
+   public <E1, E2, E3> void getTuple3GammaFromE1(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, Long e1,
+      Consumer<GammaId> consumer) {
       runQuery(consumer, SELECT_TUPLE3_GAMMA_FROM_E1, tupleType, e1, branchId);
    }
 
    @Override
-   public <E1, E2, E3> void getTuple3E2FromE3(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, E3 e3, Consumer<E2> consumer) {
+   public <E1, E2, E3> void getTuple3E2FromE3(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, E3 e3,
+      Consumer<E2> consumer) {
       jdbcClient.runQuery(stmt -> consumer.accept(e2FromLong(tupleType, stmt)), SELECT_TUPLE3_E2_FROM_E3, tupleType, e3,
          branchId);
    }
 
    @Override
-   public <E1, E2> void getTuple2E1E2FromType(Tuple2Type<E1, E2> tupleType, BranchId branchId, BiConsumer<Long, Long> consumer) {
+   public <E1, E2> void getTuple2E1E2FromType(Tuple2Type<E1, E2> tupleType, BranchId branchId,
+      BiConsumer<Long, Long> consumer) {
       runQuery(consumer, SELECT_TUPLE2_BY_TUPLE_TYPE, "e1", "e2", tupleType, branchId);
    }
 
@@ -302,7 +315,8 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
-   public <E1, E2> void getTuple2GammaFromE1E2(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1, E2 e2, Consumer<GammaId> consumer) {
+   public <E1, E2> void getTuple2GammaFromE1E2(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1, E2 e2,
+      Consumer<GammaId> consumer) {
       runQuery(consumer, SELECT_TUPLE2_GAMMA_FROM_E1_E2, tupleType, toLong(e1), toLong(e2), branchId);
    }
 
@@ -319,19 +333,22 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
-   public <E1, E2, E3, E4> void getTuple4GammaFromE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1, E2 e2, Consumer<GammaId> consumer) {
+   public <E1, E2, E3, E4> void getTuple4GammaFromE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1,
+      E2 e2, Consumer<GammaId> consumer) {
 
       runQuery(consumer, SELECT_TUPLE4_GAMMA_FROM_E1_E2, tupleType, toLong(e1), toLong(e2), branchId);
    }
 
    @Override
-   public <E1, E2, E3, E4> void getTuple4E3E4FromE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1, E2 e2, BiConsumer<E3, E4> consumer) {
+   public <E1, E2, E3, E4> void getTuple4E3E4FromE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1,
+      E2 e2, BiConsumer<E3, E4> consumer) {
       jdbcClient.runQuery(stmt -> consumer.accept(e3FromLong(tupleType, stmt), e4FromLong(tupleType, stmt)),
          SELECT_TUPLE4_E3_E4_FROM_E1_E2, tupleType, toLong(e1), toLong(e2), branchId);
    }
 
    @Override
-   public <E1, E2, E3, E4> void getTuple4E2E3E4FromE1(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1, TriConsumer<E2, E3, E4> consumer) {
+   public <E1, E2, E3, E4> void getTuple4E2E3E4FromE1(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1,
+      TriConsumer<E2, E3, E4> consumer) {
       jdbcClient.runQuery(
          stmt -> consumer.accept(e2FromLong(tupleType, stmt), e3FromLong(tupleType, stmt), e4FromLong(tupleType, stmt)),
          SELECT_TUPLE4_E2_E3_E4_FROM_E1, tupleType, toLong(e1), branchId);
@@ -403,7 +420,8 @@ public class TupleQueryImpl implements TupleQuery {
       jdbcClient.runQuery(stmt -> consumer.accept(stmt.getLong(column), stmt.getString("value")), query, data);
    }
 
-   private void runQuery(BiConsumer<Long, Long> consumer, String query, String column1, String column2, Object... data) {
+   private void runQuery(BiConsumer<Long, Long> consumer, String query, String column1, String column2,
+      Object... data) {
       jdbcClient.runQuery(stmt -> consumer.accept(stmt.getLong(column1), stmt.getLong(column2)), query, data);
    }
 
