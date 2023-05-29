@@ -113,7 +113,7 @@ public abstract class AbstractClientService {
    }
 
    protected void checkTransportSecurity() {
-      if (!mc.getSecurityContext().isSecure()) {
+      if (mc.getSecurityContext() == null || !mc.getSecurityContext().isSecure()) {
          logger.warn("Unsecure HTTP, Transport Layer Security is recommended");
          if (blockUnsecureRequests) {
             throw ExceptionUtils.toBadRequestException(null, null);
@@ -127,7 +127,8 @@ public abstract class AbstractClientService {
       }
    }
 
-   protected void addAuthenticityTokenToSession(ClientRegistrationData data, MultivaluedMap<String, String> params, UserSubject subject) {
+   protected void addAuthenticityTokenToSession(ClientRegistrationData data, MultivaluedMap<String, String> params,
+      UserSubject subject) {
       String sessionToken;
       if (sessionAuthenticityTokenProvider != null) {
          sessionToken = sessionAuthenticityTokenProvider.createSessionToken(getMessageContext(), params, subject, null);

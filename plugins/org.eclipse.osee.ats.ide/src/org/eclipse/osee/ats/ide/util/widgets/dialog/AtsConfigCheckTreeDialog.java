@@ -62,6 +62,7 @@ public class AtsConfigCheckTreeDialog<T> extends FilteredCheckboxTreeDialog<T> {
 
    @Override
    protected Result isComplete() {
+      super.isComplete();
       Result result = Result.TrueResult;
       try {
          if (requiredSelection && getChecked().isEmpty()) {

@@ -125,8 +125,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       Address previousAddress = null;
 
       for (Address address : addresses) {
-         if (address.hasSameGamma(previousAddress) && address.hasSameModType(
-            previousAddress) && previousAddress != null && address.hasSameApplicability(previousAddress)) {
+         if (previousAddress != null && address.hasSameGamma(previousAddress) && address.hasSameModType(
+            previousAddress) && address.hasSameApplicability(previousAddress)) {
             previousAddress.setPurge(true);
          }
          previousAddress = address;
@@ -147,8 +147,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       for (Address address : addresses) {
          if (address.isSameTransaction(previousAddress)) {
-            if (address.hasSameModType(
-               previousAddress) || !address.getModType().isDeleted() && previousAddress != null && previousAddress.getModType().isEdited()) {
+            if (previousAddress != null && !address.getModType().isDeleted() && previousAddress.getModType().isEdited() || address.hasSameModType(
+               previousAddress)) {
                address.setPurge(true);
             } else {
                logIssue("multiple versions in one transaction - unknown case", address);

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +90,8 @@ public final class OAuthUtil {
       return builder.toString();
    }
 
-   public static URI computeRedirectUri(URI redirectURI, boolean ignoreBasePath, Message m, ContainerRequestContext context) {
+   public static URI computeRedirectUri(URI redirectURI, boolean ignoreBasePath, Message m,
+      ContainerRequestContext context) {
       URI finalRedirectURI = null;
       if (redirectURI != null) {
          if (!redirectURI.isAbsolute()) {
@@ -133,7 +135,8 @@ public final class OAuthUtil {
       return finalRedirectURI;
    }
 
-   public static Response newAuthorizationRequiredResponse(Exception ex, URI redirectURI, boolean ignoreBasePath, String realmName, Message m, ContainerRequestContext context) {
+   public static Response newAuthorizationRequiredResponse(Exception ex, URI redirectURI, boolean ignoreBasePath,
+      String realmName, Message m, ContainerRequestContext context) {
       HttpHeaders headers = new HttpHeadersImpl(m);
       if (redirectURI != null && JaxRsUtils.isHtmlSupported(headers.getAcceptableMediaTypes())) {
          URI finalRedirectURI = computeRedirectUri(redirectURI, ignoreBasePath, m, context);
@@ -188,7 +191,7 @@ public final class OAuthUtil {
       } else {
          subject = clientSubject;
       }
-
+      Objects.requireNonNull(subject, "subject can not be null");
       return OAuthUtil.newSecurityContext(subject);
    }
 

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
+import java.util.Objects;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.util.AtsImage;
@@ -76,6 +77,7 @@ public class OpenWorkflowByIdAction extends Action {
             data.setEnteredIds(overrideId);
          }
       }
+      Objects.requireNonNull(data);
       MultipleIdSearchOperation operation = new MultipleIdSearchOperation(data);
       if (pend) {
          try {

@@ -55,6 +55,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -415,8 +416,7 @@ public final class Lib {
    /**
     * efficiently copy contents of inputStream into builder
     */
-   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, String charset,
-      StringBuilder builder) throws IOException {
+   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, String charset, StringBuilder builder) throws IOException {
       InputStreamReader reader = new InputStreamReader(inputStream, charset);
       try {
          char[] chars = new char[8000];
@@ -430,8 +430,7 @@ public final class Lib {
       }
    }
 
-   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, StringBuilder builder)
-      throws IOException {
+   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, StringBuilder builder) throws IOException {
       return inputStreamToStringBuilder(inputStream, "UTF-8", builder);
    }
 
@@ -540,6 +539,7 @@ public final class Lib {
       try {
          inputStream = new FileInputStream(file);
          int readBytes = inputStream.read(bytes);
+         readBytes = readBytes + 1;
       } finally {
          if (inputStream != null) {
             inputStream.close();
@@ -563,7 +563,6 @@ public final class Lib {
             System.gc(); // since the currently allocated buf might already be quite large
             buf = new char[size];
          }
-         inputReader.read(buf);
       } finally {
          Lib.close(inputReader);
       }
@@ -662,8 +661,7 @@ public final class Lib {
       return handleProcessNoWait(proc, output, errorWriter, reader, "err", "out");
    }
 
-   public static Thread[] handleProcessNoWait(Process proc, Writer outputWriter, Writer errorWriter, Reader reader,
-      String errName, String outName) {
+   public static Thread[] handleProcessNoWait(Process proc, Writer outputWriter, Writer errorWriter, Reader reader, String errName, String outName) {
       IOOutputThread errThread =
          new IOOutputThread(errorWriter, new BufferedReader(new InputStreamReader(proc.getErrorStream())));
       IOOutputThread outThread =
@@ -811,8 +809,7 @@ public final class Lib {
       }
    }
 
-   public static List<File> recursivelyListFilesAndDirectories(ArrayList<File> fileList, File rootPath,
-      Pattern filePathP, boolean includeDirectories) {
+   public static List<File> recursivelyListFilesAndDirectories(ArrayList<File> fileList, File rootPath, Pattern filePathP, boolean includeDirectories) {
       LinkedList<File> dirList = new LinkedList<>();
       dirList.add(rootPath);
 
@@ -1388,6 +1385,7 @@ public final class Lib {
             manifest = jf.getManifest();
          }
       }
+      Objects.requireNonNull(manifest, "manifest can not be null");
       return manifest.getMainAttributes().getValue("Implementation-Version");
    }
 
@@ -1507,8 +1505,7 @@ public final class Lib {
       }
    }
 
-   private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream,
-      boolean includeSubDirectories) throws IOException {
+   private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream, boolean includeSubDirectories) throws IOException {
       File[] children = source.listFiles();
       if (children != null) {
          for (File file : children) {
@@ -1523,8 +1520,7 @@ public final class Lib {
       }
    }
 
-   public static void compressDirectory(File directory, String zipTarget, boolean includeSubDirectories)
-      throws IOException, IllegalArgumentException {
+   public static void compressDirectory(File directory, String zipTarget, boolean includeSubDirectories) throws IOException, IllegalArgumentException {
       if (directory.isDirectory() != true) {
          throw new IllegalArgumentException(String.format("Error source is not a directory: [%s]", directory));
       }

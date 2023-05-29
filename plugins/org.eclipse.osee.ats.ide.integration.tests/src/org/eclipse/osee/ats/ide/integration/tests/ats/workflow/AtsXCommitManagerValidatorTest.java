@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
 import org.eclipse.osee.ats.ide.integration.tests.util.AtsMockitoTest;
@@ -61,7 +62,8 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
       WidgetResult result = validator.validateTransition(workItem, null, notXCommitManagerWidget, null, null, null);
       Assert.assertEquals(WidgetResult.Success, result);
 
-      result = validator.validateTransition(workItem, notArtifactValueProvider, widgetDef, null, null, atsApi);
+      result = validator.validateTransition(workItem, notArtifactValueProvider, widgetDef, null,
+         new StateDefinition("-1"), atsApi);
       Assert.assertEquals(WidgetResult.Success, result);
 
       when(provider.getObject()).thenReturn(task1);
