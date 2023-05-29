@@ -60,7 +60,9 @@ public class InternalClientSessionManager {
    }
 
    public boolean isSessionValid() {
-      return oseeSession != null;
+      synchronized (this) {
+         return oseeSession != null;
+      }
    }
 
    public OseeSessionGrant getDatabaseInfo() {
@@ -193,8 +195,10 @@ public class InternalClientSessionManager {
    }
 
    private void clearData() {
-      this.oseeSession = null;
-      this.oseeSessionGrant = null;
+      synchronized (this) {
+         this.oseeSession = null;
+         this.oseeSessionGrant = null;
+      }
    }
 
    private SessionEndpoint getSessionEndpoint() {

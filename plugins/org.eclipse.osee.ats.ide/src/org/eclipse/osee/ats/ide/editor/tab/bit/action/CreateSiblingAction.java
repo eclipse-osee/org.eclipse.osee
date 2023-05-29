@@ -88,7 +88,7 @@ public class CreateSiblingAction extends Action {
          IAtsProgram program = atsApi.getProgramService().getProgramById(progArt);
          List<IAtsActionableItem> validAis = new ArrayList<>();
          for (IAtsActionableItem ai : atsApi.getProgramService().getAis(program)) {
-            if (ai.getTags().contains(BitUtil.BIT_AI)) {
+            if (ai.getTags() != null && ai.getTags().contains(BitUtil.BIT_AI)) {
                validAis.add(ai);
             }
          }

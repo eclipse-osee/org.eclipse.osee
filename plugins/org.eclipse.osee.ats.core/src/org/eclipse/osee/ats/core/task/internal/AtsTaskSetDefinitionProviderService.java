@@ -36,15 +36,15 @@ public class AtsTaskSetDefinitionProviderService implements IAtsTaskSetDefinitio
    private static AtsTaskSetDefinitionProvider atsTaskSetDefProv;
 
    @Override
-   public void addTaskSetDefinitionProvider(IAtsTaskSetDefinitionProvider taskSetDefProvider) {
+   public synchronized void addTaskSetDefinitionProvider(IAtsTaskSetDefinitionProvider taskSetDefProvider) {
       AtsTaskSetDefinitionProviderService.taskSetDefProviders.add(taskSetDefProvider);
    }
 
    public synchronized void ensureLoaded() {
-      // Add default
-      if (!taskSetDefProviderProcessed.contains(atsTaskSetDefProv)) {
-         atsTaskSetDefProv = new AtsTaskSetDefinitionProvider();
-         taskSetDefProviders.add(atsTaskSetDefProv);
+      // Add default 
+         if (!taskSetDefProviderProcessed.contains(atsTaskSetDefProv)) {
+            atsTaskSetDefProv = new AtsTaskSetDefinitionProvider();
+            taskSetDefProviders.add(atsTaskSetDefProv);
       }
       // Add any not processed
       for (IAtsTaskSetDefinitionProvider workDefProvider : taskSetDefProviders) {

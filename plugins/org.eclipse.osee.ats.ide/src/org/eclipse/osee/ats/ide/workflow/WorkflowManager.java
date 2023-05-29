@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.workflow;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -55,7 +56,8 @@ public class WorkflowManager {
       return result;
    }
 
-   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) {
+   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas,
+      Collection<String> stateNames) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!stateNames.contains(awa.getCurrentStateName())) {
@@ -91,8 +93,7 @@ public class WorkflowManager {
          artifactsToReturn.addAll(awas);
       } else {
          for (Artifact awa : awas) {
-            if (awa instanceof IAtsWorkItem && ((IAtsWorkItem) awa).getCurrentStateName().equals(
-               selectedState)) {
+            if (awa instanceof IAtsWorkItem && ((IAtsWorkItem) awa).getCurrentStateName().equals(selectedState)) {
                artifactsToReturn.add(awa);
             }
          }
@@ -100,7 +101,8 @@ public class WorkflowManager {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> filterOutTypes(Collection<AbstractWorkflowArtifact> awas, Collection<Class<?>> classes) {
+   public static Collection<AbstractWorkflowArtifact> filterOutTypes(Collection<AbstractWorkflowArtifact> awas,
+      Collection<Class<?>> classes) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          boolean found = false;
@@ -116,7 +118,8 @@ public class WorkflowManager {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsTeamDefinition> teamDefs) {
+   public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(
+      Collection<? extends Artifact> artifacts, Collection<IAtsTeamDefinition> teamDefs) {
       List<AbstractWorkflowArtifact> returnawas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {
@@ -129,7 +132,8 @@ public class WorkflowManager {
       return returnawas;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsVersion> versionArts) {
+   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts,
+      Collection<IAtsVersion> versionArts) {
       List<AbstractWorkflowArtifact> returnawas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {
@@ -150,6 +154,7 @@ public class WorkflowManager {
    }
 
    public static IAtsStateManager getStateManager(Artifact artifact) {
+      Objects.requireNonNull(cast(artifact));
       return cast(artifact).getStateMgr();
    }
 

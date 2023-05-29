@@ -19,9 +19,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -150,11 +150,13 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
       load(name, arts, null, tableLoadOptions);
    }
 
-   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, final TableLoadOption... tableLoadOptions) {
+   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData,
+      final TableLoadOption... tableLoadOptions) {
       load(name, arts, customizeData, null, tableLoadOptions);
    }
 
-   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, final Artifact expandToArtifact, final TableLoadOption... tableLoadOptions) {
+   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData,
+      final Artifact expandToArtifact, final TableLoadOption... tableLoadOptions) {
 
       Set<TableLoadOption> loadOptions = Collections.asHashSet(tableLoadOptions);
       boolean forcePend = loadOptions.contains(TableLoadOption.ForcePend);
@@ -338,6 +340,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
 
    @Override
    public IWorldEditorProvider getWorldEditorProviderCopy() {
+      Objects.requireNonNull(iWorldEditor.getWorldEditorProvider());
       IWorldEditorProvider copyProvider = iWorldEditor.getWorldEditorProvider().copyProvider();
       return copyProvider;
    }
@@ -353,7 +356,8 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    }
 
    @Override
-   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
+   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered,
+      Collection<Artifact> sprintMemberReordered) {
       if (!goalMemberReordered.isEmpty()) {
          XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(GoalOrderColumn.COLUMN_ID);
          if (column != null && column.isShow() == true) {
@@ -456,7 +460,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          }
       }
    }
-   
+
    @Override
    public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer) {
       for (XViewerColumn col : worldXViewer.getColumns()) {

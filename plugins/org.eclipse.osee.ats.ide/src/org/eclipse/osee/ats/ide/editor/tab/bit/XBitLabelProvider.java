@@ -60,6 +60,7 @@ public class XBitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, int columnIndex) {
+      super.getColumnText(element, columnIndex);
       XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
       if (element instanceof BuildImpactData) {
          BuildImpactData bid = (BuildImpactData) element;

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -406,6 +407,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public StateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) {
+      Objects.requireNonNull(getWorkDefinition(workItem));
       return getWorkDefinition(workItem).getStateByName(stateName);
    }
 

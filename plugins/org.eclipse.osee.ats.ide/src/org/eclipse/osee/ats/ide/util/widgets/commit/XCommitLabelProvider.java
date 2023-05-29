@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.util.widgets.commit;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
@@ -128,7 +129,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          if (status == CommitStatus.Commit_Overridden) {
             CommitOverride override =
                AtsApiService.get().getBranchService().getCommitOverrideOps().getCommitOverride(teamWf, branch);
-
+            Objects.requireNonNull(override, "Override can not be null");
             String userName = AtsApiService.get().getUserService().getUserById(override.getUser()).getName();
             return String.format("%s by %s - Reason: [%s]", status.getDisplayName(), userName, override.getReason());
          }

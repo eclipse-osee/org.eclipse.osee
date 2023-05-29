@@ -71,7 +71,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
 
    @Override
    public List<WorkType> getWorkTypes() {
-      if (getTeamDefinition() != null) {
+      if (getTeamDefinition() != null && getTeamDefinition().getWorkTypes() != null) {
          return new ArrayList<>(getTeamDefinition().getWorkTypes());
       }
       return null;

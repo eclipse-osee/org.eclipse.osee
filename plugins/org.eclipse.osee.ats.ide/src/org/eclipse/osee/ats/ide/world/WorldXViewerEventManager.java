@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -91,11 +90,7 @@ public class WorldXViewerEventManager {
 
       @Override
       public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-         for (IWorldViewerEventHandler handler : handlers) {
-            if (handler.isDisposed()) {
-               handlers.remove(handler);
-            }
-         }
+         handlers.removeIf(handler -> handler.isDisposed());
          try {
             if (artifactEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
                Runnable runnable = createDisplayRunnable(artifactEvent, handlers);
@@ -108,11 +103,7 @@ public class WorldXViewerEventManager {
 
       @Override
       public void handleArtifactTopicEvent(final ArtifactTopicEvent artifactTopicEvent, Sender sender) {
-         for (IWorldViewerEventHandler handler : handlers) {
-            if (handler.isDisposed()) {
-               handlers.remove(handler);
-            }
-         }
+         handlers.removeIf(handler -> handler.isDisposed());
          try {
             if (artifactTopicEvent.isOnBranch(AtsApiService.get().getAtsBranch())) {
                Runnable runnable = createDisplayRunnable(artifactTopicEvent, handlers);
@@ -133,7 +124,8 @@ public class WorldXViewerEventManager {
          return AtsUtilClient.getAtsTopicObjectEventFilters();
       }
 
-      private Runnable createDisplayRunnable(ArtifactEvent artifactEvent, Collection<IWorldViewerEventHandler> handlers) {
+      private Runnable createDisplayRunnable(ArtifactEvent artifactEvent,
+         Collection<IWorldViewerEventHandler> handlers) {
          Collection<Artifact> modifiedArts =
             artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
          Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
@@ -169,7 +161,8 @@ public class WorldXViewerEventManager {
             goalMemberReordered, sprintMemberReordered, artifactEvent, null, handlers);
       }
 
-      private Runnable createDisplayRunnable(ArtifactTopicEvent artifactTopicEvent, Collection<IWorldViewerEventHandler> handlers) {
+      private Runnable createDisplayRunnable(ArtifactTopicEvent artifactTopicEvent,
+         Collection<IWorldViewerEventHandler> handlers) {
          Collection<Artifact> modifiedArts =
             artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
          Collection<Artifact> relModifiedArts = artifactTopicEvent.getRelCacheArtifacts();
@@ -306,9 +299,9 @@ public class WorldXViewerEventManager {
                      handler.relationsModifed(relModifiedArts, goalMemberReordered, sprintMemberReordered);
 
                      if (artifactEvent != null) {
-                    	 handler.handleColumnEvents(artifactEvent, handler.getWorldXViewer());
+                        handler.handleColumnEvents(artifactEvent, handler.getWorldXViewer());
                      } else {
-                    	 handler.handleColumnTopicEvents(artifactTopicEvent, handler.getWorldXViewer());
+                        handler.handleColumnTopicEvents(artifactTopicEvent, handler.getWorldXViewer());
                      }
                   }
                }

@@ -206,7 +206,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public List<String> getTransitionToStateNames(String id) {
       List<String> states = new LinkedList<>();
       IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
-      states.add(atsApi.getWorkItemService().getDefaultToState(teamWf).getName());
+      if (atsApi.getWorkItemService().getDefaultToState(teamWf) != null) {
+         states.add(atsApi.getWorkItemService().getDefaultToState(teamWf).getName());
+      }
       for (StateDefinition state : teamWf.getStateDefinition().getToStates()) {
          if (!states.contains(state.getName())) {
             states.add(state.getName());
@@ -224,7 +226,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
     * @return list of json objects containing artifact ids and names for a related set of requirements
     */
    @Override
-   public List<String> getRelatedRequirements(ArtifactId workflowId, AttributeTypeToken relatedReqs, AttributeTypeToken versionType) {
+   public List<String> getRelatedRequirements(ArtifactId workflowId, AttributeTypeToken relatedReqs,
+      AttributeTypeToken versionType) {
       List<String> requirements = new LinkedList<>();
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(COMMON);
       ArtifactReadable workflow = query.andId(workflowId).getArtifact();
@@ -388,7 +391,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   public Collection<ArtifactToken> setByArtifactToken(String workItemId, String changeType, Collection<ArtifactToken> artifacts) {
+   public Collection<ArtifactToken> setByArtifactToken(String workItemId, String changeType,
+      Collection<ArtifactToken> artifacts) {
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(workItemId);
       ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
       return ops.setByArtifactToken(workItem, changeType, artifacts);

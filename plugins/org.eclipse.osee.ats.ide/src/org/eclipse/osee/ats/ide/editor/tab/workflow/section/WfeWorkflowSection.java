@@ -426,13 +426,17 @@ public class WfeWorkflowSection extends SectionPart {
 
    @Override
    public void refresh() {
-      if (!Widgets.isAccessible(mainComp)) {
-         return;
+      synchronized (this) {
+         if (!Widgets.isAccessible(mainComp)) {
+            return;
+         }
       }
       super.refresh();
       try {
-         if (Widgets.isAccessible(stateNotesHeader)) {
-            stateNotesHeader.refresh();
+         synchronized (this) {
+            if (Widgets.isAccessible(stateNotesHeader)) {
+               stateNotesHeader.refresh();
+            }
          }
          for (XWidget xWidget : allXWidgets) {
             if (xWidget instanceof ArtifactStoredWidget) {
@@ -459,7 +463,7 @@ public class WfeWorkflowSection extends SectionPart {
       return statePage;
    }
 
-   public Composite getMainComp() {
+   public synchronized Composite getMainComp() {
       return mainComp;
    }
 

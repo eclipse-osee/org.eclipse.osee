@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -58,19 +59,21 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz) {
+   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType,
+      Class<T> clazz) {
       return getRelated(atsObject, relationType, DeletionFlag.EXCLUDE_DELETED, clazz);
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, DeletionFlag flag, Class<T> clazz) {
+   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType,
+      DeletionFlag flag, Class<T> clazz) {
       List<T> results = new ArrayList<>();
       if (atsObject.isInvalid()) {
          return results;
       }
       ArtifactReadable useArt = getArtifact(atsObject);
-      if (useArt != null) {
+      if (useArt != null && useArt.getRelated(relationType, flag) != null) {
          for (ArtifactReadable art : useArt.getRelated(relationType, flag)) {
             IAtsObject object = AtsObjects.getAtsObject(art, atsApi);
             if (object != null) {
@@ -197,7 +200,8 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeToken artifactType) {
+   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType,
+      ArtifactTypeToken artifactType) {
       List<ArtifactToken> results = new LinkedList<>();
       ArtifactReadable art = getArtifact(artifact);
       for (ArtifactToken related : art.getRelated(relationType)) {
@@ -230,6 +234,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    @Override
    public Collection<IRelationLink> getRelations(ArtifactId artifact, RelationTypeSide relationTypeSide) {
       ArtifactReadable art = getArtifact(artifact);
+      Objects.requireNonNull(art.getRelations(relationTypeSide));
       return art.getRelations(relationTypeSide).getList();
    }
 }
