@@ -307,6 +307,10 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
    }
 
    public void handleNewUserRole() {
+      if (reviewArt.isCompletedOrCancelled()) {
+         AWorkbench.popup("Role can not be added to Completed/Cancelled workflows.");
+         return;
+      }
       NewRoleDialog dialog = new NewRoleDialog(reviewArt.getWorkDefinition());
       dialog.setReview(reviewArt);
       if (dialog.open() == Window.OK) {
