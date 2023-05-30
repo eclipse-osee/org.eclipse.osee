@@ -43,6 +43,7 @@ import {
 	enumsServiceMock,
 	CurrentTransportTypeServiceMock,
 } from '@osee/messaging/shared/testing';
+import { CommonModule } from '@angular/common';
 
 describe('CreateConnectionDialogComponent', () => {
 	let component: CreateConnectionDialogComponent;
@@ -66,6 +67,7 @@ describe('CreateConnectionDialogComponent', () => {
 					},
 				],
 				imports: [
+					CommonModule,
 					MatDialogModule,
 					MatFormFieldModule,
 					FormsModule,

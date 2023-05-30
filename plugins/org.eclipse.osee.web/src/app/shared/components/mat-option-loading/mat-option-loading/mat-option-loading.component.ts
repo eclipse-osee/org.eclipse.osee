@@ -259,28 +259,10 @@ export class MatOptionLoadingComponent<T>
 							);
 
 							if (
-								(acc.length + curr.length) /
-									this.paginationSize !==
-									this._currentPageNumber.getValue() &&
-								Number.isInteger(
-									(acc.length + curr.length) /
-										this.paginationSize
-								) &&
-								curr.length !== 0
-							) {
-								//reset the pagination
-								this._currentPageNumber.next(1);
-								this._paginationComplete.next(false);
-								return [];
-							} else if (
 								deDupedArr.length !==
 								acc.length + curr.length
 							) {
-								const split: T[] = acc.slice(
-									this._getDuplicatedIndex(acc) - 1,
-									acc.length + curr.length
-								);
-								return split;
+								return deDupedArr;
 							}
 						} else if (acc.length + curr.length >= count) {
 							this._paginationComplete.next(true);
@@ -301,17 +283,6 @@ export class MatOptionLoadingComponent<T>
 
 	getHeightPx(itemSize: number, optLength: number) {
 		return itemSize * Math.min(5, Math.max(optLength, 1));
-	}
-
-	private _getDuplicatedIndex(value: T[]) {
-		let found: any = {}; //yuck
-		for (let i = 0; i < value.length; i++) {
-			if (found[value[i]]) {
-				return i;
-			}
-			found[value[i]] = i;
-		}
-		return -1;
 	}
 
 	ngAfterViewInit(): void {

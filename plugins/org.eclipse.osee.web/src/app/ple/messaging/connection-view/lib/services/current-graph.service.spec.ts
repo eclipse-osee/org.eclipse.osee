@@ -22,7 +22,13 @@ import {
 	BranchInfoService,
 } from '@osee/shared/services';
 
-import type { node } from '@osee/messaging/shared/types';
+import type {
+	connection,
+	node,
+	nodeData,
+	OseeEdge,
+	OseeNode,
+} from '@osee/messaging/shared/types';
 import { UserDataAccountService } from '@osee/auth';
 import { transaction } from '@osee/shared/types';
 import {
@@ -47,12 +53,13 @@ import {
 	NodeService,
 	SharedConnectionService,
 } from '@osee/messaging/shared/services';
+import { ClusterNode } from '@swimlane/ngx-graph';
 
 describe('CurrentGraphService', () => {
 	let service: CurrentGraphService;
 	let scheduler: TestScheduler;
 	let graphService: Partial<GraphService> = {
-		getNodes(id: string) {
+		getNodes(id: string, viewId: string) {
 			return of({
 				nodes: [
 					{
@@ -61,6 +68,8 @@ describe('CurrentGraphService', () => {
 						data: {
 							id: '1',
 							name: '1',
+							interfaceNodeNumber: '1',
+							interfaceNodeGroupId: 'group1',
 							interfaceNodeAddress: '',
 							interfaceNodeBgColor: '',
 						},
@@ -71,6 +80,8 @@ describe('CurrentGraphService', () => {
 						data: {
 							id: '2',
 							name: '2',
+							interfaceNodeNumber: '2',
+							interfaceNodeGroupId: 'group2',
 							interfaceNodeAddress: '',
 							interfaceNodeBgColor: '',
 						},
@@ -81,6 +92,8 @@ describe('CurrentGraphService', () => {
 						data: {
 							id: '201279',
 							name: '',
+							interfaceNodeNumber: '3',
+							interfaceNodeGroupId: 'group3',
 							interfaceNodeAddress: '',
 							interfaceNodeBgColor: '',
 							applicability: { id: '1', name: 'Base' },
@@ -92,6 +105,8 @@ describe('CurrentGraphService', () => {
 						data: {
 							id: '201379',
 							name: '',
+							interfaceNodeNumber: '4',
+							interfaceNodeGroupId: 'group4',
 							interfaceNodeAddress: '',
 							interfaceNodeBgColor: '',
 							applicability: { id: '1', name: 'Base' },
@@ -135,6 +150,17 @@ describe('CurrentGraphService', () => {
 						},
 					},
 				],
+				clusters: [
+					{
+						id: '1',
+						label: 'cluster1',
+						childNodeIds: ['1,2'],
+					},
+				],
+			} as {
+				nodes: OseeNode<nodeData>[];
+				edges: OseeEdge<connection>[];
+				clusters: ClusterNode[];
 			});
 		},
 	};
@@ -375,6 +401,8 @@ describe('CurrentGraphService', () => {
 							data: {
 								id: '1',
 								name: '1',
+								interfaceNodeNumber: '1',
+								interfaceNodeGroupId: 'group1',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 							},
@@ -385,6 +413,8 @@ describe('CurrentGraphService', () => {
 							data: {
 								id: '2',
 								name: '2',
+								interfaceNodeNumber: '2',
+								interfaceNodeGroupId: 'group2',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 							},
@@ -395,6 +425,8 @@ describe('CurrentGraphService', () => {
 							data: {
 								id: '201279',
 								name: '',
+								interfaceNodeNumber: '3',
+								interfaceNodeGroupId: 'group3',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 								applicability: { id: '1', name: 'Base' },
@@ -406,6 +438,8 @@ describe('CurrentGraphService', () => {
 							data: {
 								id: '201379',
 								name: '',
+								interfaceNodeNumber: '4',
+								interfaceNodeGroupId: 'group4',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 								applicability: { id: '1', name: 'Base' },
@@ -447,6 +481,13 @@ describe('CurrentGraphService', () => {
 									messageGenerationType: '',
 								},
 							},
+						},
+					],
+					clusters: [
+						{
+							id: '1',
+							label: 'cluster1',
+							childNodeIds: ['1,2'],
 						},
 					],
 				},
@@ -508,6 +549,8 @@ describe('CurrentGraphService', () => {
 							data: {
 								id: '1',
 								name: '1',
+								interfaceNodeNumber: '1',
+								interfaceNodeGroupId: 'group1',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 							},
@@ -518,6 +561,8 @@ describe('CurrentGraphService', () => {
 							data: {
 								id: '2',
 								name: '2',
+								interfaceNodeNumber: '2',
+								interfaceNodeGroupId: 'group2',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 							},
@@ -526,6 +571,8 @@ describe('CurrentGraphService', () => {
 							id: '201279',
 							label: '',
 							data: {
+								interfaceNodeNumber: '3',
+								interfaceNodeGroupId: 'group3',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 								applicability: {
@@ -552,6 +599,8 @@ describe('CurrentGraphService', () => {
 							data: {
 								id: '201379',
 								name: '',
+								interfaceNodeNumber: '4',
+								interfaceNodeGroupId: 'group4',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 								applicability: { id: '1', name: 'Base' },
@@ -642,6 +691,8 @@ describe('CurrentGraphService', () => {
 										},
 									},
 								},
+								interfaceNodeNumber: '',
+								interfaceNodeGroupId: '',
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 								description: '',
@@ -772,6 +823,13 @@ describe('CurrentGraphService', () => {
 								added: false,
 							},
 							label: 'T7_TC',
+						},
+					],
+					clusters: [
+						{
+							id: '1',
+							label: 'cluster1',
+							childNodeIds: ['1,2'],
 						},
 					],
 				},

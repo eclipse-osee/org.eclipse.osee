@@ -25,6 +25,8 @@ public class NodeViewData extends PLGenericDBObject {
 
    private String Description;
    private ApplicabilityToken applicability;
+   private String interfaceNodeNumber;
+   private String interfaceNodeGroupId;
    private String interfaceNodeBgColor = generateColor() ? "#81d4fa" : "#c5e1a5"; //has to be called bgColor due to @swimlane/ngx-graph having weird handling behavior of node.data.color
    private String interfaceNodeAddress = "";
 
@@ -38,8 +40,10 @@ public class NodeViewData extends PLGenericDBObject {
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
-   public NodeViewData(Long id, String name) {
+   public NodeViewData(Long id, String name, String nodeNumber, String nodeGroupId) {
       super(id, name);
+      this.setInterfaceNodeNumber(nodeNumber);
+      this.setInterfaceNodeGroupId(nodeGroupId);
    }
 
    public NodeViewData() {
@@ -104,6 +108,22 @@ public class NodeViewData extends PLGenericDBObject {
     */
    public void setInterfaceNodeAddress(String interfaceNodeAddress) {
       this.interfaceNodeAddress = interfaceNodeAddress;
+   }
+
+   public String getInterfaceNodeNumber() {
+      return interfaceNodeNumber;
+   }
+
+   public void setInterfaceNodeNumber(String nodeNumber) {
+      this.interfaceNodeNumber = nodeNumber;
+   }
+
+   public String getInterfaceNodeGroupId() {
+      return interfaceNodeGroupId;
+   }
+
+   public void setInterfaceNodeGroupId(String interfaceNodeGroupId) {
+      this.interfaceNodeGroupId = interfaceNodeGroupId;
    }
 
 }

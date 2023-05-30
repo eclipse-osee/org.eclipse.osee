@@ -30,6 +30,22 @@
 	</mat-form-field>
 	<br />
 	<mat-form-field>
+		<mat-label>Add a node number</mat-label>
+		<input
+			matInput
+			[(ngModel)]="result.interfaceNodeNumber"
+			data-cy="field-node-number" />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<mat-label>Add a node group ID</mat-label>
+		<input
+			matInput
+			[(ngModel)]="result.interfaceNodeGroupId"
+			data-cy="field-node-group-id" />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
 		<mat-label>Add a color</mat-label>
 		<input
 			matInput

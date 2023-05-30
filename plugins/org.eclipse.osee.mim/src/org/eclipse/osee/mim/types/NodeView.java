@@ -22,10 +22,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class NodeView extends PLGenericDBObject {
 
-   private String Name; //required
-
-   private String Description;
-
    private String label = ""; //label to display on connection line, should be same as {@Name}
    private NodeViewData data;
 
@@ -34,8 +30,8 @@ public class NodeView extends PLGenericDBObject {
    }
 
    public NodeView(InterfaceNode node) {
-      this(node.getId(), node.getName(), node.getDescription(), node.getApplicability(), node.getColor(),
-         node.getAddress());
+      this(node.getId(), node.getName(), node.getDescription(), node.getNodeNumber(), node.getNodeGroupId(),
+         node.getApplicability(), node.getColor(), node.getAddress());
    }
 
    public NodeView(ArtifactReadable art) {
@@ -45,10 +41,10 @@ public class NodeView extends PLGenericDBObject {
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
-   public NodeView(Long id, String name, String description, ApplicabilityToken applicability, String color, String address) {
+   public NodeView(Long id, String name, String description, String nodeNumber, String nodeGroupId, ApplicabilityToken applicability, String color, String address) {
       this(id, name);
       this.setLabel(name);
-      this.setData(new NodeViewData(id, name));
+      this.setData(new NodeViewData(id, name, nodeNumber, nodeGroupId));
       this.setApplicability(applicability);
       this.setDescription(description);
       this.setbgColor(color);

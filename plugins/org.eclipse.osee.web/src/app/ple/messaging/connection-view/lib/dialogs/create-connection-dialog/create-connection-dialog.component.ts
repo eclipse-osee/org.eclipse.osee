@@ -16,8 +16,7 @@ import {
 	MatDialogRef,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { from, of, Subject } from 'rxjs';
-import { concatMap, filter, reduce, switchMap, take } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import type {
 	newConnection,
@@ -32,12 +31,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'osee-create-connection-dialog',
 	templateUrl: './create-connection-dialog.component.html',
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatDialogModule,
 		MatFormFieldModule,
 		FormsModule,
@@ -53,17 +54,7 @@ export class CreateConnectionDialogComponent implements OnDestroy {
 	paginationSize = 5;
 
 	nodes = (pageNum: string | number) =>
-		this.graphService.getPaginatedNodes(pageNum, this.paginationSize).pipe(
-			switchMap((nodes) =>
-				of(nodes).pipe(
-					concatMap((n) =>
-						from(n).pipe(filter((node) => node.id !== this.data.id))
-					),
-					take(nodes.length),
-					reduce((acc, curr) => [...acc, curr], [] as node[])
-				)
-			)
-		);
+		this.graphService.getPaginatedNodes(pageNum, this.paginationSize);
 	title: string = '';
 	newConnection: newConnection = {
 		nodeId: '',

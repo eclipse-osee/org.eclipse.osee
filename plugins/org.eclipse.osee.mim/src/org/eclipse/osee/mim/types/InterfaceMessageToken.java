@@ -29,17 +29,21 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 public class InterfaceMessageToken extends PLGenericDBObject {
    public static final InterfaceMessageToken SENTINEL = new InterfaceMessageToken();
 
-   private String Name; //required
-
    private String InterfaceMessageNumber; //required
-
    private String InterfaceMessagePeriodicity; //required
-
    private String InterfaceMessageRate;
-
    private Boolean InterfaceMessageWriteAccess; //required
-
    private String InterfaceMessageType; //required
+   private Boolean interfaceMessageExclude;
+   private String interfaceMessageIoMode;
+   private String interfaceMessageModeCode;
+   private String interfaceMessageRateVer;
+   private String interfaceMessagePriority;
+   private String interfaceMessageProtocol;
+   private String interfaceMessageRptWordCount;
+   private String interfaceMessageRptCmdWord;
+   private Boolean interfaceMessageRunBeforeProc;
+   private String interfaceMessageVer;
 
    private String Description;
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
@@ -63,6 +67,19 @@ public class InterfaceMessageToken extends PLGenericDBObject {
       this.setInterfaceMessageType(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, ""));
       this.setInterfaceMessageWriteAccess(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false));
+      this.setInterfaceMessageExclude(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageExclude, false));
+      this.setInterfaceMessageIoMode(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageIoMode, ""));
+      this.setInterfaceMessageModeCode(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageModeCode, ""));
+      this.setInterfaceMessageRateVer(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRateVer, ""));
+      this.setInterfaceMessagePriority(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessagePriority, ""));
+      this.setInterfaceMessageProtocol(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageProtocol, ""));
+      this.setInterfaceMessageRptWordCount(
+         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRptWordCount, ""));
+      this.setInterfaceMessageRptCmdWord(
+         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRptCmdWord, ""));
+      this.setInterfaceMessageRunBeforeProc(
+         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageRunBeforeProc, false));
+      this.setInterfaceMessageVer(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageVer, ""));
       this.setSubMessages(
          art.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceSubMessageToken(a)).collect(
@@ -74,6 +91,21 @@ public class InterfaceMessageToken extends PLGenericDBObject {
 
    public InterfaceMessageToken(Long id, String name) {
       super(id, name);
+      this.setInterfaceMessageNumber("");
+      this.setInterfaceMessagePeriodicity("");
+      this.setInterfaceMessageRate("");
+      this.setInterfaceMessageWriteAccess(false);
+      this.setInterfaceMessageType("");
+      this.setInterfaceMessageExclude(false);
+      this.setInterfaceMessageIoMode("");
+      this.setInterfaceMessageModeCode("");
+      this.setInterfaceMessageRateVer("");
+      this.setInterfaceMessagePriority("");
+      this.setInterfaceMessageProtocol("");
+      this.setInterfaceMessageRptWordCount("");
+      this.setInterfaceMessageRptCmdWord("");
+      this.setInterfaceMessageRunBeforeProc(false);
+      this.setInterfaceMessageVer("");
    }
 
    public InterfaceMessageToken() {
@@ -201,6 +233,86 @@ public class InterfaceMessageToken extends PLGenericDBObject {
     */
    public void setInitiatingNode(InterfaceNode initiatingNode) {
       this.initiatingNode = initiatingNode;
+   }
+
+   public Boolean getInterfaceMessageExclude() {
+      return interfaceMessageExclude;
+   }
+
+   public void setInterfaceMessageExclude(Boolean interfaceMessageExclude) {
+      this.interfaceMessageExclude = interfaceMessageExclude;
+   }
+
+   public String getInterfaceMessageIoMode() {
+      return interfaceMessageIoMode;
+   }
+
+   public void setInterfaceMessageIoMode(String interfaceMessageIoMode) {
+      this.interfaceMessageIoMode = interfaceMessageIoMode;
+   }
+
+   public String getInterfaceMessageModeCode() {
+      return interfaceMessageModeCode;
+   }
+
+   public void setInterfaceMessageModeCode(String interfaceMessageModeCode) {
+      this.interfaceMessageModeCode = interfaceMessageModeCode;
+   }
+
+   public String getInterfaceMessageRateVer() {
+      return interfaceMessageRateVer;
+   }
+
+   public void setInterfaceMessageRateVer(String interfaceMessageRateVer) {
+      this.interfaceMessageRateVer = interfaceMessageRateVer;
+   }
+
+   public String getInterfaceMessagePriority() {
+      return interfaceMessagePriority;
+   }
+
+   public void setInterfaceMessagePriority(String interfaceMessagePriority) {
+      this.interfaceMessagePriority = interfaceMessagePriority;
+   }
+
+   public String getInterfaceMessageProtocol() {
+      return interfaceMessageProtocol;
+   }
+
+   public void setInterfaceMessageProtocol(String interfaceMessageProtocol) {
+      this.interfaceMessageProtocol = interfaceMessageProtocol;
+   }
+
+   public String getInterfaceMessageRptWordCount() {
+      return interfaceMessageRptWordCount;
+   }
+
+   public void setInterfaceMessageRptWordCount(String interfaceMessageRptWordCount) {
+      this.interfaceMessageRptWordCount = interfaceMessageRptWordCount;
+   }
+
+   public String getInterfaceMessageRptCmdWord() {
+      return interfaceMessageRptCmdWord;
+   }
+
+   public void setInterfaceMessageRptCmdWord(String interfaceMessageRptCmdWord) {
+      this.interfaceMessageRptCmdWord = interfaceMessageRptCmdWord;
+   }
+
+   public Boolean getInterfaceMessageRunBeforeProc() {
+      return interfaceMessageRunBeforeProc;
+   }
+
+   public void setInterfaceMessageRunBeforeProc(Boolean interfaceMessageRunBeforeProc) {
+      this.interfaceMessageRunBeforeProc = interfaceMessageRunBeforeProc;
+   }
+
+   public String getInterfaceMessageVer() {
+      return interfaceMessageVer;
+   }
+
+   public void setInterfaceMessageVer(String interfaceMessageVer) {
+      this.interfaceMessageVer = interfaceMessageVer;
    }
 
    @JsonIgnore

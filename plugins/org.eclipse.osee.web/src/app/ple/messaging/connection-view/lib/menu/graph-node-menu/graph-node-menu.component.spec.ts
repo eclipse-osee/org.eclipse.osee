@@ -94,6 +94,8 @@ describe('GraphNodeMenuComponent', () => {
 			component.data = {
 				id: '1',
 				name: '1',
+				interfaceNodeNumber: '1',
+				interfaceNodeGroupId: '',
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',
 				description: '',
@@ -250,6 +252,8 @@ describe('GraphNodeMenuComponent', () => {
 			component.data = {
 				id: '1',
 				name: '1',
+				interfaceNodeNumber: '1',
+				interfaceNodeGroupId: '',
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',
 				description: '',
@@ -560,6 +564,8 @@ describe('GraphNodeMenuComponent', () => {
 			component.data = {
 				id: '1',
 				name: '1',
+				interfaceNodeNumber: '1',
+				interfaceNodeGroupId: '',
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',
 				description: '',
@@ -627,6 +633,8 @@ describe('GraphNodeMenuComponent', () => {
 			component.data = {
 				id: '1',
 				name: '1',
+				interfaceNodeNumber: '1',
+				interfaceNodeGroupId: '',
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',
 				description: '',

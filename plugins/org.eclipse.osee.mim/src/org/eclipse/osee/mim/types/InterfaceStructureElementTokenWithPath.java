@@ -59,7 +59,7 @@ public class InterfaceStructureElementTokenWithPath extends InterfaceStructureEl
                            CoreRelationTypes.InterfaceMessageSubMessageContent_Message).stream().map(
                               messageArtifact -> new InterfaceMessageToken(messageArtifact)).map(
                                  message -> message.getArtifactReadable().getRelatedList(
-                                    CoreRelationTypes.InterfaceConnectionContent_Connection).stream().map(
+                                    CoreRelationTypes.InterfaceConnectionMessage_Connection).stream().map(
                                        connection -> new ConnectionView(connection)).map(
                                           connection -> "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString())).flatMap(
                                              result -> result)).flatMap(result -> result)).flatMap(
@@ -78,7 +78,7 @@ public class InterfaceStructureElementTokenWithPath extends InterfaceStructureEl
                            CoreRelationTypes.InterfaceMessageSubMessageContent_Message).stream().map(
                               messageArtifact -> new InterfaceMessageToken(messageArtifact)).map(
                                  message -> message.getArtifactReadable().getRelatedList(
-                                    CoreRelationTypes.InterfaceConnectionContent_Connection).stream().map(
+                                    CoreRelationTypes.InterfaceConnectionMessage_Connection).stream().map(
                                        connection -> new ConnectionView(connection)).map(
                                           connection -> "Connection: " + connection.getName() + " " + message.getName() + " > " + submessage.getName() + " > " + structure.getName())).flatMap(
                                              result -> result)).flatMap(result -> result)).flatMap(

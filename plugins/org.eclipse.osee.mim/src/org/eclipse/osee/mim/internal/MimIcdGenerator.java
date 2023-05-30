@@ -94,7 +94,7 @@ public class MimIcdGenerator {
       boolean diff) {
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
-            connectionId).follow(CoreRelationTypes.InterfaceConnectionContent_Message).follow(
+            connectionId).follow(CoreRelationTypes.InterfaceConnectionMessage_Message).follow(
                CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).follow(
                   CoreRelationTypes.InterfaceSubMessageContent_Structure).follow(
                      CoreRelationTypes.InterfaceStructureContent_DataElement).follow(
@@ -119,7 +119,7 @@ public class MimIcdGenerator {
       SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
 
       if (conn.isValid() && primaryNode.isValid() && secondaryNode.isValid()) {
-         messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionContent_Message).getList();
+         messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList();
 
          for (ArtifactReadable message : messages) {
             ArtifactReadable sendingNode =

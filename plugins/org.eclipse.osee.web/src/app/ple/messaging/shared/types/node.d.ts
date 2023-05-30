@@ -18,6 +18,8 @@ export interface nodeData {
 	id: string;
 	name: string;
 	description?: string;
+	interfaceNodeNumber: string;
+	interfaceNodeGroupId: string;
 	interfaceNodeBgColor: string;
 	interfaceNodeAddress: string;
 	applicability?: applic;
@@ -31,6 +33,8 @@ export interface nodeDataWithChanges extends nodeData {
 export interface nodeChanges {
 	name?: difference;
 	description?: difference;
+	interfaceNodeNumber?: string;
+	interfaceNodeGroupId?: string;
 	interfaceNodeBgColor?: difference;
 	interfaceNodeAddress?: difference;
 	applicability?: difference;
@@ -47,6 +51,8 @@ export interface nodeToken {
 	id?: string;
 	name: string;
 	description?: string;
+	interfaceNodeNumber: string;
+	interfaceNodeGroupId: string;
 	applicability?: applic;
 	color?: string;
 	address?: string;

@@ -29,6 +29,8 @@ export class MockGraphNodeMenuComponent {
 	@Input() data: nodeData | nodeDataWithChanges = {
 		id: '',
 		name: '',
+		interfaceNodeNumber: '',
+		interfaceNodeGroupId: '',
 		interfaceNodeAddress: '',
 		interfaceNodeBgColor: '',
 	};

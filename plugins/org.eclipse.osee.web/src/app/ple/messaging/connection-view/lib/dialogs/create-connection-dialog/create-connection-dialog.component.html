@@ -78,6 +78,7 @@
 				[paginationSize]="paginationSize">
 				<ng-template let-option>
 					<mat-option
+						*ngIf="option.id !== data.id"
 						[value]="option.id"
 						[attr.data-cy]="'option-' + option.name">
 						{{ option.name }}

@@ -29,7 +29,7 @@ let sideNavContentPlaceholder = new ReplaySubject<{
 }>();
 sideNavContentPlaceholder.next({ opened: true, field: '', currentValue: '' });
 export const graphServiceMock: Partial<CurrentGraphService> = {
-	nodes: of({ nodes: [], edges: [] }),
+	nodes: of({ nodes: [], edges: [], clusters: [] }),
 	updated: new BehaviorSubject<boolean>(true),
 	set update(value: boolean) {
 		return;

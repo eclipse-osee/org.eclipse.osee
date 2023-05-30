@@ -40,7 +40,7 @@ import {
 	crossReferenceHeaderDetails,
 } from '@osee/messaging/shared/table-headers';
 import { BehaviorSubject, from, iif, of, OperatorFunction } from 'rxjs';
-import { concatMap, filter, map, reduce, switchMap } from 'rxjs/operators';
+import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 import { ImportService, ImportTableComponent } from '@osee/messaging/import';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
@@ -80,10 +80,13 @@ export class ImportComponent implements OnInit, OnDestroy {
 		this.importService.reset();
 	}
 
+	showSummary: boolean = false;
 	importOptionSelection = this.importService.selectedImportOption;
 	branchId = this.importService.branchId;
 	branchType = this.importService.branchType;
-	importSummary = this.importService.importSummary;
+	importSummary = this.importService.importSummary.pipe(
+		tap(() => (this.showSummary = true))
+	);
 	importOptions = this.importService.importOptions;
 	importSuccess = this.importService.importSuccess;
 	selectedImportFileName = this.importService.importFile.pipe(
@@ -122,6 +125,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 		this.importService.reset();
 		this.SelectedConnection = undefined;
 		this.importService.SelectedImportOption = event.value;
+		this.showSummary = false;
 	}
 
 	selectFile(event: Event) {
@@ -130,9 +134,13 @@ export class ImportComponent implements OnInit, OnDestroy {
 			const file: File = target.files[0];
 			this.importService.ImportFile = file;
 			this.importService.ImportSuccess = undefined;
-			this.importService.ImportInProgress = true;
+			this.showSummary = false;
 			target.value = '';
 		}
+	}
+
+	startImportSummary() {
+		this.importService.ImportInProgress = true;
 	}
 
 	performImport() {
@@ -331,6 +339,10 @@ export class ImportComponent implements OnInit, OnDestroy {
 
 	set SelectedConnectionId(id: string) {
 		this.importService.SelectedConnectionId = id;
+	}
+
+	get selectedFile() {
+		return this.importService.importFile;
 	}
 }
 

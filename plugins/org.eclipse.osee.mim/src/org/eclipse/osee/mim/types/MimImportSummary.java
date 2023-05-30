@@ -24,6 +24,8 @@ public class MimImportSummary {
    private ArtifactId connectionId;
    private InterfaceNode primaryNode;
    private InterfaceNode secondaryNode;
+   private final List<InterfaceNode> nodes;
+   private final List<InterfaceConnection> connections;
    private final List<InterfaceMessageToken> messages;
    private final List<InterfaceSubMessageToken> subMessages;
    private final List<InterfaceStructureToken> structures;
@@ -32,6 +34,8 @@ public class MimImportSummary {
    private final List<InterfaceEnumerationSet> enumSets;
    private final List<InterfaceEnumeration> enums;
    private final List<CrossReference> crossReferences;
+   private final Map<String, List<String>> nodeConnectionRelations;
+   private final Map<String, List<String>> connectionMessageRelations;
    private final Map<String, List<String>> messageSubmessageRelations;
    private final Map<String, List<String>> subMessageStructureRelations;
    private final Map<String, List<String>> structureElementRelations;
@@ -44,6 +48,8 @@ public class MimImportSummary {
       createPrimaryNode = false;
       createSecondaryNode = false;
       connectionId = ArtifactId.SENTINEL;
+      nodes = new LinkedList<>();
+      connections = new LinkedList<>();
       messages = new LinkedList<>();
       subMessages = new LinkedList<>();
       structures = new LinkedList<>();
@@ -52,6 +58,8 @@ public class MimImportSummary {
       enumSets = new LinkedList<>();
       enums = new LinkedList<>();
       crossReferences = new LinkedList<>();
+      nodeConnectionRelations = new HashMap<>();
+      connectionMessageRelations = new HashMap<>();
       messageSubmessageRelations = new HashMap<>();
       subMessageStructureRelations = new HashMap<>();
       structureElementRelations = new HashMap<>();
@@ -101,6 +109,14 @@ public class MimImportSummary {
       this.secondaryNode = secondaryNode;
    }
 
+   public List<InterfaceNode> getNodes() {
+      return nodes;
+   }
+
+   public List<InterfaceConnection> getConnections() {
+      return connections;
+   }
+
    public List<InterfaceMessageToken> getMessages() {
       return messages;
    }
@@ -131,6 +147,14 @@ public class MimImportSummary {
 
    public List<CrossReference> getCrossReferences() {
       return crossReferences;
+   }
+
+   public Map<String, List<String>> getNodeConnectionRelations() {
+      return nodeConnectionRelations;
+   }
+
+   public Map<String, List<String>> getConnectionMessageRelations() {
+      return connectionMessageRelations;
    }
 
    public Map<String, List<String>> getMessageSubmessageRelations() {

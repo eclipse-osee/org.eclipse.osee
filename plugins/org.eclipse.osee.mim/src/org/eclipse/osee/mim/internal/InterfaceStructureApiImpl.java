@@ -488,7 +488,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       try {
          List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionContent_Connection,
+            CoreRelationTypes.InterfaceConnectionMessage_Connection,
             CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, structureId, parentRelations, InterfaceStructureToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

@@ -74,20 +74,45 @@
 									(option.connectionRequired &&
 										(selectedConnectionId | async) !== '')
 								">
-								<label
-									for="file-upload"
-									class="input-label">
-									<button
-										mat-raised-button
-										color="primary">
-										Select File
-									</button>
-								</label>
-								<input
-									id="file-upload"
-									type="file"
-									(change)="selectFile($event)"
-									accept=".xlsx, .xls, .json" />
+								<div class="tw-flex tw-items-center">
+									<label
+										for="file-upload"
+										class="input-label">
+										<button
+											mat-raised-button
+											color="primary"
+											class="tw-m-auto">
+											Select File
+										</button>
+									</label>
+									<input
+										id="file-upload"
+										type="file"
+										(change)="selectFile($event)"
+										accept=".xlsx, .xls, .json, .zip"
+										class="tw-hidden" />
+									<ng-container
+										*ngIf="selectedFile | async as file">
+										<div class="-tw-ml-12">
+											Selected:
+											<span class="tw-font-bold">{{
+												file.name
+											}}</span>
+										</div>
+									</ng-container>
+								</div>
+							</ng-container>
+							<ng-container
+								*ngIf="
+									(selectedFile | async) &&
+									(importSuccess | async) === undefined
+								">
+								<button
+									mat-raised-button
+									color="primary"
+									(click)="startImportSummary()">
+									Get Import Summary
+								</button>
 							</ng-container>
 							<ng-container
 								*ngIf="
@@ -108,183 +133,206 @@
 									*ngIf="
 										importSummary | async as _importSummary
 									">
-									<div class="import-summary">
-										<h3>
-											The following will be imported from
-											<span class="tw-font-bold">{{
-												selectedImportFileName | async
-											}}</span>
-										</h3>
-										<ng-container
-											*ngIf="
-												_importSummary.primaryNode &&
-												_importSummary.secondaryNode
-											">
-											<ul>
-												<li>
-													Primary Node:
-													{{
-														_importSummary
-															.primaryNode.name
-													}}
-												</li>
-												<li>
-													Secondary Node:
-													{{
-														_importSummary
-															.secondaryNode.name
-													}}
-												</li>
-												<li>
-													Connection:
-													{{
-														_importSummary
-															.primaryNode.name
-													}}_{{
-														_importSummary
-															.secondaryNode.name
-													}}
-												</li>
-											</ul>
+									<ng-container *ngIf="showSummary">
+										<div class="import-summary">
+											<h3>
+												The following will be imported
+												from
+												<span class="tw-font-bold">{{
+													selectedImportFileName
+														| async
+												}}</span>
+											</h3>
 											<ng-container
-												*ngIf="nodes | async as _nodes">
+												*ngIf="
+													_importSummary.primaryNode &&
+													_importSummary.secondaryNode
+												">
+												<ul>
+													<li>
+														Primary Node:
+														{{
+															_importSummary
+																.primaryNode
+																.name
+														}}
+													</li>
+													<li>
+														Secondary Node:
+														{{
+															_importSummary
+																.secondaryNode
+																.name
+														}}
+													</li>
+													<li>
+														Connection:
+														{{
+															_importSummary
+																.primaryNode
+																.name
+														}}_{{
+															_importSummary
+																.secondaryNode
+																.name
+														}}
+													</li>
+												</ul>
 												<ng-container
-													*ngIf="_nodes.length > 0">
-													<osee-import-table
-														[data]="_nodes"
-														[headers]="nodeHeaders"
-														[headerDetails]="
-															nodeHeaderDetails
-														"
-														[tableTitle]="
-															'Nodes'
-														"></osee-import-table>
+													*ngIf="
+														nodes | async as _nodes
+													">
+													<ng-container
+														*ngIf="
+															_nodes.length > 0
+														">
+														<osee-import-table
+															[data]="_nodes"
+															[headers]="
+																nodeHeaders
+															"
+															[headerDetails]="
+																nodeHeaderDetails
+															"
+															[tableTitle]="
+																'Nodes'
+															"></osee-import-table>
+													</ng-container>
 												</ng-container>
 											</ng-container>
-										</ng-container>
-										<ng-container
-											*ngIf="
-												_importSummary.messages.length >
-												0
-											">
-											<osee-import-table
-												[data]="_importSummary.messages"
-												[headers]="messageHeaders"
-												[headerDetails]="
-													messageHeaderDetails
-												"
-												[tableTitle]="
-													'Messages'
-												"></osee-import-table>
-										</ng-container>
-										<ng-container
-											*ngIf="
-												_importSummary.subMessages
-													.length > 0
-											">
-											<osee-import-table
-												[data]="
+											<ng-container
+												*ngIf="
+													_importSummary.messages
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														_importSummary.messages
+													"
+													[headers]="messageHeaders"
+													[headerDetails]="
+														messageHeaderDetails
+													"
+													[tableTitle]="
+														'Messages'
+													"></osee-import-table>
+											</ng-container>
+											<ng-container
+												*ngIf="
 													_importSummary.subMessages
-												"
-												[headers]="submessageHeaders"
-												[headerDetails]="
-													submessageHeaderDetails
-												"
-												[tableTitle]="
-													'SubMessages'
-												"></osee-import-table>
-										</ng-container>
-										<ng-container
-											*ngIf="
-												_importSummary.structures
-													.length > 0
-											">
-											<osee-import-table
-												[data]="
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														_importSummary.subMessages
+													"
+													[headers]="
+														submessageHeaders
+													"
+													[headerDetails]="
+														submessageHeaderDetails
+													"
+													[tableTitle]="
+														'SubMessages'
+													"></osee-import-table>
+											</ng-container>
+											<ng-container
+												*ngIf="
 													_importSummary.structures
-												"
-												[headers]="structureHeaders"
-												[headerDetails]="
-													structureHeaderDetails
-												"
-												[tableTitle]="
-													'Structures'
-												"></osee-import-table>
-										</ng-container>
-										<ng-container
-											*ngIf="
-												_importSummary.elements.length >
-												0
-											">
-											<osee-import-table
-												[data]="_importSummary.elements"
-												[headers]="elementHeaders"
-												[headerDetails]="
-													elementHeaderDetails
-												"
-												[tableTitle]="
-													'Elements'
-												"></osee-import-table>
-										</ng-container>
-										<ng-container
-											*ngIf="
-												_importSummary.platformTypes
-													.length > 0
-											">
-											<osee-import-table
-												[data]="
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														_importSummary.structures
+													"
+													[headers]="structureHeaders"
+													[headerDetails]="
+														structureHeaderDetails
+													"
+													[tableTitle]="
+														'Structures'
+													"></osee-import-table>
+											</ng-container>
+											<ng-container
+												*ngIf="
+													_importSummary.elements
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														_importSummary.elements
+													"
+													[headers]="elementHeaders"
+													[headerDetails]="
+														elementHeaderDetails
+													"
+													[tableTitle]="
+														'Elements'
+													"></osee-import-table>
+											</ng-container>
+											<ng-container
+												*ngIf="
 													_importSummary.platformTypes
-												"
-												[headers]="platformTypeHeaders"
-												[headerDetails]="
-													platformTypeHeaderDetails
-												"
-												[tableTitle]="
-													'Platform Types'
-												"></osee-import-table>
-										</ng-container>
-										<ng-container
-											*ngIf="
-												_importSummary.enumSets.length >
-												0
-											">
-											<osee-import-table
-												[data]="
-													(enumSets | async) || []
-												"
-												[headers]="enumSetHeaders"
-												[headerDetails]="
-													enumSetHeaderDetails
-												"
-												[tableTitle]="
-													'Enum Sets'
-												"></osee-import-table>
-										</ng-container>
-										<ng-container
-											*ngIf="
-												_importSummary.crossReferences
-													.length > 0
-											">
-											<osee-import-table
-												[data]="
-													_importSummary.crossReferences
-												"
-												[headers]="crossRefHeaders"
-												[headerDetails]="
-													crossReferenceHeaderDetails
-												"
-												[tableTitle]="
-													'Cross References'
-												"></osee-import-table>
-										</ng-container>
-									</div>
-									<button
-										mat-raised-button
-										color="primary"
-										(click)="performImport()"
-										[disabled]="!_importSummary">
-										Import
-									</button>
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														_importSummary.platformTypes
+													"
+													[headers]="
+														platformTypeHeaders
+													"
+													[headerDetails]="
+														platformTypeHeaderDetails
+													"
+													[tableTitle]="
+														'Platform Types'
+													"></osee-import-table>
+											</ng-container>
+											<ng-container
+												*ngIf="
+													_importSummary.enumSets
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														(enumSets | async) || []
+													"
+													[headers]="enumSetHeaders"
+													[headerDetails]="
+														enumSetHeaderDetails
+													"
+													[tableTitle]="
+														'Enum Sets'
+													"></osee-import-table>
+											</ng-container>
+											<ng-container
+												*ngIf="
+													_importSummary
+														.crossReferences
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														_importSummary.crossReferences
+													"
+													[headers]="crossRefHeaders"
+													[headerDetails]="
+														crossReferenceHeaderDetails
+													"
+													[tableTitle]="
+														'Cross References'
+													"></osee-import-table>
+											</ng-container>
+										</div>
+										<button
+											mat-raised-button
+											color="primary"
+											(click)="performImport()"
+											[disabled]="!_importSummary">
+											Import
+										</button>
+									</ng-container>
 								</ng-container>
 							</ng-template>
 						</ng-container>

@@ -86,7 +86,7 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
                   ArtifactId.valueOf(submessage.getId()))) {
                   //get all connections
                   for (InterfaceConnection connection : this.interfaceConnectionApi.getAccessor().getAllByRelation(
-                     branch, CoreRelationTypes.InterfaceConnectionContent_Message, ArtifactId.valueOf(message.getId()),
+                     branch, CoreRelationTypes.InterfaceConnectionMessage_Message, ArtifactId.valueOf(message.getId()),
                      Arrays.asList(CoreRelationTypes.InterfaceConnectionTransportType_TransportType))) {
                      structure.addPath(new ResolvedStructurePath(message.getName() + " > " + submessage.getName(),
                         "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString()));

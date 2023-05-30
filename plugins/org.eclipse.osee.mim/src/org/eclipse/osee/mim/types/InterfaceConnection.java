@@ -25,16 +25,10 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    public static final InterfaceConnection SENTINEL = new InterfaceConnection();
 
-   private String Name; //required
-
    private String Description;
-
    private TransportType TransportType;
-
    private Long primaryNode;
-
    private Long secondaryNode;
-
    private ApplicabilityToken applicability;
 
    public InterfaceConnection(ArtifactToken art) {

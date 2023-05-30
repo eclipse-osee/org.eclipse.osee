@@ -77,7 +77,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    @Override
    public InterfaceConnection getRelatedFromMessage(InterfaceMessageToken message) {
       return message.getArtifactReadable().getRelated(
-         CoreRelationTypes.InterfaceConnectionContent_Connection).getList().stream().filter(
+         CoreRelationTypes.InterfaceConnectionMessage_Connection).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceConnection(a)).findFirst().orElse(
                InterfaceConnection.SENTINEL);
    }

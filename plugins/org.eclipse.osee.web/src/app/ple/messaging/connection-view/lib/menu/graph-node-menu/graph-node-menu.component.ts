@@ -48,6 +48,8 @@ export class GraphNodeMenuComponent {
 	@Input() data: nodeData | nodeDataWithChanges = {
 		id: '',
 		name: '',
+		interfaceNodeNumber: '',
+		interfaceNodeGroupId: '',
 		interfaceNodeAddress: '',
 		interfaceNodeBgColor: '',
 	};

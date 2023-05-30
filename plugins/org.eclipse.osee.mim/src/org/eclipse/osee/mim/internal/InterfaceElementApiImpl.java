@@ -313,7 +313,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceStructureContent_Structure,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionContent_Connection,
+            CoreRelationTypes.InterfaceConnectionMessage_Connection,
             CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, elementId, parentRelations, InterfaceStructureElementToken.class);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

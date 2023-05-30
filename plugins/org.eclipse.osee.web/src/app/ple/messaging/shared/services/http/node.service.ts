@@ -50,7 +50,7 @@ export class NodeService {
 			apiURL + '/mim/branch/' + branchId + '/nodes/',
 			{
 				params: {
-					count: 3,
+					count: pageSize,
 					pageNum: pageNum,
 					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},
