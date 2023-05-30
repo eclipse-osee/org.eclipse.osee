@@ -50,6 +50,15 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    }
 
    @Override
+   public AtsUser getCurrentUserOrNull() {
+      UserToken user = orcsApi.userService().getUser();
+      if (user.isValid()) {
+         return getUserById(user);
+      }
+      return null;
+   }
+
+   @Override
    public AtsUser getCurrentUserNoCache() {
       return getCurrentUser();
    }
