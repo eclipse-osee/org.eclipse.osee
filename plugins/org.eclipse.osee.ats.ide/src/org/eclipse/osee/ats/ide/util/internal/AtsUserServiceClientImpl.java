@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
@@ -79,6 +80,15 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    @Override
    public String getCurrentUserId() {
       return UserManager.getUser().getUserId();
+   }
+
+   @Override
+   public AtsUser getCurrentUserOrNull() {
+      UserToken user = UserManager.getUser();
+      if (user.isValid()) {
+         return getUserById(user);
+      }
+      return null;
    }
 
    @Override

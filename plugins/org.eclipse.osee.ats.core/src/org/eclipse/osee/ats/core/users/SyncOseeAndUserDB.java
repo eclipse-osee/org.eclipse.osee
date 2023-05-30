@@ -101,9 +101,9 @@ public abstract class SyncOseeAndUserDB {
             .collect(Collectors.toList());
          time.end();
 
-         /////////////////////////////////////////////
-         ///////////// REPORT ONLY
-         /////////////////////////////////////////////
+         ////////////////////////////////////////////////////////////////
+         ///////////// THESE TESTS ONLY REPORT - NO AUTO-FIX AVAILABLE
+         ////////////////////////////////////////////////////////////////
 
          // Test if there duplicate users with same name - REPORT ONLY
          time = new ElapsedTime("testForDuplicates", debug);
@@ -115,12 +115,16 @@ public abstract class SyncOseeAndUserDB {
             results.logf("\nError: Error: Error: Sync aborted cause duplicates found; <b>RESOLVE THESE FIRST!!</b>\n");
          } else {
 
-            /////////////////////////////////////////////
-            ///////////// FIX IF PERSIST
-            /////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////
+            ///////////// THESE CHECKS HAVE FIXES IF PERSIST == TRUE
+            ////////////////////////////////////////////////////////////
 
             if (persist) {
-               changes = atsApi.createChangeSet(getTitle());
+               AtsUser user = atsApi.getUserService().getCurrentUserOrNull();
+               if (user == null) {
+                  user = atsApi.getUserService().getUserById(SystemUser.OseeSystem);
+               }
+               changes = atsApi.createChangeSet(getTitle(), user);
             }
 
             // Test that user is inactive in user db - FIX AVAILABLE

@@ -71,4 +71,6 @@ public interface IAtsUserService {
 
    AtsUser getUserByToken(UserToken userToken);
 
+   AtsUser getCurrentUserOrNull();
+
 }
