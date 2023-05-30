@@ -318,6 +318,8 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, InterfaceArtifact)
       .zeroOrOne(InterfaceNodeAddress)
+      .exactlyOne(InterfaceNodeNumber)
+      .exactlyOne(InterfaceNodeGroupId)
       .zeroOrOne(InterfaceNodeBackgroundColor));
 
    ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, InterfaceArtifact)
@@ -328,7 +330,18 @@ public interface CoreArtifactTypes {
       .exactlyOne(InterfaceMessagePeriodicity)
       .zeroOrOne(InterfaceMessageRate)
       .exactlyOne(InterfaceMessageWriteAccess)
-      .exactlyOne(InterfaceMessageType));
+      .exactlyOne(InterfaceMessageType)
+      .exactlyOne(InterfaceMessageExclude)
+      .exactlyOne(InterfaceMessageIoMode)
+      .exactlyOne(InterfaceMessageModeCode)
+      .exactlyOne(InterfaceMessageRateVer)
+      .exactlyOne(InterfaceMessagePriority)
+      .exactlyOne(InterfaceMessageProtocol)
+      .exactlyOne(InterfaceMessageRptWordCount)
+      .exactlyOne(InterfaceMessageRptCmdWord)
+      .exactlyOne(InterfaceMessageRunBeforeProc)
+      .exactlyOne(InterfaceMessageVer));
+
 
    ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, InterfaceArtifact)
       .exactlyOne(InterfaceSubMessageNumber));

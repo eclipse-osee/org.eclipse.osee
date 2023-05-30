@@ -119,7 +119,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
       List<RelationTypeSide> relations = Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
          CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
          CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-         CoreRelationTypes.InterfaceConnectionContent_Connection);
+         CoreRelationTypes.InterfaceConnectionMessage_Connection);
       return getWithRelations(branch, platformTypeId, relations);
    }
 
@@ -325,7 +325,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
       return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
          CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
          CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-         CoreRelationTypes.InterfaceConnectionContent_Connection), pageNum, pageSize, orderByAttribute);
+         CoreRelationTypes.InterfaceConnectionMessage_Connection), pageNum, pageSize, orderByAttribute);
    }
 
    @Override
@@ -335,7 +335,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
             CoreRelationTypes.InterfaceStructureContent_Structure,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionContent_Connection),
+            CoreRelationTypes.InterfaceConnectionMessage_Connection),
          pageNum, pageSize, orderByAttribute);
    }
 

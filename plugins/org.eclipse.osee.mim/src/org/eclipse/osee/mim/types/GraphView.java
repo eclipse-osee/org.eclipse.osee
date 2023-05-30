@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class GraphView {
    Collection<ConnectionView> edges;
    Collection<NodeView> nodes;
+   Collection<ClusterView> clusters;
 
    public GraphView() {
    }
@@ -86,6 +87,14 @@ public class GraphView {
    @JsonIgnore
    public void removeEdges(Long index) {
       edges = this.edges.stream().filter(x -> x.getId() != index).collect(Collectors.toList());
+   }
+
+   public Collection<ClusterView> getClusters() {
+      return clusters;
+   }
+
+   public void setClusters(Collection<ClusterView> clusters) {
+      this.clusters = clusters;
    }
 
 }

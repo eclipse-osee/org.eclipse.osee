@@ -55,6 +55,7 @@ import type {
 	transportType,
 } from '@osee/messaging/shared/types';
 import { relation, transactionToken } from '@osee/shared/types';
+import { ClusterNode } from '@swimlane/ngx-graph';
 
 @Injectable({
 	providedIn: 'root',
@@ -72,7 +73,7 @@ export class CurrentGraphService {
 					repeatWhen((_) => this.updated),
 					share()
 				),
-				of({ nodes: [], edges: [] })
+				of({ nodes: [], edges: [], clusters: [] })
 			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
@@ -428,17 +429,20 @@ export class CurrentGraphService {
 	private transform(apiResponse: {
 		nodes: OseeNode<nodeData>[];
 		edges: OseeEdge<connection>[];
+		clusters: ClusterNode[];
 	}) {
 		let returnObj: {
 			nodes: OseeNode<nodeData>[];
 			edges: OseeEdge<connection>[];
-		} = { nodes: [], edges: [] };
+			clusters: ClusterNode[];
+		} = { nodes: [], edges: [], clusters: [] };
 		apiResponse.nodes.forEach((node) => {
 			returnObj.nodes.push({ ...node, id: node.id.toString() });
 		});
 		apiResponse.edges.forEach((edge) => {
 			returnObj.edges.push({ ...edge, id: 'a' + edge?.id?.toString() });
 		});
+		returnObj.clusters = apiResponse.clusters;
 		return returnObj;
 	}
 
@@ -447,6 +451,7 @@ export class CurrentGraphService {
 		graph: {
 			nodes: OseeNode<nodeData | nodeDataWithChanges>[];
 			edges: OseeEdge<connection | connectionWithChanges>[];
+			clusters: ClusterNode[];
 		}
 	) {
 		let newNodes: changeInstance[] = [];
@@ -707,6 +712,8 @@ export class CurrentGraphService {
 				deleted: true,
 				id: '-1',
 				name: '',
+				interfaceNodeNumber: '',
+				interfaceNodeGroupId: '',
 				changes: {},
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',
@@ -772,6 +779,8 @@ export class CurrentGraphService {
 			node.data = {
 				id: '-1',
 				name: '',
+				interfaceNodeNumber: '',
+				interfaceNodeGroupId: '',
 				deleted: true,
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',

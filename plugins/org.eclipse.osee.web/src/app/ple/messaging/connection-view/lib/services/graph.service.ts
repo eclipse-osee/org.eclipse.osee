@@ -20,6 +20,7 @@ import type {
 } from '@osee/messaging/shared/types';
 import { HttpParamsType } from '@osee/shared/types';
 import { apiURL } from '@osee/environments';
+import { ClusterNode } from '@swimlane/ngx-graph';
 
 @Injectable({
 	providedIn: 'root',
@@ -35,6 +36,7 @@ export class GraphService {
 		return this.http.get<{
 			nodes: OseeNode<nodeData>[];
 			edges: OseeEdge<connection>[];
+			clusters: ClusterNode[];
 		}>(apiURL + '/mim/branch/' + id + '/graph', { params: params });
 	}
 }

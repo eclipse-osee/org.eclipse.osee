@@ -24,14 +24,11 @@ public class InterfaceNode extends PLGenericDBObject {
 
    public static final InterfaceNode SENTINEL = new InterfaceNode();
 
-   private String Name; //required
-
    private String Description;
-
+   private String nodeNumber;
+   private String nodeGroupId;
    private ApplicabilityToken applicability;
-
    private String Color;
-
    private String Address;
 
    public InterfaceNode(ArtifactToken art) {
@@ -43,6 +40,8 @@ public class InterfaceNode extends PLGenericDBObject {
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setColor(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBackgroundColor, ""));
       this.setAddress(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeAddress, ""));
+      this.setNodeNumber(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeNumber, ""));
+      this.setNodeGroupId(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeGroupId, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
@@ -108,6 +107,22 @@ public class InterfaceNode extends PLGenericDBObject {
     */
    public void setAddress(String address) {
       Address = address;
+   }
+
+   public String getNodeNumber() {
+      return nodeNumber;
+   }
+
+   public void setNodeNumber(String nodeNumber) {
+      this.nodeNumber = nodeNumber;
+   }
+
+   public String getNodeGroupId() {
+      return nodeGroupId;
+   }
+
+   public void setNodeGroupId(String nodeGroupId) {
+      this.nodeGroupId = nodeGroupId;
    }
 
 }

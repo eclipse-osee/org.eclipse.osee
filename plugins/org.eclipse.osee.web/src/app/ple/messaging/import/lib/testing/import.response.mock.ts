@@ -20,10 +20,14 @@ export const importSummaryMock: ImportSummary = {
 	primaryNode: {
 		id: '1',
 		name: 'Node 1',
+		interfaceNodeNumber: '1',
+		interfaceNodeGroupId: 'group1',
 	},
 	secondaryNode: {
 		id: '2',
 		name: 'Node 2',
+		interfaceNodeNumber: '2',
+		interfaceNodeGroupId: 'group1',
 	},
 	messages: [
 		{
@@ -33,6 +37,8 @@ export const importSummaryMock: ImportSummary = {
 			initiatingNode: {
 				id: '1',
 				name: 'Node 1',
+				interfaceNodeNumber: '1',
+				interfaceNodeGroupId: 'group1',
 			},
 			description: '',
 			interfaceMessageNumber: '10',

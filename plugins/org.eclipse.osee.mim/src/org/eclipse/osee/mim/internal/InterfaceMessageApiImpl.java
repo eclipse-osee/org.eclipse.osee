@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -29,7 +31,6 @@ import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
-import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
@@ -44,14 +45,12 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    private ArtifactAccessor<InterfaceMessageToken> accessor;
    private final InterfaceNodeViewApi nodeApi;
    private final InterfaceConnectionViewApi connectionApi;
-   private final InterfaceSubMessageApi subMessageApi;
    private final List<RelationTypeSide> relations;
    private final List<RelationTypeSide> fullRelations;
    private final List<RelationTypeSide> affectedRelations;
 
-   InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi, InterfaceSubMessageApi subMessageApi, InterfaceConnectionViewApi connectionApi) {
+   InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi, InterfaceConnectionViewApi connectionApi) {
       this.nodeApi = nodeApi;
-      this.subMessageApi = subMessageApi;
       this.connectionApi = connectionApi;
       this.setAccessor(new InterfaceMessageAccessor(orcsApi));
       this.relations = createRelationTypeSideList();
@@ -66,28 +65,24 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
     * @return
     */
    private List<RelationTypeSide> createFullRelationTypeSideList() {
-      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
-      return relations;
+      return Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
    }
 
-   private List<AttributeTypeId> createMessageAttributes() {
-      List<AttributeTypeId> messageAttributes = new LinkedList<AttributeTypeId>();
-      messageAttributes.add(CoreAttributeTypes.Name);
-      messageAttributes.add(CoreAttributeTypes.Description);
-      messageAttributes.add(CoreAttributeTypes.InterfaceMessageNumber);
-      messageAttributes.add(CoreAttributeTypes.InterfaceMessagePeriodicity);
-      messageAttributes.add(CoreAttributeTypes.InterfaceMessageRate);
-      messageAttributes.add(CoreAttributeTypes.InterfaceMessageWriteAccess);
-      messageAttributes.add(CoreAttributeTypes.InterfaceMessageType);
-      return messageAttributes;
+   private List<AttributeTypeId> getMessageSearchAttributes() {
+      List<AttributeTypeId> attributes = CoreArtifactTypes.InterfaceMessage.getValidAttributeTypes().stream().map(
+         a -> AttributeTypeId.valueOf(a.getId())).collect(Collectors.toList());
+      List<AttributeTypeToken> excluded = CoreArtifactTypes.Artifact.getValidAttributeTypes();
+      excluded.removeAll(Arrays.asList(CoreAttributeTypes.Name, CoreAttributeTypes.Description));
+      attributes.removeAll(excluded);
+      return attributes;
    }
 
-   private List<AttributeTypeId> createSubMessageAttributes() {
-      List<AttributeTypeId> attributes = new LinkedList<AttributeTypeId>();
-      attributes.add(CoreAttributeTypes.Name);
-      attributes.add(CoreAttributeTypes.Description);
-      attributes.add(CoreAttributeTypes.InterfaceSubMessageNumber);
+   private List<AttributeTypeId> getSubMessageSearchAttributes() {
+      List<AttributeTypeId> attributes = CoreArtifactTypes.InterfaceSubMessage.getValidAttributeTypes().stream().map(
+         a -> AttributeTypeId.valueOf(a.getId())).collect(Collectors.toList());
+      List<AttributeTypeToken> excluded = CoreArtifactTypes.Artifact.getValidAttributeTypes();
+      excluded.removeAll(Arrays.asList(CoreAttributeTypes.Name, CoreAttributeTypes.Description));
+      attributes.removeAll(excluded);
       return attributes;
    }
 
@@ -111,7 +106,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    private List<RelationTypeSide> createAffectedRelations() {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceConnectionContent_Message);
+      relations.add(CoreRelationTypes.InterfaceConnectionMessage_Message);
       return relations;
    }
 
@@ -140,7 +135,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
       ArtifactId viewId) {
       try {
          return this.setUpMessage(branch,
-            this.getAccessor().getByRelation(branch, messageId, CoreRelationTypes.InterfaceConnectionContent_Connection,
+            this.getAccessor().getByRelation(branch, messageId, CoreRelationTypes.InterfaceConnectionMessage_Connection,
                connectionId, this.getFollowRelationDetails(), viewId));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
@@ -176,7 +171,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    @Override
    public InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId) {
       try {
-         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceConnectionContent_Connection,
+         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceConnectionMessage_Connection,
             CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, messageId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -283,7 +278,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
       try {
          InterfaceConnection connection = this.connectionApi.get(branch, connectionId);
          List<InterfaceMessageToken> messages =
-            this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionContent_Connection,
+            this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionMessage_Connection,
                connectionId, this.getFollowRelationDetails(), pageNum, pageSize, orderByAttribute, viewId).stream().map(
                   m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
          messages.stream().forEach(m -> {
@@ -307,11 +302,11 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    @Override
    public int getAllForConnectionAndFilterCount(BranchId branch, ArtifactId connectionId, String filter) {
       int count = 0;
-      List<AttributeTypeId> messageAttributes = createMessageAttributes();
-      List<AttributeTypeId> subMessageAttributes = createSubMessageAttributes();
+      List<AttributeTypeId> messageAttributes = getMessageSearchAttributes();
+      List<AttributeTypeId> subMessageAttributes = getSubMessageSearchAttributes();
       try {
          count = this.getAccessor().getAllByRelationAndFilterAndCount(branch,
-            CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, filter, messageAttributes,
+            CoreRelationTypes.InterfaceConnectionMessage_Connection, connectionId, filter, messageAttributes,
             this.fullRelations, subMessageAttributes);
       } catch (Exception ex) {
          System.out.println(ex);
@@ -326,7 +321,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
       try {
          count = this.getAccessor().getAllByRelationAndCount(branch,
-            CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId);
+            CoreRelationTypes.InterfaceConnectionMessage_Connection, connectionId);
       } catch (Exception ex) {
          System.out.println(ex);
          return -1;
@@ -338,12 +333,12 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    public Collection<InterfaceMessageToken> getAllForConnectionAndFilter(BranchId branch, ArtifactId connectionId,
       String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       List<InterfaceMessageToken> messages = new LinkedList<InterfaceMessageToken>();
-      List<AttributeTypeId> messageAttributes = createMessageAttributes();
-      List<AttributeTypeId> subMessageAttributes = createSubMessageAttributes();
+      List<AttributeTypeId> messageAttributes = getMessageSearchAttributes();
+      List<AttributeTypeId> subMessageAttributes = getSubMessageSearchAttributes();
       try {
          InterfaceConnection connection = this.connectionApi.get(branch, connectionId);
          messages = this.getAccessor().getAllByRelationAndFilter(branch,
-            CoreRelationTypes.InterfaceConnectionContent_Connection, connectionId, filter, messageAttributes,
+            CoreRelationTypes.InterfaceConnectionMessage_Connection, connectionId, filter, messageAttributes,
             this.fullRelations, pageNum, pageSize, orderByAttribute, subMessageAttributes, viewId).stream().map(
                m -> this.setUpMessage(branch, m)).collect(Collectors.toList());
 

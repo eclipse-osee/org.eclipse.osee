@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
+import org.eclipse.osee.mim.types.ClusterView;
 import org.eclipse.osee.mim.types.ConnectionView;
 import org.eclipse.osee.mim.types.GraphView;
 import org.eclipse.osee.mim.types.InterfaceConnection;
@@ -47,11 +48,27 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
          GraphView graph = new GraphView();
          graph.setEdges(new LinkedList<ConnectionView>());
          graph.setNodes(new LinkedList<NodeView>());
+         graph.setClusters(new LinkedList<ClusterView>());
          Collection<InterfaceNode> nodes = interfaceNodeApi.getAccessor().getAll(branch, viewId);
          Collection<InterfaceConnection> edges = interfaceConnectionApi.getAll(branch, viewId);
          for (InterfaceNode node : nodes) {
             graph.addNode(new NodeView(node));
+
+            // If the node has a group id set, add it to the corresponding cluster
+            if (!node.getNodeGroupId().isEmpty()) {
+               String clusterId = node.getNodeGroupId();
+               ClusterView cluster =
+                  graph.getClusters().stream().filter(c -> c.getId().equals(clusterId)).findFirst().orElse(null);
+               if (cluster == null) {
+                  cluster = new ClusterView(clusterId, "");
+                  graph.getClusters().add(cluster);
+               }
+               cluster.getChildNodeIds().add(node.getIdString());
+            }
          }
+
+         graph.getClusters().removeIf(c -> c.getChildNodeIds().size() < 2);
+
          for (InterfaceConnection connection : edges) {
             if (connection.getPrimaryNode() > -1 && connection.getSecondaryNode() > -1) {
                graph.addEdges(new ConnectionView(connection));

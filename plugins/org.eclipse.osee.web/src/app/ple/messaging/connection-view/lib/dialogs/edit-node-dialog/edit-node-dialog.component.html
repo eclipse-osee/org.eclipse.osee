@@ -32,6 +32,24 @@
 	</mat-form-field>
 	<br />
 	<mat-form-field>
+		<mat-label>Edit Node Number</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.interfaceNodeNumber"
+			#input />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
+		<mat-label>Edit Node Group ID</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="data.interfaceNodeGroupId"
+			#input />
+	</mat-form-field>
+	<br />
+	<mat-form-field>
 		<mat-label>Edit Address/Port</mat-label>
 		<input
 			matInput

@@ -12,14 +12,15 @@
  -->
 <ng-container *ngIf="data | async as graphData">
 	<div
-		style="width: 100vw; height: 80vh"
 		(contextmenu)="openGraphDialog($event)"
-		data-cy="graph">
+		data-cy="graph"
+		class="tw-h-full tw-w-screen">
 		<ngx-graph
 			class="chart-container"
-			layout="dagre"
+			layout="dagreCluster"
 			[nodes]="graphData.nodes"
 			[links]="graphData.edges"
+			[clusters]="graphData.clusters"
 			[update$]="update">
 			<ng-template #defsTemplate>
 				<!-- <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
@@ -269,6 +270,15 @@
 						</ng-container>
 					</ng-container>
 				</svg:g>
+			</ng-template>
+
+			<ng-template
+				#clusterTemplate
+				let-cluster>
+				<svg:rect
+					[attr.width]="cluster.dimension.width"
+					[attr.height]="cluster.dimension.height"
+					[attr.fill]="'rgba(0, 0, 0, 0.15)'" />
 			</ng-template>
 		</ngx-graph>
 	</div>

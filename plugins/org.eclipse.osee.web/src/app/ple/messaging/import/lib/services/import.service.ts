@@ -83,8 +83,7 @@ export class ImportService {
 		new BehaviorSubject<ImportOption | undefined>(undefined);
 	private _importSuccess$: BehaviorSubject<boolean | undefined> =
 		new BehaviorSubject<boolean | undefined>(undefined);
-	private _importInProgress$: BehaviorSubject<boolean> =
-		new BehaviorSubject<boolean>(false);
+	private _importInProgress$: Subject<boolean> = new Subject<boolean>();
 	private _selectedConnectionId = new BehaviorSubject<string>('');
 
 	private _connections = this.branchId.pipe(
@@ -116,7 +115,8 @@ export class ImportService {
 				}
 				if (
 					file?.name.endsWith('.xlsx') ||
-					file?.name.endsWith('.xls')
+					file?.name.endsWith('.xls') ||
+					file?.name.endsWith('.zip')
 				) {
 					return of(new FormData()).pipe(
 						tap((formData) => {
@@ -141,6 +141,7 @@ export class ImportService {
 				return of(undefined);
 			}
 		),
+		tap(() => (this.ImportInProgress = false)),
 		filter((v) => v !== undefined) as OperatorFunction<
 			ImportSummary | undefined,
 			ImportSummary
@@ -1014,7 +1015,7 @@ export class ImportService {
 	}
 
 	get importInProgress() {
-		return this._importInProgress$;
+		return this._importInProgress$.asObservable();
 	}
 
 	set ImportInProgress(value: boolean) {
