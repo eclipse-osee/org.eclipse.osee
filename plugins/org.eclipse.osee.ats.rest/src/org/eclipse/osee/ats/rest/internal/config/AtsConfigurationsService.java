@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
@@ -67,7 +66,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsConfigurationsService extends AbstractAtsConfigurationService {
 
    private final OrcsApi orcsApi;
-   Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)", Pattern.DOTALL);
 
    public AtsConfigurationsService(AtsApi atsApi, OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -151,7 +149,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return configs;
    }
 
-   private void processConfigQueryResults(AtsConfigurations configs, Map<Long, ArtifactReadable> idToArtifact, ElapsedTime time2, ResultSet<ArtifactReadable> results) {
+   private void processConfigQueryResults(AtsConfigurations configs, Map<Long, ArtifactReadable> idToArtifact,
+      ElapsedTime time2, ResultSet<ArtifactReadable> results) {
       time2.start("Server ACS - process configs");
       for (ArtifactReadable art : results) {
          try {
@@ -256,7 +255,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return configs.getAtsConfig();
    }
 
-   private TeamDefinition handleTeamDef(ArtifactReadable teamDefArt, TeamDefinition teamDef, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
+   private TeamDefinition handleTeamDef(ArtifactReadable teamDefArt, TeamDefinition teamDef,
+      Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
       ArtifactReadable parent = teamDefArt.getParent();
       if (parent != null) {
          teamDef.setParentId(parent.getId());
@@ -277,14 +277,16 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       return teamDef;
    }
 
-   private Version handleVersion(ArtifactReadable verArt, Version ver, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
+   private Version handleVersion(ArtifactReadable verArt, Version ver, Map<Long, ArtifactReadable> idToArtifact,
+      AtsConfigurations configs) {
       for (ArtifactId teamDefId : verArt.getRelatedIds(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition)) {
          ver.setTeamDefId(teamDefId.getId());
       }
       return ver;
    }
 
-   private ActionableItem handleAi(ArtifactReadable aiArt, ActionableItem ai, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
+   private ActionableItem handleAi(ArtifactReadable aiArt, ActionableItem ai, Map<Long, ArtifactReadable> idToArtifact,
+      AtsConfigurations configs) {
       ArtifactReadable parent = aiArt.getParent();
       if (parent != null) {
          ai.setParentId(parent.getId());

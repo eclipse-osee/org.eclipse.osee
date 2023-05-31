@@ -412,6 +412,10 @@ public class AHTML {
       return "</table>";
    }
 
+   public static String addRowMultiColumnTableWithBg(String backgroundColor, String... str) {
+      return addRowMultiColumnTable(str, null, backgroundColor);
+   }
+
    public static String addRowMultiColumnTable(String... str) {
       return addRowMultiColumnTable(str, null, null);
    }
