@@ -64,7 +64,10 @@ public interface ApplicabilityEndpoint {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<ApplicabilityToken> getApplicabilityTokens(@QueryParam("orderByName") @DefaultValue("false") boolean orderByName, @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("pageNum") @DefaultValue("0") Long pageNum, @QueryParam("count") @DefaultValue("0") Long pageSize);
+   Collection<ApplicabilityToken> getApplicabilityTokens(
+      @QueryParam("orderByName") @DefaultValue("false") boolean orderByName,
+      @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("pageNum") @DefaultValue("0") Long pageNum,
+      @QueryParam("count") @DefaultValue("0") Long pageSize);
 
    @GET
    @Path("count")
@@ -145,6 +148,11 @@ public interface ApplicabilityEndpoint {
 
    @GET
    @Path("features")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<FeatureDefinition> getFeatureDefinitionData(@QueryParam("productType") @DefaultValue("") String productType);
+
+   @GET
+   @Path("features/ide")
    @Produces(MediaType.APPLICATION_JSON)
    List<FeatureDefinition> getFeatureDefinitionData();
 

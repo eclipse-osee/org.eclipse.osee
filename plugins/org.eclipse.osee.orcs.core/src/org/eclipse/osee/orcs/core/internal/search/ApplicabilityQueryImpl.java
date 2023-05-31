@@ -58,6 +58,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
@@ -159,7 +160,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<FeatureDefinition> getFeatureDefinitionData(BranchId branch) {
+   public List<FeatureDefinition> getFeatureDefinitionData(BranchId branch, String productType) {
       BranchId branchToUse = branch;
       Branch br = branchQuery.andId(branch).getResults().getExactlyOne();
       if (br.getBranchType().equals(BranchType.MERGE)) {
@@ -167,8 +168,12 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       }
       List<FeatureDefinition> featureDefinition = new ArrayList<>();
 
-      List<ArtifactReadable> featureArts =
-         queryFactory.fromBranch(branchToUse).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
+      QueryBuilder query = queryFactory.fromBranch(branchToUse).andIsOfType(CoreArtifactTypes.Feature);
+      if (!productType.isEmpty()) {
+         query = query.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> featureArts = query.asArtifacts();
+
       Collections.sort(featureArts, new NamedComparator(SortOrder.ASCENDING));
 
       for (ArtifactToken featureArt : featureArts) {
@@ -187,6 +192,11 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       }
 
       return featureDefinition;
+   }
+
+   @Override
+   public List<FeatureDefinition> getFeatureDefinitionData(BranchId branch) {
+      return getFeatureDefinitionData(branch, "");
    }
 
    @Override
