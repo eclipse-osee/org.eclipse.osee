@@ -123,6 +123,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
     */
    String getConfigValue(String key);
 
+   String getConfigValueNoCache(String key);
+
    String getConfigValue(String key, String defaultValue);
 
    Log getLogger();

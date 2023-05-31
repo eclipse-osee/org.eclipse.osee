@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.config;
 
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
@@ -29,6 +30,7 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
 
    protected AtsConfigurations atsConfigurations;
    protected AtsApi atsApi;
+   public static Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)", Pattern.DOTALL);
 
    @Override
    public void setAtsApi(AtsApi atsApi) {

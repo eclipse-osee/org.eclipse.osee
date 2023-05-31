@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
@@ -63,6 +64,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
 import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.ats.core.agile.AgileService;
+import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.internal.AtsWorkItemMetricsServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
@@ -172,7 +174,8 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       searchDataProviders.remove(provider);
    }
 
-   public void setTaskSetDefinitionProviderService(IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
+   public void setTaskSetDefinitionProviderService(
+      IAtsTaskSetDefinitionProviderService taskSetDefinitionProviderService) {
       this.taskSetDefinitionProviderService = taskSetDefinitionProviderService;
    }
 
@@ -553,6 +556,25 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public String getConfigValue(String key) {
       return getConfigService().getConfigurations().getConfigValue(key);
+   }
+
+   @Override
+   public String getConfigValueNoCache(String key) {
+      ArtifactToken atsConfig = getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
+      if (atsConfig != null) {
+         for (String keyValue : getAttributeResolver().getAttributesToStringList(atsConfig,
+            CoreAttributeTypes.GeneralStringData)) {
+            Matcher m = AbstractAtsConfigurationService.keyValuePattern.matcher(keyValue);
+            if (m.find()) {
+               String fndKey = m.group(1);
+               if (key.equals(fndKey)) {
+                  String value = m.group(2);
+                  return value;
+               }
+            }
+         }
+      }
+      return "";
    }
 
    @Override
