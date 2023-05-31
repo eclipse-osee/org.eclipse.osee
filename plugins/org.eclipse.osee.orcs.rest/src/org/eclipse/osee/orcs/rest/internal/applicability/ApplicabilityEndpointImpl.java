@@ -82,10 +82,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public Collection<ApplicabilityToken> getApplicabilityTokens(boolean orderByName, String filter, Long pageNum, Long pageSize) {
+   public Collection<ApplicabilityToken> getApplicabilityTokens(boolean orderByName, String filter, Long pageNum,
+      Long pageSize) {
       return applicabilityQuery.getApplicabilityTokens(branch, orderByName, filter, pageNum, pageSize);
    }
-   
+
    @Override
    public Long getApplicabilityTokenCount(String filter) {
       return applicabilityQuery.getApplicabilityTokenCount(branch, filter);
@@ -133,6 +134,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public List<ArtifactToken> getCfgGroup() {
       return applicabilityQuery.getConfigurationGroupsForBranch(branch);
+   }
+
+   @Override
+   public List<FeatureDefinition> getFeatureDefinitionData(String productType) {
+      return applicabilityQuery.getFeatureDefinitionData(branch, productType);
    }
 
    @Override

@@ -37,8 +37,9 @@ public interface ApplicabilityQuery {
 
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
 
-   Collection<ApplicabilityToken> getApplicabilityTokens(BranchId branch, boolean orderByName, String filter, Long pageNum, Long pageSize);
-   
+   Collection<ApplicabilityToken> getApplicabilityTokens(BranchId branch, boolean orderByName, String filter,
+      Long pageNum, Long pageSize);
+
    Long getApplicabilityTokenCount(BranchId branch, String filter);
 
    ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch);
@@ -47,13 +48,12 @@ public interface ApplicabilityQuery {
 
    List<ApplicabilityToken> getApplicabilityReferenceTokens(ArtifactId artifact, BranchId branch);
 
-   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch);
+   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds,
+      BranchId branch);
 
    List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
 
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2);
-
-   List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
 
    Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
 
@@ -65,9 +65,11 @@ public interface ApplicabilityQuery {
 
    ArtifactId getVersionConfig(ArtifactId art, BranchId branch);
 
-   List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds, BranchId branch);
+   List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds,
+      BranchId branch);
 
-   List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds, BranchId branch);
+   List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx,
+      List<ApplicabilityId> applicabilityIds, BranchId branch);
 
    Set<ArtifactId> getExcludedArtifacts(BranchId branch, ArtifactId view);
 
@@ -89,6 +91,11 @@ public interface ApplicabilityQuery {
 
    List<ArtifactToken> getConfigurationsForBranch(BranchId branch);
 
-   List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic, List<ArtifactTypeToken> arts, List<AttributeTypeToken> atts);
+   List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic, List<ArtifactTypeToken> arts,
+      List<AttributeTypeToken> atts);
+
+   List<FeatureDefinition> getFeatureDefinitionData(BranchId branch, String productType);
+
+   List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
 
 }
