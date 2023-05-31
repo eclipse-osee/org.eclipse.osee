@@ -370,6 +370,12 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, InterfaceArtifact));
 
+   ArtifactTypeToken InterfaceRate = osee.add(osee.artifactType(2434833974449324686L, "Interface Transmission Rate", false, InterfaceArtifact));
+
+   ArtifactTypeToken InterfaceUnit = osee.add(osee.artifactType(8314622128828217343L, "Interface Unit", false, InterfaceArtifact));
+
+   ArtifactTypeToken InterfaceMessageTypeEnum = osee.add(osee.artifactType(8893121862470164649L, "Interface Message Type Enum", false, InterfaceArtifact));
+
    ArtifactTypeToken CrossReference = osee.add(osee.artifactType(5198407772394384771L, "Cross Reference", false, Artifact)
       .exactlyOne(CrossReferenceValue)
       .zeroOrOne(CrossReferenceArrayValues)
