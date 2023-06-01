@@ -18,6 +18,7 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
+import org.eclipse.osee.define.api.md.DefineMarkdownEndpoint;
 import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
@@ -98,6 +99,8 @@ public interface OseeClient extends OseeApi {
    ApplicabilityUiEndpoint getApplicabilityUiEndpoint();
 
    DefineBranchEndpointApi getDefineBranchEndpoint();
+
+   DefineMarkdownEndpoint getDefineMarkdownEndpoint();
 
    SessionEndpoint getSessionEndpoint();
 
