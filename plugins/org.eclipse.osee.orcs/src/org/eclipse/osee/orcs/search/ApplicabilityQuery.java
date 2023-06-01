@@ -53,6 +53,8 @@ public interface ApplicabilityQuery {
 
    List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
 
+   List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch, String productType);
+
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2);
 
    Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
