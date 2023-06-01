@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
@@ -46,6 +46,7 @@ export class ReportService {
 
 	private _currentPage$ = new BehaviorSubject<number>(0);
 	private _currentPageSize$ = new BehaviorSubject<number>(10);
+	private _displayTable$ = new BehaviorSubject<boolean>(false);
 
 	constructor(private http: HttpClient) {}
 
@@ -92,8 +93,17 @@ export class ReportService {
 	get currentPageSize() {
 		return this._currentPageSize$;
 	}
+
 	set pageSize(pageSize: number) {
 		this._currentPageSize$.next(pageSize);
+	}
+
+	get displayTable() {
+		return this._displayTable$.asObservable();
+	}
+
+	set DisplayTable(display: boolean) {
+		this._displayTable$.next(display);
 	}
 
 	querySearchCount = combineLatest([

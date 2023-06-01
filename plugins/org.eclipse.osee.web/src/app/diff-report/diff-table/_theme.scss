@@ -37,8 +37,6 @@
 	.element-detail {
 		overflow: hidden;
 		justify-content: left;
-		border-left: 0.1rem solid mat.get-color-from-palette($primary);
-		border-right: 0.1rem solid mat.get-color-from-palette($primary);
 	}
 
 	.detail-table {
@@ -66,11 +64,8 @@
 		background-color: mat.get-color-from-palette($foreground);
 	}
 
-	.queue-element-detail {
-		overflow: hidden;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	.detail-table-row-border {
+		border-bottom: 0.1rem solid mat.get-color-from-palette($primary);
 	}
 }
 

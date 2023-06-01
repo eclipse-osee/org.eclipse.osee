@@ -31,15 +31,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { Build, Program, SearchOptions } from '../model/types';
-import {
-	BehaviorSubject,
-	combineLatest,
-	from,
-	iif,
-	Observable,
-	of,
-	Subject,
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
 import { Component, Output } from '@angular/core';
 
 @Component({
@@ -180,6 +172,7 @@ export class SearchCriteriaComponent {
 		this.reportService.SelectedProgram = {} as Program;
 		this.reportService.SelectedBuild = {} as Build;
 		this.reportService.setSearchOptions = searchOptions;
+		this.reportService.DisplayTable = false;
 	}
 
 	startGenerateReport() {

@@ -112,10 +112,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		'workflowID',
 		'program',
 		'build',
-		'subsystem',
-		'type',
 		'state',
-		'enhancement',
 		'description',
 		'actions',
 	];

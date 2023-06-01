@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { SearchCriteriaComponent } from './search-criteria/search-criteria.component';
 import { DiffTableComponent } from './diff-table/diff-table.component';
 import { SearchOptions } from './model/types';
-import { Subject } from 'rxjs';
+import { ReportService } from './services/report.service';
 
 @Component({
 	selector: 'osee-diff-report',
@@ -24,10 +24,11 @@ import { Subject } from 'rxjs';
 	templateUrl: './diff-report.component.html',
 })
 export class DiffReportComponent {
-	displayTable = new Subject<Boolean>();
+	constructor(private reportService: ReportService) {}
+	displayTable = this.reportService.displayTable;
 
 	startGeneratingReport(searchOptions: SearchOptions) {
-		this.displayTable.next(searchOptions.displaySearch);
+		this.reportService.DisplayTable = searchOptions.displaySearch;
 	}
 }
 

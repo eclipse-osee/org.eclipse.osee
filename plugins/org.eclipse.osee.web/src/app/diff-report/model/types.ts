@@ -40,5 +40,5 @@ export interface SearchOptions {
 	workflowDesc: string;
 	program: string;
 	build: string;
-	displaySearch: Boolean;
+	displaySearch: boolean;
 }
