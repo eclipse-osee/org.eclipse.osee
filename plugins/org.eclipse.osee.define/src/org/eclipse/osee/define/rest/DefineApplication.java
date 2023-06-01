@@ -24,6 +24,7 @@ import org.eclipse.osee.define.api.DefineOperations;
 import org.eclipse.osee.define.rest.internal.DataRightsSwReqAndCodeResource;
 import org.eclipse.osee.define.rest.internal.DefineBranchEndpointImpl;
 import org.eclipse.osee.define.rest.internal.SystemSafetyResource;
+import org.eclipse.osee.define.rest.md.DefineMarkdownEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.PublishingEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.datarights.DataRightsEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.templatemanager.TemplateManagerEndpointImpl;
@@ -89,6 +90,7 @@ public final class DefineApplication extends Application {
               new DataRightsSwReqAndCodeResource(activityLog, resourceRegistry, orcsApi),
               new DataRightsEndpointImpl(this.defineOperations),
               new DefineBranchEndpointImpl(jdbcClient, orcsApi),
+              new DefineMarkdownEndpointImpl(jdbcClient, orcsApi),
               new ImportEndpointImpl(this.defineOperations),
               new PublishingEndpointImpl(this.defineOperations),
               new SynchronizationEndpointImpl(this.defineOperations),

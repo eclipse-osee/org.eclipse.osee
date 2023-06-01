@@ -24,6 +24,7 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.api.GitEndpoint;
 import org.eclipse.osee.define.api.ImportEndpoint;
+import org.eclipse.osee.define.api.md.DefineMarkdownEndpoint;
 import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
@@ -99,12 +100,14 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    @Override
-   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options) {
+   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates,
+      QueryOptions options) {
       SearchResponse result = performSearch(request, branch, predicates, options);
       return result;
    }
 
-   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates, QueryOptions options) {
+   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates,
+      QueryOptions options) {
       Conditions.checkNotNull(requestType, "RequestType");
       TransactionId fromTx = TransactionId.valueOf(0);
       if (options.isHistorical()) {
@@ -240,6 +243,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public DefineBranchEndpointApi getDefineBranchEndpoint() {
       return this.getDefineEndpoint(DefineBranchEndpointApi.class);
+   }
+
+   @Override
+   public DefineMarkdownEndpoint getDefineMarkdownEndpoint() {
+      return this.getDefineEndpoint(DefineMarkdownEndpoint.class);
    }
 
    /**
