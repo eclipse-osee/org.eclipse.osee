@@ -127,6 +127,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId view, String productType) {
+      return applicabilityQuery.getViewApplicabilityTokens(view, branch, productType);
+   }
+
+   @Override
    public List<ArtifactToken> getViews() {
       return applicabilityQuery.getViewsForBranch(branch);
    }

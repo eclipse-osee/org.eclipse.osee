@@ -153,9 +153,26 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
    @Override
    public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch) {
+      return getViewApplicabilityTokens(artId, branch, "");
+   }
+
+   @Override
+   public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch, String productType) {
       List<ApplicabilityToken> result = new ArrayList<>();
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
       tupleQuery.getTuple2KeyValuePair(ViewApplicability, artId, branch, consumer);
+      if (!productType.isEmpty()) {
+         List<ApplicabilityToken> productTypeApps = new ArrayList<>();
+         BiConsumer<Long, String> consumer2 = (id, name) -> productTypeApps.add(new ApplicabilityToken(id, name));
+         for (FeatureDefinition featureDefinition : getFeatureDefinitionData(branch, productType)) {
+            tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ApplicabilityDefinition,
+               ArtifactId.valueOf(featureDefinition.getId()), branch, consumer2);
+         }
+         List<ApplicabilityToken> intersect =
+            result.stream().filter(productTypeApps::contains).collect(Collectors.toList());
+         return intersect;
+      }
+
       return result;
    }
 

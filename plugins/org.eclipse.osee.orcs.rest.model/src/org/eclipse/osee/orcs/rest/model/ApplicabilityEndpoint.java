@@ -208,9 +208,15 @@ public interface ApplicabilityEndpoint {
    XResultData createProductType(ProductTypeDefinition productType);
 
    @GET
-   @Path("view/{id}")
+   @Path("view/{id}/ide")
    @Produces(MediaType.APPLICATION_JSON)
    List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("id") ArtifactId id);
+
+   @GET
+   @Path("view/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("id") ArtifactId id,
+      @QueryParam("productType") @DefaultValue("") String productType);
 
    @DELETE
    @Path("view/{id}")
