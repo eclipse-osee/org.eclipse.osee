@@ -16,11 +16,16 @@ package org.eclipse.osee.orcs.rest.model;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
@@ -41,6 +46,10 @@ public class BranchQueryData {
    private Long isChildOf = -1L;
    private Long isAncestorOf = -1L;
    private BranchCategoryToken category = BranchCategoryToken.SENTINEL;
+   private String mappedSearchValue = "";
+   private BranchId relatedBranch = BranchId.SENTINEL;
+   private List<Pair<ArtifactTypeToken, AttributeTypeToken>> relatedArtAttrTypes =
+      new LinkedList<Pair<ArtifactTypeToken, AttributeTypeToken>>();
 
    public Collection<BranchId> getBranchIds() {
       return branchIds;
@@ -150,4 +159,31 @@ public class BranchQueryData {
       this.category = category;
    }
 
+   public void setRelatedBranch(BranchId branch) {
+      this.relatedBranch = branch;
+   }
+
+   public BranchId getRelatedBranch() {
+      return this.relatedBranch;
+   }
+
+   public void setMappedSearchValue(String value) {
+      this.mappedSearchValue = value;
+   }
+
+   public String getMappedSearchValue() {
+      return this.mappedSearchValue;
+   }
+
+   public List<Pair<ArtifactTypeToken, AttributeTypeToken>> getRelatedArtAttrTypes() {
+      return relatedArtAttrTypes;
+   }
+
+   public void setRelatedArtAttrTypes(List<Pair<ArtifactTypeToken, AttributeTypeToken>> relatedArtAttrTypes) {
+      this.relatedArtAttrTypes = relatedArtAttrTypes;
+   }
+
+   public void addRelatedArtAttrPair(Pair<ArtifactTypeToken, AttributeTypeToken> artAttrPair) {
+      this.relatedArtAttrTypes.add(artAttrPair);
+   }
 }

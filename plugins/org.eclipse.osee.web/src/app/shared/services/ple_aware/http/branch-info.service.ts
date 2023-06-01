@@ -14,7 +14,18 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { iif } from 'rxjs';
 import { apiURL } from '@osee/environments';
-import { branch, commitResponse, response } from '@osee/shared/types';
+import {
+	HttpParamsType,
+	branch,
+	commitResponse,
+	response,
+} from '@osee/shared/types';
+import {
+	OseeNode,
+	nodeData,
+	OseeEdge,
+	connection,
+} from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -26,10 +37,21 @@ export class BranchInfoService {
 		return this.http.get<branch>(apiURL + '/orcs/branches/' + id);
 	}
 
-	public getBranches(type: string, category?: string, searchType?: boolean) {
+	public getBranches(
+		type: string,
+		category?: string,
+		searchType?: boolean,
+		workType?: string
+	) {
+		let params: HttpParamsType = {};
+		if (workType && workType !== '') {
+			params = { ...params, workType: workType };
+		}
 		return iif(
 			() => searchType || false,
-			this.http.get<branch[]>(apiURL + '/ats/ple/branches/' + type),
+			this.http.get<branch[]>(apiURL + '/ats/ple/branches/' + type, {
+				params: params,
+			}),
 			this.http.get<branch[]>(
 				apiURL + `/orcs/branches/${type}/category/${category}`
 			)

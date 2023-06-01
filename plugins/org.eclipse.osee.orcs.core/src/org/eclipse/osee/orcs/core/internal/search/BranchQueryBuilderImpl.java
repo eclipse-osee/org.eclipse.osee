@@ -21,12 +21,16 @@ import static org.eclipse.osee.framework.core.enums.BranchState.PURGE_IN_PROGRES
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -197,6 +201,14 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
          addAndCheck(queryData, criteriaFactory.createBranchStateCriteria(states));
       }
       return queryData;
+   }
+
+   @Override
+   public T mapAssocArtIdToRelatedAttributes(String value, BranchId relatedBranch,
+      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs) {
+      Criteria criteria =
+         criteriaFactory.createMapAssocArtToRelatedAttributesCriteria(value, relatedBranch, artAttrPairs);
+      return addAndCheck(getQueryData(), criteria);
    }
 
 }

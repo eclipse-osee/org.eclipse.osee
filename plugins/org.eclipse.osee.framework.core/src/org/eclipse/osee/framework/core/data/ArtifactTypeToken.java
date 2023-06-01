@@ -39,17 +39,23 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
       return new AttributeMultiplicity(id, NamespaceToken.OSEE, name, false, Arrays.asList(superTypes)).get();
    }
 
+   public static ArtifactTypeToken valueOf(String id) {
+      return valueOf(Long.valueOf(id), Named.SENTINEL);
+   }
+
    Multiplicity getMultiplicity(AttributeTypeToken attributeType);
 
    default void getSingletonAttributeTypes(Set<AttributeTypeToken> attributeTypeTokens) {
       //This implementation should never be called
    }
 
-   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, List<ArtifactTypeToken> superTypes) {
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
+      OseeImage image, List<ArtifactTypeToken> superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, image, superTypes).get();
    }
 
-   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
+      List<ArtifactTypeToken> superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes).get();
    }
 
@@ -112,11 +118,13 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public OseeImage getImage();
 
-   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
+      AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
       return create(id, namespace, name, isAbstract, attributeTypes, null, superTypes);
    }
 
-   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, OseeImage image, List<ArtifactTypeToken> superTypes) {
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
+      AttributeMultiplicity attributeTypes, OseeImage image, List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
          private final List<ArtifactTypeToken> superTypes;

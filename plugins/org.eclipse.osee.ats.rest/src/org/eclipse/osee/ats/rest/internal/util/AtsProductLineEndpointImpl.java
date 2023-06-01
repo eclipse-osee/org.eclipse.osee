@@ -25,15 +25,16 @@ import org.eclipse.osee.ats.api.util.AtsProductLineEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -50,33 +51,28 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
    }
 
    @Override
-   public List<BranchToken> getBranches(String branchQueryType) {
+   public List<BranchToken> getBranches(String branchQueryType, String workType) {
+
+      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs = new ArrayList<>();
+      artAttrPairs.add(
+         new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamDefinition, AtsAttributeTypes.WorkType));
+      artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamWorkflow,
+         AtsAttributeTypes.TeamDefinitionReference));
 
       List<BranchToken> pleBranchList = new ArrayList<>();
       if (branchQueryType.equals("baseline")) {
-         for (Branch branch : orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(
-            false).andIsOfType(BranchType.BASELINE).andStateIs(BranchState.CREATED,
-               BranchState.MODIFIED).getResults().getList()) {
-            if (orcsApi.getQueryFactory().fromBranch(branch).andId(CoreArtifactTokens.ProductLineFolder).exists()) {
-               pleBranchList.add(branch);
-            }
-         }
+         pleBranchList =
+            orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
+               false).includeDeleted(false).andIsOfType(BranchType.BASELINE).andStateIs(BranchState.MODIFIED,
+                  BranchState.CREATED).getResultsAsId().getList();
       }
       if (branchQueryType.equals("working")) {
 
-         List<String> arbs = new ArrayList<>();
-         for (ArtifactId arbIds : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
-            AtsArtifactTypes.ActionableItem).andAttributeIs(AtsAttributeTypes.WorkType, "ARB").asArtifactIds()) {
-            arbs.add(arbIds.getIdString());
-         }
-
-         for (ArtifactId artifactId : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(
-            AtsAttributeTypes.ActionableItemReference, arbs).asArtifactIds()) {
-            pleBranchList.addAll(
-               orcsApi.getQueryFactory().branchQuery().includeArchived(false).includeDeleted(false).andIsOfType(
-                  BranchType.WORKING).andStateIs(BranchState.CREATED, BranchState.MODIFIED).andAssociatedArtId(
-                     artifactId).getResults().getList());
-         }
+         pleBranchList =
+            orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
+               false).includeDeleted(false).andIsOfType(BranchType.WORKING).andStateIs(BranchState.MODIFIED,
+                  BranchState.CREATED).mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON,
+                     artAttrPairs).getResultsAsId().getList();
       }
       Collections.sort(pleBranchList);
 
