@@ -39,7 +39,9 @@
 			</button>
 		</ng-container>
 		<div>
-			<mat-form-field>
+			<mat-form-field
+				subscriptSizing="dynamic"
+				class="tw-py-4">
 				<input
 					matInput
 					class="form-field"
@@ -121,38 +123,6 @@
 				</td>
 			</ng-container>
 
-			<ng-container matColumnDef="subsystem">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					mat-sort-header
-					class="header-cell">
-					Subsystem
-				</th>
-				<td
-					mat-cell
-					class="row-cell"
-					*matCellDef="let artifact">
-					{{ artifact.subsystem }}
-				</td>
-			</ng-container>
-
-			<ng-container matColumnDef="type">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					mat-sort-header
-					class="header-cell">
-					Type
-				</th>
-				<td
-					mat-cell
-					class="row-cell"
-					*matCellDef="let artifact">
-					{{ artifact.type }}
-				</td>
-			</ng-container>
-
 			<ng-container matColumnDef="state">
 				<th
 					mat-header-cell
@@ -166,22 +136,6 @@
 					class="row-cell"
 					*matCellDef="let artifact">
 					{{ artifact.state }}
-				</td>
-			</ng-container>
-
-			<ng-container matColumnDef="enhancement">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					mat-sort-header
-					class="header-cell">
-					Enhancement
-				</th>
-				<td
-					mat-cell
-					class="row-cell"
-					*matCellDef="let artifact">
-					{{ artifact.enhancement }}
 				</td>
 			</ng-container>
 
@@ -248,6 +202,7 @@
 								</th>
 							</tr>
 							<tr
+								class="detail-table-row-border"
 								*ngFor="
 									let requirement of element.requirements
 								">
