@@ -100,9 +100,16 @@ public interface BranchEndpoint {
    List<Branch> getBaselineBranches();
 
    @GET
-   @Path("working")
+   @Path("working/ide")
    @Produces(MediaType.APPLICATION_JSON)
    List<Branch> getWorkingBranches();
+
+   @GET
+   @Path("working")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Branch> getWorkingBranches(@QueryParam("value") @DefaultValue("") String value,
+      @QueryParam("artAttrPairs") List<String> artAttrPairs,
+      @QueryParam("mapBranchId") @DefaultValue("-1") BranchId mapBranchId);
 
    @GET
    @Path("{type}/category/{category}")

@@ -39,7 +39,8 @@ export class BranchListService {
 						this.branchService.getBranches(
 							viewBranchType,
 							category,
-							searchType
+							searchType,
+							this.getWorkType(category)
 						),
 						of([])
 					)
@@ -65,6 +66,17 @@ export class BranchListService {
 		}
 		//"product line , working"
 	}
+
+	private getWorkType(category?: string) {
+		if (category === '3') {
+			return 'MIM';
+		} else {
+			return 'ARB';
+		}
+
+		return '';
+	}
+
 	get branches() {
 		return this._branches;
 	}

@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -63,6 +64,7 @@ import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
@@ -214,6 +216,22 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public List<Branch> getWorkingBranches() {
       return newBranchQuery().includeArchived(false).includeDeleted(false).andIsOfType(
          BranchType.WORKING).getResults().getList();
+   }
+
+   @Override
+   public List<Branch> getWorkingBranches(String value, List<String> artAttrPairs, BranchId mapBranchId) {
+      BranchQuery query = newBranchQuery().includeArchived(false).includeDeleted(false).andIsOfType(BranchType.WORKING);
+      if (!value.isEmpty() && !artAttrPairs.isEmpty() && mapBranchId.isValid()) {
+         List<Pair<ArtifactTypeToken, AttributeTypeToken>> pairs =
+            new ArrayList<Pair<ArtifactTypeToken, AttributeTypeToken>>();
+         for (String artAttrType : artAttrPairs) {
+            pairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(
+               ArtifactTypeToken.valueOf(artAttrType.substring(0, artAttrType.indexOf(","))),
+               AttributeTypeToken.valueOf(artAttrType.substring(artAttrType.indexOf(",") + 1))));
+         }
+         query = query.mapAssocArtIdToRelatedAttributes(value, mapBranchId, pairs);
+      }
+      return query.getResults().getList();
    }
 
    @Override

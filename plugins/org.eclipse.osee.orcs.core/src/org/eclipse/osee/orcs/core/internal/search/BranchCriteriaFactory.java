@@ -14,12 +14,16 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
@@ -30,6 +34,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 
 /**
@@ -75,5 +80,10 @@ public class BranchCriteriaFactory {
 
    public Criteria createBranchCategoryCriteria(BranchCategoryToken category) {
       return new CriteriaBranchCategory(category);
+   }
+
+   public Criteria createMapAssocArtToRelatedAttributesCriteria(String value, BranchId relatedBranch,
+      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs) {
+      return new CriteriaMapAssocArtToRelatedAttributes(value, relatedBranch, artAttrPairs);
    }
 }

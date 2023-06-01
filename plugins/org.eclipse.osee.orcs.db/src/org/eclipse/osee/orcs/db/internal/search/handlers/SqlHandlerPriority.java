@@ -29,6 +29,7 @@ public enum SqlHandlerPriority {
    BRANCH_NAME,
    ALL_BRANCHES,
    BRANCH_TX_DATA_XTRA,
+   BRANCH_MAP_ASSOC_ART_TO_REL_ATTR,
    TX_ID,
    TX_BRANCH_ID,
    TX_COMMIT_ART_ID,

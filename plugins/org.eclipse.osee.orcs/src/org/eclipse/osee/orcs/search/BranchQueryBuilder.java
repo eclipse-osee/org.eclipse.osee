@@ -14,11 +14,15 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Ryan D. Brooks
@@ -65,5 +69,8 @@ public interface BranchQueryBuilder<T> {
    T andAssociatedArtId(ArtifactId artId);
 
    T andIsOfCategory(BranchCategoryToken category);
+
+   T mapAssocArtIdToRelatedAttributes(String value, BranchId relatedBranch,
+      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs);
 
 }

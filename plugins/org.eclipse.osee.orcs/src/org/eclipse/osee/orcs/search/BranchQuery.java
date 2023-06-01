@@ -16,6 +16,8 @@ package org.eclipse.osee.orcs.search;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -24,6 +26,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -185,6 +188,12 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
          @Override
          public List<BranchCategoryToken> getBranchCategories(BranchId branchId) {
+            return null;
+         }
+
+         @Override
+         public BranchQuery mapAssocArtIdToRelatedAttributes(String value, BranchId relatedBranch,
+            List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs) {
             return null;
          }
       }

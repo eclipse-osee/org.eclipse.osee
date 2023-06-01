@@ -99,6 +99,14 @@ public class JdbcDbType extends BaseId {
       }
    }
 
+   public String getStringConversion() {
+      if (matches(postgresql)) {
+         return "::varchar(255)";
+      } else {
+         return "";
+      }
+   }
+
    public String getInStringSql(String str, String searchString) {
       if (matches(oracle, hsql)) {
          return "instr(" + str + "," + searchString + ")";
