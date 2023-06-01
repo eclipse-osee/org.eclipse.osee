@@ -245,7 +245,7 @@ public class StateDefBuilder {
       return this;
    }
 
-   public StateDefBuilder andWorkItemListener(AtsTaskDefToken taskDefToken) {
+   public StateDefBuilder andCommitTaskGenListener(AtsTaskDefToken taskDefToken) {
       state.addWorkItemListener(new CreateChangeReportTaskCommitHook(taskDefToken));
       return this;
    }
