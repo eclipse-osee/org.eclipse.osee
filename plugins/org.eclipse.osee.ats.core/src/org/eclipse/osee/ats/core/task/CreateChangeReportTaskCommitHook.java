@@ -63,7 +63,7 @@ public class CreateChangeReportTaskCommitHook implements IAtsWorkItemHook {
                AtsApiService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
             if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(teamWf,
                AtsApiService.get())) {
-               IAtsChangeSet changes = atsApi.createChangeSet(getName());
+               IAtsChangeSet changes = atsApi.createChangeSet(getName() + " - Commit");
                ChangeReportTaskData data = runChangeReportTaskOperation(teamWf, taskDefToken, true, changes,
                   atsApi.getUserService().getCurrentUser());
                if (data.getResults().isErrors()) {
@@ -79,7 +79,8 @@ public class CreateChangeReportTaskCommitHook implements IAtsWorkItemHook {
       }
    }
 
-   public static ChangeReportTaskData runChangeReportTaskOperation(IAtsWorkItem workItem, AtsTaskDefToken taskDefToken, boolean finalTaskGen, IAtsChangeSet changes, AtsUser asUser) {
+   public static ChangeReportTaskData runChangeReportTaskOperation(IAtsWorkItem workItem, AtsTaskDefToken taskDefToken,
+      boolean finalTaskGen, IAtsChangeSet changes, AtsUser asUser) {
       ChangeReportTaskData data = new ChangeReportTaskData();
       data.setTaskDefToken(taskDefToken);
       data.setHostTeamWf(workItem.getStoreObject());
