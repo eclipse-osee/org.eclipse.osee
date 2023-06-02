@@ -128,21 +128,22 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
          Document doc = Jsoup.parse(htmlStream, "UTF-8", "");
          Element body = doc.body();
+         if (body != null) {
+            for (Node cNodes : body.childNodes()) {
 
-         for (Node cNodes : body.childNodes()) {
+               for (Node subNodes : cNodes.childNodes()) {
 
-            for (Node subNodes : cNodes.childNodes()) {
+                  if (subNodes.nodeName().compareTo("tbody") == 0) {
+                     // for normalized doors input, there is a table that wraps all of the other content
+                     // the first row in the table will have all of the column names
+                     // the other rows will have the data elements that need to be analyzed and converted to artifacts
 
-               if (subNodes.nodeName().compareTo("tbody") == 0) {
-                  // for normalized doors input, there is a table that wraps all of the other content
-                  // the first row in the table will have all of the column names
-                  // the other rows will have the data elements that need to be analyzed and converted to artifacts
-
-                  for (Node tableRow : subNodes.childNodes()) {
-                     // jsoup parses the row ends as text nodes (not elements)
-                     // each element is one row of the doors output table
-                     if (tableRow instanceof Element) {
-                        rowCollector.addRawRow(tableRow);
+                     for (Node tableRow : subNodes.childNodes()) {
+                        // jsoup parses the row ends as text nodes (not elements)
+                        // each element is one row of the doors output table
+                        if (tableRow instanceof Element) {
+                           rowCollector.addRawRow(tableRow);
+                        }
                      }
                   }
                }

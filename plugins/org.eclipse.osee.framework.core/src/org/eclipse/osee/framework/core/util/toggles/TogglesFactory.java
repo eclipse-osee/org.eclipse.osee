@@ -80,6 +80,7 @@ public class TogglesFactory {
    private static List<Bundle> getBundles(Set<String> bundleNames) {
 
       //@formatter:off
+      try {
       return
          Arrays.stream( FrameworkUtil.getBundle(TogglesFactory.class).getBundleContext().getBundles() )
             .filter
@@ -87,6 +88,10 @@ public class TogglesFactory {
                   ( bundle ) -> bundleNames.contains( bundle.getSymbolicName() )
                )
             .collect( Collectors.toList() );
+      }
+      catch(NullPointerException ext) {
+         return null;
+      }
       //@formatter:on
 
    }

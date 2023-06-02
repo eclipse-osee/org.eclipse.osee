@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
@@ -104,7 +105,7 @@ public class JdbcServiceImpl implements JdbcService {
 
          JdbcClientBuilder builder = JdbcClientBuilder.newBuilder(props);
          if (hasServerConfig(props)) {
-
+            Objects.requireNonNull(server, "Server can not be null");
             JdbcServerConfig serverConfig = server.getConfig();
             if (!Strings.isValid(builder.getDbUri())) {
                builder = builder.fromType(JdbcDriverType.hsql, serverConfig.getDbName(), serverConfig.getDbPort());

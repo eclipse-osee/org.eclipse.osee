@@ -72,6 +72,7 @@ public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog<IA
 
    @Override
    protected Result isComplete() {
+      super.isComplete();
       Result result = Result.TrueResult;
       try {
          if (requiredSelection && getChecked().isEmpty()) {

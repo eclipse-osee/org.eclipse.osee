@@ -220,7 +220,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       for (ArtifactReadable artifact : query.asArtifacts()) {
          if (artifact.isValid()) {
             T returnObj = this.getType().getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-            if (hasSetApplic(this.getType()) && !query.areApplicabilityTokensIncluded()) {
+            if (getSetApplic(this.getType()) != null && !query.areApplicabilityTokensIncluded()) {
                getSetApplic(this.getType()).invoke(returnObj,
                   orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
             }
@@ -235,7 +235,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       ArtifactReadable artifact = query.asArtifactOrSentinel();
       if (artifact.isValid()) {
          T returnObj = this.getType().getDeclaredConstructor(ArtifactReadable.class).newInstance(artifact);
-         if (hasSetApplic(this.getType()) && !query.areApplicabilityTokensIncluded()) {
+         if (getSetApplic(this.getType()) != null && !query.areApplicabilityTokensIncluded()) {
             getSetApplic(this.getType()).invoke(returnObj,
                orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artifact, branch));
          }

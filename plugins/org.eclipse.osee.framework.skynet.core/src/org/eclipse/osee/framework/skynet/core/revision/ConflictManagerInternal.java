@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -115,7 +116,8 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   public static List<Conflict> getConflictsPerBranch(BranchToken sourceBranch, BranchToken destinationBranch, TransactionToken baselineTransaction, IProgressMonitor monitor) {
+   public static List<Conflict> getConflictsPerBranch(BranchToken sourceBranch, BranchToken destinationBranch,
+      TransactionToken baselineTransaction, IProgressMonitor monitor) {
       List<ConflictBuilder> conflictBuilders = new ArrayList<>();
       List<Conflict> conflicts = new ArrayList<>();
       Set<ArtifactId> artIdSet = new HashSet<>();
@@ -141,7 +143,7 @@ public class ConflictManagerInternal {
       // check for multiplicity conflicts
       Collection<AttributeTypeToken> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
       loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, conflictBuilders, artIdSet);
-
+      Objects.requireNonNull(commonTransaction, "Common Transaction can not be null");
       loadArtifactVersionConflicts(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch,
          destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd, monitor,
          commonTransaction);
@@ -179,7 +181,8 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   private static Conflict getConflict(ConflictBuilder conflictBuilder, BranchToken mergeBranch, Set<ArtifactId> artIdSetDontShow) {
+   private static Conflict getConflict(ConflictBuilder conflictBuilder, BranchToken mergeBranch,
+      Set<ArtifactId> artIdSetDontShow) {
       Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
       if (conflict != null) {
          conflict.computeStatus();
@@ -187,7 +190,8 @@ public class ConflictManagerInternal {
       return conflict;
    }
 
-   private static Collection<Artifact> preloadConflictArtifacts(BranchToken sourceBranch, BranchToken destBranch, BranchToken mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor) {
+   private static Collection<Artifact> preloadConflictArtifacts(BranchToken sourceBranch, BranchToken destBranch,
+      BranchToken mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor) {
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
 
       Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(artIdSet, sourceBranch, INCLUDE_DELETED);
@@ -198,7 +202,8 @@ public class ConflictManagerInternal {
       return artifacts;
    }
 
-   private static void loadMultiplicityConflicts(Collection<AttributeTypeToken> types, BranchId source, BranchId dest, List<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet) {
+   private static void loadMultiplicityConflicts(Collection<AttributeTypeToken> types, BranchId source, BranchId dest,
+      List<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       List<Object[]> batchParams = new LinkedList<>();
       OrcsTokenService tokenService = OsgiUtil.getService(ConflictManagerInternal.class, OrcsTokenService.class);
@@ -232,7 +237,10 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadArtifactVersionConflicts(String sql, BranchToken sourceBranch, BranchToken destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, Set<ArtifactId> artIdSetDontShow, Set<ArtifactId> artIdSetDontAdd, IProgressMonitor monitor, TransactionToken commonTransaction) {
+   private static void loadArtifactVersionConflicts(String sql, BranchToken sourceBranch, BranchToken destinationBranch,
+      TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet,
+      Set<ArtifactId> artIdSetDontShow, Set<ArtifactId> artIdSetDontAdd, IProgressMonitor monitor,
+      TransactionToken commonTransaction) {
       boolean hadEntries = false;
 
       monitor.subTask("Finding Artifact Version Conflicts");
@@ -280,7 +288,9 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadAttributeConflictsNew(BranchToken sourceBranch, BranchToken destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, IProgressMonitor monitor, TransactionToken commonTransaction) {
+   private static void loadAttributeConflictsNew(BranchToken sourceBranch, BranchToken destinationBranch,
+      TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet,
+      IProgressMonitor monitor, TransactionToken commonTransaction) {
       monitor.subTask("Finding the Attribute Conflicts");
 
       AttributeConflictBuilder attributeConflictBuilder;
@@ -343,7 +353,8 @@ public class ConflictManagerInternal {
    /**
     * @return Returns True if the destination gamma does not exist on a branch else false if it does.
     */
-   private static boolean isAttributeConflictValidOnBranch(GammaId destinationGammaId, BranchId branch, TransactionId endTransaction) {
+   private static boolean isAttributeConflictValidOnBranch(GammaId destinationGammaId, BranchId branch,
+      TransactionId endTransaction) {
       String sql =
          "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
       return ConnectionHandler.getJdbcClient().fetch(0, sql, destinationGammaId, branch, endTransaction) == 0;
@@ -354,6 +365,7 @@ public class ConflictManagerInternal {
       if (conflicts != null && conflicts.size() != 0 && branch.isValid()) {
          try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
             for (Conflict conflict : conflicts) {
+               Objects.requireNonNull(conflict.getConflictType(), "Conflict Type can not be null");
                joinQuery.add(branch, conflict.getObjectId(),
                   TransactionId.valueOf(conflict.getConflictType().getValue()));
             }
