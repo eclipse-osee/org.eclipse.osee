@@ -82,23 +82,20 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       searchResult = result;
       childrenMap = new HashMap<>();
       boolean showLineMatches = searchResult.hasAttributeMatches();
-
-      if (result != null) {
-         Object[] elements = result.getElements();
-         for (int i = 0; i < elements.length; i++) {
-            if (showLineMatches) {
-               Match[] matches = result.getMatches(elements[i]);
-               for (int j = 0; j < matches.length; j++) {
-                  Match match = matches[j];
-                  if (match instanceof AttributeMatch) {
-                     insert(((AttributeMatch) match).getLineElement(), false);
-                  } else {
-                     insert(match.getElement(), false);
-                  }
+      Object[] elements = result.getElements();
+      for (int i = 0; i < elements.length; i++) {
+         if (showLineMatches) {
+            Match[] matches = result.getMatches(elements[i]);
+            for (int j = 0; j < matches.length; j++) {
+               Match match = matches[j];
+               if (match instanceof AttributeMatch) {
+                  insert(((AttributeMatch) match).getLineElement(), false);
+               } else {
+                  insert(match.getElement(), false);
                }
-            } else {
-               insert(elements[i], false);
             }
+         } else {
+            insert(elements[i], false);
          }
       }
    }

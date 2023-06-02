@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -196,6 +197,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
       List<IAttribute<String>> attributes = customArt.getAttributeList(CoreAttributeTypes.XViewerCustomization);
 
       AttributeId attrId = AttributeId.SENTINEL;
+      Objects.requireNonNull(attributes, "Attributes cannot be null");
       for (IAttribute<String> attribute : attributes) {
          CustomizeData cd = new CustomizeData(attribute.getValue());
          if (customizeData.getGuid().equals(cd.getGuid())) {

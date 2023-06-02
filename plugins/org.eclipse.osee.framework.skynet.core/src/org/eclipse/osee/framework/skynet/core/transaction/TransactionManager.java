@@ -164,7 +164,8 @@ public final class TransactionManager {
       processedCommitArtifactId.remove(associatedArtifact);
    }
 
-   public synchronized static void cacheCommittedArtifactTransaction(ArtifactId artifact, TransactionToken transactionId) {
+   public synchronized static void cacheCommittedArtifactTransaction(ArtifactId artifact,
+      TransactionToken transactionId) {
       commitArtifactIdMap.put(artifact, getTransactionRecord(transactionId.getId()));
       processedCommitArtifactId.add(artifact);
    }
@@ -291,7 +292,8 @@ public final class TransactionManager {
     * @param persist - if true, changes will be made to attributes and artifact and added to persistTransaction
     * @return true if changes were found
     */
-   public static boolean revertArtifactFromTransaction(Artifact art, TransactionId revertTransaction, XResultData results, boolean persist, SkynetTransaction persistTransaction) {
+   public static boolean revertArtifactFromTransaction(Artifact art, TransactionId revertTransaction,
+      XResultData results, boolean persist, SkynetTransaction persistTransaction) {
       List<AttributeRow> attributesFromArtifactAndTransaction =
          getAttributesFromArtifactAndTransaction(art, revertTransaction);
       for (AttributeRow attr : attributesFromArtifactAndTransaction) {
@@ -328,8 +330,12 @@ public final class TransactionManager {
                if (persist && prevValue != null) {
                   art.setSoleAttributeValue(type, prevValue);
                }
-               String currValueAsText = curValue.toString();
-               currValueAsText = AHTML.textToHtml(currValueAsText);
+               String currValueAsText = "";
+
+               if (curValue != null) {
+                  currValueAsText = curValue.toString();
+                  currValueAsText = AHTML.textToHtml(currValueAsText);
+               }
                if (prevValue != null) {
                   String prevValueAsText = prevValue.toString();
                   prevValueAsText = AHTML.textToHtml(prevValueAsText);

@@ -79,7 +79,8 @@ public final class WordUiUtil {
       }
    }
 
-   public static XResultData createUnhandledArtifactsReport(final Collection<Artifact> artifacts, final String warningString) {
+   public static XResultData createUnhandledArtifactsReport(final Collection<Artifact> artifacts,
+      final String warningString) {
       XResultData rd = new XResultData(false);
       rd.warning("\nYou chose to preview/edit artifacts that could not be handled: ");
       rd.log(warningString + "\n");
@@ -109,7 +110,7 @@ public final class WordUiUtil {
             } else {
                err = errorMessage;
             }
-            if (err == null || err.isEmpty()) {
+            if (err.isEmpty()) {
                err = errorMessage;
             }
 
@@ -136,7 +137,8 @@ public final class WordUiUtil {
       }
    }
 
-   public static IVbaDiffGenerator createScriptGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors, boolean diffFieldCodes) {
+   public static IVbaDiffGenerator createScriptGenerator(boolean merge, boolean show, boolean detectFormatChanges,
+      boolean executeVbScript, boolean skipErrors, boolean diffFieldCodes) {
       return new VbaWordDiffGenerator(merge, show, detectFormatChanges, executeVbScript, skipErrors, diffFieldCodes);
    }
 }

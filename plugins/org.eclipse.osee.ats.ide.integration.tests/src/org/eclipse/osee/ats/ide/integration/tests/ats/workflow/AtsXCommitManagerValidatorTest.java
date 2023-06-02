@@ -67,7 +67,7 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
       Assert.assertEquals(WidgetResult.Success, result);
 
       when(provider.getObject()).thenReturn(task1);
-      result = validator.validateTransition(workItem, provider, widgetDef, null, null, atsApi);
+      result = validator.validateTransition(workItem, provider, widgetDef, null, new StateDefinition("-1"), atsApi);
       if (result != null) {
          Assert.assertEquals(WidgetResult.Success, result);
       }

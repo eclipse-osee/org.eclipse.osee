@@ -77,7 +77,8 @@ public class DevProgressMetricsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       if (xWidget.getLabel().equalsIgnoreCase(VERSION)) {
          versions = new ArrayList<>();
          versionWidget = (XHyperlabelVersionSelection) xWidget;
@@ -118,27 +119,29 @@ public class DevProgressMetricsBlam extends AbstractBlam {
                endDate = (Date) variableMap.getValue(END_DATE);
                allTime = variableMap.getBoolean(ALL_TIME);
 
-               Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().devProgressReport(
-                  selectedVersion.getName(), startDate, endDate, allTime);
+               try (Response res = AtsApiService.get().getServerEndpoints().getMetricsEp().devProgressReport(
+                  selectedVersion.getName(), startDate, endDate, allTime);) {
 
-               if (res == null) {
-                  return;
+                  if (res == null) {
+                     return;
+                  }
+
+                  String filePath =
+                     String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
+                  BufferedWriter bwr = new BufferedWriter(new FileWriter(new File(filePath)));
+
+                  GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
+                  StringBuffer sb = new StringBuffer();
+                  BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));
+                  String inputLine = "";
+                  while ((inputLine = in.readLine()) != null) {
+                     sb.append(inputLine);
+                  }
+                  bwr.write(sb.toString());
+                  bwr.flush();
+                  bwr.close();
+                  res.close();
                }
-
-               String filePath = String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
-               BufferedWriter bwr = new BufferedWriter(new FileWriter(new File(filePath)));
-
-               GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
-               StringBuffer sb = new StringBuffer();
-               BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));
-               String inputLine = "";
-               while ((inputLine = in.readLine()) != null) {
-                  sb.append(inputLine);
-               }
-               bwr.write(sb.toString());
-               bwr.flush();
-               bwr.close();
-               res.close();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
