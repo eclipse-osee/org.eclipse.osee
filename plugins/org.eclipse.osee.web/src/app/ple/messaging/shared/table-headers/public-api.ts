@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export * from './connection-table-headers';
 export * from './cross-reference-table-headers';
 export * from './element-table-headers';
 export * from './enum-set-headers';

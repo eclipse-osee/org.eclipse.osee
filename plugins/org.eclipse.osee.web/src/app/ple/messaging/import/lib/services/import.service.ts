@@ -12,6 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import {
+	concatMap,
 	filter,
 	map,
 	reduce,
@@ -27,6 +28,7 @@ import {
 	combineLatest,
 	from,
 	iif,
+	Observable,
 	of,
 	OperatorFunction,
 	Subject,
@@ -52,10 +54,12 @@ import type {
 	node,
 	structure,
 	message,
+	connection,
+	importRelationMap,
 } from '@osee/messaging/shared/types';
 import { UiService } from '@osee/shared/services';
 import { TransactionService } from '@osee/shared/transactions';
-import { transaction } from '@osee/shared/types';
+import { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -160,211 +164,109 @@ export class ImportService {
 		)
 	);
 
-	private _connectionId$ = this._importSummary$.pipe(
-		switchMap((summary) =>
-			summary.connectionId === '-1'
-				? of('connection')
-				: of(summary.connectionId)
-		)
-	);
-
-	private _nodes$ = this._importSummary$.pipe(
-		switchMap((summary) =>
-			iif(
-				() =>
-					summary?.primaryNode !== null &&
-					summary?.secondaryNode != null,
-				of([summary!.primaryNode, summary!.secondaryNode]),
-				of([] as nodeToken[])
-			)
-		)
-	);
-
-	private _messages$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.messages))
-	);
-
-	private _subMessages$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.subMessages))
-	);
-
-	private _structures$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.structures))
-	);
-
-	private _elements$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.elements))
-	);
-
-	private _platformTypes$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.platformTypes))
-	);
-
-	private _enumSets$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.enumSets))
-	);
-
-	private _enums$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.enums))
-	);
-
-	private _crossRefs$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.crossReferences))
-	);
-
-	private _messageSubMessageRelations$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.messageSubmessageRelations))
-	);
-
-	private _subMessageStructureRelations$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.subMessageStructureRelations))
-	);
-
-	private _structureElementRelations$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.structureElementRelations))
-	);
-
-	private _elementPlatformTypeRelations$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.elementPlatformTypeRelations))
-	);
-
-	private _platformTypeEnumSetRelations$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.platformTypeEnumSetRelations))
-	);
-
-	private _enumSetEnumRelations$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.enumSetEnumRelations))
-	);
-
-	private _connectionCrossRefRelations$ = this._importSummary$.pipe(
-		switchMap((summary) => of(summary.connectionCrossReferenceRelations))
-	);
-
-	private _nodesTx$ = combineLatest([
-		this._importSummary$,
+	private _allImportTx$ = combineLatest([
 		this._importTx$,
-		this._nodes$,
-		this._connectionId$,
+		this._importSummary$,
+		this.selectedImportOption,
 		this.branchId,
 	]).pipe(
-		switchMap(([summary, tx, nodes, connectionId, branchId]) =>
-			of(nodes).pipe(
-				switchMap((nodes) =>
-					from(nodes).pipe(
-						switchMap((node, index) =>
-							of(node).pipe(
-								filter((n) => n.name !== ''),
-								tap((node) =>
-									(index % 2 === 1 &&
-										summary.createSecondaryNode) ||
-									(index % 2 === 0 &&
-										summary.createPrimaryNode)
-										? this.nodeService.createNode(
-												branchId,
-												{ name: node.name } as node,
-												tx,
-												node.id
-										  )
-										: ''
+		switchMap(([initTx, summary, option, branchId]) =>
+			of(initTx)
+				.pipe(
+					// Connections
+					concatMap((tx) =>
+						iif(
+							() => summary.connections.length > 0,
+							from(summary.connections).pipe(
+								map(
+									(connection) =>
+										({
+											id: connection.id,
+											name: connection.name,
+											description: connection.description,
+											transportType:
+												connection.transportType,
+										} as connection)
 								),
-								switchMap((node) =>
-									summary.createPrimaryNode ||
-									summary.createSecondaryNode
-										? this.connectionService
-												.createNodeRelation(
-													node.id!,
-													index % 2 === 1,
-													connectionId
-												)
-												.pipe(
-													switchMap((nodeRelation) =>
-														this.connectionService.addRelation(
-															branchId,
-															nodeRelation,
-															tx
+								// Create connection
+								concatMap((connection) =>
+									this.connectionService
+										.createConnectionNoRelations(
+											branchId,
+											connection,
+											tx,
+											connection.id
+										)
+										.pipe(
+											// Create connection <-> transport type relation
+											concatMap((_) =>
+												iif(
+													() =>
+														option?.transportType !==
+															undefined &&
+														option.transportType !==
+															'',
+													this.connectionService
+														.createTransportTypeRelation(
+															option!
+																.transportType ||
+																'',
+															connection.id
 														)
-													)
+														.pipe(
+															switchMap((rel) =>
+																this.connectionService.addRelation(
+																	branchId,
+																	rel,
+																	tx
+																)
+															)
+														),
+													of(tx)
 												)
-										: ''
-								)
-							)
+											)
+										)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
 						)
 					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _connectionTx$ = combineLatest([
-		this._importTx$,
-		this.selectedImportOption,
-		this._nodes$,
-		this._connectionId$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, option, nodes, connectionId, branchId]) =>
-			of(nodes).pipe(
-				switchMap((nodes) =>
-					nodes.length === 2 &&
-					nodes[0].name !== '' &&
-					nodes[1].name !== '' &&
-					connectionId === 'connection'
-						? this.connectionService
-								.createConnectionNoRelations(
-									branchId,
-									{
-										name:
-											nodes[0].name + '_' + nodes[1].name,
-										description: '',
-									},
-									tx,
-									connectionId
-								)
-								.pipe(
-									switchMap((connectionTx) =>
-										iif(
-											() =>
-												option?.transportType !==
-													undefined &&
-												option.transportType !== '',
-											this.connectionService
-												.createTransportTypeRelation(
-													option?.transportType || '',
-													connectionId
-												)
-												.pipe(
-													switchMap((rel) =>
-														this.connectionService.addRelation(
-															branchId,
-															rel,
-															connectionTx
-														)
-													)
-												),
-											of(tx)
-										)
-									)
-								)
-						: of(tx)
 				)
-			)
-		)
-	);
-
-	private _messagesTx$ = combineLatest([
-		this._importTx$,
-		this._messages$,
-		this._connectionId$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, messages, connectionId, branchId]) =>
-			of(messages).pipe(
-				switchMap((msgs) =>
-					from(msgs).pipe(
-						switchMap((message) =>
-							of(message).pipe(
+				.pipe(
+					// Nodes
+					concatMap((tx) =>
+						iif(
+							() => summary.nodes.length > 0,
+							from(summary.nodes).pipe(
+								map(
+									(node) =>
+										({
+											id: node.id,
+											name: node.name,
+											description: node.description,
+										} as node)
+								),
+								concatMap((node) =>
+									this.nodeService.createNode(
+										branchId,
+										node,
+										tx,
+										node.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Messages
+					concatMap((tx) =>
+						iif(
+							() => summary.messages.length > 0,
+							from(summary.messages).pipe(
 								map(
 									(m) =>
 										({
@@ -383,7 +285,7 @@ export class ImportService {
 												m.interfaceMessageNumber,
 										} as message)
 								),
-								switchMap((msg) =>
+								concatMap((msg) =>
 									this.messagesService.createMessage(
 										branchId,
 										msg,
@@ -392,552 +294,387 @@ export class ImportService {
 										msg.id
 									)
 								),
-								switchMap((_) =>
-									this.messagesService
-										.createConnectionRelation(
-											connectionId,
-											message.id
-										)
-										.pipe(
-											switchMap((relation) =>
-												this.messagesService.addRelation(
-													branchId,
-													relation,
-													tx
-												)
-											)
-										)
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Submessages
+					concatMap((tx) =>
+						iif(
+							() => summary.subMessages.length > 0,
+							from(summary.subMessages).pipe(
+								map(
+									(s) =>
+										({
+											id: s.id,
+											name: s.name,
+											description: s.description,
+											interfaceSubMessageNumber:
+												s.interfaceSubMessageNumber,
+										} as subMessage)
 								),
-								switchMap((_) =>
-									this.messagesService
-										.createNodeRelation(
-											message.id,
-											message.initiatingNode.id
-										)
-										.pipe(
-											switchMap((relation) =>
-												this.messagesService.addRelation(
-													branchId,
-													relation,
-													tx
-												)
+								concatMap((subMessage) =>
+									this.subMessageService.createSubMessage(
+										branchId,
+										subMessage,
+										[],
+										tx,
+										subMessage.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Structures
+					concatMap((tx) =>
+						iif(
+							() => summary.structures.length > 0,
+							from(summary.structures).pipe(
+								map(
+									(s) =>
+										({
+											id: s.id,
+											name: s.name,
+											description: s.description,
+											interfaceMaxSimultaneity:
+												s.interfaceMaxSimultaneity,
+											interfaceMinSimultaneity:
+												s.interfaceMinSimultaneity,
+											interfaceTaskFileType:
+												s.interfaceTaskFileType,
+											interfaceStructureCategory:
+												s.interfaceStructureCategory,
+										} as structure)
+								),
+								concatMap((structure) =>
+									this.structureService.createStructure(
+										structure,
+										branchId,
+										[],
+										tx,
+										structure.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Elements
+					concatMap((tx) =>
+						iif(
+							() => summary.elements.length > 0,
+							from(summary.elements).pipe(
+								concatMap((element) =>
+									this.elementService.createElement(
+										element,
+										branchId,
+										[],
+										tx,
+										element.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Platform Types
+					concatMap((tx) =>
+						iif(
+							() => summary.platformTypes.length > 0,
+							from(summary.platformTypes).pipe(
+								concatMap((pType) =>
+									this.typesService.createPlatformType(
+										branchId,
+										pType,
+										[],
+										tx,
+										pType.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Enum Sets
+					concatMap((tx) =>
+						iif(
+							() => summary.enumSets.length > 0,
+							from(summary.enumSets).pipe(
+								map(
+									(e) =>
+										({
+											id: e.id,
+											name: e.name,
+											applicability: e.applicability,
+											description: e.description,
+										} as enumSet)
+								),
+								concatMap((enumSet) =>
+									this.enumSetService.createEnumSet(
+										branchId,
+										enumSet,
+										[],
+										tx,
+										enumSet.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Enums
+					concatMap((tx) =>
+						iif(
+							() => summary.enums.length > 0,
+							from(summary.enums).pipe(
+								concatMap((enumeration) =>
+									this.enumSetService.createEnum(
+										branchId,
+										enumeration,
+										[],
+										tx,
+										enumeration.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Cross References
+					concatMap((tx) =>
+						iif(
+							() => summary.crossReferences.length > 0,
+							from(summary.crossReferences).pipe(
+								concatMap((crossRef) =>
+									this.crossRefService.createCrossReferenceTx(
+										crossRef,
+										branchId,
+										tx,
+										crossRef.id
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					)
+				)
+				.pipe(
+					// Connection <-> Node relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.connectionNodeRelations,
+							this.connectionService.createNodeRelation,
+							true,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Connection <-> Message relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.connectionMessageRelations,
+							this.messagesService.createConnectionRelation,
+							false,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Message <-> Publisher Node relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.messagePublisherNodeRelations,
+							this.messagesService.createMessageNodeRelation,
+							false,
+							tx,
+							branchId,
+							true
+						)
+					)
+				)
+				.pipe(
+					// Message <-> Subscriber Node relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.messageSubscriberNodeRelations,
+							this.messagesService.createMessageNodeRelation,
+							false,
+							tx,
+							branchId,
+							false
+						)
+					)
+				)
+				.pipe(
+					// Message <-> Submessage relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.messageSubmessageRelations,
+							this.subMessageService.createMessageRelation,
+							false,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Submessage <-> Structure relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.subMessageStructureRelations,
+							this.structureService.createSubMessageRelation,
+							false,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Structure <-> Element relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.structureElementRelations,
+							this.elementService.createStructureRelation,
+							false,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Element <-> Platform Type relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.elementPlatformTypeRelations,
+							this.elementService.createPlatformTypeRelation,
+							true,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Platform Type <-> Enum Set relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.platformTypeEnumSetRelations,
+							this.enumSetService
+								.createPlatformTypeToEnumSetRelation,
+							true,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Enum Set <-> Enum relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.enumSetEnumRelations,
+							this.enumSetService.createEnumToEnumSetRelation,
+							false,
+							tx,
+							branchId
+						)
+					)
+				)
+				.pipe(
+					// Cross Reference <-> Connection relations
+					concatMap((tx) =>
+						this._addRelationPipe(
+							summary.connectionCrossReferenceRelations,
+							this.crossRefService.createConnectionRelation,
+							false,
+							tx,
+							branchId
+						)
+					)
+				)
+		)
+	);
+
+	private _addRelationPipe(
+		map: importRelationMap,
+		create:
+			| ((
+					artAId: string,
+					artBId: string,
+					flag?: boolean
+			  ) => Observable<relation>)
+			| ((artAId: string, artBId: string) => Observable<relation>),
+		swap: boolean,
+		tx: transaction,
+		branchId: string,
+		flag?: boolean
+	) {
+		return of(tx).pipe(
+			concatMap((tx) =>
+				iif(
+					() => Object.keys(map).length > 0,
+					from(Object.keys(map)).pipe(
+						concatMap((artAId) =>
+							from(map[artAId]).pipe(
+								switchMap((artBId) =>
+									create(
+										swap ? artBId : artAId,
+										swap ? artAId : artBId,
+										flag
+									).pipe(
+										switchMap((relation) =>
+											this.subMessageService.addRelation(
+												branchId,
+												relation,
+												tx
 											)
 										)
+									)
 								)
 							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _subMessagesTx$ = combineLatest([
-		this._importTx$,
-		this._subMessages$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, subMessages, branchId]) =>
-			of(subMessages).pipe(
-				switchMap((subMsgs) =>
-					from(subMsgs).pipe(
-						map(
-							(s) =>
-								({
-									id: s.id,
-									name: s.name,
-									description: s.description,
-									interfaceSubMessageNumber:
-										s.interfaceSubMessageNumber,
-								} as subMessage)
 						),
-						switchMap((subMessage) =>
-							this.subMessageService.createSubMessage(
-								branchId,
-								subMessage,
-								[],
-								tx,
-								subMessage.id
-							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
+						reduce(() => tx)
+					),
+					of(tx)
+				)
 			)
-		)
-	);
-
-	private _structuresTx$ = combineLatest([
-		this._importTx$,
-		this._structures$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, structures, branchId]) =>
-			of(structures).pipe(
-				switchMap((structs) =>
-					from(structs).pipe(
-						map(
-							(s) =>
-								({
-									id: s.id,
-									name: s.name,
-									description: s.description,
-									interfaceMaxSimultaneity:
-										s.interfaceMaxSimultaneity,
-									interfaceMinSimultaneity:
-										s.interfaceMinSimultaneity,
-									interfaceTaskFileType:
-										s.interfaceTaskFileType,
-									interfaceStructureCategory:
-										s.interfaceStructureCategory,
-								} as structure)
-						),
-						switchMap((structure) =>
-							this.structureService.createStructure(
-								structure,
-								branchId,
-								[],
-								tx,
-								structure.id
-							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _elementsTx$ = combineLatest([
-		this._importTx$,
-		this._elements$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, elements, branchId]) =>
-			of(elements).pipe(
-				switchMap((elements) =>
-					from(elements).pipe(
-						switchMap((element) =>
-							this.elementService.createElement(
-								element,
-								branchId,
-								[],
-								tx,
-								element.id
-							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _platformTypesTx$ = combineLatest([
-		this._importTx$,
-		this._platformTypes$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, pTypes, branchId]) =>
-			of(pTypes).pipe(
-				switchMap((pTypes) =>
-					from(pTypes).pipe(
-						switchMap((pType) =>
-							this.typesService.createPlatformType(
-								branchId,
-								pType,
-								[],
-								tx,
-								pType.id
-							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _enumSetTx$ = combineLatest([
-		this._importTx$,
-		this._enumSets$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, enumSets, branchId]) =>
-			of(enumSets).pipe(
-				switchMap((enumSets) =>
-					from(enumSets).pipe(
-						map(
-							(e) =>
-								({
-									id: e.id,
-									name: e.name,
-									applicability: e.applicability,
-									description: e.description,
-								} as enumSet)
-						),
-						switchMap((enumSet) =>
-							this.enumSetService.createEnumSet(
-								branchId,
-								enumSet,
-								[],
-								tx,
-								enumSet.id
-							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _enumsTx$ = combineLatest([
-		this._importTx$,
-		this._enums$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, enums, branchId]) =>
-			of(enums).pipe(
-				switchMap((enums) =>
-					from(enums).pipe(
-						switchMap((enumeration) =>
-							this.enumSetService.createEnum(
-								branchId,
-								enumeration,
-								[],
-								tx,
-								enumeration.id
-							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _crossRefsTx$ = combineLatest([
-		this._importTx$,
-		this._crossRefs$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, crossRefs, branchId]) =>
-			of(crossRefs).pipe(
-				switchMap((crossRefs) =>
-					from(crossRefs).pipe(
-						switchMap((crossRef) =>
-							this.crossRefService.createCrossReferenceTx(
-								crossRef,
-								branchId,
-								tx,
-								crossRef.id
-							)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _messageSubMessageRelationsTx$ = combineLatest([
-		this._importTx$,
-		this._messageSubMessageRelations$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, relations, branchId]) =>
-			from(Object.keys(relations)).pipe(
-				switchMap((msgId) =>
-					from(relations[msgId]).pipe(
-						switchMap((subMsgId) =>
-							this.subMessageService
-								.createMessageRelation(msgId, subMsgId)
-								.pipe(
-									switchMap((relation) =>
-										this.subMessageService.addRelation(
-											branchId,
-											relation,
-											tx
-										)
-									)
-								)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _subMessageStructureRelationsTx$ = combineLatest([
-		this._importTx$,
-		this._subMessageStructureRelations$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, relations, branchId]) =>
-			from(Object.keys(relations)).pipe(
-				switchMap((subMsgId) =>
-					from(relations[subMsgId]).pipe(
-						switchMap((structureId) =>
-							this.structureService
-								.createSubMessageRelation(subMsgId, structureId)
-								.pipe(
-									switchMap((relation) =>
-										this.structureService.addRelation(
-											branchId,
-											relation,
-											tx
-										)
-									)
-								)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _structureElementRelationsTx$ = combineLatest([
-		this._importTx$,
-		this._structureElementRelations$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, relations, branchId]) =>
-			from(Object.keys(relations)).pipe(
-				switchMap((structureId) =>
-					from(relations[structureId]).pipe(
-						switchMap((elementId) =>
-							this.elementService
-								.createStructureRelation(structureId, elementId)
-								.pipe(
-									switchMap((relation) =>
-										this.elementService.addRelation(
-											branchId,
-											relation,
-											tx
-										)
-									)
-								)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _elementPlatformTypeRelationsTx$ = combineLatest([
-		this._importTx$,
-		this._elementPlatformTypeRelations$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, relations, branchId]) =>
-			from(Object.keys(relations)).pipe(
-				switchMap((elementId) =>
-					from(relations[elementId]).pipe(
-						switchMap((pTypeId) =>
-							this.elementService
-								.createPlatformTypeRelation(pTypeId, elementId)
-								.pipe(
-									switchMap((relation) =>
-										this.elementService.addRelation(
-											branchId,
-											relation,
-											tx
-										)
-									)
-								)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _platformTypeEnumSetRelationsTx$ = combineLatest([
-		this._importTx$,
-		this._platformTypeEnumSetRelations$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, relations, branchId]) =>
-			from(Object.keys(relations)).pipe(
-				switchMap((pTypeId) =>
-					from(relations[pTypeId]).pipe(
-						switchMap((enumSetId) =>
-							this.enumSetService
-								.createPlatformTypeToEnumSetRelation(
-									enumSetId,
-									pTypeId
-								)
-								.pipe(
-									switchMap((relation) =>
-										this.enumSetService.addRelation(
-											branchId,
-											relation,
-											tx
-										)
-									)
-								)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _enumSetEnumRelationsTx$ = combineLatest([
-		this._importTx$,
-		this._enumSetEnumRelations$,
-		this.branchId,
-	]).pipe(
-		switchMap(([tx, relations, branchId]) =>
-			from(Object.keys(relations)).pipe(
-				switchMap((enumSetId) =>
-					from(relations[enumSetId]).pipe(
-						switchMap((enumId) =>
-							this.enumSetService
-								.createEnumToEnumSetRelation(enumSetId, enumId)
-								.pipe(
-									switchMap((relation) =>
-										this.enumSetService.addRelation(
-											branchId,
-											relation,
-											tx
-										)
-									)
-								)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	private _connectionCrossRefRelationsTx$ = combineLatest([
-		this._importTx$,
-		this._connectionCrossRefRelations$,
-		this.branchId,
-		this.selectedConnectionId,
-	]).pipe(
-		switchMap(([tx, relations, branchId, selectedConnectionId]) =>
-			from(Object.keys(relations)).pipe(
-				switchMap((connectionId) =>
-					from(relations[connectionId]).pipe(
-						switchMap((crossRefId) =>
-							this.crossRefService
-								.createConnectionRelation(
-									selectedConnectionId,
-									crossRefId
-								)
-								.pipe(
-									switchMap((relation) =>
-										this.crossRefService.addRelation(
-											branchId,
-											relation,
-											tx
-										)
-									)
-								)
-						)
-					)
-				),
-				reduce(() => tx, tx),
-				startWith(tx)
-			)
-		)
-	);
-
-	// The last parameter of the below combineLatest is getting lost and not making it into the final combined tx. Having this placeholder as the last parameter causes just the placeholder to get lost instead.
-	private _placeholderTx$ = this._importTx$;
-
-	// combineLatest can only support up to 6 observables, so we need multiple combineLatest
-	private _combined1$ = combineLatest([
-		this._nodesTx$,
-		this._connectionTx$,
-		this._messagesTx$,
-		this._subMessagesTx$,
-		this._structuresTx$,
-		this._elementsTx$,
-	]);
-	private _combined2$ = combineLatest([
-		this._platformTypesTx$,
-		this._enumSetTx$,
-		this._enumsTx$,
-		this._crossRefsTx$,
-		this._messageSubMessageRelationsTx$,
-		this._subMessageStructureRelationsTx$,
-	]);
-	private _combined3$ = combineLatest([
-		this._structureElementRelationsTx$,
-		this._elementPlatformTypeRelationsTx$,
-		this._platformTypeEnumSetRelationsTx$,
-		this._enumSetEnumRelationsTx$,
-		this._connectionCrossRefRelationsTx$,
-		this._placeholderTx$,
-	]);
-
-	private _combineTxs(branchId: string, ...txs: transaction[]) {
-		const importTx: transaction = {
-			branch: branchId,
-			txComment: 'MIM Import',
-			createArtifacts: [],
-			addRelations: [],
-		};
-		return from(txs).pipe(
-			startWith(importTx),
-			reduce((curr, acc) => {
-				acc.addRelations?.push(...curr.addRelations!);
-				acc.createArtifacts?.push(...curr.createArtifacts!);
-				return acc;
-			}, importTx)
 		);
 	}
 
-	private _sendTransaction$ = combineLatest([
-		this.branchId,
-		this._combined1$,
-		this._combined2$,
-		this._combined3$,
-	]).pipe(
+	private _sendTransaction$ = this._allImportTx$.pipe(
 		take(1),
-		switchMap(([branchId, combined1, combined2, combined3]) =>
-			this._combineTxs(
-				branchId,
-				...combined1,
-				...combined2,
-				...combined3
-			).pipe(
-				switchMap((importTx) =>
-					this.transactionService.performMutation(importTx).pipe(
-						tap((res) => {
-							this.ImportSuccess = res.results.success;
-							this.ImportInProgress = false;
-						})
-					)
-				)
+		switchMap((tx) =>
+			this.transactionService.performMutation(tx).pipe(
+				tap((res) => {
+					this.ImportSuccess = res.results.success;
+					this.ImportInProgress = false;
+				})
 			)
-		),
-		takeUntil(this._done$)
+		)
 	);
 
 	performImport() {

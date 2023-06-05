@@ -877,7 +877,7 @@ export const changeReportMock: changeInstance[] = [
 		itemId: '5144',
 		itemTypeId: {
 			id: RelationTypeId.INTERFACECONNECTIONCONTENT,
-			name: 'Interface Connection Content',
+			name: 'Interface Connection Message',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
 			multiplicity: 'MANY_TO_MANY',
@@ -976,7 +976,7 @@ export const changeReportMock: changeInstance[] = [
 		itemId: '5145',
 		itemTypeId: {
 			id: RelationTypeId.INTERFACECONNECTIONCONTENT,
-			name: 'Interface Connection Content',
+			name: 'Interface Connection Message',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
 			multiplicity: 'MANY_TO_MANY',
@@ -24432,13 +24432,13 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201376',
 		itemId: '5239',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONPRIMARYNODE,
-			name: 'Interface Connection Primary Node',
+			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
-			multiplicity: 'MANY_TO_ONE',
+			multiplicity: 'MANY_TO_MANY',
 			idIntValue: 1955695736,
-			idString: '6039606571486514296',
+			idString: '6039606571486514300',
 		},
 		baselineVersion: {
 			transactionToken: {
@@ -24525,13 +24525,13 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201376',
 		itemId: '5240',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONSECONDARYNODE,
-			name: 'Interface Connection Secondary Node',
+			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
-			multiplicity: 'MANY_TO_ONE',
+			multiplicity: 'MANY_TO_MANY',
 			idIntValue: 1955695737,
-			idString: '6039606571486514297',
+			idString: '6039606571486514300',
 		},
 		baselineVersion: {
 			transactionToken: {
@@ -24621,13 +24621,13 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201377',
 		itemId: '5241',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONSECONDARYNODE,
-			name: 'Interface Connection Secondary Node',
+			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
-			multiplicity: 'MANY_TO_ONE',
+			multiplicity: 'MANY_TO_MANY',
 			idIntValue: 1955695737,
-			idString: '6039606571486514297',
+			idString: '6039606571486514300',
 		},
 		baselineVersion: {
 			transactionToken: {
@@ -24717,13 +24717,13 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201377',
 		itemId: '5242',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONPRIMARYNODE,
-			name: 'Interface Connection Primary Node',
+			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
-			multiplicity: 'MANY_TO_ONE',
+			multiplicity: 'MANY_TO_MANY',
 			idIntValue: 1955695736,
-			idString: '6039606571486514296',
+			idString: '6039606571486514300',
 		},
 		baselineVersion: {
 			transactionToken: {

@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -107,7 +108,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag);
 
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag);
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag);
 
    default String getAttributeValuesAsString(AttributeTypeToken attributeType) {
       return Collections.toString(", ", getAttributeValues(attributeType));
@@ -128,6 +130,11 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    default ArtifactReadable getParent() {
       return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(
          getRelated(CoreRelationTypes.DefaultHierarchical_Parent, ArtifactTypeToken.SENTINEL));
+   }
+
+   @JsonIgnore
+   default ArtifactId getArtifactId() {
+      return ArtifactId.valueOf(getId());
    }
 
    /**
@@ -181,7 +188,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag);
 
-   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag);
+   List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
+      DeletionFlag deletionFlag);
 
    boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable artifact);
 
@@ -335,7 +343,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       }
 
       @Override
-      public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
+         DeletionFlag deletionFlag) {
          return null;
       }
 
@@ -404,7 +413,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       }
 
       @Override
-      public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag) {
+      public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
+         DeletionFlag deletionFlag) {
          return null;
       }
 

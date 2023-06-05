@@ -1,12 +1,3 @@
-import type { CrossReference } from './crossReference.d ';
-import type { messageToken } from './messages';
-import type { subMessage } from './sub-messages';
-import type { elementImportToken } from './element';
-import type { enumeration, enumSet } from './enum';
-import type { nodeToken } from './node';
-import type { platformTypeImportToken } from './platformType';
-import type { structure } from './structure';
-
 /*********************************************************************
  * Copyright (c) 2022 Boeing
  *
@@ -19,12 +10,19 @@ import type { structure } from './structure';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import type { CrossReference } from './crossReference.d ';
+import type { messageToken } from './messages';
+import type { subMessage } from './sub-messages';
+import type { elementImportToken } from './element';
+import type { enumeration, enumSet } from './enum';
+import type { nodeToken } from './node';
+import type { platformTypeImportToken } from './platformType';
+import type { structure } from './structure';
+import { connection } from 'src/app/ple/messaging/shared/types/connection';
+
 export interface ImportSummary {
-	createPrimaryNode: boolean;
-	createSecondaryNode: boolean;
-	connectionId: string;
-	primaryNode: nodeToken;
-	secondaryNode: nodeToken;
+	nodes: nodeToken[];
+	connections: connection[];
 	messages: messageToken[];
 	subMessages: subMessage[];
 	structures: structure[];
@@ -33,6 +31,10 @@ export interface ImportSummary {
 	enumSets: enumSet[];
 	enums: enumeration[];
 	crossReferences: CrossReference[];
+	connectionNodeRelations: importRelationMap;
+	connectionMessageRelations: importRelationMap;
+	messagePublisherNodeRelations: importRelationMap;
+	messageSubscriberNodeRelations: importRelationMap;
 	messageSubmessageRelations: importRelationMap;
 	subMessageStructureRelations: importRelationMap;
 	structureElementRelations: importRelationMap;

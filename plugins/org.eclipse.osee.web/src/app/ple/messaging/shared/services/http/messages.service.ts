@@ -153,16 +153,22 @@ export class MessagesService {
 
 	createConnectionRelation(connectionId: string, messageId?: string) {
 		let relation: relation = {
-			typeName: 'Interface Connection Content',
+			typeName: 'Interface Connection Message',
 			sideA: connectionId,
 			sideB: messageId,
 		};
 		return of(relation);
 	}
 
-	createNodeRelation(messageId: string, nodeId?: string) {
+	createMessageNodeRelation(
+		messageId: string,
+		nodeId: string,
+		type?: boolean
+	) {
 		let relation: relation = {
-			typeName: 'Interface Message Sending Node',
+			typeName: type
+				? 'Interface Message Publisher Node'
+				: 'Interface Message Subscriber Node',
 			sideA: messageId,
 			sideB: nodeId,
 		};

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
@@ -88,6 +87,7 @@ public class IcdImportApiImpl implements MimImportApi {
          primaryNode.setColor("");
          primaryNode.setDescription("");
          incrementId();
+         summary.getNodes().add(primaryNode);
       }
       if (existingSecondaryNode.isValid()) {
          secondaryNode = existingSecondaryNode;
@@ -98,16 +98,27 @@ public class IcdImportApiImpl implements MimImportApi {
          secondaryNode.setColor("");
          secondaryNode.setDescription("");
          incrementId();
+         summary.getNodes().add(secondaryNode);
       }
-      summary.setPrimaryNode(primaryNode);
-      summary.setSecondaryNode(secondaryNode);
-      summary.setCreatePrimaryNode(!existingPrimaryNode.isValid());
-      summary.setCreateSecondaryNode(!existingSecondaryNode.isValid());
 
-      InterfaceConnection existingConnection = mimApi.getInterfaceConnectionViewApi().getAll(branch).stream().filter(
-         c -> c.getPrimaryNode().equals(existingPrimaryNode.getId()) && c.getSecondaryNode().equals(
-            existingSecondaryNode.getId())).findFirst().orElse(InterfaceConnection.SENTINEL);
-      summary.setConnectionId(ArtifactId.valueOf(existingConnection.getId()));
+      InterfaceConnection connection =
+         mimApi.getInterfaceConnectionViewApi().getAll(branch).stream().filter(c -> c.getNodes().stream().filter(
+            n -> n.getId().equals(existingPrimaryNode.getId())).findAny().isPresent() && c.getNodes().stream().filter(
+               n -> n.getId().equals(existingSecondaryNode.getId())).findAny().isPresent()).findFirst().orElse(
+                  InterfaceConnection.SENTINEL);
+      if (!connection.isValid()) {
+         connection = new InterfaceConnection(id, "");
+         incrementId();
+         connection.setApplicability(ApplicabilityToken.BASE);
+         connection.getNodes().add(primaryNode.getArtifactId());
+         connection.getNodes().add(secondaryNode.getArtifactId());
+         summary.getConnections().add(connection);
+         List<String> rels =
+            summary.getConnectionNodeRelations().getOrDefault(connection.getIdString(), new LinkedList<>());
+         rels.add(primaryNode.getIdString());
+         rels.add(secondaryNode.getIdString());
+         summary.getConnectionNodeRelations().put(connection.getIdString(), rels);
+      }
 
       // Messages and SubMessages
       List<String> primaryRegions = reader.getMergedRegions().stream().filter(
@@ -120,14 +131,14 @@ public class IcdImportApiImpl implements MimImportApi {
          String[] split = region.split(":");
          int start = Integer.parseInt(split[0].substring(1)) - 1; // Subtract 1 due to 0-based indexing
          int end = Integer.parseInt(split[1].substring(1)) - 1;
-         readMessage(primaryNode, start, end, 0, submessageIds);
+         readMessage(primaryNode, secondaryNode, start, end, 0, submessageIds);
       }
 
       for (String region : secondaryRegions) {
          String[] split = region.split(":");
          int start = Integer.parseInt(split[0].substring(1)) - 1;
          int end = Integer.parseInt(split[1].substring(1)) - 1;
-         readMessage(secondaryNode, start, end, 5, submessageIds);
+         readMessage(secondaryNode, primaryNode, start, end, 5, submessageIds);
       }
 
       // Structures and Elements
@@ -186,7 +197,7 @@ public class IcdImportApiImpl implements MimImportApi {
       Collections.sort(summary.getMessages(), new Comparator<InterfaceMessageToken>() {
          @Override
          public int compare(InterfaceMessageToken o1, InterfaceMessageToken o2) {
-            if (o1.getInitiatingNode().getName().equals(o2.getInitiatingNode().getName())) {
+            if (o1.getPublisherNodes().get(0).getName().equals(o2.getPublisherNodes().get(0).getName())) {
                boolean isO1Numeric = isStringNumeric(o1.getInterfaceMessageNumber());
                boolean isO2Numeric = isStringNumeric(o2.getInterfaceMessageNumber());
                if (isO1Numeric && isO2Numeric) {
@@ -198,7 +209,7 @@ public class IcdImportApiImpl implements MimImportApi {
                }
                return isO2Numeric ? 1 : -1;
             }
-            if (o1.getInitiatingNode().getName().equals(primaryNode.getName())) {
+            if (o1.getPublisherNodes().get(0).getName().equals(primaryNode.getName())) {
                return -1;
             } else {
                return 1;
@@ -206,11 +217,20 @@ public class IcdImportApiImpl implements MimImportApi {
          }
       });
 
+      // Add connection <-> message relations after the messages are sorted to get the correct relation order.
+      List<String> connectionRels =
+         summary.getConnectionMessageRelations().getOrDefault(connection.getIdString(), new LinkedList<>());
+      for (InterfaceMessageToken message : summary.getMessages()) {
+         connectionRels.add(message.getIdString());
+         summary.getConnectionMessageRelations().put(connection.getIdString(), connectionRels);
+      }
+
       reader.closeWorkbook();
       return summary;
    }
 
-   private void readMessage(InterfaceNode node, int firstRow, int lastRow, int colOffset, Map<String, Long> subMessageIdMap) {
+   private void readMessage(InterfaceNode pubNode, InterfaceNode subNode, int firstRow, int lastRow, int colOffset,
+      Map<String, Long> subMessageIdMap) {
       String messageNumber = reader.getCellStringValue(firstRow, 0 + colOffset);
       String rate = reader.getCellStringValue(firstRow, 1 + colOffset);
       String write = reader.getCellStringValue(firstRow, 2 + colOffset);
@@ -229,10 +249,21 @@ public class IcdImportApiImpl implements MimImportApi {
       message.setInterfaceMessagePeriodicity(periodicity);
       message.setInterfaceMessageWriteAccess(write.equals("W"));
       message.setApplicability(ApplicabilityToken.BASE);
-      message.setInitiatingNode(node);
+      message.getPublisherNodes().add(pubNode);
+      message.getSubscriberNodes().add(subNode);
       message.setInterfaceMessageType("Operational");
       message.setDescription("");
       incrementId();
+
+      List<String> pubRels =
+         summary.getMessagePublisherNodeRelations().getOrDefault(message.getIdString(), new LinkedList<>());
+      pubRels.add(pubNode.getIdString());
+      summary.getMessagePublisherNodeRelations().put(message.getIdString(), pubRels);
+
+      List<String> subRels =
+         summary.getMessageSubscriberNodeRelations().getOrDefault(message.getIdString(), new LinkedList<>());
+      subRels.add(subNode.getIdString());
+      summary.getMessageSubscriberNodeRelations().put(message.getIdString(), subRels);
 
       List<String> subMessageIds = new LinkedList<>();
       int subMsgNum = 1;
@@ -247,7 +278,7 @@ public class IcdImportApiImpl implements MimImportApi {
          subMessage.setInterfaceSubMessageNumber("" + subMsgNum);
          subMessage.setDescription("");
          subMessageIds.add("" + id);
-         subMessageIdMap.put(getSubMessageMapKey(messageNumber + "", subMsgNum + "", node.getName()), id);
+         subMessageIdMap.put(getSubMessageMapKey(messageNumber + "", subMsgNum + "", pubNode.getName()), id);
          incrementId();
          summary.getSubMessages().add(subMessage);
          subMsgNum++;
@@ -257,7 +288,8 @@ public class IcdImportApiImpl implements MimImportApi {
       summary.getMessages().add(message);
    }
 
-   private InterfaceStructureToken readStructure(InterfaceNode primaryNode, InterfaceNode secondaryNode, Map<String, Long> subMessageIdMap) {
+   private InterfaceStructureToken readStructure(InterfaceNode primaryNode, InterfaceNode secondaryNode,
+      Map<String, Long> subMessageIdMap) {
       int structureRow = 1;
       String name = reader.getCellStringValue(structureRow, 1);
       String category = reader.getCellStringValue(structureRow, 4);
@@ -294,8 +326,9 @@ public class IcdImportApiImpl implements MimImportApi {
       // Find message based on node and number and update with new information
       InterfaceMessageToken message = InterfaceMessageToken.SENTINEL;
       for (InterfaceMessageToken msg : summary.getMessages()) {
-         if (msg.getInterfaceMessageNumber().equals(msgNum + "") && msg.getInitiatingNode().getName().equals(
-            nodeName)) {
+         if (msg.getInterfaceMessageNumber().equals(
+            msgNum + "") && msg.getPublisherNodes().size() > 0 && msg.getPublisherNodes().get(0).getName().equals(
+               nodeName)) {
             message = msg;
             break;
          }
@@ -303,15 +336,28 @@ public class IcdImportApiImpl implements MimImportApi {
 
       // If the message does not exist, create a new one
       if (!message.isValid()) {
+         InterfaceNode pubNode = primaryNode.getName().equals(nodeName) ? primaryNode : secondaryNode;
+         InterfaceNode subNode = pubNode.equals(primaryNode) ? secondaryNode : primaryNode;
          message = new InterfaceMessageToken(id, "Message " + msgNum);
          message.setInterfaceMessageNumber("" + msgNum);
          message.setInterfaceMessageWriteAccess(false);
          message.setApplicability(ApplicabilityToken.BASE);
-         message.setInitiatingNode(primaryNode.getName().equals(nodeName) ? primaryNode : secondaryNode);
+         message.getPublisherNodes().add(pubNode);
+         message.getSubscriberNodes().add(subNode);
          message.setInterfaceMessageType("Connection");
          message.setDescription("");
          incrementId();
          summary.getMessages().add(message);
+
+         List<String> pubRels =
+            summary.getMessagePublisherNodeRelations().getOrDefault(message.getIdString(), new LinkedList<>());
+         pubRels.add(pubNode.getIdString());
+         summary.getMessagePublisherNodeRelations().put(message.getIdString(), pubRels);
+
+         List<String> subRels =
+            summary.getMessageSubscriberNodeRelations().getOrDefault(message.getIdString(), new LinkedList<>());
+         subRels.add(subNode.getIdString());
+         summary.getMessageSubscriberNodeRelations().put(message.getIdString(), subRels);
       }
 
       // txRate will either be a double like 20.0 if periodic, or 20-A if aperiodic
@@ -348,7 +394,10 @@ public class IcdImportApiImpl implements MimImportApi {
       return structure;
    }
 
-   private void readStructureElements(InterfaceStructureToken structure, Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes, List<PlatformTypeImportToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate, String connectionName) {
+   private void readStructureElements(InterfaceStructureToken structure,
+      Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes,
+      List<PlatformTypeImportToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate,
+      String connectionName) {
       Boolean hasDefaultValue = reader.getCellStringValue(3, 18).equals("Default Value");
       int rowIndex = 4;
       InterfaceElementImportToken previousElement = InterfaceElementImportToken.SENTINEL;

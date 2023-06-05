@@ -61,9 +61,7 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
       try {
          List<InterfaceNode> nodes = new LinkedList<>();
          nodes.addAll(interfaceNodeApi.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceConnectionPrimary_Connection, connectionId, InterfaceNode.class));
-         nodes.addAll(interfaceNodeApi.getAccessor().getAllByRelation(branch,
-            CoreRelationTypes.InterfaceConnectionSecondary_Connection, connectionId, InterfaceNode.class));
+            CoreRelationTypes.InterfaceConnectionNode_Connection, connectionId));
          return nodes;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {

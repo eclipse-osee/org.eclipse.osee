@@ -145,60 +145,39 @@
 											</h3>
 											<ng-container
 												*ngIf="
-													_importSummary.primaryNode &&
-													_importSummary.secondaryNode
+													_importSummary.nodes
+														.length > 0
 												">
-												<ul>
-													<li>
-														Primary Node:
-														{{
-															_importSummary
-																.primaryNode
-																.name
-														}}
-													</li>
-													<li>
-														Secondary Node:
-														{{
-															_importSummary
-																.secondaryNode
-																.name
-														}}
-													</li>
-													<li>
-														Connection:
-														{{
-															_importSummary
-																.primaryNode
-																.name
-														}}_{{
-															_importSummary
-																.secondaryNode
-																.name
-														}}
-													</li>
-												</ul>
-												<ng-container
-													*ngIf="
-														nodes | async as _nodes
-													">
-													<ng-container
-														*ngIf="
-															_nodes.length > 0
-														">
-														<osee-import-table
-															[data]="_nodes"
-															[headers]="
-																nodeHeaders
-															"
-															[headerDetails]="
-																nodeHeaderDetails
-															"
-															[tableTitle]="
-																'Nodes'
-															"></osee-import-table>
-													</ng-container>
-												</ng-container>
+												<osee-import-table
+													[data]="
+														_importSummary.nodes
+													"
+													[headers]="nodeHeaders"
+													[headerDetails]="
+														nodeHeaderDetails
+													"
+													[tableTitle]="
+														'Nodes'
+													"></osee-import-table>
+											</ng-container>
+											<ng-container
+												*ngIf="
+													_importSummary.connections
+														.length > 0
+												">
+												<osee-import-table
+													[data]="
+														_importSummary.connections
+													"
+													[headers]="
+														connectionHeaders
+													"
+													[headerDetails]="
+														connectionHeaderDetails
+													"
+													[tableTitle]="
+														'Connections'
+													"></osee-import-table>
 											</ng-container>
 											<ng-container
 												*ngIf="

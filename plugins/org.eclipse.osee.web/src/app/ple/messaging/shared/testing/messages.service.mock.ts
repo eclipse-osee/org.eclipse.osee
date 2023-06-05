@@ -42,11 +42,15 @@ export const messageServiceMock: Partial<MessagesService> = {
 	},
 	createConnectionRelation(connectionId: string) {
 		return of({
-			typeName: 'Interface Connection Content',
+			typeName: 'Interface Connection Message',
 			sideA: '10',
 		});
 	},
-	createNodeRelation(messageId: string, nodeId?: string) {
+	createMessageNodeRelation(
+		messageId: string,
+		nodeId: string,
+		type: boolean
+	) {
 		return of({
 			typeName: 'Interface Message Sending Node',
 			sideA: '20',

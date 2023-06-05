@@ -12,7 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -27,8 +31,7 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    private String Description;
    private TransportType TransportType;
-   private Long primaryNode;
-   private Long secondaryNode;
+   private List<ArtifactId> nodes;
    private ApplicabilityToken applicability;
 
    public InterfaceConnection(ArtifactToken art) {
@@ -37,10 +40,8 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    public InterfaceConnection(ArtifactReadable art) {
       super(art);
-      this.setPrimaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getOneOrDefault(
-         ArtifactReadable.SENTINEL).getId());
-      this.setSecondaryNode(art.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getOneOrDefault(
-         ArtifactReadable.SENTINEL).getId());
+      this.setNodes(art.getRelated(CoreRelationTypes.InterfaceConnectionNode_Node).getList().stream().map(
+         n -> n.getArtifactId()).collect(Collectors.toList()));
       this.setTransportType(new TransportType(
          art.getRelated(CoreRelationTypes.InterfaceConnectionTransportType_TransportType).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL)));
@@ -51,6 +52,7 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    public InterfaceConnection(Long id, String name) {
       super(id, name);
+      this.setNodes(new LinkedList<>());
    }
 
    public InterfaceConnection() {
@@ -68,34 +70,6 @@ public class InterfaceConnection extends PLGenericDBObject {
     */
    public void setDescription(String description) {
       this.Description = description;
-   }
-
-   /**
-    * @return the secondaryNode
-    */
-   public Long getSecondaryNode() {
-      return secondaryNode;
-   }
-
-   /**
-    * @param secondaryNode the secondaryNode to set
-    */
-   public void setSecondaryNode(Long secondaryNode) {
-      this.secondaryNode = secondaryNode;
-   }
-
-   /**
-    * @return the primaryNode
-    */
-   public Long getPrimaryNode() {
-      return primaryNode;
-   }
-
-   /**
-    * @param primaryNode the primaryNode to set
-    */
-   public void setPrimaryNode(Long primaryNode) {
-      this.primaryNode = primaryNode;
    }
 
    /**
@@ -124,6 +98,14 @@ public class InterfaceConnection extends PLGenericDBObject {
     */
    public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
+   }
+
+   public List<ArtifactId> getNodes() {
+      return nodes;
+   }
+
+   private void setNodes(List<ArtifactId> nodes) {
+      this.nodes = nodes;
    }
 
 }

@@ -627,7 +627,7 @@ export const differenceReportMock: DifferenceReport = {
 					itemId: '-1',
 					itemTypeId: {
 						id: RelationTypeId.INTERFACECONNECTIONCONTENT,
-						name: 'Interface Connection Content',
+						name: 'Interface Connection Message',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
 						multiplicity: 'MANY_TO_MANY',
@@ -720,7 +720,7 @@ export const differenceReportMock: DifferenceReport = {
 					itemId: '-1',
 					itemTypeId: {
 						id: RelationTypeId.INTERFACECONNECTIONCONTENT,
-						name: 'Interface Connection Content',
+						name: 'Interface Connection Message',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
 						multiplicity: 'MANY_TO_MANY',
@@ -813,7 +813,7 @@ export const differenceReportMock: DifferenceReport = {
 					itemId: '-1',
 					itemTypeId: {
 						id: RelationTypeId.INTERFACECONNECTIONCONTENT,
-						name: 'Interface Connection Content',
+						name: 'Interface Connection Message',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
 						multiplicity: 'MANY_TO_MANY',
@@ -2098,13 +2098,13 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200402',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEMESSAGESENDINGNODE,
-						name: 'Interface Message Sending Node',
+						id: RelationTypeId.INTERFACEMESSAGEPUBNODE,
+						name: 'Interface Message Publisher Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
-						multiplicity: 'MANY_TO_ONE',
+						multiplicity: 'MANY_TO_MANY',
 						idIntValue: 1955695739,
-						idString: '6039606571486514299',
+						idString: '6039606571486514301',
 					},
 					baselineVersion: {
 						transactionToken: {
@@ -10755,14 +10755,14 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200431',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACECONNECTIONPRIMARYNODE,
-						name: 'Interface Connection Primary Node',
+						id: RelationTypeId.INTERFACECONNECTIONNODE,
+						name: 'Interface Connection Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 
 						ordered: true,
-						multiplicity: 'MANY_TO_ONE',
+						multiplicity: 'MANY_TO_MANY',
 						idIntValue: 1955695736,
-						idString: '6039606571486514296',
+						idString: '6039606571486514300',
 					},
 					baselineVersion: {
 						transactionToken: {
@@ -10849,14 +10849,14 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200431',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACECONNECTIONSECONDARYNODE,
-						name: 'Interface Connection Secondary Node',
+						id: RelationTypeId.INTERFACECONNECTIONNODE,
+						name: 'Interface Connection Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 
 						ordered: true,
-						multiplicity: 'MANY_TO_ONE',
+						multiplicity: 'MANY_TO_MANY',
 						idIntValue: 1955695737,
-						idString: '6039606571486514297',
+						idString: '6039606571486514300',
 					},
 					baselineVersion: {
 						transactionToken: {
@@ -11304,14 +11304,14 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200432',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEMESSAGESENDINGNODE,
-						name: 'Interface Message Sending Node',
+						id: RelationTypeId.INTERFACEMESSAGEPUBNODE,
+						name: 'Interface Message Publisher Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 
 						ordered: true,
-						multiplicity: 'MANY_TO_ONE',
+						multiplicity: 'MANY_TO_MANY',
 						idIntValue: 1955695739,
-						idString: '6039606571486514299',
+						idString: '6039606571486514301',
 					},
 					baselineVersion: {
 						transactionToken: {

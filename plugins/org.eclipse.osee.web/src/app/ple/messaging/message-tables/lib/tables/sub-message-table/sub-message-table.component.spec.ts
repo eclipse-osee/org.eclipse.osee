@@ -110,7 +110,28 @@ describe('SubMessageTableComponent', () => {
 			interfaceMessageType: 'Connection',
 			interfaceMessageWriteAccess: true,
 			subMessages: [],
-			initiatingNode: { id: '1', name: 'Node 1' },
+			interfaceMessageExclude: false,
+			interfaceMessageIoMode: '',
+			interfaceMessageModeCode: '',
+			interfaceMessageRateVer: '',
+			interfaceMessagePriority: '',
+			interfaceMessageProtocol: '',
+			interfaceMessageRptWordCount: '',
+			interfaceMessageRptCmdWord: '',
+			interfaceMessageRunBeforeProc: false,
+			interfaceMessageVer: '',
+			publisherNodes: [
+				{
+					id: '100',
+					name: 'Node1',
+				},
+			],
+			subscriberNodes: [
+				{
+					id: '101',
+					name: 'Node2',
+				},
+			],
 		};
 		component.dataSource = new MatTableDataSource();
 		component.data = expectedData;

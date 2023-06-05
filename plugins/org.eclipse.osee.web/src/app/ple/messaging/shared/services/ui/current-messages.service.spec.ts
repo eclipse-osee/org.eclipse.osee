@@ -177,7 +177,8 @@ describe('CurrentMessagesService', () => {
 				scheduler
 					.expectObservable(
 						service.createMessage(
-							{ id: '1', name: 'Node 1' },
+							[{ id: '100', name: 'Node1' }],
+							[{ id: '101', name: 'Node2' }],
 							messagesMock[0]
 						)
 					)
@@ -370,13 +371,31 @@ describe('CurrentMessagesService', () => {
 							interfaceMessageWriteAccess: true,
 							interfaceMessageType: 'Connection',
 							interfaceMessageNumber: '0',
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							applicability: {
 								id: '1',
 								name: 'Base',
-							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
 							},
 							changes: {
 								name: {
@@ -423,13 +442,31 @@ describe('CurrentMessagesService', () => {
 							interfaceMessageWriteAccess: true,
 							interfaceMessageType: 'Connection',
 							interfaceMessageNumber: '0',
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							applicability: {
 								id: '1',
 								name: 'Base',
-							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
 							},
 							changes: {
 								name: {
@@ -452,13 +489,31 @@ describe('CurrentMessagesService', () => {
 							interfaceMessageWriteAccess: true,
 							interfaceMessageType: 'Connection',
 							interfaceMessageNumber: '1',
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							applicability: {
 								id: '1',
 								name: 'Base',
-							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
 							},
 						},
 					],
@@ -495,13 +550,31 @@ describe('CurrentMessagesService', () => {
 							interfaceMessageWriteAccess: true,
 							interfaceMessageType: 'Connection',
 							interfaceMessageNumber: '0',
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							applicability: {
 								id: '1',
 								name: 'Base',
-							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
 							},
 							changes: {
 								name: {
@@ -524,13 +597,31 @@ describe('CurrentMessagesService', () => {
 							interfaceMessageWriteAccess: true,
 							interfaceMessageType: 'Connection',
 							interfaceMessageNumber: '1',
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							applicability: {
 								id: '1',
 								name: 'Base',
-							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
 							},
 						},
 						{
@@ -630,10 +721,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							changes: {},
 						},
 					],
@@ -674,10 +783,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							changes: {
 								name: {
 									previousValue: '',
@@ -703,10 +830,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201289',
@@ -806,10 +951,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201300',
@@ -861,10 +1024,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 					],
 					e: [
@@ -904,10 +1085,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							changes: {
 								name: {
 									previousValue: '',
@@ -933,10 +1132,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201289',
@@ -1045,10 +1262,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201300',
@@ -1103,10 +1338,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201303',
@@ -1125,10 +1378,18 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '',
-								name: '',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [],
+							subscriberNodes: [],
 							changes: {},
 						},
 					],
@@ -1169,10 +1430,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							changes: {
 								name: {
 									previousValue: '',
@@ -1198,10 +1477,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201289',
@@ -1310,10 +1607,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201300',
@@ -1368,10 +1683,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 						},
 						{
 							id: '201303',
@@ -1390,10 +1723,18 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '',
-								name: '',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [],
+							subscriberNodes: [],
 							changes: {},
 						},
 						{
@@ -1410,10 +1751,28 @@ describe('CurrentMessagesService', () => {
 								id: '1',
 								name: 'Base',
 							},
-							initiatingNode: {
-								id: '1',
-								name: 'Node 1',
-							},
+							interfaceMessageExclude: false,
+							interfaceMessageIoMode: '',
+							interfaceMessageModeCode: '',
+							interfaceMessageRateVer: '',
+							interfaceMessagePriority: '',
+							interfaceMessageProtocol: '',
+							interfaceMessageRptWordCount: '',
+							interfaceMessageRptCmdWord: '',
+							interfaceMessageRunBeforeProc: false,
+							interfaceMessageVer: '',
+							publisherNodes: [
+								{
+									id: '100',
+									name: 'Node1',
+								},
+							],
+							subscriberNodes: [
+								{
+									id: '101',
+									name: 'Node2',
+								},
+							],
 							added: false,
 							hasSubMessageChanges: false,
 							changes: {

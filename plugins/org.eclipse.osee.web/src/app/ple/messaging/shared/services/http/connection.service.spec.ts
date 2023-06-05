@@ -48,36 +48,17 @@ describe('ConnectionService', () => {
 	describe('Core Functionality', () => {
 		describe('Modifying data', () => {
 			describe('should create a valid node relation', () => {
-				it('should create a secondary node relation', () => {
+				it('should create a node relation', () => {
 					scheduler.run(() => {
 						let relation = {
-							typeName: 'Interface Connection Secondary Node',
+							typeName: 'Interface Connection Node',
 							sideB: '10',
 							sideA: undefined,
 						};
 						const expectedObservable = { a: relation };
 						const expectedMarble = '(a|)';
 						scheduler
-							.expectObservable(
-								service.createNodeRelation('10', true)
-							)
-							.toBe(expectedMarble, expectedObservable);
-					});
-				});
-
-				it('should create a primary node relation', () => {
-					scheduler.run(() => {
-						let relation = {
-							typeName: 'Interface Connection Primary Node',
-							sideB: '10',
-							sideA: undefined,
-						};
-						const expectedObservable = { a: relation };
-						const expectedMarble = '(a|)';
-						scheduler
-							.expectObservable(
-								service.createNodeRelation('10', false)
-							)
+							.expectObservable(service.createNodeRelation('10'))
 							.toBe(expectedMarble, expectedObservable);
 					});
 				});

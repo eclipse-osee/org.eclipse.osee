@@ -159,9 +159,7 @@ export class GraphNodeMenuComponent {
 		dialogRef
 			.afterClosed()
 			.pipe(
-				//only take first response
 				take(1),
-				//filter out non-valid responses
 				filter(
 					(dialogResponse: newConnection) =>
 						dialogResponse !== undefined && dialogResponse !== null

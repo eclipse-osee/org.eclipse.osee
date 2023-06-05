@@ -26,8 +26,6 @@ public class ConnectionView extends PLGenericDBObject {
    @JsonIgnore
    private String Name; //required
 
-   private String Description;
-
    private String source = "";//source node to reference
    private String target = ""; //target node to reference
    private String label = ""; //label to display on connection line, should be same as {@Name}
@@ -39,8 +37,13 @@ public class ConnectionView extends PLGenericDBObject {
 
    public ConnectionView(InterfaceConnection connection) {
       this(connection.getId(), connection.getName(), connection.getDescription(), connection.getTransportType());
-      this.setSource(connection.getPrimaryNode().toString());
-      this.setTarget(connection.getSecondaryNode().toString());
+      // TODO this needs to change to support more than 2 nodes per connection
+      if (connection.getNodes().size() > 0) {
+         this.setSource(connection.getNodes().get(0).getIdString());
+      }
+      if (connection.getNodes().size() > 1) {
+         this.setTarget(connection.getNodes().get(1).getIdString());
+      }
       this.setApplicability(connection.getApplicability());
    }
 

@@ -24,7 +24,6 @@ import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -56,18 +55,6 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    }
 
    @Override
-   public InterfaceNode getNodeForMessage(BranchId branch, ArtifactId message) {
-      try {
-         return this.getAccessor().getByRelationWithoutId(branch, CoreRelationTypes.InterfaceMessageSendingNode_Message,
-            ArtifactId.valueOf(message.getId()));
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         //
-      }
-      return (InterfaceNode) PLGenericDBObject.SENTINEL;
-   }
-
-   @Override
    public InterfaceNode get(BranchId branch, ArtifactId nodeId) {
       try {
          return this.getAccessor().get(branch, nodeId);
@@ -92,9 +79,10 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId) {
       try {
          //nodes currently don't have affected artifacts
-         return this.getAccessor().getAffectedArtifacts(branch, relatedId, new LinkedList());
+         return this.getAccessor().getAffectedArtifacts(branch, relatedId, new LinkedList<>());
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<ArtifactMatch>();
    }
@@ -110,7 +98,8 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    }
 
    @Override
-   public Collection<InterfaceNode> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<InterfaceNode> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
+      long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -136,13 +125,49 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    }
 
    @Override
-   public Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       try {
          return this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttributeType);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<InterfaceNode>();
+   }
+
+   @Override
+   public Collection<InterfaceNode> getMessagePublisherNodes(BranchId branch, ArtifactId message) {
+      try {
+         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceMessagePubNode_Message, message);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public Collection<InterfaceNode> getMessageSubscriberNodes(BranchId branch, ArtifactId message) {
+      try {
+         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceMessageSubNode_Message, message);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public Collection<InterfaceNode> getNodesForConnection(BranchId branch, ArtifactId connectionId) {
+      try {
+         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionNode_Connection,
+            connectionId);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
    }
 
 }
