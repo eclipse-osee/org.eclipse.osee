@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
@@ -73,7 +72,6 @@ import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkIte
 import org.eclipse.osee.ats.core.workflow.hooks.AtsWriteDiffWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.ConfirmPlarbApprovalHook;
 import org.eclipse.osee.ats.core.workflow.note.AtsStateNoteServiceImpl;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -514,26 +512,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public TransitionResults transition(TransitionData transData) {
-      IAtsChangeSet changes = atsApi.createChangeSet(transData.getName(), transData.getTransitionUser());
-      TransitionHelper helper = new TransitionHelper(transData, changes, atsApi);
-      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       return results;
    }
 
    @Override
    public TransitionResults transitionValidate(TransitionData transData) {
-      TransitionHelper helper = new TransitionHelper(transData, null, atsApi);
-      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleTransitionValidation(new TransitionResults());
-      return results;
-   }
-
-   @Override
-   public TransitionResults transition(ITransitionHelper helper) {
-      helper.setAtsApi(atsApi);
-      TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAllAndPersist();
       return results;
    }
 

@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -126,9 +126,8 @@ public class AtsTestUtilTest extends AtsTestUtil {
 
       for (IStateToken toState : Arrays.asList(TeamState.Implement, TeamState.Completed, TeamState.Implement,
          TeamState.Cancelled, TeamState.Implement)) {
-         TransitionHelper helper = new TransitionHelper("test", Arrays.asList(teamArt), toState.getName(),
-            Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), "cancelled", null, null,
-            TransitionOption.OverrideTransitionValidityCheck);
+         TransitionData helper = new TransitionData("test", Arrays.asList(teamArt), toState.getName(),
+            Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), "cancelled", null, TransitionOption.OverrideTransitionValidityCheck);
          TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
          Assert.assertTrue(results.toString(), results.isSuccess());
          Assert.assertEquals(toState.getName(), teamArt.getCurrentStateName());

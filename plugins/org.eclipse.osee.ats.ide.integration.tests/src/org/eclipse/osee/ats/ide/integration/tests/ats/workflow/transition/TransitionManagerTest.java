@@ -34,11 +34,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinitionTokens;
@@ -97,11 +97,11 @@ public class TransitionManagerTest {
    @org.junit.Test
    public void testHandleTransitionValidation__NoAwas() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-A");
-      TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), EMPTY_AWAS,
+      TransitionData transData = new TransitionData(getClass().getSimpleName(), EMPTY_AWAS,
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
-         AtsApiService.get().createChangeSet(getClass().getSimpleName()), AtsApiService.get(), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+         AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(TransitionResult.NO_WORKFLOWS_PROVIDED_FOR_TRANSITION));
@@ -109,10 +109,10 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testHandleTransitionValidation__ToStateNotNull() {
-      TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
+      TransitionData transData = new TransitionData(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          null, Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
-         AtsApiService.get().createChangeSet(getClass().getSimpleName()), AtsApiService.get(), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+         AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(TransitionResult.TO_STATE_CANT_BE_NULL));
@@ -120,10 +120,10 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testHandleTransitionValidation__InvalidToState() {
-      TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
+      TransitionData transData = new TransitionData(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          "InvalidStateName", Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
-         AtsApiService.get().createChangeSet(getClass().getSimpleName()), AtsApiService.get(), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+         AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(
@@ -137,12 +137,12 @@ public class TransitionManagerTest {
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       Assert.assertNotNull(teamDef);
 
-      TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TransitionData transData = new TransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
-         AtsApiService.get().createChangeSet(getClass().getSimpleName()), AtsApiService.get(), TransitionOption.None);
-      helper.setExecuteChanges(true);
-      TransitionManager transMgr = new TransitionManager(helper);
+         AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
+      transData.setExecuteChanges(true);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // First transition should be valid cause Joe Smith is assigned cause he created
@@ -151,25 +151,26 @@ public class TransitionManagerTest {
 
       // Set OverrideAssigneeCheck
       results.clear();
-      helper.addTransitionOption(TransitionOption.OverrideAssigneeCheck);
-      Assert.assertTrue(helper.isOverrideAssigneeCheck());
+      transData.addTransitionOption(TransitionOption.OverrideAssigneeCheck);
+      Assert.assertTrue(transData.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
       // Set UnAssigned, should be able to transition cause will be assigned as convenience
       results.clear();
-      helper.removeTransitionOption(TransitionOption.OverrideAssigneeCheck);
-      Assert.assertFalse(helper.isOverrideAssigneeCheck());
+      transData.removeTransitionOption(TransitionOption.OverrideAssigneeCheck);
+      Assert.assertFalse(transData.isOverrideAssigneeCheck());
       teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByToken(SystemUser.UnAssigned));
       transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(getResultsAndDebug(results, teamArt, helper), results.isEmpty());
+      Assert.assertTrue(getResultsAndDebug(results, teamArt, transData), results.isEmpty());
 
       // cleanup test
       teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByToken(SystemUser.UnAssigned));
    }
 
-   private String getResultsAndDebug(TransitionResults results, TeamWorkFlowArtifact teamArt, TransitionHelper helper) {
+   private String getResultsAndDebug(TransitionResults results, TeamWorkFlowArtifact teamArt,
+      TransitionData transData) {
       StringBuilder sb = new StringBuilder(results.toString());
       sb.append("\n\n");
       sb.append("assignees: ");
@@ -177,7 +178,7 @@ public class TransitionManagerTest {
       sb.append("\n\n");
       sb.append("transitionOptions: ");
       boolean firstOption = true;
-      for (TransitionOption transOp : helper.getTransitionOptions()) {
+      for (TransitionOption transOp : transData.getTransitionOptions()) {
          if (!firstOption) {
             sb.append(", ");
          } else {
@@ -192,11 +193,11 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__WorkingBranchTransitionable() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-C");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // this should pass
@@ -204,25 +205,25 @@ public class TransitionManagerTest {
       Assert.assertTrue("Test wasn't reset to allow transition", results.isEmpty());
 
       // attempt to transition to Implement with working branch
-      helper.setWorkingBranchInWork(true);
-      helper.setBranchInCommit(false);
+      transData.setWorkingBranchInWork(true);
+      transData.setBranchInCommit(false);
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(AtsTestUtil.getTeamWf(), TransitionResult.WORKING_BRANCH_EXISTS));
 
       // attempt to cancel workflow with working branch
       results.clear();
-      helper.setWorkingBranchInWork(true);
-      helper.setBranchInCommit(false);
-      helper.setToStateName(TeamState.Cancelled.getName());
+      transData.setWorkingBranchInWork(true);
+      transData.setBranchInCommit(false);
+      transData.setToStateName(TeamState.Cancelled.getName());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(
          results.contains(AtsTestUtil.getTeamWf(), TransitionResult.DELETE_WORKING_BRANCH_BEFORE_CANCEL));
 
       // attempt to transition workflow with branch being committed
       results.clear();
-      helper.setWorkingBranchInWork(true);
-      helper.setBranchInCommit(true);
-      helper.setToStateName(TeamState.Implement.getName());
+      transData.setWorkingBranchInWork(true);
+      transData.setBranchInCommit(true);
+      transData.setToStateName(TeamState.Implement.getName());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(AtsTestUtil.getTeamWf(), TransitionResult.WORKING_BRANCH_BEING_COMMITTED));
    }
@@ -231,24 +232,24 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__NoSystemUser() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-D");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // First transition should be valid cause Joe Smith is assigned cause he created
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
-      helper.setSystemUser(true);
+      transData.setSystemUser(true);
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(TransitionResult.CAN_NOT_TRANSITION_AS_SYSTEM_USER));
 
       results.clear();
-      helper.setSystemUser(false);
-      helper.setSystemUserAssigned(true);
+      transData.setSystemUser(false);
+      transData.setSystemUserAssigned(true);
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED));
    }
@@ -257,13 +258,13 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__ValidateXWidgets__RequiredForTransition() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-1");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // test that normal transition works
@@ -292,13 +293,13 @@ public class TransitionManagerTest {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-2");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // test that normal transition works
@@ -311,13 +312,13 @@ public class TransitionManagerTest {
 
       // test that neither are required for transition to implement
       results.clear();
-      helper.setToStateName(AtsTestUtil.getImplementStateDef().getName());
+      transData.setToStateName(AtsTestUtil.getImplementStateDef().getName());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
       // test that Work Package only widget required for normal transition
       results.clear();
-      helper.setToStateName(AtsTestUtil.getCompletedStateDef().getName());
+      transData.setToStateName(AtsTestUtil.getCompletedStateDef().getName());
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
@@ -332,14 +333,14 @@ public class TransitionManagerTest {
       // test that neither are required for transition to canceled
       results.clear();
 
-      helper.setToStateName(AtsTestUtil.getCancelledStateDef().getName());
+      transData.setToStateName(AtsTestUtil.getCancelledStateDef().getName());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
       // test that neither are required for transition to completed if overrideValidation is set
       results.clear();
-      helper.setToStateName(AtsTestUtil.getCompletedStateDef().getName());
-      helper.setOverrideTransitionValidityCheck(true);
+      transData.setToStateName(AtsTestUtil.getCompletedStateDef().getName());
+      transData.setOverrideTransitionValidityCheck(true);
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
    }
@@ -391,11 +392,11 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
 
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // validate that can transition
@@ -424,11 +425,11 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
 
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // validate that can transition
@@ -459,11 +460,11 @@ public class TransitionManagerTest {
 
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-6");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // validate that can transition
@@ -519,41 +520,41 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt02 = AtsTestUtil.getTeamWf2();
 
       //1. Initially transition workflows to Implement
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(),
          Arrays.asList(teamArt01, teamArt02), AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
       //2. redundant transition workflows to Implement
-      MockTransitionHelper helper01 = new MockTransitionHelper(getClass().getSimpleName(),
+      TestTransitionData transData01 = new TestTransitionData(getClass().getSimpleName(),
          Arrays.asList(teamArt01, teamArt02), AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr01 = new TransitionManager(helper01);
+      TransitionManager transMgr01 = new TransitionManager(transData01);
       TransitionResults results01 = new TransitionResults();
       transMgr01.handleTransitionValidation(results01);
       Assert.assertTrue(results01.isEmpty());
 
       //3. Transition one TeamWf to Complete
-      MockTransitionHelper helper02 = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01),
+      TestTransitionData transData02 = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt01),
          AtsTestUtil.getCompletedStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr02 = new TransitionManager(helper02);
+      TransitionManager transMgr02 = new TransitionManager(transData02, AtsApiService.get());
       TransitionResults results02 = new TransitionResults();
       transMgr02.handleTransitionValidation(results02);
       Assert.assertTrue(results02.isEmpty());
 
       //4. redundant transition workflows to Implement
-      MockTransitionHelper helper03 = new MockTransitionHelper(getClass().getSimpleName(),
+      TestTransitionData transData03 = new TestTransitionData(getClass().getSimpleName(),
          Arrays.asList(teamArt01, teamArt02), AtsTestUtil.getCompletedStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr03 = new TransitionManager(helper03);
+      TransitionManager transMgr03 = new TransitionManager(transData03);
       TransitionResults results03 = new TransitionResults();
       transMgr03.handleTransitionValidation(results03);
       Assert.assertTrue(results03.isEmpty());
@@ -565,10 +566,10 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       List<AtsUser> assigneesBefore = teamArt.getAssignees();
       Assert.assertTrue(assigneesBefore.size() > 0);
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(), teamArt.getAssignees(), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
       TransitionResults results01 = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -586,11 +587,11 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       List<AtsUser> assigneesBefore = teamArt.getAssignees();
       Assert.assertTrue(assigneesBefore.size() > 0);
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(), null, null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      helper.setExecuteChanges(true);
-      TransitionManager transMgr = new TransitionManager(helper);
+      transData.setExecuteChanges(true);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
       TransitionResults results01 = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -616,29 +617,29 @@ public class TransitionManagerTest {
       Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
 
       // Transition to completed should set percent to 100
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getCompletedStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Completed", teamArt.getCurrentStateName());
       Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
 
       // Transition to Implement should set percent to 0
-      helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
-      AtsApiService.get().getWorkItemService().transition(helper);
+      AtsApiService.get().getWorkItemService().transition(transData);
 
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Implement", teamArt.getCurrentStateName());
       Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
 
       // Transition to Cancelled should set percent to 0
-      helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getCancelledStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
-      AtsApiService.get().getWorkItemService().transition(helper);
+      AtsApiService.get().getWorkItemService().transition(transData);
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Cancelled", teamArt.getCurrentStateName());
       Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
@@ -660,11 +661,11 @@ public class TransitionManagerTest {
 
       // transition workflow to cancelled - peer review not cancelled
       changes.clear();
-      TransitionHelper transHelper =
-         new TransitionHelper("Transition Team Workflow Review", Arrays.asList(teamArt), "Cancelled",
-            new ArrayList<AtsUser>(), "", changes, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
-      transHelper.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
-      TransitionManager mgr = new TransitionManager(transHelper);
+      TransitionData transData =
+         new TransitionData("Transition Team Workflow Review", Arrays.asList(teamArt), "Cancelled",
+            new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
+      transData.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
+      TransitionManager mgr = new TransitionManager(transData, AtsApiService.get());
       results = mgr.handleAll();
       changes.execute();
       Assert.assertTrue(results.contains(teamArt, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL));
@@ -672,10 +673,10 @@ public class TransitionManagerTest {
       // transition workflow again - peer review cancelled
       results.clear();
       changes.clear();
-      transHelper = new TransitionHelper("Transition Team Workflow Review", Arrays.asList(peerReview), "Cancelled",
-         new ArrayList<AtsUser>(), "", changes, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
-      transHelper.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
-      mgr = new TransitionManager(transHelper);
+      transData = new TransitionData("Transition Team Workflow Review", Arrays.asList(peerReview), "Cancelled",
+         new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
+      transData.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
+      mgr = new TransitionManager(transData);
       results = mgr.handleAll();
       changes.execute();
       Assert.assertTrue(results.isEmpty());

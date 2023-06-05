@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateColorToSwtColor;
@@ -120,8 +120,8 @@ public class TaskInfoXWidget extends XLabelValueBase {
    public static Result areTasksComplete(IAtsTeamWorkflow teamWf, IStateToken state) {
       try {
          for (IAtsTask task : AtsApiService.get().getTaskService().getTask(teamWf)) {
-            if (task.getCurrentStateType().isWorking() && AtsApiService.get().getTaskService().isRelatedToState(
-               task, state.getName())) {
+            if (task.getCurrentStateType().isWorking() && AtsApiService.get().getTaskService().isRelatedToState(task,
+               state.getName())) {
                return new Result(false, "Task " + task.getIdString() + " Not Complete");
             }
          }
@@ -194,12 +194,12 @@ public class TaskInfoXWidget extends XLabelValueBase {
                                  taskArt.getStateMgr().setAssignee(
                                     AtsApiService.get().getUserService().getCurrentUser());
                               }
-                              TransitionHelper helper =
-                                 new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-                                    TaskStates.Completed.getName(), null, null, null, AtsApiService.get(),
-                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                              TransitionData transData =
+                                 new TransitionData("Transition to Completed", Arrays.asList(taskArt),
+                                    TaskStates.Completed.getName(), null, null, null, TransitionOption.OverrideTransitionValidityCheck,
+                                    TransitionOption.None);
                               TransitionResults results =
-                                 AtsApiService.get().getWorkItemServiceIde().transition(helper);
+                                 AtsApiService.get().getWorkItemServiceIde().transition(transData);
                               if (!results.isEmpty()) {
                                  AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                                  return;

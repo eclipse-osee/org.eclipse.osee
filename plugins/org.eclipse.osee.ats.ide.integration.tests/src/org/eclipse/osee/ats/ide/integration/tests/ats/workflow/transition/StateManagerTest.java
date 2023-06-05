@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 
 import java.util.Collections;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -47,10 +47,10 @@ public class StateManagerTest {
          false, AtsApiService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
-      ITransitionHelper helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
-         AtsTestUtil.getImplementStateDef().getName(),
-         Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()), null, null);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
+      TransitionData transData =
+         new TransitionData("dodad", Collections.singletonList(teamWf), AtsTestUtil.getImplementStateDef().getName(),
+            Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()), null, null);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       Assert.assertTrue(results.isEmpty());
 
       changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
@@ -58,10 +58,10 @@ public class StateManagerTest {
          false, AtsApiService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
-      helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
+      transData = new TestTransitionData("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getCompletedStateDef().getName(),
          Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()), null, null);
-      results = AtsApiService.get().getWorkItemService().transition(helper);
+      results = AtsApiService.get().getWorkItemService().transition(transData);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       Assert.assertEquals(3.3, AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(teamWf), 0.001);

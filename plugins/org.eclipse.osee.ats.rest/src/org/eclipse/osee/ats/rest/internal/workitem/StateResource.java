@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -98,10 +98,10 @@ public final class StateResource {
 
          IAtsChangeSet changes =
             atsApi.getStoreService().createAtsChangeSet("Transition Action - Server", transitionUser);
-         TransitionHelper helper = new TransitionHelper("Transition " + id, Collections.singleton(workItem), toState,
-            workItem.getAssignees(), reason, changes, atsApi, TransitionOption.None);
-         helper.setTransitionUser(transitionUser);
-         TransitionManager mgr = new TransitionManager(helper);
+         TransitionData transData = new TransitionData("Transition " + id, Collections.singleton(workItem), toState,
+            workItem.getAssignees(), reason, changes, TransitionOption.None);
+         transData.setTransitionUser(transitionUser);
+         TransitionManager mgr = new TransitionManager(transData);
          TransitionResults results = mgr.handleAll();
          if (!results.isEmpty()) {
             return RestUtil.returnInternalServerError("Transition Failed: " + results.toString());

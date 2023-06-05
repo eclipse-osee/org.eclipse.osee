@@ -32,11 +32,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.task.ChangeReportTasksUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -425,7 +425,8 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   protected Artifact getOrCreateArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch, Artifact parent, boolean persist) {
+   protected Artifact getOrCreateArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch,
+      Artifact parent, boolean persist) {
       Artifact art = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);
       if (art == null) {
          art = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName);
@@ -641,10 +642,11 @@ public abstract class BranchRegressionTest {
    public void testRequirementsWorkflowCompletion() {
       // Complete Requirements and Start Code/Test
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("testRequirementsWorkflowCompletion");
-      TransitionHelper helper = new TransitionHelper("Branch Regression Test", Arrays.asList(reqTeamWf),
-         getRequirementsCompletedState().getName(), null, null, changes, AtsApiService.get(),
-         TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
+      TransitionData transData = new TransitionData("Branch Regression Test", Arrays.asList(reqTeamWf),
+         getRequirementsCompletedState().getName(), null, null, changes, TransitionOption.OverrideAssigneeCheck,
+         TransitionOption.OverrideTransitionValidityCheck);
+      transData.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       if (!results.isEmpty()) {
          Assert.fail("Complete Requirements Failed " + results.toString());
       }
@@ -763,7 +765,8 @@ public abstract class BranchRegressionTest {
       }
    }
 
-   protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions, BranchToken branch) throws MultipleAttributesExist {
+   protected Artifact createSoftwareArtifact(ArtifactToken artifactToken, Artifact parent, String[] partitions,
+      BranchToken branch) throws MultipleAttributesExist {
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Create " + artifactToken.getName());
       Artifact newArt = ArtifactTypeManager.addArtifact(artifactToken, branch);
       Artifact parentArt = setParent(parent, partitions, newArt, tx);
@@ -781,14 +784,16 @@ public abstract class BranchRegressionTest {
       return art1;
    }
 
-   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchToken branch) {
+   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title,
+      String[] partitions, BranchToken branch) {
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "title");
       Artifact art = this.createSoftwareArtifact(artifactType, parent, title, partitions, branch, tx);
       tx.execute();
       return art;
    }
 
-   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title, String[] partitions, BranchToken branch, SkynetTransaction tx) {
+   protected Artifact createSoftwareArtifact(ArtifactTypeToken artifactType, Artifact parent, String title,
+      String[] partitions, BranchToken branch, SkynetTransaction tx) {
       Artifact parentArt = null;
       try {
          SkynetTransaction.setOverrideAccess(true);

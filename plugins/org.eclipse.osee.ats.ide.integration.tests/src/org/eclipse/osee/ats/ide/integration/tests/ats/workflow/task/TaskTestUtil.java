@@ -21,10 +21,10 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskStates;
@@ -50,9 +50,9 @@ public class TaskTestUtil {
       if (estimatedHours > 0.0) {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
       }
-      TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-         TaskStates.Completed.getName(), null, null, null, AtsApiService.get());
-      helper.addTransitionHook(new IAtsTransitionHook() {
+      TransitionData transData = new TransitionData("Transition to Completed", Arrays.asList(taskArt),
+         TaskStates.Completed.getName(), null, null, null);
+      transData.addTransitionHook(new IAtsTransitionHook() {
 
          @Override
          public String getDescription() {
@@ -60,12 +60,13 @@ public class TaskTestUtil {
          }
 
          @Override
-         public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+         public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
             AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, taskArt.getStateDefinition(),
                additionalHours, 100, true, AtsApiService.get().getUserService().getCurrentUser(), changes);
          }
       });
-      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
 
       if (results.isEmpty()) {
          return Result.TrueResult;
@@ -73,14 +74,15 @@ public class TaskTestUtil {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public static Result transitionToInWork(TaskArtifact taskArt, AtsUser toUser, int percentComplete, double additionalHours) {
+   public static Result transitionToInWork(TaskArtifact taskArt, AtsUser toUser, int percentComplete,
+      double additionalHours) {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }
-      TransitionHelper helper =
-         new TransitionHelper("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
-            Arrays.asList(toUser), null, null, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
-      helper.addTransitionHook(new IAtsTransitionHook() {
+      TransitionData transData =
+         new TransitionData("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
+            Arrays.asList(toUser), null, null, TransitionOption.OverrideAssigneeCheck);
+      transData.addTransitionHook(new IAtsTransitionHook() {
 
          @Override
          public String getDescription() {
@@ -88,7 +90,8 @@ public class TaskTestUtil {
          }
 
          @Override
-         public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+         public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
             if (AtsApiService.get().getWorkItemMetricsService().getPercentComplete(
                taskArt) != percentComplete || additionalHours > 0) {
                AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, fromState, additionalHours,
@@ -96,7 +99,7 @@ public class TaskTestUtil {
             }
          }
       });
-      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       if (!results.isEmpty()) {
          return new Result("Transition Error %s", results.toString());
       }

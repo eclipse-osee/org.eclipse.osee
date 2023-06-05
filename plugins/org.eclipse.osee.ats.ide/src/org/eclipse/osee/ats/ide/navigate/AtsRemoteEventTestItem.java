@@ -30,11 +30,11 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -181,9 +181,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private void makeChanges7(IAtsTeamWorkflow teamWf) {
-      TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamWf),
+      TransitionData helper = new TransitionData("Remote Event Test", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()),
-         null, null, AtsApiService.get(), TransitionOption.None);
+         null, null, TransitionOption.None);
       TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
       if (!results.isEmpty()) {
          throw new OseeStateException(results.toString());

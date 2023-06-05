@@ -26,10 +26,10 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,8 +49,7 @@ public class DemoTeamWorkflowTest {
    @Before
    @After
    public void cleanup() throws Exception {
-      assertTrue("This can not be run on production databse.",
-         !AtsApiService.get().getStoreService().isProductionDb());
+      assertTrue("This can not be run on production databse.", !AtsApiService.get().getStoreService().isProductionDb());
 
       AtsTestUtil.cleanupSimpleTest(getClass().getSimpleName());
    }
@@ -71,18 +70,17 @@ public class DemoTeamWorkflowTest {
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
 
       //*** Transition Action to Analyze
-      TransitionHelper helper = new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf),
-         TeamState.Analyze.getName(), Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
-         null, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
+      TransitionData transData = new TransitionData("Transition to Analyze", Arrays.asList(teamWf),
+         TeamState.Analyze.getName(), Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null,
+         TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
       //*** Transition Action to Implement
-      helper = new TransitionHelper("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null,
-         AtsApiService.get(), TransitionOption.OverrideAssigneeCheck,
+      transData = new TransitionData("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.OverrideAssigneeCheck,
          TransitionOption.OverrideTransitionValidityCheck);
-      results = AtsApiService.get().getWorkItemService().transition(helper);
+      results = AtsApiService.get().getWorkItemService().transition(transData);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
       IAtsVersion sawBuild2Version =

@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.DemoWorkDefinition
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTestPrepare;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamDecisionReviewDefinitionManagerTesttoDecision;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.MockTransitionHelper;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.TestTransitionData;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -69,8 +69,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
          teamWf.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getDecisionReviews().size());
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());
 
-      MockTransitionHelper helper =
-         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamWf), TeamState.Implement.getName(),
+      TestTransitionData helper =
+         new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamWf), TeamState.Implement.getName(),
             Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.None);
       TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
 
@@ -105,7 +105,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
 
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());
 
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(),
+      TestTransitionData helper = new TestTransitionData(getClass().getSimpleName(),
          Arrays.asList((TeamWorkFlowArtifact) teamWf.getStoreObject()), TeamState.Implement.getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser
 

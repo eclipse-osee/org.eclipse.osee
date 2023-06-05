@@ -67,7 +67,6 @@ import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
@@ -271,10 +270,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          attrTypeId = AtsAttributeTypes.Priority;
       } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
          String state = values.iterator().next();
-         TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
-            new ArrayList<AtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-         helper.setTransitionUser(atsApi.getUserService().getCurrentUser());
-         TransitionManager mgr = new TransitionManager(helper);
+         TransitionData transData = new TransitionData("Transition Workflow", Arrays.asList(workItem), state,
+            new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
+         transData.setTransitionUser(atsApi.getUserService().getCurrentUser());
+         TransitionManager mgr = new TransitionManager(transData);
          TransitionResults results = new TransitionResults();
          mgr.handleTransitionValidation(results);
          if (!results.isEmpty()) {
