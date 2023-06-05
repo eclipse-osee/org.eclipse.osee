@@ -51,12 +51,12 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -101,7 +101,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate, AtsUser transitionUser, IAtsChangeSet changes) {
+   public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate,
+      AtsUser transitionUser, IAtsChangeSet changes) {
       // If not validate page, don't do anything
       if (!force && !isValidatePage(teamWf.getStateDefinition())) {
          return null;
@@ -124,10 +125,10 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          changes.setSoleAttributeValue(decRev, AtsAttributeTypes.DecisionReviewOptions,
             "No;Followup;" + getValidateReviewFollowupUsersStr(teamWf) + "\n" + "Yes;Completed;");
 
-         TransitionHelper helper = new TransitionHelper("Transition to Decision", Arrays.asList(decRev),
-            DecisionReviewState.Decision.getName(), Arrays.asList(teamWf.getCreatedBy()), null, changes, atsApi,
-            TransitionOption.None);
-         TransitionManager transitionMgr = new TransitionManager(helper);
+         TransitionData transData =
+            new TransitionData("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
+               Arrays.asList(teamWf.getCreatedBy()), null, changes, TransitionOption.None);
+         TransitionManager transitionMgr = new TransitionManager(transData);
          TransitionResults results = transitionMgr.handleAll();
          if (!results.isEmpty()) {
             OseeLog.logf(AtsReviewServiceImpl.class, OseeLevel.SEVERE_POPUP,
@@ -169,16 +170,19 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle,
+      String description, String againstState, ReviewBlockType reviewBlockType,
+      Collection<IAtsDecisionReviewOption> options, List<AtsUser> assignees, Date createdDate, AtsUser createdBy,
+      IAtsChangeSet changes) {
       IAtsDecisionReview decRev = createNewDecisionReview(teamWf, reviewBlockType, reviewTitle, againstState,
          description, options, assignees, createdDate, createdBy, changes);
       changes.add(decRev);
 
       // transition to decision
-      TransitionHelper helper =
-         new TransitionHelper("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
-            assignees, null, changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
+      TransitionData transData =
+         new TransitionData("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
+            assignees, null, changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAll();
 
       if (!results.isEmpty()) {
@@ -192,7 +196,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType,
+      boolean againstCurrentState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       return createNewDecisionReview(teamWf, reviewBlockType,
          "Should we do this?  Yes will require followup, No will not",
          againstCurrentState ? teamWf.getCurrentStateName() : null, "Enter description of the decision, if any",
@@ -200,7 +205,9 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType,
+      String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options,
+      List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       ArtifactToken decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
       IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemService().getReview(decRevArt);
 
@@ -326,26 +333,30 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes) {
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle,
+      String againstState, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(teamWf, reviewTitle, againstState, new Date(),
          atsApi.getUserService().getCurrentUser(), changes);
    }
 
    @Override
-   public IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes) {
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf,
+      String reviewTitle, String againstState, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(workDefinition, teamWf, teamWf.getTeamDefinition(), reviewTitle, againstState,
          new Date(), atsApi.getUserService().getCurrentUser(), changes);
    }
 
    @Override
-   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWF, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWF, String reviewTitle,
+      String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(
          atsApi.getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWF), teamWF,
          teamWF.getTeamDefinition(), reviewTitle, againstState, createdDate, createdBy, changes);
    }
 
    @Override
-   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   public IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle,
+      String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       IAtsTeamDefinition teamDef =
          actionableItem.getAtsApi().getActionableItemService().getTeamDefinitionInherited(actionableItem);
       WorkDefinition workDefinition =
@@ -357,7 +368,9 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return peerArt;
    }
 
-   private IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   private IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf,
+      IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy,
+      IAtsChangeSet changes) {
       Conditions.assertNotNull(workDefinition, "WorkDefinition");
       ArtifactTypeToken reviewArtType = workDefinition.getArtType();
       IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) changes.createArtifact(reviewArtType,
@@ -393,7 +406,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
     * @param user User to transition to OR null if should use user of current state
     */
    @Override
-   public Result transitionDecisionTo(IAtsDecisionReview decRev, DecisionReviewState toState, AtsUser user, boolean popup, IAtsChangeSet changes) {
+   public Result transitionDecisionTo(IAtsDecisionReview decRev, DecisionReviewState toState, AtsUser user,
+      boolean popup, IAtsChangeSet changes) {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (decRev.isInState(DecisionReviewState.Prepare)) {
@@ -426,7 +440,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return Result.TrueResult;
    }
 
-   public Result setDecisionPrepareStateData(boolean popup, IAtsDecisionReview decRev, int statePercentComplete, double estimateHours, double stateHoursSpent, IAtsChangeSet changes) {
+   public Result setDecisionPrepareStateData(boolean popup, IAtsDecisionReview decRev, int statePercentComplete,
+      double estimateHours, double stateHoursSpent, IAtsChangeSet changes) {
       if (!decRev.isInState(DecisionReviewState.Prepare)) {
          Result result = new Result("Action not in Prepare state");
          if (result.isFalse() && popup) {
@@ -439,11 +454,12 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return Result.TrueResult;
    }
 
-   public Result transitionDecisionToState(StateType StateType, boolean popup, IStateToken toState, IAtsDecisionReview decRev, AtsUser user, IAtsChangeSet changes) {
-      TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(decRev),
+   public Result transitionDecisionToState(StateType StateType, boolean popup, IStateToken toState,
+      IAtsDecisionReview decRev, AtsUser user, IAtsChangeSet changes) {
+      TransitionData transData = new TransitionData("Transition to " + toState.getName(), Arrays.asList(decRev),
          toState.getName(), Arrays.asList(user == null ? decRev.getStateMgr().getAssignees().iterator().next() : user),
-         null, changes, atsApi, TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
+         null, changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
          return Result.TrueResult;
@@ -451,7 +467,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public Result setDecisionStateData(boolean popup, IAtsDecisionReview decRev, boolean decision, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
+   public Result setDecisionStateData(boolean popup, IAtsDecisionReview decRev, boolean decision,
+      int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
       if (!decRev.isInState(DecisionReviewState.Decision)) {
          Result result = new Result("Action not in Decision state");
          if (result.isFalse() && popup) {
@@ -477,7 +494,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
     * @param user User to transition to OR null if should use user of current state
     */
    @Override
-   public Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes) {
+   public Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles,
+      Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes) {
       Result result = setPrepareStateData(popup, peerRev, roles, "DoThis.java", 100, .2, changes);
       if (result.isFalse()) {
          return result;
@@ -504,11 +522,12 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return Result.TrueResult;
    }
 
-   private Result transitionToState(StateType StateType, boolean popup, IAtsPeerToPeerReview peerRev, IStateToken toState, IAtsChangeSet changes) {
-      TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(peerRev),
+   private Result transitionToState(StateType StateType, boolean popup, IAtsPeerToPeerReview peerRev,
+      IStateToken toState, IAtsChangeSet changes) {
+      TransitionData transData = new TransitionData("Transition to " + toState.getName(), Arrays.asList(peerRev),
          toState.getName(), Arrays.asList(peerRev.getStateMgr().getAssignees().iterator().next()), null, changes,
-         atsApi, TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
+         TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
          return Result.TrueResult;
@@ -517,7 +536,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public Result setPrepareStateData(boolean popup, IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
+   public Result setPrepareStateData(boolean popup, IAtsPeerToPeerReview peerRev, Collection<UserRole> roles,
+      String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
       if (!peerRev.isInState(PeerToPeerReviewState.Prepare)) {
          Result result = new Result("Action not in Prepare state");
          if (result.isFalse() && popup) {
@@ -540,7 +560,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public Result setReviewStateData(IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
+   public Result setReviewStateData(IAtsPeerToPeerReview peerRev, Collection<UserRole> roles,
+      Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
       if (roles != null) {
          IAtsPeerReviewRoleManager roleMgr = peerRev.getRoleManager();
          for (UserRole role : roles) {

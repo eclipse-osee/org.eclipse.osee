@@ -14,13 +14,23 @@
 package org.eclipse.osee.ats.api.workflow.transition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -42,9 +52,28 @@ public class TransitionData {
    private ArtifactId transitionUserArtId;
    private boolean workflowsReloaded = false;
    private boolean dialogCancelled = false;
+   @JsonIgnore
+   private final List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
+   @JsonIgnore
+   private IAtsChangeSet changes;
 
    public TransitionData() {
       // for jax-rs
+   }
+
+   public TransitionData(String name, Collection<? extends IAtsWorkItem> workItems, String toStateName, //
+      Collection<AtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
+      //      transData.setDebug(isDebug());
+      setName(name);
+      setWorkItems(Collections.castAll(workItems));
+      setToStateName(toStateName);
+      setCancellationReason(cancellationReason);
+      setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
+      setToAssignees(toAssignees);
+      for (TransitionOption opt : transitionOption) {
+         getTransitionOptions().add(opt);
+      }
+      this.changes = changes;
    }
 
    public String getCancellationReason() {
@@ -158,6 +187,54 @@ public class TransitionData {
 
    public void setCancellationReasonAttrType(AttributeTypeToken cancellationReasonAttrType) {
       this.cancellationReasonAttrType = cancellationReasonAttrType;
+   }
+
+   public void addTransitionOption(TransitionOption transitionOption) {
+      transitionOptions.add(transitionOption);
+   }
+
+   public void removeTransitionOption(TransitionOption transitionOption) {
+      transitionOptions.remove(transitionOption);
+   }
+
+   public boolean isOverrideAssigneeCheck() {
+      return transitionOptions.contains(TransitionOption.OverrideAssigneeCheck);
+   }
+
+   public boolean isOverrideWorkingBranchCheck() {
+      return transitionOptions.contains(TransitionOption.OverrideWorkingBranchCheck);
+   }
+
+   public boolean isOverrideTransitionValidityCheck() {
+      return transitionOptions.contains(TransitionOption.OverrideTransitionValidityCheck);
+   }
+
+   public void addTransitionHook(IAtsTransitionHook transitionHook) {
+      transitionHooks.add(transitionHook);
+   }
+
+   public List<IAtsTransitionHook> getTransitionHooks() {
+      return transitionHooks;
+   }
+
+   public IAtsChangeSet getChanges() {
+      return changes;
+   }
+
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf, AtsApi atsApi) {
+      return atsApi.getBranchService().isWorkingBranchInWork(teamWf);
+   }
+
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf, AtsApi atsApi) {
+      return atsApi.getBranchService().isBranchInCommit(teamWf);
+   }
+
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem) {
+      return workItem.getStateMgr().getAssignees().stream().anyMatch(SystemUser.OseeSystem::equals);
+   }
+
+   public boolean isSystemUser() {
+      return AtsCoreUsers.isAtsCoreUser(getTransitionUser());
    }
 
 }

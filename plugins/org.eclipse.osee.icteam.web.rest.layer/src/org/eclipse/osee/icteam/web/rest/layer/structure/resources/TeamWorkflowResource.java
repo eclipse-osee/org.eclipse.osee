@@ -47,9 +47,9 @@ import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -593,7 +593,8 @@ public class TeamWorkflowResource extends AbstractConfigResource {
     * @param attrGuid {@link String}
     * @param value {@link String}
     */
-   private void updateProjectAttributes(final ArtifactReadable teamwfartifact, final TransactionBuilder tx, final String attrGuid, final String value) {
+   private void updateProjectAttributes(final ArtifactReadable teamwfartifact, final TransactionBuilder tx,
+      final String attrGuid, final String value) {
       ArtifactReadable activeProject =
          teamwfartifact.getRelated(AtsRelationTypes.ProjectToTeamWorkFlow_Project).getAtMostOneOrNull();
       tx.setSoleAttributeFromString(activeProject, AttributeTypeToken.valueOf(Long.parseLong(attrGuid), "Attribute"),
@@ -612,7 +613,9 @@ public class TeamWorkflowResource extends AbstractConfigResource {
     * @param changes {@link String}
     * @param link {@link String}
     */
-   public static void sendMail(final OrcsApi orcsApi, final String createdUserId, final List<String> assignees, final ArtifactReadable teamwfartifact, final Date estimatedDate, final ICTeamNotifyType notify, final String changes, final String link) {
+   public static void sendMail(final OrcsApi orcsApi, final String createdUserId, final List<String> assignees,
+      final ArtifactReadable teamwfartifact, final Date estimatedDate, final ICTeamNotifyType notify,
+      final String changes, final String link) {
       List<String> mailIds = new ArrayList<String>();
       String createdUserMailId = getMailIdByUserId(orcsApi, createdUserId);
 
@@ -646,7 +649,9 @@ public class TeamWorkflowResource extends AbstractConfigResource {
     * @param productBacklog {@link String}
     * @return childArtifact {@link ArtifactId}
     */
-   public static ArtifactId createNewTask(final TransactionBuilder tx, final TransferableArtifact artifact, final OrcsApi orcsApi, Date estimatedDate, String notify, String createdUserId, final List<String> assignees, String productBacklog) {
+   public static ArtifactId createNewTask(final TransactionBuilder tx, final TransferableArtifact artifact,
+      final OrcsApi orcsApi, Date estimatedDate, String notify, String createdUserId, final List<String> assignees,
+      String productBacklog) {
       String artName = "";
 
       if (artifact.getName() == null) {
@@ -986,19 +991,19 @@ public class TeamWorkflowResource extends AbstractConfigResource {
       AtsUser asAtsUser = OseeCoreData.getAtsServer().getUserService().getUserByUserId(asUserId);
       IAtsChangeSet changes =
          OseeCoreData.getAtsServer().getStoreService().createAtsChangeSet("transition Action", asAtsUser);
-      TransitionHelper helper = null;
+      TransitionData transData = null;
 
       if (admin.equals("true")) {
-         helper = new TransitionHelper("Transition " + guid, Collections.singleton(workItem), toState, assigneesList,
-            reason, changes, OseeCoreData.getAtsServer(), TransitionOption.OverrideWorkingBranchCheck);
+         transData = new TransitionData("Transition " + guid, Collections.singleton(workItem), toState, assigneesList,
+            reason, changes, TransitionOption.OverrideWorkingBranchCheck);
       } else {
-         helper = new TransitionHelper("Transition " + guid, Collections.singleton(workItem), toState, assigneesList,
-            reason, changes, OseeCoreData.getAtsServer(), TransitionOption.None);
+         transData = new TransitionData("Transition " + guid, Collections.singleton(workItem), toState, assigneesList,
+            reason, changes, TransitionOption.None);
       }
 
-      helper.setTransitionUser(asAtsUser);
+      transData.setTransitionUser(asAtsUser);
 
-      TransitionManager mgr = new TransitionManager(helper);
+      TransitionManager mgr = new TransitionManager(transData);
       TransitionResults results = mgr.handleAll();
       TransferableArtifact artifact = new TransferableArtifact();
 

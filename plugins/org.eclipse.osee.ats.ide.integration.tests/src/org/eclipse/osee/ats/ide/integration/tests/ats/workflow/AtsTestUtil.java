@@ -52,10 +52,10 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -383,7 +383,8 @@ public class AtsTestUtil {
       return taskArtWf1;
    }
 
-   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) {
+   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType,
+      AtsTestUtilState relatedToState, IAtsChangeSet changes) {
       ensureLoaded();
       if (decRevArt == null) {
          List<IAtsDecisionReviewOption> options = new ArrayList<>();
@@ -572,11 +573,13 @@ public class AtsTestUtil {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
    }
 
-   public static Result transitionTo(AtsTestUtilState atsTestUtilState, AtsUser user, TransitionOption... transitionOptions) {
+   public static Result transitionTo(AtsTestUtilState atsTestUtilState, AtsUser user,
+      TransitionOption... transitionOptions) {
       return transitionTo(teamWf, atsTestUtilState, user, transitionOptions);
    }
 
-   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, AtsUser user, TransitionOption... transitionOptions) {
+   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, AtsUser user,
+      TransitionOption... transitionOptions) {
       if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.getStateMgr().isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
@@ -609,10 +612,11 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, AtsUser user, TransitionOption... transitionOptions) {
-      TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
-         toState.getName(), Arrays.asList(user), null, null, AtsApiService.get(), transitionOptions);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
+   private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, AtsUser user,
+      TransitionOption... transitionOptions) {
+      TransitionData transData = new TransitionData("Transition to " + toState.getName(), Arrays.asList(teamWf),
+         toState.getName(), Arrays.asList(user), null, null, transitionOptions);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       if (results.isEmpty()) {
          return Result.TrueResult;
       }
@@ -638,7 +642,8 @@ public class AtsTestUtil {
       }
    }
 
-   public static IAtsPeerToPeerReview getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) {
+   public static IAtsPeerToPeerReview getOrCreatePeerReview(ReviewBlockType reviewBlockType,
+      AtsTestUtilState relatedToState, IAtsChangeSet changes) {
       ensureLoaded();
       try {
          if (peerRev == null) {

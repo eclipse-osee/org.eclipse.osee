@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -32,19 +32,19 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class TransitionToOperation extends AbstractOperation {
 
-   private final ITransitionHelper helper;
+   private final TransitionData transData;
    private TransitionResults results;
 
-   public TransitionToOperation(ITransitionHelper helper) {
-      super(helper.getName(), Activator.PLUGIN_ID);
-      this.helper = helper;
+   public TransitionToOperation(TransitionData transData) {
+      super(transData.getName(), Activator.PLUGIN_ID);
+      this.transData = transData;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       try {
-         IAtsChangeSet changes = AtsApiService.get().createChangeSet(helper.getName() + ".preSave");
-         for (IAtsWorkItem workItem : helper.getWorkItems()) {
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet(transData.getName() + ".preSave");
+         for (IAtsWorkItem workItem : transData.getWorkItems()) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) workItem;
             if (awa.isDirty()) {
                changes.add(awa);
@@ -52,7 +52,7 @@ public class TransitionToOperation extends AbstractOperation {
          }
          changes.executeIfNeeded();
 
-         results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
+         results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          if (results == null) {
@@ -60,7 +60,7 @@ public class TransitionToOperation extends AbstractOperation {
          }
          results.addResult(
             new TransitionResult(String.format("Exception [%s] transitioning to [%s].  See error log for details.",
-               ex.getLocalizedMessage(), helper.getToStateName())));
+               ex.getLocalizedMessage(), transData.getToStateName())));
       }
    }
 

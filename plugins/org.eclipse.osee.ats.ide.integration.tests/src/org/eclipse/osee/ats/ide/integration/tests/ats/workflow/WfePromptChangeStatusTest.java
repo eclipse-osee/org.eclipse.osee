@@ -22,10 +22,10 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkState;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePromptChangeStatus;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -114,9 +114,9 @@ public class WfePromptChangeStatusTest {
       TaskArtifact cancelTask = tasks.iterator().next();
 
       // test that if one task is cancelled, can't change status
-      TransitionHelper helper = new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask),
-         TaskStates.Cancelled.getName(), null, null, null, AtsApiService.get(), TransitionOption.None);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
+      TransitionData transData = new TransitionData("Transition to Cancelled", Arrays.asList(cancelTask),
+         TaskStates.Cancelled.getName(), null, null, null, TransitionOption.None);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       assertEquals("Transition should have no errors", true, results.isEmpty());
 
       Result result = WfePromptChangeStatus.isValidToChangeStatus(tasks);

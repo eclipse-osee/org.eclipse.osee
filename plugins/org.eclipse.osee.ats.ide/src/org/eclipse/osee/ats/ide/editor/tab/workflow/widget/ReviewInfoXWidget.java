@@ -25,10 +25,10 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -206,7 +206,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       return html.toString();
    }
 
-   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final AbstractReviewArtifact revArt, IStateToken forState) {
+   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit,
+      final AbstractReviewArtifact revArt, IStateToken forState) {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -231,8 +232,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                IMessageProvider.WARNING, strLabel);
          }
       } else {
-         strLabel.setText(
-            revArt.getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
+         strLabel.setText(revArt.getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
       }
 
       String str = "[" + revArt.getName() + "]";
@@ -270,11 +270,11 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                            awas.add(revArt);
                         }
                      }
-                     TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews",
+                     TransitionData transData = new TransitionData("ATS Auto Complete Reviews",
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
-                        TeamState.Completed.getName(), null, null, null, AtsApiService.get(),
-                        TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                     TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
+                        TeamState.Completed.getName(), null, null, null, TransitionOption.OverrideTransitionValidityCheck,
+                        TransitionOption.None);
+                     TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }

@@ -46,12 +46,11 @@ public class TransitionListenersTest {
 
       AtsTestUtil.cleanupAndReset("TransitionListenersTest-7");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
-         Arrays.asList(
-            org.eclipse.osee.ats.ide.integration.tests.AtsApiService.get().getUserService().getCurrentUser()),
-         null, AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
+         AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
+      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
 
       // validate that can transition
@@ -65,7 +64,8 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener1 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             results.addResult(new TransitionResult(reason1));
          }
 
@@ -78,7 +78,8 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener2 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             results.addResult(workItem, new TransitionResult(reason2));
          }
 
@@ -91,7 +92,8 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener3 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             // do nothing
          }
 
@@ -104,7 +106,8 @@ public class TransitionListenersTest {
       IAtsTransitionHook listener4 = new IAtsTransitionHook() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
             throw new OseeCoreException(exceptionStr);
          }
 

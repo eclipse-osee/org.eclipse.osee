@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -139,8 +138,6 @@ public interface IAtsWorkItemService {
    StateDefinition getStateByName(IAtsWorkItem workItem, String name);
 
    TransitionResults transition(TransitionData transData);
-
-   TransitionResults transition(ITransitionHelper helper);
 
    TransitionResults transitionValidate(TransitionData transData);
 

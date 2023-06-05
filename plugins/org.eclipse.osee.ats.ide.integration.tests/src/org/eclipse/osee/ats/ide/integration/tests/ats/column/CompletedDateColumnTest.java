@@ -16,11 +16,11 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -61,10 +61,10 @@ public class CompletedDateColumnTest {
       Assert.assertNull(date);
       Assert.assertEquals("", CompletedDateColumn.getCompletedDateStr(teamArt));
 
-      TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(teamArt),
-         TeamState.Completed.getName(), null, null, null, AtsApiService.get(),
-         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
+      TransitionData transData = new TransitionData("Transition to Completed", Arrays.asList(teamArt),
+         TeamState.Completed.getName(), null, null, null, TransitionOption.OverrideTransitionValidityCheck,
+         TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       date = CompletedDateColumn.getCompletedDate(teamArt);
@@ -73,11 +73,10 @@ public class CompletedDateColumnTest {
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date),
          CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
 
-      helper = new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null,
-         AtsApiService.get(), TransitionOption.OverrideTransitionValidityCheck,
+      transData = new TransitionData("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.OverrideTransitionValidityCheck,
          TransitionOption.OverrideAssigneeCheck);
-      results = AtsApiService.get().getWorkItemServiceIde().transition(helper);
+      results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       teamArt = (TeamWorkFlowArtifact) teamArt.reloadAttributesAndRelations();

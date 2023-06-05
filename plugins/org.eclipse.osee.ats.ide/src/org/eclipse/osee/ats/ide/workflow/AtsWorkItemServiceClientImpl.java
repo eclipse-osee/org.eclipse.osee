@@ -13,23 +13,17 @@
 
 package org.eclipse.osee.ats.ide.workflow;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -74,46 +68,6 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       if (transData.getTransitionUser() == null) {
          transData.setTransitionUser(atsApi.getUserService().getCurrentUser());
       }
-   }
-
-   @Override
-   public TransitionResults transition(ITransitionHelper helper) {
-      // Have to handle validation separate so UI can be done before transition
-      helper.setAtsApi(atsApi);
-      TransitionData transData = helper.getTransData();
-      if (helper.getWorkItems().size() == 1) {
-         Collection<? extends AtsUser> toAssignees = helper.getToAssignees(helper.getWorkItems().iterator().next());
-         if (toAssignees != null) {
-            transData.setToAssignees(Collections.castAll(toAssignees));
-         }
-      }
-      if (helper.getTransitionUser() != null) {
-         transData.setTransitionUser(helper.getTransitionUser());
-      }
-      transData.setToStateName(helper.getToStateName());
-      transData.setName(helper.getName());
-      transData.setWorkItems(helper.getWorkItems());
-
-      // Set dummy cancel reason
-      StateDefinition toStateDef = atsApi.getWorkDefinitionService().getStateDefinitionByName(
-         helper.getWorkItems().iterator().next(), helper.getToStateName());
-      if (toStateDef.getStateType() == StateType.Cancelled) {
-         transData.setCancellationReason("temp reason");
-      }
-      TransitionResults results = transitionValidate(transData);
-      if (results.isErrors()) {
-         return results;
-      }
-
-      helper.getCancellationReason(transData);
-      if (transData.isDialogCancelled()) {
-         results.setCancelled(true);
-         return results;
-      }
-
-      results = transition(transData);
-      results.setAtsApi(atsApi);
-      return results;
    }
 
    @Override

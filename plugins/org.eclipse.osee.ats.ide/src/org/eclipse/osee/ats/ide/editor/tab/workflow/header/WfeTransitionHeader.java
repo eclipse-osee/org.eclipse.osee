@@ -22,39 +22,31 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
-import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
-import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.cr.sibling.base.XSiblingActionBar;
+import org.eclipse.osee.ats.ide.workflow.transition.TransitionDataUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -225,104 +217,11 @@ public class WfeTransitionHeader extends Composite {
 
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable,
       StateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
-      ITransitionHelper helper = new TransitionHelperAdapter(AtsApiService.get()) {
+      TransitionData transData = new TransitionData("Workflow Editor Transition", Arrays.asList(awa),
+         toStateDef.getName(), awa.getTransitionAssignees(), null, null, TransitionOption.None);
+      TransitionDataUi.getCancellationReason(transData);
 
-         @Override
-         public String getToStateName() {
-            return toStateDef.getName();
-         }
-
-         @Override
-         public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem) {
-            AbstractWorkflowArtifact awa =
-               (AbstractWorkflowArtifact) AtsApiService.get().getQueryService().getArtifact(workItem);
-            return awa.getTransitionAssignees();
-         }
-
-         @Override
-         public String getName() {
-            return "Workflow Editor Transition";
-         }
-
-         @Override
-         public TransitionData getCancellationReason(final TransitionData transitionData) {
-            Displays.ensureInDisplayThread(new Runnable() {
-
-               @Override
-               public void run() {
-                  StateDefinition toStateDef;
-                  try {
-                     toStateDef =
-                        AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(awa, getToStateName());
-                     if (toStateDef.isCancelled()) {
-                        EntryDialog cancelDialog;
-                        boolean useCancelledReasonEnumDialog =
-                           toStateDef.getStateOptions().contains(StateOption.USE_CANCELLED_REASON_ENUM_DIALOG);
-                        if (useCancelledReasonEnumDialog) {
-                           cancelDialog = new CancelledReasonEnumDialog("Cancellation Reason",
-                              "Select cancellation reason.  If other, please specify with details.");
-                        } else {
-                           cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-                        }
-                        if (cancelDialog.open() != 0) {
-                           transitionData.setDialogCancelled(true);
-                           return;
-                        }
-                        if (useCancelledReasonEnumDialog) {
-                           transitionData.setCancellationReason(((CancelledReasonEnumDialog) cancelDialog).getEntry());
-                           transitionData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReasonEnum);
-                           transitionData.setCancellationReasonDetails(
-                              ((CancelledReasonEnumDialog) cancelDialog).getCancelledDetails());
-                        } else {
-                           transitionData.setCancellationReason(cancelDialog.getEntry());
-                           transitionData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
-                        }
-                     }
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }, true);
-            return transitionData;
-         }
-
-         @Override
-         public Collection<IAtsWorkItem> getWorkItems() {
-            return Arrays.asList(awa);
-         }
-
-         @Override
-         public IAtsChangeSet getChangeSet() {
-            return null;
-         }
-
-         @Override
-         public Collection<IAtsTransitionHook> getTransitionHooks() {
-            try {
-               return AtsApiService.get().getWorkItemService().getTransitionHooks();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-            return java.util.Collections.emptyList();
-         }
-
-         @Override
-         public AtsApi getServices() {
-            return AtsApiService.get();
-         }
-
-         @Override
-         public String getCancellationReasonDetails() {
-            return null;
-         }
-
-         @Override
-         public String getCancellationReason() {
-            return null;
-         }
-
-      };
-      final TransitionToOperation operation = new TransitionToOperation(helper);
+      final TransitionToOperation operation = new TransitionToOperation(transData);
       Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
 
          @Override

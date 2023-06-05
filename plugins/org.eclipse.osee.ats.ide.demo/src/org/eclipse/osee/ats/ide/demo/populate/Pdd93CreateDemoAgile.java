@@ -50,10 +50,10 @@ import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.ide.demo.SprintItemData;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -383,10 +383,10 @@ public class Pdd93CreateDemoAgile {
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
          DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
-      TransitionHelper helper =
-         new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
-            null, changes, AtsApiService.get(), TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(helper);
+      TransitionData transData =
+         new TransitionData("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
+            null, changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       if (results.isErrors()) {
          throw new OseeStateException("Exception transitioning sprint: %s", results.toString());
       }
