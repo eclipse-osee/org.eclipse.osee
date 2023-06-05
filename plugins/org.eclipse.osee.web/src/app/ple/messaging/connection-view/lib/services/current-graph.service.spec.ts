@@ -793,8 +793,8 @@ describe('CurrentGraphService', () => {
 						},
 						{
 							id: 'a201377',
-							source: '201375',
-							target: '201312',
+							source: '',
+							target: '',
 							data: {
 								deleted: true,
 								description: '',

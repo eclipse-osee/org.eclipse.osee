@@ -58,7 +58,7 @@ describe('MessagesService', () => {
 	it('should create a connection relation', () => {
 		scheduler.run(() => {
 			let relation: relation = {
-				typeName: 'Interface Connection Content',
+				typeName: 'Interface Connection Message',
 				sideA: '10',
 				sideB: undefined,
 			};

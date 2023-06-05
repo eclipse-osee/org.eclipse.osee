@@ -173,7 +173,8 @@
 						<ng-container
 							*ngIf="
 								header !== 'applicability' &&
-								header !== 'initiatingNode'
+								header !== 'publisherNodes' &&
+								header !== 'subscriberNodes'
 							">
 							<div
 								oseeHighlightFilteredText
@@ -191,22 +192,31 @@
 								{{ element[header] }}
 							</div>
 						</ng-container>
-						<ng-container *ngIf="header === 'initiatingNode'">
-							<div
-								oseeHighlightFilteredText
-								[searchTerms]="searchTerms"
-								[text]="element[header].name"
-								classToApply="message-interface-table-highlighted-text"
-								[attr.data-cy]="
-									'message-table-' +
-									header +
-									'-' +
-									element.name +
-									'-' +
-									element[header].name
+						<ng-container
+							*ngIf="
+								header === 'publisherNodes' ||
+								header === 'subscriberNodes'
+							">
+							<ng-container
+								*ngIf="
+									getNodeNames(element[header]) as nodeNames
 								">
-								{{ element[header] }}
-							</div>
+								<div
+									oseeHighlightFilteredText
+									[searchTerms]="searchTerms"
+									[text]="nodeNames"
+									classToApply="message-interface-table-highlighted-text"
+									[attr.data-cy]="
+										'message-table-' +
+										header +
+										'-' +
+										element.name +
+										'-' +
+										element.id
+									">
+									{{ nodeNames }}
+								</div>
+							</ng-container>
 						</ng-container>
 					</ng-template>
 				</div>

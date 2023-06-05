@@ -259,9 +259,14 @@ export class HeaderService {
 			humanReadable: 'Applicability',
 		},
 		{
-			header: 'initiatingNode',
-			description: 'Sender of the message',
-			humanReadable: 'Initiating Node',
+			header: 'publisherNodes',
+			description: 'Sender(s) of the message',
+			humanReadable: 'Publisher Nodes',
+		},
+		{
+			header: 'subscriberNodes',
+			description: 'Recipient(s) of the message',
+			humanReadable: 'Subscriber Nodes',
 		},
 	]);
 

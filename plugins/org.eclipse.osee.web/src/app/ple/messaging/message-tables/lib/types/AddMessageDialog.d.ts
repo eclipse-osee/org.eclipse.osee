@@ -21,5 +21,6 @@ export interface AddMessageDialog {
 	interfaceMessageWriteAccess: boolean;
 	interfaceMessageType: string;
 	interfaceMessageNumber: string;
-	initiatingNode: ConnectionNode;
+	publisherNodes: ConnectionNode[];
+	subscriberNodes: ConnectionNode[];
 }

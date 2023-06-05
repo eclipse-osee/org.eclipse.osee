@@ -26,6 +26,7 @@ import {
 	reduce,
 	mergeMap,
 	scan,
+	concatMap,
 } from 'rxjs/operators';
 import { PreferencesUIService } from './preferences-ui.service';
 import { applic } from '@osee/shared/types/applicability';
@@ -54,7 +55,7 @@ import type {
 	message,
 	settingsDialogData,
 } from '@osee/messaging/shared/types';
-import { transaction, transactionToken } from '@osee/shared/types';
+import { relation, transaction, transactionToken } from '@osee/shared/types';
 import { SideNavService } from '@osee/shared/services/layout';
 
 @Injectable({
@@ -671,42 +672,65 @@ export class CurrentMessagesService {
 		);
 	}
 
-	createMessage(initiatingNode: ConnectionNode, body: message) {
-		return combineLatest([this.BranchId, this.connectionId]).pipe(
+	createMessage(
+		pubNodes: ConnectionNode[],
+		subNodes: ConnectionNode[],
+		body: message
+	) {
+		const connectionRelation = this.connectionId.pipe(
 			take(1),
-			switchMap(([branch, connectionId]) =>
-				this.messageService.createConnectionRelation(connectionId).pipe(
-					take(1),
-					switchMap((connectionRelation) =>
-						this.messageService
-							.createNodeRelation(body.id, initiatingNode.id)
-							.pipe(
-								take(1),
-								switchMap((nodeRelation) =>
-									this.messageService
-										.createMessage(branch, body, [
-											connectionRelation,
-											nodeRelation,
-										])
-										.pipe(
-											take(1),
-											switchMap((transaction) =>
-												this.messageService
-													.performMutation(
-														transaction
-													)
-													.pipe(
-														tap(() => {
-															this.ui.updateMessages =
-																true;
-														})
-													)
-											)
-										)
-								)
-							)
-					)
+			switchMap((connectionId) =>
+				this.messageService.createConnectionRelation(connectionId)
+			)
+		);
+		const pubNodeRelations = from(pubNodes).pipe(
+			concatMap((node) =>
+				this.messageService.createMessageNodeRelation(
+					body.id,
+					node.id,
+					true
 				)
+			),
+			reduce((acc, curr) => [...acc, curr], [] as relation[])
+		);
+		const subNodeRelations = from(subNodes).pipe(
+			concatMap((node) =>
+				this.messageService.createMessageNodeRelation(
+					body.id,
+					node.id,
+					false
+				)
+			),
+			reduce((acc, curr) => [...acc, curr], [] as relation[])
+		);
+
+		return combineLatest([
+			this.BranchId,
+			connectionRelation,
+			pubNodeRelations,
+			subNodeRelations,
+		]).pipe(
+			take(1),
+			switchMap(
+				([branch, connectionRelation, pubRelations, subRelations]) =>
+					this.messageService
+						.createMessage(branch, body, [
+							connectionRelation,
+							...pubRelations,
+							...subRelations,
+						])
+						.pipe(
+							take(1),
+							switchMap((transaction) =>
+								this.messageService
+									.performMutation(transaction)
+									.pipe(
+										tap(() => {
+											this.ui.updateMessages = true;
+										})
+									)
+							)
+						)
 			)
 		);
 	}
@@ -968,16 +992,7 @@ export class CurrentMessagesService {
 						(
 							messageList[messageIndex] as messageWithChanges
 						).added = true;
-						(
-							messageList[messageIndex] as messageWithChanges
-						).changes.initiatingNode = {
-							previousValue: '',
-							currentValue:
-								messageList[messageIndex].initiatingNode,
-							transactionToken: (
-								messageList[messageIndex] as messageWithChanges
-							).changes.description!.transactionToken,
-						};
+						messageList[messageIndex] as messageWithChanges;
 					} else {
 						(
 							messageList[messageIndex] as messageWithChanges
@@ -1143,10 +1158,18 @@ export class CurrentMessagesService {
 			interfaceMessageWriteAccess: false,
 			interfaceMessageType: '',
 			interfaceMessageNumber: '',
-			initiatingNode: {
-				id: '',
-				name: '',
-			},
+			interfaceMessageExclude: false,
+			interfaceMessageIoMode: '',
+			interfaceMessageModeCode: '',
+			interfaceMessageRateVer: '',
+			interfaceMessagePriority: '',
+			interfaceMessageProtocol: '',
+			interfaceMessageRptWordCount: '',
+			interfaceMessageRptCmdWord: '',
+			interfaceMessageRunBeforeProc: false,
+			interfaceMessageVer: '',
+			publisherNodes: [],
+			subscriberNodes: [],
 		};
 		changes.forEach((value) => {
 			tempMessage = this.parseMessageDeletionChange(value, tempMessage);

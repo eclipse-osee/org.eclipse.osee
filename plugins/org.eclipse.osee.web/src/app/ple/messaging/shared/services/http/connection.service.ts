@@ -43,17 +43,9 @@ export class ConnectionService {
 	 * @param nodeId Id of node to create a connection-node relationship
 	 * @param type 0=primary 1=secondary
 	 */
-	createNodeRelation(nodeId: string, type: boolean, connectionId?: string) {
-		if (type) {
-			let relation: relation = {
-				typeName: 'Interface Connection Secondary Node',
-				sideB: nodeId,
-				sideA: connectionId,
-			};
-			return of(relation);
-		}
+	createNodeRelation(nodeId: string, connectionId?: string) {
 		let relation: relation = {
-			typeName: 'Interface Connection Primary Node',
+			typeName: 'Interface Connection Node',
 			sideB: nodeId,
 			sideA: connectionId,
 		};
@@ -75,14 +67,15 @@ export class ConnectionService {
 	createConnection(
 		branchId: string,
 		connection: _newConnection,
-		relations: relation[]
+		relations: relation[],
+		transaction?: transaction
 	) {
 		return of(
 			this.builder.createArtifact(
 				connection,
 				ARTIFACTTYPEIDENUM.CONNECTION,
 				relations,
-				undefined,
+				transaction,
 				branchId,
 				'Create Connection and Relate to Node(s): ' +
 					relations[1].sideB +

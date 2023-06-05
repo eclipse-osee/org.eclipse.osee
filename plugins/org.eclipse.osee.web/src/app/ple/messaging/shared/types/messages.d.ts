@@ -26,7 +26,7 @@ export interface message {
 		| Array<subMessage | subMessageWithChanges>
 		| undefined
 		| messageChanges
-		| nodeToken;
+		| Array<ConnectionNode>;
 	id: string;
 	name: string;
 	description: string;
@@ -36,8 +36,19 @@ export interface message {
 	interfaceMessageWriteAccess: boolean;
 	interfaceMessageType: string;
 	interfaceMessageNumber: string;
+	interfaceMessageExclude: boolean;
+	interfaceMessageIoMode: string;
+	interfaceMessageModeCode: string;
+	interfaceMessageRateVer: string;
+	interfaceMessagePriority: string;
+	interfaceMessageProtocol: string;
+	interfaceMessageRptWordCount: string;
+	interfaceMessageRptCmdWord: string;
+	interfaceMessageRunBeforeProc: boolean;
+	interfaceMessageVer: string;
 	applicability?: applic;
-	initiatingNode: ConnectionNode;
+	publisherNodes: Array<ConnectionNode>;
+	subscriberNodes: Array<ConnectionNode>;
 }
 
 export interface messageWithChanges extends message {
@@ -55,8 +66,17 @@ export interface messageChanges {
 	interfaceMessageWriteAccess?: difference;
 	interfaceMessageType?: difference;
 	interfaceMessageNumber?: difference;
+	interfaceMessageExclude?: difference;
+	interfaceMessageIoMode?: difference;
+	interfaceMessageModeCode?: difference;
+	interfaceMessageRateVer?: difference;
+	interfaceMessagePriority?: difference;
+	interfaceMessageProtocol?: difference;
+	interfaceMessageRptWordCount?: difference;
+	interfaceMessageRptCmdWord?: difference;
+	interfaceMessageRunBeforeProc?: difference;
+	interfaceMessageVer?: difference;
 	applicability?: difference;
-	initiatingNode?: difference;
 }
 
 export interface messageToken
@@ -72,6 +92,17 @@ export interface messageToken
 		| 'interfaceMessageType'
 		| 'interfaceMessageNumber'
 		| 'applicability'
+		| 'interfaceMessageExclude'
+		| 'interfaceMessageIoMode'
+		| 'interfaceMessageModeCode'
+		| 'interfaceMessageRateVer'
+		| 'interfaceMessagePriority'
+		| 'interfaceMessageProtocol'
+		| 'interfaceMessageRptWordCount'
+		| 'interfaceMessageRptCmdWord'
+		| 'interfaceMessageRunBeforeProc'
+		| 'interfaceMessageVer'
 	> {
-	initiatingNode: nodeToken;
+	publisherNodes: nodeToken[];
+	subscriberNodes: nodeToken[];
 }

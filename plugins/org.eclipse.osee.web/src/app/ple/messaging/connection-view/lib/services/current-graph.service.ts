@@ -34,7 +34,6 @@ import {
 import {
 	changeInstance,
 	changeTypeEnum,
-	itemTypeIdRelation,
 } from '@osee/shared/types/change-report';
 import { SideNavService } from '@osee/shared/services/layout';
 import { RelationTypeId } from '@osee/shared/types/constants';
@@ -262,40 +261,33 @@ export class CurrentGraphService {
 							//get node information
 							take(1),
 							switchMap((node) =>
-								iif(
-									() => edge.source === nodeId,
-									this.connectionService.createNodeRelation(
-										node?.id || '',
-										false,
-										id
-									),
-									this.connectionService.createNodeRelation(
-										node?.id || '',
-										true,
-										id
+								this.connectionService
+									.createNodeRelation(node?.id || '', id)
+									.pipe(
+										//create primary relation if nodeId==source else nodeId==target create secondary relation
+										switchMap((relation) =>
+											this.connectionService
+												.deleteRelation(
+													branchId,
+													relation
+												)
+												.pipe(
+													//turn into transaction
+													switchMap((transaction) =>
+														this.connectionService
+															.performMutation(
+																transaction
+															)
+															.pipe(
+																tap(() => {
+																	this.update =
+																		true;
+																})
+															)
+													) //send to /orcs/tx
+												)
+										)
 									)
-								).pipe(
-									//create primary relation if nodeId==source else nodeId==target create secondary relation
-									switchMap((relation) =>
-										this.connectionService
-											.deleteRelation(branchId, relation)
-											.pipe(
-												//turn into transaction
-												switchMap((transaction) =>
-													this.connectionService
-														.performMutation(
-															transaction
-														)
-														.pipe(
-															tap(() => {
-																this.update =
-																	true;
-															})
-														)
-												) //send to /orcs/tx
-											)
-									)
-								)
 							)
 						)
 					)
@@ -371,10 +363,7 @@ export class CurrentGraphService {
 			filter((val) => val.id === sourceId || val.id === targetId),
 			take(2), //if this returns more than 2, something is very very wrong
 			switchMap((node) =>
-				this.connectionService.createNodeRelation(
-					node.id || '',
-					node?.id !== sourceId
-				)
+				this.connectionService.createNodeRelation(node.id || '')
 			),
 			reduce((acc, curr) => [...acc, curr], [] as relation[])
 		);
@@ -528,17 +517,7 @@ export class CurrentGraphService {
 		changes.forEach((change) => {
 			//not doing this currently, need to update UI to remove relation on both ends before this would work.
 			if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
-				let relType = change.itemTypeId as itemTypeIdRelation;
-				if (
-					relType.id === RelationTypeId.INTERFACECONNECTIONPRIMARYNODE
-				) {
-					//sending node
-				} else if (
-					relType.id ===
-					RelationTypeId.INTERFACECONNECTIONSECONDARYNODE
-				) {
-					//receiving node
-				}
+				//
 			}
 		});
 		return graph;
@@ -866,20 +845,6 @@ export class CurrentGraphService {
 			}
 		} else if (change.changeType.name === changeTypeEnum.RELATION_CHANGE) {
 			//do nothing currently
-			if (
-				edge.source === '' &&
-				(change.itemTypeId as itemTypeIdRelation).id ===
-					RelationTypeId.INTERFACECONNECTIONPRIMARYNODE
-			) {
-				edge.source = change.artIdB;
-			}
-			if (
-				edge.target === '' &&
-				(change.itemTypeId as itemTypeIdRelation).id ===
-					RelationTypeId.INTERFACECONNECTIONSECONDARYNODE
-			) {
-				edge.target = change.artIdB;
-			}
 		}
 		return edge;
 	}

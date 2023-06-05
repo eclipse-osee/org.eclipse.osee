@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -30,6 +31,7 @@ public class InterfaceNode extends PLGenericDBObject {
    private ApplicabilityToken applicability;
    private String Color;
    private String Address;
+   private ArtifactReadable artifactReadable;
 
    public InterfaceNode(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -44,6 +46,7 @@ public class InterfaceNode extends PLGenericDBObject {
       this.setNodeGroupId(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeGroupId, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+      this.setArtifactReadable(art);
    }
 
    public InterfaceNode(Long id, String name) {
@@ -123,6 +126,15 @@ public class InterfaceNode extends PLGenericDBObject {
 
    public void setNodeGroupId(String nodeGroupId) {
       this.nodeGroupId = nodeGroupId;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
+   }
+
+   private void setArtifactReadable(ArtifactReadable artifactReadable) {
+      this.artifactReadable = artifactReadable;
    }
 
 }

@@ -31,18 +31,11 @@ export const connectionServiceMock: Partial<ConnectionService> = {
 	) {
 		return of(transactionMock);
 	},
-	createNodeRelation(nodeId: string, type: boolean) {
-		return iif(
-			() => type,
-			of({
-				typeName: 'Interface Connection Secondary Node',
-				sideB: nodeId,
-			}),
-			of({
-				typeName: 'Interface Connection Primary Node',
-				sideB: nodeId,
-			})
-		);
+	createNodeRelation(nodeId: string) {
+		return of({
+			typeName: 'Interface Connection Node',
+			sideB: nodeId,
+		});
 	},
 	createTransportTypeRelation(transportTypeId, connectionId?: string) {
 		return of({

@@ -16,14 +16,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 
 public class MimImportSummary {
-   private boolean createPrimaryNode;
-   private boolean createSecondaryNode;
-   private ArtifactId connectionId;
-   private InterfaceNode primaryNode;
-   private InterfaceNode secondaryNode;
    private final List<InterfaceNode> nodes;
    private final List<InterfaceConnection> connections;
    private final List<InterfaceMessageToken> messages;
@@ -34,8 +28,10 @@ public class MimImportSummary {
    private final List<InterfaceEnumerationSet> enumSets;
    private final List<InterfaceEnumeration> enums;
    private final List<CrossReference> crossReferences;
-   private final Map<String, List<String>> nodeConnectionRelations;
+   private final Map<String, List<String>> connectionNodeRelations;
    private final Map<String, List<String>> connectionMessageRelations;
+   private final Map<String, List<String>> messagePublisherNodeRelations;
+   private final Map<String, List<String>> messageSubscriberNodeRelations;
    private final Map<String, List<String>> messageSubmessageRelations;
    private final Map<String, List<String>> subMessageStructureRelations;
    private final Map<String, List<String>> structureElementRelations;
@@ -45,9 +41,6 @@ public class MimImportSummary {
    private final Map<String, List<String>> connectionCrossReferenceRelations;
 
    public MimImportSummary() {
-      createPrimaryNode = false;
-      createSecondaryNode = false;
-      connectionId = ArtifactId.SENTINEL;
       nodes = new LinkedList<>();
       connections = new LinkedList<>();
       messages = new LinkedList<>();
@@ -58,8 +51,10 @@ public class MimImportSummary {
       enumSets = new LinkedList<>();
       enums = new LinkedList<>();
       crossReferences = new LinkedList<>();
-      nodeConnectionRelations = new HashMap<>();
+      connectionNodeRelations = new HashMap<>();
       connectionMessageRelations = new HashMap<>();
+      messagePublisherNodeRelations = new HashMap<>();
+      messageSubscriberNodeRelations = new HashMap<>();
       messageSubmessageRelations = new HashMap<>();
       subMessageStructureRelations = new HashMap<>();
       structureElementRelations = new HashMap<>();
@@ -67,46 +62,6 @@ public class MimImportSummary {
       platformTypeEnumSetRelations = new HashMap<>();
       enumSetEnumRelations = new HashMap<>();
       connectionCrossReferenceRelations = new HashMap<>();
-   }
-
-   public boolean isCreatePrimaryNode() {
-      return createPrimaryNode;
-   }
-
-   public void setCreatePrimaryNode(boolean createPrimaryNode) {
-      this.createPrimaryNode = createPrimaryNode;
-   }
-
-   public boolean isCreateSecondaryNode() {
-      return createSecondaryNode;
-   }
-
-   public void setCreateSecondaryNode(boolean createSecondaryNode) {
-      this.createSecondaryNode = createSecondaryNode;
-   }
-
-   public ArtifactId getConnectionId() {
-      return connectionId;
-   }
-
-   public void setConnectionId(ArtifactId connectionId) {
-      this.connectionId = connectionId;
-   }
-
-   public InterfaceNode getPrimaryNode() {
-      return primaryNode;
-   }
-
-   public void setPrimaryNode(InterfaceNode primaryNode) {
-      this.primaryNode = primaryNode;
-   }
-
-   public InterfaceNode getSecondaryNode() {
-      return secondaryNode;
-   }
-
-   public void setSecondaryNode(InterfaceNode secondaryNode) {
-      this.secondaryNode = secondaryNode;
    }
 
    public List<InterfaceNode> getNodes() {
@@ -149,12 +104,20 @@ public class MimImportSummary {
       return crossReferences;
    }
 
-   public Map<String, List<String>> getNodeConnectionRelations() {
-      return nodeConnectionRelations;
+   public Map<String, List<String>> getConnectionNodeRelations() {
+      return connectionNodeRelations;
    }
 
    public Map<String, List<String>> getConnectionMessageRelations() {
       return connectionMessageRelations;
+   }
+
+   public Map<String, List<String>> getMessagePublisherNodeRelations() {
+      return messagePublisherNodeRelations;
+   }
+
+   public Map<String, List<String>> getMessageSubscriberNodeRelations() {
+      return messageSubscriberNodeRelations;
    }
 
    public Map<String, List<String>> getMessageSubmessageRelations() {

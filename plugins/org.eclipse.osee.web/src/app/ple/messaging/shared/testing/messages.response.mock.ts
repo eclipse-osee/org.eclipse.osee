@@ -28,10 +28,28 @@ export const messagesMock: (message | messageWithChanges)[] = [
 			id: '1',
 			name: 'Base',
 		},
-		initiatingNode: {
-			id: '1',
-			name: 'Node 1',
-		},
+		interfaceMessageExclude: false,
+		interfaceMessageIoMode: '',
+		interfaceMessageModeCode: '',
+		interfaceMessageRateVer: '',
+		interfaceMessagePriority: '',
+		interfaceMessageProtocol: '',
+		interfaceMessageRptWordCount: '',
+		interfaceMessageRptCmdWord: '',
+		interfaceMessageRunBeforeProc: false,
+		interfaceMessageVer: '',
+		publisherNodes: [
+			{
+				id: '100',
+				name: 'Node1',
+			},
+		],
+		subscriberNodes: [
+			{
+				id: '101',
+				name: 'Node2',
+			},
+		],
 		changes: {
 			name: {
 				previousValue: '',
@@ -57,10 +75,28 @@ export const messagesMock: (message | messageWithChanges)[] = [
 			id: '1',
 			name: 'Base',
 		},
-		initiatingNode: {
-			id: '1',
-			name: 'Node 1',
-		},
+		interfaceMessageExclude: false,
+		interfaceMessageIoMode: '',
+		interfaceMessageModeCode: '',
+		interfaceMessageRateVer: '',
+		interfaceMessagePriority: '',
+		interfaceMessageProtocol: '',
+		interfaceMessageRptWordCount: '',
+		interfaceMessageRptCmdWord: '',
+		interfaceMessageRunBeforeProc: false,
+		interfaceMessageVer: '',
+		publisherNodes: [
+			{
+				id: '100',
+				name: 'Node1',
+			},
+		],
+		subscriberNodes: [
+			{
+				id: '101',
+				name: 'Node2',
+			},
+		],
 	},
 	{
 		id: '201304',
@@ -76,10 +112,28 @@ export const messagesMock: (message | messageWithChanges)[] = [
 			id: '1',
 			name: 'Base',
 		},
-		initiatingNode: {
-			id: '1',
-			name: 'Node 1',
-		},
+		interfaceMessageExclude: false,
+		interfaceMessageIoMode: '',
+		interfaceMessageModeCode: '',
+		interfaceMessageRateVer: '',
+		interfaceMessagePriority: '',
+		interfaceMessageProtocol: '',
+		interfaceMessageRptWordCount: '',
+		interfaceMessageRptCmdWord: '',
+		interfaceMessageRunBeforeProc: false,
+		interfaceMessageVer: '',
+		publisherNodes: [
+			{
+				id: '100',
+				name: 'Node1',
+			},
+		],
+		subscriberNodes: [
+			{
+				id: '101',
+				name: 'Node2',
+			},
+		],
 	},
 	{
 		id: '201300',
@@ -106,10 +160,28 @@ export const messagesMock: (message | messageWithChanges)[] = [
 			id: '1',
 			name: 'Base',
 		},
-		initiatingNode: {
-			id: '1',
-			name: 'Node 1',
-		},
+		interfaceMessageExclude: false,
+		interfaceMessageIoMode: '',
+		interfaceMessageModeCode: '',
+		interfaceMessageRateVer: '',
+		interfaceMessagePriority: '',
+		interfaceMessageProtocol: '',
+		interfaceMessageRptWordCount: '',
+		interfaceMessageRptCmdWord: '',
+		interfaceMessageRunBeforeProc: false,
+		interfaceMessageVer: '',
+		publisherNodes: [
+			{
+				id: '100',
+				name: 'Node1',
+			},
+		],
+		subscriberNodes: [
+			{
+				id: '101',
+				name: 'Node2',
+			},
+		],
 	},
 	{
 		id: '201289',
@@ -125,9 +197,27 @@ export const messagesMock: (message | messageWithChanges)[] = [
 			id: '1',
 			name: 'Base',
 		},
-		initiatingNode: {
-			id: '1',
-			name: 'Node 1',
-		},
+		interfaceMessageExclude: false,
+		interfaceMessageIoMode: '',
+		interfaceMessageModeCode: '',
+		interfaceMessageRateVer: '',
+		interfaceMessagePriority: '',
+		interfaceMessageProtocol: '',
+		interfaceMessageRptWordCount: '',
+		interfaceMessageRptCmdWord: '',
+		interfaceMessageRunBeforeProc: false,
+		interfaceMessageVer: '',
+		publisherNodes: [
+			{
+				id: '100',
+				name: 'Node1',
+			},
+		],
+		subscriberNodes: [
+			{
+				id: '101',
+				name: 'Node2',
+			},
+		],
 	},
 ];

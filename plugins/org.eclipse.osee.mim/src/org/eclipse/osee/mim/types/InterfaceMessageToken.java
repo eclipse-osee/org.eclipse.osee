@@ -47,8 +47,9 @@ public class InterfaceMessageToken extends PLGenericDBObject {
 
    private String Description;
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
+   private List<InterfaceNode> publisherNodes = new LinkedList<>();
+   private List<InterfaceNode> subscriberNodes = new LinkedList<>();
    private ApplicabilityToken applicability;
-   private InterfaceNode initiatingNode;
    private ArtifactReadable artifactReadable;
 
    public InterfaceMessageToken(ArtifactToken art) {
@@ -221,18 +222,20 @@ public class InterfaceMessageToken extends PLGenericDBObject {
       this.applicability = applicability;
    }
 
-   /**
-    * @return the initiating node name and id for this message
-    */
-   public InterfaceNode getInitiatingNode() {
-      return initiatingNode;
+   public List<InterfaceNode> getPublisherNodes() {
+      return publisherNodes;
    }
 
-   /**
-    * @param Node that sends this message
-    */
-   public void setInitiatingNode(InterfaceNode initiatingNode) {
-      this.initiatingNode = initiatingNode;
+   public void setPublisherNodes(List<InterfaceNode> publisherNodes) {
+      this.publisherNodes = publisherNodes;
+   }
+
+   public List<InterfaceNode> getSubscriberNodes() {
+      return subscriberNodes;
+   }
+
+   public void setSubscriberNodes(List<InterfaceNode> subscriberNodes) {
+      this.subscriberNodes = subscriberNodes;
    }
 
    public Boolean getInterfaceMessageExclude() {

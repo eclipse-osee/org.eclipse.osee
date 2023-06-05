@@ -66,6 +66,7 @@ import type {
 	messageWithChanges,
 	messageChanges,
 	EditViewFreeTextDialog,
+	ConnectionNode,
 } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
@@ -140,7 +141,10 @@ export class MessageTableComponent implements AfterViewChecked {
 		takeUntil(this.messageService.done)
 	);
 	headers = this.headerService.AllMessageHeaders;
-	nonEditableHeaders: (keyof message)[] = ['initiatingNode'];
+	nonEditableHeaders: (keyof message)[] = [
+		'publisherNodes',
+		'subscriberNodes',
+	];
 	expandedElement = this.messageService.expandedRows;
 	private _expandedElementData = combineLatest([
 		this.messageService.messages,
@@ -287,10 +291,18 @@ export class MessageTableComponent implements AfterViewChecked {
 			interfaceMessageRate: '',
 			interfaceMessageType: '',
 			interfaceMessageWriteAccess: false,
-			initiatingNode: {
-				id: '',
-				name: '',
-			},
+			publisherNodes: [
+				{
+					id: '',
+					name: '',
+				},
+			],
+			subscriberNodes: [
+				{
+					id: '',
+					name: '',
+				},
+			],
 		};
 		const dialogRef = this.dialog.open(AddMessageDialogComponent, {
 			data: dialogData,
@@ -300,11 +312,19 @@ export class MessageTableComponent implements AfterViewChecked {
 			.pipe(
 				first(),
 				filter((val) => val !== undefined),
-				switchMap(({ initiatingNode, ...val }) =>
-					this.messageService.createMessage(initiatingNode, val)
+				switchMap(({ publisherNodes, subscriberNodes, ...val }) =>
+					this.messageService.createMessage(
+						publisherNodes,
+						subscriberNodes,
+						val
+					)
 				)
 			)
 			.subscribe();
+	}
+
+	getNodeNames(nodes: ConnectionNode[]) {
+		return nodes.map((n) => n.name).join(', ');
 	}
 
 	openMenu(

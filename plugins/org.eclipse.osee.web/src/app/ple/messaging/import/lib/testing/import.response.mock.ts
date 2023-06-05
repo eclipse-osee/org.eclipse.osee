@@ -14,32 +14,67 @@
 import type { ImportOption, ImportSummary } from '@osee/messaging/shared/types';
 
 export const importSummaryMock: ImportSummary = {
-	createPrimaryNode: true,
-	createSecondaryNode: true,
-	connectionId: '1234',
-	primaryNode: {
-		id: '1',
-		name: 'Node 1',
-		interfaceNodeNumber: '1',
-		interfaceNodeGroupId: 'group1',
-	},
-	secondaryNode: {
-		id: '2',
-		name: 'Node 2',
-		interfaceNodeNumber: '2',
-		interfaceNodeGroupId: 'group1',
-	},
+	nodes: [
+		{
+			id: '1',
+			name: 'Node 1',
+			interfaceNodeNumber: '1',
+			interfaceNodeGroupId: 'group1',
+		},
+		{
+			id: '2',
+			name: 'Node 2',
+			interfaceNodeNumber: '2',
+			interfaceNodeGroupId: 'group1',
+		},
+	],
+	connections: [
+		{
+			id: '200',
+			name: 'Connection 1',
+			description: '',
+			transportType: {
+				id: '400',
+				name: 'TT 1',
+				byteAlignValidation: true,
+				byteAlignValidationSize: 8,
+				messageGeneration: true,
+				messageGenerationPosition: '0',
+				messageGenerationType: 'Operational',
+			},
+		},
+	],
 	messages: [
 		{
 			id: '3',
 			name: 'Message 1',
 			subMessages: [],
-			initiatingNode: {
-				id: '1',
-				name: 'Node 1',
-				interfaceNodeNumber: '1',
-				interfaceNodeGroupId: 'group1',
-			},
+			interfaceMessageExclude: false,
+			interfaceMessageIoMode: '',
+			interfaceMessageModeCode: '',
+			interfaceMessageRateVer: '',
+			interfaceMessagePriority: '',
+			interfaceMessageProtocol: '',
+			interfaceMessageRptWordCount: '',
+			interfaceMessageRptCmdWord: '',
+			interfaceMessageRunBeforeProc: false,
+			interfaceMessageVer: '',
+			publisherNodes: [
+				{
+					id: '100',
+					name: 'Node 1',
+					interfaceNodeNumber: '1',
+					interfaceNodeGroupId: 'group1',
+				},
+			],
+			subscriberNodes: [
+				{
+					id: '101',
+					name: 'Node 2',
+					interfaceNodeNumber: '2',
+					interfaceNodeGroupId: 'group1',
+				},
+			],
 			description: '',
 			interfaceMessageNumber: '10',
 			interfaceMessageType: 'Operational',
@@ -134,6 +169,18 @@ export const importSummaryMock: ImportSummary = {
 			crossReferenceAdditionalContent: 'Additional Content',
 		},
 	],
+	connectionNodeRelations: {
+		'200': ['1', '2'],
+	},
+	connectionMessageRelations: {
+		'200': ['3'],
+	},
+	messagePublisherNodeRelations: {
+		'3': ['1'],
+	},
+	messageSubscriberNodeRelations: {
+		'3': ['2'],
+	},
 	messageSubmessageRelations: {
 		'3': ['4'],
 	},

@@ -503,7 +503,10 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       ArtifactId messageId) {
       InterfaceMessageToken message = interfaceMessageApi.get(branch, messageId);
       ApplicabilityToken applic = message.getApplicability();
-      String initiatingNode = message.getInitiatingNode().getName();
+      String initiatingNode = "Node"; // This should always be overwritten below, but initializing just in case.
+      if (message.getPublisherNodes().size() > 0) {
+         initiatingNode = message.getPublisherNodes().get(0).getName();
+      }
       String messageNumber = message.getInterfaceMessageNumber();
       Long id = 0L;
 

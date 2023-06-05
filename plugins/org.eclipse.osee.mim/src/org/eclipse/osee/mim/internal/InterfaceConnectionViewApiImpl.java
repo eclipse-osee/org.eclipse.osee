@@ -57,8 +57,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
 
    private List<RelationTypeSide> createAffectedRelationTypeSideList() {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceConnectionPrimary_Node);
-      relations.add(CoreRelationTypes.InterfaceConnectionSecondary_Node);
+      relations.add(CoreRelationTypes.InterfaceConnectionNode_Node);
       return relations;
    }
 
@@ -138,12 +137,14 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    }
 
    @Override
-   public Collection<InterfaceConnection> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceConnection> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceConnection> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<InterfaceConnection> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
+      long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query, relations, isExact, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -159,12 +160,14 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    }
 
    @Override
-   public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       return this.getAll(branch, pageNum, pageSize, orderByAttribute, ArtifactId.SENTINEL);
    }
 
    @Override
-   public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId) {
+   public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute, ArtifactId viewId) {
       try {
          return this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute, viewId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

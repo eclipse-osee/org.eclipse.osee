@@ -33,7 +33,12 @@ public interface InterfaceNodeViewApi extends QueryCapableMIMAPI<InterfaceNode>,
 
    Collection<InterfaceNode> getAll(BranchId branch, AttributeTypeToken orderByAttributeType);
 
-   Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeToken orderByAttributeType);
+   Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType);
 
-   InterfaceNode getNodeForMessage(BranchId branch, ArtifactId message);
+   Collection<InterfaceNode> getMessagePublisherNodes(BranchId branch, ArtifactId message);
+
+   Collection<InterfaceNode> getMessageSubscriberNodes(BranchId branch, ArtifactId message);
+
+   Collection<InterfaceNode> getNodesForConnection(BranchId branch, ArtifactId connectionId);
 }

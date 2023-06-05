@@ -70,7 +70,7 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
          graph.getClusters().removeIf(c -> c.getChildNodeIds().size() < 2);
 
          for (InterfaceConnection connection : edges) {
-            if (connection.getPrimaryNode() > -1 && connection.getSecondaryNode() > -1) {
+            if (connection.getNodes().size() > 1) {
                graph.addEdges(new ConnectionView(connection));
             }
          }

@@ -45,7 +45,6 @@ import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
-import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
@@ -62,9 +61,9 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public class MimIcdGenerator {
 
+   private final MimApi mimApi;
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
-   private final MimApi mimApi;
    private final InterfaceMessageApi interfaceMessageApi;
    private final InterfaceStructureApi interfaceStructureApi;
    private final InterfaceDifferenceReportApi interfaceDifferenceReportApi;
@@ -76,9 +75,9 @@ public class MimIcdGenerator {
    private Map<ArtifactId, MimDifferenceItem> diffs;
 
    public MimIcdGenerator(MimApi mimApi) {
+      this.mimApi = mimApi;
       this.orcsApi = mimApi.getOrcsApi();
       this.atsApi = mimApi.getAtsApi();
-      this.mimApi = mimApi;
       this.structuresList = new HashMap<>();
       this.headersList = new HashMap<>();
       this.messageHeaders = new HashMap<>();
@@ -102,15 +101,14 @@ public class MimIcdGenerator {
                            CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).follow(
                               CoreRelationTypes.InterfaceEnumeration_EnumerationState).asArtifact();
 
-      ArtifactReadable primaryNode =
-         orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(CoreArtifactTypes.InterfaceNode).andId(
-            conn.getRelated(CoreRelationTypes.InterfaceConnectionPrimary_Node).getAtMostOneOrDefault(
-               ArtifactReadable.SENTINEL)).asArtifact();
+      ArtifactReadable primaryNode = ArtifactReadable.SENTINEL;
+      ArtifactReadable secondaryNode = ArtifactReadable.SENTINEL;
 
-      ArtifactReadable secondaryNode =
-         orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(CoreArtifactTypes.InterfaceNode).andId(
-            conn.getRelated(CoreRelationTypes.InterfaceConnectionSecondary_Node).getAtMostOneOrDefault(
-               ArtifactReadable.SENTINEL)).asArtifact();
+      List<ArtifactReadable> nodes = conn.getRelatedList(CoreRelationTypes.InterfaceConnectionNode_Node);
+      if (nodes.size() == 2) {
+         primaryNode = nodes.get(0);
+         secondaryNode = nodes.get(1);
+      }
 
       List<ArtifactReadable> messages = new LinkedList<>();
       List<ArtifactReadable> subMessages = new LinkedList<>();
@@ -122,12 +120,8 @@ public class MimIcdGenerator {
          messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList();
 
          for (ArtifactReadable message : messages) {
-            ArtifactReadable sendingNode =
-               (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
-                  ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
-                     primaryNode.getIdString())) ? primaryNode : secondaryNode;
             InterfaceMessageToken msg = new InterfaceMessageToken(message);
-            msg.setInitiatingNode(new InterfaceNode(sendingNode));
+            mimApi.getInterfaceMessageApi().setUpMessage(branch, msg);
 
             List<ArtifactReadable> messageSubMessages =
                message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
@@ -213,9 +207,8 @@ public class MimIcdGenerator {
       ArtifactReadable secondaryNode, List<ArtifactReadable> messages) {
       for (ArtifactReadable message : messages) {
          ArtifactReadable sendingNode =
-            (message.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
-               ArtifactReadable.SENTINEL).getIdString().equalsIgnoreCase(
-                  primaryNode.getIdString())) ? primaryNode : secondaryNode;
+            message.getRelated(CoreRelationTypes.InterfaceMessagePubNode_Node).getOneOrDefault(
+               ArtifactReadable.SENTINEL);
          String msgNumber = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber, "0");
 
          String msgRateText;
@@ -365,7 +358,7 @@ public class MimIcdGenerator {
       int rowIndex = 1;
       for (TransactionReadable tx : orcsApi.getQueryFactory().transactionQuery().andBranch(
          branch).getResults().getList()) {
-         if (tx.getCommitArt().getId() != -1) {
+         if (tx.getCommitArt().getId() > 0) {
             IAtsWorkItem change = atsApi.getQueryService().getWorkItem(tx.getCommitArt().getIdString());
             if (change != null && change.getId() != -1) {
                rowIndex++;
@@ -1075,11 +1068,11 @@ public class MimIcdGenerator {
          e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
             Collectors.toList());
       List<ArtifactReadable> primaryList = connectionMessages.stream().filter(
-         e -> primaryNode.equals(e.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+         e -> primaryNode.equals(e.getRelated(CoreRelationTypes.InterfaceMessagePubNode_Node).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL))).collect(Collectors.toList());
 
-      List<ArtifactReadable> secondaryList = connectionMessages.stream().filter(e -> secondaryNode.equals(
-         e.getRelated(CoreRelationTypes.InterfaceMessageSendingNode_Node).getAtMostOneOrDefault(
+      List<ArtifactReadable> secondaryList = connectionMessages.stream().filter(
+         e -> secondaryNode.equals(e.getRelated(CoreRelationTypes.InterfaceMessagePubNode_Node).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL))).collect(Collectors.toList());
 
       writer.createSheet("Message and SubMessage Summary");

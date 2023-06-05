@@ -47,10 +47,18 @@ describe('AddMessageDialogComponent', () => {
 		interfaceMessageRate: '',
 		interfaceMessageType: '',
 		interfaceMessageWriteAccess: false,
-		initiatingNode: {
-			id: '',
-			name: '',
-		},
+		publisherNodes: [
+			{
+				id: '',
+				name: '',
+			},
+		],
+		subscriberNodes: [
+			{
+				id: '',
+				name: '',
+			},
+		],
 	};
 	let enumServiceMock: Partial<EnumsService> = {
 		types: of(['type1', 'type2', 'type3']),

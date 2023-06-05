@@ -15,6 +15,7 @@ import { MimPreferencesMock } from './mim-preferences.response.mock';
 import { applic } from '@osee/shared/types/applicability';
 import { CurrentMessagesService } from '../services/ui/current-messages.service';
 import type {
+	ConnectionNode,
 	message,
 	messageWithChanges,
 	settingsDialogData,
@@ -64,10 +65,28 @@ let expectedData: (message | messageWithChanges)[] = [
 			id: '1',
 			name: 'Base',
 		},
-		initiatingNode: {
-			id: '1',
-			name: 'Node 1',
-		},
+		interfaceMessageExclude: false,
+		interfaceMessageIoMode: '',
+		interfaceMessageModeCode: '',
+		interfaceMessageRateVer: '',
+		interfaceMessagePriority: '',
+		interfaceMessageProtocol: '',
+		interfaceMessageRptWordCount: '',
+		interfaceMessageRptCmdWord: '',
+		interfaceMessageRunBeforeProc: false,
+		interfaceMessageVer: '',
+		publisherNodes: [
+			{
+				id: '100',
+				name: 'Pub Node 1',
+			},
+		],
+		subscriberNodes: [
+			{
+				id: '101',
+				name: 'Sub Node 1',
+			},
+		],
 		changes: {
 			name: {
 				previousValue: '',
@@ -93,7 +112,11 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
 	partialUpdateMessage(body) {
 		return of(transactionResultMock);
 	},
-	createMessage(body: message) {
+	createMessage(
+		pubNodes: ConnectionNode[],
+		subNodes: ConnectionNode[],
+		body: message
+	) {
 		return of(transactionResultMock);
 	},
 	BranchId: new BehaviorSubject('10'),

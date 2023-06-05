@@ -68,38 +68,6 @@ describe('MessageTableComponent', () => {
 	let component: MessageTableComponent;
 	let uiService: MessageUiService;
 	let fixture: ComponentFixture<MessageTableComponent>;
-	let expectedData: message[] = [
-		{
-			id: '10',
-			name: 'name',
-			description: 'description',
-			interfaceMessageRate: '50Hz',
-			interfaceMessageNumber: '0',
-			interfaceMessagePeriodicity: '1Hz',
-			interfaceMessageWriteAccess: true,
-			interfaceMessageType: 'Connection',
-			initiatingNode: {
-				id: '1',
-				name: 'Node 1',
-			},
-			subMessages: [
-				{
-					id: '5',
-					name: 'sub message name',
-					description: '',
-					interfaceSubMessageNumber: '0',
-					applicability: {
-						id: '1',
-						name: 'Base',
-					},
-				},
-			],
-			applicability: {
-				id: '1',
-				name: 'Base',
-			},
-		},
-	];
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(MessageTableComponent, {

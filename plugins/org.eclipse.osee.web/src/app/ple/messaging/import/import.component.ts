@@ -38,6 +38,7 @@ import {
 	subMessageHeaderDetails,
 	importElementHeaderDetails,
 	crossReferenceHeaderDetails,
+	connectionHeaderDetails,
 } from '@osee/messaging/shared/table-headers';
 import { BehaviorSubject, from, iif, of, OperatorFunction } from 'rxjs';
 import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
@@ -153,14 +154,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 			ImportSummary
 		>,
 		switchMap((summary) => {
-			let nodes: nodeToken[] = [];
-			if (summary.createPrimaryNode) {
-				nodes = [summary.primaryNode];
-			}
-			if (summary.createSecondaryNode) {
-				nodes = [...nodes, summary.secondaryNode];
-			}
-			return of(nodes);
+			return of(summary.nodes);
 		})
 	);
 
@@ -249,6 +243,13 @@ export class ImportComponent implements OnInit, OnDestroy {
 
 	nodeHeaderDetails = nodeHeaderDetails;
 	nodeHeaders: (keyof nodeToken)[] = ['name', 'description', 'applicability'];
+
+	connectionHeaderDetails = connectionHeaderDetails;
+	connectionHeaders: (keyof connection)[] = [
+		'name',
+		'description',
+		'applicability',
+	];
 
 	messageHeaderDetails = importMessageHeaderDetails;
 	messageHeaders: (keyof messageToken)[] = [
