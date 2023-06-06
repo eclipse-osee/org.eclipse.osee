@@ -20,21 +20,14 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 
-//@formatter:off
 @RunWith(Suite.class)
-@Suite.SuiteClasses
-   (
-      {
-         AbstractOperationTest.class,
-         ConditionsTest.class,
-         ManifestTest.class,
-         WordCoreUtilTest.class,
-         XResultDataTest.class
-      }
-   )
+@Suite.SuiteClasses({
+   AbstractOperationTest.class,
+   ConditionsTest.class,
+   ManifestTest.class,
+   WordCoreUtilTest.class,
+   XResultDataTest.class,
+   XResultDataTimeMapTest.class})
 public class UtilCoreTestSuite {
    // Test Suite
 }
-//@formatter:on
-
-/* EOF */

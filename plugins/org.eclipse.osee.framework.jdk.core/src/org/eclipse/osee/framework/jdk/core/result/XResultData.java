@@ -423,15 +423,15 @@ public class XResultData {
       List<String> testNames = new ArrayList<>();
       testNames.addAll(keyToTimeSpentMap.keySet());
       java.util.Collections.sort(testNames);
-      log(AHTML.beginMultiColumnTable(70, 2));
+      log(AHTML.beginMultiColumnTable(95, 2));
       // Sort tests
       for (String prefix : testPrefix) {
          for (String testName : testNames) {
             if (testName.startsWith(prefix)) {
                int testTime = keyToTimeSpentMap.get(testName);
                totalTime += testTime;
-               logf(
-                  AHTML.addRowMultiColumnTable(testName, (testTime / 60000) + " min or " + (testTime / 1000) + " sec"));
+               logf(AHTML.addRowMultiColumnTable(testName,
+                  (testTime / 60000) + " min or " + (testTime / 1000) + " sec or " + testTime + " millisec"));
             }
          }
       }
@@ -451,7 +451,7 @@ public class XResultData {
          throw new IllegalArgumentException("No Start Key: " + key);
       }
       int spent = Long.valueOf(now.getTime() - start.getTime()).intValue();
-      keyToTimeSpentMap.put(key, spent);
+      keyToTimeSpentMap.put(key, spent); // This adds time to existing
       return spent;
    }
 
@@ -469,6 +469,13 @@ public class XResultData {
       XResultData rd = new XResultData();
       rd.logStr(type, "%s: %s", messageId, message);
       return rd;
+   }
+
+   public void addTimeSpentAndClearTimeForKey(String key) {
+      logTimeSpent(key);
+      keyTimeStart.remove(key);
+      System.err.println("keyTimeStart " + keyTimeStart);
+      System.err.println("keyToTimeSpentMap " + keyToTimeSpentMap);
    }
 
 }

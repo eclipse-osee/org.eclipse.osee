@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 
 /**
- * Provides hooks for interacting with ATS state transitions.  NOTE: HOOKS MUST BE IMPLEMENTED in ats.core OR ats.rest since 
- * transitions are on the server.
+ * Provides hooks for interacting with ATS state transitions. NOTE: HOOKS MUST BE IMPLEMENTED in ats.core OR ats.rest
+ * since transitions are on the server.
  *
  * @author Donald G. Dunne
  */
@@ -32,23 +32,30 @@ public interface IAtsTransitionHook {
    public String getDescription();
 
    /**
-    * Allows subclass to add changes to transition before commit.
+    * Allows subclass to add changes to transition before persist.<br/>
+    * ONLY USE IF NEED TO ADD SOMETHING TO TRANSITION PERSIST
     */
-   default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+   default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
       // Provided for subclass implementation
    }
 
    /**
-    * Allows subclass to do operation after transition and persist.
+    * Allows subclass to do operation after transition and persist.<br/>
+    * USE IF NEED TO DO SOMETHING AFTER TRANSITION PERSIST; OPERATION WILL BE RUN IN BACKGROUND SO TRANSITION ISN'T
+    * SLOWED
     */
-   default public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems, Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName, AtsUser asUser) {
+   default public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems,
+      Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName, AtsUser asUser) {
       // Provided for subclass implementation
    }
 
    /**
-    * Log errors in results if transition should fail
+    * Log errors in results if transition should fail<br/>
+    * ONLY USE IF NEED TO CHECK SOMETHING BEFORE TRANSITION; CHECK SHOULD BE QUICK
     */
-   default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+   default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
+      IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
       // Provided for subclass implementation
    }
 

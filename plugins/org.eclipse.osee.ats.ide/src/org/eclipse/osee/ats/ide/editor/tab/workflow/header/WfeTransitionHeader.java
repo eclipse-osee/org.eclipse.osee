@@ -47,10 +47,13 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -99,6 +102,18 @@ public class WfeTransitionHeader extends Composite {
             handleTransitionButtonSelection();
          }
       });
+      transitionLabelLink.addMouseListener(new MouseAdapter() {
+
+         @Override
+         public void mouseUp(MouseEvent e) {
+            if (e.button == 3) {
+               transitionLabelLink.setEnabled(false);
+               stateLabelLink.setEnabled(false);
+               handleTransitionButtonSelection(true);
+            }
+         }
+
+      });
       transitionLabelLink.setFont(FontManager.getDefaultLabelFont());
       transitionLabelLink.setToolTipText("Select to transition workflow to the default or selected state");
 
@@ -123,6 +138,22 @@ public class WfeTransitionHeader extends Composite {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
+      });
+      stateLabelLink.addMouseListener(new MouseAdapter() {
+
+         @Override
+         public void mouseUp(MouseEvent e) {
+            if (e.button == 3) {
+               StateDefinition selState = handleChangeTransitionToState(workItem, isEditable, getToState());
+               if (selState != null) {
+                  userSelectedTransitionToState = selState;
+                  transitionLabelLink.setEnabled(false);
+                  stateLabelLink.setEnabled(false);
+                  handleTransitionButtonSelection(true);
+               }
+            }
+         }
+
       });
 
       Hyperlink assigneesLabelLink = editor.getToolkit().createHyperlink(this, "Next State Assignee(s)", SWT.NONE);
@@ -200,8 +231,11 @@ public class WfeTransitionHeader extends Composite {
       }
 
    }
-
    public void handleTransitionButtonSelection() {
+      handleTransitionButtonSelection(false);
+   }
+
+   public void handleTransitionButtonSelection(boolean debug) {
       final StateDefinition toStateDef = getToState();
       if (toStateDef == null) {
          AWorkbench.popup("Must select state to transition.");
@@ -212,13 +246,15 @@ public class WfeTransitionHeader extends Composite {
          editor.doSave(null);
       }
       editor.getWorkFlowTab().setLoading(true);
-      handleTransitionButtonSelection(workItem, isEditable, toStateDef, editor, this);
+      handleTransitionButtonSelection(workItem, isEditable, toStateDef, editor, this, debug);
    }
 
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isEditable,
-      StateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader) {
+      StateDefinition toStateDef, final WorkflowEditor editor, final WfeTransitionHeader transitionHeader,
+      boolean debug) {
       TransitionData transData = new TransitionData("Workflow Editor Transition", Arrays.asList(awa),
          toStateDef.getName(), awa.getTransitionAssignees(), null, null, TransitionOption.None);
+      transData.setDebug(debug);
       TransitionDataUi.getCancellationReason(transData);
 
       final TransitionToOperation operation = new TransitionToOperation(transData);
@@ -232,6 +268,9 @@ public class WfeTransitionHeader extends Composite {
                if (results.isErrors()) {
                   TransitionResultsUi.reportDialog("Transition Failed", results);
                   AtsUtilClient.logExceptions(results);
+               }
+               if (results.isDebug()) {
+                  XResultDataUI.report(results.getTimeRd(), "Transition Debug");
                }
             }
             editor.getWorkFlowTab().setLoading(false);
