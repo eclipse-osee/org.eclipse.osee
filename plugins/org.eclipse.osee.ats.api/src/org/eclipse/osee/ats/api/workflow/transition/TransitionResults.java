@@ -36,6 +36,8 @@ public class TransitionResults {
    private List<TransitionResult> results = new ArrayList<>();
    private List<TransitionWorkItemResult> transitionWorkItems = new ArrayList<>();
    private TransactionId transaction;
+   private XResultData timeRd = new XResultData();
+   private boolean debug = false;
    @JsonIgnore
    private AtsApi atsApi;
 
@@ -215,6 +217,22 @@ public class TransitionResults {
 
    public void setTransaction(TransactionId transaction) {
       this.transaction = transaction;
+   }
+
+   public XResultData getTimeRd() {
+      return timeRd;
+   }
+
+   public void setTimeRd(XResultData timeRd) {
+      this.timeRd = timeRd;
+   }
+
+   public boolean isDebug() {
+      return debug;
+   }
+
+   public void setDebug(boolean debug) {
+      this.debug = debug;
    }
 
 }

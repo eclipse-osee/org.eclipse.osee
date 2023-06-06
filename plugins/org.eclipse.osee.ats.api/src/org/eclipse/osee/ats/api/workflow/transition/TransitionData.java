@@ -56,6 +56,7 @@ public class TransitionData {
    private final List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
    @JsonIgnore
    private IAtsChangeSet changes;
+   private boolean debug = false;
 
    public TransitionData() {
       // for jax-rs
@@ -235,6 +236,14 @@ public class TransitionData {
 
    public boolean isSystemUser() {
       return AtsCoreUsers.isAtsCoreUser(getTransitionUser());
+   }
+
+   public boolean isDebug() {
+      return debug;
+   }
+
+   public void setDebug(boolean debug) {
+      this.debug = debug;
    }
 
 }

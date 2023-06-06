@@ -87,6 +87,7 @@ public class TransitionManager implements IExecuteListener {
    private final AtsApi atsApi;
    private final TransitionData transData;
    private IAtsChangeSet changes;
+   private final TransitionResults results = new TransitionResults();
 
    public TransitionManager(TransitionData transData) {
       this(transData, AtsApiService.get());
@@ -106,6 +107,7 @@ public class TransitionManager implements IExecuteListener {
       this.attrResolver = atsApi.getAttributeResolver();
       this.taskService = atsApi.getTaskService();
       this.workItemFromStateMap = new HashMap<>();
+      results.setDebug(transData.isDebug());
       if (atsApi.isIde() && !overrideClientCheck && !AtsUtil.isInTest()) {
          // Capture stack trace so it's easy to determine where this is being called from
          try {
@@ -120,32 +122,62 @@ public class TransitionManager implements IExecuteListener {
    public TransitionResults handleAll() {
       loadWorkItems();
 
-      TransitionResults results = new TransitionResults();
       handleTransitionValidation(results);
       if (results.isCancelled() || !results.isEmpty()) {
          return results;
       }
 
       handleTransition(results);
+      results.getTimeRd().addTimeMapToResultData();
+      return results;
+   }
+
+   public TransitionResults handleAllAndPersist() {
+      TransitionResults results = handleAll();
+      if (results.isEmpty()) {
+         if (getChangeSet() != null) {
+            logTimeStart("30 - ChangeSet.execute");
+            TransactionId transactionId = getChangeSet().execute();
+            results.setTransaction(transactionId);
+            logTimeSpent("30 - ChangeSet.execute");
+         }
+
+         if (atsApi.getEventService() != null) {
+            logTimeStart("35 - ChangeSet.execute");
+            atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
+               transData.getWorkItems(), results.getTransaction());
+            logTimeSpent("35 - ChangeSet.execute");
+         }
+      } else {
+         if (atsApi.getEventService() != null) {
+            logTimeStart("35 - ChangeSet.execute");
+            atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED,
+               transData.getWorkItems(), TransactionToken.SENTINEL);
+            logTimeSpent("35 - ChangeSet.execute");
+         }
+      }
       return results;
    }
 
    private void loadWorkItems() {
+      logTimeStart("01 - loadWorkItems");
       if (transData.getWorkItems().isEmpty()) {
          for (ArtifactToken art : atsApi.getQueryService().getArtifacts(Collections.castAll(transData.getWorkItemIds()),
             atsApi.getAtsBranch())) {
             transData.getWorkItems().add(atsApi.getWorkItemService().getWorkItem(art));
          }
       }
+      logTimeSpent("01 - loadWorkItems");
    }
 
    /**
     * Validate AbstractWorkflowArtifact for transition including checking widget validation, rules, assignment, etc.
     *
-    * @return Result.isFalse if failure
+    * @return TransitionResults.results errors if failed
     */
    public TransitionResults handleTransitionValidation(TransitionResults results) {
       loadWorkItems();
+      logTimeStart("05 - handleTransitionValidation");
       boolean overrideAssigneeCheck = isOverrideAssigneeCheck();
       try {
          if (transData.getWorkItems().isEmpty()) {
@@ -175,6 +207,7 @@ public class TransitionManager implements IExecuteListener {
                OseeLog.log(TransitionManager.class, Level.SEVERE,
                   String.format("from state for workItem %s is null", workItem.getName()));
             } else {
+               logTimeStart("05.1 - Validate toState valid");
                StateDefinition toStateDef = workItem.getWorkDefinition().getStateByName(transData.getToStateName());
                if (toStateDef == null) {
                   results.addResult(workItem,
@@ -183,6 +216,7 @@ public class TransitionManager implements IExecuteListener {
                            transData.getToStateName(), workItem.getWorkDefinition().getName())));
                   continue;
                }
+               logTimeSpent("05.1 - Validate toState valid");
 
                // Ignore transitions to the same state
                if (!fromStateDef.equals(toStateDef)) {
@@ -199,6 +233,7 @@ public class TransitionManager implements IExecuteListener {
                   }
 
                   // Validate Editable
+                  logTimeStart("05.2 - Validate Editable");
                   boolean isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
                   boolean currentlyUnAssignedOrCompletedOrCancelled =
                      workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
@@ -213,14 +248,17 @@ public class TransitionManager implements IExecuteListener {
                      results.addResult(workItem, TransitionResult.UNABLE_TO_ASSIGN);
                      continue;
                   }
+                  logTimeSpent("05.2 - Validate Editable");
 
                   // Validate Working Branch
+                  logTimeStart("05.3 - Validate Working Branch");
                   if (!isOverrideWorkingBranchCheck()) {
                      isWorkingBranchTransitionable(results, workItem, toStateDef);
                      if (results.isCancelled()) {
                         continue;
                      }
                   }
+                  logTimeSpent("05.3 - Validate Working Branch");
 
                   // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
                   if (!overrideAssigneeCheck && !toStateDef.isCancelled() && transData.isSystemUserAssingee(workItem)) {
@@ -246,16 +284,20 @@ public class TransitionManager implements IExecuteListener {
                String.format("Exception while validating transition [%s]", transData.getName()), ex));
          }
       }
+      logTimeSpent("05 - handleTransitionValidation");
       return results;
    }
 
    public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem,
       StateDefinition fromStateDef, StateDefinition toStateDef) {
+      logTimeStart("05.5 - isTransitionValidForExtensions");
       // Check extension points for valid transition
       for (IAtsTransitionHook listener : getTransitionHooks()) {
          try {
+            logTimeStart("05.51 - transitioning 1 - " + listener.getClass().getSimpleName());
             listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
                transData.getTransitionUser());
+            logTimeSpent("05.51 - transitioning 1 - " + listener.getClass().getSimpleName());
             if (results.isCancelled() || !results.isEmpty()) {
                continue;
             }
@@ -271,8 +313,10 @@ public class TransitionManager implements IExecuteListener {
       if (results.isEmpty()) {
          for (IAtsTransitionHook listener : getTransitionHooks()) {
             try {
+               logTimeStart("05.52 - transitioning 2 - " + listener.getClass().getSimpleName());
                listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
                   AtsApiService.get().getUserService().getCurrentUser());
+               logTimeSpent("05.52 - transitioning 2 - " + listener.getClass().getSimpleName());
                if (results.isCancelled() || !results.isEmpty()) {
                   continue;
                }
@@ -284,12 +328,14 @@ public class TransitionManager implements IExecuteListener {
 
          }
       }
+      logTimeSpent("05.5 - isTransitionValidForExtensions");
    }
 
    /**
     * Process transition and persist changes to given skynet transaction
     */
    public void handleTransition(TransitionResults results) {
+      logTimeStart("20 - handleTransition");
       try {
          IAtsChangeSet changes = getChangeSet();
          if (changes != null) {
@@ -351,13 +397,17 @@ public class TransitionManager implements IExecuteListener {
 
                   // Notify extension points of transition
                   for (IAtsTransitionHook listener : getTransitionHooks()) {
+                     logTimeStart("20.1 - hooks transitioned " + listener.getClass().getSimpleName());
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, transData.getTransitionUser(),
                         changes);
+                     logTimeSpent("20.1 - hooks transitioned " + listener.getClass().getSimpleName());
                   }
                   // Notify any state transition listeners
                   for (IAtsTransitionHook listener : toState.getTransitionListeners()) {
+                     logTimeStart("20.2 - state hook transitioned " + listener.getClass().getSimpleName());
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, transData.getTransitionUser(),
                         changes);
+                     logTimeSpent("20.2 - state hook transitioned " + listener.getClass().getSimpleName());
                   }
                   if (toState.isCompletedOrCancelled()) {
                      workItemService.clearImplementersCache(workItem);
@@ -380,11 +430,12 @@ public class TransitionManager implements IExecuteListener {
          results.addResult(
             new TransitionResult(String.format("Exception while transitioning [%s]", transData.getName()), ex));
       }
-
+      logTimeSpent("20 - handleTransition");
    }
 
    private void isWorkingBranchTransitionable(TransitionResults results, IAtsWorkItem workItem,
       StateDefinition toStateDef) {
+      logTimeStart("05.32 - isWorkingBranchTransitionable");
       if (workItem.isTeamWorkflow()) {
          if (transData.isWorkingBranchInWork((IAtsTeamWorkflow) workItem, atsApi)) {
             if (toStateDef.getName().equals(TeamState.Cancelled.getName())) {
@@ -396,12 +447,14 @@ public class TransitionManager implements IExecuteListener {
             }
          }
       }
+      logTimeSpent("05.32 - isWorkingBranchTransitionable");
    }
 
    /**
     * @return true if toState is visited and is toState is earlier than current state
     */
    private boolean isOverrideAttributeValidationState(IAtsWorkItem workItem, StateDefinition toStateDef) {
+      logTimeStart("05.31 - isWorkingBranchTransitionable");
       List<String> visitedStateNames = workItem.getStateMgr().getVisitedStateNames();
       if (visitedStateNames.contains(toStateDef.getName())) {
          StateDefinition currState = workItem.getStateDefinition();
@@ -413,14 +466,16 @@ public class TransitionManager implements IExecuteListener {
             }
          }
       }
+      logTimeSpent("05.31 - isWorkingBranchTransitionable");
       return false;
    }
 
    private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
+      logTimeStart("05.4 - isStateTransitionable");
       boolean isOverrideAttributeValidationState =
          transData.isOverrideTransitionValidityCheck() || isOverrideAttributeValidationState(workItem, toStateDef);
       if (toStateDef.isCancelled()) {
-         validateTaskCompletion(results, workItem, toStateDef, taskService);
+         validateTaskCompletion(workItem, toStateDef, taskService);
          validateReviewsCancelled(results, workItem, toStateDef);
       } else if (!toStateDef.isCancelled() && !isOverrideAttributeValidationState) {
 
@@ -432,7 +487,7 @@ public class TransitionManager implements IExecuteListener {
             }
          }
 
-         validateTaskCompletion(results, workItem, toStateDef, taskService);
+         validateTaskCompletion(workItem, toStateDef, taskService);
 
          // Don't transition without targeted version if so configured
          boolean teamDefRequiresTargetedVersion =
@@ -457,9 +512,11 @@ public class TransitionManager implements IExecuteListener {
             }
          }
       }
+      logTimeSpent("05.4 - isStateTransitionable");
    }
 
    private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
+      logTimeStart("05.42 - validateReviewsCancelled");
       if (workItem.isTeamWorkflow() && toStateDef.isCancelled()) {
          for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
             ReviewBlockType reviewBlockType = reviewService.getReviewBlockType(review);
@@ -470,6 +527,13 @@ public class TransitionManager implements IExecuteListener {
             }
          }
       }
+      logTimeSpent("05.42 - validateReviewsCancelled");
+   }
+
+   private void validateTaskCompletion(IAtsWorkItem workItem, StateDefinition toStateDef, IAtsTaskService taskService) {
+      logTimeStart("05.41 - validateTaskCompletion");
+      validateTaskCompletion(results, workItem, toStateDef, taskService);
+      logTimeSpent("05.41 - validateTaskCompletion");
    }
 
    public static void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem,
@@ -659,33 +723,14 @@ public class TransitionManager implements IExecuteListener {
       return toAssignees;
    }
 
-   public TransitionResults handleAllAndPersist() {
-      TransitionResults result = handleAll();
-      if (result.isEmpty()) {
-         if (getChangeSet() != null) {
-            TransactionId transactionId = getChangeSet().execute();
-            result.setTransaction(transactionId);
-         }
-
-         if (atsApi.getEventService() != null) {
-            atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITIONED,
-               transData.getWorkItems(), result.getTransaction());
-         }
-      } else {
-         if (atsApi.getEventService() != null) {
-            atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_TRANSITION_FAILED,
-               transData.getWorkItems(), TransactionToken.SENTINEL);
-         }
-      }
-      return result;
-   }
-
    @Override
    public void changesStored(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
       for (IAtsTransitionHook listener : getTransitionHooks()) {
+         logTimeStart("25.0 - transitionPersisted " + listener.getClass().getSimpleName());
          listener.transitionPersisted(transData.getWorkItems(), workItemFromStateMap, transData.getToStateName(),
             transData.getTransitionUser());
+         logTimeSpent("25.0 - transitionPersisted " + listener.getClass().getSimpleName());
       }
    }
 
@@ -757,4 +802,15 @@ public class TransitionManager implements IExecuteListener {
       transData.getTransitionOptions().remove(transitionOption);
    }
 
+   private void logTimeSpent(String key) {
+      if (transData.isDebug()) {
+         results.getTimeRd().logTimeSpent(key);
+      }
+   }
+
+   private void logTimeStart(String key) {
+      if (transData.isDebug()) {
+         results.getTimeRd().logTimeStart(key);
+      }
+   }
 }
