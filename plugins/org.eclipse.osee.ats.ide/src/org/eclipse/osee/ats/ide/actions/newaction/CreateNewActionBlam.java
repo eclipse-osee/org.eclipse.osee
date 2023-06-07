@@ -157,11 +157,15 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       if (!isValidEntry() || !valid) {
          return;
       }
+      String priorityStr = Priorities.Three.name();
+      if (priority != null) {
+         priorityStr = priority.getName();
+      }
 
       IAtsChangeSet changes = atsApi.createChangeSet(getName());
       actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
-         cType, priority.getName(), false, needBy, actionableItems, new Date(),
-         atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
+         cType, priorityStr, false, needBy, actionableItems, new Date(), atsApi.getUserService().getCurrentUser(),
+         Collections.singleton(this), changes);
 
       if (actionResult.getResults().isErrors()) {
          XResultDataUI.report(actionResult.getResults(), getTitle());
@@ -274,7 +278,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
       if (xWidget.getLabel().equals(TITLE)) {
          titleWidget = (XText) xWidget;
