@@ -47,7 +47,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    private static final String TITLE = "Action Search";
    protected WorldSearchItem searchItem;
    private long searchId = Lib.generateId();
-   private String searchName = "";
+   protected String searchName = "";
    protected AtsSearchData savedData;
 
    public AtsSearchWorkflowSearchItem() {
