@@ -25,10 +25,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 import {
 	EnumsService,
 	CurrentMessagesService,
+	TransportTypeUiService,
 } from '@osee/messaging/shared/services';
+import { combineLatest, of, switchMap } from 'rxjs';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-message-dialog.component';
 
@@ -50,19 +53,23 @@ import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-
 		NgFor,
 		NgIf,
 		AsyncPipe,
+		MessageNodesCountDirective,
 	],
 })
 export class AddMessageDialogComponent {
-	rates = this.enumService.rates;
-	types = this.enumService.types;
-	periodicities = this.enumService.periodicities;
-	nodes = this.currentMessagesService.connectionNodes;
 	constructor(
 		public dialogRef: MatDialogRef<AddSubMessageDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: AddMessageDialog,
 		private enumService: EnumsService,
-		private currentMessagesService: CurrentMessagesService
+		private currentMessagesService: CurrentMessagesService,
+		private transportTypeService: TransportTypeUiService
 	) {}
+
+	rates = this.enumService.rates;
+	types = this.enumService.types;
+	periodicities = this.enumService.periodicities;
+	nodes = this.currentMessagesService.connectionNodes;
+	transportType = this.transportTypeService.currentTransportType;
 
 	onNoClick() {
 		this.dialogRef.close();

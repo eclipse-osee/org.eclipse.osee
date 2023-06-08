@@ -12,12 +12,12 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { combineLatest, from, Observable, of } from 'rxjs';
 import { apiURL } from '@osee/environments';
 import type { message } from '../../types/messages';
 import type { connection } from '../../types/connection';
 import type { ConnectionNode } from '../../types/connection-nodes';
-import { map } from 'rxjs/operators';
+import { concatMap, map, reduce, switchMap } from 'rxjs/operators';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import {
 	TransactionBuilderService,
@@ -160,6 +160,13 @@ export class MessagesService {
 		return of(relation);
 	}
 
+	/**
+	 *
+	 * @param messageId
+	 * @param nodeId
+	 * @param type - true = publusher node, false = subscriber node
+	 * @returns
+	 */
 	createMessageNodeRelation(
 		messageId: string,
 		nodeId: string,
@@ -241,7 +248,11 @@ export class MessagesService {
 		);
 	}
 
-	deleteRelation(branchId: string, relation: relation) {
+	deleteRelation(
+		branchId: string,
+		relation: relation,
+		transaction?: transaction
+	) {
 		return of(
 			this.builder.deleteRelation(
 				relation.typeName,
@@ -249,7 +260,7 @@ export class MessagesService {
 				relation.sideA as string,
 				relation.sideB as string,
 				undefined,
-				undefined,
+				transaction,
 				branchId,
 				'Removing message'
 			)

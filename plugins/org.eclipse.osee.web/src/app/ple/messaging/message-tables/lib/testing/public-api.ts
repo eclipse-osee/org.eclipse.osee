@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './message-table.component.mock';
+export * from './edit-message-nodes-field.component.mock';

@@ -239,10 +239,9 @@ export class CurrentMessagesService {
 		this.connectionId,
 	]).pipe(
 		switchMap(([branchId, connectionId]) =>
-			this.messageService
-				.getConnectionNodes(branchId, connectionId)
-				.pipe(shareReplay({ bufferSize: 1, refCount: true }))
-		)
+			this.messageService.getConnectionNodes(branchId, connectionId)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	private _done = new Subject<boolean>();
@@ -673,10 +672,17 @@ export class CurrentMessagesService {
 	}
 
 	createMessage(
-		pubNodes: ConnectionNode[],
-		subNodes: ConnectionNode[],
+		publisherNodes: ConnectionNode | ConnectionNode[],
+		subscriberNodes: ConnectionNode | ConnectionNode[],
 		body: message
 	) {
+		const pubNodes = Array.isArray(publisherNodes)
+			? publisherNodes
+			: [publisherNodes];
+		const subNodes = Array.isArray(subscriberNodes)
+			? subscriberNodes
+			: [subscriberNodes];
+
 		const connectionRelation = this.connectionId.pipe(
 			take(1),
 			switchMap((connectionId) =>
@@ -1412,6 +1418,111 @@ export class CurrentMessagesService {
 						'/' +
 						connection +
 						'/messages/'
+				)
+			)
+		);
+	}
+
+	/**
+	 *
+	 * @param message
+	 * @param newNodes
+	 * @param type - true = publusher node, false = subscriber node
+	 */
+	updateMessageNodeRelations(
+		message: message,
+		newNodes: ConnectionNode[],
+		type: boolean
+	) {
+		const currentNodes = type
+			? message.publisherNodes
+			: message.subscriberNodes;
+		const removeNodes: ConnectionNode[] = [];
+		const addNodes: ConnectionNode[] = [];
+
+		currentNodes.forEach((oldNode) => {
+			if (newNodes.filter((n) => n.id === oldNode.id).length === 0) {
+				removeNodes.push(oldNode);
+			}
+		});
+
+		newNodes.forEach((newNode) => {
+			if (currentNodes.filter((n) => n.id === newNode.id).length === 0) {
+				addNodes.push(newNode);
+			}
+		});
+
+		const removeRelations = from(removeNodes).pipe(
+			concatMap((node) =>
+				this.messageService
+					.createMessageNodeRelation(message.id, node.id, type)
+					.pipe()
+			),
+			reduce((acc, curr) => [...acc, curr], [] as relation[])
+		);
+
+		const addRelations = from(addNodes).pipe(
+			concatMap((node) =>
+				this.messageService
+					.createMessageNodeRelation(message.id, node.id, type)
+					.pipe()
+			),
+			reduce((acc, curr) => [...acc, curr], [] as relation[])
+		);
+
+		return combineLatest([
+			this.BranchId,
+			removeRelations,
+			addRelations,
+		]).pipe(
+			filter(
+				([branchId, removeRels, addRels]) =>
+					removeRels.length > 0 || addRels.length > 0
+			),
+			switchMap(([branchId, removeRels, addRels]) =>
+				of({
+					branch: branchId,
+					txComment: 'Update Message Nodes',
+				} as transaction).pipe(
+					concatMap((tx) =>
+						iif(
+							() => removeRels.length > 0,
+							from(removeRels).pipe(
+								concatMap((rel) =>
+									this.messageService.deleteRelation(
+										branchId,
+										rel,
+										tx
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					),
+					concatMap((tx) =>
+						iif(
+							() => addRels.length > 0,
+							from(addRels).pipe(
+								concatMap((rel) =>
+									this.messageService.addRelation(
+										branchId,
+										rel,
+										tx
+									)
+								),
+								reduce(() => tx)
+							),
+							of(tx)
+						)
+					),
+					switchMap((tx) =>
+						this.messageService.performMutation(tx).pipe(
+							tap((res) => {
+								this.ui.updateMessages = true;
+							})
+						)
+					)
 				)
 			)
 		);

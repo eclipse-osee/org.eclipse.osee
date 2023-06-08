@@ -37,7 +37,10 @@ import type {
 	_newConnection,
 } from '@osee/messaging/shared/types';
 import { EnumsService } from '@osee/messaging/shared/services';
-import { enumsServiceMock } from '@osee/messaging/shared/testing';
+import {
+	enumsServiceMock,
+	ethernetTransportType,
+} from '@osee/messaging/shared/testing';
 
 describe('GraphNodeMenuComponent', () => {
 	let component: GraphNodeMenuComponent;
@@ -112,14 +115,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '3',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];
@@ -131,14 +127,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '4',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];
@@ -212,14 +201,7 @@ describe('GraphNodeMenuComponent', () => {
 			const conn: _newConnection = {
 				name: '',
 				description: '',
-				transportType: {
-					name: 'ETHERNET',
-					byteAlignValidation: false,
-					byteAlignValidationSize: 0,
-					messageGeneration: false,
-					messageGenerationPosition: '',
-					messageGenerationType: '',
-				},
+				transportType: ethernetTransportType,
 			};
 			let dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of(conn),
@@ -318,14 +300,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '3',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];
@@ -337,14 +312,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '4',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];
@@ -582,14 +550,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '3',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];
@@ -601,14 +562,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '4',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];
@@ -699,14 +653,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '3',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];
@@ -718,14 +665,7 @@ describe('GraphNodeMenuComponent', () => {
 					data: {
 						name: '4',
 						description: '',
-						transportType: {
-							name: 'ETHERNET',
-							byteAlignValidation: false,
-							byteAlignValidationSize: 0,
-							messageGeneration: false,
-							messageGenerationPosition: '',
-							messageGenerationType: '',
-						},
+						transportType: ethernetTransportType,
 					},
 				},
 			];

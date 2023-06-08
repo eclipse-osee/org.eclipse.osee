@@ -21,4 +21,8 @@ export interface transportTypeAttributes {
 	byteAlignValidationSize: number;
 	messageGenerationType: string;
 	messageGenerationPosition: string;
+	minimumPublisherMultiplicity: number;
+	maximumPublisherMultiplicity: number;
+	minimumSubscriberMultiplicity: number;
+	maximumSubscriberMultiplicity: number;
 }

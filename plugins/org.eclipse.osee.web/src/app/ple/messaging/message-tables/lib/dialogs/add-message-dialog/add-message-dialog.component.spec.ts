@@ -27,8 +27,12 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
 	CurrentMessagesService,
 	EnumsService,
+	TransportTypeUiService,
 } from '@osee/messaging/shared/services';
-import { CurrentMessageServiceMock } from '@osee/messaging/shared/testing';
+import {
+	CurrentMessageServiceMock,
+	transportTypeUIServiceMock,
+} from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 
@@ -79,6 +83,10 @@ describe('AddMessageDialogComponent', () => {
 					{
 						provide: CurrentMessagesService,
 						useValue: CurrentMessageServiceMock,
+					},
+					{
+						provide: TransportTypeUiService,
+						useValue: transportTypeUIServiceMock,
 					},
 				],
 			},

@@ -26,7 +26,7 @@ import {
 } from '@osee/messaging/shared/services';
 import type { message } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { combineLatest, iif, of, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, iif, of, Subject } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
@@ -99,6 +99,7 @@ export class EditMessageFieldComponent<
 	periodicities = this.enumService.periodicities.pipe(
 		takeUntil(this.messageService.done)
 	);
+
 	private _focus = new Subject<string | null>();
 	private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
 		scan(
@@ -147,6 +148,7 @@ export class EditMessageFieldComponent<
 	focusChanged(event: string | null) {
 		this._focus.next(event);
 	}
+
 	/**
 	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
 	 */

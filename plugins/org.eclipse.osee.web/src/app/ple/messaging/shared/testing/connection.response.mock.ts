@@ -12,16 +12,10 @@
  **********************************************************************/
 
 import type { connection } from '@osee/messaging/shared/types';
+import { ethernetTransportType } from './transport-type.response.mock';
 
 export const connectionMock: connection = {
 	name: 'connection1',
 	description: '',
-	transportType: {
-		name: 'ETHERNET',
-		byteAlignValidation: false,
-		byteAlignValidationSize: 0,
-		messageGeneration: false,
-		messageGenerationPosition: '',
-		messageGenerationType: '',
-	},
+	transportType: ethernetTransportType,
 };

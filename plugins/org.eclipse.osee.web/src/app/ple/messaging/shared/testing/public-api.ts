@@ -57,6 +57,7 @@ export * from './sub-message.service.mock';
 export * from './sub-messages.response.mock';
 export * from './transport-type.response.mock';
 export * from './transport-type.service.mock';
+export * from './transport-type-ui.service.mock';
 export * from './types.service.mock';
 export * from './types.ui.service.mock';
 export * from './unique-platform-type-attributes.directive.mock';

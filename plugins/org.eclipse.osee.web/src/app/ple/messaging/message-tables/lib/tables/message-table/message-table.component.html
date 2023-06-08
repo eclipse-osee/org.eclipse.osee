@@ -136,18 +136,42 @@
 								!nonEditableHeaders.includes(header);
 							else no_edit
 						">
-						<osee-messaging-edit-message-field
-							[messageId]="element.id"
-							[header]="header"
-							[value]="element[header]"
-							[attr.data-cy]="
-								'message-table-' +
-								header +
-								'-' +
-								element.name +
-								'-' +
-								element[header]
-							"></osee-messaging-edit-message-field>
+						<ng-container
+							*ngIf="
+								header !== 'publisherNodes' &&
+								header !== 'subscriberNodes'
+							">
+							<osee-messaging-edit-message-field
+								[messageId]="element.id"
+								[header]="header"
+								[value]="element[header]"
+								[attr.data-cy]="
+									'message-table-' +
+									header +
+									'-' +
+									element.name +
+									'-' +
+									element[header]
+								"></osee-messaging-edit-message-field>
+						</ng-container>
+						<ng-container
+							*ngIf="
+								header === 'publisherNodes' ||
+								header === 'subscriberNodes'
+							">
+							<osee-edit-message-nodes-field
+								[message]="element"
+								[header]="header"
+								[value]="element[header]"
+								[attr.data-cy]="
+									'message-table-' +
+									header +
+									'-' +
+									element.name +
+									'-' +
+									element[header]
+								"></osee-edit-message-nodes-field>
+						</ng-container>
 					</ng-container>
 					<ng-template #no_edit>
 						<ng-container *ngIf="header === 'applicability'">

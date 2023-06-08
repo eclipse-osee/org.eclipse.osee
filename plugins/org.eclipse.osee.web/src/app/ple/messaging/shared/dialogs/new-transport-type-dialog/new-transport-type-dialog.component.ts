@@ -47,6 +47,10 @@ export class NewTransportTypeDialogComponent {
 		byteAlignValidationSize: 0,
 		messageGenerationType: '',
 		messageGenerationPosition: '',
+		minimumPublisherMultiplicity: 0,
+		maximumPublisherMultiplicity: 0,
+		minimumSubscriberMultiplicity: 0,
+		maximumSubscriberMultiplicity: 0,
 	};
 	generationTypes = ['None', 'Dynamic', 'Relational', 'Static'];
 	validation = this.transportType.byteAlignValidation

@@ -12,7 +12,7 @@
  **********************************************************************/
 import type { transportType } from '@osee/messaging/shared/types';
 
-export const ethernet: Required<transportType> = {
+export const ethernetTransportType: Required<transportType> = {
 	id: '1233456',
 	name: 'Ethernet',
 	byteAlignValidation: true,
@@ -20,4 +20,8 @@ export const ethernet: Required<transportType> = {
 	byteAlignValidationSize: 4,
 	messageGenerationType: '',
 	messageGenerationPosition: '',
+	minimumPublisherMultiplicity: 0,
+	maximumPublisherMultiplicity: 0,
+	minimumSubscriberMultiplicity: 0,
+	maximumSubscriberMultiplicity: 0,
 };

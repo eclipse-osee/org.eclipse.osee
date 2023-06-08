@@ -41,6 +41,7 @@ import {
 	dialogRef,
 	enumsServiceMock,
 	CurrentTransportTypeServiceMock,
+	ethernetTransportType,
 } from '@osee/messaging/shared/testing';
 import {
 	MockApplicabilitySelectorComponent,
@@ -57,14 +58,7 @@ describe('EditConnectionDialogComponent', () => {
 	let dialogData: connection = {
 		name: '',
 		description: '',
-		transportType: {
-			name: 'ETHERNET',
-			byteAlignValidation: false,
-			byteAlignValidationSize: 0,
-			messageGeneration: false,
-			messageGenerationPosition: '',
-			messageGenerationType: '',
-		},
+		transportType: ethernetTransportType,
 		applicability: { id: '1', name: 'Base' },
 	};
 
@@ -119,14 +113,7 @@ describe('EditConnectionDialogComponent', () => {
 		component.data = {
 			name: 'Connection',
 			description: '',
-			transportType: {
-				name: 'ETHERNET',
-				byteAlignValidation: false,
-				byteAlignValidationSize: 0,
-				messageGeneration: false,
-				messageGenerationPosition: '',
-				messageGenerationType: '',
-			},
+			transportType: ethernetTransportType,
 			applicability: {
 				id: '1',
 				name: 'Base',

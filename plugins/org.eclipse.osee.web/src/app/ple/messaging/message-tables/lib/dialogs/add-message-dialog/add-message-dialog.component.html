@@ -100,38 +100,68 @@
 			required
 			data-cy="field-message-number" />
 	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<label>Publisher Node(s)</label>
-		<mat-select
-			[(ngModel)]="data.publisherNodes"
-			required
-			multiple
-			data-cy="field-init-node">
-			<mat-option
-				*ngFor="let option of nodes | async"
-				[value]="option"
-				[attr.data-cy]="'option-' + option.name">
-				{{ option.name }}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<label>Subscriber Node(s)</label>
-		<mat-select
-			[(ngModel)]="data.subscriberNodes"
-			required
-			multiple
-			data-cy="field-init-node">
-			<mat-option
-				*ngFor="let option of nodes | async"
-				[value]="option"
-				[attr.data-cy]="'option-' + option.name">
-				{{ option.name }}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
+	<ng-container *ngIf="transportType | async as type">
+		<br />
+		<mat-form-field>
+			<label>Publisher Node(s)</label>
+			<mat-select
+				[(ngModel)]="data.publisherNodes"
+				required
+				[multiple]="type.maximumPublisherMultiplicity !== 1"
+				#pubSelect="ngModel"
+				[oseeMessageNodesCount]="true"
+				data-cy="field-init-node">
+				<mat-option
+					*ngFor="let option of nodes | async"
+					[value]="option"
+					[attr.data-cy]="'option-' + option.name">
+					{{ option.name }}
+				</mat-option>
+			</mat-select>
+			<mat-error
+				*ngIf="
+					pubSelect.control.errors?.min ||
+					pubSelect.control.errors?.required
+				"
+				>Minimum nodes is
+				{{ type.minimumPublisherMultiplicity || 1 }}</mat-error
+			>
+			<mat-error *ngIf="pubSelect.control.errors?.max"
+				>Maximum nodes is
+				{{ type.maximumPublisherMultiplicity }}</mat-error
+			>
+		</mat-form-field>
+		<br />
+		<mat-form-field>
+			<label>Subscriber Node(s)</label>
+			<mat-select
+				[(ngModel)]="data.subscriberNodes"
+				required
+				[multiple]="type.maximumSubscriberMultiplicity !== 1"
+				#subSelect="ngModel"
+				[oseeMessageNodesCount]="false"
+				data-cy="field-init-node">
+				<mat-option
+					*ngFor="let option of nodes | async"
+					[value]="option"
+					[attr.data-cy]="'option-' + option.name">
+					{{ option.name }}
+				</mat-option>
+			</mat-select>
+			<mat-error
+				*ngIf="
+					subSelect.control.errors?.min ||
+					subSelect.control.errors?.required
+				"
+				>Minimum nodes is
+				{{ type.minimumSubscriberMultiplicity || 1 }}</mat-error
+			>
+			<mat-error *ngIf="subSelect.control.errors?.max"
+				>Maximum nodes is
+				{{ type.maximumSubscriberMultiplicity }}</mat-error
+			>
+		</mat-form-field>
+	</ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
 	<button
@@ -140,20 +170,38 @@
 		data-cy="cancel-btn">
 		Cancel
 	</button>
-	<button
-		mat-raised-button
-		[mat-dialog-close]="data"
-		color="primary"
-		[disabled]="
-			data.name.length === 0 ||
-			data.interfaceMessageNumber.length === 0 ||
-			data.interfaceMessagePeriodicity.length === 0 ||
-			data.interfaceMessageType.length === 0 ||
-			data.interfaceMessageRate.length === 0 ||
-			data.publisherNodes.length === 0 ||
-			data.subscriberNodes.length === 0
-		"
-		data-cy="submit-btn">
-		Ok
-	</button>
+	<ng-container *ngIf="transportType | async as type">
+		<button
+			mat-raised-button
+			[mat-dialog-close]="data"
+			color="primary"
+			[disabled]="
+				data.name.length === 0 ||
+				data.interfaceMessageNumber.length === 0 ||
+				data.interfaceMessagePeriodicity.length === 0 ||
+				data.interfaceMessageType.length === 0 ||
+				data.interfaceMessageRate.length === 0 ||
+				data.publisherNodes.length === 0 ||
+				(data.publisherNodes.length > 0 &&
+					data.publisherNodes[0].id === '') ||
+				data.subscriberNodes.length === 0 ||
+				(data.subscriberNodes.length > 0 &&
+					data.subscriberNodes[0].id === '') ||
+				(type.maximumPublisherMultiplicity !== 0 &&
+					data.publisherNodes.length >
+						type.maximumPublisherMultiplicity) ||
+				(type.minimumPublisherMultiplicity !== 0 &&
+					data.publisherNodes.length <
+						type.minimumPublisherMultiplicity) ||
+				(type.maximumSubscriberMultiplicity !== 0 &&
+					data.publisherNodes.length >
+						type.maximumSubscriberMultiplicity) ||
+				(type.minimumSubscriberMultiplicity !== 0 &&
+					data.publisherNodes.length <
+						type.minimumSubscriberMultiplicity)
+			"
+			data-cy="submit-btn">
+			Ok
+		</button>
+	</ng-container>
 </mat-dialog-actions>

@@ -40,6 +40,7 @@ import {
 	MimPreferencesMock,
 	connectionServiceMock,
 	sharedConnectionServiceMock,
+	ethernetTransportType,
 } from '@osee/messaging/shared/testing';
 import {
 	applicabilityListServiceMock,
@@ -288,14 +289,7 @@ describe('CurrentGraphService', () => {
 							data: {
 								name: 'abcd',
 								description: '',
-								transportType: {
-									name: 'ETHERNET',
-									byteAlignValidation: false,
-									byteAlignValidationSize: 0,
-									messageGeneration: false,
-									messageGenerationPosition: '',
-									messageGenerationType: '',
-								},
+								transportType: ethernetTransportType,
 							},
 						},
 						{
@@ -305,14 +299,7 @@ describe('CurrentGraphService', () => {
 							data: {
 								name: 'abcd',
 								description: '',
-								transportType: {
-									name: 'ETHERNET',
-									byteAlignValidation: false,
-									byteAlignValidationSize: 0,
-									messageGeneration: false,
-									messageGenerationPosition: '',
-									messageGenerationType: '',
-								},
+								transportType: ethernetTransportType,
 							},
 						},
 					])
@@ -333,14 +320,7 @@ describe('CurrentGraphService', () => {
 						{
 							name: 'connection',
 							description: '',
-							transportType: {
-								name: 'ETHERNET',
-								byteAlignValidation: false,
-								byteAlignValidationSize: 0,
-								messageGeneration: false,
-								messageGenerationPosition: '',
-								messageGenerationType: '',
-							},
+							transportType: ethernetTransportType,
 						},
 						'1',
 						'2'
@@ -362,14 +342,7 @@ describe('CurrentGraphService', () => {
 						{
 							name: 'connection',
 							description: '',
-							transportType: {
-								name: 'ETHERNET',
-								byteAlignValidation: false,
-								byteAlignValidationSize: 0,
-								messageGeneration: false,
-								messageGenerationPosition: '',
-								messageGenerationType: '',
-							},
+							transportType: ethernetTransportType,
 						},
 						'2',
 						'1'
