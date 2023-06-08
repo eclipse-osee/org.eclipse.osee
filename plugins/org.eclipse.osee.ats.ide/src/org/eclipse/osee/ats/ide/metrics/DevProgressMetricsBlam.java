@@ -132,10 +132,11 @@ public class DevProgressMetricsBlam extends AbstractBlam {
 
                   GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
                   StringBuffer sb = new StringBuffer();
-                  BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));
-                  String inputLine = "";
-                  while ((inputLine = in.readLine()) != null) {
-                     sb.append(inputLine);
+                  try (BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));) {
+                     String inputLine = "";
+                     while ((inputLine = in.readLine()) != null) {
+                        sb.append(inputLine);
+                     }
                   }
                   bwr.write(sb.toString());
                   bwr.flush();

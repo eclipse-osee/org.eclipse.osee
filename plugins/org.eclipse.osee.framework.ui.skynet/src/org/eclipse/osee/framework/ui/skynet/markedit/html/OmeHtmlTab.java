@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.markedit.html;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -90,15 +91,20 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
 
    private static String execCmd(String cmd) throws java.io.IOException {
       java.util.Scanner s = null;
+      InputStream runtime = null;
       String html = "";
       try {
-         s = new java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+         runtime = Runtime.getRuntime().exec(cmd).getInputStream();
+         s = new java.util.Scanner(runtime).useDelimiter("\\A");
          if (s.hasNext()) {
             html = s.next();
          }
       } finally {
          if (s != null) {
             s.close();
+         }
+         if (runtime != null) {
+            runtime.close();
          }
       }
       return html;

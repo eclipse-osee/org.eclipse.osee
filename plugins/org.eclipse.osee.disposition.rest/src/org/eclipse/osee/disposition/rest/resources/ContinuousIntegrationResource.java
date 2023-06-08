@@ -120,21 +120,30 @@ public class ContinuousIntegrationResource {
       @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response createDispoAnnotation(CiItemData data,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
-      Response response = Response.status(Response.Status.OK).build();
-      if (data != null) {
-         BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
-         String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
-         if (Strings.isInValid(itemId)) {
-            dispoApi.createDispoItem(branch, data, userName);
-            itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+      Response response = null;
+      try {
+         response = Response.status(Response.Status.OK).build();
+         if (data != null) {
+            BranchId branch = BranchId.valueOf(data.getSetData().getBranchId());
+            String itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+            if (Strings.isInValid(itemId)) {
+               dispoApi.createDispoItem(branch, data, userName);
+               itemId = dispoApi.getDispoItemId(branch, data.getSetData().getDispoSetId(), data.getScriptName());
+            }
+            if (Strings.isValid(itemId)) {
+               updateDiscrepencies(data, branch, itemId, userName);
+               dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
+               response.close();
+               response = createAndUpdateAnnotation(data, userName, response, branch, itemId);
+            }
+         } else {
+            response.close();
+            response = Response.status(Response.Status.BAD_REQUEST).build();
          }
-         if (Strings.isValid(itemId)) {
-            updateDiscrepencies(data, branch, itemId, userName);
-            dispoApi.deleteAllDispoAnnotation(branch, itemId, userName, true);
-            response = createAndUpdateAnnotation(data, userName, response, branch, itemId);
+      } catch (Exception ex) {
+         if (response != null) {
+            response.close();
          }
-      } else {
-         response = Response.status(Response.Status.BAD_REQUEST).build();
       }
       return response;
    }
@@ -179,24 +188,35 @@ public class ContinuousIntegrationResource {
 
    private Response createAndUpdateAnnotation(CiItemData data, String userName, Response response, BranchId branchId,
       String itemId) {
-      for (DispoAnnotationData annotation : data.getAnnotations()) {
-         DispoAnnotationData temp = new DispoAnnotationData();
-         String createdAnnotationId = dispoApi.createDispoAnnotation(branchId, itemId, temp, userName, true);
-         if (!createdAnnotationId.isEmpty()) {
-            response = Response.status(Response.Status.OK).build();
-            initTempAnnotationData(annotation, temp);
-            boolean wasEdited =
-               dispoApi.editDispoAnnotation(branchId, itemId, createdAnnotationId, temp, userName, true);
-            if (wasEdited) {
+      try {
+         for (DispoAnnotationData annotation : data.getAnnotations()) {
+            DispoAnnotationData temp = new DispoAnnotationData();
+            String createdAnnotationId = dispoApi.createDispoAnnotation(branchId, itemId, temp, userName, true);
+            if (!createdAnnotationId.isEmpty()) {
+               response.close();
                response = Response.status(Response.Status.OK).build();
+               initTempAnnotationData(annotation, temp);
+               boolean wasEdited =
+                  dispoApi.editDispoAnnotation(branchId, itemId, createdAnnotationId, temp, userName, true);
+               if (wasEdited) {
+                  response.close();
+                  response = Response.status(Response.Status.OK).build();
+               } else {
+                  response.close();
+                  response = Response.status(Response.Status.NOT_MODIFIED).build();
+                  break;
+               }
             } else {
-               response = Response.status(Response.Status.NOT_MODIFIED).build();
+               response.close();
+               response = Response.status(Response.Status.NOT_ACCEPTABLE).build();
                break;
             }
-         } else {
-            response = Response.status(Response.Status.NOT_ACCEPTABLE).build();
-            break;
          }
+      } catch (Exception ex) {
+         if (response != null) {
+            response.close();
+         }
+         return null;
       }
       return response;
    }
