@@ -443,10 +443,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
                @Override
                public void run() {
-
-                  try {
-
-                     renderer.getRenderInputStream(presentationType, artifacts);
+                  try (var is = renderer.getRenderInputStream(presentationType, artifacts);) {
 
                   } catch (Exception rendererException) {
 

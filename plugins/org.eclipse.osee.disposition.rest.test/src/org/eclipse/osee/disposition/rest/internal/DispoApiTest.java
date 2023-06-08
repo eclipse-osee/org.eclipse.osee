@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.CiItemData;
 import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.CiTestPoint;
@@ -162,10 +163,15 @@ public class DispoApiTest {
    @Test
    public void testNullResponseEntities() {
       ContinuousIntegrationResource cir = new ContinuousIntegrationResource(dispoApi);
+      Response dispoAnnotation = null;
       try {
-         cir.createDispoAnnotation(mockCiItemData, DemoUsers.Joe_Smith.getUserId());
+         dispoAnnotation = cir.createDispoAnnotation(mockCiItemData, DemoUsers.Joe_Smith.getUserId());
       } catch (IllegalStateException ise) {
          fail("IllegalStateException thrown: " + ise.getMessage());
+      } finally {
+         if (dispoAnnotation != null) {
+            dispoAnnotation.close();
+         }
       }
    }
 

@@ -75,12 +75,15 @@ public class AttachmentMessageBodyWriter implements MessageBodyWriter<Attachment
 
    @SuppressWarnings("unchecked")
    @Override
-   public void writeTo(Attachment attachment, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream outputStream) throws IOException, WebApplicationException {
+   public void writeTo(Attachment attachment, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream outputStream)
+      throws IOException, WebApplicationException {
 
       httpHeaders.putAll((Map<? extends String, ? extends List<Object>>) attachment.getHeaders());
       httpHeaders.put("Content-Disposition", List.of(attachment.getContentDisposition().toString()));
-      attachment.getDataHandler().getInputStream().transferTo(outputStream);
-
+      try (var stream = attachment.getDataHandler().getInputStream();) {
+         stream.transferTo(outputStream);
+      }
    }
 
 }
