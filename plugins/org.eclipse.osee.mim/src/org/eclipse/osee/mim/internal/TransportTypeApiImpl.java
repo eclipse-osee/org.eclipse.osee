@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.TransportTypeApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
@@ -68,9 +69,10 @@ public class TransportTypeApiImpl implements TransportTypeApi {
    @Override
    public TransportType get(BranchId branch, ArtifactId artId) {
       try {
-         return this.accessor.get(branch, artId, TransportType.class);
+         return this.accessor.get(branch, artId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new TransportType();
    }
@@ -86,11 +88,13 @@ public class TransportTypeApiImpl implements TransportTypeApi {
    }
 
    @Override
-   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
+      long pageSize) {
       try {
          return this.accessor.getAllByQuery(branch, query, isExact, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<TransportType>();
    }
@@ -106,13 +110,27 @@ public class TransportTypeApiImpl implements TransportTypeApi {
    }
 
    @Override
-   public Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<TransportType> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       try {
          return this.accessor.getAll(branch, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<TransportType>();
+   }
+
+   @Override
+   public TransportType getFromConnection(BranchId branch, ArtifactId connectionId) {
+      try {
+         return this.accessor.getByRelationWithoutId(branch,
+            CoreRelationTypes.InterfaceConnectionTransportType_InterfaceConnection, connectionId);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return TransportType.SENTINEL;
    }
 
 }

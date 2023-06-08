@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './validators/enum-set-unique-description.directive';
-export * from './validators/message-nodes-count.directive';
-export * from './validators/unique-platform-type-attributes.directive';
-export * from './validators/unique-platform-type-name.directive';
+@use 'mdc-migration/_form-field'
+@use 'modern-ple-theme'
+:host-context(.light-theme)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-light-theme,$class:'form-field')
+:host-context(.dark-theme)
+    @include form-field.legacy($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'form-field')

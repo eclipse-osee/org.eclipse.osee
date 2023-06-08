@@ -23,6 +23,10 @@ export const transportTypes: Required<transportType>[] = [
 		messageGeneration: false,
 		messageGenerationPosition: '',
 		messageGenerationType: '',
+		minimumPublisherMultiplicity: 0,
+		maximumPublisherMultiplicity: 0,
+		minimumSubscriberMultiplicity: 0,
+		maximumSubscriberMultiplicity: 0,
 	},
 ];
 export const transportTypeServiceMock: Partial<TransportTypeService> = {

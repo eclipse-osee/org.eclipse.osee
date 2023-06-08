@@ -60,7 +60,7 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
                ClusterView cluster =
                   graph.getClusters().stream().filter(c -> c.getId().equals(clusterId)).findFirst().orElse(null);
                if (cluster == null) {
-                  cluster = new ClusterView(clusterId, "");
+                  cluster = new ClusterView(clusterId);
                   graph.getClusters().add(cluster);
                }
                cluster.getChildNodeIds().add(node.getIdString());

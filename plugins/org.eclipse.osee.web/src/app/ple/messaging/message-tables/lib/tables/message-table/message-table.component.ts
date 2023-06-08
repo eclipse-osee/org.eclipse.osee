@@ -38,6 +38,7 @@ import {
 	switchMap,
 	take,
 	takeUntil,
+	tap,
 } from 'rxjs/operators';
 import { difference } from '@osee/shared/types/change-report';
 
@@ -55,6 +56,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EditMessageFieldComponent } from '../../fields/edit-message-field/edit-message-field.component';
+import { EditMessageNodesFieldComponent } from '../../fields/edit-message-nodes-field/edit-message-nodes-field.component';
 import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
 import { MatInputModule } from '@angular/material/input';
 import {
@@ -126,6 +128,7 @@ import {
 		RemoveMessageDialogComponent,
 		DeleteMessageDialogComponent,
 		EditMessageFieldComponent,
+		EditMessageNodesFieldComponent,
 		HighlightFilteredTextDirective,
 		SubMessageTableComponent,
 		TwoLayerAddButtonComponent,
@@ -141,10 +144,7 @@ export class MessageTableComponent implements AfterViewChecked {
 		takeUntil(this.messageService.done)
 	);
 	headers = this.headerService.AllMessageHeaders;
-	nonEditableHeaders: (keyof message)[] = [
-		'publisherNodes',
-		'subscriberNodes',
-	];
+	nonEditableHeaders: (keyof message)[] = [];
 	expandedElement = this.messageService.expandedRows;
 	private _expandedElementData = combineLatest([
 		this.messageService.messages,

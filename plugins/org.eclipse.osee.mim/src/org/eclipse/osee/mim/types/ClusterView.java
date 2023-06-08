@@ -30,9 +30,9 @@ public class ClusterView {
       setChildNodeIds(new LinkedList<>());
    }
 
-   public ClusterView(String id, String label) {
+   public ClusterView(String id) {
       setId(id);
-      setLabel(label);
+      setLabel(id);
       setChildNodeIds(new LinkedList<>());
    }
 

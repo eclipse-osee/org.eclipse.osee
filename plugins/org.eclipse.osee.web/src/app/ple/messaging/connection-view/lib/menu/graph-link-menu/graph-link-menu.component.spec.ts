@@ -33,7 +33,10 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 import { GraphLinkMenuComponent } from './graph-link-menu.component';
 import { EnumsService } from '@osee/messaging/shared/services';
 import type { connectionWithChanges } from '@osee/messaging/shared/types';
-import { enumsServiceMock } from '@osee/messaging/shared/testing';
+import {
+	enumsServiceMock,
+	ethernetTransportType,
+} from '@osee/messaging/shared/testing';
 
 describe('GraphLinkMenuComponent', () => {
 	let component: GraphLinkMenuComponent;
@@ -81,14 +84,7 @@ describe('GraphLinkMenuComponent', () => {
 				id: '3',
 				name: '3',
 				description: '',
-				transportType: {
-					name: 'ETHERNET',
-					byteAlignValidation: false,
-					byteAlignValidationSize: 0,
-					messageGeneration: false,
-					messageGenerationPosition: '',
-					messageGenerationType: '',
-				},
+				transportType: ethernetTransportType,
 			};
 			component.source = {
 				id: '1',
@@ -233,14 +229,7 @@ describe('GraphLinkMenuComponent', () => {
 				name: '3',
 				description: '',
 				applicability: { id: '1', name: 'Base' },
-				transportType: {
-					name: 'ETHERNET',
-					byteAlignValidation: false,
-					byteAlignValidationSize: 0,
-					messageGeneration: false,
-					messageGenerationPosition: '',
-					messageGenerationType: '',
-				},
+				transportType: ethernetTransportType,
 				changes: {
 					name: {
 						previousValue: 'a',
@@ -517,14 +506,7 @@ describe('GraphLinkMenuComponent', () => {
 				id: '3',
 				name: '3',
 				description: '',
-				transportType: {
-					name: 'ETHERNET',
-					byteAlignValidation: false,
-					byteAlignValidationSize: 0,
-					messageGeneration: false,
-					messageGenerationPosition: '',
-					messageGenerationType: '',
-				},
+				transportType: ethernetTransportType,
 			};
 			component.source = {
 				id: '1',
@@ -561,14 +543,7 @@ describe('GraphLinkMenuComponent', () => {
 				name: '3',
 				description: '',
 				applicability: { id: '1', name: 'Base' },
-				transportType: {
-					name: 'ETHERNET',
-					byteAlignValidation: false,
-					byteAlignValidationSize: 0,
-					messageGeneration: false,
-					messageGenerationPosition: '',
-					messageGenerationType: '',
-				},
+				transportType: ethernetTransportType,
 				changes: {
 					name: {
 						previousValue: 'a',

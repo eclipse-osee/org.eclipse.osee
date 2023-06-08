@@ -47,7 +47,10 @@ import type {
 } from '@osee/messaging/shared/types';
 import { EnumsService } from '@osee/messaging/shared/services';
 import { RouteStateService } from '../../services/route-state-service.service';
-import { enumsServiceMock } from '@osee/messaging/shared/testing';
+import {
+	enumsServiceMock,
+	ethernetTransportType,
+} from '@osee/messaging/shared/testing';
 
 describe('GraphComponent', () => {
 	let component: GraphComponent;
@@ -179,14 +182,7 @@ describe('GraphComponent', () => {
 								id: '1',
 								name: 'Base',
 							},
-							transportType: {
-								name: 'ETHERNET',
-								byteAlignValidation: false,
-								byteAlignValidationSize: 0,
-								messageGeneration: false,
-								messageGenerationPosition: '',
-								messageGenerationType: '',
-							},
+							transportType: ethernetTransportType,
 							deleted: false,
 							added: false,
 							changes: {
@@ -292,14 +288,7 @@ describe('GraphComponent', () => {
 						data: {
 							name: '',
 							description: '',
-							transportType: {
-								name: 'ETHERNET',
-								byteAlignValidation: false,
-								byteAlignValidationSize: 0,
-								messageGeneration: false,
-								messageGenerationPosition: '',
-								messageGenerationType: '',
-							},
+							transportType: ethernetTransportType,
 							deleted: false,
 							added: false,
 							changes: {},
@@ -311,14 +300,7 @@ describe('GraphComponent', () => {
 						data: {
 							name: '',
 							description: '',
-							transportType: {
-								name: 'ETHERNET',
-								byteAlignValidation: false,
-								byteAlignValidationSize: 0,
-								messageGeneration: false,
-								messageGenerationPosition: '',
-								messageGenerationType: '',
-							},
+							transportType: ethernetTransportType,
 							deleted: false,
 							added: false,
 							changes: {},
@@ -354,14 +336,7 @@ describe('GraphComponent', () => {
 									data: {
 										name: 'a',
 										description: '',
-										transportType: {
-											name: 'ETHERNET',
-											byteAlignValidation: false,
-											byteAlignValidationSize: 0,
-											messageGeneration: false,
-											messageGenerationPosition: '',
-											messageGenerationType: '',
-										},
+										transportType: ethernetTransportType,
 									},
 								},
 								{
@@ -371,14 +346,7 @@ describe('GraphComponent', () => {
 									data: {
 										name: 'b',
 										description: '',
-										transportType: {
-											name: 'ETHERNET',
-											byteAlignValidation: false,
-											byteAlignValidationSize: 0,
-											messageGeneration: false,
-											messageGenerationPosition: '',
-											messageGenerationType: '',
-										},
+										transportType: ethernetTransportType,
 									},
 								},
 							]

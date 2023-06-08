@@ -21,6 +21,7 @@ import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 
 import { ConnectionService } from './connection.service';
+import { ethernetTransportType } from '@osee/messaging/shared/testing';
 
 describe('ConnectionService', () => {
 	let service: ConnectionService;
@@ -124,14 +125,7 @@ describe('ConnectionService', () => {
 									{ typeName: 'Description', value: '' },
 									{
 										typeName: 'Interface Transport Type',
-										value: {
-											name: 'ETHERNET',
-											byteAlignValidation: false,
-											byteAlignValidationSize: 0,
-											messageGeneration: false,
-											messageGenerationPosition: '',
-											messageGenerationType: '',
-										},
+										value: ethernetTransportType,
 									},
 								],
 								relations: [],
@@ -148,14 +142,7 @@ describe('ConnectionService', () => {
 								{
 									name: 'connection',
 									description: '',
-									transportType: {
-										name: 'ETHERNET',
-										byteAlignValidation: false,
-										byteAlignValidationSize: 0,
-										messageGeneration: false,
-										messageGenerationPosition: '',
-										messageGenerationType: '',
-									},
+									transportType: ethernetTransportType,
 								},
 								undefined,
 								'10'
@@ -179,14 +166,7 @@ describe('ConnectionService', () => {
 									{ typeName: 'Description', value: '' },
 									{
 										typeName: 'Interface Transport Type',
-										value: {
-											name: 'ETHERNET',
-											byteAlignValidation: false,
-											byteAlignValidationSize: 0,
-											messageGeneration: false,
-											messageGenerationPosition: '',
-											messageGenerationType: '',
-										},
+										value: ethernetTransportType,
 									},
 								],
 							},
@@ -200,14 +180,7 @@ describe('ConnectionService', () => {
 								id: '1',
 								name: 'connection',
 								description: '',
-								transportType: {
-									name: 'ETHERNET',
-									byteAlignValidation: false,
-									byteAlignValidationSize: 0,
-									messageGeneration: false,
-									messageGenerationPosition: '',
-									messageGenerationType: '',
-								},
+								transportType: ethernetTransportType,
 							})
 						)
 						.toBe(expectedMarble, expectedfilterValues);

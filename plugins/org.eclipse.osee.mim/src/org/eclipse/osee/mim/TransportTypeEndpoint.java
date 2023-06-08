@@ -37,4 +37,9 @@ public interface TransportTypeEndpoint {
    @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
    TransportType get(@PathParam("id") ArtifactId transportTypeId);
+
+   @GET()
+   @Path("connection/{connectionId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   TransportType getFromConnection(@PathParam("connectionId") ArtifactId connectionId);
 }

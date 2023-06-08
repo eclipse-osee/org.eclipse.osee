@@ -61,6 +61,7 @@ import {
 } from '@osee/messaging/shared/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MockSingleDiffComponent } from '@osee/shared/testing';
+import { MockEditMessageNodesFieldComponent } from '@osee/messaging/message-tables/testing';
 
 let loader: HarnessLoader;
 
@@ -92,6 +93,7 @@ describe('MessageTableComponent', () => {
 					MockSubMessageTableComponent,
 					MockAddMessageDialogComponent,
 					MockEditMessageFieldComponent,
+					MockEditMessageNodesFieldComponent,
 					MockSingleDiffComponent,
 					HighlightFilteredTextDirective,
 					TwoLayerAddButtonComponent,
@@ -136,6 +138,7 @@ describe('MessageTableComponent', () => {
 					HighlightFilteredTextDirective,
 					AddMessageDialogComponent,
 					MockEditMessageFieldComponent,
+					MockEditMessageNodesFieldComponent,
 					ConvertMessageTableTitlesToStringPipe,
 					MessageTableComponent,
 					MockSubMessageTableComponent,

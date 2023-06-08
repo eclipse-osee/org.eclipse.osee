@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2022 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './validators/enum-set-unique-description.directive';
-export * from './validators/message-nodes-count.directive';
-export * from './validators/unique-platform-type-attributes.directive';
-export * from './validators/unique-platform-type-name.directive';
+import { TransportTypeUiService } from '@osee/messaging/shared/services';
+import { of } from 'rxjs';
+import { ethernetTransportType } from '@osee/messaging/shared/testing';
+
+export const transportTypeUIServiceMock: Partial<TransportTypeUiService> = {
+	get currentTransportType() {
+		return of(ethernetTransportType);
+	},
+};

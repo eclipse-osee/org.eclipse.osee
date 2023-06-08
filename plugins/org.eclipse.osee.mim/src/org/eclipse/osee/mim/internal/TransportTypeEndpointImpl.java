@@ -40,4 +40,9 @@ public class TransportTypeEndpointImpl implements TransportTypeEndpoint {
       return this.transportTypeApi.get(branch, transportTypeId);
    }
 
+   @Override
+   public TransportType getFromConnection(ArtifactId connectionId) {
+      return this.transportTypeApi.getFromConnection(branch, connectionId);
+   }
+
 }

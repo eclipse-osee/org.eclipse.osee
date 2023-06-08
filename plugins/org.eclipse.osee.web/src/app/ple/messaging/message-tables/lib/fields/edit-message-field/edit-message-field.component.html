@@ -22,7 +22,9 @@
 			*ngIf="
 				header === 'interfaceMessageRate' ||
 					header === 'interfaceMessagePeriodicity' ||
-					header === 'interfaceMessageType';
+					header === 'interfaceMessageType' ||
+					header === 'publisherNodes' ||
+					header === 'subscriberNodes';
 				else generalEdit
 			">
 			<ng-container *ngIf="header === 'interfaceMessageRate'">

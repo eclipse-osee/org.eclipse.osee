@@ -50,4 +50,14 @@ export class TransportTypeService {
 			apiURL + '/mim/branch/' + branchId + '/transportTypes/' + artId
 		);
 	}
+
+	getFromConnection(branchId: string, connectionId: string) {
+		return this.http.get<Required<transportType>>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/transportTypes/connection/' +
+				connectionId
+		);
+	}
 }

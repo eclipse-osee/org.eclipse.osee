@@ -31,6 +31,7 @@ export * from './ui/current-messages.service';
 export * from './ui/difference-report-branch-info.service';
 export * from './ui/current-diff-report.service';
 export * from './ui/cross-reference.service';
+export * from './ui/transport-type-ui.service';
 export * from './ui/views-routed-ui.service';
 export * from './ui/warning-dialog.service';
 export * from './public/edit-auth-service.service';
