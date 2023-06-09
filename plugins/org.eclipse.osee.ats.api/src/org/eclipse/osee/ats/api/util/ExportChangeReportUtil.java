@@ -23,6 +23,7 @@ public class ExportChangeReportUtil {
 
    public static final ArtifactTypeToken[] ARTIFACT_ALLOW_TYPES = {
       CoreArtifactTypes.AbstractSoftwareRequirement,
+      CoreArtifactTypes.AbstractImplementationDetails,
       CoreArtifactTypes.InterfaceRequirementMsWord,
       CoreArtifactTypes.HeadingMsWord};
 }
