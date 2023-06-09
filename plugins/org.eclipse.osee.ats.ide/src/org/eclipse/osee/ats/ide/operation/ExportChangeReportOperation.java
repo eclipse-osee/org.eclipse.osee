@@ -115,8 +115,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                while (it.hasNext()) {
                   ArtifactDelta next = it.next();
                   Artifact endArtifact = next.getEndArtifact();
-                  if (endArtifact.isOfType(
-                     DISALLOW_TYPES) || !endArtifact.isOfType(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
+                  if (!endArtifact.isOfType(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
                      it.remove();
                      artIds.remove(ArtifactId.create(endArtifact));
                      if (debug) {
@@ -183,7 +182,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       });
    }
 
-   private Collection<Change> computeChanges(IAtsTeamWorkflow teamWf, IProgressMonitor monitor, Set<ArtifactId> artIds) {
+   private Collection<Change> computeChanges(IAtsTeamWorkflow teamWf, IProgressMonitor monitor,
+      Set<ArtifactId> artIds) {
 
       List<Change> changes = new ArrayList<>();
       IOperation operation = null;

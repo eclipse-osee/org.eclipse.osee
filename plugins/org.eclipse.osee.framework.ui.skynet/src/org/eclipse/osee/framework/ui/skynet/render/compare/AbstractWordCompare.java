@@ -71,7 +71,8 @@ public abstract class AbstractWordCompare implements IComparator {
       return renderer;
    }
 
-   protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       boolean show = !((boolean) renderer.getRendererOptionValue(RendererOption.NO_DISPLAY));
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
       boolean skipErrors = !((boolean) renderer.getRendererOptionValue(RendererOption.SKIP_ERRORS));
@@ -85,7 +86,8 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    @Override
-   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) {
+   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType,
+      ArtifactDelta artifactDelta, String pathPrefix) {
       boolean invalid = false;
       Artifact startArt = artifactDelta.getStartArtifact();
       Artifact endArt = artifactDelta.getEndArtifact();
@@ -179,7 +181,8 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    @Override
-   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) {
+   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile,
+      IFile newerFile, PresentationType presentationType, String pathPrefix) {
       //@formatter:off
       var branch =
          ( Objects.nonNull( baseVersion )
@@ -243,7 +246,8 @@ public abstract class AbstractWordCompare implements IComparator {
       collector.onCompare(data);
    }
 
-   protected String getDiffPath(Artifact baseVersion, Artifact newerVersion, PresentationType presentationType, String prefix) {
+   protected String getDiffPath(Artifact baseVersion, Artifact newerVersion, PresentationType presentationType,
+      String prefix) {
       //@formatter:off
       var artifact =
          Objects.nonNull( baseVersion )
@@ -254,13 +258,14 @@ public abstract class AbstractWordCompare implements IComparator {
 
       var artifacts = Collections.singletonList( artifact );
 
+      var path = RendererUtil.makeRenderPath( prefix.concat( "/results" ) );
       var diffPath =
          RenderingUtil
             .getRenderFile
                (
                   renderer,
                   presentationType,
-                  RendererUtil.makeRenderPath(prefix),
+                  path,
                   "xml",
                   RenderingUtil.getFileNameSegmentsFromArtifacts( presentationType, branchToken.getShortName(), artifacts )
                )
