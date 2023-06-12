@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.util.validate;
+package org.eclipse.osee.ats.core.validator;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -21,13 +21,9 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
-import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
- * Test unit for {@link
- *
  * @author Donald G. Dunne
  */
 public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
@@ -35,17 +31,21 @@ public class AtsOperationalImpactValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
+
       WidgetResult result = WidgetResult.Success;
+      if (!workItem.isTeamWorkflow()) {
+         return result;
+      }
+
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
-         if (provider instanceof ArtifactValueProvider && ((ArtifactValueProvider) provider).getArtifact() instanceof TeamWorkFlowArtifact) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ((ArtifactValueProvider) provider).getArtifact();
-            String impact = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, "No");
-            if (impact.equals("Yes")) {
-               String desc = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, "");
-               if (!Strings.isValid(desc)) {
-                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]", widgetDef.getName());
-               }
+         String impact =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.OperationalImpact, "No");
+         if (impact.equals("Yes")) {
+            String desc = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
+               AtsAttributeTypes.OperationalImpactDescription, "");
+            if (!Strings.isValid(desc)) {
+               return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]", widgetDef.getName());
             }
          }
       }

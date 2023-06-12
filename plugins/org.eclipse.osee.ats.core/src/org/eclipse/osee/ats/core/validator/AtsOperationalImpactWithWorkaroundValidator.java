@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.util.validate;
+package org.eclipse.osee.ats.core.validator;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
-import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -34,31 +33,33 @@ public class AtsOperationalImpactWithWorkaroundValidator implements IAtsXWidgetV
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
-      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
+      if (!workItem.isTeamWorkflow()) {
+         return result;
+      }
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
-         if (provider instanceof TeamWorkFlowArtifact) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) provider;
-            String impact = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, "No");
-            if (impact.equals("Yes")) {
-               String desc = teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, "");
-               if (!Strings.isValid(desc)) {
-                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]",
-                     AtsAttributeTypes.OperationalImpactDescription.getName());
-               }
+         String impact =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.OperationalImpact, "No");
+         if (impact.equals("Yes")) {
+            String desc = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
+               AtsAttributeTypes.OperationalImpactDescription, "");
+            if (!Strings.isValid(desc)) {
+               return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]",
+                  AtsAttributeTypes.OperationalImpactDescription.getName());
             }
-            String workaroundChecked =
-               teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaround, "No");
-            if (workaroundChecked.equals("Yes")) {
-               String desc =
-                  teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundDescription, "");
-               if (!Strings.isValid(desc)) {
-                  return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]",
-                     AtsAttributeTypes.OperationalImpactWorkaroundDescription.getName());
-               }
-            }
-
          }
+         String workaroundChecked = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
+            AtsAttributeTypes.OperationalImpactWorkaround, "No");
+         if (workaroundChecked.equals("Yes")) {
+            String desc = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
+               AtsAttributeTypes.OperationalImpactWorkaroundDescription, "");
+            if (!Strings.isValid(desc)) {
+               return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Must enter [%s]",
+                  AtsAttributeTypes.OperationalImpactWorkaroundDescription.getName());
+            }
+         }
+
       }
       return result;
    }

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2011 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,34 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.workflow.review.defect;
+package org.eclipse.osee.ats.core.validator;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
-import org.eclipse.osee.ats.core.review.ReviewDefectError;
-import org.eclipse.osee.ats.core.review.ReviewDefectManager;
-import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsXDefectValidator extends AtsXWidgetValidator {
-
-   public static String WIDGET_NAME = "XDefectViewer";
+public class AtsXHyperlinkWithFilteredDialogValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Success;
-      if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
-         IAtsPeerReviewDefectManager mgr = new ReviewDefectManager(provider);
-         ReviewDefectError error = ReviewDefectValidator.isValid(mgr.getDefectItems());
-         return error.toWidgetResult(widgetDef);
+      if ("XHyperlinkWithFilteredDialog".equals(widgetDef.getXWidgetName())) {
+         result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
+         if (!result.isSuccess()) {
+            return result;
+         }
       }
       return result;
    }

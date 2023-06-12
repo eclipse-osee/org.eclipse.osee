@@ -54,10 +54,10 @@ public class AtsXWidgetValidateManagerTest {
    @Test
    public void testValidateTransition_validValidators() {
       List<WidgetResult> results = new LinkedList<>();
-      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
+      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager(true);
       AtsXWidgetValidateManager.getProviders().clear();
 
-      TestValidatorProvider provider = new TestValidatorProvider(new AtsValidator());
+      AtsXWidgetValidatorProviderTest provider = new AtsXWidgetValidatorProviderTest(new AtsValidator());
       manager.addWidgetValidatorProvider(provider);
       AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, null, null,
          null, atsServices);
@@ -68,9 +68,9 @@ public class AtsXWidgetValidateManagerTest {
    @Test
    public void testValidateTransition_inValidValidators() {
       List<WidgetResult> results = new LinkedList<>();
-      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
+      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager(true);
 
-      TestValidatorProvider provider = new TestValidatorProvider(new AtsErrorValidator());
+      AtsXWidgetValidatorProviderTest provider = new AtsXWidgetValidatorProviderTest(new AtsErrorValidator());
       manager.addWidgetValidatorProvider(provider);
       AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, null, null,
          null, atsServices);
@@ -81,9 +81,9 @@ public class AtsXWidgetValidateManagerTest {
    @Test
    public void testValidateTransition_exceptionValidators() {
       List<WidgetResult> results = new LinkedList<>();
-      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
+      AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager(true);
 
-      TestValidatorProvider provider = new TestValidatorProvider(new AtsExceptionValidator());
+      AtsXWidgetValidatorProviderTest provider = new AtsXWidgetValidatorProviderTest(new AtsExceptionValidator());
       manager.addWidgetValidatorProvider(provider);
       WidgetDefinition widgetDef = new WidgetDefinition("Widget Name");
       widgetDef.setXWidgetName("XTestWidget");
@@ -94,7 +94,7 @@ public class AtsXWidgetValidateManagerTest {
       Assert.assertEquals(
          "Exception - Exception retrieving validation for widget [AtsExceptionValidator] Exception [problem]",
          results.iterator().next().toString());
-      Assert.assertTrue(results.iterator().next().getException().contains("OseeStateException"));
+      Assert.assertTrue(results.toString(), results.iterator().next().getException().contains("OseeStateException"));
       manager.removeWidgetValidatorProvider(provider);
    }
 
@@ -126,11 +126,11 @@ public class AtsXWidgetValidateManagerTest {
 
    }
 
-   private class TestValidatorProvider implements IAtsXWidgetValidatorProvider {
+   private class AtsXWidgetValidatorProviderTest implements IAtsXWidgetValidatorProvider {
 
       private final LinkedList<IAtsXWidgetValidator> validators;
 
-      public TestValidatorProvider(IAtsXWidgetValidator validator) {
+      public AtsXWidgetValidatorProviderTest(IAtsXWidgetValidator validator) {
          validators = new LinkedList<>();
          validators.add(validator);
       }

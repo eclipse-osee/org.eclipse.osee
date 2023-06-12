@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
-   <implementation class="org.eclipse.osee.ats.ide.util.validate.AtsXWidgetValidateProviderClient"/>
+   <implementation class="org.eclipse.osee.ats.core.validator.AtsXWidgetValidatorProviderCore"/>
    <service>
       <provide interface="org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider"/>
    </service>

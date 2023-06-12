@@ -54,9 +54,9 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
          public void run() {
             // Multiple TaskSetDefinitions can be registered for a transition; ensure applicable before running
             CreateTasksDefinitionBuilder taskSetDefinition =
-               AtsApiService.get().getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
+               atsApi.getTaskSetDefinitionProviderService().getTaskSetDefinition(taskDefToken);
             if (taskSetDefinition != null && taskSetDefinition.getCreateTasksDef().getHelper().isApplicable(workItem,
-               AtsApiService.get())) {
+               atsApi)) {
                ChangeReportTaskData data = runChangeReportTaskOperation(workItem, taskDefToken, true, changes, asUser);
                if (data.getResults().isErrors()) {
                   throw new OseeArgumentException(data.getResults().toString());

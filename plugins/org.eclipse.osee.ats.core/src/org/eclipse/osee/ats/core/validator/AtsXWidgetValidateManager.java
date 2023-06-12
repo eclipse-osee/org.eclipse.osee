@@ -33,7 +33,17 @@ import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
  */
 public class AtsXWidgetValidateManager {
 
-   private static List<IAtsXWidgetValidatorProvider> providers;
+   private static List<IAtsXWidgetValidatorProvider> providers = new LinkedList<>();
+
+   public AtsXWidgetValidateManager() {
+      // for jax-rs
+   }
+
+   public AtsXWidgetValidateManager(boolean clearCache) {
+      if (clearCache) {
+         providers.clear();
+      }
+   }
 
    public void addWidgetValidatorProvider(IAtsXWidgetValidatorProvider provider) {
       getProviders().add(provider);
@@ -43,8 +53,11 @@ public class AtsXWidgetValidateManager {
       getProviders().remove(provider);
    }
 
-   public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results, IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
-      for (IAtsXWidgetValidatorProvider provider : getProviders()) {
+   public static List<WidgetResult> validateTransition(IAtsWorkItem workItem, List<WidgetResult> results,
+      IValueProvider valueProvider, WidgetDefinition widgetDef, StateDefinition fromStateDef,
+      StateDefinition toStateDef, AtsApi atsServices) {
+      List<IAtsXWidgetValidatorProvider> providers = getProviders();
+      for (IAtsXWidgetValidatorProvider provider : providers) {
          for (IAtsXWidgetValidator validator : provider.getValidators()) {
             try {
                WidgetResult status = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef,
@@ -66,16 +79,12 @@ public class AtsXWidgetValidateManager {
       return results;
    }
 
-   static {
-      providers = new LinkedList<>();
-      providers.add(new AtsCoreXWidgetValidatorProvider());
-   }
-
    static synchronized List<IAtsXWidgetValidatorProvider> getProviders() {
       return providers;
    }
 
-   public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, StateDefinition toStateDef, AtsApi atsApi) {
+   public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, StateDefinition toStateDef,
+      AtsApi atsApi) {
       List<WidgetResult> results = new ArrayList<>();
       List<WidgetDefinition> widgetItems =
          atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition());

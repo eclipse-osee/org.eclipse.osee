@@ -62,12 +62,9 @@ import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.hooks.AtsNotificationTransitionHook;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
-import org.eclipse.osee.ats.core.workflow.hooks.AtsCommitBranchWhenCompleteHook;
+import org.eclipse.osee.ats.core.workflow.hooks.AtsArchiveBranchWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
-import org.eclipse.osee.ats.core.workflow.hooks.AtsHoldOrBlockedTransitionHook;
-import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerReviewRoleDefectValidator;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsPeerToPeerReviewReviewWorkItemHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsWriteDiffWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.ConfirmPlarbApprovalHook;
@@ -188,14 +185,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          transitionHooks = new HashSet<>();
          transitionHooks.add(new DecisionReviewOnTransitionToHook());
          transitionHooks.add(new PeerReviewOnTransitionToHook());
-         transitionHooks.add(new AtsNotificationTransitionHook());
          transitionHooks.add(new AtsDecisionReviewPrepareWorkItemHook());
          transitionHooks.add(new AtsForceAssigneesToTeamLeadsWorkItemHook());
          transitionHooks.add(new AtsPeerToPeerReviewReviewWorkItemHook());
-         transitionHooks.add(new AtsCommitBranchWhenCompleteHook());
+         transitionHooks.add(new AtsArchiveBranchWhenCompleteHook());
          transitionHooks.add(new AtsWriteDiffWhenCompleteHook());
-         transitionHooks.add(new AtsHoldOrBlockedTransitionHook());
-         transitionHooks.add(new AtsPeerReviewRoleDefectValidator());
       }
       return transitionHooks;
    }

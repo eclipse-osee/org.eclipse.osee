@@ -17,7 +17,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test case for {@link AtsCoreXWidgetValidatorProvider}
+ * Test case for {@link AtsXWidgetValidatorProviderCore}
  *
  * @author Donald G. Dunne
  */
@@ -25,7 +25,7 @@ public class AtsCoreXWidgetValidatorProviderTest {
 
    @Test
    public void testGetValidators() {
-      Assert.assertNotNull(new AtsCoreXWidgetValidatorProvider().getValidators());
+      Assert.assertNotNull(new AtsXWidgetValidatorProviderCore().getValidators());
    }
 
 }

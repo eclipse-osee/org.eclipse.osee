@@ -46,16 +46,18 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
     */
-   public static IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy) {
+   public static IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef,
+      IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy) {
+      AtsApi atsApi = AtsApiService.get();
       String title = peerRevDef.getReviewTitle();
       if (!Strings.isValid(title)) {
          title = String.format("Review [%s]", teamWf.getName());
       }
-      if (Named.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(title)) {
+      if (Named.getNames(atsApi.getReviewService().getReviews(teamWf)).contains(title)) {
          // Already created this review
          return null;
       }
-      IAtsPeerToPeerReview peerRev = AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamWf, title,
+      IAtsPeerToPeerReview peerRev = atsApi.getReviewService().createNewPeerToPeerReview(teamWf, title,
          peerRevDef.getRelatedToState(), createdDate, createdBy, changes);
       if (Strings.isValid(peerRevDef.getDescription())) {
          changes.setSoleAttributeFromString(peerRev, AtsAttributeTypes.Description, peerRevDef.getDescription());
@@ -67,13 +69,13 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
       if (Strings.isValid(peerRevDef.getLocation())) {
          changes.setSoleAttributeFromString(peerRev, AtsAttributeTypes.Location, peerRevDef.getLocation());
       }
-      Collection<AtsUser> assignees = AtsApiService.get().getUserService().getUsersByUserIds(peerRevDef.getAssignees());
+      Collection<AtsUser> assignees = atsApi.getUserService().getUsersByUserIds(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
          peerRev.getStateMgr().setAssignees(assignees);
       }
       peerRev.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", peerRevDef.getName()),
-         AtsApiService.get().getUserService().getCurrentUser().getUserId());
-      for (IAtsReviewHook provider : AtsApiService.get().getReviewService().getReviewHooks()) {
+         atsApi.getUserService().getCurrentUser().getUserId());
+      for (IAtsReviewHook provider : atsApi.getReviewService().getReviewHooks()) {
          provider.reviewCreated(peerRev);
       }
       changes.add(peerRev);
@@ -81,7 +83,8 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+      Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!workItem.isTeamWorkflow()) {
          return;

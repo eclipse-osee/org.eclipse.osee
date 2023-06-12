@@ -37,9 +37,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectValidator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -113,7 +113,7 @@ public class DefectXViewer extends XViewer {
     */
    private void loadDefectData(final DefectData data) {
       data.defectItems = review.getDefectManager().getDefectItems();
-      data.error = ReviewDefectValidator.isValid(AtsApiService.get().getQueryServiceIde().getArtifact(review));
+      data.error = ReviewDefectManager.isValid(AtsApiService.get().getQueryServiceIde().getArtifact(review));
    }
 
    @Override

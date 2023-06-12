@@ -41,7 +41,8 @@ public interface IAtsReviewService {
     *
     * @param force will force the creation of the review without checking that a review should be created
     */
-   IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate, AtsUser transitionUser, IAtsChangeSet changes);
+   IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate,
+      AtsUser transitionUser, IAtsChangeSet changes);
 
    Collection<IAtsAbstractReview> getReviewsFromCurrentState(IAtsTeamWorkflow teamWf);
 
@@ -49,11 +50,17 @@ public interface IAtsReviewService {
 
    IAtsPeerReviewRoleManager createPeerReviewRoleManager(IAtsPeerToPeerReview peerRev);
 
-   IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
+   IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle,
+      String description, String againstState, ReviewBlockType reviewBlockType,
+      Collection<IAtsDecisionReviewOption> options, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy,
+      IAtsChangeSet changes);
 
-   IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
+   IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType,
+      boolean againstCurrentState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
 
-   IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
+   IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title,
+      String relatedToState, String description, Collection<IAtsDecisionReviewOption> options,
+      Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
 
    List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions();
 
@@ -63,13 +70,17 @@ public interface IAtsReviewService {
 
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken relatedToState);
 
-   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
+   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle,
+      String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
 
-   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
+   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState,
+      Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
 
-   IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes);
+   IAtsPeerToPeerReview createNewPeerToPeerReview(WorkDefinition workDefinition, IAtsTeamWorkflow teamWf,
+      String reviewTitle, String againstState, IAtsChangeSet changes);
 
-   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState, IAtsChangeSet changes);
+   IAtsPeerToPeerReview createNewPeerToPeerReview(IAtsTeamWorkflow teamWf, String reviewTitle, String againstState,
+      IAtsChangeSet changes);
 
    String getDefaultPeerReviewTitle(IAtsTeamWorkflow teamWf);
 
@@ -77,15 +88,19 @@ public interface IAtsReviewService {
 
    Collection<IAtsReviewHook> getReviewHooks();
 
-   Result transitionDecisionTo(IAtsDecisionReview decRev, DecisionReviewState toState, AtsUser user, boolean popup, IAtsChangeSet changes);
+   Result transitionDecisionTo(IAtsDecisionReview decRev, DecisionReviewState toState, AtsUser user, boolean popup,
+      IAtsChangeSet changes);
 
    String getDefaultReviewTitle(IAtsTeamWorkflow teamWf);
 
-   Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes);
+   Result transitionTo(IAtsPeerToPeerReview peerRev, PeerToPeerReviewState toState, Collection<UserRole> roles,
+      Collection<ReviewDefectItem> defects, AtsUser user, boolean popup, IAtsChangeSet changes);
 
-   Result setPrepareStateData(boolean popup, IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes);
+   Result setPrepareStateData(boolean popup, IAtsPeerToPeerReview peerRev, Collection<UserRole> roles,
+      String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes);
 
-   Result setReviewStateData(IAtsPeerToPeerReview peerRev, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes);
+   Result setReviewStateData(IAtsPeerToPeerReview peerRev, Collection<UserRole> roles,
+      Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes);
 
    boolean isStandAloneReview(Object object);
 

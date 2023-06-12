@@ -13,27 +13,35 @@
 
 package org.eclipse.osee.ats.core.review;
 
+import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IValueProvider;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.ArtifactValueProvider;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -268,4 +276,33 @@ public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
       return builder.toString();
    }
 
+   public static ReviewDefectError isValid(ArtifactToken artifact) {
+      try {
+         if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
+            ReviewDefectManager mgr = new ReviewDefectManager((IAtsPeerToPeerReview) artifact, AtsApiService.get());
+            ReviewDefectError result = isValid(mgr.getDefectItems());
+            if (!result.isOK()) {
+               return result;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return ReviewDefectError.ExceptionValidatingRoles;
+      }
+      return ReviewDefectError.None;
+   }
+
+   public static ReviewDefectError isValid(Set<ReviewDefectItem> defectItems) {
+      try {
+         for (ReviewDefectItem item : defectItems) {
+            if (item.isClosed() == false || item.getDisposition() == Disposition.None || item.getSeverity() == Severity.None && item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject) {
+               return ReviewDefectError.AllItemsMustBeMarkedAndClosed;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         return ReviewDefectError.ExceptionValidatingRoles;
+      }
+      return ReviewDefectError.None;
+   }
 }

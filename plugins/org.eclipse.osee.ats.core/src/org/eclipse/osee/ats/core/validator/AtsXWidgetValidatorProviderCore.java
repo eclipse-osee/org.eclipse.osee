@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider
 /**
  * @author Donald G. Dunne
  */
-public class AtsCoreXWidgetValidatorProvider implements IAtsXWidgetValidatorProvider {
+public class AtsXWidgetValidatorProviderCore implements IAtsXWidgetValidatorProvider {
 
    private static List<IAtsXWidgetValidator> atsValidators;
 
@@ -44,6 +44,13 @@ public class AtsCoreXWidgetValidatorProvider implements IAtsXWidgetValidatorProv
          atsValidators.add(new AtsXCheckBoxThreeStateValidator());
          atsValidators.add(new AtsXHyperlinkTriStateBooleanValidator());
          atsValidators.add(new AtsWalktrhoughAttrValidator());
+         atsValidators.add(new AtsXHyperlinkWithFilteredDialogValidator());
+         atsValidators.add(new AtsXHyperlinkMemberSelValidator());
+         atsValidators.add(new AtsXUserRoleValidator());
+         atsValidators.add(new AtsXCommitManagerValidator());
+         atsValidators.add(new AtsOperationalImpactValidator());
+         atsValidators.add(new AtsOperationalImpactWithWorkaroundValidator());
+
       }
       return atsValidators;
    }

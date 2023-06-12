@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 
 /**
  * Contributed via AtsWorkItemServiceImpl
@@ -42,11 +41,11 @@ public class AtsDecisionReviewPrepareWorkItemHook implements IAtsTransitionHook 
    }
 
    @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
-      if (workItem instanceof IAtsDecisionReview && fromState.getName().equals(
-         DecisionReviewState.Prepare.getName()) && toState.getName().equals(DecisionReviewState.Decision.getName())) {
-         DecisionReviewOptions decOptions =
-            new DecisionReviewOptions((IAtsDecisionReview) workItem, AtsApiService.get());
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
+      IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+      if (workItem.isDecisionReview() && fromState.isState(DecisionReviewState.Prepare) && toState.isState(
+         DecisionReviewState.Decision)) {
+         DecisionReviewOptions decOptions = new DecisionReviewOptions((IAtsDecisionReview) workItem, atsApi);
          decOptions.validateDecisionOptions(results);
       }
    }
