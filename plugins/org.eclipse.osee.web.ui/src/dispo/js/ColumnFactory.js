@@ -368,6 +368,7 @@ app.factory('ColumnFactory', function() {
     var resolutionCoverageTmpl = '<div class="ui-grid-cell-contents placeholder" ng-class="{\'placeholder-parent\': !row.entity.isLeaf, \'complete-parent\': row.entity.isAllComplete, \'none-complete-parent\': row.entity.isNoneComplete, \'some-complete-parent\': row.entity.isSomeComplete, \'almost-complete-parent\': row.entity.isAlmostComplete,  \'causing-invalid\': grid.appScope.isCausingInvalid(row.entity)}" title="TOOLTIP">{{ grid.appScope.getTextResolution(row.entity) }}</div>';
     var resolutionTypeTmpl = '<div class="ui-grid-cell-contents" ng-class="{\'placeholder-parent\': true}" title="TOOLTIP">{{ grid.appScope.getTextResolutionType(row.entity) }}</div>';
     var lastResolutionTmpl = '<div class="ui-grid-cell-contents" title="TOOLTIP">{{ grid.appScope.getLastTextResolution(row.entity) }}</div>';
+    var satisfiedPairs = '<div class="ui-grid-cell-contents" title="TOOLTIP">{{ grid.appScope.getSatisfiedPairs(row.entity) }}</div>';
     var subGridOrigTmpl = '<div ng-class="{\'ui-grid-cell-contents\': true, annotationInput: true, invalid: grid.appScope.getInvalidLocRefs(row.entity), details: annotation.showDeets}" title="TOOLTIP">{{row.entity.locationRefs}}</div>';
     var codeTemplate = '<div class="method-number">{{ grid.appScope.selectedItem.methodNumber }}</div>';
 
@@ -412,6 +413,15 @@ app.factory('ColumnFactory', function() {
     }, {
         field: 'lastResolution',
         displayName: 'Last Resolution',
+        width: '10%',
+        cellTemplate: lastResolutionTmpl,
+        cellEditableCondition: function($scope) {
+            return $scope.row.entity.isLeaf && !$scope.row.entity.isDefault
+        }
+
+    }, {
+        field: 'satisfiedPairs',
+        displayName: 'Satisfied Pairs',
         width: '10%',
         cellTemplate: lastResolutionTmpl,
         cellEditableCondition: function($scope) {

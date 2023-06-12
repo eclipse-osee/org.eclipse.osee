@@ -441,8 +441,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer line = stmt.getInt("line");
             Integer hit_count = stmt.getInt("hit_count");
             Integer max_hit_count = stmt.getInt("max_hit_count");
-            toReturn.add(
-               new VCastStatementCoverage(id, function_id, line, hit_count, max_hit_count, false, "", "", -1));
+            toReturn.add(new VCastStatementCoverage(id, function_id, line, hit_count, max_hit_count));
          }
 
       } finally {
@@ -577,8 +576,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
                Integer line = stmt.getInt("line");
                Integer hit_count = stmt.getInt("hit_count");
                Integer max_hit_count = stmt.getInt("max_hit_count");
-               toReturn.add(
-                  new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, false, "", "", -1));
+               toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count));
             }
 
          } finally {
@@ -609,8 +607,8 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer hit_count = stmt.getInt("hit_count");
             Integer max_hit_count = stmt.getInt("max_hit_count");
             Integer num_conditions = stmt.getInt("num_conditions");
-            toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, false, "", "",
-               num_conditions));
+            toReturn.add(
+               new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, num_conditions));
          }
       } catch (Exception ex) {
          System.out.println(ex);
@@ -624,42 +622,49 @@ public class VCastDataStoreImpl implements VCastDataStore {
       Collection<VCastStatementCoverage> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
+
       try {
          // @formatter:off
          String query =
-            "WITH temp as (SELECT sc.id as sc_id, mcdc.id as mcdc_id, sc.hit_count, sc.max_hit_count, sc.line, mcdc.id, mcdc.simplified_expr"+
-            " FROM statement_coverage sc left outer join mcdc_coverage mcdc on (sc.line = mcdc.line and sc.function_id = mcdc.function_id)"+
-            " where sc.function_id = ?) select temp.sc_id, temp.line, temp.hit_count, temp.max_hit_count, temp.simplified_expr, mcdc_c.cond_index,"+
-            " mcdc_c.cond_variable, mcdc_c.cond_expr from temp left outer join mcdc_coverage_conditions mcdc_c on temp.mcdc_id = mcdc_c.mcdc_id";
+            "WITH temp as (SELECT sc.id as sc_id, mcdc.id as mcdc_id, sc.hit_count, sc.max_hit_count, sc.line, mcdc.simplified_expr," +
+            " mcdc.num_conditions FROM statement_coverage sc left outer join mcdc_coverage mcdc on (sc.line = mcdc.line and sc.function_id" +
+            " = mcdc.function_id) where sc.function_id = ?) select temp.sc_id, temp.mcdc_id, temp.line, temp.hit_count, temp.max_hit_count," +
+            " temp.simplified_expr, temp.num_conditions, mcdc_c.cond_index, mcdc_c.cond_variable, mcdc_c.cond_expr from temp left outer" +
+            " join mcdc_coverage_conditions mcdc_c on temp.mcdc_id = mcdc_c.mcdc_id";
          // @formatter:on
 
          stmt.runPreparedQuery(query, function.getId());
+
          while (stmt.next()) {
             Integer id = stmt.getInt("temp.sc_id");
             Integer line = stmt.getInt("temp.line");
+            Integer mcdc_id = stmt.getInt("temp.mcdc_id");
             Integer hit_count = stmt.getInt("temp.hit_count");
             Integer max_hit_count = stmt.getInt("temp.max_hit_count");
+            String simp_expr = stmt.getString("temp.simplified_expr");
+            Integer num_conditions = stmt.getInt("temp.num_conditions");
             String variable = stmt.getString("mcdc_c.cond_variable");
-            String condExpression = stmt.getString("mcdc_c.cond_expr");
-            String simpExpression = stmt.getString("temp.simplified_expr");
-            Integer condIndex = stmt.getInt("mcdc_c.cond_index");
+            String cond_expr = stmt.getString("mcdc_c.cond_expr");
+            Integer cond_index = stmt.getInt("mcdc_c.cond_index");
 
             String variableFullName;
             boolean isMCDCPair = false;
             if (variable != null) {
                isMCDCPair = true;
-               if (variable.isEmpty()) {
+               if (variable.isEmpty() || num_conditions == 1) {
+                  num_conditions = -1;
                   variableFullName = "RESULT";
-                  condExpression = simpExpression;
+                  cond_expr = simp_expr;
                } else {
-                  variableFullName = String.format("%d (%s)", condIndex, variable.toUpperCase());
+                  num_conditions = (num_conditions - 2) / 2; //This vectorcast's logic for getting condition count
+                  variableFullName = String.format("%d (%s)", cond_index, variable.toUpperCase());
                }
             } else {
                // Not an MCDC pair so name wont matter
                variableFullName = null;
             }
             toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, isMCDCPair,
-               variableFullName, condExpression, -1));
+               variableFullName, cond_expr, num_conditions, cond_index, queryMcdcPairs(mcdc_id)));
          }
 
       } catch (Exception ex) {
@@ -668,6 +673,37 @@ public class VCastDataStoreImpl implements VCastDataStore {
          stmt.close();
       }
       return toReturn;
+   }
+
+   private ArrayList<VCastMcdcCoveragePairRow> queryMcdcPairs(int mcdcId) {
+
+      ArrayList<VCastMcdcCoveragePairRow> mcdcCoveragePairRows = new ArrayList<VCastMcdcCoveragePairRow>();
+      JdbcStatement rowStmt = getStatement();
+
+      try {
+         // @formatter:off
+         String query = "SELECT * FROM mcdc_coverage_pair_rows WHERE mcdc_id = ?";
+         // @formatter:on
+
+         rowStmt.runPreparedQuery(query, mcdcId);
+
+         while (rowStmt.next()) {
+            Integer id = rowStmt.getInt("id");
+            Integer mcdc_id = rowStmt.getInt("mcdc_id");
+            Integer row_value = rowStmt.getInt("row_value");
+            Integer row_result = rowStmt.getInt("row_result");
+            Integer hit_count = rowStmt.getInt("hit_count");
+            Integer max_hit_count = rowStmt.getInt("max_hit_count");
+            VCastMcdcCoveragePairRow pairRow =
+               new VCastMcdcCoveragePairRow(id, mcdc_id, row_value, row_result, hit_count, max_hit_count);
+            mcdcCoveragePairRows.add(pairRow);
+         }
+      } catch (Exception ex) {
+         System.out.println(ex);
+      } finally {
+         rowStmt.close();
+      }
+      return mcdcCoveragePairRows;
    }
 
    @Override
