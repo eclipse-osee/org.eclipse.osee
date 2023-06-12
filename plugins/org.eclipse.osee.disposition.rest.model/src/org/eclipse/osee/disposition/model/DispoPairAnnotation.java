@@ -13,19 +13,16 @@
 
 package org.eclipse.osee.disposition.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Angel Avila
  */
-
-@XmlRootElement(name = "DispoAnnotationData")
-public class DispoAnnotationData {
+@XmlRootElement(name = "DispoPairAnnotation")
+public class DispoPairAnnotation {
 
    private String guid;
    private int index;
@@ -41,14 +38,19 @@ public class DispoAnnotationData {
    private boolean isDefault;
    private boolean isAnalyze;
    private String resolutionMethodType;
-   private String satisfiedPairs; //Used for MCDC pair coverage
-   private Map<Integer, DispoPairAnnotation> pairAnnotations; //Used for MCDC pair coverage
 
-   public DispoAnnotationData() {
+   private String location; //Code Line
+   private int row;
+   private String text;
+   private Collection<Integer> pairs;
+   private boolean isRowCovered;
+
+   public DispoPairAnnotation() {
       guid = GUID.create();
-      idsOfCoveredDiscrepancies = new ArrayList<>();
+
    }
 
+   //get functions
    public String getGuid() {
       return guid;
    }
@@ -109,14 +111,27 @@ public class DispoAnnotationData {
       return resolutionMethodType;
    }
 
-   public String getSatisfiedPairs() {
-      return satisfiedPairs;
+   public String getText() {
+      return text;
    }
 
-   public Map<Integer, DispoPairAnnotation> getPairAnnotations() {
-      return pairAnnotations;
+   public String getLocation() {
+      return location;
    }
 
+   public boolean getIsRowCovered() {
+      return isRowCovered;
+   }
+
+   public int getRow() {
+      return row;
+   }
+
+   public Collection<Integer> getPairs() {
+      return pairs;
+   }
+
+   //set functions
    public void setLocationRefs(String locationRefs) {
       this.locationRefs = locationRefs;
    }
@@ -173,26 +188,23 @@ public class DispoAnnotationData {
       this.resolutionMethodType = resolutionMethodType;
    }
 
-   @JsonIgnore
-   public boolean isValid() {
-      return (isConnected || isDefault) && isResolutionValid && isResolutionTypeValid();
+   public void setText(String text) {
+      this.text = text;
    }
 
-   private boolean isResolutionTypeValid() {
-      return resolutionType != null && !resolutionType.isEmpty() && !resolutionType.equalsIgnoreCase(
-         "None") && !resolutionType.equalsIgnoreCase("null");
+   public void setLocation(String location) {
+      this.location = location;
    }
 
-   public void disconnect() {
-      this.isConnected = false;
-      this.idsOfCoveredDiscrepancies = new ArrayList<>();
+   public void setIsRowCovered(boolean isRowCovered) {
+      this.isRowCovered = isRowCovered;
    }
 
-   public void setSatisfiedPairs(String satisfiedPairs) {
-      this.satisfiedPairs = satisfiedPairs;
+   public void setRow(int row) {
+      this.row = row;
    }
 
-   public void setPairAnnotations(Map<Integer, DispoPairAnnotation> pairAnnotation) {
-      this.pairAnnotations = pairAnnotation;
+   public void setPairs(Collection<Integer> pairs) {
+      this.pairs = pairs;
    }
 }

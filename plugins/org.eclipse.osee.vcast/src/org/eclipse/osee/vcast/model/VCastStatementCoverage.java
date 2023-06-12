@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.vcast.model;
 
+import java.util.ArrayList;
+
 /**
  * @author Shawn F. Cook
  */
@@ -27,8 +29,18 @@ public class VCastStatementCoverage {
    private final String abbrevCondition;
    private final String fullCondition;
    private final int numConditions;
+   private final int condIndex;
+   private final ArrayList<VCastMcdcCoveragePairRow> coverageRows;
 
-   public VCastStatementCoverage(int id, int functionId, int line, int hitCount, int maxHitCount, boolean isMCDCPair, String abbrevCondition, String fullCondition, int num_conditions) {
+   public VCastStatementCoverage(int id, int functionId, int line, int hitCount, int maxHitCount) {
+      this(id, functionId, line, hitCount, maxHitCount, false, "", "", -1, -1, null);
+   }
+
+   public VCastStatementCoverage(int id, int functionId, int line, int hitCount, int maxHitCount, int numConditions) {
+      this(id, functionId, line, hitCount, maxHitCount, false, "", "", numConditions, -1, null);
+   }
+
+   public VCastStatementCoverage(int id, int functionId, int line, int hitCount, int maxHitCount, boolean isMCDCPair, String abbrevCondition, String fullCondition, int numConditions, int condIndex, ArrayList<VCastMcdcCoveragePairRow> coverageRows) {
       this.id = id;
       this.functionId = functionId;
       this.line = line;
@@ -37,7 +49,9 @@ public class VCastStatementCoverage {
       this.isMCDCPair = isMCDCPair;
       this.abbrevCondition = abbrevCondition;
       this.fullCondition = fullCondition;
-      this.numConditions = num_conditions;
+      this.numConditions = numConditions;
+      this.condIndex = condIndex;
+      this.coverageRows = coverageRows;
    }
 
    public int getId() {
@@ -76,4 +90,11 @@ public class VCastStatementCoverage {
       return numConditions;
    }
 
+   public int getCondIndex() {
+      return condIndex;
+   }
+
+   public ArrayList<VCastMcdcCoveragePairRow> getCoverageRows() {
+      return coverageRows;
+   }
 }

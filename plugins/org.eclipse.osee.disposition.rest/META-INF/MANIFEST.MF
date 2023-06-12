@@ -12,6 +12,7 @@ Import-Package:
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.type,
  com.fasterxml.jackson.databind,
+ com.google.common.collect,
  io.swagger.v3.core.util,
  io.swagger.v3.jaxrs2,
  io.swagger.v3.oas.annotations,

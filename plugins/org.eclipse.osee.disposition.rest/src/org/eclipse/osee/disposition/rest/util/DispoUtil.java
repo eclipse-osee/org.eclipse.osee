@@ -101,7 +101,8 @@ public final class DispoUtil {
       return itemArtToItemData(dispoItemArt, isIncludeDiscrepancies, false);
    }
 
-   public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean isIncludeDiscrepancies, boolean isIncludeAnnotations) {
+   public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean isIncludeDiscrepancies,
+      boolean isIncludeAnnotations) {
       DispoItemData dispoItemData = new DispoItemData();
       dispoItemData.setName(dispoItemArt.getName());
       dispoItemData.setGuid(dispoItemArt.getGuid());

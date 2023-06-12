@@ -14,6 +14,7 @@
 package org.eclipse.osee.disposition.model;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Map;
 
 /**
  * @author Angel Avila
@@ -23,7 +24,8 @@ public class Discrepancy {
 
    private String id;
    private String text;
-   private String location;
+   private String location; //Code Line
+   private Map<Integer, DispoPairAnnotation> pairAnnotations; //Used for MCDC pair coverage
 
    public Discrepancy() {
 
@@ -41,7 +43,10 @@ public class Discrepancy {
       return location;
    }
 
-   // Setters
+   public Map<Integer, DispoPairAnnotation> getPairAnnotations() {
+      return pairAnnotations;
+   }
+
    public void setId(String id) {
       this.id = id;
    }
@@ -54,4 +59,7 @@ public class Discrepancy {
       this.location = location;
    }
 
+   public void setPairAnnotations(Map<Integer, DispoPairAnnotation> pairAnnotations) {
+      this.pairAnnotations = pairAnnotations;
+   }
 }

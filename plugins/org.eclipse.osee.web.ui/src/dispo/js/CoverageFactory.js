@@ -40,6 +40,10 @@ app.factory('CoverageFactory', function() {
         	return "";
         }
 	}
+	
+	CoverageFactory.getSatisfiedPairs = function(annotation) {
+		return satisfiedPairs;
+	}
     
 	var getReasonWhyIncomplete = function(annotation) {
 		var toReturn = [];
@@ -107,6 +111,30 @@ app.factory('CoverageFactory', function() {
                 populatePercentData(parentAnnotation);
                 
                 toReturn.push(parentAnnotation);
+            } else if (annotation.name.match(/\d+\.\d+\s+\(.\)/)) {
+                var parentAnnotation = {};
+                annotation.id = annotation.guid;
+                var leadingLocRefs = annotation.locationRefs.split(".")[0];
+                parentAnnotation.locationRefs = leadingLocRefs;
+                parentAnnotation.id = annotation.guid;
+                parentAnnotation.guid = annotation.guid;
+                parentAnnotation.parentId = -1;
+
+                var metadata = {};
+                metadata.childrenComplete = true;
+            	 metadata.totalCount = 0;
+            	 metadata.completeCount = 0;
+            	 metadata.runningTotalCount = 0;
+            	 metadata.runningCompleteCount = 0;
+            	 parentAnnotation.isTopLevel = true;
+                parentAnnotation.childMetadata = metadata;
+
+				var conditionStack = getAnnotationsStartsWith(annotationsStack, leadingLocRefs, false, true);
+                var conditionAsTree = createTreeAnnotations(annotationsStack, parentAnnotation, Object.values(annotation.pairAnnotations), 1, metadata);
+				parentAnnotation.children = conditionAsTree;
+				parentAnnotation.$treeLevel = 0;
+				
+                toReturn.push(parentAnnotation);              
             } else {
                 annotationsStack.pop();
                 annotation.children = [];
