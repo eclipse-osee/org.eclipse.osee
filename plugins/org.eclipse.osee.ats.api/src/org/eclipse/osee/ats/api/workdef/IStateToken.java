@@ -31,4 +31,8 @@ public interface IStateToken extends Named {
    public boolean isWorking();
 
    public boolean isCompletedOrCancelled();
+
+   default public boolean isState(IStateToken state) {
+      return state.getName().equals(getName());
+   }
 }

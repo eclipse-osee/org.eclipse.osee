@@ -44,4 +44,8 @@ public class TeamState extends StateTypeAdapter {
       return StateTypeAdapter.pages(TeamState.class);
    }
 
+   public boolean isState(String toStateName) {
+      return getName().equals(toStateName);
+   }
+
 }

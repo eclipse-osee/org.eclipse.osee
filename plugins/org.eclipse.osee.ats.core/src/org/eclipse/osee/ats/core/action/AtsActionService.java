@@ -388,8 +388,9 @@ public class AtsActionService implements IAtsActionService {
 
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef,
-      Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate,
-      AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption) {
+      Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, IAtsChangeSet changes,
+      Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners,
+      CreateTeamOption... createTeamOption) {
       Conditions.assertNotNull(teamDef, "Team Definition can not be null");
       WorkDefinition workDef =
          atsApi.getWorkDefinitionService().computeWorkDefinitionForTeamWfNotYetCreated(teamDef, newActionListeners);

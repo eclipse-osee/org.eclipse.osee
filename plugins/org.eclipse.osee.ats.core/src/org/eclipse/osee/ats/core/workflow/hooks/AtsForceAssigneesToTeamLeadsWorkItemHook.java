@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 
 /**
  * Contributed via AtsWorkItemServiceImpl
@@ -42,12 +41,12 @@ public class AtsForceAssigneesToTeamLeadsWorkItemHook implements IAtsTransitionH
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
-      if (workItem instanceof IAtsTeamWorkflow && isForceAssigneesToTeamLeads(
-         AtsApiService.get().getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+      Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+      if (workItem.isTeamWorkflow() && isForceAssigneesToTeamLeads(
+         atsApi.getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
          Collection<AtsUser> teamLeads =
-            AtsApiService.get().getTeamDefinitionService().getLeads(((IAtsTeamWorkflow) workItem).getTeamDefinition());
-
+            atsApi.getTeamDefinitionService().getLeads(((IAtsTeamWorkflow) workItem).getTeamDefinition());
          if (!teamLeads.isEmpty()) {
             workItem.getStateMgr().setAssignees(teamLeads);
             changes.add(workItem);

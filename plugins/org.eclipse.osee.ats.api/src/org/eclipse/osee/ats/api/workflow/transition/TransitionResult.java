@@ -24,6 +24,8 @@ public class TransitionResult {
 
    public static TransitionResult MUST_BE_TARGETED_FOR_VERSION =
       new TransitionResult("Actions must be targeted for a Version.  Please set \"Target Version\" before transition.");
+   public static TransitionResult MUST_HAVE_ASSIGNEE =
+      new TransitionResult("Actions must be Assigned.  Please set \"Assignee(s)\" before transition.");
    public static TransitionResult NO_WORKFLOWS_PROVIDED_FOR_TRANSITION =
       new TransitionResult("No Workflows provided for transition; aborting.");
    public static TransitionResult TO_STATE_CANT_BE_NULL =

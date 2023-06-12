@@ -172,16 +172,15 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle,
       String description, String againstState, ReviewBlockType reviewBlockType,
-      Collection<IAtsDecisionReviewOption> options, List<AtsUser> assignees, Date createdDate, AtsUser createdBy,
+      Collection<IAtsDecisionReviewOption> options, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy,
       IAtsChangeSet changes) {
       IAtsDecisionReview decRev = createNewDecisionReview(teamWf, reviewBlockType, reviewTitle, againstState,
          description, options, assignees, createdDate, createdBy, changes);
       changes.add(decRev);
 
       // transition to decision
-      TransitionData transData =
-         new TransitionData("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
-            assignees, null, changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionData transData = new TransitionData("Transition to Decision", Arrays.asList(decRev),
+         DecisionReviewState.Decision.getName(), assignees, null, changes, TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAll();
 

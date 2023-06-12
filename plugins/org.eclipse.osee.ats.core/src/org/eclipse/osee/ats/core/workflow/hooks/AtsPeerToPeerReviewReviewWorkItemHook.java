@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 
 /**
@@ -53,7 +52,7 @@ public class AtsPeerToPeerReviewReviewWorkItemHook implements IAtsTransitionHook
          IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) workItem;
          for (UserRole uRole : peerRev.getRoleManager().getUserRoles()) {
             if (!uRole.isCompleted()) {
-               assignees.add(UserRoleManager.getUser(uRole, AtsApiService.get()));
+               assignees.add(UserRoleManager.getUser(uRole, atsApi));
             }
          }
          assignees.addAll(workItem.getStateMgr().getAssignees());

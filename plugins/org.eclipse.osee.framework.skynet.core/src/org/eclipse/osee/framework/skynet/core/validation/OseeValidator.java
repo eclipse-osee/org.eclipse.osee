@@ -39,7 +39,8 @@ public class OseeValidator {
       return instance;
    }
 
-   public XResultData validate(int requiredQualityOfService, Artifact artifact, String attributeTypeName, Object proposedValue) {
+   public XResultData validate(int requiredQualityOfService, Artifact artifact, String attributeTypeName,
+      Object proposedValue) {
       XResultData status = XResultData.OK_STATUS;
       try {
          AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
@@ -50,35 +51,32 @@ public class OseeValidator {
       return status;
    }
 
-   public XResultData validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType, Object proposedValue) {
+   public XResultData validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType,
+      Object proposedValue) {
       return validate(requiredQualityOfService, artifact, attributeType, proposedValue, new XResultData());
    }
 
-   public XResultData validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType, Object proposedValue, XResultData rd) {
+   public XResultData validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType,
+      Object proposedValue, XResultData rd) {
       if (artifact != null) {
          for (IOseeValidator validator : loadedObjects.getObjects()) {
-            rd.logTimeStart(validator.getClass().getSimpleName());
-            try {
-               if (requiredQualityOfService >= validator.getQualityOfService()) {
-                  try {
-                     if (validator.isApplicable(artifact, attributeType)) {
-                        try {
-                           XResultData status = validator.validate(artifact, attributeType, proposedValue);
-                           if (!status.isOK()) {
-                              return status;
-                           }
-                        } catch (Exception ex) {
-                           return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID,
-                              ex.getLocalizedMessage(), ex);
+            if (requiredQualityOfService >= validator.getQualityOfService()) {
+               try {
+                  if (validator.isApplicable(artifact, attributeType)) {
+                     try {
+                        XResultData status = validator.validate(artifact, attributeType, proposedValue);
+                        if (!status.isOK()) {
+                           return status;
                         }
+                     } catch (Exception ex) {
+                        return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID,
+                           ex.getLocalizedMessage(), ex);
                      }
-                  } catch (Exception ex) {
-                     return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID, ex.getLocalizedMessage(),
-                        ex);
                   }
+               } catch (Exception ex) {
+                  return XResultData.valueOf(XResultData.Type.Severe, Activator.PLUGIN_ID, ex.getLocalizedMessage(),
+                     ex);
                }
-            } finally {
-               rd.logTimeSpent(validator.getClass().getSimpleName());
             }
          }
       }

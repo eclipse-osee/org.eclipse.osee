@@ -33,7 +33,7 @@ public class RuleDefinitionOptionTest {
 
    @Test
    public void testValues() {
-      Assert.assertEquals(7, RuleDefinitionOption.values().length);
+      Assert.assertEquals(8, RuleDefinitionOption.values().length);
    }
 
    @Test

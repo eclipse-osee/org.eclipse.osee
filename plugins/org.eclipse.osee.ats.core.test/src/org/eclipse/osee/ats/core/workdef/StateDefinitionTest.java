@@ -13,7 +13,8 @@
 
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.api.AtsApi;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
@@ -24,10 +25,10 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -35,13 +36,16 @@ import org.mockito.MockitoAnnotations;
  */
 public class StateDefinitionTest {
 
-   // @formatter:off
-   @Mock AtsApi atsApi;
-   // @formatter:on
-
    @Before
    public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
+   }
+
+   @Test
+   public void testIsState() {
+      StateDefinition def = new StateDefinition("Endorse");
+      assertTrue(def.isState(TeamState.Endorse));
+      assertFalse(def.isState(TeamState.Implement));
    }
 
    @Test
@@ -142,7 +146,7 @@ public class StateDefinitionTest {
    @Test
    public void testGetWidgetsFromStateItems() {
       StateDefinition def = new StateDefinition("endorse");
-      Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());
+      Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl(null, null).getWidgetsFromLayoutItems(def).size());
 
       WidgetDefinition widget1 = new WidgetDefinition("item 1");
       def.getLayoutItems().add(widget1);
@@ -160,7 +164,7 @@ public class StateDefinitionTest {
       LayoutItem widget4 = new LayoutItem("item 4");
       stateItem3.getLayoutItems().add(widget4);
 
-      Assert.assertEquals(3, new AtsWorkDefinitionServiceImpl(atsApi, null).getWidgetsFromLayoutItems(def).size());
+      Assert.assertEquals(3, new AtsWorkDefinitionServiceImpl(null, null).getWidgetsFromLayoutItems(def).size());
    }
 
    @Test

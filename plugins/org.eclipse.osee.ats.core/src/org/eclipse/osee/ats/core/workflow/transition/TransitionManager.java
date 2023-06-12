@@ -25,9 +25,16 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -43,6 +50,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -53,6 +61,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.task.CreateTasksRuleRunner;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -201,6 +210,13 @@ public class TransitionManager implements IExecuteListener {
             if (getChangeSet() != null) {
                getChangeSet().add(workItem);
             }
+
+            // Validate not Blocked or OnHold
+            validateNotBlockedOrHold(workItem);
+            if (results.isErrors()) {
+               continue;
+            }
+
             // Validate toState valid
             StateDefinition fromStateDef = workItem.getStateDefinition();
             if (fromStateDef == null) {
@@ -288,16 +304,30 @@ public class TransitionManager implements IExecuteListener {
       return results;
    }
 
+   private void validateNotBlockedOrHold(IAtsWorkItem workItem) {
+      boolean isBlocked = workItem.getAtsApi().getWorkItemService().isBlocked(workItem);
+      if (isBlocked) {
+         String reason = workItem.getAtsApi().getAttributeResolver().getSoleAttributeValue(workItem,
+            AtsAttributeTypes.BlockedReason, "unknown");
+         results.addResult(new TransitionResult("Can not transition a Blocked Workflow.\nBlock Reason: [%s]", reason));
+      }
+      boolean isHold = workItem.getAtsApi().getWorkItemService().isOnHold(workItem);
+      if (isHold) {
+         String reason = workItem.getAtsApi().getAttributeResolver().getSoleAttributeValue(workItem,
+            AtsAttributeTypes.HoldReason, "");
+         results.addResult(new TransitionResult("Can not transition a Workflow on Hold.\nHold Reason: [%s]", reason));
+      }
+   }
+
    public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem,
       StateDefinition fromStateDef, StateDefinition toStateDef) {
       logTimeStart("05.5 - isTransitionValidForExtensions");
-      // Check extension points for valid transition
       for (IAtsTransitionHook listener : getTransitionHooks()) {
          try {
-            logTimeStart("05.51 - transitioning 1 - " + listener.getClass().getSimpleName());
+            logTimeStart("05.51 - transitioning - " + listener.getClass().getSimpleName());
             listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
                transData.getTransitionUser(), atsApi);
-            logTimeSpent("05.51 - transitioning 1 - " + listener.getClass().getSimpleName());
+            logTimeSpent("05.51 - transitioning - " + listener.getClass().getSimpleName());
             if (results.isCancelled() || !results.isEmpty()) {
                continue;
             }
@@ -309,25 +339,6 @@ public class TransitionManager implements IExecuteListener {
 
       }
 
-      // Check again in case first check made changes that would now keep transition from happening
-      if (results.isEmpty()) {
-         for (IAtsTransitionHook listener : getTransitionHooks()) {
-            try {
-               logTimeStart("05.52 - transitioning 2 - " + listener.getClass().getSimpleName());
-               listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
-                  AtsApiService.get().getUserService().getCurrentUser(), atsApi);
-               logTimeSpent("05.52 - transitioning 2 - " + listener.getClass().getSimpleName());
-               if (results.isCancelled() || !results.isEmpty()) {
-                  continue;
-               }
-            } catch (OseeCoreException ex) {
-               results.addResult(workItem,
-                  new TransitionResult(String.format("Exception [%s] while validating transition extensions 2 [%s]",
-                     ex.getMessage(), transData.getName()), ex));
-            }
-
-         }
-      }
       logTimeSpent("05.5 - isTransitionValidForExtensions");
    }
 
@@ -369,7 +380,7 @@ public class TransitionManager implements IExecuteListener {
                      logStateCompletedEvent(workItem, workItem.getCurrentStateName(), transitionDate, transitionUser);
                   }
                   logStateStartedEvent(workItem, toState, transitionDate, transitionUser);
-                  // Get transition to assignees, do some checking to ensure someone is assigneed and UnAssigned
+                  // Get transition to assignees, do some checking to ensure someone is assigned and UnAssigned
                   Collection<AtsUser> updatedAssigees = getToAssignees(workItem, toState);
 
                   workItem.getStateMgr().transitionHelper(updatedAssigees, fromState, toState);
@@ -414,6 +425,9 @@ public class TransitionManager implements IExecuteListener {
                   }
                   if (changes != null) {
                      changes.add(workItem);
+                     changes.addWorkItemNotificationEvent(
+                        AtsNotificationEventFactory.getWorkItemNotificationEvent(AtsCoreUsers.SYSTEM_USER, workItem,
+                           AtsNotifyType.Subscribed, AtsNotifyType.Completed, AtsNotifyType.Cancelled));
                   }
 
                   workItemFromStateMap.put(workItem, fromState.getName());
@@ -479,13 +493,17 @@ public class TransitionManager implements IExecuteListener {
          validateReviewsCancelled(results, workItem, toStateDef);
       } else if (!toStateDef.isCancelled() && !isOverrideAttributeValidationState) {
 
+         validatePeerDefects(results, workItem, toStateDef);
+
          // Validate XWidgets for transition
+         logTimeStart("05.41 - validateWidgetTransition");
          Collection<WidgetResult> widgetResults = workItemService.validateWidgetTransition(workItem, toStateDef);
          for (WidgetResult widgetResult : widgetResults) {
             if (!widgetResult.isSuccess()) {
                results.addResult(workItem, widgetResult);
             }
          }
+         logTimeSpent("05.41 - validateWidgetTransition");
 
          validateTaskCompletion(workItem, toStateDef, taskService);
 
@@ -502,6 +520,14 @@ public class TransitionManager implements IExecuteListener {
             results.addResult(workItem, TransitionResult.MUST_BE_TARGETED_FOR_VERSION);
          }
 
+         // Don't assignee if so configured
+         boolean requireAssignee = workItem.getWorkDefinition().getOptions().contains(WorkDefOption.RequireAssignees);
+
+         // Only check this if TeamWorkflow, not for reviews
+         if (requireAssignee && toStateDef.isWorking()) {
+            results.addResult(workItem, TransitionResult.MUST_HAVE_ASSIGNEE);
+         }
+
          // Loop through this state's blocking reviews to confirm complete
          if (workItem.isTeamWorkflow()) {
             for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
@@ -515,8 +541,31 @@ public class TransitionManager implements IExecuteListener {
       logTimeSpent("05.4 - isStateTransitionable");
    }
 
+   private void validatePeerDefects(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
+      logTimeStart("05.42 - validatePeerDefects");
+      if (workItem.isPeerReview() && toStateDef.isCompleted()) {
+         IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) workItem;
+         IAtsPeerReviewDefectManager defectMgr = review.getDefectManager();
+
+         for (ReviewDefectItem item : defectMgr.getDefectItems()) {
+            if (!item.isClosed()) {
+               results.addResult(workItem, TransitionResult.REVIEW_DEFECTS_NOT_CLOSED);
+               break;
+            }
+         }
+
+         for (UserRole role : review.getRoleManager().getUserRoles()) {
+            if (!role.isCompleted()) {
+               results.addResult(workItem, TransitionResult.REVIEW_ROLES_NOT_COMPLETED);
+               break;
+            }
+         }
+      }
+      logTimeSpent("05.42 - validatePeerDefects");
+   }
+
    private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
-      logTimeStart("05.42 - validateReviewsCancelled");
+      logTimeStart("05.43 - validateReviewsCancelled");
       if (workItem.isTeamWorkflow() && toStateDef.isCancelled()) {
          for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
             ReviewBlockType reviewBlockType = reviewService.getReviewBlockType(review);
@@ -527,13 +576,13 @@ public class TransitionManager implements IExecuteListener {
             }
          }
       }
-      logTimeSpent("05.42 - validateReviewsCancelled");
+      logTimeSpent("05.43 - validateReviewsCancelled");
    }
 
    private void validateTaskCompletion(IAtsWorkItem workItem, StateDefinition toStateDef, IAtsTaskService taskService) {
-      logTimeStart("05.41 - validateTaskCompletion");
+      logTimeStart("05.44 - validateTaskCompletion");
       validateTaskCompletion(results, workItem, toStateDef, taskService);
-      logTimeSpent("05.41 - validateTaskCompletion");
+      logTimeSpent("05.44 - validateTaskCompletion");
    }
 
    public static void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem,
@@ -700,7 +749,7 @@ public class TransitionManager implements IExecuteListener {
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
    public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem, StateDefinition toState) {
-      List<AtsUser> toAssignees = new ArrayList<>();
+      Set<AtsUser> toAssignees = new HashSet<>();
       if (toState.isWorking()) {
          Collection<AtsUser> requestedAssignees = getToAssignees(workItem);
          if (requestedAssignees != null) {
@@ -708,6 +757,9 @@ public class TransitionManager implements IExecuteListener {
                toAssignees.add(user);
             }
          }
+
+         toAssignees.addAll(getPeerReviewRolesAssignees(workItem, toState));
+
          if (toAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
             toAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
             toAssignees.add(getTransitionAsUser());
@@ -723,13 +775,45 @@ public class TransitionManager implements IExecuteListener {
       return toAssignees;
    }
 
+   private Collection<AtsUser> getPeerReviewRolesAssignees(IAtsWorkItem workItem, StateDefinition toState) {
+      if (workItem.isPeerReview() && toState.isState(PeerToPeerReviewState.Review)) {
+         // Set Assignees to all user roles users
+         Set<AtsUser> assignees = new HashSet<>();
+         IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) workItem;
+         for (UserRole uRole : peerRev.getRoleManager().getUserRoles()) {
+            if (!uRole.isCompleted()) {
+               assignees.add(UserRoleManager.getUser(uRole, atsApi));
+            }
+         }
+         return assignees;
+      }
+      return java.util.Collections.emptyList();
+   }
+
    @Override
    public void changesStored(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
       for (IAtsTransitionHook listener : getTransitionHooks()) {
          logTimeStart("25.0 - transitionPersisted " + listener.getClass().getSimpleName());
+
+         // Run forground tasks
          listener.transitionPersisted(transData.getWorkItems(), workItemFromStateMap, transData.getToStateName(),
             transData.getTransitionUser(), atsApi);
+
+         // Kickoff background tasks
+         if (listener.isBackgroundTask(transData.getWorkItems(), workItemFromStateMap, transData.getToStateName(),
+            transData.getTransitionUser(), atsApi)) {
+            Thread backgroundTask = new Thread(listener.getClass().getSimpleName()) {
+
+               @Override
+               public void run() {
+                  listener.transitionPersistedBackground(transData.getWorkItems(), workItemFromStateMap,
+                     transData.getToStateName(), transData.getTransitionUser(), atsApi);
+               }
+
+            };
+            backgroundTask.run();
+         }
          logTimeSpent("25.0 - transitionPersisted " + listener.getClass().getSimpleName());
       }
    }

@@ -47,16 +47,18 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
    /**
     * Creates decision review if one of same name doesn't already exist
     */
-   public static IAtsDecisionReview createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy) {
-      if (Named.getNames(AtsApiService.get().getReviewService().getReviews(teamWf)).contains(revDef.getReviewTitle())) {
+   public static IAtsDecisionReview createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes,
+      IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy) {
+      AtsApi atsApi = AtsApiService.get();
+      if (Named.getNames(atsApi.getReviewService().getReviews(teamWf)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
       }
       // Add current user if no valid users specified
       List<AtsUser> users = new LinkedList<>();
-      users.addAll(AtsApiService.get().getUserService().getUsersByUserIds(revDef.getAssignees()));
+      users.addAll(atsApi.getUserService().getUsersByUserIds(revDef.getAssignees()));
       if (users.isEmpty()) {
-         users.add(AtsApiService.get().getUserService().getCurrentUser());
+         users.add(atsApi.getUserService().getCurrentUser());
       }
       if (!Strings.isValid(revDef.getReviewTitle())) {
          throw new OseeStateException("ReviewDefinition must specify title for Team Workflow [%s] WorkDefinition [%s]",
@@ -64,18 +66,17 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
       }
       IAtsDecisionReview decArt = null;
       if (revDef.isAutoTransitionToDecision()) {
-         decArt =
-            (IAtsDecisionReview) AtsApiService.get().getReviewService().createNewDecisionReviewAndTransitionToDecision(
-               teamWf, revDef.getReviewTitle(), revDef.getDescription(), revDef.getRelatedToState(),
-               revDef.getBlockingType(), revDef.getOptions(), users, createdDate, createdBy, changes).getStoreObject();
+         decArt = (IAtsDecisionReview) atsApi.getReviewService().createNewDecisionReviewAndTransitionToDecision(teamWf,
+            revDef.getReviewTitle(), revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(),
+            revDef.getOptions(), users, createdDate, createdBy, changes).getStoreObject();
       } else {
-         decArt = AtsApiService.get().getReviewService().createNewDecisionReview(teamWf, revDef.getBlockingType(),
+         decArt = atsApi.getReviewService().createNewDecisionReview(teamWf, revDef.getBlockingType(),
             revDef.getReviewTitle(), revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users,
             createdDate, createdBy, changes);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()),
-         AtsApiService.get().getUserService().getCurrentUser().getUserId());
-      for (IAtsReviewHook provider : AtsApiService.get().getReviewService().getReviewHooks()) {
+         atsApi.getUserService().getCurrentUser().getUserId());
+      for (IAtsReviewHook provider : atsApi.getReviewService().getReviewHooks()) {
          provider.reviewCreated(decArt);
       }
       changes.add(decArt);
@@ -83,9 +84,10 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
+      Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
-      if (!(workItem instanceof IAtsTeamWorkflow)) {
+      if (!workItem.isTeamWorkflow()) {
          return;
       }
       Date createdDate = new Date();

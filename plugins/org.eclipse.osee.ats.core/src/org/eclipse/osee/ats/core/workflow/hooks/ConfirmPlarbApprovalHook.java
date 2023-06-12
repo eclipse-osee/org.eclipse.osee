@@ -28,13 +28,11 @@ public class ConfirmPlarbApprovalHook implements IAtsWorkItemHook {
 
    @Override
    public XResultData committing(IAtsTeamWorkflow teamWf, XResultData rd) {
-      if (teamWf.getWorkTypes() != null) {
-         if (teamWf.getWorkTypes().contains(WorkType.ARB)) {
-            String performedBy = String.valueOf(AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
-               AtsAttributeTypes.ProductLineApprovedBy, ""));
-            if (Strings.isInValid(performedBy)) {
-               rd.error("Branch can not be committed without PLARB Approval");
-            }
+      if (teamWf.isWorkType(WorkType.ARB)) {
+         String performedBy = String.valueOf(AtsApiService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
+            AtsAttributeTypes.ProductLineApprovedBy, ""));
+         if (Strings.isInValid(performedBy)) {
+            rd.error("Branch can not be committed without PLARB Approval");
          }
       }
       return rd;

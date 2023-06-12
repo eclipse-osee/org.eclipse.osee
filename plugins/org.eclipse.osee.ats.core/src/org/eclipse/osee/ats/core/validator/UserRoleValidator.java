@@ -11,36 +11,33 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.workflow.review.role;
+package org.eclipse.osee.ats.core.validator;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.UserRoleError;
-import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
 public class UserRoleValidator {
 
-   public static UserRoleError isValid(Artifact artifact) {
+   public static UserRoleError isValid(ArtifactToken artifact) {
       try {
          if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
-            PeerToPeerReviewArtifact peerToPeerReviewArtifact = (PeerToPeerReviewArtifact) artifact;
             IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) artifact).getRoleManager();
             UserRoleError result =
-               roleMgr.validateRoleTypeMinimums(peerToPeerReviewArtifact.getStateDefinition(), roleMgr);
+               roleMgr.validateRoleTypeMinimums(((IAtsPeerToPeerReview) artifact).getStateDefinition(), roleMgr);
             if (!result.isOK()) {
                return result;
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(UserRoleValidator.class, Level.SEVERE, ex);
          return UserRoleError.ExceptionValidatingRoles;
       }
       return UserRoleError.None;

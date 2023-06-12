@@ -28,6 +28,7 @@ public enum RuleDefinitionOption {
    AllowTransitionWithWorkingBranch("StateDefinition Option: Will allow transition to this state without committing current working branch.", RuleLocations.StateDefinition),
    ForceAssigneesToTeamLeads("StateDefinition Option: Will force this state to be assigned back to the configured team leads.  Useful for authorization state.", RuleLocations.StateDefinition),
    RequireTargetedVersion("StateDefinition and Team Definition Option: Requires workflow to be targeted for version before transition is allowed.", RuleLocations.StateDefinition, RuleLocations.TeamDefinition),
+   RequireAssignee("Require Assignee for Transition", RuleLocations.StateDefinition),
    AllowTransitionWithoutTaskCompletion("StateDefinition Option: Allow tasks to transition to other InWork states without completion.", RuleLocations.StateDefinition);
 
    public final String description;

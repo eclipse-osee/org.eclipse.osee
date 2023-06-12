@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.util.validate;
+package org.eclipse.osee.ats.core.validator;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -25,8 +25,6 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
-import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
-import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -74,7 +72,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
                }
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(AtsXCommitManagerValidator.class, Level.SEVERE, ex);
             return new WidgetResult(WidgetStatus.Exception, ex,
                "Exception validating Commits for transition validation [%s]; see error log", ex.getLocalizedMessage());
          }

@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
-import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.defect.AtsXDefectValidatorTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.defect.ReviewDefectItemTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.role.UserRoleTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -24,7 +23,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    GenerateReviewParticipationReportTest.class,
-   AtsXDefectValidatorTest.class,
    ReviewDefectItemTest.class,
    UserRoleTest.class,
    DecisionReviewManagerTest.class,

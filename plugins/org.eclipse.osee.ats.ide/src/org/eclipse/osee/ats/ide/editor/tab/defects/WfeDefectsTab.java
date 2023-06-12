@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.core.review.ReviewDefectError;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.ide.util.widgets.defect.DefectData;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectLabelProvider;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectRefreshListener;
 import org.eclipse.osee.ats.ide.util.widgets.defect.DefectXViewer;
-import org.eclipse.osee.ats.ide.workflow.review.defect.ReviewDefectValidator;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -114,8 +114,7 @@ public class WfeDefectsTab extends WfeAbstractTab implements DefectRefreshListen
          protected IStatus run(IProgressMonitor monitor) {
             try {
                DefectData data = new DefectData();
-               data.setError(
-                  ReviewDefectValidator.isValid(AtsApiService.get().getQueryServiceIde().getArtifact(review)));
+               data.setError(ReviewDefectManager.isValid(AtsApiService.get().getQueryServiceIde().getArtifact(review)));
                refreshMessageLabel(data);
             } catch (Exception ex) {
                // do nothing
