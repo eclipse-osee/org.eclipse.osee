@@ -5,7 +5,7 @@ java_library(
 	srcs = glob(["**/*.java"]),
         deps = ["java_deps", "//framework_core_packages","//org.eclipse.osee.disposition.rest.model:disposition_rest_model",
                 "//org.eclipse.osee.vcast:vcast","//:jdbc","//:orcs", "//:ats_api"],
-        visibility = ["//org.eclipse.osee.disposition.rest.test:__pkg__"]
+        visibility = ["//visibility:public"]
 )
 
 filegroup(
@@ -37,7 +37,10 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		"@ext_jars//:javax.annotation",
+                "@maven//:io_swagger_core_v3_swagger_annotations",
+                "@maven//:io_swagger_core_v3_swagger_jaxrs2",
+                "@maven//:io_swagger_core_v3_swagger_models",
+                "@ext_jars//:javax.annotation",
 		"@ext_jars//:apache_commons_lang"
                 ],
 )

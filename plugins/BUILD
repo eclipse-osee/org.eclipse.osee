@@ -62,8 +62,23 @@ alias(
 )
 
 alias(
+   name = "authentication_ldap", 
+   actual = "//org.eclipse.osee.authentication.ldap:authentication_ldap"
+)
+
+alias(
+   name = "authorization_admin", 
+   actual = "//org.eclipse.osee.authorization.admin:authorization_admin"
+)
+
+alias(
    name = "cache_admin", 
    actual = "//org.eclipse.osee.cache.admin:cache_admin"
+)
+
+alias(
+   name = "config_admin", 
+   actual = "//org.eclipse.osee.config.admin:config_admin"
 )
 
 alias(
@@ -84,6 +99,16 @@ alias(
 alias(
    name = "define_ide",
    actual = "//org.eclipse.osee.define.ide:define_ide"
+)
+
+alias(
+   name = "disposition_rest",
+   actual = "//org.eclipse.osee.disposition.rest:disposition_rest"
+)
+
+alias(
+   name = "disposition_rest_model",
+   actual = "//org.eclipse.osee.disposition.rest.model:disposition_rest_model"
 )
 
 alias(
@@ -176,6 +201,22 @@ alias(
    actual = "//org.eclipse.osee.jdbc:jdbc"
 )
 
+
+alias(
+   name = "logger",
+   actual = "//org.eclipse.osee.logger:logger"
+)
+
+alias(
+   name = "logger_slf4j",
+   actual = "//org.eclipse.osee.logger.slf4j:logger_slf4j"
+)
+
+alias(
+   name = "mim",
+   actual = "//org.eclipse.osee.mim:mim"
+)
+
 alias(
     name = "orcs",
     actual = "//org.eclipse.osee.orcs:orcs",
@@ -209,4 +250,9 @@ alias(
 alias(
     name = "template_engine",
     actual = "//org.eclipse.osee.template.engine:template_engine"
+)
+
+alias(
+    name = "vcast",
+    actual = "//org.eclipse.osee.vcast:vcast"
 )

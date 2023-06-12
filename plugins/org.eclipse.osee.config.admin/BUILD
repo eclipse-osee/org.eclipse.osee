@@ -4,7 +4,7 @@ java_library(
         srcs = glob(["**/*.java"]),
         deps = ["java_deps","//org.eclipse.osee.framework.jdk.core:framework_jdk_core",
                 "//org.eclipse.osee.framework.core:framework_core", "//org.eclipse.osee.logger:logger"],
-        visibility = ["//org.eclipse.osee.config.admin.test:__pkg__"]
+        visibility = ["//visibility:public"]
 )
 
 filegroup(

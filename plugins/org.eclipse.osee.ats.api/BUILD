@@ -10,15 +10,14 @@ java_library(
                 "//org.eclipse.osee.define.api:define_api","//org.eclipse.osee.orcs.rest.model:orcs_rest_model",
                 "//org.eclipse.osee.framework.core.model:framework_core_model"],
         visibility = ["//visibility:public"]
-
 )
 
 filegroup(
-    name = "x_file",
-    srcs =
+        name = "x_file",
+        srcs =
           [
             "OSGI-INF/ats.type.provider.xml",
-           ]
+          ]
   ,
 
 )
@@ -39,6 +38,9 @@ java_library(
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+		"@maven//:io_swagger_core_v3_swagger_core",
+		"@maven//:io_swagger_core_v3_swagger_jaxrs2",
+                "@maven//:io_swagger_core_v3_swagger_models",
 		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang"
