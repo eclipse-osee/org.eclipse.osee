@@ -72,7 +72,7 @@ public class OseeData {
       }
    }
 
-   public static IProject getProject() {
+   public synchronized static IProject getProject() {
       ensureProjectReady();
       return project;
    }

@@ -337,6 +337,7 @@ public class WfeHeaderComposite extends Composite {
 
    @Override
    public void dispose() {
+      super.dispose();
       if (customHeader != null) {
          customHeader.dispose();
       }

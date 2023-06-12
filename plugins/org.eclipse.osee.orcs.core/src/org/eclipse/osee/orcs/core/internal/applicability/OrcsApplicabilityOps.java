@@ -2935,6 +2935,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       String uniqueIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, uniqueId);
       String sourceNameDir = String.format("%s%ssource", uniqueIdDir, File.separator);
       OutputStream outStream = null;
+      ZipInputStream zis = null;
       try {
          new File(uniqueIdDir).mkdir();
          String fileZip = String.format("%s.zip", sourceNameDir);
@@ -2944,7 +2945,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          outStream = new FileOutputStream(uploadedZip);
          outStream.write(buffer);
 
-         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+         zis = new ZipInputStream(new FileInputStream(fileZip));
          ZipEntry zipEntry = zis.getNextEntry();
          File unzipLocation = new File(sourceNameDir);
          unzipLocation.mkdirs();
@@ -3002,6 +3003,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "BAT Operation Failed");
       } finally {
+         if (zis != null) {
+            Lib.close(zis);
+         }
          Lib.close(outStream);
       }
       return uniqueId;

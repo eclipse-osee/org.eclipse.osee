@@ -2,11 +2,11 @@
 java_library(
        name = "mim",
        resources = ["xml_files"],
-	   srcs = glob(["**/*.java"]),
+       srcs = glob(["**/*.java"]),
        deps = ["java_deps", "//framework_core_packages","//:framework_core_model","//:activity_api",
-	           "//:framework_resource_management","//:jdbc","//:jaxrs","//:orcs","//:orcs_core",
-			   "//:orcs_rest_model","//:console_admin","//:define_api","//:define","//:ats_api","//:ats_core",
-			   "//:framework_core_server","//:template_engine", "//:ats_rest"],
+	       "//:framework_resource_management","//:jdbc","//:jaxrs","//:orcs","//:orcs_core",
+	       "//:orcs_rest_model","//:console_admin","//:define_api","//:define","//:ats_api","//:ats_core",
+	       "//:framework_core_server","//:template_engine", "//:ats_rest"],
        visibility = ["//visibility:public"]
 
 )
@@ -36,11 +36,14 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",		
-		        "@ext_jars//:eclipse_osgi_services",
-		        "@ext_jars//:nebula",
-		        "@ext_jars//:eclipse_core",
-		        "@ext_jars//:apache_commons_lang",
-		        "@ext_jars//:eclipse_equinox_common"
+                "@maven//:io_swagger_core_v3_swagger_core",
+                "@maven//:io_swagger_core_v3_swagger_jaxrs2",
+    		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+    		"@maven//:io_swagger_core_v3_swagger_models",		
+		"@ext_jars//:eclipse_osgi_services",
+		"@ext_jars//:nebula",
+		"@ext_jars//:eclipse_core",
+		"@ext_jars//:apache_commons_lang",
+		"@ext_jars//:eclipse_equinox_common"
                 ],
 )

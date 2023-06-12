@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -397,6 +398,7 @@ public class LisFileParser implements DispoImporterApi {
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       VCastSourceFileJoin sourceFileJoin = dataStore.getSourceFileJoin(lisFile);
+      Objects.requireNonNull(sourceFileJoin, "sourceFileJoin can not be null");
       itemName = sourceFileJoin.getDisplayName() + "." + function.getName();
 
       newItem.setName(itemName);
@@ -824,7 +826,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private boolean isDuplicateFile(File file, OperationReport report) {
-      String normalizedFileName = file.getName().replaceAll("//....", "");
+      String normalizedFileName = file.getName().replace("//....", "");
       if (alreadyUsedFileNames.contains(normalizedFileName)) {
          report.addEntry(file.getName(), "Duplicate File skipped", DispoSummarySeverity.WARNING);
          return true;

@@ -3,7 +3,7 @@ java_library(
         name = "vcast",
         srcs = glob(["**/*.java"]),
         deps = ["java_deps","//framework_core_packages","//:jdbc"],
-        visibility = ["//org.eclipse.osee.disposition.rest:__pkg__"]
+        visibility = ["//org.eclipse.osee.disposition.rest:__pkg__","//org.eclipse.osee.server.p2:__subpackages__"]
         
 )
 
