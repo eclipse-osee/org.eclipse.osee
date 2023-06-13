@@ -83,7 +83,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
     * The context menu command title for the Edit command.
     */
 
-   private static final String COMMAND_TITLE_EDIT = "Makrdown Editor";
+   private static final String COMMAND_TITLE_EDIT = "Markdown Editor";
 
    /**
     * The context menu command title for the Preview command.

@@ -34,7 +34,7 @@ public class BlockField {
 
    public BlockField fillContent(String content) {
       Conditions.assertNotNullOrEmpty(content, "null content in add content to block");
-      String strippedContent = content.replaceAll("<[^>]+>", "");
+      String strippedContent = content.replaceAll("<[^>]+>", "").replaceAll("&amp;", "&");
       Matcher contentMatcher = bft.contentRegex.matcher(strippedContent);
       if (contentMatcher.find()) {
          data = contentMatcher.group(1);

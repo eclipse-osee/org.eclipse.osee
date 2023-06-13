@@ -46,6 +46,10 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
       attributes.clear();
    }
 
+   public void deleteAttribute(String name) {
+      attributes.remove(new CaseInsensitiveString(name));
+   }
+
    public void addAttribute(String name, String... values) {
       for (String value : values) {
          put(name, new RoughAttribute(value));
