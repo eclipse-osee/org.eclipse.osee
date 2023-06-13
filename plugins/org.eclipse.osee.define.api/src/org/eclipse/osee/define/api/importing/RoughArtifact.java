@@ -257,4 +257,8 @@ public class RoughArtifact {
    public OrcsApi getOrcsApi() {
       return this.orcsApi;
    }
+
+   public void deleteAttribute(String typeName) {
+      this.attributes.deleteAttribute(typeName);
+   }
 }

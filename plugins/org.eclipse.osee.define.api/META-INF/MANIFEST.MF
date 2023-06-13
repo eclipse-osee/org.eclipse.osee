@@ -9,7 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.api,
  org.eclipse.osee.define.api.importing,
- org.eclipse.osee.define.api.md,
  org.eclipse.osee.define.api.publishing,
  org.eclipse.osee.define.api.publishing.datarights,
  org.eclipse.osee.define.api.publishing.templatemanager,

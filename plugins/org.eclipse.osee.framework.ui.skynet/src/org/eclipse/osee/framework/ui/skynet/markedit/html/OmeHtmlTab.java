@@ -13,11 +13,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.markedit.html;
 
-import java.io.File;
-import java.io.IOException;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.InputStream;
 import java.util.regex.Matcher;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
 import org.eclipse.osee.framework.ui.skynet.markedit.OmeAbstractTab;
@@ -51,41 +52,38 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
    }
 
    public static void handleRefreshAction(AbstractOmeData omeData, Browser browser, IManagedForm managedForm) {
-      try {
-         String mdContent = omeData.getMdContent();
-         if (Strings.isInValid(mdContent)) {
-            omeData.load();
-            mdContent = omeData.getMdContent();
+      String mdContent = omeData.getMdContent();
+      if (Strings.isInValid(mdContent)) {
+         omeData.load();
+         mdContent = omeData.getMdContent();
+      }
+      if (Strings.isValid(mdContent)) {
+         Matcher m = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
+         while (m.find()) {
+            String idStr = m.group(1);
+            String name = m.group(2);
+            String url = String.format("<a href=\"%s\">%s</a>", idStr, name);
+            mdContent = mdContent.replaceFirst("<oseelink>(.*?)</oseelink>", url);
          }
-         if (Strings.isValid(mdContent)) {
-            Matcher m = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
-            while (m.find()) {
-               String idStr = m.group(1);
-               String name = m.group(2);
-               String url = String.format("<a href=\"%s\">%s</a>", idStr, name);
-               mdContent = mdContent.replaceFirst("<oseelink>(.*?)</oseelink>", url);
-            }
 
-            File mdFile = new File("mdFile.md");
-            Lib.writeStringToFile(mdContent, mdFile);
-            String cmd = "C:/Tools/mdconv/comrak-v0.13.1.exe " //
-               + "--config-file C:/Tools/mdconv/comrak_config " //
-               + mdFile.getAbsolutePath();
-            String html = execCmd(cmd);
-            omeData.setHtmlContent(html);
-            Displays.ensureInDisplayThread(new Runnable() {
+         MutableDataSet options = new MutableDataSet();
+         //add extensions here
+         Parser parser = Parser.builder(options).build();
+         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+         Node document = parser.parse(mdContent);
+         String html = renderer.render(document);
 
-               @Override
-               public void run() {
-                  browser.setText(html);
-                  if (managedForm != null) {
-                     managedForm.reflow(true);
-                  }
+         omeData.setHtmlContent(html);
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               browser.setText(html);
+               if (managedForm != null) {
+                  managedForm.reflow(true);
                }
-            });
-         }
-      } catch (IOException ex) {
-         System.err.println(Lib.exceptionToString(ex));
+            }
+         });
       }
    }
 
