@@ -178,4 +178,15 @@ public final class OrcsPredicates {
          }
       };
    }
+
+   public static Predicate<Relation> nodeIdsAndRelOrderEquals(final ArtifactId aId, final ArtifactId bId,
+      final int relOrder) {
+      return new Predicate<Relation>() {
+         @Override
+         public boolean apply(Relation relation) {
+            return aId.equals(relation.getIdForSide(RelationSide.SIDE_A)) && //
+            bId.equals(relation.getIdForSide(RelationSide.SIDE_B)) && relOrder == relation.getRelOrder();
+         }
+      };
+   }
 }

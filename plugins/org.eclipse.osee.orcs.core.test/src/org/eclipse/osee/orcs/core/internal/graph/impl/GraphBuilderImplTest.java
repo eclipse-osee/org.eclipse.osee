@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -141,7 +142,8 @@ public class GraphBuilderImplTest {
       reset(relationFactory);
       when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
       when(relationFactory.createRelation(relationData)).thenReturn(relation);
-
+      when(relationData.getType()).thenReturn(RelationTypeToken.SENTINEL);
+      when(relationData.getRelOrder()).thenReturn(0);
       builder.onData(attributeData);
       verify(logger).warn("Orphaned attribute detected - data[%s]", attributeData);
 
@@ -154,7 +156,8 @@ public class GraphBuilderImplTest {
    public void testOnData() {
       when(graphData.getNode(artifactData)).thenReturn(artifact);
       when(graphData.getNode(artifactId60)).thenReturn(container);
-
+      when(relationData.getType()).thenReturn(RelationTypeToken.SENTINEL);
+      when(relationData.getRelOrder()).thenReturn(0);
       builder.onLoadStart();
       builder.onLoadDescription(description);
       builder.onData(artifactData);

@@ -87,7 +87,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       // @formatter:on
    }
 
-   private VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, boolean historical, TransactionId stripeId) {
+   private VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, boolean historical,
+      TransactionId stripeId) {
       VersionData version = new VersionDataImpl();
       version.setBranch(branchId);
       version.setTransactionId(txId);
@@ -98,7 +99,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, ArtifactTypeToken artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
+   public ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, ArtifactTypeToken artifactType,
+      ModificationType modType, String guidToSet, ApplicabilityId applicId) {
       return createArtifactFromRow(version, artifactId, artifactType, modType, artifactType, modType, guidToSet,
          applicId);
    }
@@ -111,7 +113,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public <T> AttributeData<T> createAttributeData(VersionData version, AttributeId id, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artifactId, T value, String uri, ApplicabilityId applicId) {
+   public <T> AttributeData<T> createAttributeData(VersionData version, AttributeId id,
+      AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artifactId, T value, String uri,
+      ApplicabilityId applicId) {
       DataProxy<T> proxy = proxyFactory.createProxy(attributeType, value, uri);
       return createAttributeFromRow(version, id, attributeType, modType, attributeType, modType, artifactId, proxy,
          applicId);
@@ -128,25 +132,30 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public <T> AttributeData<T> createAttributeData(VersionData version, AttributeId generateAttId, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId) {
+   public <T> AttributeData<T> createAttributeData(VersionData version, AttributeId generateAttId,
+      AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId) {
       DataProxy<T> proxy = proxyFactory.createProxy(attributeType, "", "");
       return createAttributeFromRow(version, generateAttId, attributeType, modType, attributeType, modType, artId,
          proxy, applicId);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
+   public RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType,
+      ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
       return createRelationData(version, id, relationType, modType, relationType, modType, aArtId, bArtId,
          ArtifactId.SENTINEL, 0, rationale, applicId);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, ApplicabilityId applicId) {
+   public RelationData createRelationData(VersionData version, RelationTypeToken relationType, ModificationType modType,
+      ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, ApplicabilityId applicId) {
       return createRelationData(version, RelationId.SENTINEL, relationType, modType, relationType, modType, aArtId,
          bArtId, relArtId, relOrder, "", applicId);
    }
 
-   private ArtifactData createArtifactFromRow(VersionData version, ArtifactId artifactId, ArtifactTypeToken artifactType, ModificationType modType, ArtifactTypeToken baseArtifactType, ModificationType baseModType, String guid, ApplicabilityId applicId) {
+   private ArtifactData createArtifactFromRow(VersionData version, ArtifactId artifactId,
+      ArtifactTypeToken artifactType, ModificationType modType, ArtifactTypeToken baseArtifactType,
+      ModificationType baseModType, String guid, ApplicabilityId applicId) {
       ArtifactData data = new ArtifactDataImpl(version);
       data.setLocalId(artifactId);
       data.setType(artifactType);
@@ -158,7 +167,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private <T> AttributeData<T> createAttributeFromRow(VersionData version, AttributeId id, AttributeTypeGeneric<?> attributeType, ModificationType modType, AttributeTypeToken baseAttributeType, ModificationType baseModType, ArtifactId artifactId, DataProxy<T> proxy, ApplicabilityId applicId) {
+   private <T> AttributeData<T> createAttributeFromRow(VersionData version, AttributeId id,
+      AttributeTypeGeneric<?> attributeType, ModificationType modType, AttributeTypeToken baseAttributeType,
+      ModificationType baseModType, ArtifactId artifactId, DataProxy<T> proxy, ApplicabilityId applicId) {
       AttributeData<T> data = new AttributeDataImpl<>(version);
       data.setLocalId(id);
       data.setType(attributeType);
@@ -171,7 +182,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, RelationTypeToken baseRelationType, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, String rationale, ApplicabilityId applicId) {
+   private RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType,
+      ModificationType modType, RelationTypeToken baseRelationType, ModificationType baseModType, ArtifactId aArtId,
+      ArtifactId bArtId, ArtifactId relArtId, int relOrder, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
       if (relationType.isNewRelationTable()) {
          if (version.getGammaId().isValid()) {
@@ -182,6 +195,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
          } else {
             data.setLocalId(id);
          }
+         data.setRelOrder(relOrder);
+         data.setRelationArtifact(relArtId);
       } else {
          data.setLocalId(id);
       }
@@ -207,7 +222,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchCategoryData createBranchCategoryData(VersionData version, BranchId branchId, BranchCategoryToken category) {
+   public BranchCategoryData createBranchCategoryData(VersionData version, BranchId branchId,
+      BranchCategoryToken category) {
       BranchCategoryData data = new BranchCategoryDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
@@ -233,19 +249,22 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public TupleData createTuple2Data(VersionData version, BranchId branch, Tuple2Type<?, ?> tupleType, Long e1, Long e2) {
+   public TupleData createTuple2Data(VersionData version, BranchId branch, Tuple2Type<?, ?> tupleType, Long e1,
+      Long e2) {
       return createTuple2Data(version, branch, (TupleTypeId) tupleType, e1, e2);
    }
 
    @Override
-   public TupleData createTuple3Data(VersionData version, BranchId branch, Tuple3Type<?, ?, ?> tupleType, Long e1, Long e2, Long e3) {
+   public TupleData createTuple3Data(VersionData version, BranchId branch, Tuple3Type<?, ?, ?> tupleType, Long e1,
+      Long e2, Long e3) {
       TupleData data = createTuple2Data(version, branch, tupleType, e1, e2);
       data.setElement3(e3);
       return data;
    }
 
    @Override
-   public TupleData createTuple4Data(VersionData version, BranchId branch, Tuple4Type<?, ?, ?, ?> tupleType, Long e1, Long e2, Long e3, Long e4) {
+   public TupleData createTuple4Data(VersionData version, BranchId branch, Tuple4Type<?, ?, ?, ?> tupleType, Long e1,
+      Long e2, Long e3, Long e4) {
       TupleData data = createTuple2Data(version, branch, tupleType, e1, e2);
       data.setElement3(e3);
       data.setElement4(e4);
@@ -253,7 +272,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, Long artifactType, ModificationType modType, String guidToSet, ApplicabilityId applicId) {
+   public ArtifactData createArtifactData(VersionData version, ArtifactId artifactId, Long artifactType,
+      ModificationType modType, String guidToSet, ApplicabilityId applicId) {
       return createArtifactData(version, artifactId, tokenService.getArtifactType(artifactType), modType, guidToSet,
          applicId);
    }

@@ -44,7 +44,8 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
    }
 
    @Override
-   protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt, Options options) {
+   protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt,
+      Options options) {
       RelationData toReturn = null;
 
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
@@ -53,12 +54,13 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
       RelationTypeToken relationType = tokenService.getRelationTypeOrCreate(chStmt.getLong("rel_type"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
+      int rel_order = chStmt.getInt("rel_order");
 
       boolean historical = OptionsUtil.isHistorical(options);
 
       CreateConditions condition = asConditions(conditions);
-      if (!condition.isSame(branch, aArtId, bArtId, relationType)) {
-         condition.saveConditions(branch, aArtId, bArtId, relationType, gammaId);
+      if (!condition.isSame(branch, aArtId, bArtId, relationType, rel_order)) {
+         condition.saveConditions(branch, aArtId, bArtId, relationType, gammaId, rel_order);
 
          TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
@@ -69,7 +71,6 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
 
          ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
-         int rel_order = chStmt.getInt("rel_order");
          ArtifactId relArtId = ArtifactId.valueOf(chStmt.getLong("rel_art_id"));
 
          toReturn =
@@ -100,18 +101,21 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
       ArtifactId previousArtIdB = ArtifactId.SENTINEL;
       RelationTypeToken previousTypeId = RelationTypeToken.SENTINEL;
       GammaId previousGammaId = GammaId.SENTINEL;
+      int previousRelOrder = 0;
 
-      boolean isSame(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId) {
+      boolean isSame(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId, int relOrder) {
          return previousBranchId.equals(branch) && previousArtIdA.equals(aArtId) && previousArtIdB.equals(
-            bArtId) && previousTypeId.equals(typeId);
+            bArtId) && previousTypeId.equals(typeId) && previousRelOrder == relOrder;
       }
 
-      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId, GammaId gammaId) {
+      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeToken typeId,
+         GammaId gammaId, int relOrder) {
          previousBranchId = branch;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;
          previousTypeId = typeId;
          previousGammaId = gammaId;
+         previousRelOrder = relOrder;
       }
    }
 }
