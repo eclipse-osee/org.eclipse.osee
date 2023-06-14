@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +42,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -166,22 +167,77 @@ public class TransactionEndpointTest {
       testWrapUp(json, CoreAttributeTypes.BaselinedBy, testArtId);
    }
 
-  //Still need to add ability to handle binary data
-  /**
+   //Still need to add ability to handle binary data
+   /**
+    * @Test public void testAddBinaryDataAttribute() { String json; try { InputStream testBinaryData =
+    * Lib.stringToInputStream("Test Binary Data Attribute"); json = setupTransferJson(CoreArtifactTypes.ImageArtifact,
+    * AttributeTypeId.valueOf(CoreAttributeTypes.ImageContent.getId()), testBinaryData); } catch
+    * (UnsupportedEncodingException ex) { throw new OseeCoreException("Failed to add attribute during
+    * testAddBinaryDataAttribute"); } Response response =
+    * jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+    * assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily()); }
+    */
+
    @Test
-   public void testAddBinaryDataAttribute() {
-      String json;
+   public void testArtifactDeletionTransfer() {
+      //Create an artifact on SAW_PL_Working_Branch and transfer it to SAW_PL_Hardening_Branch
+      SkynetTransaction addArtTransaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + ": Create Artifact for Deletion");
+      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement,
+         DemoBranches.SAW_PL_Working_Branch, "Artifact for DeletionTestTransfer");
+      addArtTransaction.addArtifact(artifact);
+      TransactionToken addArtTx = addArtTransaction.execute();
+      TransactionToken priorTxToken = TransactionManager.getPriorTransaction(addArtTx);
+      TransactionBuilderData txDataAddArt = transactionEndpoint.exportTxsDiff(priorTxToken, addArtTx);
+      txDataAddArt.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      ObjectMapper mapperAddArt = new ObjectMapper();
+      String addArtJson;
       try {
-         InputStream testBinaryData = Lib.stringToInputStream("Test Binary Data Attribute");
-         json = setupTransferJson(CoreArtifactTypes.ImageArtifact,
-            AttributeTypeId.valueOf(CoreAttributeTypes.ImageContent.getId()), testBinaryData);
-      } catch (UnsupportedEncodingException ex) {
-         throw new OseeCoreException("Failed to add attribute during testAddBinaryDataAttribute");
+         addArtJson = mapperAddArt.writeValueAsString(txDataAddArt);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json in for creating a artifact");
       }
-      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
-      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+      Response responseAddArt =
+         jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(addArtJson));
+      assertEquals(Family.SUCCESSFUL, responseAddArt.getStatusInfo().getFamily());
+
+      //Ensure Artifact is created on SAW_PL_Hardening_Branch
+      assertTrue(artifact.getId().equals(
+         ArtifactQuery.getArtifactFromId(artifact, DemoBranches.SAW_PL_Hardening_Branch).getId()));
+
+      //Delete the Artifact on the SAW_PL_Working_Branch and transfer it to SAW_PL_Hardening_Branch
+      SkynetTransaction deleteArtTransaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + ": Delete Artifact Transaction");
+      artifact.deleteAndPersist(deleteArtTransaction);
+      TransactionToken deleteArtTx = deleteArtTransaction.execute();
+      priorTxToken = TransactionManager.getPriorTransaction(deleteArtTx);
+      TransactionBuilderData txDataDeleteArt = transactionEndpoint.exportTxsDiff(priorTxToken, deleteArtTx);
+      txDataDeleteArt.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      ObjectMapper mapperDeleteArt = new ObjectMapper();
+      String deleteArtJson;
+      try {
+         deleteArtJson = mapperDeleteArt.writeValueAsString(txDataDeleteArt);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json for deleting a artifact");
+      }
+      Response responseDeleteArt =
+         jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(deleteArtJson));
+      assertEquals(Family.SUCCESSFUL, responseDeleteArt.getStatusInfo().getFamily());
+      //Need to decache the branch because it was previously getting the undeleted artifact from the cache
+      ArtifactCache.deCache(DemoBranches.SAW_PL_Hardening_Branch);
+
+      //Ensure Artifact is deleted on SAW_PL_Hardening_Branch
+      assertTrue(ArtifactQuery.getArtifactFromId(artifact, DemoBranches.SAW_PL_Hardening_Branch,
+         DeletionFlag.allowDeleted(true)).isDeleted());
+
+      //Test Cleanup
+      try {
+         purge(addArtTx);
+         purge(deleteArtTx);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to purge Transaction in testArtifactDeletionTransfer");
+      }
    }
-   */
 
    /**
     * Helper method that will create a new Artifact with a single added attribute and return the Transfer Json created
