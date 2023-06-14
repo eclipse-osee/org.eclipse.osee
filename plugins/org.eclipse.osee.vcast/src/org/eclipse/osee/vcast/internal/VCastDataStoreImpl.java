@@ -657,7 +657,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
                   cond_expr = simp_expr;
                } else {
                   num_conditions = (num_conditions - 2) / 2; //This vectorcast's logic for getting condition count
-                  variableFullName = String.format("%d (%s)", cond_index, variable.toUpperCase());
+                  variableFullName = String.format("%d (P%s)", cond_index, variable.toLowerCase());
                }
             } else {
                // Not an MCDC pair so name wont matter

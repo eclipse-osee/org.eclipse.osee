@@ -41,8 +41,12 @@ app.factory('CoverageFactory', function() {
         }
 	}
 	
-	CoverageFactory.getSatisfiedPairs = function(annotation) {
-		return satisfiedPairs;
+	CoverageFactory.getPossiblePairs = function(annotation) {
+		return annotation.possiblePairs;
+	}
+	
+	CoverageFactory.getPairs = function(annotation) {
+		return annotation.Pairs;
 	}
     
 	var getReasonWhyIncomplete = function(annotation) {
@@ -89,33 +93,35 @@ app.factory('CoverageFactory', function() {
             if (annotation.name.match(/\d+\.\w+\..+/gi)) {
                 var parentAnnotation = {};
                 annotation.id = annotation.guid;
-                var leadingLocRefs = annotation.locationRefs.split(".")[0];
-                parentAnnotation.locationRefs = leadingLocRefs;
+                var parentLocRefs = annotation.locationRefs.split(".")[0];
+                parentAnnotation.locationRefs = parentLocRefs;
                 parentAnnotation.id = annotation.guid;
                 parentAnnotation.guid = annotation.guid;
                 parentAnnotation.parentId = -1;
 
+
+				
                 var metadata = {};
                 metadata.childrenComplete = true;
-            	metadata.totalCount = 0;
-            	metadata.completeCount = 0;
-            	metadata.runningTotalCount = 0;
-            	metadata.runningCompleteCount = 0;
-            	parentAnnotation.isTopLevel = true;
+            	 metadata.totalCount = 0;
+            	 metadata.completeCount = 0;
+            	 metadata.runningTotalCount = 0;
+            	 metadata.runningCompleteCount = 0;
+            	 parentAnnotation.isTopLevel = true;
                 parentAnnotation.childMetadata = metadata;
-
-                var childrenStack = getAnnotationsStartsWith(annotationsStack, leadingLocRefs, false, true);
-                var childrenAsTree = createTreeAnnotations(annotationsStack, parentAnnotation, childrenStack, 1, metadata);
+				
+                var childrenStack = getAnnotationsStartsWith(annotationsStack, parentLocRefs + ".", true);
+                var childrenAsTree = createTreeAnnotations(annotationsStack, parentAnnotation, childrenStack, 1, metadata, false);
                 parentAnnotation.children = childrenAsTree;
                 parentAnnotation.$treeLevel = 0;
                 populatePercentData(parentAnnotation);
                 
                 toReturn.push(parentAnnotation);
-            } else if (annotation.name.match(/\d+\.\d+\s+\(.\)/)) {
+            } else if (annotation.name.match(/\d+\.\d+\s+\(.*\)/)) {
                 var parentAnnotation = {};
                 annotation.id = annotation.guid;
-                var leadingLocRefs = annotation.locationRefs.split(".")[0];
-                parentAnnotation.locationRefs = leadingLocRefs;
+                var parentLocRefs = annotation.locationRefs.split(".")[0];
+                parentAnnotation.locationRefs = parentLocRefs;
                 parentAnnotation.id = annotation.guid;
                 parentAnnotation.guid = annotation.guid;
                 parentAnnotation.parentId = -1;
@@ -129,11 +135,16 @@ app.factory('CoverageFactory', function() {
             	 parentAnnotation.isTopLevel = true;
                 parentAnnotation.childMetadata = metadata;
 
-				var conditionStack = getAnnotationsStartsWith(annotationsStack, leadingLocRefs, false, true);
-                var conditionAsTree = createTreeAnnotations(annotationsStack, parentAnnotation, Object.values(annotation.pairAnnotations), 1, metadata);
-				parentAnnotation.children = conditionAsTree;
-				parentAnnotation.$treeLevel = 0;
-				
+				    var conditionStack = getAnnotationsStartsWith(annotationsStack, parentLocRefs + ".", true);
+                var conditionStackForPairs = conditionStack.slice();
+				    var conditionAsTree = createTreeAnnotations(annotationsStack, parentAnnotation, conditionStack, 2, metadata);
+				    parentAnnotation.children = conditionAsTree;
+				    parentAnnotation.$treeLevel = 0;
+				    for (var i = 0; i < conditionStackForPairs.length; i++) {
+	                var pairsAsTree = createTreeAnnotations(annotationsStack, conditionStackForPairs[i], Object.values(conditionStackForPairs[i].pairAnnotations), 3, metadata);
+					    conditionStackForPairs[i].children = pairsAsTree;
+					    conditionStackForPairs[i].$treeLevel = 2;
+				    }
                 toReturn.push(parentAnnotation);              
             } else {
                 annotationsStack.pop();
@@ -158,7 +169,14 @@ app.factory('CoverageFactory', function() {
         	metadata.childrenComplete = true;
         	metadata.totalCount = 0;
         	metadata.completeCount = 0;
-            var children = getAnnotationsStartsWith(childrenStack, parent.locationRefs, false, true);
+            var children = getAnnotationsStartsWith(childrenStack, parent.locationRefs + ".", true);
+			children.sort(function(a, b){
+				var aSplit = a.locationRefs.split(".");
+				var bSplit = b.locationRefs.split(".");
+				if (aSplit.length == bSplit.length) {
+					return aSplit[aSplit.length-1] - bSplit[bSplit.length-1];
+				}
+			});
             for (var i = 0; i < children.length; i++) {
             	metadata.totalCount++;
                 children[i].$$treeLevel = level;
@@ -189,7 +207,7 @@ app.factory('CoverageFactory', function() {
                 self.locationRefs = leadingLocRefs;
                 self.$$treeLevel = level;
                 var childMetadata = {};
-                self.children = createTreeAnnotations(annotationsStack, self, childrenStack, level + 1, childMetadata);
+				    self.children = createTreeAnnotations(annotationsStack, self, childrenStack, level + 1, childMetadata);
                 self.childMetadata = childMetadata
                 metadata.childrenComplete = metadata.childrenComplete && childMetadata.childMetadata;
                 if(metadata.childrenComplete) {
@@ -262,23 +280,20 @@ app.factory('CoverageFactory', function() {
     }
 
     
-    var getAnnotationsStartsWith = function(annotationsStack, startsWith, isWholeString, isPop) {
+    var getAnnotationsStartsWith = function(annotationsStack, startsWith, isPop) {
         var searchStr = startsWith; 
-    	if(!isWholeString) {
-        	searchStr = startsWith + ".";
-        }
         var annotationsStackOrig = annotationsStack.slice();
         var toReturn = [];
         var toDelete = [];
-        for (var i = 0; i < annotationsStack.length; i++) {
+        for (var i = annotationsStack.length - 1; i >= 0; i--) {
             var annotation = annotationsStackOrig[i];
-            if ((!isWholeString && annotation.locationRefs.startsWith(searchStr)) || (isWholeString && annotation.locationRefs == searchStr)) {
+            if (annotation.locationRefs.startsWith(searchStr)) {
                 toDelete.push(i);
                 toReturn.push(annotation);
             }
         }
         if (isPop) {
-            for (var i = toDelete.length - 1; i >= 0; i--) {
+            for (var i = 0; i < toDelete.length; i++) {
                 annotationsStack.splice(toDelete[i], 1);
             }
         }
