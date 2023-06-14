@@ -57,8 +57,9 @@ public class XEstimatedPointsWidget extends XHyperlinkLabelCmdValueSelDam implem
    @Override
    public boolean handleClear() {
       IAtsChangeSet changes = atsApi.createChangeSet("Remove Points");
-      changes.deleteAttributes(workItem, getAttributeType());
+      changes.deleteAttributes(workItem, getPointsAttrType());
       changes.executeIfNeeded();
+      refresh();
       return true;
    }
 

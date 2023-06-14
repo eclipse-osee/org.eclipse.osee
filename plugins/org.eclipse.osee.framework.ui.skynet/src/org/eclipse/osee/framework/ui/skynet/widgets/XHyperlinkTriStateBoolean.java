@@ -68,8 +68,9 @@ public class XHyperlinkTriStateBoolean extends XHyperlinkLabelValueSelection {
             MessageDialog.QUESTION, 3, buttonLabels.toArray(new String[buttonLabels.size()]));
 
          int selectednum = dialog.open();
+
          // not cancelled
-         if (selectednum != buttonLabels.size() - 1) {
+         if (selectednum >= 0 && selectednum != buttonLabels.size() - 1) {
             String selectedStr = getSelectable().toArray(new String[getSelectable().size()])[selectednum];
             selected = BooleanState.valueOf(selectedStr);
             handleSelectionPersist(selected);
