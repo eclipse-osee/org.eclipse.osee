@@ -49,15 +49,16 @@ public abstract class XButtonWithLabelDam extends XButton implements ArtifactWid
       if (Widgets.isAccessible(labelWidget)) {
 
          Displays.ensureInDisplayThread(new Runnable() {
-
             @Override
             public void run() {
                resultsLabelWidget.setText(getResultsText());
                resultsLabelWidget.getParent().layout(true);
                resultsLabelWidget.getParent().getParent().layout(true);
+               validate();
             }
          });
       }
+
    }
 
    protected abstract String getResultsText();

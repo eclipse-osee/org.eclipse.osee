@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.column;
 
+import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -121,9 +122,10 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
       AtsApi atsApi) {
       if (pointsAttrType == AtsAttributeTypes.PointsNumeric) {
          EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
+         dialog.setNumberFormat(NumberFormat.getInstance());
          if (dialog.open() == Window.OK) {
             String entry = dialog.getEntry();
-            if (org.eclipse.osee.framework.jdk.core.util.Strings.isNumeric(entry)) {
+            if (Strings.isNumeric(entry)) {
                try {
                   double points = Double.valueOf(entry);
                   IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
@@ -135,11 +137,12 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
                } catch (Exception ex) {
                   // do nothing
                }
-            } else if (Strings.isInValid(entry)) {
+            } else if (Strings.isInvalidOrBlank(entry)) {
                IAtsChangeSet changes = atsApi.createChangeSet("Set Points");
                for (IAtsWorkItem workItem : workItems) {
                   changes.deleteAttributes(workItem, pointsAttrType);
                }
+               changes.executeIfNeeded();
             }
          }
       } else {

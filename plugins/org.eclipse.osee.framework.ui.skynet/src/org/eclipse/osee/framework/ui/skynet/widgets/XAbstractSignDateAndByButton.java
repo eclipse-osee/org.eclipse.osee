@@ -90,7 +90,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    private final XModifiedListener listener = new XModifiedListener() {
       @Override
-      public void widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget widget) {
+      public void widgetModified(XWidget widget) {
          handleSelection();
       }
    };
@@ -107,7 +107,6 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
             doSign = true;
          }
          Job signJob = new Job(getSignMessage()) {
-
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                if (res == 2) {
@@ -125,6 +124,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
             }
          };
          Operations.scheduleJob(signJob, false, Job.SHORT, null);
+
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -138,11 +138,13 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
       return true;
    }
 
-   public static void setSigned(Artifact artifact, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrType, String label, boolean signed) {
+   public static void setSigned(Artifact artifact, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrType,
+      String label, boolean signed) {
       setSigned(Collections.singleton(artifact), signDateAttrType, signByAttrType, label, signed);
    }
 
-   public static void setSigned(Collection<Artifact> artifacts, AttributeTypeId signDateAttrType, AttributeTypeId signByAttrType, String label, boolean signed) {
+   public static void setSigned(Collection<Artifact> artifacts, AttributeTypeId signDateAttrType,
+      AttributeTypeId signByAttrType, String label, boolean signed) {
       SkynetTransaction tx =
          TransactionManager.createTransaction(artifacts.iterator().next().getBranch(), "Set signed for " + label);
       for (Artifact art : artifacts) {
@@ -173,7 +175,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam {
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry()) {
+      if (isRequiredEntry() && getResultsText().equals(NOT_YET_SIGNED)) {
          Date date = getArtifact().getSoleAttributeValue(signDateAttrType, null);
          if (date == null) {
             return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be signed");
