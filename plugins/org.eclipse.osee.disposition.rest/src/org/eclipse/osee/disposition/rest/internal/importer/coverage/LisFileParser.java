@@ -263,6 +263,17 @@ public class LisFileParser implements DispoImporterApi {
          String line = datId.replaceAll("\\d*:\\d*:", "");
          line = line.replaceAll(":", "");
          String text = "";
+         if (line.endsWith("RESULT")) {
+            String lineF = line + ".F";
+            Discrepancy matchingDiscrepancyF = matchDiscrepancy(lineF, item.getDiscrepanciesList());
+            if (matchingDiscrepancyF != null) {
+               text = matchingDiscrepancyF.getText();
+               Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+               discrepancies.remove(matchingDiscrepancyF.getId());
+               addAnnotationForCoveredLine(item, lineF, Exception_Handling_Resolution, "", text);
+            }
+            line = line + ".T";
+         }
          Discrepancy matchingDiscrepancy = matchDiscrepancy(line, item.getDiscrepanciesList());
          if (matchingDiscrepancy != null) {
             text = matchingDiscrepancy.getText();
@@ -468,36 +479,40 @@ public class LisFileParser implements DispoImporterApi {
                int conditionIndex = statementCoverageItem.getCondIndex();
 
                if (conditionIndex > 0) {
-
                   ArrayList<VCastMcdcCoveragePairRow> coverageRows = statementCoverageItem.getCoverageRows();
-
-                  //Table of Row, Condition, Truth Value
-                  Table<Integer, Integer, Boolean> truthTable = mcdcTruthTable(numberOfConditions);
-
-                  //Map of Row, Successful Pair for the current condition.
-                  Multimap<Integer, Integer> allPairs = determineMcdcPairs(truthTable, coverageRows, conditionIndex);
-
                   Map<Integer, DispoPairAnnotation> pairAnnotations = new HashMap<>();
-                  for (VCastMcdcCoveragePairRow coverageRow : coverageRows) {
-                     int rowValue = coverageRow.getRowValue();
-                     if (!allPairs.containsKey(rowValue)) {
-                        continue;
+                  if (numberOfConditions <= 8) {
+
+                     //Table of Row, Condition, Truth Value
+                     Table<Integer, Integer, Boolean> truthTable = mcdcTruthTable(numberOfConditions);
+
+                     //Map of Row, Successful Pair for the current condition.
+                     Multimap<Integer, Integer> allPairs = determineMcdcPairs(truthTable, coverageRows, conditionIndex);
+
+                     for (VCastMcdcCoveragePairRow coverageRow : coverageRows) {
+                        int rowValue = coverageRow.getRowValue();
+                        if (!allPairs.containsKey(rowValue)) {
+                           continue;
+                        }
+                        boolean isRowCovered = coverageRow.getMaxHitCount() > 0;
+                        String truthRowText = "";
+                        for (Map.Entry<Integer, Boolean> truthRow : truthTable.row(rowValue).entrySet()) {
+                           truthRowText = String.format("%s%s=%b  ", truthRowText,
+                              LETTERS.charAt(truthRow.getKey() - 1), truthRow.getValue());
+                        }
+                        if (coverageRow.getRowResult() == 1) {
+                           truthRowText = String.format("%sResult=%b", truthRowText, true);
+                        } else {
+                           truthRowText = String.format("%sResult=%b", truthRowText, false);
+                        }
+                        pairAnnotations.put(rowValue, createPairAnnotation(location + "." + rowValue, truthRowText,
+                           isRowCovered, rowValue, allPairs.get(rowValue)));
                      }
-                     boolean isRowCovered = coverageRow.getMaxHitCount() > 0;
-                     String truthRowText = "";
-                     for (Map.Entry<Integer, Boolean> truthRow : truthTable.row(rowValue).entrySet()) {
-                        truthRowText = String.format("%s%s=%b  ", truthRowText, LETTERS.charAt(truthRow.getKey() - 1),
-                           truthRow.getValue());
-                     }
-                     if (coverageRow.getRowResult() == 1) {
-                        truthRowText = String.format("%sResult=%b", truthRowText, true);
-                     } else {
-                        truthRowText = String.format("%sResult=%b", truthRowText, false);
-                     }
-                     pairAnnotations.put(rowValue, createPairAnnotation(location + "." + rowValue, truthRowText,
-                        isRowCovered, rowValue, allPairs.get(rowValue)));
+                     addMcdcDiscrepancy(discrepancies, location, text, pairAnnotations, "", false);
+                  } else {
+                     String overloadedText = String.format("", numberOfConditions);
+                     addMcdcDiscrepancy(discrepancies, location, text, pairAnnotations, overloadedText, true);
                   }
-                  addMcdcDiscrepancy(discrepancies, location, text, pairAnnotations);
                }
             } else { // May be a case or WHILE (1) statement, which should only test for True
                text = lineData.getFirst().trim();
@@ -655,6 +670,19 @@ public class LisFileParser implements DispoImporterApi {
       discrepancies.put(id, newDiscrepancy);
    }
 
+   private void addMcdcDiscrepancy(Map<String, Discrepancy> discrepancies, String location, String text,
+      Map<Integer, DispoPairAnnotation> pairAnnotations, String devNotes, boolean isOverloadedCondition) {
+      String id = String.valueOf(Lib.generateUuid());
+      Discrepancy newDiscrepancy = new Discrepancy();
+      newDiscrepancy.setId(id);
+      newDiscrepancy.setLocation(location);
+      newDiscrepancy.setText(text);
+      newDiscrepancy.setPairAnnotations(pairAnnotations);
+      newDiscrepancy.setDevNotes(devNotes);
+      newDiscrepancy.setIsOverloadedCondition(isOverloadedCondition);
+      discrepancies.put(id, newDiscrepancy);
+   }
+
    private DispoPairAnnotation createPairAnnotation(String location, String text, boolean isRowCovered, int row,
       Collection<Integer> collection) {
       String id = String.valueOf(Lib.generateUuid());
@@ -668,17 +696,6 @@ public class LisFileParser implements DispoImporterApi {
       pairAnnotation.setLocationRefs(location);
 
       return pairAnnotation;
-   }
-
-   private void addMcdcDiscrepancy(Map<String, Discrepancy> discrepancies, String location, String text,
-      Map<Integer, DispoPairAnnotation> pairAnnotations) {
-      String id = String.valueOf(Lib.generateUuid());
-      Discrepancy newDiscrepancy = new Discrepancy();
-      newDiscrepancy.setId(id);
-      newDiscrepancy.setLocation(location);
-      newDiscrepancy.setText(text);
-      newDiscrepancy.setPairAnnotations(pairAnnotations);
-      discrepancies.put(id, newDiscrepancy);
    }
 
    private String generateDatId(Object... ids) {
@@ -855,12 +872,10 @@ public class LisFileParser implements DispoImporterApi {
 
    private void processMultiResultMCDC(String resultPath, Matcher m) {
       DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
-
       if (item != null) {
          Integer lineNumber = Integer.valueOf(m.group(3));
          Integer bitsValue = Integer.valueOf(m.group(4));
          Integer bitsMask = Integer.valueOf(m.group(5));
-
          Map<String, Boolean> bitsTrueMap =
             getBitToBoolean(Integer.toString(bitsValue, 2), Integer.toString(bitsMask, 2));
 
@@ -879,11 +894,14 @@ public class LisFileParser implements DispoImporterApi {
             if (matchingDiscrepancy != null) {
                String text = matchingDiscrepancy.getText();
                Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
-               if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty()) {
+               if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty() && !matchingDiscrepancy.getIsOverloadedCondition()) {
                   Map<Integer, DispoPairAnnotation> pairAnnotations = new HashMap<>();
                   pairAnnotations.putAll(matchingDiscrepancy.getPairAnnotations());
                   addAnnotationForCoveredMcdcLine(item, location, Test_Unit_Resolution, resultPath, text,
                      pairAnnotations);
+               } else if (matchingDiscrepancy.getIsOverloadedCondition()) {
+                  addAnnotationForOverloadedMcdcLine(item, location, text, resultPath,
+                     matchingDiscrepancy.getDevNotes());
                } else {
                   addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
                }
@@ -900,7 +918,7 @@ public class LisFileParser implements DispoImporterApi {
       if (abbrevCond.length() != 1 || abbrevCond.charAt(0) < 65 || abbrevCond.charAt(0) > 90) {
          return String.format("%s.%s.%s", lineNumber, abbrevCond, TorF);
       }
-      return String.format("%s.%s", lineNumber, abbrevCond.charAt(0) - 64 + " (" + abbrevCond + ")");
+      return String.format("%s.%s", lineNumber, abbrevCond.charAt(0) - 64 + " (P" + abbrevCond.toLowerCase() + ")");
    }
 
    private Map<String, Boolean> getBitToBoolean(String bitsValue, String bitsMask) {
@@ -1026,6 +1044,29 @@ public class LisFileParser implements DispoImporterApi {
       annotationsList.add(newIndex, newAnnotation);
    }
 
+   private void addAnnotationForOverloadedMcdcLine(DispoItemData item, String location, String text,
+      String lastResolution, String developerNotes) {
+      DispoAnnotationData newAnnotation = new DispoAnnotationData();
+      dataFactory.initAnnotation(newAnnotation);
+      String idOfNewAnnotation = dataFactory.getNewId();
+      newAnnotation.setId(idOfNewAnnotation);
+
+      newAnnotation.setIsDefault(false);
+      newAnnotation.setLocationRefs(location);
+      newAnnotation.setResolutionType("");
+      newAnnotation.setResolution("");
+      newAnnotation.setLastResolution(lastResolution);
+      newAnnotation.setIsResolutionValid(false);
+      newAnnotation.setCustomerNotes(text);
+      newAnnotation.setDeveloperNotes(developerNotes);
+      dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
+
+      List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
+      int newIndex = annotationsList.size();
+      newAnnotation.setIndex(newIndex);
+      annotationsList.add(newIndex, newAnnotation);
+   }
+
    private void addAnnotationForCoveredMcdcLine(DispoItemData item, String location, String resolutionType,
       String coveringFile, String text, Map<Integer, DispoPairAnnotation> pairAnnotations) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
@@ -1038,17 +1079,19 @@ public class LisFileParser implements DispoImporterApi {
 
       newAnnotation.setLastResolution("N/A");
       newAnnotation.setCustomerNotes(text);
-      List<String> satisfiedPairs = checkSatisfiedPairs(pairAnnotations, resolutionType, coveringFile);
+      String possiblePairs = getPossiblePairs(pairAnnotations);
+      String satisfiedPairs = getSatisfiedPairs(pairAnnotations, resolutionType, coveringFile);
+      newAnnotation.setPossiblePairs(possiblePairs);
       if (!satisfiedPairs.isEmpty()) {
          newAnnotation.setResolutionType(resolutionType);
          newAnnotation.setResolution(coveringFile);
          newAnnotation.setIsResolutionValid(true);
-         newAnnotation.setSatisfiedPairs(satisfiedPairs.toString());
+         newAnnotation.setPairs(satisfiedPairs);
       } else {
          newAnnotation.setResolutionType("");
          newAnnotation.setResolution("");
          newAnnotation.setIsResolutionValid(false);
-         newAnnotation.setSatisfiedPairs("");
+         newAnnotation.setPairs("No Pairs Satisfied");
       }
       newAnnotation.setPairAnnotations(pairAnnotations);
 
@@ -1058,14 +1101,13 @@ public class LisFileParser implements DispoImporterApi {
       annotationsList.add(newIndex, newAnnotation);
    }
 
-   private List<String> checkSatisfiedPairs(Map<Integer, DispoPairAnnotation> pairAnnotations, String resolutionType,
+   private String getSatisfiedPairs(Map<Integer, DispoPairAnnotation> pairAnnotations, String resolutionType,
       String resolution) {
       List<String> satisfiedPairs = new ArrayList<>();
       for (DispoPairAnnotation pairAnnotation : pairAnnotations.values()) {
          if (pairAnnotation.getIsRowCovered()) {
             pairAnnotation.setResolutionType(resolutionType);
             pairAnnotation.setResolution(resolution);
-
             for (int pair : pairAnnotation.getPairs()) {
                int sideARow = pairAnnotation.getRow();
                if (sideARow < pair && pairAnnotations.get(pair).getIsRowCovered()) {
@@ -1074,7 +1116,20 @@ public class LisFileParser implements DispoImporterApi {
             }
          }
       }
-      return satisfiedPairs;
+      return String.format("Pairs Satisfied By: %s", satisfiedPairs.toString());
+   }
+
+   private String getPossiblePairs(Map<Integer, DispoPairAnnotation> pairAnnotations) {
+      List<String> possiblePairs = new ArrayList<>();
+      for (DispoPairAnnotation pairAnnotation : pairAnnotations.values()) {
+         for (int pair : pairAnnotation.getPairs()) {
+            int sideARow = pairAnnotation.getRow();
+            if (sideARow < pair && pairAnnotations.get(pair).getIsRowCovered()) {
+               possiblePairs.add(String.format("%s/%s", sideARow, pair));
+            }
+         }
+      }
+      return String.format("Possible Pairs: %s", possiblePairs.toString());
    }
 
    private Collection<VCastResult> getResultFiles(VCastDataStore dataStore) {

@@ -41,7 +41,8 @@ public class DispoAnnotationData {
    private boolean isDefault;
    private boolean isAnalyze;
    private String resolutionMethodType;
-   private String satisfiedPairs; //Used for MCDC pair coverage
+   private String possiblePairs; //Used for MCDC pair coverage, gets all of the possible pairs
+   private String pairs; //Used for MCDC pair coverage, gets all of the satisfied pairs for a Pair Px
    private Map<Integer, DispoPairAnnotation> pairAnnotations; //Used for MCDC pair coverage
 
    public DispoAnnotationData() {
@@ -109,8 +110,12 @@ public class DispoAnnotationData {
       return resolutionMethodType;
    }
 
-   public String getSatisfiedPairs() {
-      return satisfiedPairs;
+   public String getPossiblePairs() {
+      return possiblePairs;
+   }
+
+   public String getPairs() {
+      return pairs;
    }
 
    public Map<Integer, DispoPairAnnotation> getPairAnnotations() {
@@ -188,8 +193,12 @@ public class DispoAnnotationData {
       this.idsOfCoveredDiscrepancies = new ArrayList<>();
    }
 
-   public void setSatisfiedPairs(String satisfiedPairs) {
-      this.satisfiedPairs = satisfiedPairs;
+   public void setPossiblePairs(String possiblePairs) {
+      this.possiblePairs = possiblePairs;
+   }
+
+   public void setPairs(String pairs) {
+      this.pairs = pairs;
    }
 
    public void setPairAnnotations(Map<Integer, DispoPairAnnotation> pairAnnotation) {

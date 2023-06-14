@@ -159,7 +159,7 @@ app.controller('userController', [
 
                 var delta = bSplit[0] - aSplit[0];
                 if (delta == 0) {
-					     const regex = (/\d+\.\d+\s+\(.\)/);
+					     const regex = (/\d+\.\d+\s+\(.*\)/);
                     if (isValidSize(aSplit, bSplit) && bSplit[1].match("RESULT") && !aSplit[1].match("RESULT")) {
                         return -1;
                     } else if (isValidSize(aSplit, bSplit) && !bSplit[1].match("RESULT") && aSplit[1].match("RESULT")) {
@@ -330,6 +330,8 @@ app.controller('userController', [
         $scope.getTextResolutionType = function(annotation) {
             if (annotation.isLeaf) {
                 return annotation.resolutionType;
+            } else if (annotation.locationRefs.match(/^\d+\.\d+ \(.*\)$/)) {
+                return annotation.resolutionType;
             } else {
                 return "-----------------";
             }
@@ -351,18 +353,24 @@ app.controller('userController', [
         	}
         }
 
-        $scope.satisfiedPairs = function(annotation) {
+        $scope.getPairs = function(annotation) {
         	if($scope.isCoverage) {
-        		return CoverageFactory.getSatisfiedPairs(annotation);
+				var pairs = CoverageFactory.getPairs(annotation);
+				if(pairs == "No Pairs Satisfied") {
+					return CoverageFactory.getPossiblePairs(annotation);
+				}
+				return CoverageFactory.getPairs(annotation);
         	} else {
-        		return annotation.satisfiedPairs;
+        		return "";
         	}
         }
         
         $scope.getTextCoverage = function(annotation) {
         	if(annotation.isLeaf) {
         		return annotation.customerNotes;
-        	} else {
+        	} else if (annotation.locationRefs.match(/^\d+\.\d+ \(.*\)$/)) {
+            return annotation.customerNotes;
+         } else {
         		return "";
         	}
         }
