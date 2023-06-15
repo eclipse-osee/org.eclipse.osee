@@ -227,9 +227,14 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
 
       resultAtsArts.addAll(teamArts);
 
-      // This does artId search
+      // This does artId search; Not all are have to be numeric ids, so check first
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
-         List<ArtifactId> artifactIds = Collections.fromString(data.getEnteredIds(), ArtifactId::valueOf);
+         List<ArtifactId> artifactIds = new ArrayList<>();
+         for (String idStr : Collections.fromString(data.getEnteredIds(), ",")) {
+            if (Strings.isNumeric(idStr)) {
+               artifactIds.add(ArtifactId.valueOf(idStr));
+            }
+         }
          for (Artifact art : ArtifactQuery.getArtifactListFrom(artifactIds, data.getBranchForIncludeArtIds())) {
             artifacts.add(art);
          }
