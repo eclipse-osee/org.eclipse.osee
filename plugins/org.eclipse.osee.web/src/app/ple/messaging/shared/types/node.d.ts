@@ -23,6 +23,13 @@ export interface nodeData {
 	interfaceNodeBgColor: string;
 	interfaceNodeAddress: string;
 	applicability?: applic;
+	interfaceNodeBuildCodeGen: boolean;
+	interfaceNodeCodeGen: boolean;
+	interfaceNodeCodeGenName: string;
+	interfaceNodeNameAbbrev: string;
+	interfaceNodeToolUse: boolean;
+	interfaceNodeType: string;
+	notes: string;
 }
 
 export interface nodeDataWithChanges extends nodeData {
@@ -38,6 +45,13 @@ export interface nodeChanges {
 	interfaceNodeBgColor?: difference;
 	interfaceNodeAddress?: difference;
 	applicability?: difference;
+	interfaceNodeBuildCodeGen?: difference;
+	interfaceNodeCodeGen?: difference;
+	interfaceNodeCodeGenName?: difference;
+	interfaceNodeNameAbbrev?: difference;
+	interfaceNodeToolUse?: difference;
+	interfaceNodeType?: difference;
+	notes?: difference;
 }
 
 export interface node {
@@ -56,6 +70,13 @@ export interface nodeToken {
 	applicability?: applic;
 	color?: string;
 	address?: string;
+	interfaceNodeBuildCodeGen?: boolean;
+	interfaceNodeCodeGen?: boolean;
+	interfaceNodeCodeGenName?: string;
+	interfaceNodeNameAbbrev?: string;
+	interfaceNodeToolUse?: boolean;
+	interfaceNodeType?: string;
+	notes?: string;
 }
 
 export interface OseeNode<T> extends Omit<Node, 'data'> {

@@ -669,6 +669,13 @@ describe('CurrentGraphService', () => {
 								interfaceNodeAddress: '',
 								interfaceNodeBgColor: '',
 								description: '',
+								interfaceNodeBuildCodeGen: false,
+								interfaceNodeCodeGen: false,
+								interfaceNodeCodeGenName: '',
+								interfaceNodeNameAbbrev: '',
+								interfaceNodeToolUse: false,
+								interfaceNodeType: '',
+								notes: '',
 								applicability: {
 									id: '1',
 									name: 'Base',

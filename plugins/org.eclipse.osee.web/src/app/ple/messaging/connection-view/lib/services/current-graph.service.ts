@@ -696,6 +696,13 @@ export class CurrentGraphService {
 				changes: {},
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',
+				interfaceNodeBuildCodeGen: false,
+				interfaceNodeCodeGen: false,
+				interfaceNodeCodeGenName: '',
+				interfaceNodeNameAbbrev: '',
+				interfaceNodeToolUse: false,
+				interfaceNodeType: '',
+				notes: '',
 			},
 			id: '-1',
 		};
@@ -763,6 +770,13 @@ export class CurrentGraphService {
 				deleted: true,
 				interfaceNodeAddress: '',
 				interfaceNodeBgColor: '',
+				interfaceNodeBuildCodeGen: false,
+				interfaceNodeCodeGen: false,
+				interfaceNodeCodeGenName: '',
+				interfaceNodeNameAbbrev: '',
+				interfaceNodeToolUse: false,
+				interfaceNodeType: '',
+				notes: '',
 				changes: {},
 			};
 		}

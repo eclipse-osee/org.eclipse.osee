@@ -31,6 +31,13 @@ public class InterfaceNode extends PLGenericDBObject {
    private ApplicabilityToken applicability;
    private String Color;
    private String Address;
+   private String interfaceNodeNameAbbrev;
+   private String interfaceNodeCodeGenName;
+   private String InterfaceNodeType;
+   private String notes;
+   private boolean interfaceNodeCodeGen;
+   private boolean interfaceNodeBuildCodeGen;
+   private boolean interfaceNodeToolUse;
    private ArtifactReadable artifactReadable;
 
    public InterfaceNode(ArtifactToken art) {
@@ -46,6 +53,13 @@ public class InterfaceNode extends PLGenericDBObject {
       this.setNodeGroupId(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeGroupId, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+      this.setInterfaceNodeNameAbbrev(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeNameAbbrev, ""));
+      this.setInterfaceNodeCodeGenName(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeCodeGenName, ""));
+      this.setInterfaceNodeType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeType, ""));
+      this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
+      this.setInterfaceNodeCodeGen(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeCodeGen, false));
+      this.setInterfaceNodeBuildCodeGen(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBuildCodeGen, false));
+      this.setInterfaceNodeToolUse(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeToolUse, false));
       this.setArtifactReadable(art);
    }
 
@@ -135,6 +149,62 @@ public class InterfaceNode extends PLGenericDBObject {
 
    private void setArtifactReadable(ArtifactReadable artifactReadable) {
       this.artifactReadable = artifactReadable;
+   }
+
+   public String getInterfaceNodeNameAbbrev() {
+      return interfaceNodeNameAbbrev;
+   }
+
+   public void setInterfaceNodeNameAbbrev(String interfaceNodeNameAbbrev) {
+      this.interfaceNodeNameAbbrev = interfaceNodeNameAbbrev;
+   }
+
+   public String getInterfaceNodeCodeGenName() {
+      return interfaceNodeCodeGenName;
+   }
+
+   public void setInterfaceNodeCodeGenName(String interfaceNodeCodeGenName) {
+      this.interfaceNodeCodeGenName = interfaceNodeCodeGenName;
+   }
+
+   public String getInterfaceNodeType() {
+      return InterfaceNodeType;
+   }
+
+   public void setInterfaceNodeType(String interfaceNodeType) {
+      InterfaceNodeType = interfaceNodeType;
+   }
+
+   public String getNotes() {
+      return notes;
+   }
+
+   public void setNotes(String notes) {
+      this.notes = notes;
+   }
+
+   public boolean isInterfaceNodeCodeGen() {
+      return interfaceNodeCodeGen;
+   }
+
+   public void setInterfaceNodeCodeGen(boolean interfaceNodeCodeGen) {
+      this.interfaceNodeCodeGen = interfaceNodeCodeGen;
+   }
+
+   public boolean isInterfaceNodeBuildCodeGen() {
+      return interfaceNodeBuildCodeGen;
+   }
+
+   public void setInterfaceNodeBuildCodeGen(boolean interfaceNodeBuildCodeGen) {
+      this.interfaceNodeBuildCodeGen = interfaceNodeBuildCodeGen;
+   }
+
+   public boolean isInterfaceNodeToolUse() {
+      return interfaceNodeToolUse;
+   }
+
+   public void setInterfaceNodeToolUse(boolean interfaceNodeToolUse) {
+      this.interfaceNodeToolUse = interfaceNodeToolUse;
    }
 
 }

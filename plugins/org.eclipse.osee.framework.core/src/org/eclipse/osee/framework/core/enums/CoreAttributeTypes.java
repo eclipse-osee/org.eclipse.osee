@@ -173,10 +173,16 @@ public interface CoreAttributeTypes {
    InterfaceMessageTypeAttributeType InterfaceMessageType = osee.createEnum(new InterfaceMessageTypeAttributeType());
    AttributeTypeString InterfaceMessageVer = osee.createString(2455059983007225804L, "Message Ver", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean InterfaceMessageWriteAccess = osee.createBoolean(2455059983007225754L, "Interface Message Write Access", MediaType.TEXT_PLAIN, "Message has write access");
+   AttributeTypeString InterfaceNodeNameAbbrev= osee.createString(8355308043647703563L,"Interface Node Name Abbrev",MediaType.TEXT_PLAIN,"");
+   AttributeTypeString InterfaceNodeCodeGenName= osee.createString(5390401355909179776L,"Interface Node Code Gen Name",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeAddress= osee.createString(5726596359647826656L,"Interface Node Address",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeGroupId= osee.createString(5726596359647826658L,"Interface Node Group Id",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeNumber= osee.createString(5726596359647826657L,"Interface Node Number",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeBackgroundColor = osee.createString(5221290120300474048L,"Interface Node Bg Color",MediaType.TEXT_PLAIN,"");
+   AttributeTypeString InterfaceNodeType= osee.createString(6981431177168910500L,"Interface Node Type",MediaType.TEXT_PLAIN,"");
+   AttributeTypeBoolean InterfaceNodeCodeGen = osee.createBoolean(4980834335211418740L, "Interface Node Code Gen", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean InterfaceNodeBuildCodeGen = osee.createBoolean(5806420174793066197L, "Interface Node Build Code Gen", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean InterfaceNodeToolUse = osee.createBoolean(5863226088234748106L, "Interface Node Tool Use", MediaType.TEXT_PLAIN, "");
    InterfaceStructureCategoryAttribute InterfaceStructureCategory = osee.createEnum(new InterfaceStructureCategoryAttribute());
    AttributeTypeString InterfaceSubMessageNumber = osee.createString(2455059983007225769L, "Interface Sub Message Number", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfaceMinSimultaneity = osee.createString(2455059983007225755L, "Interface Minimum Simultaneity", MediaType.TEXT_PLAIN, "");

@@ -34,6 +34,7 @@ import { dialogRef } from '@osee/messaging/shared/testing';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 describe('EditNodeDialogComponent', () => {
 	let component: EditNodeDialogComponent;
@@ -55,6 +56,7 @@ describe('EditNodeDialogComponent', () => {
 					MatButtonModule,
 					MatSelectModule,
 					MatOptionModule,
+					MatSlideToggleModule,
 					AsyncPipe,
 					NgFor,
 					MockApplicabilitySelectorComponent,
@@ -68,6 +70,7 @@ describe('EditNodeDialogComponent', () => {
 					MatSelectModule,
 					MatInputModule,
 					MatButtonModule,
+					MatSlideToggleModule,
 					NoopAnimationsModule,
 					FormsModule,
 					EditNodeDialogComponent,

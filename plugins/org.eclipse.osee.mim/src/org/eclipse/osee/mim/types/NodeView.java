@@ -30,8 +30,13 @@ public class NodeView extends PLGenericDBObject {
    }
 
    public NodeView(InterfaceNode node) {
-      this(node.getId(), node.getName(), node.getDescription(), node.getNodeNumber(), node.getNodeGroupId(),
-         node.getApplicability(), node.getColor(), node.getAddress());
+      this(node.getId(), node.getName());
+      this.setLabel(node.getName());
+      this.setData(new NodeViewData(node));
+      this.setApplicability(node.getApplicability());
+      this.setDescription(node.getDescription());
+      this.setbgColor(node.getColor());
+      this.setInterfaceNodeAddress(node.getAddress());
    }
 
    public NodeView(ArtifactReadable art) {
@@ -39,16 +44,6 @@ public class NodeView extends PLGenericDBObject {
       this.setData(new NodeViewData(art));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-   }
-
-   public NodeView(Long id, String name, String description, String nodeNumber, String nodeGroupId, ApplicabilityToken applicability, String color, String address) {
-      this(id, name);
-      this.setLabel(name);
-      this.setData(new NodeViewData(id, name, nodeNumber, nodeGroupId));
-      this.setApplicability(applicability);
-      this.setDescription(description);
-      this.setbgColor(color);
-      this.setInterfaceNodeAddress(address);
    }
 
    public NodeView(Long id, String name) {

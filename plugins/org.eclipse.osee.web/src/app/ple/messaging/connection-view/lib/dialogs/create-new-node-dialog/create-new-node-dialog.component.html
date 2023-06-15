@@ -12,55 +12,101 @@
  -->
 <h1 mat-dialog-title>Create New Node</h1>
 <mat-dialog-content>
-	<mat-form-field>
-		<mat-label>Add a name</mat-label>
-		<input
-			matInput
-			[(ngModel)]="result.name"
-			required
-			data-cy="field-name" />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Add a description</mat-label>
-		<input
-			matInput
-			[(ngModel)]="result.description"
-			data-cy="field-description" />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Add a node number</mat-label>
-		<input
-			matInput
-			[(ngModel)]="result.interfaceNodeNumber"
-			data-cy="field-node-number" />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Add a node group ID</mat-label>
-		<input
-			matInput
-			[(ngModel)]="result.interfaceNodeGroupId"
-			data-cy="field-node-group-id" />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Add a color</mat-label>
-		<input
-			matInput
-			type="color"
-			[(ngModel)]="result.interfaceNodeBgColor"
-			data-cy="field-color" />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Add a network address</mat-label>
-		<input
-			matInput
-			[(ngModel)]="result.interfaceNodeAddress"
-			data-cy="field-address" />
-	</mat-form-field>
+	<div class="tw-grid tw-grid-cols-3 tw-gap-4">
+		<mat-form-field>
+			<mat-label>Add a name</mat-label>
+			<input
+				matInput
+				[(ngModel)]="result.name"
+				required
+				data-cy="field-name" />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a name abbreviation</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="result.interfaceNodeNameAbbrev"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a code gen name</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="result.interfaceNodeCodeGenName"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a node number</mat-label>
+			<input
+				matInput
+				[(ngModel)]="result.interfaceNodeNumber"
+				data-cy="field-node-number" />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a node group ID</mat-label>
+			<input
+				matInput
+				[(ngModel)]="result.interfaceNodeGroupId"
+				data-cy="field-node-group-id" />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a node type</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="result.interfaceNodeType"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a description</mat-label>
+			<input
+				matInput
+				[(ngModel)]="result.description"
+				data-cy="field-description" />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add notes</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="result.notes"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a network address</mat-label>
+			<input
+				matInput
+				[(ngModel)]="result.interfaceNodeAddress"
+				data-cy="field-address" />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Add a color</mat-label>
+			<input
+				matInput
+				type="color"
+				[(ngModel)]="result.interfaceNodeBgColor"
+				data-cy="field-color" />
+		</mat-form-field>
+	</div>
+	<div class="tw-flex tw-flex-col tw-gap-4">
+		<mat-slide-toggle
+			[(ngModel)]="result.interfaceNodeToolUse"
+			labelPosition="before">
+			Used in code gen tool
+		</mat-slide-toggle>
+		<mat-slide-toggle
+			[(ngModel)]="result.interfaceNodeCodeGen"
+			labelPosition="before">
+			Code Gen
+		</mat-slide-toggle>
+		<mat-slide-toggle
+			[(ngModel)]="result.interfaceNodeBuildCodeGen"
+			labelPosition="before">
+			Code Gen for Builds
+		</mat-slide-toggle>
+	</div>
 </mat-dialog-content>
 <div mat-dialog-actions>
 	<button

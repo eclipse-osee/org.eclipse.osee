@@ -12,67 +12,114 @@
  -->
 <h1 mat-dialog-title>Editing {{ title }}</h1>
 <mat-dialog-content>
-	<mat-form-field>
-		<mat-label>Edit Name</mat-label>
-		<input
-			matInput
-			type="text"
-			[(ngModel)]="data.name"
-			#input
-			required />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Edit Description</mat-label>
-		<input
-			matInput
-			type="text"
-			[(ngModel)]="data.description"
-			#input />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Edit Node Number</mat-label>
-		<input
-			matInput
-			type="text"
-			[(ngModel)]="data.interfaceNodeNumber"
-			#input />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Edit Node Group ID</mat-label>
-		<input
-			matInput
-			type="text"
-			[(ngModel)]="data.interfaceNodeGroupId"
-			#input />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Edit Address/Port</mat-label>
-		<input
-			matInput
-			type="text"
-			[(ngModel)]="data.interfaceNodeAddress"
-			#input />
-	</mat-form-field>
-	<br />
-	<mat-form-field>
-		<mat-label>Select a Background Color</mat-label>
-		<input
-			matInput
-			type="color"
-			[(ngModel)]="data.interfaceNodeBgColor" />
-	</mat-form-field>
-	<br />
-	<osee-applicability-selector
-		[applicability]="data.applicability"
-		(applicabilityChange)="data.applicability = $event"
-		[required]="true">
-	</osee-applicability-selector>
+	<div class="tw-grid tw-grid-cols-3 tw-gap-4">
+		<mat-form-field>
+			<mat-label>Edit Name</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.name"
+				#input
+				required />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Name Abbreviation</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.interfaceNodeNameAbbrev"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Code Gen Name</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.interfaceNodeCodeGenName"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Node Number</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.interfaceNodeNumber"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Node Group ID</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.interfaceNodeGroupId"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Node Type</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.interfaceNodeType"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Description</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.description"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Notes</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.notes"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Edit Address/Port</mat-label>
+			<input
+				matInput
+				type="text"
+				[(ngModel)]="data.interfaceNodeAddress"
+				#input />
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Select a Background Color</mat-label>
+			<input
+				matInput
+				type="color"
+				[(ngModel)]="data.interfaceNodeBgColor" />
+		</mat-form-field>
+		<osee-applicability-selector
+			[applicability]="data.applicability"
+			(applicabilityChange)="data.applicability = $event"
+			[required]="true">
+		</osee-applicability-selector>
+	</div>
+	<div class="tw-flex tw-flex-col tw-gap-4">
+		<mat-slide-toggle
+			[(ngModel)]="data.interfaceNodeToolUse"
+			labelPosition="before">
+			Used in code gen tool
+		</mat-slide-toggle>
+		<mat-slide-toggle
+			[(ngModel)]="data.interfaceNodeCodeGen"
+			labelPosition="before">
+			Code Gen
+		</mat-slide-toggle>
+		<mat-slide-toggle
+			[(ngModel)]="data.interfaceNodeBuildCodeGen"
+			labelPosition="before">
+			Code Gen for Builds
+		</mat-slide-toggle>
+	</div>
 </mat-dialog-content>
-<div mat-dialog-actions>
+<div
+	mat-dialog-actions
+	align="end">
 	<button
 		mat-button
 		(click)="onNoClick()">

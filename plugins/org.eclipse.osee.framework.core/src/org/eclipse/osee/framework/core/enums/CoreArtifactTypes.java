@@ -319,8 +319,15 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, InterfaceArtifact)
       .zeroOrOne(InterfaceNodeAddress)
       .exactlyOne(InterfaceNodeNumber)
-      .exactlyOne(InterfaceNodeGroupId)
-      .zeroOrOne(InterfaceNodeBackgroundColor));
+      .zeroOrOne(InterfaceNodeGroupId)
+      .zeroOrOne(InterfaceNodeNameAbbrev)
+      .zeroOrOne(InterfaceNodeCodeGenName)
+      .zeroOrOne(InterfaceNodeType)
+      .zeroOrOne(InterfaceNodeBackgroundColor)
+      .zeroOrOne(InterfaceNodeCodeGen)
+      .zeroOrOne(InterfaceNodeBuildCodeGen)
+      .zeroOrOne(InterfaceNodeToolUse)
+      .zeroOrOne(Notes));
 
    ArtifactTypeToken InterfaceConnection = osee.add(osee.artifactType(126164394421696910L, "Interface Connection", false, InterfaceArtifact)
       .exactlyOne(InterfaceTransportType));
@@ -331,16 +338,16 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceMessageRate)
       .exactlyOne(InterfaceMessageWriteAccess)
       .exactlyOne(InterfaceMessageType)
-      .exactlyOne(InterfaceMessageExclude)
-      .exactlyOne(InterfaceMessageIoMode)
-      .exactlyOne(InterfaceMessageModeCode)
-      .exactlyOne(InterfaceMessageRateVer)
-      .exactlyOne(InterfaceMessagePriority)
-      .exactlyOne(InterfaceMessageProtocol)
-      .exactlyOne(InterfaceMessageRptWordCount)
-      .exactlyOne(InterfaceMessageRptCmdWord)
-      .exactlyOne(InterfaceMessageRunBeforeProc)
-      .exactlyOne(InterfaceMessageVer));
+      .zeroOrOne(InterfaceMessageExclude)
+      .zeroOrOne(InterfaceMessageIoMode)
+      .zeroOrOne(InterfaceMessageModeCode)
+      .zeroOrOne(InterfaceMessageRateVer)
+      .zeroOrOne(InterfaceMessagePriority)
+      .zeroOrOne(InterfaceMessageProtocol)
+      .zeroOrOne(InterfaceMessageRptWordCount)
+      .zeroOrOne(InterfaceMessageRptCmdWord)
+      .zeroOrOne(InterfaceMessageRunBeforeProc)
+      .zeroOrOne(InterfaceMessageVer));
 
 
    ArtifactTypeToken InterfaceSubMessage = osee.add(osee.artifactType(126164394421696908L, "Interface SubMessage", false, InterfaceArtifact)
