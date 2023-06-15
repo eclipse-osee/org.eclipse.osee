@@ -2299,5 +2299,89 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+ 
+ <plugin
+         id="flexmark"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="flexmark-util-format"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="flexmark-util-dependency"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="flexmark-util-html"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="flexmark-util-ast"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="flexmark-util-sequence"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="flexmark-util-builder"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="flexmark-util-collection"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+ <plugin
+         id="flexmark-util-data"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+	 unpack="false"/>
+
+   <plugin
+         id="flexmark-util-misc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="flexmark-util-visitor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+<plugin
+         id="annotations"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+ 
 </feature>
