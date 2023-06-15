@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalManager;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
+import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskComposite;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -737,6 +738,9 @@ public class WorldXWidgetActionPage extends FormPage {
                   if (art.isOfType(AtsArtifactTypes.Goal)) {
                      arts.addAll(Collections.castAll(AtsObjects.getArtifacts(
                         AtsApiService.get().getGoalMembersCache().getMembers((GoalArtifact) art))));
+                  } else if (art.isOfType(AtsArtifactTypes.AgileSprint)) {
+                     arts.addAll(Collections.castAll(AtsObjects.getArtifacts(
+                        AtsApiService.get().getSprintItemsCache().getMembers((SprintArtifact) art))));
                   } else if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.addAll(Collections.castAll(
                         AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(art))));
