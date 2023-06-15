@@ -16,8 +16,6 @@ import {
 	MatDialogRef,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { applic } from '@osee/shared/types/applicability';
-import { CurrentGraphService } from '../../services/current-graph.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -27,6 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AsyncPipe, NgFor } from '@angular/common';
 import type { nodeData } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
 	selector: 'osee-edit-node-dialog',
@@ -41,6 +40,7 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 		MatButtonModule,
 		MatSelectModule,
 		MatOptionModule,
+		MatSlideToggleModule,
 		AsyncPipe,
 		NgFor,
 		ApplicabilitySelectorComponent,

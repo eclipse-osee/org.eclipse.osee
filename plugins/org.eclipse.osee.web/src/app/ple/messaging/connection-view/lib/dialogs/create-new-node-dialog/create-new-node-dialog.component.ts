@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import type { nodeData } from '@osee/messaging/shared/types';
 
 @Component({
@@ -29,6 +30,7 @@ import type { nodeData } from '@osee/messaging/shared/types';
 		MatInputModule,
 		FormsModule,
 		MatButtonModule,
+		MatSlideToggleModule,
 	],
 })
 export class CreateNewNodeDialogComponent {

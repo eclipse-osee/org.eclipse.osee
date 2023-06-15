@@ -52,6 +52,13 @@ export class GraphNodeMenuComponent {
 		interfaceNodeGroupId: '',
 		interfaceNodeAddress: '',
 		interfaceNodeBgColor: '',
+		interfaceNodeBuildCodeGen: false,
+		interfaceNodeCodeGen: false,
+		interfaceNodeCodeGenName: '',
+		interfaceNodeNameAbbrev: '',
+		interfaceNodeToolUse: false,
+		interfaceNodeType: '',
+		notes: '',
 	};
 	@Input() sources: OseeEdge<connection | connectionWithChanges>[] = [];
 	@Input() targets: OseeEdge<connection | connectionWithChanges>[] = [];

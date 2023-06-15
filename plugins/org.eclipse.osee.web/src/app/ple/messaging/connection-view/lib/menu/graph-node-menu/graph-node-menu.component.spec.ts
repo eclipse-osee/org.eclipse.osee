@@ -33,6 +33,7 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 
 import { GraphNodeMenuComponent } from './graph-node-menu.component';
 import type {
+	nodeData,
 	nodeDataWithChanges,
 	_newConnection,
 } from '@osee/messaging/shared/types';
@@ -48,6 +49,27 @@ describe('GraphNodeMenuComponent', () => {
 	let loader: HarnessLoader;
 	let router: any;
 	let route: any;
+
+	const testNode: nodeData = {
+		id: '1',
+		name: '1',
+		interfaceNodeNumber: '1',
+		interfaceNodeGroupId: '',
+		interfaceNodeAddress: '',
+		interfaceNodeBgColor: '',
+		description: '',
+		interfaceNodeBuildCodeGen: false,
+		interfaceNodeCodeGen: false,
+		interfaceNodeCodeGenName: '',
+		interfaceNodeNameAbbrev: '',
+		interfaceNodeToolUse: false,
+		interfaceNodeType: '',
+		notes: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+	};
 
 	beforeEach(async () => {
 		router = jasmine.createSpyObj(
@@ -94,19 +116,7 @@ describe('GraphNodeMenuComponent', () => {
 	describe('Editing Enabled & no changes', () => {
 		beforeEach(() => {
 			component.editMode = true;
-			component.data = {
-				id: '1',
-				name: '1',
-				interfaceNodeNumber: '1',
-				interfaceNodeGroupId: '',
-				interfaceNodeAddress: '',
-				interfaceNodeBgColor: '',
-				description: '',
-				applicability: {
-					id: '1',
-					name: 'Base',
-				},
-			};
+			component.data = testNode;
 			component.sources = [
 				{
 					source: '1',
@@ -232,17 +242,7 @@ describe('GraphNodeMenuComponent', () => {
 		beforeEach(() => {
 			component.editMode = true;
 			component.data = {
-				id: '1',
-				name: '1',
-				interfaceNodeNumber: '1',
-				interfaceNodeGroupId: '',
-				interfaceNodeAddress: '',
-				interfaceNodeBgColor: '',
-				description: '',
-				applicability: {
-					id: '1',
-					name: 'Base',
-				},
+				...testNode,
 				changes: {
 					name: {
 						previousValue: '7',
@@ -529,19 +529,7 @@ describe('GraphNodeMenuComponent', () => {
 	describe('Editing Disabled & no changes', () => {
 		beforeEach(() => {
 			component.editMode = false;
-			component.data = {
-				id: '1',
-				name: '1',
-				interfaceNodeNumber: '1',
-				interfaceNodeGroupId: '',
-				interfaceNodeAddress: '',
-				interfaceNodeBgColor: '',
-				description: '',
-				applicability: {
-					id: '1',
-					name: 'Base',
-				},
-			};
+			component.data = testNode;
 			component.sources = [
 				{
 					source: '1',
@@ -585,17 +573,7 @@ describe('GraphNodeMenuComponent', () => {
 		beforeEach(() => {
 			component.editMode = false;
 			component.data = {
-				id: '1',
-				name: '1',
-				interfaceNodeNumber: '1',
-				interfaceNodeGroupId: '',
-				interfaceNodeAddress: '',
-				interfaceNodeBgColor: '',
-				description: '',
-				applicability: {
-					id: '1',
-					name: 'Base',
-				},
+				...testNode,
 				changes: {
 					name: {
 						previousValue: '7',
