@@ -78,6 +78,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
    private final OrcsApi orcsApi;
    private static final String NEWEST_SESSIONS_BY_USER =
       "select client_address, user_id, created_on, client_port, client_version, session_id from osee_session where user_id = ? order by created_on desc";
+   private boolean noSupportedVersionsLogged = false;
 
    public ClientEndpointImpl(JdbcService jdbcService, OrcsApi orcsApi) {
       this.jdbcService = jdbcService;
@@ -154,7 +155,11 @@ public class ClientEndpointImpl implements ClientEndpoint {
       try {
          File versFile = new File("OseeSupportedVersions.txt");
          if (!versFile.exists()) {
-            System.out.println("No SupportedVersions.txt: " + versFile.getAbsolutePath());
+            // Only log once
+            if (!noSupportedVersionsLogged) {
+               System.out.println("No SupportedVersions.txt: " + versFile.getAbsolutePath());
+               noSupportedVersionsLogged = true;
+            }
          } else {
             System.out.println("Reading SupportedVersions.txt: " + versFile.getAbsolutePath());
             String fileStr = Lib.fileToString(versFile);
