@@ -60,10 +60,12 @@
 	</mat-card-content>
 	<ng-container *ngIf="(inEditMode | async) === true; else no_edit">
 		<mat-card-actions class="fit-buttons">
-			<!-- <button mat-stroked-button (click)="openDialog(edit)">
-                <mat-icon color="primary">edit</mat-icon>
-                Edit
-            </button> -->
+			<button
+				mat-stroked-button
+				(click)="openDialog(edit)">
+				<mat-icon color="primary">edit</mat-icon>
+				Edit
+			</button>
 			<button
 				mat-stroked-button
 				(click)="openDialog(copy)">

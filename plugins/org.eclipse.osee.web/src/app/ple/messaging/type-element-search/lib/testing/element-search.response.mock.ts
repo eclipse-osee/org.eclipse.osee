@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import type {
 	element,
 	elementWithPathsAndButtons,
@@ -28,6 +29,7 @@ export const elementSearch1: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '1',
@@ -40,6 +42,7 @@ export const elementSearch1: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '2',
@@ -52,6 +55,7 @@ export const elementSearch1: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '0',
@@ -64,6 +68,7 @@ export const elementSearch1: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 ];
 
@@ -79,6 +84,7 @@ export const elementSearch2: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '1',
@@ -91,6 +97,7 @@ export const elementSearch2: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '5',
@@ -103,6 +110,7 @@ export const elementSearch2: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '0',
@@ -115,6 +123,7 @@ export const elementSearch2: element[] = [
 		interfaceDefaultValue: '',
 		units: '',
 		enumLiteral: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 ];
 
@@ -132,6 +141,7 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
 		paths: ['path 1'],
 		buttonNames: ['name 1'],
 		units: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '1',
@@ -146,6 +156,7 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
 		paths: ['path 1', 'path2'],
 		buttonNames: ['name 1', 'name2'],
 		units: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '2',
@@ -160,6 +171,7 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
 		paths: [],
 		buttonNames: [],
 		units: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 	{
 		id: '3',
@@ -174,5 +186,6 @@ export const elementSearch3: elementWithPathsAndButtons[] = [
 		paths: ['path 1'],
 		buttonNames: ['name 1'],
 		units: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 ];

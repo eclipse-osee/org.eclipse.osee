@@ -30,4 +30,14 @@ export const warningDialogServiceMock: Partial<WarningDialogService> = {
 	openElementDialog(body: Partial<element>) {
 		return of(body);
 	},
+	openEnumsDialogs(enums, enumSets, platformTypes) {
+		return of([]);
+	},
+	openPlatformTypeDialog(tx) {
+		return of({
+			createArtifacts: [],
+			modifyArtifacts: [],
+			deleteRelations: [],
+		});
+	},
 };

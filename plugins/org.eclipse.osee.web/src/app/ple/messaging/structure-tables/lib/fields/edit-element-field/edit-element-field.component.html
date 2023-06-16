@@ -37,7 +37,7 @@
 			matInput
 			[(ngModel)]="value"
 			(ngModelChange)="updateElement(header, value)"
-			*ngIf="header !== 'platformTypeName2' && header !== 'units'"
+			*ngIf="header !== 'platformType' && header !== 'units'"
 			[disabled]="
 				editingDisabled ||
 				((header === 'interfaceElementIndexStart' ||
@@ -52,16 +52,15 @@
 				</p>
 			</ng-container>
 		</ng-container>
-		<ng-container
-			*ngIf="header === 'platformTypeName2' || header === 'units'">
-			<ng-container *ngIf="header === 'platformTypeName2'">
+		<ng-container *ngIf="header === 'platformType' || header === 'units'">
+			<ng-container *ngIf="header === 'platformType'">
 				<div class="tw-flex">
 					<input
 						matInput
 						type="text"
-						[(ngModel)]="value"
+						[(ngModel)]="value.name"
 						[matAutocomplete]="auto"
-						(keyup)="applySearch($event)"
+						(keyup)="applySearch(value.name)"
 						[disabled]="editingDisabled"
 						(focusin)="autoCompleteOpened()" />
 					<ng-container *ngIf="_location | async as location">
@@ -74,7 +73,7 @@
 								'/' +
 								location.id +
 								'/type/' +
-								platformTypeId
+								platformType.id
 							"
 							(contextmenu)="openMenu($event, value)"
 							><mat-icon>arrow_forward</mat-icon></a

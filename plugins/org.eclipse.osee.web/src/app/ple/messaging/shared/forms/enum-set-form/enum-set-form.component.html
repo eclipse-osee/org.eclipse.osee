@@ -52,7 +52,9 @@
 	</osee-applicability-selector>
 	<osee-enum-form
 		[bitSize]="bitSize"
+		[enumSetId]="enumSet.id || '-1'"
 		[enumSetName]="enumSet.name"
 		(enumSetString)="updateDescription($event)"
-		(enums)="updateEnums($event)"></osee-enum-form>
+		(enums)="updateEnums($event)"
+		[preload]="enumSet.enumerations || []"></osee-enum-form>
 </div>

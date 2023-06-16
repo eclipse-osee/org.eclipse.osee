@@ -16,7 +16,7 @@ import type { PlatformType } from '@osee/messaging/shared/types';
 export const platformTypesMock: PlatformType[] = [
 	{
 		interfaceLogicalType: 'boolean',
-		interfacePlatform2sComplement: false,
+		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '8',
 		interfacePlatformTypeBitSize: '8',
 		interfacePlatformTypeBitsResolution: '8',
@@ -29,10 +29,14 @@ export const platformTypesMock: PlatformType[] = [
 		interfacePlatformTypeValidRangeDescription: '',
 		name: 'First',
 		description: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	},
 	{
 		interfaceLogicalType: 'boolean',
-		interfacePlatform2sComplement: false,
+		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '8',
 		interfacePlatformTypeBitSize: '8',
 		interfacePlatformTypeBitsResolution: '8',
@@ -45,13 +49,17 @@ export const platformTypesMock: PlatformType[] = [
 		interfacePlatformTypeValidRangeDescription: '',
 		name: 'First2',
 		description: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	},
 ];
 export const platformTypes1: PlatformType[] = [
 	{
 		interfaceLogicalType: '',
 		description: '',
-		interfacePlatform2sComplement: false,
+		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '',
 		interfacePlatformTypeBitSize: '8',
 		interfacePlatformTypeBitsResolution: '8',
@@ -64,11 +72,15 @@ export const platformTypes1: PlatformType[] = [
 		interfacePlatformTypeValidRangeDescription: '',
 		id: '0',
 		name: 'Name',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	},
 	{
 		interfaceLogicalType: '',
 		description: '',
-		interfacePlatform2sComplement: false,
+		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '',
 		interfacePlatformTypeBitSize: '8',
 		interfacePlatformTypeBitsResolution: '8',
@@ -81,11 +93,15 @@ export const platformTypes1: PlatformType[] = [
 		interfacePlatformTypeValidRangeDescription: '',
 		id: '1',
 		name: 'Name2',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	},
 	{
 		interfaceLogicalType: '',
 		description: '',
-		interfacePlatform2sComplement: false,
+		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '',
 		interfacePlatformTypeBitSize: '8',
 		interfacePlatformTypeBitsResolution: '8',
@@ -98,5 +114,9 @@ export const platformTypes1: PlatformType[] = [
 		interfacePlatformTypeValidRangeDescription: '',
 		id: '2',
 		name: 'Name3',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	},
 ];

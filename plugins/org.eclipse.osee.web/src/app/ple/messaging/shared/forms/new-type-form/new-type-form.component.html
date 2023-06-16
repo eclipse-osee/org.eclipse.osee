@@ -75,10 +75,26 @@
 			<ng-container *ngIf="_typeFormState | async as attrs">
 				<ng-container
 					*ngFor="let attr of attrs.platformType | keyvalue">
-					<mat-label class="mat-headline-6">
-						{{ attr.key }} : {{ attr.value }}</mat-label
-					>
-					<br />
+					<ng-container
+						*ngIf="
+							attr.key !== 'id' && attr.key !== 'applicability'
+						">
+						<mat-label class="mat-headline-6">
+							{{ attr.key | titlecase }} :
+							{{ attr.value }}</mat-label
+						>
+						<br />
+					</ng-container>
+					<ng-container
+						*ngIf="
+							attr.key === 'applicability' && isApplic(attr.value)
+						">
+						<mat-label class="mat-headline-6">
+							{{ attr.key | titlecase }} :
+							{{ attr.value.name }}</mat-label
+						>
+						<br />
+					</ng-container>
 				</ng-container>
 			</ng-container>
 			<!--TODO: add enum set/enum display-->

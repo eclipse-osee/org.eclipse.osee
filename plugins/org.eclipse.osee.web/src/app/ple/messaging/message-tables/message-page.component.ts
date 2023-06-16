@@ -30,6 +30,7 @@ export class MessagePageComponent implements OnInit, OnDestroy {
 		private messageService: CurrentMessagesService
 	) {}
 	ngOnDestroy(): void {
+		this.messageService.clearRows();
 		this.messageService.toggleDone = true;
 	}
 

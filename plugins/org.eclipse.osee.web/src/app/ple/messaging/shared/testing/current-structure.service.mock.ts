@@ -164,4 +164,5 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	},
 	currentPageSize: of(10),
 	currentPage: of(1),
+	clearRows: function () {},
 };

@@ -29,6 +29,11 @@ import {
 	EnumerationUIService,
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+} from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-messaging-edit-enum-set-dialog',
@@ -43,16 +48,18 @@ import {
 		EditEnumSetFieldComponent,
 	],
 })
-export class EditEnumSetDialogComponent implements OnInit {
+export class EditEnumSetDialogComponent {
 	enumObs: Observable<enumerationSet> = this.enumSetService.getEnumSet(
 		this.data.id
 	);
-	private _enumUpdate: Subject<enumerationSet> = new Subject();
-
 	isOnEditablePage = this.data.isOnEditablePage;
 	inEditMode = this.preferenceService.inEditMode;
 
-	changedEnum!: Observable<unknown>;
+	receivedTx = new Subject<{
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}>();
 	constructor(
 		public dialogRef: MatDialogRef<EditEnumSetDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: enumsetDialogData,
@@ -60,34 +67,15 @@ export class EditEnumSetDialogComponent implements OnInit {
 		private preferenceService: PreferencesUIService
 	) {}
 
-	ngOnInit(): void {
-		this.changedEnum = combineLatest([this.enumObs, this._enumUpdate]).pipe(
-			switchMap(([previousEnum, currentEnum]) =>
-				of([previousEnum, currentEnum]).pipe(
-					map(([previousEnum, currentEnum]) => {
-						//find changes in currentEnum, remove existing contents of previousEnum
-						//this will end up being the old output
-
-						return {
-							id: currentEnum.id,
-							name: currentEnum.name,
-							applicability: currentEnum.applicability,
-							applicabilityId: currentEnum.applicability.id,
-							description: currentEnum.description,
-							enumerations: currentEnum.enumerations,
-						};
-					})
-				)
-			)
-		);
-	}
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
 
-	enumUpdate(value: enumerationSet | undefined) {
-		if (value) {
-			this._enumUpdate.next(value);
-		}
+	receiveTx(value: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}) {
+		this.receivedTx.next(value);
 	}
 }

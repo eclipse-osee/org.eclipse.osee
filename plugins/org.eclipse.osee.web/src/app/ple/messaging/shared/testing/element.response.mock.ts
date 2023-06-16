@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import type { element } from '@osee/messaging/shared/types';
 
 export const elementsMock: element[] = [
@@ -26,5 +27,6 @@ export const elementsMock: element[] = [
 		enumLiteral: '',
 		logicalType: 'enumeration',
 		units: '',
+		platformType: new PlatformTypeSentinel(),
 	},
 ];

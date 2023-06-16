@@ -25,17 +25,17 @@ public class InterfaceLogicalTypeHex extends InterfaceLogicalTypeGeneric {
    public InterfaceLogicalTypeHex() {
       super(6L, name);
       ArrayList<InterfaceLogicalTypeField> fields = new ArrayList<InterfaceLogicalTypeField>();
-      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true, "Name", CoreAttributeTypes.Name));
+      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true, "Name", CoreAttributeTypes.Name, "name"));
       fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize", true, true,
-         CoreAttributeTypes.InterfacePlatformTypeBitSize));
+         CoreAttributeTypes.InterfacePlatformTypeBitSize, "interfacePlatformTypeBitSize"));
       fields.add(new InterfaceLogicalTypeField("2s Complement", "InterfacePlatformType2sComplement", true, false,
-         "true", CoreAttributeTypes.InterfacePlatformType2sComplement));
-      fields.add(
-         new InterfaceLogicalTypeField("Description", "Description", false, true, CoreAttributeTypes.Description));
+         "true", CoreAttributeTypes.InterfacePlatformType2sComplement, "interfacePlatformType2sComplement"));
+      fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true,
+         CoreAttributeTypes.Description, "description"));
       fields.add(new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true,
-         CoreAttributeTypes.InterfacePlatformTypeMinval));
+         CoreAttributeTypes.InterfacePlatformTypeMinval, "interfacePlatformTypeMinval"));
       fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", true, true,
-         CoreAttributeTypes.InterfacePlatformTypeMaxval));
+         CoreAttributeTypes.InterfacePlatformTypeMaxval, "interfacePlatformTypeMaxval"));
       this.setFields(fields);
    }
 

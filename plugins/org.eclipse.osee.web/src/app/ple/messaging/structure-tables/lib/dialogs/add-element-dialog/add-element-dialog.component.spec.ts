@@ -60,6 +60,7 @@ import {
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 
 describe('AddElementDialogComponent', () => {
 	let component: AddElementDialogComponent;
@@ -72,7 +73,7 @@ describe('AddElementDialogComponent', () => {
 			name: '',
 			description: '',
 			interfaceLogicalType: '',
-			interfacePlatform2sComplement: false,
+			interfacePlatformType2sComplement: false,
 			interfacePlatformTypeAnalogAccuracy: '',
 			interfacePlatformTypeBitSize: '',
 			interfacePlatformTypeBitsResolution: '',
@@ -83,6 +84,10 @@ describe('AddElementDialogComponent', () => {
 			interfacePlatformTypeMsbValue: '',
 			interfacePlatformTypeUnits: '',
 			interfacePlatformTypeValidRangeDescription: '',
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
 		},
 		element: {
 			id: '-1',
@@ -95,6 +100,7 @@ describe('AddElementDialogComponent', () => {
 			interfaceDefaultValue: '',
 			enumLiteral: '',
 			units: '',
+			platformType: new PlatformTypeSentinel(),
 		},
 	};
 	let loader: HarnessLoader;

@@ -18,7 +18,13 @@ import type {
 	enumeration,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
-import { relation, transaction } from '@osee/shared/types';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+	relation,
+	transaction,
+} from '@osee/shared/types';
 import {
 	transactionMock,
 	transactionResultMock,
@@ -65,7 +71,11 @@ export const enumerationUiServiceMock: Partial<EnumerationUIService> = {
 	getEnumSet(platformTypeId: string) {
 		return of(enumerationSetMock[0]);
 	},
-	changeEnumSet(changes: enumerationSet, enumerations?: enumeration[]) {
+	changeEnumSet(dialogResponse: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}) {
 		return of(transactionResultMock);
 	},
 };

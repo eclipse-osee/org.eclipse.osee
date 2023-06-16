@@ -13,8 +13,8 @@
 <ng-container *ngIf="_editable !== undefined">
 	<ng-container *ngIf="{ value: _editable | async } as editMode">
 		<ng-container *ngIf="editMode.value === true">
-			<ng-container *ngIf="enumObs !== undefined">
-				<ng-container *ngIf="enumObs | async as enumerationSet">
+			<ng-container *ngIf="enum$ !== undefined">
+				<ng-container *ngIf="enum$ | async as enumerationSet">
 					<mat-form-field
 						*ngIf="enumerationSet.name !== undefined"
 						subscriptSizing="dynamic"
@@ -54,18 +54,19 @@
 					<ng-container *ngIf="_type | async as typeData">
 						<osee-enum-form
 							[bitSize]="typeData.interfacePlatformTypeBitSize"
+							[enumSetId]="enumerationSet.id || '-1'"
 							[enumSetName]="enumerationSet.name"
 							[preload]="enumerationSet.enumerations || []"
 							(enumSetString)="setDescription($event)"
-							(enums)="updateEnums($event)"
-							(unique)="updateUnique($event)"></osee-enum-form>
+							(unique)="updateUnique($event)"
+							(tx)="updateEnumTx($event)"></osee-enum-form>
 					</ng-container>
 				</ng-container>
 			</ng-container>
 		</ng-container>
 		<ng-container *ngIf="editMode.value === false">
-			<ng-container *ngIf="enumObs !== undefined">
-				<ng-container *ngIf="enumObs | async as enumerationSet">
+			<ng-container *ngIf="enum$ !== undefined">
+				<ng-container *ngIf="enum$ | async as enumerationSet">
 					<mat-label>Name: {{ enumerationSet.name }}</mat-label>
 					<br />
 					<mat-label

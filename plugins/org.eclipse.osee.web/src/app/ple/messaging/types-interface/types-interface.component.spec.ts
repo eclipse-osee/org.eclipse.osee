@@ -34,7 +34,7 @@ describe('TypesInterfaceComponent', () => {
 			{
 				interfaceLogicalType: 'boolean',
 				description: '',
-				interfacePlatform2sComplement: false,
+				interfacePlatformType2sComplement: false,
 				interfacePlatformTypeAnalogAccuracy: 'Hello',
 				interfacePlatformTypeBitsResolution: '1',
 				interfacePlatformTypeBitSize: '8',
@@ -47,11 +47,15 @@ describe('TypesInterfaceComponent', () => {
 				interfacePlatformTypeUnits: 'N/A',
 				interfacePlatformTypeValidRangeDescription: 'Description',
 				name: 'boolean',
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
 			},
 			{
 				interfaceLogicalType: 'integer',
 				description: '',
-				interfacePlatform2sComplement: false,
+				interfacePlatformType2sComplement: false,
 				interfacePlatformTypeAnalogAccuracy: 'Hello',
 				interfacePlatformTypeBitsResolution: '1',
 				interfacePlatformTypeBitSize: '8',
@@ -64,6 +68,10 @@ describe('TypesInterfaceComponent', () => {
 				interfacePlatformTypeUnits: 'N/A',
 				interfacePlatformTypeValidRangeDescription: 'Description',
 				name: 'integer',
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
 			},
 		]),
 	};

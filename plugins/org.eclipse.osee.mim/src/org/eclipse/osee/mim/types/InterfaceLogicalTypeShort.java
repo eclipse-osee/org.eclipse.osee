@@ -25,21 +25,21 @@ public class InterfaceLogicalTypeShort extends InterfaceLogicalTypeGeneric {
    public InterfaceLogicalTypeShort() {
       super(12L, name);
       ArrayList<InterfaceLogicalTypeField> fields = new ArrayList<InterfaceLogicalTypeField>();
-      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true, "Name", CoreAttributeTypes.Name));
+      fields.add(new InterfaceLogicalTypeField("Name", "Name", true, true, "Name", CoreAttributeTypes.Name, "name"));
       fields.add(new InterfaceLogicalTypeField("Bit Size", "InterfacePlatformTypeBitSize", true, true, "16",
-         CoreAttributeTypes.InterfacePlatformTypeBitSize));
+         CoreAttributeTypes.InterfacePlatformTypeBitSize, "interfacePlatformTypeBitSize"));
       fields.add(new InterfaceLogicalTypeField("2s Complement", "InterfacePlatformType2sComplement", true, false,
-         "true", CoreAttributeTypes.InterfacePlatformType2sComplement));
-      fields.add(
-         new InterfaceLogicalTypeField("Description", "Description", false, true, CoreAttributeTypes.Description));
+         "true", CoreAttributeTypes.InterfacePlatformType2sComplement, "interfacePlatformType2sComplement"));
+      fields.add(new InterfaceLogicalTypeField("Description", "Description", false, true,
+         CoreAttributeTypes.Description, "interfacePlatformType2sComplement"));
       fields.add(new InterfaceLogicalTypeField("Minval", "InterfacePlatformTypeMinval", true, true,
-         CoreAttributeTypes.InterfacePlatformTypeMinval));
+         CoreAttributeTypes.InterfacePlatformTypeMinval, "interfacePlatformTypeMinval"));
       fields.add(new InterfaceLogicalTypeField("Maxval", "InterfacePlatformTypeMaxval", true, true,
-         CoreAttributeTypes.InterfacePlatformTypeMaxval));
+         CoreAttributeTypes.InterfacePlatformTypeMaxval, "interfacePlatformTypeMaxval"));
       fields.add(new InterfaceLogicalTypeField("Units", "InterfacePlatformTypeUnits", false, true,
-         CoreAttributeTypes.InterfacePlatformTypeUnits));
+         CoreAttributeTypes.InterfacePlatformTypeUnits, "interfacePlatformTypeUnits"));
       fields.add(new InterfaceLogicalTypeField("Default Value", "InterfaceDefaultValue", false, true,
-         CoreAttributeTypes.InterfaceDefaultValue));
+         CoreAttributeTypes.InterfaceDefaultValue, "interfaceDefaultValue"));
       this.setFields(fields);
    }
 

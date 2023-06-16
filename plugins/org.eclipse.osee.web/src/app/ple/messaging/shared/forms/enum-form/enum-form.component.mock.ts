@@ -11,8 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, Output } from '@angular/core';
+import { enumerationSetMock } from '@osee/messaging/shared/testing';
 import type { enumeration } from '@osee/messaging/shared/types';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { EnumFormComponent } from './enum-form.component';
 
 @Component({
@@ -24,8 +25,11 @@ export class MockEnumFormUniqueComponent implements Partial<EnumFormComponent> {
 	private _unique = new Subject<boolean>();
 	@Input() bitSize: string = '32';
 	@Input() enumSetName: string = 'testenumset';
+	@Input() enumSetId?: string = '';
 	@Input() preload: enumeration[] = [];
-	@Output() tableData: Subject<enumeration[]> = new Subject();
+	@Output() tableData: BehaviorSubject<enumeration[]> = new BehaviorSubject(
+		enumerationSetMock[0].enumerations || []
+	);
 	@Output() enumSetString: Observable<string> = new Subject();
 	@Output() unique: Observable<boolean> = this._unique;
 	constructor() {

@@ -12,6 +12,7 @@
  **********************************************************************/
 import { EventEmitter, Output } from '@angular/core';
 import { Component, Input } from '@angular/core';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import type { element, structure } from '@osee/messaging/shared/types';
 import { applic } from '@osee/shared/types/applicability';
 
@@ -34,6 +35,7 @@ export class SubElementTableRowComponentMock {
 		interfaceDefaultValue: '',
 		enumLiteral: '',
 		units: 'Hertz',
+		platformType: new PlatformTypeSentinel(),
 	};
 	@Input() structure: structure = {
 		id: '',

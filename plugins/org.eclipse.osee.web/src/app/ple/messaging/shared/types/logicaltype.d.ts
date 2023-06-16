@@ -38,4 +38,5 @@ interface logicalTypeFieldInfo {
 	required: boolean;
 	defaultValue: string;
 	value?: string;
+	jsonPropertyName: keyof PlatformType;
 }

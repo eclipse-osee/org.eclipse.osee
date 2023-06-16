@@ -47,7 +47,6 @@ import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type {
 	structure,
-	enumerationSet,
 	element,
 	EditViewFreeTextDialog,
 } from '@osee/messaging/shared/types';
@@ -56,9 +55,15 @@ import {
 	CurrentStructureService,
 	EnumerationUIService,
 	HeaderService,
-	PreferencesUIService,
+	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+	relation,
+} from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',
@@ -120,7 +125,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		private layoutNotifier: LayoutNotifierService,
 		private headerService: HeaderService,
 		private enumSetService: EnumerationUIService,
-		private preferencesService: PreferencesUIService
+		private warningDialogService: WarningDialogService
 	) {
 		this.subMessageHeaders = [
 			'name',
@@ -274,12 +279,15 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 			switchMap((value: AddElementDialog) =>
 				iif(
 					() =>
+						value.element.id !== undefined &&
 						value.element.id !== '-1' &&
 						value.element.id.length > 0,
 					this.structureService
 						.relateElement(
 							structure.id,
-							value.element.id,
+							value.element.id !== undefined
+								? value.element.id
+								: '-1',
 							afterElement || 'end'
 						)
 						.pipe(
@@ -347,17 +355,52 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 			.afterClosed()
 			.pipe(
 				filter((x) => x !== undefined) as OperatorFunction<
-					enumerationSet | undefined,
-					enumerationSet
+					| {
+							createArtifacts: createArtifact[];
+							modifyArtifacts: modifyArtifact[];
+							deleteRelations: modifyRelation[];
+					  }
+					| undefined,
+					{
+						createArtifacts: createArtifact[];
+						modifyArtifacts: modifyArtifact[];
+						deleteRelations: modifyRelation[];
+					}
 				>,
 				take(1),
-				switchMap(({ enumerations, ...changes }) =>
+				switchMap((tx) =>
 					iif(
 						() => this.editMode,
-						this.enumSetService.changeEnumSet(
-							changes,
-							enumerations
-						),
+						this.warningDialogService
+							.openEnumsDialogs(
+								tx.modifyArtifacts
+									.slice(0, -1)
+									.map((v) => v.id),
+								[
+									...tx.createArtifacts
+										.flatMap((v) => v.relations)
+										.filter(
+											(v): v is relation =>
+												v !== undefined
+										)
+										.map((v) => v.sideA)
+										.filter(
+											(v): v is string | string[] =>
+												v !== undefined
+										)
+										.flatMap((v) => v),
+									...tx.deleteRelations
+										.flatMap((v) => v.aArtId)
+										.filter(
+											(v): v is string => v !== undefined
+										),
+								]
+							)
+							.pipe(
+								switchMap((_) =>
+									this.enumSetService.changeEnumSet(tx)
+								)
+							),
 						of()
 					)
 				)

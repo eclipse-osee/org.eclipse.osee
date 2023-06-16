@@ -54,7 +54,12 @@
 				</ng-container>
 				<ng-template #noShrink>
 					<ng-container *ngIf="header !== 'path'; else pathButton">
-						{{ element[header] }}
+						<ng-container *ngIf="isPlatformType(element[header])">
+							{{ element[header].name }}
+						</ng-container>
+						<ng-container *ngIf="!isPlatformType(element[header])">
+							{{ element[header] }}
+						</ng-container>
 					</ng-container>
 					<ng-template #pathButton>
 						<ng-container *ngIf="element.paths.length === 1">

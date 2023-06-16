@@ -11,12 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { element } from '@osee/messaging/shared/types';
 import { AddElementDialog } from './add-element-dialog';
 
 export class DefaultAddElementDialog implements AddElementDialog {
 	id = '';
 	name = '';
-	element = {
+	element: Partial<element> = {
 		id: '-1',
 		name: '',
 		description: '',
@@ -25,6 +27,11 @@ export class DefaultAddElementDialog implements AddElementDialog {
 		interfaceElementAlterable: true,
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+		platformType: new PlatformTypeSentinel(),
 		units: '',
 		enumLiteral: '',
 	};
@@ -33,7 +40,7 @@ export class DefaultAddElementDialog implements AddElementDialog {
 		name: '',
 		description: '',
 		interfaceLogicalType: '',
-		interfacePlatform2sComplement: false,
+		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '',
 		interfacePlatformTypeBitSize: '',
 		interfacePlatformTypeBitsResolution: '',
@@ -44,10 +51,17 @@ export class DefaultAddElementDialog implements AddElementDialog {
 		interfacePlatformTypeMsbValue: '',
 		interfacePlatformTypeUnits: '',
 		interfacePlatformTypeValidRangeDescription: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	};
 
-	constructor(id?: string, name?: string) {
+	constructor(id?: string, name?: string, element?: Partial<element>) {
 		this.id = id ? id : this.id;
 		this.name = name ? name : this.name;
+		if (element) {
+			this.element = element;
+		}
 	}
 }

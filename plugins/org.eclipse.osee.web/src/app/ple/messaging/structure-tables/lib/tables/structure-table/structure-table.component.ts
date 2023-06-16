@@ -363,6 +363,10 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 							interfaceMinSimultaneity: '',
 							interfaceStructureCategory: '',
 							interfaceTaskFileType: 0,
+							applicability: {
+								id: '1',
+								name: 'Base',
+							},
 						},
 					},
 				})
@@ -491,10 +495,16 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 			switchMap((value: AddElementDialog) =>
 				iif(
 					() =>
+						value.element.id !== undefined &&
 						value.element.id !== '-1' &&
 						value.element.id.length > 0,
 					this.structureService
-						.relateElement(structure.id, value.element.id)
+						.relateElement(
+							structure.id,
+							value.element.id !== undefined
+								? value.element.id
+								: '-1'
+						)
 						.pipe(
 							switchMap((transaction) =>
 								combineLatest([

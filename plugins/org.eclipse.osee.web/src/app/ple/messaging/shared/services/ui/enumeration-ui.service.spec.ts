@@ -55,14 +55,11 @@ describe('EnumerationUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.changeEnumSet(
-						{
-							name: '',
-							applicability: { id: '1', name: 'Base' },
-							description: '',
-						},
-						[]
-					)
+					service.changeEnumSet({
+						createArtifacts: [],
+						modifyArtifacts: [],
+						deleteRelations: [],
+					})
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});

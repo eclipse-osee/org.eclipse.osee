@@ -23,6 +23,7 @@ import { MatButtonModule } from '@angular/material/button';
 import type {
 	element,
 	elementWithPathsAndButtons,
+	PlatformType,
 } from '@osee/messaging/shared/types';
 import { HeaderService } from '@osee/messaging/shared/services';
 import { DisplayTruncatedStringWithFieldOverflowPipe } from '@osee/shared/utils';
@@ -49,7 +50,7 @@ export class ElementTableComponent {
 	dataSource = new MatTableDataSource<element>();
 	headers: Extract<keyof elementWithPathsAndButtons, string>[] = [
 		'name',
-		'platformTypeName2',
+		'platformType',
 		'path',
 		'interfaceElementAlterable',
 		'description',
@@ -74,5 +75,17 @@ export class ElementTableComponent {
 		return this.headerService
 			.getHeaderByName(value, 'element')
 			.pipe(map((v) => v.humanReadable));
+	}
+
+	isPlatformType(value: unknown): value is PlatformType {
+		return (
+			value !== null &&
+			value !== undefined &&
+			typeof value === 'object' &&
+			'id' in value &&
+			'name' in value &&
+			typeof value.id === 'string' &&
+			typeof value.name === 'string'
+		);
 	}
 }

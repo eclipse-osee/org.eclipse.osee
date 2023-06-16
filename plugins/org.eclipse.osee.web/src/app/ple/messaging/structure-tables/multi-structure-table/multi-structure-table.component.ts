@@ -35,6 +35,7 @@ export class MultiStructureTableComponent implements OnInit, OnDestroy {
 		private structureService: CurrentStructureService
 	) {}
 	ngOnDestroy(): void {
+		this.structureService.clearRows();
 		this.structureService.toggleDone = true;
 	}
 

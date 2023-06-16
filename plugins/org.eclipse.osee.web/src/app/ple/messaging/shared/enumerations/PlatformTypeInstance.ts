@@ -11,23 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import type { PlatformType } from '../../types/platformType';
+import { applic } from '@osee/shared/types/applicability';
+import { enumerationSet } from '../types/enum';
+import type { PlatformType } from '../types/platformType';
 
 export class PlatformTypeSentinel implements PlatformType {
+	[index: string]: string | boolean | enumerationSet | applic | undefined;
 	id?: string | undefined = '-1';
 	description: string = '';
 	interfaceLogicalType: string = '';
-	interfacePlatform2sComplement: boolean = false;
+	interfacePlatformType2sComplement: boolean = false;
 	interfacePlatformTypeAnalogAccuracy: string = '';
 	interfacePlatformTypeBitsResolution: string = '';
 	interfacePlatformTypeBitSize: string = '';
 	interfacePlatformTypeCompRate: string = '';
 	interfaceDefaultValue: string = '';
-	interfacePlatformTypeEnumLiteral: string = '';
 	interfacePlatformTypeMaxval: string = '';
 	interfacePlatformTypeMinval: string = '';
 	interfacePlatformTypeMsbValue: string = '';
 	interfacePlatformTypeUnits: string = '';
 	interfacePlatformTypeValidRangeDescription: string = '';
 	name: string = '';
+	applicability: applic = {
+		id: '1',
+		name: 'Base',
+	};
 }

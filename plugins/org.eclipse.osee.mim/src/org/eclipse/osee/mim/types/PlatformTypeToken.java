@@ -14,6 +14,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -59,6 +60,8 @@ public class PlatformTypeToken extends PLGenericDBObject {
    private ArtifactReadable artifactReadable;
    private InterfaceEnumerationSet enumSet = InterfaceEnumerationSet.SENTINEL;
 
+   private ApplicabilityToken applicability;
+
    public PlatformTypeToken(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
@@ -90,7 +93,8 @@ public class PlatformTypeToken extends PLGenericDBObject {
       this.setInterfacePlatformTypeValidRangeDescription(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription, ""));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
-
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
       if (this.getInterfaceLogicalType().equals("enumeration") && art.getRelated(
          CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getOneOrDefault(
             ArtifactReadable.SENTINEL).isValid() && !art.getRelated(
@@ -326,4 +330,17 @@ public class PlatformTypeToken extends PLGenericDBObject {
       this.enumSet = enumSet;
    }
 
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
+   }
 }

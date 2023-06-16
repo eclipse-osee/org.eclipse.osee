@@ -41,7 +41,7 @@ import {
 import {
 	ATTRIBUTETYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
-	RelationTypeId,
+	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
 import {
 	ApplicabilityListUIService,
@@ -421,6 +421,11 @@ export class CurrentMessagesService {
 			temp.splice(this._expandedRows.getValue().indexOf(value), 1);
 			this._expandedRows.next(temp);
 		}
+		this._expandedRowsDecreasing.next(true);
+	}
+
+	clearRows() {
+		this._expandedRows.next([]);
 		this._expandedRowsDecreasing.next(true);
 	}
 
@@ -944,7 +949,7 @@ export class CurrentMessagesService {
 				typeof change.itemTypeId === 'object' &&
 				'id' in change.itemTypeId &&
 				change.itemTypeId.id ===
-					RelationTypeId.INTERFACECONNECTIONCONTENT
+					RELATIONTYPEIDENUM.INTERFACECONNECTIONCONTENT
 			) {
 				if (!newMessagesId.includes(change.artId)) {
 					newMessagesId.push(change.artId);
@@ -954,7 +959,8 @@ export class CurrentMessagesService {
 			} else if (
 				typeof change.itemTypeId === 'object' &&
 				'id' in change.itemTypeId &&
-				change.itemTypeId.id === RelationTypeId.INTERFACEMESSAGECONTENT
+				change.itemTypeId.id ===
+					RELATIONTYPEIDENUM.INTERFACEMESSAGECONTENT
 			) {
 				if (!newSubmessagesId.includes(change.artId)) {
 					newSubmessagesId.push(change.artId);
@@ -1293,7 +1299,7 @@ export class CurrentMessagesService {
 			//do nothing currently
 			if (
 				((change.itemTypeId as itemTypeIdRelation).id =
-					RelationTypeId.INTERFACEMESSAGECONTENT)
+					RELATIONTYPEIDENUM.INTERFACEMESSAGECONTENT)
 			) {
 				message.hasSubMessageChanges = true;
 				let submessageIndex = message.subMessages.findIndex(

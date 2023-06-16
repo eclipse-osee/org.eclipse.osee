@@ -10,10 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 import {
 	MatDialogModule,
 	MatDialogRef,
@@ -24,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 import {
 	CurrentMessagesService,
 	EnumsService,
@@ -33,6 +36,7 @@ import {
 	CurrentMessageServiceMock,
 	transportTypeUIServiceMock,
 } from '@osee/messaging/shared/testing';
+import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 import { of } from 'rxjs';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 
@@ -51,6 +55,10 @@ describe('AddMessageDialogComponent', () => {
 		interfaceMessageRate: '',
 		interfaceMessageType: '',
 		interfaceMessageWriteAccess: false,
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 		publisherNodes: [
 			{
 				id: '',
@@ -88,6 +96,22 @@ describe('AddMessageDialogComponent', () => {
 						provide: TransportTypeUiService,
 						useValue: transportTypeUIServiceMock,
 					},
+				],
+				imports: [
+					MatDialogModule,
+					MatInputModule,
+					MatFormFieldModule,
+					MatOptionModule,
+					MatSlideToggleModule,
+					MatButtonModule,
+					MatSelectModule,
+					TextFieldModule,
+					FormsModule,
+					NgFor,
+					NgIf,
+					AsyncPipe,
+					MessageNodesCountDirective,
+					MockApplicabilitySelectorComponent,
 				],
 			},
 		})

@@ -17,7 +17,7 @@
 			<mat-dialog-content>
 				<osee-new-platform-type-form
 					[logicalType]="__logicalType"
-					(attributes)="
+					(platformType)="
 						attributesUpdate($event)
 					"></osee-new-platform-type-form>
 				<ng-container *ngIf="__logicalType.name === 'enumeration'">

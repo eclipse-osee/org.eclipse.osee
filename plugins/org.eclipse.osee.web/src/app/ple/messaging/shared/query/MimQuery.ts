@@ -14,7 +14,8 @@ import {
 	ARTIFACTTYPEID,
 	ARTIFACTTYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
-	RelationTypeId,
+	RELATIONTYPEID,
+	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
 import type { MIMATTRIBUTETYPEID } from '@osee/messaging/shared/attr';
 import type { enumerationSet } from '../types/enum';
@@ -23,7 +24,7 @@ import type { PlatformType } from '../types/platformType';
 interface _mimQuery<T> {
 	type: ARTIFACTTYPEID;
 	related?: {
-		relation: RelationTypeId;
+		relation: RELATIONTYPEID;
 		relatedId: string;
 		side: 'SIDE_A' | 'SIDE_B';
 	};
@@ -91,7 +92,7 @@ export class MimQuery<T = unknown> implements _mimQuery<T> {
 	constructor(
 		type: ARTIFACTTYPEID,
 		related?: {
-			relation: RelationTypeId;
+			relation: RELATIONTYPEID;
 			relatedId: string;
 			side: 'SIDE_A' | 'SIDE_B';
 		},
@@ -104,7 +105,7 @@ export class MimQuery<T = unknown> implements _mimQuery<T> {
 	type: ARTIFACTTYPEID;
 	related?:
 		| {
-				relation: RelationTypeId;
+				relation: RELATIONTYPEID;
 				relatedId: string;
 				side: 'SIDE_A' | 'SIDE_B';
 		  }
@@ -114,7 +115,7 @@ export class MimQuery<T = unknown> implements _mimQuery<T> {
 export class PlatformTypeQuery extends MimQuery<PlatformType> {
 	constructor(
 		related?: {
-			relation: RelationTypeId;
+			relation: RELATIONTYPEID;
 			relatedId: string;
 			side: 'SIDE_A' | 'SIDE_B';
 		},
@@ -127,7 +128,7 @@ export class PlatformTypeQuery extends MimQuery<PlatformType> {
 export class EnumerationSetQuery extends MimQuery<enumerationSet> {
 	constructor(
 		related?: {
-			relation: RelationTypeId;
+			relation: RELATIONTYPEID;
 			relatedId: string;
 			side: 'SIDE_A' | 'SIDE_B';
 		},

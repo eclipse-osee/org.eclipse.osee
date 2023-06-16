@@ -23,6 +23,7 @@ import {
 	STRUCTURE_SERVICE_TOKEN,
 	SINGLE_STRUCTURE_SERVICE,
 } from '@osee/messaging/shared/tokens';
+import { provideRouter } from '@angular/router';
 
 describe('SingleStructureTableComponent', () => {
 	let component: SingleStructureTableComponent;
@@ -32,23 +33,20 @@ describe('SingleStructureTableComponent', () => {
 	beforeEach(async () => {
 		await TestBed.overrideComponent(SingleStructureTableComponent, {
 			set: {
-				imports: [
-					AsyncPipe,
-					StructureTableComponentMock,
-					RouterTestingModule,
-				],
+				imports: [AsyncPipe, StructureTableComponentMock],
 				providers: [
 					{
 						provide: CurrentStructureSingleService,
 						useValue: CurrentStateServiceMock,
 					},
-					{
-						provide: STRUCTURE_SERVICE_TOKEN,
-						useValue: SINGLE_STRUCTURE_SERVICE,
-					},
+					SINGLE_STRUCTURE_SERVICE,
 				],
 			},
-		}).compileComponents();
+		})
+			.configureTestingModule({
+				providers: [provideRouter([])],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

@@ -40,9 +40,10 @@ import {
 } from '@osee/shared/types/change-report';
 import {
 	ATTRIBUTETYPEIDENUM,
-	RelationTypeId,
+	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
 import { CurrentStructureService } from './current-structure.service';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 
 @Injectable({
 	providedIn: 'root',
@@ -128,7 +129,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 	 * no-op implementation
 	 */
 	get currentPage() {
-		return of();
+		return of(1);
 	}
 
 	/**
@@ -137,7 +138,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 	set page(page: number) {}
 	returnToFirstPage() {}
 	get currentPageSize(): Observable<number> {
-		return of();
+		return of(1);
 	}
 	set pageSize(page: number) {}
 	get structures() {
@@ -198,7 +199,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 									(typeof val.itemTypeId === 'object' &&
 										'id' in val.itemTypeId &&
 										val.itemTypeId.id ===
-											RelationTypeId.INTERFACESTRUCTURECONTENT)
+											RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT)
 							),
 							mergeMap((change) =>
 								iif(
@@ -910,7 +911,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 													() =>
 														structure.elements
 															?.map((a) =>
-																a.platformTypeId?.toString()
+																a.platformType.id?.toString()
 															)
 															.includes(
 																change.artId
@@ -924,7 +925,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																let index =
 																	structure.elements?.findIndex(
 																		(el) =>
-																			el.platformTypeId?.toString() ===
+																			el.platformType.id?.toString() ===
 																			change.artId
 																	);
 																structure.elements[
@@ -977,7 +978,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																				(
 																					el
 																				) =>
-																					el.platformTypeId?.toString() ===
+																					el.platformType.id?.toString() ===
 																					change.artId
 																			);
 																		structure.elements[
@@ -994,16 +995,38 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																				.elements[
 																				index
 																			] as elementWithChanges
-																		).changes.platformTypeName2 =
+																		).changes.platformType =
 																			{
 																				previousValue:
-																					change
-																						.baselineVersion
-																						.value as string,
+																					{
+																						...(
+																							structure
+																								.elements[
+																								index
+																							] as elementWithChanges
+																						)
+																							.changes
+																							.platformType!
+																							.previousValue,
+																						name: change
+																							.baselineVersion
+																							.value as string,
+																					},
 																				currentValue:
-																					change
-																						.currentVersion
-																						.value as string,
+																					{
+																						...(
+																							structure
+																								.elements[
+																								index
+																							] as elementWithChanges
+																						)
+																							.changes
+																							.platformType!
+																							.currentValue,
+																						name: change
+																							.currentVersion
+																							.value as string,
+																					},
 																				transactionToken:
 																					change
 																						.currentVersion
@@ -1034,7 +1057,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 														'object' &&
 													'id' in change.itemTypeId &&
 													change.itemTypeId.id ===
-														RelationTypeId.INTERFACESUBMESSAGECONTENT &&
+														RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT &&
 													change.artIdB ===
 														structure.id,
 												of(change), //mark structure as added/deleted
@@ -1045,7 +1068,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 														'id' in
 															change.itemTypeId &&
 														change.itemTypeId.id ===
-															RelationTypeId.INTERFACESTRUCTURECONTENT &&
+															RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT &&
 														change.artId ===
 															structure.id,
 													iif(
@@ -1182,10 +1205,10 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																									.currentVersion
 																									.transactionToken,
 																						},
-																						platformTypeName2:
+																						platformType:
 																							{
 																								previousValue:
-																									initialEl.platformTypeName2,
+																									initialEl.platformType,
 																								currentValue:
 																									'',
 																								transactionToken:
@@ -1299,7 +1322,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																change.itemTypeId &&
 															change.itemTypeId
 																.id ===
-																RelationTypeId.INTERFACEELEMENTPLATFORMTYPE &&
+																RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE &&
 															structure.elements
 																?.map(
 																	(a) => a.id
@@ -1352,7 +1375,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																					] as elementWithChanges
 																				)
 																					.changes
-																					.platformTypeName2 ===
+																					.platformType ===
 																				undefined
 																			) {
 																				(
@@ -1360,12 +1383,12 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																						.elements[
 																						index
 																					] as elementWithChanges
-																				).changes.platformTypeName2 =
+																				).changes.platformType =
 																					{
 																						previousValue:
-																							'',
+																							new PlatformTypeSentinel(),
 																						currentValue:
-																							type.name,
+																							type,
 																						transactionToken:
 																							change
 																								.currentVersion
@@ -1379,7 +1402,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																					] as elementWithChanges
 																				)
 																					.changes
-																					.platformTypeName2 !==
+																					.platformType !==
 																					undefined &&
 																				(
 																					structure
@@ -1388,29 +1411,31 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																					] as elementWithChanges
 																				)
 																					.changes
-																					.platformTypeName2
-																					?.currentValue !==
+																					.platformType
+																					?.currentValue
+																					.name !==
 																					(
 																						structure
 																							.elements[
 																							index
 																						] as elementWithChanges
 																					)
-																						.platformTypeName2
+																						.platformType
+																						.name
 																			) {
 																				(
 																					structure
 																						.elements[
 																						index
 																					] as elementWithChanges
-																				).changes.platformTypeName2!.currentValue =
+																				).changes.platformType!.currentValue.name =
 																					type.name;
 																				(
 																					structure
 																						.elements[
 																						index
 																					] as elementWithChanges
-																				).changes.platformTypeName2!.transactionToken =
+																				).changes.platformType!.transactionToken =
 																					change.currentVersion.transactionToken;
 																			}
 																			(
@@ -1466,7 +1491,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																						] as elementWithChanges
 																					)
 																						.changes
-																						.platformTypeName2 ===
+																						.platformType ===
 																					undefined
 																				) {
 																					(
@@ -1474,12 +1499,23 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																							.elements[
 																							index
 																						] as elementWithChanges
-																					).changes.platformTypeName2 =
+																					).changes.platformType =
 																						{
 																							previousValue:
-																								type.name,
+																								{
+																									...(
+																										structure
+																											.elements[
+																											index
+																										] as elementWithChanges
+																									)
+																										.changes
+																										.platformType!
+																										.previousValue,
+																									name: type.name,
+																								},
 																							currentValue:
-																								'',
+																								new PlatformTypeSentinel(),
 																							transactionToken:
 																								change
 																									.currentVersion
@@ -1493,7 +1529,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																						] as elementWithChanges
 																					)
 																						.changes
-																						.platformTypeName2 !==
+																						.platformType !==
 																						undefined &&
 																					(
 																						structure
@@ -1502,7 +1538,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																						] as elementWithChanges
 																					)
 																						.changes
-																						.platformTypeName2
+																						.platformType
 																						?.currentValue !==
 																						(
 																							structure
@@ -1510,21 +1546,21 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								index
 																							] as elementWithChanges
 																						)
-																							.platformTypeName2
+																							.platformType
 																				) {
 																					(
 																						structure
 																							.elements[
 																							index
 																						] as elementWithChanges
-																					).changes.platformTypeName2!.previousValue =
+																					).changes.platformType!.previousValue.name =
 																						type.name;
 																					(
 																						structure
 																							.elements[
 																							index
 																						] as elementWithChanges
-																					).changes.platformTypeName2!.transactionToken =
+																					).changes.platformType!.transactionToken =
 																						change.currentVersion.transactionToken;
 																				} else {
 																					(
@@ -1532,7 +1568,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																							.elements[
 																							index
 																						] as elementWithChanges
-																					).changes.platformTypeName2!.previousValue =
+																					).changes.platformType!.previousValue.name =
 																						type.name;
 																				}
 																				(

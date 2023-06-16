@@ -10,6 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+} from '@osee/shared/types';
 import type { PlatformType } from './platformType';
 
 /**
@@ -18,4 +23,9 @@ import type { PlatformType } from './platformType';
 export interface editPlatformTypeDialogData {
 	mode: 0 | 1;
 	type: PlatformType;
+	enumerationSet?: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	};
 }

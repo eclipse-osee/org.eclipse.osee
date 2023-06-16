@@ -58,7 +58,7 @@ export class HeaderService {
 			humanReadable: 'Name',
 		},
 		{
-			header: 'platformTypeName2',
+			header: 'platformType',
 			description: 'Platform Type of Element',
 			humanReadable: 'Type',
 		},

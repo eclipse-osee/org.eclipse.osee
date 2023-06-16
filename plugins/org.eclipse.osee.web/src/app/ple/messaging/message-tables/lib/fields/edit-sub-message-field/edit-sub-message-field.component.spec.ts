@@ -21,12 +21,14 @@ import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { EditSubMessageFieldComponent } from './edit-sub-message-field.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { CurrentMessagesService } from '@osee/messaging/shared/services';
+import {
+	CurrentMessagesService,
+	WarningDialogService,
+} from '@osee/messaging/shared/services';
 import {
 	CurrentMessageServiceMock,
 	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
-import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 import { A11yModule } from '@angular/cdk/a11y';
 import { NgIf, NgFor, AsyncPipe } from '@angular/common';

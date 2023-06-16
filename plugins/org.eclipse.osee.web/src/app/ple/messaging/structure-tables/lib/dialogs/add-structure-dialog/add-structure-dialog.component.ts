@@ -30,7 +30,10 @@ import {
 	EnumsService,
 } from '@osee/messaging/shared/services';
 import type { structure } from '@osee/messaging/shared/types';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
+import {
+	MatOptionLoadingComponent,
+	ApplicabilitySelectorComponent,
+} from '@osee/shared/components';
 import { AddStructureDialog } from './add-structure-dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { BehaviorSubject, debounceTime, map, switchMap } from 'rxjs';
@@ -56,6 +59,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 		NgIf,
 		NgFor,
 		AsyncPipe,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class AddStructureDialogComponent {

@@ -29,6 +29,7 @@ import {
 } from '@osee/messaging/shared/query';
 import { Observable, of, switchMap, take } from 'rxjs';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeAttributes]',
@@ -52,6 +53,8 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 		idIntValue: 0,
 		fields: [],
 	};
+	@Input() referencePlatform: PlatformType = new PlatformTypeSentinel();
+	private __referencePlatform = new PlatformTypeSentinel();
 	constructor(private queryService: CurrentQueryService) {}
 	validate(
 		control: AbstractControl<PlatformType, any>
@@ -191,7 +194,14 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 			.pipe(
 				take(1),
 				switchMap((results) =>
-					results.length > 0
+					results.length > 0 &&
+					this.referencePlatform.id !== this.__referencePlatform.id &&
+					results
+						.map((v) => v.id)
+						.includes(this.referencePlatform?.id || '') &&
+					results.length !== 1 &&
+					this.referencePlatform.interfaceLogicalType !==
+						'enumeration'
 						? of<ValidationErrors>({
 								attributesNotUnique: { value: results.length },
 						  })

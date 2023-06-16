@@ -13,7 +13,7 @@
 import { applic } from '../applicability/applic';
 import type { ARTIFACTTYPEID } from '../constants/ArtifactTypeId.enum';
 import type { ATTRIBUTETYPEID } from '../constants/AttributeTypeId.enum';
-import type { RelationTypeId } from '../constants/RelationTypeId.enum';
+import type { RELATIONTYPEID } from '../constants/RelationTypeId.enum';
 import { TupleTypeId } from '../constants/TupleTypeId';
 import { transactionToken } from './transaction-token';
 
@@ -34,7 +34,7 @@ export class changeInstance<
 	itemTypeId:
 		| ARTIFACTTYPEID
 		| ATTRIBUTETYPEID
-		| RelationTypeId
+		| RELATIONTYPEID
 		| TupleTypeId
 		| itemTypeIdRelation
 		| string; // update to enum union later, should be artifact type id, attribute type id, relation type id
@@ -117,7 +117,7 @@ export interface difference<
 	transactionToken: transactionToken;
 }
 export class itemTypeIdRelation {
-	id: RelationTypeId;
+	id: RELATIONTYPEID;
 	name: string;
 	order: string;
 	ordered: boolean;

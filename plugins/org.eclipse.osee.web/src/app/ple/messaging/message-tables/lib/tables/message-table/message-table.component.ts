@@ -290,6 +290,10 @@ export class MessageTableComponent implements AfterViewChecked {
 			interfaceMessagePeriodicity: '',
 			interfaceMessageRate: '',
 			interfaceMessageType: '',
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
 			interfaceMessageWriteAccess: false,
 			publisherNodes: [
 				{
@@ -457,6 +461,10 @@ export class MessageTableComponent implements AfterViewChecked {
 						name: '',
 						description: '',
 						interfaceSubMessageNumber: '',
+						applicability: {
+							id: '1',
+							name: 'Base',
+						},
 					},
 				},
 			})

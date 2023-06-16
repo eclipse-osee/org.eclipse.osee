@@ -31,9 +31,9 @@ import {
 	CurrentMessagesService,
 	TransportTypeUiService,
 } from '@osee/messaging/shared/services';
-import { combineLatest, of, switchMap } from 'rxjs';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-message-dialog.component';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-add-message-dialog',
@@ -54,6 +54,7 @@ import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-
 		NgIf,
 		AsyncPipe,
 		MessageNodesCountDirective,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class AddMessageDialogComponent {

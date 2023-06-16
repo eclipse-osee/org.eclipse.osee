@@ -56,7 +56,7 @@ export const MimPreferencesMock: MimPreferences<
 			enabled: true,
 		},
 		{
-			name: 'platformTypeName2',
+			name: 'platformType',
 			enabled: true,
 		},
 		{

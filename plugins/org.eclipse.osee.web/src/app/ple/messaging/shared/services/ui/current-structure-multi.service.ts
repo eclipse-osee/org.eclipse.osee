@@ -46,9 +46,25 @@ import {
 } from '@osee/shared/types/change-report';
 import {
 	ATTRIBUTETYPEIDENUM,
-	RelationTypeId,
+	RELATIONTYPEID,
+	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
 import { CurrentStructureService } from './current-structure.service';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+
+/**
+ * Note these type guards are pretty specific to multi service, however they might be useful to single service...TBD
+ */
+const _rels = [
+	RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
+	RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
+	RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
+] as const;
+
+type StructureRels = (typeof _rels)[number];
+function _isStructureRel(rel2: RELATIONTYPEID): rel2 is StructureRels {
+	return !!_rels.find((rel) => rel2 === rel);
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -264,27 +280,29 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 									b.changeType.id ===
 										changeTypeNumber.RELATION_CHANGE &&
 									typeof b.itemTypeId === 'object' &&
-									'id' in b.itemTypeId
+									'id' in b.itemTypeId &&
+									_isStructureRel(a.itemTypeId.id) &&
+									_isStructureRel(b.itemTypeId.id)
 								) {
 									const relFactor =
 										[
-											RelationTypeId.INTERFACESTRUCTURECONTENT,
-											RelationTypeId.INTERFACESUBMESSAGECONTENT,
-											RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+											RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
+											RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
+											RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 										].indexOf(a.itemTypeId.id) -
 										[
-											RelationTypeId.INTERFACESTRUCTURECONTENT,
-											RelationTypeId.INTERFACESUBMESSAGECONTENT,
-											RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+											RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
+											RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
+											RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 										].indexOf(b.itemTypeId.id) -
 										((a.itemTypeId.id ===
-											RelationTypeId.INTERFACESTRUCTURECONTENT &&
+											RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT &&
 											b.itemTypeId.id ===
-												RelationTypeId.INTERFACESTRUCTURECONTENT) ||
+												RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT) ||
 										(a.itemTypeId.id ===
-											RelationTypeId.INTERFACESUBMESSAGECONTENT &&
+											RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT &&
 											b.itemTypeId.id ===
-												RelationTypeId.INTERFACESUBMESSAGECONTENT)
+												RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT)
 											? [
 													ModificationType.NEW,
 													ModificationType.DELETED,
@@ -1483,7 +1501,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																.map((a) =>
 																	a.elements.map(
 																		(b) =>
-																			b.platformTypeId?.toString()
+																			b.platformType.id?.toString()
 																	)
 																)
 																.flat()
@@ -1508,7 +1526,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																								(
 																									a
 																								) =>
-																									a.platformTypeId?.toString()
+																									a.platformType.id?.toString()
 																							)
 																							.flat()
 																							.includes(
@@ -1531,7 +1549,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																											iif(
 																												() =>
 																													change.artId ===
-																													element.platformTypeId?.toString(),
+																													element.platformType.id?.toString(),
 																												iif(
 																													() =>
 																														change.itemTypeId ===
@@ -1585,16 +1603,32 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																		);
 																																	(
 																																		el as elementWithChanges
-																																	).changes.platformTypeName2 =
+																																	).changes.platformType =
 																																		{
 																																			previousValue:
-																																				change
-																																					.baselineVersion
-																																					.value as string,
+																																				{
+																																					...(
+																																						el as elementWithChanges
+																																					)
+																																						.changes
+																																						.platformType!
+																																						.previousValue,
+																																					name: change
+																																						.baselineVersion
+																																						.value as string,
+																																				},
 																																			currentValue:
-																																				change
-																																					.currentVersion
-																																					.value as string,
+																																				{
+																																					...(
+																																						el as elementWithChanges
+																																					)
+																																						.changes
+																																						.platformType!
+																																						.currentValue,
+																																					name: change
+																																						.currentVersion
+																																						.value as string,
+																																				},
 																																			transactionToken:
 																																				change
 																																					.currentVersion
@@ -1666,7 +1700,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 														'id' in
 															change.itemTypeId &&
 														change.itemTypeId.id ===
-															RelationTypeId.INTERFACESUBMESSAGECONTENT &&
+															RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT &&
 														change.artId ===
 															subMessageId,
 													iif(
@@ -1886,7 +1920,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																change.itemTypeId &&
 															change.itemTypeId
 																.id ===
-																RelationTypeId.INTERFACESTRUCTURECONTENT &&
+																RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT &&
 															structures
 																.map(
 																	(a) => a.id
@@ -2062,12 +2096,12 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																	};
 																																(
 																																	el as elementWithChanges
-																																).changes.platformTypeName2 =
+																																).changes.platformType =
 																																	{
 																																		previousValue:
-																																			'',
+																																			new PlatformTypeSentinel(),
 																																		currentValue:
-																																			el.platformTypeName2,
+																																			el.platformType,
 																																		transactionToken:
 																																			change
 																																				.currentVersion
@@ -2246,12 +2280,12 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																				.currentVersion
 																																				.transactionToken,
 																																	},
-																																	platformTypeName2:
+																																	platformType:
 																																		{
 																																			previousValue:
-																																				initialEl.platformTypeName2,
+																																				initialEl.platformType,
 																																			currentValue:
-																																				'',
+																																				new PlatformTypeSentinel(),
 																																			transactionToken:
 																																				change
 																																					.currentVersion
@@ -2388,7 +2422,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																change
 																	.itemTypeId
 																	.id ===
-																	RelationTypeId.INTERFACEELEMENTPLATFORMTYPE &&
+																	RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE &&
 																structures
 																	.map((a) =>
 																		a.elements?.map(
@@ -2483,17 +2517,25 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																							element as elementWithChanges
 																																						)
 																																							.changes
-																																							.platformTypeName2 ===
+																																							.platformType ===
 																																						undefined
 																																					) {
 																																						(
 																																							element as elementWithChanges
-																																						).changes.platformTypeName2 =
+																																						).changes.platformType =
 																																							{
 																																								previousValue:
-																																									'',
+																																									new PlatformTypeSentinel(),
 																																								currentValue:
-																																									type.name,
+																																									{
+																																										...(
+																																											element as elementWithChanges
+																																										)
+																																											.changes
+																																											.platformType!
+																																											.currentValue,
+																																										name: type.name,
+																																									},
 																																								transactionToken:
 																																									change
 																																										.currentVersion
@@ -2504,23 +2546,26 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																							element as elementWithChanges
 																																						)
 																																							.changes
-																																							.platformTypeName2 !==
+																																							.platformType !==
 																																							undefined &&
 																																						(
 																																							element as elementWithChanges
 																																						)
 																																							.changes
-																																							.platformTypeName2
-																																							?.currentValue !==
-																																							element.platformTypeName2
+																																							.platformType
+																																							?.currentValue
+																																							.name !==
+																																							element
+																																								.platformType
+																																								.name
 																																					) {
 																																						(
 																																							element as elementWithChanges
-																																						).changes.platformTypeName2!.currentValue =
+																																						).changes.platformType!.currentValue.name =
 																																							type.name;
 																																						(
 																																							element as elementWithChanges
-																																						).changes.platformTypeName2!.transactionToken =
+																																						).changes.platformType!.transactionToken =
 																																							change.currentVersion.transactionToken;
 																																					}
 																																					return element as elementWithChanges;
@@ -2665,17 +2710,25 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																								element as elementWithChanges
 																																							)
 																																								.changes
-																																								.platformTypeName2 ===
+																																								.platformType ===
 																																							undefined
 																																						) {
 																																							(
 																																								element as elementWithChanges
-																																							).changes.platformTypeName2 =
+																																							).changes.platformType =
 																																								{
 																																									previousValue:
-																																										type.name,
+																																										{
+																																											...(
+																																												element as elementWithChanges
+																																											)
+																																												.changes
+																																												.platformType!
+																																												.previousValue,
+																																											name: type.name,
+																																										},
 																																									currentValue:
-																																										'',
+																																										new PlatformTypeSentinel(),
 																																									transactionToken:
 																																										change
 																																											.currentVersion
@@ -2686,28 +2739,31 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																								element as elementWithChanges
 																																							)
 																																								.changes
-																																								.platformTypeName2 !==
+																																								.platformType !==
 																																								undefined &&
 																																							(
 																																								element as elementWithChanges
 																																							)
 																																								.changes
-																																								.platformTypeName2
-																																								?.currentValue !==
-																																								element.platformTypeName2
+																																								.platformType
+																																								?.currentValue
+																																								.name !==
+																																								element
+																																									.platformType
+																																									.name
 																																						) {
 																																							(
 																																								element as elementWithChanges
-																																							).changes.platformTypeName2!.previousValue =
+																																							).changes.platformType!.previousValue.name =
 																																								type.name;
 																																							(
 																																								element as elementWithChanges
-																																							).changes.platformTypeName2!.transactionToken =
+																																							).changes.platformType!.transactionToken =
 																																								change.currentVersion.transactionToken;
 																																						} else {
 																																							(
 																																								element as elementWithChanges
-																																							).changes.platformTypeName2!.previousValue =
+																																							).changes.platformType!.previousValue.name =
 																																								type.name;
 																																						}
 																																						return element as elementWithChanges;

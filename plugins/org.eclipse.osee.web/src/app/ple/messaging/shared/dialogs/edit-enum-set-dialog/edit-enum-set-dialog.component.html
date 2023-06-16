@@ -21,7 +21,7 @@
 			<osee-edit-enum-set-field
 				[editable]="true"
 				[platformTypeId]="data.id"
-				(enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
+				(enumSetTx)="receiveTx($event)"></osee-edit-enum-set-field>
 		</mat-dialog-content>
 	</ng-container>
 	<ng-template #no_edit>
@@ -30,7 +30,7 @@
 			<osee-edit-enum-set-field
 				[editable]="false"
 				[platformTypeId]="data.id"
-				(enumUpdated)="enumUpdate($event)"></osee-edit-enum-set-field>
+				(enumSetTx)="receiveTx($event)"></osee-edit-enum-set-field>
 		</mat-dialog-content>
 	</ng-template>
 </ng-container>
@@ -40,7 +40,7 @@
 		(click)="onNoClick()">
 		Cancel
 	</button>
-	<ng-container *ngIf="changedEnum | async as result">
+	<ng-container *ngIf="receivedTx | async as result">
 		<button
 			mat-raised-button
 			color="primary"

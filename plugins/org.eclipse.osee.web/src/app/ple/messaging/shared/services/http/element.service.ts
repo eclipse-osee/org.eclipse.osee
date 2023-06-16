@@ -140,6 +140,10 @@ export class ElementService {
 		transaction?: transaction,
 		key?: string
 	) {
+		if (body.platformType) {
+			//this is a relation
+			delete body.platformType;
+		}
 		if (
 			body.interfaceElementIndexEnd === 0 &&
 			body.interfaceElementIndexStart === 0

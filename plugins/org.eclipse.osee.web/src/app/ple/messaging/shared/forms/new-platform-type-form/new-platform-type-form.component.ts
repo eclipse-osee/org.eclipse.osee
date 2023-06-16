@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
+import {
+	NgIf,
+	NgFor,
+	AsyncPipe,
+	TitleCasePipe,
+	NgTemplateOutlet,
+} from '@angular/common';
 import {
 	Component,
 	Input,
@@ -24,22 +30,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { UniquePlatformTypeAttributesDirective } from '@osee/messaging/shared/directives';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { TypesService, EnumsService } from '@osee/messaging/shared/services';
 import type {
+	enumerationSet,
 	logicalType,
 	logicalTypeFieldInfo,
 	PlatformType,
 } from '@osee/messaging/shared/types';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
+import { applic } from '@osee/shared/types/applicability';
 import { FirstLetterLowerPipe } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
 	debounceTime,
 	distinctUntilChanged,
 	filter,
+	ReplaySubject,
 	scan,
 	Subject,
 	switchMap,
+	tap,
 } from 'rxjs';
 import { NewAttributeFormFieldComponent } from '../new-attribute-form-field/new-attribute-form-field.component';
 /**
@@ -61,6 +72,7 @@ import { NewAttributeFormFieldComponent } from '../new-attribute-form-field/new-
 		NewAttributeFormFieldComponent,
 		UniquePlatformTypeAttributesDirective,
 		FirstLetterLowerPipe,
+		NgTemplateOutlet,
 	],
 	templateUrl: './new-platform-type-form.component.html',
 	styleUrls: ['./new-platform-type-form.component.sass'],
@@ -70,7 +82,7 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 	/**
 	 * Logical type to load needed attributes from
 	 */
-	@Input('logicalType') _logicalType: logicalType = {
+	@Input() logicalType: logicalType = {
 		id: '-1',
 		name: '',
 		idString: '-1',
@@ -89,24 +101,23 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 		filter((val) => val.id !== '' && val.id !== '-1'),
 		distinctUntilChanged(),
 		debounceTime(500),
-		switchMap((type) => this.typesService.getLogicalTypeFormDetail(type.id))
+		switchMap((type) =>
+			this.typesService.getLogicalTypeFormDetail(type.id)
+		),
+		tap((form) => {
+			this._platformType.interfaceLogicalType = form.name;
+			form.fields
+				.filter((f) => !f.editable)
+				.forEach((f) => {
+					this._platformType[f.jsonPropertyName] = f.defaultValue;
+				});
+			this.updateField();
+		})
 	);
 	private _latestFormInfo = new Subject<logicalTypeFieldInfo>();
 
-	/**
-	 * Partial Platform Type that contains all the values set by the user.
-	 */
-	@Output() attributes = this._latestFormInfo.pipe(
-		scan((acc, curr) => {
-			const attributeType: Uncapitalize<typeof curr.attributeType> =
-				(curr.attributeType.charAt(0).toLowerCase() +
-					curr.attributeType.slice(1)) as Uncapitalize<
-					typeof curr.attributeType
-				>;
-			acc[attributeType] = curr.value;
-			return acc;
-		}, {} as Partial<PlatformType>)
-	);
+	protected _platformType: PlatformType = new PlatformTypeSentinel();
+	@Output() protected platformType = new Subject<PlatformType>();
 
 	parentMatcher = new ParentErrorStateMatcher();
 
@@ -116,14 +127,29 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 	) {}
 	ngOnChanges(changes: SimpleChanges) {
 		if (
-			changes._logicalType.currentValue !==
-			this.logicalTypeSubject.getValue()
+			changes.logicalType !== undefined &&
+			changes.logicalType.currentValue !==
+				this.logicalTypeSubject.getValue() &&
+			changes.logicalType.currentValue !== undefined
 		) {
-			this.logicalTypeSubject.next(changes._logicalType.currentValue);
+			this.logicalTypeSubject.next(changes.logicalType.currentValue);
 		}
 	}
 	updatedFormValue(event: logicalTypeFieldInfo) {
 		this._latestFormInfo.next(event);
+	}
+	protected isLogicalTypeFieldInfo(
+		value: unknown
+	): value is logicalTypeFieldInfo {
+		return (value as any).jsonPropertyName !== undefined;
+	}
+	protected isString(
+		value: string | boolean | enumerationSet | applic | undefined
+	): value is string {
+		return typeof value === 'string';
+	}
+	updateField() {
+		this.platformType.next(this._platformType);
 	}
 }
 

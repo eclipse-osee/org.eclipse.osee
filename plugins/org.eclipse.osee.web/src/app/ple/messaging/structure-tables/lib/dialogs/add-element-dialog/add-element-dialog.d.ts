@@ -16,6 +16,6 @@ import type { element, PlatformType } from '@osee/messaging/shared/types';
 export interface AddElementDialog {
 	id: string;
 	name: string;
-	element: element;
+	element: Partial<element>;
 	type: PlatformType;
 }

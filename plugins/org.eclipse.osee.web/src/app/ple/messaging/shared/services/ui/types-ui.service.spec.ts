@@ -80,7 +80,13 @@ describe('TypesUIService', () => {
 			const expectedMarble = '(a|)';
 			uiService.idValue = '10';
 			scheduler
-				.expectObservable(service.partialUpdate({}))
+				.expectObservable(
+					service.partialUpdate({
+						createArtifacts: [],
+						modifyArtifacts: [],
+						deleteRelations: [],
+					})
+				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
 	});
@@ -91,7 +97,13 @@ describe('TypesUIService', () => {
 			const expectedMarble = '(a|)';
 			uiService.idValue = '10';
 			scheduler
-				.expectObservable(service.copyType({}))
+				.expectObservable(
+					service.copyType({
+						createArtifacts: [],
+						modifyArtifacts: [],
+						deleteRelations: [],
+					})
+				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
 	});

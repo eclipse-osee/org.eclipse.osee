@@ -13,6 +13,7 @@ import type { applic } from '@osee/shared/types/applicability';
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { hasChanges } from '@osee/shared/types/change-report';
+import { PlatformType } from './platformType';
 export interface element {
 	[index: string]: any;
 	id: string;
@@ -20,14 +21,17 @@ export interface element {
 	description: string;
 	notes: string;
 	interfacePlatformTypeDescription?: string;
+	interfacePlatformTypeMinval?: string;
+	interfacePlatformTypeMaxval?: string;
+	elementSizeInBytes?: number;
+	elementSizeInBits?: number;
 	interfaceElementIndexEnd: number;
 	interfaceElementIndexStart: number;
 	interfaceElementAlterable: boolean;
 	interfaceDefaultValue: string;
-	units: string;
+	units?: string;
 	enumLiteral: string;
-	platformTypeName2?: string;
-	platformTypeId?: number;
+	platformType: PlatformType;
 	beginWord?: number;
 	beginByte?: number;
 	endWord?: number;

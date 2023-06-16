@@ -283,7 +283,7 @@ public class MimIcdGenerator {
                   sizeInBytes = sizeInBytes + (int) element.getElementSizeInBytes();
 
                   MimDifferenceItem elementDiffItem = diffs.get(ArtifactId.valueOf(element.getId()));
-                  MimDifferenceItem pTypeDiffItem = diffs.get(ArtifactId.valueOf(element.getPlatformTypeId()));
+                  MimDifferenceItem pTypeDiffItem = diffs.get(ArtifactId.valueOf(element.getPlatformType().getId()));
                   structureSizeChanged =
                      structureSizeChanged || (pTypeDiffItem != null && pTypeDiffItem.getAttributeChanges().containsKey(
                         CoreAttributeTypes.InterfacePlatformTypeBitSize.getId())) || (elementDiffItem != null && (elementDiffItem.isAdded() || !elementDiffItem.getRelationChanges().isEmpty()));

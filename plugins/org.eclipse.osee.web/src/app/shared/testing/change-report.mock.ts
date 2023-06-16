@@ -18,7 +18,7 @@ import {
 	ignoreType,
 	ModificationType,
 } from '@osee/shared/types/change-report';
-import { RelationTypeId } from '@osee/shared/types/constants';
+import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
 
 export const changeReportMock: changeInstance[] = [
 	{
@@ -496,7 +496,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201289',
 		itemId: '5141',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface Message SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -686,7 +686,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201289',
 		itemId: '5143',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface Message SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -876,7 +876,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201282',
 		itemId: '5144',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONCONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACECONNECTIONCONTENT,
 			name: 'Interface Connection Message',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -975,7 +975,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201282',
 		itemId: '5145',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONCONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACECONNECTIONCONTENT,
 			name: 'Interface Connection Message',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -1153,7 +1153,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201297',
 		itemId: '5146',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface Message SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -1331,7 +1331,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201289',
 		itemId: '5147',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface Message SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -21795,7 +21795,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201351',
 		itemId: '5196',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+			id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 			name: 'Interface Element Platform Type',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -22076,7 +22076,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201301',
 		itemId: '5204',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -22175,7 +22175,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201364',
 		itemId: '5207',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 			name: 'Interface Structure Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -22274,7 +22274,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201315',
 		itemId: '5209',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 			name: 'Interface Structure Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -22373,7 +22373,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201362',
 		itemId: '5210',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+			id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 			name: 'Interface Element Platform Type',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -22472,7 +22472,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201301',
 		itemId: '5213',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -22747,7 +22747,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201301',
 		itemId: '5221',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -22925,7 +22925,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201301',
 		itemId: '5222',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 			name: 'Interface SubMessage Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -23103,7 +23103,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201364',
 		itemId: '5223',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 			name: 'Interface Structure Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -23372,7 +23372,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201315',
 		itemId: '5224',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+			id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 			name: 'Interface Structure Content',
 			order: 'USER_DEFINED',
 			ordered: true,
@@ -23550,7 +23550,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201371',
 		itemId: '5225',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+			id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 			name: 'Interface Element Platform Type',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -23728,7 +23728,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201351',
 		itemId: '5226',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+			id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 			name: 'Interface Element Platform Type',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -24246,7 +24246,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '8255184',
 		itemId: '5236',
 		itemTypeId: {
-			id: RelationTypeId.DEFAULT_HIERARCHICAL,
+			id: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
 			name: 'Default Hierarchical',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -24339,7 +24339,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '8255184',
 		itemId: '5237',
 		itemTypeId: {
-			id: RelationTypeId.DEFAULT_HIERARCHICAL,
+			id: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
 			name: 'Default Hierarchical',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -24432,7 +24432,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201376',
 		itemId: '5239',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			id: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
 			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -24525,7 +24525,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201376',
 		itemId: '5240',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			id: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
 			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -24621,7 +24621,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201377',
 		itemId: '5241',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			id: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
 			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -24717,7 +24717,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '201377',
 		itemId: '5242',
 		itemTypeId: {
-			id: RelationTypeId.INTERFACECONNECTIONNODE,
+			id: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
 			name: 'Interface Connection Node',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
@@ -24813,7 +24813,7 @@ export const changeReportMock: changeInstance[] = [
 		artId: '8255184',
 		itemId: '5243',
 		itemTypeId: {
-			id: RelationTypeId.DEFAULT_HIERARCHICAL,
+			id: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
 			name: 'Default Hierarchical',
 			order: 'LEXICOGRAPHICAL_ASC',
 			ordered: true,
