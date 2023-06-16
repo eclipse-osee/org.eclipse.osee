@@ -25,8 +25,11 @@
 					matInput
 					type="text"
 					[(ngModel)]="data.type.name"
-					[ngModelOptions]="{ updateOn: 'blur' }"
+					(ngModelChange)="
+						updatePTypeManifest('1152921504606847088', $event)
+					"
 					oseeUniquePlatformTypeName
+					[referencePlatform]="reference"
 					#input
 					required
 					id="platformTypeName"
@@ -39,8 +42,17 @@
 					>Name must be unique.</mat-error
 				>
 			</mat-form-field>
+			<osee-applicability-selector
+				[applicability]="data.type.applicability"
+				(applicabilityChange)="
+					data.type.applicability = $event;
+					modifyApplicability($event)
+				">
+			</osee-applicability-selector>
+			<br />
 			<form
 				[oseeUniquePlatformTypeAttributes]="undefined"
+				[referencePlatform]="reference"
 				#platformTypeForm="ngForm">
 				<mat-form-field class="width-100">
 					<mat-label for="interfaceLogicalType"
@@ -84,8 +96,13 @@
 							matInput
 							[errorStateMatcher]="parentMatcher"
 							[(ngModel)]="data.type.description"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'1152921504606847090',
+									$event
+								)
+							"
 							[required]="(descriptionRequired | async) || false"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="description"
 							name="description"
 							#description="ngModel"></textarea>
@@ -108,11 +125,16 @@
 							matInput
 							type="number"
 							[(ngModel)]="data.type.interfacePlatformTypeMinval"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'3899709087455064782',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(minValRequired | async) || false"
 							[max]="data.type.interfacePlatformTypeMaxval"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfacePlatformTypeMinval"
 							name="interfacePlatformTypeMinval"
 							#interfacePlatformTypeMinval="ngModel" />
@@ -134,11 +156,16 @@
 							matInput
 							type="number"
 							[(ngModel)]="data.type.interfacePlatformTypeMaxval"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'3899709087455064783',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(maxValRequired | async) || false"
 							[min]="data.type.interfacePlatformTypeMinval"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfacePlatformTypeMaxval"
 							name="interfacePlatformTypeMaxval"
 							#interfacePlatformTypeMaxval="ngModel" />
@@ -160,12 +187,17 @@
 							matInput
 							type="text"
 							[(ngModel)]="data.type.interfaceDefaultValue"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'2886273464685805413',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(defaultValRequired | async) || false"
 							[max]="data.type.interfacePlatformTypeMaxval"
 							[min]="data.type.interfacePlatformTypeMinval"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfaceDefaultValue"
 							name="interfaceDefaultValue"
 							#interfaceDefaultValue="ngModel" />
@@ -190,7 +222,12 @@
 								data.type.interfacePlatformTypeMsbValue
 							"
 							[ngModel]="getMSBValue()"
-							[ngModelOptions]="{ updateOn: 'blur' }"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'3899709087455064785',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(msbValRequired | async) || false"
@@ -219,7 +256,6 @@
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(bitSizeRequired | async) || false"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="byte_size1"
 							name="byte_size1"
 							#byte_size1="ngModel" />
@@ -241,11 +277,16 @@
 							matInput
 							type="number"
 							[(ngModel)]="data.type.interfacePlatformTypeBitSize"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'2455059983007225786',
+									$event
+								)
+							"
 							#input
 							required
 							[errorStateMatcher]="parentMatcher"
 							[required]="(bitSizeRequired | async) || false"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfacePlatformTypeBitSize"
 							name="interfacePlatformTypeBitSize"
 							#interfacePlatformTypeBitSize="ngModel" />
@@ -273,12 +314,17 @@
 								data.type.interfacePlatformTypeBitsResolution
 							"
 							[ngModel]="getResolution()"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'3899709087455064786',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="
 								(bitResolutionRequired | async) || false
 							"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfacePlatformTypeBitsResolution"
 							name="interfacePlatformTypeBitsResolution"
 							#interfacePlatformTypeBitsResolution="ngModel" />
@@ -302,10 +348,15 @@
 							[(ngModel)]="
 								data.type.interfacePlatformTypeCompRate
 							"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'3899709087455064787',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(compRateRequired | async) || false"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfacePlatformTypeCompRate"
 							name="interfacePlatformTypeCompRate"
 							#interfacePlatformTypeCompRate="ngModel" />
@@ -329,10 +380,15 @@
 							[(ngModel)]="
 								data.type.interfacePlatformTypeAnalogAccuracy
 							"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'3899709087455064788',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(analogAccRequired | async) || false"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfacePlatformTypeAnalogAccuracy"
 							name="interfacePlatformTypeAnalogAccuracy"
 							#interfacePlatformTypeAnalogAccuracy="ngModel" />
@@ -352,10 +408,15 @@
 						>
 						<mat-select
 							[(ngModel)]="data.type.interfacePlatformTypeUnits"
+							(ngModelChange)="
+								updatePTypeManifest(
+									'4026643196432874344',
+									$event
+								)
+							"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(unitsRequired | async) || false"
-							[ngModelOptions]="{ updateOn: 'blur' }"
 							id="interfacePlatformTypeUnits"
 							name="interfacePlatformTypeUnits"
 							#interfacePlatformTypeUnits="ngModel">
@@ -403,46 +464,12 @@
 					Next
 				</button>
 			</ng-container>
-			<ng-container
-				*ngIf="data.type.interfaceLogicalType !== 'enumeration'">
-				<button
-					mat-raised-button
-					[mat-dialog-close]="data"
-					color="primary"
-					[disabled]="
-						data.type.name.length === 0 ||
-						data.type.interfaceLogicalType.length === 0 ||
-						platformTypeForm.invalid ||
-						platformTypeForm.pending ||
-						platformTypeName.invalid ||
-						platformTypeName.pending
-					">
-					Ok
-				</button>
-			</ng-container>
-		</mat-dialog-actions>
-	</mat-step>
-	<ng-container *ngIf="data.type.interfaceLogicalType === 'enumeration'">
-		<mat-step label="Enumeration Set">
-			<mat-dialog-content>
-				<osee-edit-enum-set-field
-					[editable]="true"
-					[platformType]="data.type"
-					(enumUpdated)="
-						enumUpdate($event)
-					"></osee-edit-enum-set-field>
-			</mat-dialog-content>
-			<mat-dialog-actions align="end">
-				<button
-					mat-button
-					(click)="onNoClick()">
-					Cancel
-				</button>
+			<ng-container *ngIf="manifest | async as _manifest">
 				<ng-container
-					*ngIf="data.type.interfaceLogicalType === 'enumeration'">
+					*ngIf="data.type.interfaceLogicalType !== 'enumeration'">
 					<button
 						mat-raised-button
-						[mat-dialog-close]="returnValue"
+						[mat-dialog-close]="_manifest"
 						color="primary"
 						[disabled]="
 							data.type.name.length === 0 ||
@@ -450,13 +477,55 @@
 							platformTypeForm.invalid ||
 							platformTypeForm.pending ||
 							platformTypeName.invalid ||
-							platformTypeName.pending ||
-							(enumUnique | async) === 'false'
+							platformTypeName.pending
 						">
 						Ok
 					</button>
 				</ng-container>
-			</mat-dialog-actions>
-		</mat-step>
+			</ng-container>
+		</mat-dialog-actions>
+	</mat-step>
+	<ng-container *ngIf="data.type.interfaceLogicalType === 'enumeration'">
+		<ng-container *ngIf="manifest | async as _manifest">
+			<mat-step label="Enumeration Set">
+				<mat-dialog-content>
+					<osee-edit-enum-set-field
+						[editable]="true"
+						[platformType]="data.type"
+						[shouldCreateNew]="data.mode === 1"
+						(enumSetTx)="enumUpdate($event)"
+						(unique)="
+							updateUnique($event)
+						"></osee-edit-enum-set-field>
+				</mat-dialog-content>
+				<mat-dialog-actions align="end">
+					<button
+						mat-button
+						(click)="onNoClick()">
+						Cancel
+					</button>
+					<ng-container
+						*ngIf="
+							data.type.interfaceLogicalType === 'enumeration'
+						">
+						<button
+							mat-raised-button
+							[mat-dialog-close]="_manifest"
+							color="primary"
+							[disabled]="
+								data.type.name.length === 0 ||
+								data.type.interfaceLogicalType.length === 0 ||
+								platformTypeForm.invalid ||
+								platformTypeForm.pending ||
+								platformTypeName.invalid ||
+								platformTypeName.pending ||
+								(enumUnique | async) === 'false'
+							">
+							Ok
+						</button>
+					</ng-container>
+				</mat-dialog-actions>
+			</mat-step>
+		</ng-container>
 	</ng-container>
 </mat-stepper>

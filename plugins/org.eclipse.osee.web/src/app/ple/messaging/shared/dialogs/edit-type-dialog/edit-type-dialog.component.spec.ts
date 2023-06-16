@@ -45,7 +45,11 @@ import {
 	TypesService,
 	EnumsService,
 } from '@osee/messaging/shared/services';
-import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import {
+	MockApplicabilitySelectorComponent,
+	MockMatOptionLoadingComponent,
+} from '@osee/shared/components/testing';
+import { MockUniquePlatformTypeNameDirective } from 'src/app/ple/messaging/shared/testing/unique-platform-type-name.directive.mock';
 
 let loader: HarnessLoader;
 
@@ -58,7 +62,7 @@ describe('EditTypeDialogComponent', () => {
 		type: {
 			interfaceLogicalType: 'boolean',
 			description: '',
-			interfacePlatform2sComplement: false,
+			interfacePlatformType2sComplement: false,
 			interfacePlatformTypeAnalogAccuracy: 'N/A',
 			interfacePlatformTypeBitsResolution: 'N/A',
 			interfacePlatformTypeCompRate: '50Hz',
@@ -70,6 +74,10 @@ describe('EditTypeDialogComponent', () => {
 			interfacePlatformTypeUnits: 'N/A',
 			interfacePlatformTypeValidRangeDescription: '',
 			name: 'FACE Boolean',
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
 		},
 	};
 
@@ -91,6 +99,8 @@ describe('EditTypeDialogComponent', () => {
 					MockMatOptionLoadingComponent,
 					MockEditEnumSetFieldComponent,
 					MockUniquePlatformTypeAttributesDirective,
+					MockUniquePlatformTypeNameDirective,
+					MockApplicabilitySelectorComponent,
 				],
 				providers: [
 					{ provide: QueryService, useValue: QueryServiceMock },

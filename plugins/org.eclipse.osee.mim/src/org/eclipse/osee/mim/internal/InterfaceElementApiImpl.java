@@ -165,9 +165,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
             element.setBeginWord(
                Math.floor(((previousElement.getEndWord() * 4) + previousElement.getEndByte() + 1) / 4));
          }
+         element.setPlatformType(platformType);
          element.setInterfacePlatformTypeBitSize(platformType.getInterfacePlatformTypeBitSize());
-         element.setPlatformTypeId(platformType.getId());
-         element.setPlatformTypeName(platformType.getName());
          element.setLogicalType(
             platformType.getInterfaceLogicalType() != null ? platformType.getInterfaceLogicalType() : "");
          element.setInterfacePlatformTypeMinval(
@@ -178,8 +177,6 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
             platformType.getInterfaceDefaultValue() != null ? platformType.getInterfaceDefaultValue() : "");
          element.setUnits(
             platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
-         element.setInterfacePlatformTypeDescription(
-            platformType.getDescription() != null ? platformType.getDescription() : "");
       } catch (Exception ex) {
          System.out.println(ex);
       }

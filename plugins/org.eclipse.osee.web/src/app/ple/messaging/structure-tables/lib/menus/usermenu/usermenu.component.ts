@@ -94,7 +94,7 @@ export class UsermenuComponent {
 				),
 				of([
 					'name',
-					'platformTypeName2',
+					'platformType',
 					'interfaceElementAlterable',
 					'description',
 					'notes',

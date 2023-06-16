@@ -24,33 +24,31 @@ import {
 	STRUCTURE_SERVICE_TOKEN,
 	MULTI_STRUCTURE_SERVICE,
 } from '@osee/messaging/shared/tokens';
+import { provideRouter } from '@angular/router';
 
 let loader: HarnessLoader;
 
-describe('MessageElementInterfaceComponent', () => {
+describe('MultiStructureComponent', () => {
 	let component: MultiStructureTableComponent;
 	let fixture: ComponentFixture<MultiStructureTableComponent>;
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(MultiStructureTableComponent, {
 			set: {
-				imports: [
-					AsyncPipe,
-					StructureTableComponentMock,
-					RouterTestingModule,
-				],
+				imports: [AsyncPipe, StructureTableComponentMock],
 				providers: [
 					{
 						provide: CurrentStructureMultiService,
 						useValue: CurrentStateServiceMock,
 					},
-					{
-						provide: STRUCTURE_SERVICE_TOKEN,
-						useValue: MULTI_STRUCTURE_SERVICE,
-					},
+					MULTI_STRUCTURE_SERVICE,
 				],
 			},
-		}).compileComponents();
+		})
+			.configureTestingModule({
+				providers: [provideRouter([])],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

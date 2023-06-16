@@ -16,16 +16,15 @@ import type {
 	enumeration,
 	enumerationSet,
 } from '@osee/messaging/shared/types';
-import { relation, transaction } from '@osee/shared/types';
-import { from, iif, Observable, of } from 'rxjs';
 import {
-	share,
-	switchMap,
-	shareReplay,
-	take,
-	concatMap,
-	reduce,
-} from 'rxjs/operators';
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+	relation,
+	transaction,
+} from '@osee/shared/types';
+import { iif, Observable, of } from 'rxjs';
+import { share, switchMap, shareReplay, take, map } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 
@@ -89,43 +88,23 @@ export class EnumerationUIService {
 			)
 		);
 	}
-	changeEnumSet(changes: enumerationSet, enumerations?: enumeration[]) {
+	changeEnumSet(dialogResponse: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}) {
 		return this.ui.id.pipe(
 			take(1),
-			switchMap((branchId) =>
-				this.enumSetService.changeEnumSet(branchId, changes).pipe(
-					switchMap((transactionStart) =>
-						iif(
-							() =>
-								enumerations !== undefined &&
-								enumerations?.length > 0,
-							of(enumerations as enumeration[]).pipe(
-								concatMap((enumerationsArray) =>
-									from(enumerationsArray).pipe(
-										switchMap((enumeration) =>
-											this.createOrChangeEnum(
-												branchId,
-												changes?.id || '',
-												enumeration
-											)
-										)
-									)
-								),
-								take(
-									(enumerations as enumeration[])?.length || 0
-								),
-								reduce((acc, curr) => [...acc, curr], [
-									transactionStart,
-								] as transaction[]),
-								switchMap((transactions) =>
-									this._mergeTransactions([...transactions])
-								)
-							),
-							of(transactionStart)
-						)
-					)
-				)
-			),
+			map((id) => {
+				const tx: transaction = {
+					branch: id,
+					txComment: 'Updating enumeration',
+					createArtifacts: dialogResponse.createArtifacts,
+					modifyArtifacts: dialogResponse.modifyArtifacts,
+					deleteRelations: dialogResponse.deleteRelations,
+				};
+				return tx;
+			}),
 			switchMap((transaction) =>
 				this.enumSetService.performMutation(transaction)
 			)

@@ -18,7 +18,7 @@ import type { enumeration, enumSet } from './enum';
 import type { nodeData } from './node';
 import type { platformTypeImportToken } from './platformType';
 import type { structure } from './structure';
-import { connection } from 'src/app/ple/messaging/shared/types/connection';
+import type { connection } from '@osee/messaging/shared/types';
 
 export interface ImportSummary {
 	nodes: nodeData[];

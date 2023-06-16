@@ -171,6 +171,11 @@
 					Alterable
 				</mat-slide-toggle>
 				<br />
+				<osee-applicability-selector
+					[applicability]="data.element.applicability"
+					(applicabilityChange)="data.element.applicability = $event"
+					[required]="true"></osee-applicability-selector>
+				<br />
 			</div>
 			<br />
 			<ng-container
@@ -254,6 +259,8 @@
 				color="primary"
 				(click)="resetDialog()"
 				*ngIf="
+					data.element.name !== undefined &&
+					data.element.description !== undefined &&
 					data.element.name.length > 0 &&
 					data.element.description.length > 0 &&
 					data.type.name.length > 0 &&
@@ -299,6 +306,10 @@
 					>Enumerated Literals:
 					{{ data.element.enumLiteral }}</mat-label
 				>
+				<mat-label
+					>Applicability:
+					{{ data.element.applicability?.name }}
+				</mat-label>
 				<mat-label>Platform Type: {{ data.type.name }}</mat-label>
 			</div>
 		</mat-dialog-content>

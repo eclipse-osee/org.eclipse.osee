@@ -165,18 +165,7 @@ export class NewPlatformTypeFormPage2Component implements OnChanges {
 	 * Updates the platform type to the current state from osee-new-platform-type-form
 	 */
 	attributesUpdate(value: Partial<PlatformType>) {
-		this.logicalTypeSubject
-			.pipe(
-				take(1),
-				map((logicalTypeSelected) => {
-					return {
-						...value,
-						interfaceLogicalType: logicalTypeSelected.name,
-					};
-				}),
-				tap((v) => this.platformType.next(v))
-			)
-			.subscribe();
+		this.platformType.next(value);
 	}
 
 	/**

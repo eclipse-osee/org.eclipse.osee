@@ -24,6 +24,7 @@ export const logicalTypeFormDetailMock: logicalTypeFormDetail = {
 			required: true,
 			defaultValue: '8',
 			value: '8',
+			jsonPropertyName: 'interfacePlatformTypeBitSize',
 		},
 	],
 	id: '',

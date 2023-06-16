@@ -12,7 +12,7 @@
  -->
 <h1 mat-dialog-title>Create New Message</h1>
 <mat-dialog-content>
-	<mat-form-field>
+	<mat-form-field class="tw-w-full">
 		<label>Name</label>
 		<input
 			matInput
@@ -23,7 +23,7 @@
 			data-cy="field-name" />
 	</mat-form-field>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="tw-w-full">
 		<label>Description</label>
 		<textarea
 			matInput
@@ -35,7 +35,7 @@
 			data-cy="field-description"></textarea>
 	</mat-form-field>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="tw-w-full">
 		<label>Rate</label>
 		<mat-select
 			[(ngModel)]="data.interfaceMessageRate"
@@ -50,7 +50,7 @@
 		</mat-select>
 	</mat-form-field>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="tw-w-full">
 		<label>Periodicity</label>
 		<mat-select
 			[(ngModel)]="data.interfaceMessagePeriodicity"
@@ -68,14 +68,15 @@
 	<mat-slide-toggle
 		[(ngModel)]="data.interfaceMessageWriteAccess"
 		[labelPosition]="data.interfaceMessageWriteAccess ? 'after' : 'before'"
-		data-cy="field-write-access">
+		data-cy="field-write-access"
+		class="tw-w-full">
 		<ng-container *ngIf="data.interfaceMessageWriteAccess; else read">
 			Writable
 		</ng-container>
 		<ng-template #read> Read Only </ng-template>
 	</mat-slide-toggle>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="tw-w-full">
 		<label>Type</label>
 		<mat-select
 			[(ngModel)]="data.interfaceMessageType"
@@ -90,7 +91,7 @@
 		</mat-select>
 	</mat-form-field>
 	<br />
-	<mat-form-field>
+	<mat-form-field class="tw-w-full">
 		<label>Message Number</label>
 		<input
 			matInput
@@ -102,7 +103,7 @@
 	</mat-form-field>
 	<ng-container *ngIf="transportType | async as type">
 		<br />
-		<mat-form-field>
+		<mat-form-field class="tw-w-full">
 			<label>Publisher Node(s)</label>
 			<mat-select
 				[(ngModel)]="data.publisherNodes"
@@ -132,7 +133,7 @@
 			>
 		</mat-form-field>
 		<br />
-		<mat-form-field>
+		<mat-form-field class="tw-w-full">
 			<label>Subscriber Node(s)</label>
 			<mat-select
 				[(ngModel)]="data.subscriberNodes"
@@ -161,6 +162,10 @@
 				{{ type.maximumSubscriberMultiplicity }}</mat-error
 			>
 		</mat-form-field>
+		<osee-applicability-selector
+			[applicability]="data.applicability"
+			(applicabilityChange)="data.applicability = $event"
+			[required]="true"></osee-applicability-selector>
 	</ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end">

@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import type {
 	structure,
 	structureWithChanges,
@@ -31,8 +32,11 @@ export const structuresMock: Required<structure>[] = [
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 		],
@@ -66,8 +70,11 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 			{
@@ -80,8 +87,11 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 			{
@@ -94,8 +104,11 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 		],
@@ -124,8 +137,11 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 		],
@@ -154,8 +170,11 @@ export const structuresPreChanges: structure[] = [
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				interfaceElementAlterable: true,
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 		],
@@ -193,6 +212,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				units: '',
+				platformType: new PlatformTypeSentinel(),
 				changes: {
 					name: {
 						previousValue: 'hello',
@@ -218,9 +238,9 @@ export const structuresMockWithChangesMulti: (
 							branchId: '2780650236653788489',
 						},
 					},
-					platformTypeName2: {
+					platformType: {
 						previousValue: undefined,
-						currentValue: '',
+						currentValue: new PlatformTypeSentinel(),
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -278,8 +298,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 				added: true,
 				changes: {
@@ -302,9 +325,13 @@ export const structuresMockWithChangesMulti: (
 							branchId: '2780650236653788489',
 						},
 					},
-					platformTypeName2: {
-						previousValue: '',
-						currentValue: 'boolean',
+					platformType: {
+						previousValue: new PlatformTypeSentinel(),
+						currentValue: {
+							...new PlatformTypeSentinel(),
+							name: 'boolean',
+							id: '9',
+						},
 						transactionToken: {
 							id: '1222',
 							branchId: '2780650236653788489',
@@ -378,8 +405,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 				changes: {
 					units: {
@@ -390,9 +420,13 @@ export const structuresMockWithChangesMulti: (
 							branchId: '2780650236653788489',
 						},
 					},
-					platformTypeName2: {
+					platformType: {
 						previousValue: null,
-						currentValue: 'testingUnits',
+						currentValue: {
+							...new PlatformTypeSentinel(),
+							name: 'testingUnits',
+							id: '9',
+						},
 						transactionToken: {
 							id: '1322',
 							branchId: '2780650236653788489',
@@ -426,8 +460,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 				changes: {
 					units: {
@@ -478,9 +515,13 @@ export const structuresMockWithChangesMulti: (
 							branchId: '2780650236653788489',
 						},
 					},
-					platformTypeName2: {
+					platformType: {
 						previousValue: null,
-						currentValue: 'Name',
+						currentValue: {
+							...new PlatformTypeSentinel(),
+							name: 'Name',
+							id: '9',
+						},
 						transactionToken: {
 							id: '1225',
 							branchId: '2780650236653788489',
@@ -573,13 +614,20 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 				changes: {
-					platformTypeName2: {
+					platformType: {
 						previousValue: null,
-						currentValue: 'testingUnits',
+						currentValue: {
+							...new PlatformTypeSentinel(),
+							name: 'testingUnits',
+							id: '9',
+						},
 						transactionToken: {
 							id: '1322',
 							branchId: '2780650236653788489',
@@ -673,13 +721,20 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 				changes: {
-					platformTypeName2: {
+					platformType: {
 						previousValue: null,
-						currentValue: 'testingUnits',
+						currentValue: {
+							...new PlatformTypeSentinel(),
+							name: 'testingUnits',
+							id: '9',
+						},
 						transactionToken: {
 							id: '1322',
 							branchId: '2780650236653788489',
@@ -786,6 +841,7 @@ export const structuresMockWithChangesMulti: (
 				enumLiteral: '',
 				deleted: true,
 				units: '',
+				platformType: new PlatformTypeSentinel(),
 				changes: {
 					name: {
 						previousValue: 'hello',
@@ -811,9 +867,9 @@ export const structuresMockWithChangesMulti: (
 							branchId: '2780650236653788489',
 						},
 					},
-					platformTypeName2: {
+					platformType: {
 						previousValue: undefined,
-						currentValue: '',
+						currentValue: new PlatformTypeSentinel(),
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -871,8 +927,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 			{
@@ -885,8 +944,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 			{
@@ -899,8 +961,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 		],
@@ -990,8 +1055,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 			{
@@ -1004,8 +1072,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 			{
@@ -1018,8 +1089,11 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementAlterable: true,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
-				platformTypeName2: 'boolean',
-				platformTypeId: 9,
+				platformType: {
+					...new PlatformTypeSentinel(),
+					name: 'boolean',
+					id: '9',
+				},
 				units: '',
 			},
 		],
@@ -1110,6 +1184,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			enumLiteral: '',
 			deleted: true,
 			units: '',
+			platformType: new PlatformTypeSentinel(),
 			changes: {
 				name: {
 					previousValue: 'hello',
@@ -1135,8 +1210,8 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 						branchId: '2780650236653788489',
 					},
 				},
-				platformTypeName2: {
-					previousValue: undefined,
+				platformType: {
+					previousValue: new PlatformTypeSentinel(),
 					currentValue: '',
 					transactionToken: {
 						id: '1223',
@@ -1193,10 +1268,13 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
-			platformTypeName2: 'boolean',
+			platformType: {
+				...new PlatformTypeSentinel(),
+				name: 'boolean',
+				id: '9',
+			},
 			interfaceDefaultValue: '',
 			enumLiteral: '',
-			platformTypeId: 9,
 			units: '',
 			added: true,
 			changes: {
@@ -1216,9 +1294,33 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 						branchId: '2780650236653788489',
 					},
 				},
-				platformTypeName2: {
-					previousValue: 'Name',
-					currentValue: 'Name',
+				platformType: {
+					previousValue: {
+						...new PlatformTypeSentinel(),
+						name: 'Name',
+						id: '0', //? don't know why this is getting this value
+						interfaceLogicalType: '',
+						interfacePlatformType2sComplement: false,
+						interfacePlatformTypeAnalogAccuracy: '',
+						interfacePlatformTypeCompRate: '',
+						interfaceDefaultValue: '',
+						interfacePlatformTypeUnits: '',
+						interfacePlatformTypeValidRangeDescription: '',
+						applicability: {
+							id: '1',
+							name: 'Base',
+						},
+						interfacePlatformTypeBitSize: '8',
+						interfacePlatformTypeBitsResolution: '8',
+						interfacePlatformTypeMaxval: '1',
+						interfacePlatformTypeMinval: '1',
+						interfacePlatformTypeMsbValue: '0',
+					},
+					currentValue: {
+						...new PlatformTypeSentinel(),
+						name: 'Name',
+						id: '9',
+					},
 					transactionToken: {
 						id: '1226',
 						branchId: '2780650236653788489',
@@ -1234,10 +1336,13 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
-			platformTypeName2: 'boolean',
+			platformType: {
+				...new PlatformTypeSentinel(),
+				name: 'boolean',
+				id: '9',
+			},
 			interfaceDefaultValue: '',
 			enumLiteral: '',
-			platformTypeId: 9,
 			units: '',
 			changes: {
 				interfaceElementIndexEnd: {
@@ -1258,10 +1363,13 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
-			platformTypeName2: 'boolean',
+			platformType: {
+				...new PlatformTypeSentinel(),
+				name: 'boolean',
+				id: '9',
+			},
 			interfaceDefaultValue: '',
 			enumLiteral: '',
-			platformTypeId: 9,
 			units: '',
 			changes: {
 				applicability: {
@@ -1296,9 +1404,13 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 						branchId: '2780650236653788489',
 					},
 				},
-				platformTypeName2: {
+				platformType: {
 					previousValue: '',
-					currentValue: 'Name',
+					currentValue: {
+						...new PlatformTypeSentinel(),
+						name: 'Name',
+						id: '9',
+					},
 					transactionToken: {
 						id: '1225',
 						branchId: '2780650236653788489',
@@ -1371,10 +1483,13 @@ export const structuresMockWithChanges: structureWithChanges = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
-			platformTypeName2: 'boolean',
+			platformType: {
+				...new PlatformTypeSentinel(),
+				name: 'boolean',
+				id: '9',
+			},
 			interfaceDefaultValue: '',
 			enumLiteral: '',
-			platformTypeId: 9,
 			units: '',
 		},
 	],

@@ -81,6 +81,7 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 			});
 	}
 	ngOnDestroy(): void {
+		this.structureService.clearRows();
 		this.structureService.toggleDone = true;
 	}
 }

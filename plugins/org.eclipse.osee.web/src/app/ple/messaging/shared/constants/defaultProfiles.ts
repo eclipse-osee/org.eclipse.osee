@@ -13,7 +13,7 @@
 export const defaultEditElementProfile = [
 	'name',
 	'description',
-	'platformTypeName2',
+	'platformType',
 	'interfaceElementIndexStart',
 	'interfaceElementIndexEnd',
 	'logicalType',

@@ -17,7 +17,12 @@ import type {
 	enumerationSet,
 	enumeratedPlatformType,
 } from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/types';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+	transaction,
+} from '@osee/shared/types';
 import { of, from, combineLatest } from 'rxjs';
 import {
 	share,
@@ -35,6 +40,21 @@ import { UiService } from '@osee/shared/services';
 import { applic } from '@osee/shared/types/applicability';
 import { TypesService } from '../http/types.service';
 import { EnumerationUIService } from './enumeration-ui.service';
+import {
+	ARTIFACTTYPEID,
+	ARTIFACTTYPEIDENUM,
+} from '@osee/shared/types/constants';
+
+const _artTypes = [
+	ARTIFACTTYPEIDENUM.ENUM,
+	ARTIFACTTYPEIDENUM.ENUMSET,
+	ARTIFACTTYPEIDENUM.PLATFORMTYPE,
+] as const;
+
+type CreationRels = (typeof _artTypes)[number];
+function _isCreationRel(rel2: string): rel2 is CreationRels {
+	return !!_artTypes.find((rel) => rel2 === rel);
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -249,79 +269,61 @@ export class TypesUIService {
 		);
 		return of<transaction>(transactionA);
 	}
-	partialUpdate(body: Partial<PlatformType>) {
-		return this._typesService
-			.changePlatformType(this._ui.id.getValue(), body)
-			.pipe(
-				take(1),
-				switchMap((transaction) =>
-					this._typesService.performMutation(transaction).pipe(
-						tap(() => {
-							this._ui.updated = true;
-						})
-					)
-				)
-			);
-	}
-
-	copyType<T extends PlatformType | Partial<PlatformType>>(body: T) {
-		this.removeId(body);
-		delete body.enumSet;
-		return body.interfaceLogicalType === 'enumeration' &&
-			'enumerationSet' in body
-			? this.copyEnumeratedType(body as enumeratedPlatformType)
-			: this._typesService
-					.createPlatformType(this._ui.id.getValue(), body, [])
-					.pipe(
-						take(1),
-						switchMap((transaction) =>
-							this._typesService
-								.performMutation(transaction)
-								.pipe(
-									tap(() => {
-										this._ui.updated = true;
-									})
-								)
-						)
-					);
-	}
-
-	copyEnumeratedType(body: enumeratedPlatformType) {
-		const { enumerationSet, ...type } = body;
-		return combineLatest([
-			this._ui.id,
-			this.createEnumSet(enumerationSet),
-		]).pipe(
+	partialUpdate(dialogResponse: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}) {
+		return this._ui.id.pipe(
 			take(1),
-			filter(
-				([id, enumerationSetResults]) =>
-					id !== '' && enumerationSetResults.results.success
-			),
-			switchMap(([branchId, enumerationSetResults]) =>
-				this._enumSetService
-					.createPlatformTypeToEnumSetRelation(
-						enumerationSetResults.results.ids[0]
-					)
-					.pipe(
-						switchMap((relation) =>
-							this._typesService.createPlatformType(
-								branchId,
-								type,
-								[relation]
-							)
-						)
-					)
-			),
-			take(1),
+			map((id) => {
+				const tx: transaction = {
+					branch: id,
+					txComment: 'Updating platform type',
+					createArtifacts: dialogResponse.createArtifacts,
+					modifyArtifacts: dialogResponse.modifyArtifacts,
+					deleteRelations: dialogResponse.deleteRelations,
+				};
+				return tx;
+			}),
 			switchMap((transaction) =>
-				this._typesService.performMutation(transaction).pipe(
-					tap(() => {
-						this._ui.updated = true;
-					})
-				)
+				this._typesService.performMutation(transaction)
 			)
 		);
 	}
+
+	copyType(dialogResponse: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}) {
+		const createArtifacts = dialogResponse.createArtifacts.sort((a, b) => {
+			if (_isCreationRel(a.typeId) && _isCreationRel(b.typeId)) {
+				return (
+					_artTypes.indexOf(b.typeId) - _artTypes.indexOf(a.typeId)
+				);
+			} else {
+				return 0;
+			}
+		});
+		return this._ui.id.pipe(
+			take(1),
+			map((id) => {
+				const tx: transaction = {
+					branch: id,
+					txComment: 'Creating platform type',
+					createArtifacts: createArtifacts,
+					modifyArtifacts: dialogResponse.modifyArtifacts,
+					deleteRelations: dialogResponse.deleteRelations,
+				};
+				return tx;
+			}),
+			switchMap((transaction) =>
+				this._typesService.performMutation(transaction)
+			)
+		);
+	}
+
 	createEnums(set: enumerationSet, id: string) {
 		return this._ui.id.pipe(
 			filter((branchId) => branchId !== ''),

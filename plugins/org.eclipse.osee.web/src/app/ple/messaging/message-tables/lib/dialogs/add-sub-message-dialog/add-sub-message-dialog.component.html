@@ -103,6 +103,11 @@
 					required
 					data-cy="field-sub-message-number" />
 			</mat-form-field>
+			<osee-applicability-selector
+				[applicability]="data.subMessage.applicability"
+				(applicabilityChange)="data.subMessage.applicability = $event"
+				[required]="true">
+			</osee-applicability-selector>
 		</div>
 		<button
 			mat-raised-button
@@ -138,6 +143,10 @@
 				>Sub Message Number:
 				{{ data.subMessage.interfaceSubMessageNumber }}</mat-label
 			>
+			<mat-label
+				>Applicability:
+				{{ data.subMessage.applicability?.name }}
+			</mat-label>
 		</div>
 		<mat-dialog-actions align="end">
 			<button

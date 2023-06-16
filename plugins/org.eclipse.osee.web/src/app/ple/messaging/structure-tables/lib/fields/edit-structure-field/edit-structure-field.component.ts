@@ -33,8 +33,8 @@ import type { structure } from '@osee/messaging/shared/types';
 import {
 	CurrentStructureService,
 	EnumsService,
+	WarningDialogService,
 } from '@osee/messaging/shared/services';
-import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
 

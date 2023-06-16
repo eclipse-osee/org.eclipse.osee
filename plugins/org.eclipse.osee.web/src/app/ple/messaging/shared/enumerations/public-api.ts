@@ -10,4 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export * from './PlatformTypeInstance';
 export * from './EditPlatformTypeDialogDataMode.enum';

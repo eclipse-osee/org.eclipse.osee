@@ -26,31 +26,37 @@ public class InterfaceLogicalTypeField {
    private boolean editable;
    private String defaultValue = Strings.EMPTY_STRING;
    private AttributeTypeId attributeTypeId = AttributeTypeId.SENTINEL;
+   /**
+    * Note: this has a 1:1 mapping to the json attributes on the platform type interface in platformType.d.ts in
+    * osee.web
+    */
+   private String jsonPropertyName = Strings.EMPTY_STRING;
 
    public InterfaceLogicalTypeField() {
       //
    }
 
-   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String defaultValue, AttributeTypeId attributeType) {
-      this(name, type, required, editable, defaultValue);
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String defaultValue, AttributeTypeId attributeType, String jsonPropertyName) {
+      this(name, type, required, editable, defaultValue, jsonPropertyName);
       this.setAttributeTypeId(attributeType);
    }
 
-   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String defaultValue) {
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String defaultValue, String jsonPropertyName) {
       this.setName(name);
       this.setAttributeType(type);
       this.setRequired(required);
       this.setEditable(editable);
       this.setDefaultValue(defaultValue);
+      this.setJsonPropertyName(jsonPropertyName);
    }
 
-   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, AttributeTypeId attributeType) {
-      this(name, type, required, editable);
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, AttributeTypeId attributeType, String jsonPropertyName) {
+      this(name, type, required, editable, jsonPropertyName);
       this.setAttributeTypeId(attributeType);
    }
 
-   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable) {
-      this(name, type, required, editable, Strings.EMPTY_STRING);
+   public InterfaceLogicalTypeField(String name, String type, boolean required, boolean editable, String jsonPropertyName) {
+      this(name, type, required, editable, Strings.EMPTY_STRING, jsonPropertyName);
    }
 
    public boolean isRequired() {
@@ -105,5 +111,19 @@ public class InterfaceLogicalTypeField {
     */
    public void setAttributeTypeId(AttributeTypeId attributeTypeId) {
       this.attributeTypeId = attributeTypeId;
+   }
+
+   /**
+    * @return the jsonPropertyName
+    */
+   public String getJsonPropertyName() {
+      return jsonPropertyName;
+   }
+
+   /**
+    * @return the jsonPropertyName
+    */
+   public void setJsonPropertyName(String jsonPropertyName) {
+      this.jsonPropertyName = jsonPropertyName;
    }
 }

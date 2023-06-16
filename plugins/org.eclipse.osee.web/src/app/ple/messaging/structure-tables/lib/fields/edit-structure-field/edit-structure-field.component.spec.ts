@@ -37,9 +37,9 @@ import {
 import {
 	StructuresUiService,
 	EnumsService,
+	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 
 describe('EditStructureFieldComponent', () => {
 	let component: EditStructureFieldComponent;

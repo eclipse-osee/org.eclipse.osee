@@ -30,6 +30,7 @@ import {
 	MimPreferencesServiceMock,
 	enumerationSetServiceMock,
 	enumsServiceMock,
+	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import type {
@@ -47,6 +48,7 @@ import {
 	MimPreferencesService,
 	EnumerationSetService,
 	EnumsService,
+	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import { TransactionBuilderService } from '@osee/shared/transactions';
@@ -81,6 +83,12 @@ describe('PlatformTypeCardComponent', () => {
 					imports: [
 						MockEditTypeDialogComponent,
 						MockEditEnumSetDialogComponent,
+					],
+					providers: [
+						{
+							provide: WarningDialogService,
+							useValue: warningDialogServiceMock,
+						},
 					],
 				},
 			})
@@ -117,6 +125,10 @@ describe('PlatformTypeCardComponent', () => {
 						provide: ApplicabilityListService,
 						useValue: applicabilityListServiceMock,
 					},
+					{
+						provide: WarningDialogService,
+						useValue: warningDialogServiceMock,
+					},
 				],
 				schemas: [NO_ERRORS_SCHEMA], //weirdness with standalone component + dialog
 			})
@@ -140,10 +152,14 @@ describe('PlatformTypeCardComponent', () => {
 			interfacePlatformTypeBitsResolution: '0',
 			interfacePlatformTypeCompRate: '0',
 			interfacePlatformTypeAnalogAccuracy: '0',
-			interfacePlatform2sComplement: false,
+			interfacePlatformType2sComplement: false,
 			interfacePlatformTypeEnumLiteral: 'A string',
 			interfacePlatformTypeUnits: 'N/A',
 			interfacePlatformTypeValidRangeDescription: 'N/A',
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
 		};
 		component.typeData = expectedData;
 		fixture.detectChanges();
@@ -203,7 +219,7 @@ describe('PlatformTypeCardComponent', () => {
 					name: '',
 					description: '',
 					interfaceLogicalType: '',
-					interfacePlatform2sComplement: false,
+					interfacePlatformType2sComplement: false,
 					interfacePlatformTypeAnalogAccuracy: '',
 					interfacePlatformTypeBitSize: '0',
 					interfacePlatformTypeBitsResolution: '',
@@ -214,6 +230,10 @@ describe('PlatformTypeCardComponent', () => {
 					interfacePlatformTypeMsbValue: '',
 					interfacePlatformTypeUnits: '',
 					interfacePlatformTypeValidRangeDescription: '',
+					applicability: {
+						id: '1',
+						name: 'Base',
+					},
 				},
 			}),
 			close: null,

@@ -36,7 +36,7 @@ import {
 	changeTypeEnum,
 } from '@osee/shared/types/change-report';
 import { SideNavService } from '@osee/shared/services/layout';
-import { RelationTypeId } from '@osee/shared/types/constants';
+import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
 import {
 	ConnectionService,
 	NodeService,
@@ -387,7 +387,7 @@ export class CurrentGraphService {
 					transportRelation,
 					...nodesRel,
 					{
-						typeId: RelationTypeId.DEFAULT_HIERARCHICAL,
+						typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
 						sideA: '8255184',
 					},
 				])

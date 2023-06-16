@@ -81,6 +81,7 @@ describe('MessageInterfaceComponent', () => {
 							string: '',
 							messages: of(expectedData),
 							BranchId: new BehaviorSubject('10'),
+							clearRows() {},
 						},
 					},
 				],

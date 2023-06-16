@@ -59,6 +59,7 @@ import {
 } from 'rxjs';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { applic } from '@osee/shared/types/applicability';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 
 @Component({
 	selector: 'osee-messaging-edit-element-field',
@@ -86,20 +87,22 @@ import { applic } from '@osee/shared/types/applicability';
 		ApplicabilitySelectorComponent,
 	],
 })
-export class EditElementFieldComponent<T extends keyof element = any>
-	implements OnDestroy, OnChanges
+export class EditElementFieldComponent<
+	T extends element[U],
+	U extends keyof element
+> implements OnDestroy, OnChanges
 {
 	private _done = new Subject();
 	availableTypes = this.structureService.types;
 	@Input() structureId: string = '';
 	@Input() elementId: string = '';
-	@Input() header: (T & string) | '' = '';
+	@Input() header!: U;
 	@Input() value: T = {} as T;
 	@Input() elementStart: number = 0;
 	@Input() elementEnd: number = 0;
 	@Input() editingDisabled: boolean = false;
 
-	@Input() platformTypeId: string = '';
+	@Input() platformType: PlatformType = new PlatformTypeSentinel();
 	@Output() contextMenu = new EventEmitter<MouseEvent>();
 
 	private _value: Subject<T> = new Subject();
@@ -132,7 +135,7 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		distinctUntilChanged(),
 		switchMap((unit) =>
 			this.structureService.updatePlatformTypeValue({
-				id: this.platformTypeId,
+				id: this.platformType.id,
 				interfacePlatformTypeUnits: unit,
 			})
 		)
@@ -228,11 +231,18 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		share(),
 		debounceTime(500),
 		distinctUntilChanged(),
-		switchMap((value) =>
-			this.structureService.changeElementPlatformType(
-				this.structureId,
-				this.elementId,
-				value
+		switchMap((pType) =>
+			of(pType).pipe(
+				switchMap((pType) =>
+					this.warningService.openElementDialog(this._element)
+				),
+				switchMap((_) =>
+					this.structureService.changeElementPlatformType(
+						this.structureId,
+						this.elementId,
+						pType
+					)
+				)
 			)
 		)
 	);
@@ -253,12 +263,22 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		this._updateUnits.subscribe();
 	}
 	ngOnChanges(changes: SimpleChanges): void {
-		this.updateTypeAhead(this.value);
+		if (this.header !== 'platformType') {
+			this.updateTypeAhead(this.value);
+		} else {
+			this.updateTypeAhead(this.value.name);
+		}
+		if (
+			changes.elementId !== undefined &&
+			changes.elementId.previousValue !== changes.elementId.currentValue
+		) {
+			this._element.id = changes.elementId.currentValue;
+		}
 	}
 	ngOnDestroy(): void {
 		this._done.next(true);
 	}
-	updateElement(header: string, value: T) {
+	updateElement(header: keyof element, value: T) {
 		if (this.header === 'applicability') {
 			this.focusChanged('applicability');
 		}
@@ -272,6 +292,9 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	}
 	updateType(value: PlatformType) {
 		this._type.next(value);
+		if (this.isPlatformType(this.value)) {
+			this.value.name = value.name;
+		}
 		this.updateTypeAhead(value.name);
 	}
 
@@ -279,9 +302,8 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		this._typeValue.next(value);
 	}
 
-	applySearch(searchTerm: Event) {
-		const value = (searchTerm.target as HTMLInputElement).value;
-		this._typeValue.next(value);
+	applySearch(searchTerm: string) {
+		this._typeValue.next(searchTerm);
 	}
 
 	openMenu(event: MouseEvent, location: T) {
@@ -289,7 +311,7 @@ export class EditElementFieldComponent<T extends keyof element = any>
 		this.contextMenu.emit(event);
 	}
 	isString(val: T | string): val is string {
-		return typeof val === 'string' || val instanceof String;
+		return typeof val === 'string';
 	}
 	focusChanged(event: string | null) {
 		this._focus.next(event);
@@ -321,5 +343,18 @@ export class EditElementFieldComponent<T extends keyof element = any>
 	 */
 	returnAsT(value: unknown): T {
 		return value as T;
+	}
+
+	/**
+	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
+	 */
+	isPlatformType(value: unknown): value is PlatformType {
+		return (
+			value !== null &&
+			value !== undefined &&
+			typeof value === 'object' &&
+			'id' in value &&
+			'name' in value
+		);
 	}
 }

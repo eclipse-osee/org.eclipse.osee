@@ -238,7 +238,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
 
    private void processElement(ArtifactId elementId, ArtifactId typeId) {
       InterfaceStructureElementToken element = interfaceElementApi.get(getBranchId(elementId), elementId);
-      pTypeList.add(ArtifactId.valueOf(element.getPlatformTypeId())); // Add platform type id to list to process later
+      pTypeList.add(ArtifactId.valueOf(element.getPlatformType().getId())); // Add platform type id to list to process later
       processElement(elementId, typeId, element);
    }
 

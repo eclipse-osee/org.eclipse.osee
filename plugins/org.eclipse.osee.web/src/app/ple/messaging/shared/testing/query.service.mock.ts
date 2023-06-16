@@ -16,10 +16,10 @@ import { QueryService } from '../services/http/query.service';
 
 export const QueryServiceMock: Partial<QueryService> = {
 	query(branchId: string, query: MimQuery<unknown>) {
-		return of('Hello' as any);
+		return of(['Hello'] as any[]);
 	},
 
 	queryExact(branchId: string, query: MimQuery<unknown>) {
-		return of('Hello' as any);
+		return of(['Hello'] as any[]);
 	},
 };

@@ -296,8 +296,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                currentPlatformType = this.interfacePlatformTypeApi.getAccessor().getByRelationWithoutId(branch,
                   CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
                   PlatformTypeToken.class);
-               element.setPlatformTypeId(currentPlatformType.getId());
-               element.setPlatformTypeName(currentPlatformType.getName());
+               element.setPlatformType(currentPlatformType);
                element.setInterfacePlatformTypeBitSize(currentPlatformType.getInterfacePlatformTypeBitSize());
                element.setLogicalType(
                   currentPlatformType.getInterfaceLogicalType() != null ? currentPlatformType.getInterfaceLogicalType() : "");
@@ -606,7 +605,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             spareType.setInterfacePlatformTypeValidRangeDescription("n/a");
             e.setName("Byte Alignment Spare");
             e.setPlatformType(spareType);
-            e.setPlatformTypeName("UINTEGER");
             e.setLogicalType("unsigned integer");
          }
       });

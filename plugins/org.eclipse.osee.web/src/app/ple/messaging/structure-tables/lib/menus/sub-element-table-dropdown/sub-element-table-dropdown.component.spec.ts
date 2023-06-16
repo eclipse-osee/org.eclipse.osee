@@ -28,11 +28,13 @@ import {
 	enumerationUiServiceMock,
 	preferencesUiServiceMock,
 	elementsMock,
+	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
 import {
 	CurrentStructureService,
 	EnumerationUIService,
 	PreferencesUIService,
+	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
@@ -67,6 +69,10 @@ describe('SubElementTableDropdownComponent', () => {
 					{
 						provide: EnumerationUIService,
 						useValue: enumerationUiServiceMock,
+					},
+					{
+						provide: WarningDialogService,
+						useValue: warningDialogServiceMock,
 					},
 				],
 			},

@@ -42,14 +42,17 @@ import {
 	warningDialogServiceMock,
 	CurrentStateServiceMock,
 	unitsMock,
+	platformTypesMock,
 } from '@osee/messaging/shared/testing';
-import { EnumsService } from '@osee/messaging/shared/services';
+import {
+	EnumsService,
+	WarningDialogService,
+} from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import { WarningDialogService } from 'src/app/ple/messaging/shared/services/warnings';
 
 describe('EditElementFieldComponent', () => {
-	let component: EditElementFieldComponent;
-	let fixture: ComponentFixture<EditElementFieldComponent>;
+	let component: EditElementFieldComponent<any, any>;
+	let fixture: ComponentFixture<EditElementFieldComponent<any, any>>; //@todo Luciano fix these types later when the types are smarter
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
@@ -97,7 +100,7 @@ describe('EditElementFieldComponent', () => {
 		component = fixture.componentInstance;
 		component.structureId = '10';
 		component.elementId = '15';
-		component.platformTypeId = '20';
+		component.platformType = platformTypesMock[0];
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
@@ -108,8 +111,8 @@ describe('EditElementFieldComponent', () => {
 
 	describe('Platform Type Editing', () => {
 		beforeEach(() => {
-			component.header = 'platformTypeName2';
-			component.value = 'First';
+			component.header = 'platformType';
+			component.value = platformTypesMock[0];
 		});
 
 		it('should update the platform type', fakeAsync(async () => {

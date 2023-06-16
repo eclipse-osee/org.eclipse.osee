@@ -17,7 +17,12 @@ import { applic } from '@osee/shared/types/applicability';
 import { EditElementFieldComponent } from '../edit-element-field/edit-element-field.component';
 import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
-import type { element, structure } from '@osee/messaging/shared/types';
+import type {
+	element,
+	PlatformType,
+	structure,
+} from '@osee/messaging/shared/types';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-field',
@@ -45,6 +50,7 @@ export class SubElementTableFieldComponent {
 		interfaceDefaultValue: '',
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
+		platformType: new PlatformTypeSentinel(),
 		applicability: {
 			id: '1',
 			name: 'Base',
@@ -65,7 +71,7 @@ export class SubElementTableFieldComponent {
 	};
 	editableElementHeaders: string[] = [
 		'name',
-		'platformTypeName2',
+		'platformType',
 		'interfaceElementAlterable',
 		'description',
 		'notes',
@@ -82,7 +88,7 @@ export class SubElementTableFieldComponent {
 	@Output() menu = new EventEmitter<{
 		event: MouseEvent;
 		element: element;
-		field?: string | number | boolean | applic;
+		field?: string | number | boolean | applic | PlatformType;
 	}>();
 	constructor(private layoutNotifier: LayoutNotifierService) {}
 	getEnumLiterals() {
@@ -91,7 +97,7 @@ export class SubElementTableFieldComponent {
 	openGeneralMenu(
 		event: MouseEvent,
 		element: element,
-		field?: string | number | boolean | applic
+		field?: string | number | boolean | applic | PlatformType
 	) {
 		this.menu.emit({ event, element, field });
 	}

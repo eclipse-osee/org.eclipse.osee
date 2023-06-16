@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { ConnectionNode } from '@osee/messaging/shared/types';
+import { applic } from '@osee/shared/types/applicability';
 
 export interface AddMessageDialog {
 	id: string;
@@ -21,6 +22,7 @@ export interface AddMessageDialog {
 	interfaceMessageWriteAccess: boolean;
 	interfaceMessageType: string;
 	interfaceMessageNumber: string;
+	applicability: applic;
 	publisherNodes: ConnectionNode[];
 	subscriberNodes: ConnectionNode[];
 }

@@ -17,7 +17,7 @@ import {
 	ignoreType,
 	ModificationType,
 } from '@osee/shared/types/change-report';
-import { RelationTypeId } from '@osee/shared/types/constants';
+import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
 export const differenceReportMock: DifferenceReport = {
 	changeItems: {
 		'200390': {
@@ -626,7 +626,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200392',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACECONNECTIONCONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACECONNECTIONCONTENT,
 						name: 'Interface Connection Message',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
@@ -719,7 +719,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200392',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACECONNECTIONCONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACECONNECTIONCONTENT,
 						name: 'Interface Connection Message',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
@@ -812,7 +812,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200392',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACECONNECTIONCONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACECONNECTIONCONTENT,
 						name: 'Interface Connection Message',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
@@ -1771,7 +1771,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200399',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEMESSAGECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACEMESSAGECONTENT,
 						name: 'Interface Message SubMessage Content',
 						order: 'USER_DEFINED',
 						ordered: true,
@@ -2098,7 +2098,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200402',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEMESSAGEPUBNODE,
+						id: RELATIONTYPEIDENUM.INTERFACEMESSAGEPUBNODE,
 						name: 'Interface Message Publisher Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 						ordered: true,
@@ -2934,7 +2934,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200403',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 						name: 'Interface SubMessage Content',
 						order: 'USER_DEFINED',
 						ordered: true,
@@ -3027,7 +3027,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200403',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 						name: 'Interface SubMessage Content',
 						order: 'USER_DEFINED',
 						ordered: true,
@@ -3317,7 +3317,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200404',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACESUBMESSAGECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACESUBMESSAGECONTENT,
 						name: 'Interface SubMessage Content',
 						order: 'USER_DEFINED',
 						ordered: true,
@@ -4192,7 +4192,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200407',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 						name: 'Interface Structure Content',
 						order: 'USER_DEFINED',
 						ordered: true,
@@ -4491,7 +4491,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200408',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 						name: 'Interface Structure Content',
 						order: 'USER_DEFINED',
 
@@ -4585,7 +4585,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200408',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 						name: 'Interface Structure Content',
 						order: 'USER_DEFINED',
 
@@ -6339,7 +6339,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200413',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -6433,7 +6433,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200413',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -6712,7 +6712,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200413',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -6806,7 +6806,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200413',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -7085,7 +7085,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200413',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -7179,7 +7179,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200413',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -7525,7 +7525,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200415',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -10755,7 +10755,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200431',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACECONNECTIONNODE,
+						id: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
 						name: 'Interface Connection Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -10849,7 +10849,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200431',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACECONNECTIONNODE,
+						id: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
 						name: 'Interface Connection Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -11304,7 +11304,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200432',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEMESSAGEPUBNODE,
+						id: RELATIONTYPEIDENUM.INTERFACEMESSAGEPUBNODE,
 						name: 'Interface Message Publisher Node',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -12102,7 +12102,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200433',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACESTRUCTURECONTENT,
+						id: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 						name: 'Interface Structure Content',
 						order: 'USER_DEFINED',
 
@@ -12825,7 +12825,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200434',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -13344,7 +13344,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200434',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -13863,7 +13863,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200434',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -14382,7 +14382,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200434',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -14901,7 +14901,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200434',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -15539,7 +15539,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200435',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -16058,7 +16058,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200435',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 
@@ -16577,7 +16577,7 @@ export const differenceReportMock: DifferenceReport = {
 					artId: '200435',
 					itemId: '-1',
 					itemTypeId: {
-						id: RelationTypeId.INTERFACEELEMENTPLATFORMTYPE,
+						id: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
 						name: 'Interface Element Platform Type',
 						order: 'LEXICOGRAPHICAL_ASC',
 

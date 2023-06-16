@@ -59,6 +59,7 @@ import type {
 	PlatformType,
 	newPlatformTypeDialogReturnData,
 } from '@osee/messaging/shared/types';
+import { applic } from '@osee/shared/types/applicability';
 
 /**
  * Form used to create a new platform type
@@ -177,5 +178,13 @@ export class NewTypeFormComponent implements OnInit {
 
 	updateFormState(state: newPlatformTypeDialogReturnData) {
 		this._typeFormState.next(state);
+	}
+
+	isApplic(value: unknown): value is applic {
+		return (
+			(value as any) !== undefined &&
+			(value as any).id !== undefined &&
+			(value as any).name !== undefined
+		);
 	}
 }

@@ -12,12 +12,13 @@
  **********************************************************************/
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import type {
 	enumerationSet,
 	PlatformType,
 } from '@osee/messaging/shared/types';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
+import { enumerationSetMock } from '@osee/messaging/shared/testing';
 
 @Component({
 	selector: 'osee-edit-enum-set-field',
@@ -34,7 +35,7 @@ export class MockEditEnumSetFieldComponent
 	//type enumset loading case 2: by type
 	@Input() platformType: PlatformType | undefined;
 
-	@Output() enumUpdated = new EventEmitter<enumerationSet | undefined>();
+	@Output() enum$ = of<enumerationSet>(enumerationSetMock[0]);
 
 	@Output('unique') unique = new Subject<boolean>();
 }

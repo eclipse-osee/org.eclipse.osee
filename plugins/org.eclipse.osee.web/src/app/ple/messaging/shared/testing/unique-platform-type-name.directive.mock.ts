@@ -25,19 +25,17 @@ import type {
 import { Observable, of } from 'rxjs';
 
 @Directive({
-	selector: '[oseeUniquePlatformTypeAttributes]',
+	selector: '[oseeUniquePlatformTypeName]',
 	standalone: true,
 	providers: [
 		{
 			provide: NG_ASYNC_VALIDATORS,
-			useExisting: MockUniquePlatformTypeAttributesDirective,
+			useExisting: MockUniquePlatformTypeNameDirective,
 			multi: true,
 		},
 	],
 })
-export class MockUniquePlatformTypeAttributesDirective
-	implements AsyncValidator
-{
+export class MockUniquePlatformTypeNameDirective implements AsyncValidator {
 	@Optional()
 	@Input('oseeUniquePlatformTypeAttributes')
 	inputField?: logicalTypeFormDetail = {

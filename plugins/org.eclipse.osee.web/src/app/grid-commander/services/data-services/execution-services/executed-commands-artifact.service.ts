@@ -14,7 +14,7 @@ import { Injectable } from '@angular/core';
 import { executedCommand } from '../../../types/grid-commander-types/executedCommand';
 import {
 	ARTIFACTTYPEIDENUM,
-	RelationTypeId,
+	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
 import { of, switchMap, take } from 'rxjs';
 import { userHistory } from '../../../types/grid-commander-types/userHistory';
@@ -59,7 +59,7 @@ export class ExecutedCommandsArtifactService {
 	//Create relation of ExecutedCommand Artifact to the User's Executed Command History
 	createCommandToHistoryRelation(historyId: string, commandId: string) {
 		let relation: relation = {
-			typeId: RelationTypeId.DEFAULT_HIERARCHICAL,
+			typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
 			sideA: historyId,
 			sideB: commandId,
 		};

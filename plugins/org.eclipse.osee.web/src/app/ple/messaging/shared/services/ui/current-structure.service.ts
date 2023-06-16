@@ -142,6 +142,11 @@ export abstract class CurrentStructureService {
 		}
 		this._expandedRowsDecreasing.next(true);
 	}
+
+	clearRows() {
+		this._expandedRows.next([]);
+		this._expandedRowsDecreasing.next(true);
+	}
 	abstract get structures(): Observable<(structure | structureWithChanges)[]>;
 
 	abstract get structuresCount(): Observable<number>;
@@ -676,7 +681,7 @@ export abstract class CurrentStructureService {
 						switchMap((element) =>
 							combineLatest([
 								this.elements.createPlatformTypeRelation(
-									'' + (element.platformTypeId || -1),
+									'' + (element.platformType.id || -1),
 									elementId
 								),
 								this.elements.createPlatformTypeRelation(

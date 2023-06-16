@@ -11,16 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { applic } from '@osee/shared/types/applicability';
 import type { enumerationSet } from './enum';
 
 /**
  * Platform Type as defined by the API, ids are required when fetching or updating a platform type
  */
 export interface PlatformType {
+	[index: string]: string | boolean | enumerationSet | applic | undefined;
 	id?: string;
 	description: string;
 	interfaceLogicalType: string;
-	interfacePlatform2sComplement: boolean;
+	interfacePlatformType2sComplement: boolean;
 	interfacePlatformTypeAnalogAccuracy: string;
 	interfacePlatformTypeBitsResolution: string;
 	interfacePlatformTypeBitSize: string;
@@ -33,6 +35,7 @@ export interface PlatformType {
 	interfacePlatformTypeUnits: string;
 	interfacePlatformTypeValidRangeDescription: string;
 	name: string;
+	applicability: applic;
 }
 
 export interface platformTypeImportToken

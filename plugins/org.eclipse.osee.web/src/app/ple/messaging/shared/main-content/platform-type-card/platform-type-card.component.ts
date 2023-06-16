@@ -13,7 +13,7 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { iif, of, OperatorFunction } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,7 +32,14 @@ import {
 	TypesUIService,
 	PreferencesUIService,
 	EnumerationUIService,
+	WarningDialogService,
 } from '@osee/messaging/shared/services';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+	relation,
+} from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-messaging-types-platform-type-card',
@@ -57,7 +64,8 @@ export class PlatformTypeCardComponent {
 		public dialog: MatDialog,
 		private typesService: TypesUIService,
 		private preferenceService: PreferencesUIService,
-		private enumSetService: EnumerationUIService
+		private enumSetService: EnumerationUIService,
+		private warningDialogService: WarningDialogService
 	) {}
 
 	/**
@@ -65,11 +73,11 @@ export class PlatformTypeCardComponent {
 	 * @param value Whether the dialog should be in edit or copy mode (see @enum {editPlatformTypeDialogDataMode})
 	 */
 	openDialog(value: editPlatformTypeDialogDataMode) {
-		let dialogData: editPlatformTypeDialogData = {
+		const copy = { ...this.typeData }; //clone the object so that edits aren't reflected in the page
+		const dialogData: editPlatformTypeDialogData = {
 			mode: value,
-			type: this.typeData,
+			type: copy,
 		};
-		const copy = JSON.parse(JSON.stringify(this.typeData)); //can't remember what this line does
 		const dialogRef = this.dialog.open(EditTypeDialogComponent, {
 			data: dialogData,
 			minWidth: '70%',
@@ -78,12 +86,18 @@ export class PlatformTypeCardComponent {
 			.afterClosed()
 			.pipe(
 				filter((val) => val !== undefined),
-				switchMap(({ mode, type }) =>
-					iif(
-						() => mode === this.copy,
-						this.typesService.copyType(type),
-						this.getEditObservable(copy, { mode, type })
-					)
+				switchMap(({ manifest, mode }) =>
+					this.warningDialogService
+						.openPlatformTypeDialog(manifest)
+						.pipe(
+							switchMap((v) =>
+								iif(
+									() => mode === this.copy,
+									this.typesService.copyType(manifest),
+									this.getEditObservable(manifest)
+								)
+							)
+						)
 				)
 			)
 			.subscribe();
@@ -96,20 +110,16 @@ export class PlatformTypeCardComponent {
 	 * @param result Changed values of the platform type + mode AFTER the dialog is closed
 	 * @returns @type {Observable<OSEEWriteApiResponse>} observable containing results (see @type {OSEEWriteApiResponse} and @type {Observable})
 	 */
-	getEditObservable(copy: PlatformType, result: editPlatformTypeDialogData) {
-		let newType: any = new Object();
-		Object.keys(copy).forEach((value) => {
-			if (
-				copy[value as keyof PlatformType] !==
-				result.type[value as keyof PlatformType]
-			) {
-				newType[value as keyof PlatformType] =
-					result.type[value as keyof PlatformType];
-			}
-		});
-		newType['id'] = copy['id'];
-
-		return this.typesService.partialUpdate(newType);
+	getEditObservable(manifest: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}) {
+		return this.warningDialogService
+			.openPlatformTypeDialog(manifest)
+			.pipe(
+				switchMap((body) => this.typesService.partialUpdate(manifest))
+			);
 	}
 
 	/**
@@ -127,17 +137,52 @@ export class PlatformTypeCardComponent {
 			.afterClosed()
 			.pipe(
 				filter((x) => x !== undefined) as OperatorFunction<
-					enumerationSet | undefined,
-					enumerationSet
+					| {
+							createArtifacts: createArtifact[];
+							modifyArtifacts: modifyArtifact[];
+							deleteRelations: modifyRelation[];
+					  }
+					| undefined,
+					{
+						createArtifacts: createArtifact[];
+						modifyArtifacts: modifyArtifact[];
+						deleteRelations: modifyRelation[];
+					}
 				>,
 				take(1),
-				switchMap(({ enumerations, ...changes }) =>
+				switchMap((tx) =>
 					iif(
 						() => makeChanges,
-						this.enumSetService.changeEnumSet(
-							changes,
-							enumerations
-						),
+						this.warningDialogService
+							.openEnumsDialogs(
+								tx.modifyArtifacts
+									.slice(0, -1)
+									.map((v) => v.id),
+								[
+									...tx.createArtifacts
+										.flatMap((v) => v.relations)
+										.filter(
+											(v): v is relation =>
+												v !== undefined
+										)
+										.map((v) => v.sideA)
+										.filter(
+											(v): v is string | string[] =>
+												v !== undefined
+										)
+										.flatMap((v) => v),
+									...tx.deleteRelations
+										.flatMap((v) => v.aArtId)
+										.filter(
+											(v): v is string => v !== undefined
+										),
+								]
+							)
+							.pipe(
+								switchMap((_) =>
+									this.enumSetService.changeEnumSet(tx)
+								)
+							),
 						of() // @todo replace with a false response
 					)
 				)

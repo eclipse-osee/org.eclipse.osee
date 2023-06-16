@@ -142,6 +142,12 @@
 						</mat-option>
 					</mat-select>
 				</mat-form-field>
+				<osee-applicability-selector
+					[applicability]="data.structure.applicability"
+					(applicabilityChange)="
+						data.structure.applicability = $event
+					"
+					[required]="true"></osee-applicability-selector>
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
@@ -199,6 +205,10 @@
 					>Structure Category:
 					{{ data.structure.interfaceStructureCategory }}</mat-label
 				>
+				<mat-label
+					>Applicability:
+					{{ data.structure.applicability?.name }}
+				</mat-label>
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">

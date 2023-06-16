@@ -16,7 +16,7 @@ import {
 	MatDialogRef,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { combineLatest, from, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
 import {
 	concatMap,
 	filter,
@@ -27,7 +27,10 @@ import {
 	take,
 	takeUntil,
 } from 'rxjs/operators';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+import {
+	ARTIFACTTYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/shared/types/constants';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,12 +49,29 @@ import type {
 	enumerationSet,
 	editPlatformTypeDialogData,
 	enumeratedPlatformType,
+	PlatformType,
 } from '@osee/messaging/shared/types';
-import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
+import {
+	editPlatformTypeDialogDataMode,
+	PlatformTypeSentinel,
+} from '@osee/messaging/shared/enumerations';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import { TypesService, EnumsService } from '@osee/messaging/shared/services';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
+import {
+	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+} from '@osee/shared/types';
+import {
+	MIMATTRIBUTETYPEID,
+	PLATFORMTYPEATTRIBUTETYPEID,
+} from '@osee/messaging/shared/attr';
+import { applic } from '@osee/shared/types/applicability';
 
 @Component({
 	selector: 'osee-edit-type-dialog',
@@ -74,6 +94,7 @@ import { ParentErrorStateMatcher } from '@osee/shared/matchers';
 		UniquePlatformTypeNameDirective,
 		UniquePlatformTypeAttributesDirective,
 		EditEnumSetFieldComponent,
+		ApplicabilitySelectorComponent,
 	],
 })
 export class EditTypeDialogComponent implements OnDestroy {
@@ -97,11 +118,53 @@ export class EditTypeDialogComponent implements OnDestroy {
 		reduce((acc, curr) => [...acc, curr], [] as logicalType[])
 	);
 	units = this.enumService.units;
-	enumSet: enumerationSet = {
-		name: '',
-		applicability: { id: '1', name: 'Base' },
-		description: '',
+	enumSet: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	} = {
+		createArtifacts: [],
+		modifyArtifacts: [],
+		deleteRelations: [],
 	};
+
+	private enumSetManifest = new BehaviorSubject<{
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}>({ createArtifacts: [], modifyArtifacts: [], deleteRelations: [] });
+	private pTypeManifest = new BehaviorSubject<{
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}>({ createArtifacts: [], modifyArtifacts: [], deleteRelations: [] });
+	protected manifest = combineLatest([
+		this.enumSetManifest,
+		this.pTypeManifest,
+	]).pipe(
+		map(([enumSet, pType]) => {
+			return {
+				createArtifacts: [
+					...enumSet.createArtifacts,
+					...pType.createArtifacts,
+				],
+				modifyArtifacts: [
+					...enumSet.modifyArtifacts,
+					...pType.modifyArtifacts,
+				],
+				deleteRelations: [
+					...enumSet.deleteRelations,
+					...pType.deleteRelations,
+				],
+			};
+		}),
+		map((changeManifest) => {
+			return {
+				manifest: changeManifest,
+				mode: this.data.mode,
+			};
+		})
+	);
 	parentMatcher = new ParentErrorStateMatcher();
 
 	enumUnique = new Subject<string>();
@@ -214,6 +277,7 @@ export class EditTypeDialogComponent implements OnDestroy {
 		),
 		map((v) => v.required)
 	);
+	reference: PlatformType = new PlatformTypeSentinel();
 
 	constructor(
 		public dialogRef: MatDialogRef<EditTypeDialogComponent>,
@@ -222,8 +286,99 @@ export class EditTypeDialogComponent implements OnDestroy {
 		private enumService: EnumsService
 	) {
 		this.platform_type = this.data.type.name;
+		this.reference = { ...this.data.type };
+		if (this.data.mode === 0) {
+			this.pTypeManifest.next({
+				createArtifacts: [],
+				modifyArtifacts: [
+					{
+						id: this.data.type.id || '-1',
+						setAttributes: [],
+						applicabilityId: this.data.type.applicability.id,
+					},
+				],
+				deleteRelations: [],
+			});
+		} else {
+			this.pTypeManifest.next({
+				createArtifacts: [
+					{
+						typeId: ARTIFACTTYPEIDENUM.PLATFORMTYPE,
+						applicabilityId: this.data.type.applicability.id,
+						name: this.data.type.name,
+						key: '3e1a2d30-f7db-43d2-af9d-d423115cbb8', //magic UUID to reference platform type
+						attributes: [
+							{
+								typeId: ATTRIBUTETYPEIDENUM.DESCRIPTION,
+								value: this.data.type.description,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.LOGICALTYPE,
+								value: this.data.type.interfaceLogicalType,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL,
+								value: this.data.type
+									.interfacePlatformTypeMinval,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL,
+								value: this.data.type
+									.interfacePlatformTypeMaxval,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL,
+								value: this.data.type.interfaceDefaultValue,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL,
+								value: this.data.type
+									.interfacePlatformTypeMsbValue,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE,
+								value: this.data.type
+									.interfacePlatformTypeBitSize,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION,
+								value: this.data.type
+									.interfacePlatformTypeBitsResolution,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE,
+								value: this.data.type
+									.interfacePlatformTypeCompRate,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY,
+								value: this.data.type
+									.interfacePlatformTypeAnalogAccuracy,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
+								value: this.data.type
+									.interfacePlatformTypeUnits,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT,
+								value: this.data.type
+									.interfacePlatformType2sComplement,
+							},
+							{
+								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION,
+								value: this.data.type
+									.interfacePlatformTypeValidRangeDescription,
+							},
+						],
+					},
+				],
+				modifyArtifacts: [],
+				deleteRelations: [],
+			});
+			delete this.reference.id;
+		}
 	}
-	//@TODO Luciano Figure out if logicalType.next() is needed in afterviewInit
 
 	ngOnDestroy(): void {
 		this._done.next('');
@@ -244,7 +399,7 @@ export class EditTypeDialogComponent implements OnDestroy {
 			Number(this.data.type.interfacePlatformTypeBitsResolution) *
 			(2 ^
 				((Number(this.data.type.interfacePlatformTypeBitSize) * 8 -
-					Number(this.data.type.interfacePlatform2sComplement)) /
+					Number(this.data.type.interfacePlatformType2sComplement)) /
 					2))
 		).toString();
 	}
@@ -264,7 +419,7 @@ export class EditTypeDialogComponent implements OnDestroy {
 			(Number(this.data.type.interfacePlatformTypeMsbValue) * 2) /
 			(2 ^
 				(Number(this.data.type.interfacePlatformTypeBitSize) * 8 -
-					Number(this.data.type.interfacePlatform2sComplement)))
+					Number(this.data.type.interfacePlatformType2sComplement)))
 		).toString();
 	}
 
@@ -303,22 +458,40 @@ export class EditTypeDialogComponent implements OnDestroy {
 		}
 		return val1 === val2;
 	}
-	enumUpdate(value: enumerationSet | undefined) {
+	enumUpdate(value: {
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}) {
 		if (value) {
 			this.enumSet = value;
+			this.enumSetManifest.next(value);
 		}
 	}
 	get returnValue(): {
 		mode: editPlatformTypeDialogDataMode;
 		type: enumeratedPlatformType;
+		enumeration: {
+			createArtifacts: createArtifact[];
+			modifyArtifacts: modifyArtifact[];
+			deleteRelations: modifyRelation[];
+		};
 	} {
 		return {
 			mode: this.data.mode,
 			type: {
 				...this.data.type,
 				interfaceLogicalType: 'enumeration',
-				enumerationSet: this.enumSet,
+				enumerationSet: {
+					name: '',
+					applicability: {
+						id: '1',
+						name: 'Base',
+					},
+					description: '',
+				},
 			},
+			enumeration: this.enumSet,
 		};
 	}
 	updateUnique(value: boolean) {
@@ -327,5 +500,72 @@ export class EditTypeDialogComponent implements OnDestroy {
 
 	updateLogicalType(value: string) {
 		this._logicalType.next(value);
+		this.updatePTypeManifest(ATTRIBUTETYPEIDENUM.LOGICALTYPE, value);
+	}
+
+	updatePTypeManifest(
+		attributeType: PLATFORMTYPEATTRIBUTETYPEID,
+		value: string
+	) {
+		const newValue = this.pTypeManifest.getValue();
+		if (this.data.mode === 0) {
+			if (
+				newValue.modifyArtifacts[0].setAttributes
+					?.map((v) => v.typeId)
+					.includes(attributeType)
+			) {
+				//replace the existing value
+				const index = newValue.modifyArtifacts[0].setAttributes
+					?.map((v) => v.typeId)
+					.indexOf(attributeType);
+				if (index !== -1) {
+					newValue.modifyArtifacts[0].setAttributes[index] = {
+						typeId: attributeType,
+						value: value,
+					};
+				}
+			} else {
+				newValue.modifyArtifacts[0].setAttributes?.push({
+					typeId: attributeType,
+					value: value,
+				});
+			}
+		} else {
+			if (attributeType === ATTRIBUTETYPEIDENUM.NAME) {
+				newValue.createArtifacts[0].name = value;
+			} else {
+				if (
+					newValue.createArtifacts[0].attributes
+						?.map((v) => v.typeId)
+						.includes(attributeType)
+				) {
+					//replace the existing value
+					const index = newValue.createArtifacts[0].attributes
+						?.map((v) => v.typeId)
+						.indexOf(attributeType);
+					if (index !== -1) {
+						newValue.createArtifacts[0].attributes[index] = {
+							typeId: attributeType,
+							value: value,
+						};
+					}
+				} else {
+					newValue.createArtifacts[0].attributes?.push({
+						typeId: attributeType,
+						value: value,
+					});
+				}
+			}
+		}
+		this.pTypeManifest.next(newValue);
+	}
+	modifyApplicability(applicability: applic) {
+		const newValue = this.pTypeManifest.getValue();
+		if (this.data.mode === 0) {
+			newValue.modifyArtifacts[0].applicabilityId = applicability.id;
+		} else {
+			newValue.createArtifacts[0].applicabilityId = applicability.id;
+		}
+		this.pTypeManifest.next(newValue);
 	}
 }

@@ -12,8 +12,15 @@
  **********************************************************************/
 
 import { Component, Input, Output } from '@angular/core';
-import type { logicalType, PlatformType } from '@osee/messaging/shared/types';
-import { of } from 'rxjs';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import type {
+	enumerationSet,
+	logicalType,
+	logicalTypeFieldInfo,
+	PlatformType,
+} from '@osee/messaging/shared/types';
+import { applic } from '@osee/shared/types/applicability';
+import { Subject } from 'rxjs';
 import { NewPlatformTypeFormComponent } from './new-platform-type-form.component';
 
 @Component({
@@ -30,5 +37,6 @@ export class MockNewPlatformTypeFormComponent
 		idString: '-1',
 		idIntValue: -1,
 	};
-	@Output() attributes = of({} satisfies Partial<PlatformType>);
+
+	@Output() platformType = new Subject<PlatformType>();
 }
