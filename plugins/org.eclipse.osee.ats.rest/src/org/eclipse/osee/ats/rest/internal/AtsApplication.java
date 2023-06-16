@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.rest.internal.config.TeamResource;
 import org.eclipse.osee.ats.rest.internal.config.UserResource;
 import org.eclipse.osee.ats.rest.internal.config.VersionResource;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.test.AtsTestEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsProductLineEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
@@ -144,6 +145,7 @@ public class AtsApplication extends Application {
       singletons.add(new AtsAttributeEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new JiraEndpointImpl(atsApiServer));
       singletons.add(new MetricsEndpointImpl(atsApiServer, orcsApi));
+      singletons.add(new AtsTestEndpointImpl(atsApiServer));
 
       // UIs
       singletons.add(new AtsActionUiEndpointImpl(atsApiServer, logger));

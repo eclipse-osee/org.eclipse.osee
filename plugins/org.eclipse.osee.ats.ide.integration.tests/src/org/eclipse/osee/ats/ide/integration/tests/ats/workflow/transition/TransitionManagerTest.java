@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.test.AtsTestUtilCore.AtsTestUtilState;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -46,7 +47,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransit
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestWidgetRequiredCompletion;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.WorkDefTeamTransitionManagerTestWidgetRequiredTransition;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;

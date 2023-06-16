@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MassEditTeamVersionItemTest.class, VersionsTest.class})
+@Suite.SuiteClasses({MassEditTeamVersionItemTest.class, VersionsTest.class, VersionRelationToggleClientServerTest.class})
 /**
  * @author Donald G. Dunne
  */
