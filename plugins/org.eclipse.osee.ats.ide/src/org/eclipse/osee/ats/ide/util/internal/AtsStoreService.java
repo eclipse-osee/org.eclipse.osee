@@ -48,12 +48,14 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
@@ -367,6 +369,12 @@ public class AtsStoreService implements IAtsStoreService {
          }
       }
       return rd;
+   }
+
+   @Override
+   public void purgeArtifacts(List<ArtifactToken> artifacts) {
+      Operations.executeWorkAndCheckStatus(
+         new PurgeArtifacts(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(artifacts)));
    }
 
 }

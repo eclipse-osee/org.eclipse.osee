@@ -116,11 +116,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          // Third, delete any desired objects
          for (ArtifactId artifact : deleteArtifacts) {
             if (artifact instanceof Artifact) {
-               AtsApiService.get().getQueryServiceIde().getArtifact(artifact).deleteAndPersist(transaction);
+               if (!AtsApiService.get().getStoreService().isDeleted(artifact)) {
+                  AtsApiService.get().getQueryServiceIde().getArtifact(artifact).deleteAndPersist(transaction);
+               }
             }
          }
          for (IAtsObject atsObject : deleteAtsObjects) {
-            AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).deleteAndPersist(transaction);
+            if (!AtsApiService.get().getStoreService().isDeleted(atsObject.getStoreObject())) {
+               AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).deleteAndPersist(transaction);
+            }
          }
          transactionTok = transaction.execute();
       } catch (Exception ex) {
@@ -141,8 +145,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
       if (transactionTok != null && transactionTok.isValid()) {
          executeAfterSuccess(AtsApiService.get());
+         return transactionTok;
       }
-      return transactionTok;
+      return TransactionToken.SENTINEL;
    }
 
    private void execute(AtsRelationChange relChange, SkynetTransaction transaction) {

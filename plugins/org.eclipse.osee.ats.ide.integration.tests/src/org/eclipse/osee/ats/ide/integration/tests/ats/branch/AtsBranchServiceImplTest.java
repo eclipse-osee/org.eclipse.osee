@@ -64,7 +64,7 @@ public class AtsBranchServiceImplTest {
          true);
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
-      //Test Team Def-base Team Arts
+      // Test Team Def-base Team Arts
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
@@ -73,6 +73,7 @@ public class AtsBranchServiceImplTest {
          changes.deleteArtifact(AtsApiService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
+      AtsTestUtil.clearVersions();
 
       AtsApiService.get().reloadServerAndClientCaches();
 
@@ -91,7 +92,7 @@ public class AtsBranchServiceImplTest {
       IAtsChangeSet changes =
          AtsApiService.get().createChangeSet("testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
 
-      //Test Version-based Team Arts
+      // Test Version-based Team Arts
       IAtsVersion version1 = AtsTestUtil.getVerArt1();
       IAtsVersion version2 = AtsTestUtil.getVerArt2();
 
@@ -125,10 +126,11 @@ public class AtsBranchServiceImplTest {
          changes.deleteArtifact(AtsApiService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
+      AtsTestUtil.clearVersions();
 
       AtsApiService.get().reloadServerAndClientCaches();
 
-      //Test TxRecords
+      // Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
          UserManager.getUser(), UserManager.getUser(), TransactionDetailsType.Baselined, 0L);
       Collection<TransactionRecord> commitTxs = new ArrayList<>();

@@ -167,8 +167,8 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       if (team == null) {
          throw new OseeArgumentException("Team Workflow can not be null %s", team);
       }
-      Collection<ArtifactToken> versions = atsApi.getRelationResolver().getRelated(team.getStoreObject(),
-         AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+      Collection<ArtifactToken> versions =
+         atsApi.getRelationResolver().getRelated(team, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       IAtsVersion version = null;
       if (!versions.isEmpty()) {
          if (versions.size() > 1) {
@@ -193,13 +193,17 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       ArtifactId previousVersion = ArtifactId.SENTINEL;
       if (!previousVersions.isEmpty()) {
          previousVersion = ArtifactId.create(previousVersions.iterator().next());
+         if (version.equals(previousVersion)) {
+            return version;
+         }
       }
       changes.setRelation(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
       changes.addExecuteListener(getPostPersistExecutionListener(teamWf, version, previousVersion));
       return version;
    }
 
-   protected IExecuteListener getPostPersistExecutionListener(IAtsTeamWorkflow teamWf, IAtsVersion newVersion, ArtifactId previousVersion) {
+   protected IExecuteListener getPostPersistExecutionListener(IAtsTeamWorkflow teamWf, IAtsVersion newVersion,
+      ArtifactId previousVersion) {
       return new IExecuteListener() {
 
          @Override
@@ -369,13 +373,15 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType) {
+   public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType,
+      VersionLockedType lockedType) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.setIntersection(
          getVersionsReleased(teamDef, releaseType), getVersionsLocked(teamDef, lockedType));
    }
 
    @Override
-   public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType) {
+   public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef,
+      VersionReleaseType releaseType, VersionLockedType lockedType) {
       if (teamDef == null) {
          return new ArrayList<>();
       } else {

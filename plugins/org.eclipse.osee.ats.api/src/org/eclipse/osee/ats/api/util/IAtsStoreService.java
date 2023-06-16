@@ -85,7 +85,8 @@ public interface IAtsStoreService {
 
    JdbcService getJdbcService();
 
-   default Map<ArtifactId, ArtifactTypeToken> getArtifactTypes(Collection<ArtifactId> artIds, OrcsTokenService tokenService) {
+   default Map<ArtifactId, ArtifactTypeToken> getArtifactTypes(Collection<ArtifactId> artIds,
+      OrcsTokenService tokenService) {
       String query = String.format(ART_TYPE_FROM_ID_QUERY,
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(artIds, ",", ArtifactId::getIdString));
 
@@ -128,5 +129,7 @@ public interface IAtsStoreService {
    boolean isChangedInDb(ArtifactId artifact);
 
    XResultData clearAtsCachesAllServers();
+
+   void purgeArtifacts(List<ArtifactToken> artifacts);
 
 }

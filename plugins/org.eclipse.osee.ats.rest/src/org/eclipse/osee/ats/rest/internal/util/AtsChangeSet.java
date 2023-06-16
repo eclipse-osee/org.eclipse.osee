@@ -70,7 +70,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (branch == null) {
             branch = atsApi.getAtsBranch();
          }
-         transaction = orcsApi.getTransactionFactory().createTransaction(branch, asUser, comment);
+         if (asUser == null) {
+            transaction = orcsApi.getTransactionFactory().createTransaction(branch, comment);
+         } else {
+            transaction = orcsApi.getTransactionFactory().createTransaction(branch, asUser, comment);
+         }
       }
       return transaction;
    }
@@ -247,7 +251,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setRelationsAndOrder(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
+   public void setRelationsAndOrder(Object object, RelationTypeSide relationSide,
+      Collection<? extends Object> objects) {
       ArtifactReadable artifact = getArtifact(object);
       List<ArtifactReadable> artifacts = new LinkedList<>();
       for (Object obj : objects) {
@@ -387,7 +392,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeGeneric<?> attributeType, InputStream inputStream) {
+   public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeGeneric<?> attributeType,
+      InputStream inputStream) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeFromStream(art, attributeType, inputStream);
       add(art);
@@ -408,7 +414,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType,
+      List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
          if (attributeType.isString()) {
@@ -468,7 +475,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType, ArtifactId artifactRef) {
+   public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType,
+      ArtifactId artifactRef) {
       addAttribute(artifact, attributeType, artifactRef.getIdString());
    }
 

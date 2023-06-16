@@ -83,4 +83,6 @@ public interface IAtsServerEndpointProvider {
 
    MetricsEndpointApi getMetricsEp();
 
+   IAtsTestEndpoint getTestEp();
+
 }

@@ -20,10 +20,10 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.core.test.AtsTestUtilCore.AtsTestUtilState;
 import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -50,7 +50,7 @@ public class CopyActionDetailsTest {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       String str = new CopyActionDetails(AtsTestUtil.getTeamWf(), AtsApiService.get()).getDetailsString();
       assertEquals(
-         "\"Team Workflow\" - " + AtsTestUtil.getTeamWf().getAtsId() + " - \"AtsTestUtil - Team WF [CopyActionDetailsTest]\"",
+         "\"Team Workflow\" - " + AtsTestUtil.getTeamWf().getAtsId() + " - \"AtsTestUtilCore - Team WF [CopyActionDetailsTest]\"",
          str);
    }
 
@@ -59,7 +59,7 @@ public class CopyActionDetailsTest {
       String str =
          new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1(), AtsApiService.get()).getDetailsString();
       assertEquals(
-         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
+         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getAtsId() + " - \"AtsTestUtilCore - Task [CopyActionDetailsTest]\"",
          str);
    }
 
@@ -69,7 +69,7 @@ public class CopyActionDetailsTest {
       DecisionReviewArtifact review =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes);
       String str = new CopyActionDetails(review, AtsApiService.get()).getDetailsString();
-      assertEquals("\"Decision Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Decision Review\"", str);
+      assertEquals("\"Decision Review\" - " + review.getAtsId() + " - \"AtsTestUtilCore Test Decision Review\"", str);
       changes.execute();
    }
 
@@ -79,7 +79,7 @@ public class CopyActionDetailsTest {
          (PeerToPeerReviewArtifact) AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze,
             AtsApiService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
       String str = new CopyActionDetails(review, AtsApiService.get()).getDetailsString();
-      assertEquals("\"Peer-To-Peer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
+      assertEquals("\"Peer-To-Peer Review\" - " + review.getAtsId() + " - \"AtsTestUtilCore Test Peer Review\"", str);
       review.persist(getClass().getSimpleName());
    }
 
@@ -96,8 +96,8 @@ public class CopyActionDetailsTest {
       changes.execute();
 
       String str = new CopyActionDetails(teamWf, AtsApiService.get()).getDetailsString();
-      assertEquals(teamWf.getAtsId() + " - AtsTestUtil - Team WF [CopyActionDetailsTest] - Team Workflow - Improvement",
-         str);
+      assertEquals(
+         teamWf.getAtsId() + " - AtsTestUtilCore - Team WF [CopyActionDetailsTest] - Team Workflow - Improvement", str);
 
       changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.ActionDetailsFormat,
@@ -108,7 +108,7 @@ public class CopyActionDetailsTest {
       IAtsAction action = teamWf.getParentAction();
       str = new CopyActionDetails(teamWf, AtsApiService.get()).getDetailsString();
       assertEquals(
-         "[" + action.getAtsId() + "] - [" + teamWf.getAtsId() + "] - [PCR100] - AtsTestUtil - Team WF [CopyActionDetailsTest]",
+         "[" + action.getAtsId() + "] - [" + teamWf.getAtsId() + "] - [PCR100] - AtsTestUtilCore - Team WF [CopyActionDetailsTest]",
          str);
 
    }

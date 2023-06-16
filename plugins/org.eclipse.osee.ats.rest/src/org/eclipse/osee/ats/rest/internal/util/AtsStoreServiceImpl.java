@@ -290,4 +290,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       throw new UnsupportedOperationException("unsupported on server");
    }
 
+   @Override
+   public void purgeArtifacts(List<ArtifactToken> artifacts) {
+      throw new UnsupportedOperationException("unsupported on server");
+   }
+
 }

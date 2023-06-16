@@ -41,6 +41,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -467,6 +469,12 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
             user.getArtifactId().getIdString(), atsApi.getAtsBranch());
       }
       return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public Collection<? extends ArtifactToken> getArtifactsFromName(String name, BranchToken branch,
+      DeletionFlag excludeDeleted, QueryOption[] containsMatchOptions) {
+      return getArtifacts(CoreAttributeTypes.Name, name, branch);
    }
 
 }
