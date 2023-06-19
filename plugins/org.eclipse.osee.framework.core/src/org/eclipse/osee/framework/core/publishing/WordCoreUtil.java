@@ -312,6 +312,18 @@ public class WordCoreUtil {
    public static final String FILE_NAME = "fileName";
 
    /**
+    * Word ML footer
+    */
+
+   public static final String FOOTER = "<w:ftr>";
+
+   /**
+    * Word ML footer end
+    */
+
+   public static final String FOOTER_END = "</w:ftr>";
+
+   /**
     * The page size tags are removed with {@link #PAGE_SIZE_REMOVAL_PATTERN} and replaced with this string.
     */
 
@@ -359,6 +371,18 @@ public class WordCoreUtil {
     */
 
    private static final StringBuilder HARD_LINE_BREAK = new StringBuilder("<w:br/>");
+
+   /**
+    * Word ML header
+    */
+
+   public static final String HEADER = "<w:hdr>";
+
+   /**
+    * Word ML Header end
+    */
+
+   public static final String HEADER_END = "</w:hdr>";
 
    private static final String HYPERLINK_DOCUMENT_TEMPLATE_PART_A = "<w:p><w:hlink w:dest=\"";
 
@@ -1284,6 +1308,10 @@ public class WordCoreUtil {
          );
    //@formatter:on
 
+   public static final String TYPE = "<w:type>";
+
+   public static final String TYPE_END = "</w:type>";
+
    //@formatter:off
    private static final Pattern WORD_ANNOTATIONS_REMOVAL_PATTERN =
       Pattern.compile
@@ -1371,7 +1399,8 @@ public class WordCoreUtil {
     * @return the provided Word ML with updated table and figure captions.
     */
 
-   public static CharSequence addChapterNumToCaptionAndBookmark(CharSequence input, CharSequence amlBookmarkStart, CharSequence amlBookmarkEnd) {
+   public static CharSequence addChapterNumToCaptionAndBookmark(CharSequence input, CharSequence amlBookmarkStart,
+      CharSequence amlBookmarkEnd) {
 
       //@formatter:off
       var replacerText =
@@ -1416,7 +1445,9 @@ public class WordCoreUtil {
       return replacerText;
    }
 
-   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations, Set<String> allValidConfigurationGroups) {
+   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch,
+      HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations,
+      Set<String> allValidConfigurationGroups) {
 
       Matcher matcher = FULL_PATTERN.matcher(wordml);
       Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
@@ -1990,7 +2021,8 @@ public class WordCoreUtil {
     * @return a {@link CharSequence} of the updated publishing template.
     */
 
-   public static CharSequence initializePublishingTemplateOutliningNumbers(String outlineNumber, CharSequence template, String outlineType) {
+   public static CharSequence initializePublishingTemplateOutliningNumbers(String outlineNumber, CharSequence template,
+      String outlineType) {
 
       if (Objects.isNull(outlineNumber)) {
          return template;
@@ -2018,7 +2050,8 @@ public class WordCoreUtil {
       return template;
    }
 
-   public static boolean isExpressionInvalid(String expression, BranchId branch, HashCollection<String, String> validFeatureValues) {
+   public static boolean isExpressionInvalid(String expression, BranchId branch,
+      HashCollection<String, String> validFeatureValues) {
       ApplicabilityGrammarLexer lex = new ApplicabilityGrammarLexer(new ANTLRStringStream(expression.toUpperCase()));
       ApplicabilityGrammarParser parser = new ApplicabilityGrammarParser(new CommonTokenStream(lex));
 
@@ -2075,7 +2108,8 @@ public class WordCoreUtil {
       return false;
    }
 
-   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch, HashCollection<String, String> validFeatureValues) {
+   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch,
+      HashCollection<String, String> validFeatureValues) {
 
       if (applicabilityBlock.getType() != ApplicabilityType.Feature) {
          return true;
@@ -2107,7 +2141,8 @@ public class WordCoreUtil {
       return true;
    }
 
-   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup, Set<String> allValidConfigurationGroups) {
+   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup,
+      Set<String> allValidConfigurationGroups) {
       beginConfigGroup = WordCoreUtil.textOnly(beginConfigGroup);
       int start = beginConfigGroup.indexOf("[") + 1;
       int end = beginConfigGroup.indexOf("]");
@@ -2137,7 +2172,8 @@ public class WordCoreUtil {
     * @param tailProcessor a {@link Consumer} used to process the final section of the <code>templateContent</code>.
     */
 
-   public static void processPublishingTemplate(CharSequence templateContent, Consumer<CharSequence> segmentProcessor, Consumer<CharSequence> tailProcessor) {
+   public static void processPublishingTemplate(CharSequence templateContent, Consumer<CharSequence> segmentProcessor,
+      Consumer<CharSequence> tailProcessor) {
 
       var tokenMatcher = WordCoreUtil.TOKEN_PATTERN_PROCESS_PUBLISHING_TEMPLATE.tokenMatcher(templateContent);
       int lastEndIndex = 0;
@@ -2241,7 +2277,8 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, Pattern pattern, Function<Matcher, StringBuilder> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, Pattern pattern,
+      Function<Matcher, StringBuilder> newTextFunction) {
 
       var matcher = pattern.matcher(input);
       var changeSet = new ChangeSet(input);
@@ -2289,7 +2326,8 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, Supplier<Pattern> patternFunction, BiFunction<Matcher, ChangeSet, Boolean> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, Supplier<Pattern> patternFunction,
+      BiFunction<Matcher, ChangeSet, Boolean> newTextFunction) {
 
       var changeSet = new ChangeSet(input);
       var done = false;
@@ -2335,7 +2373,8 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, TokenPattern tokenPattern, Function<TokenMatcher, StringBuilder> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, TokenPattern tokenPattern,
+      Function<TokenMatcher, StringBuilder> newTextFunction) {
 
       var tokenMatcher = tokenPattern.tokenMatcher(input);
       var changeSet = new ChangeSet(input);
@@ -2499,6 +2538,106 @@ public class WordCoreUtil {
                   return index >= outlineNumbers.length;
                }
             );
+      //@formatter:on
+   }
+
+   /**
+    * Generate Word ML for a section's header
+    *
+    * @param header input for the word ml to process
+    * @param type (word-ml or text)
+    * @return a {@link StringBuilder} with word ml or the header
+    */
+
+   public static StringBuilder generateHeader(CharSequence header, FormatIndicator type) {
+      //@formatter:off
+      if (type.getType().equals("word-ml")) {
+         var size = WordCoreUtil.HEADER.length()
+               + WordCoreUtil.HEADER_END.length()
+               + header.length();
+
+         var output =
+            new StringBuilder(size)
+            .append(WordCoreUtil.HEADER)
+            .append(header)
+            .append(WordCoreUtil.HEADER_END);
+
+         return output;
+      } else {
+         var size =
+            WordCoreUtil.HEADER.length()
+            + WordCoreUtil.HEADER_END.length()
+            + WordCoreUtil.PARAGRAPH.length()
+            + WordCoreUtil.PARAGRAPH_END.length()
+            + WordCoreUtil.RUN.length()
+            + WordCoreUtil.RUN_END.length()
+            + WordCoreUtil.TEXT.length()
+            + WordCoreUtil.TEXT_END.length()
+            + header.length();
+
+         var output = new StringBuilder(size)
+            .append(WordCoreUtil.HEADER)
+            .append(WordCoreUtil.PARAGRAPH)
+            .append(WordCoreUtil.RUN)
+            .append(WordCoreUtil.TEXT)
+            .append(XmlEncoderDecoder.xmlToText(header))
+            .append(WordCoreUtil.TEXT_END)
+            .append(WordCoreUtil.RUN_END)
+            .append(WordCoreUtil.PARAGRAPH_END)
+            .append(WordCoreUtil.HEADER_END);
+
+         return output;
+      }
+      //@formatter:on
+   }
+
+   /**
+    * Generate Word ML for a section's footer
+    *
+    * @param footer input for the word ml to process
+    * @param type (word-ml or text)
+    * @return a {@link StringBuilder} with word ml or the footer
+    */
+
+   public static StringBuilder generateFooter(CharSequence footer, FormatIndicator type) {
+    //@formatter:off
+      if (type.getType().equals("word-ml")) {
+         var size = WordCoreUtil.FOOTER.length()
+               + WordCoreUtil.FOOTER_END.length()
+               + footer.length();
+
+         var output =
+            new StringBuilder(size)
+            .append(WordCoreUtil.FOOTER)
+            .append(footer)
+            .append(WordCoreUtil.FOOTER_END);
+
+         return output;
+      } else {
+         var size =
+            WordCoreUtil.FOOTER.length()
+            + WordCoreUtil.FOOTER_END.length()
+            + WordCoreUtil.PARAGRAPH.length()
+            + WordCoreUtil.PARAGRAPH_END.length()
+            + WordCoreUtil.RUN.length()
+            + WordCoreUtil.RUN_END.length()
+            + WordCoreUtil.TEXT.length()
+            + WordCoreUtil.TEXT_END.length()
+            + footer.length();
+
+         var output = new StringBuilder(size)
+            .append(WordCoreUtil.FOOTER)
+            .append(WordCoreUtil.PARAGRAPH)
+            .append(WordCoreUtil.RUN)
+            .append(WordCoreUtil.TEXT)
+            .append(XmlEncoderDecoder.xmlToText(footer))
+            .append(WordCoreUtil.TEXT_END)
+            .append(WordCoreUtil.RUN_END)
+            .append(WordCoreUtil.PARAGRAPH_END)
+            .append(WordCoreUtil.FOOTER_END);
+
+         return output;
+      }
       //@formatter:on
    }
 
