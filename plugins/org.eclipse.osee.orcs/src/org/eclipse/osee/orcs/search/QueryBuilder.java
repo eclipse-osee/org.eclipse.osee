@@ -162,7 +162,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder isOnPage(long pageNum, long pageSize);
 
-   QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options);
+   QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values,
+      QueryOption... options);
 
    QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options);
 
@@ -331,6 +332,13 @@ public interface QueryBuilder extends Query {
     * @return
     */
    QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType);
+
+   /**
+    * @param relationTypeSide side of of the relation following to (not starting from)
+    * @param artifacType of the artifacts following to
+    * @return
+    */
+   QueryBuilder followFork(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType, QueryBuilder query);
 
    QueryBuilder followNoSelect(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType);
 
