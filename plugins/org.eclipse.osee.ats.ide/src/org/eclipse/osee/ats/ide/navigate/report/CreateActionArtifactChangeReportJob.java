@@ -65,7 +65,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
       return runIt(monitor, getName(), teamWfs, attributeType);
    }
 
-   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<IAtsTeamWorkflow> teamWfs, AttributeTypeToken attributeType) {
+   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<IAtsTeamWorkflow> teamWfs,
+      AttributeTypeToken attributeType) {
       XResultData rd = new XResultData();
       try {
          if (teamWfs.isEmpty()) {
@@ -100,7 +101,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<IAtsTeamWorkflow> teamWfs, AttributeTypeToken attributeType, XResultData rd) {
+   private static void retrieveData(IProgressMonitor monitor, Collection<IAtsTeamWorkflow> teamWfs,
+      AttributeTypeToken attributeType, XResultData rd) {
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
@@ -124,7 +126,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType, CommitConfigItem commitConfigItem, XResultData rd) {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType,
+      CommitConfigItem commitConfigItem, XResultData rd) {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
       ChangeData changeData = AtsApiService.get().getBranchServiceIde().getChangeData(teamArt, commitConfigItem);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW,

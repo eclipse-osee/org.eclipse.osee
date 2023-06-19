@@ -112,7 +112,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    /**
     * Has potential of returning null if this fromAi has already been processed.
     */
-   protected IAtsActionableItem createActionableItems(IAtsChangeSet changes, IAtsActionableItem fromAi, IAtsActionableItem parentAi) {
+   protected IAtsActionableItem createActionableItems(IAtsChangeSet changes, IAtsActionableItem fromAi,
+      IAtsActionableItem parentAi) {
       Artifact fromAiArt = AtsApiService.get().getQueryServiceIde().getArtifact(fromAi);
 
       if (processedFromAis.contains(fromAiArt)) {
@@ -160,7 +161,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       return newAi;
    }
 
-   protected IAtsTeamDefinition createTeamDefinitions(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition parentTeamDef) {
+   protected IAtsTeamDefinition createTeamDefinitions(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef,
+      IAtsTeamDefinition parentTeamDef) {
       // Get or create new team definition
       Artifact parentTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(parentTeamDef);
       Artifact fromTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(fromTeamDef);
@@ -190,7 +192,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       return newTeamDef;
    }
 
-   private void duplicateTeamLeadsAndMembers(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition newTeamDef) {
+   private void duplicateTeamLeadsAndMembers(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef,
+      IAtsTeamDefinition newTeamDef) {
       Artifact fromTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(fromTeamDef);
       Artifact newTeamDefArt = AtsApiService.get().getQueryServiceIde().getArtifact(newTeamDef);
 
@@ -245,7 +248,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       }
    }
 
-   private Pair<Artifact, IAtsConfigObject> duplicateTeamDefinitionOrActionableItem(IAtsChangeSet changes, Artifact fromArt) {
+   private Pair<Artifact, IAtsConfigObject> duplicateTeamDefinitionOrActionableItem(IAtsChangeSet changes,
+      Artifact fromArt) {
       String newName = CopyAtsUtil.getConvertedName(data, fromArt.getName());
       if (newName.equals(fromArt.getName())) {
          throw new OseeArgumentException("Could not get new name from name conversion.");

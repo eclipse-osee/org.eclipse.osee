@@ -101,7 +101,8 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+         StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          return new WidgetResult(WidgetStatus.Success, "Here it is");
       }
 
@@ -109,7 +110,8 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsErrorValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+         StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, "Here it is");
       }
 
@@ -117,7 +119,8 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsExceptionValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+         StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
          throw new OseeStateException("problem");
       }
 

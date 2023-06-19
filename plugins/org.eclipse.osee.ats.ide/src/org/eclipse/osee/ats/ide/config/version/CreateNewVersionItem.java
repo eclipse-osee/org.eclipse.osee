@@ -113,7 +113,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       }
    }
 
-   public static Collection<IAtsVersion> createVersions(XResultData resultData, IAtsChangeSet changes, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) {
+   public static Collection<IAtsVersion> createVersions(XResultData resultData, IAtsChangeSet changes,
+      IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) {
       List<IAtsVersion> versions = new ArrayList<>();
       for (String newVer : newVersionNames) {
          if (!Strings.isValid(newVer)) {

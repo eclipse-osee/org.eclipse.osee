@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.demo.enums.token.CodeReqDocAttributeType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
-import org.eclipse.osee.framework.core.data.computed.ComputedCharacteristicDelta;
 
 /**
  * @author Ryan D. Brooks

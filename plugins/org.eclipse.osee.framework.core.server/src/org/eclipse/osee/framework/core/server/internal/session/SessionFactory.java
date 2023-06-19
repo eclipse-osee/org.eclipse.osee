@@ -37,13 +37,15 @@ public final class SessionFactory implements IOseeTypeFactory {
       this.jdbcService = jdbcService;
    }
 
-   public Session createLoadedSession(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
+   public Session createLoadedSession(String guid, String userId, Date creationDate, String clientVersion,
+      String clientMachineName, String clientAddress, int clientPort) {
       Session toReturn =
          createNewSession(guid, userId, creationDate, clientVersion, clientMachineName, clientAddress, clientPort);
       return toReturn;
    }
 
-   public Session createNewSession(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
+   public Session createNewSession(String guid, String userId, Date creationDate, String clientVersion,
+      String clientMachineName, String clientAddress, int clientPort) {
       Session toReturn =
          new Session(guid, userId, creationDate, clientVersion, clientMachineName, clientAddress, clientPort);
       return toReturn;

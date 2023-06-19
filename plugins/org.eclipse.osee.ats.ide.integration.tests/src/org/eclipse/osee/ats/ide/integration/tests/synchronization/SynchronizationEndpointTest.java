@@ -1426,7 +1426,8 @@ public class SynchronizationEndpointTest {
     * @throws AssertionError when unable to obtain the referenced {@link DatatypeDefinition}.
     */
 
-   public static DatatypeDefinition getDatatypeDefinitionFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition) {
+   public static DatatypeDefinition getDatatypeDefinitionFromAttributeDefinition(
+      AttributeDefinition reqifAttributeDefinition) {
       try {
          var datatypeDefinition =
             (DatatypeDefinition) reqifAttributeDefinition.getClass().getDeclaredMethod("getType").invoke(
@@ -1480,7 +1481,8 @@ public class SynchronizationEndpointTest {
     * </ul>
     */
 
-   private static void verifyAttributeValue(AttributeValue reqifAttributeValue, ArtifactInfoRecord artifactInfoRecord, Boolean checkDefaultValue) {
+   private static void verifyAttributeValue(AttributeValue reqifAttributeValue, ArtifactInfoRecord artifactInfoRecord,
+      Boolean checkDefaultValue) {
       try {
 
          //@formatter:off
@@ -1533,7 +1535,8 @@ public class SynchronizationEndpointTest {
     * </ul>
     */
 
-   private static void verifyDefaultValueFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition, ArtifactInfoRecord artifactInfoRecord) {
+   private static void verifyDefaultValueFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition,
+      ArtifactInfoRecord artifactInfoRecord) {
       try {
          var defaultValueSet =
             reqifAttributeDefinition.getClass().getDeclaredMethod("isSetDefaultValue").invoke(reqifAttributeDefinition);

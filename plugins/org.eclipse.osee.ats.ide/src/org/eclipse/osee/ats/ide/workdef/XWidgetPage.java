@@ -48,13 +48,15 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       dynamicXWidgetLayout = new SwtXWidgetRenderer(this, optionResolver);
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
+   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
+      XModifiedListener xModListener, boolean isEditable) {
       dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
    }
 
    @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit,
+      Artifact art, XModifiedListener xModListener, boolean isEditable) {
       WidgetPageUtil.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
    }
 

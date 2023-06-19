@@ -221,11 +221,13 @@ public class WfeHeaderComposite extends Composite {
       holdWfHeader = new WfeHoldWorkflowHeader(comp, SWT.NONE, workItem, editor);
    }
 
-   private WfeCustomHeader createCustomHeader(Composite comp, XFormToolkit toolkit, IAtsWorkItem workItem, WorkflowEditor editor, IManagedForm managedForm) {
+   private WfeCustomHeader createCustomHeader(Composite comp, XFormToolkit toolkit, IAtsWorkItem workItem,
+      WorkflowEditor editor, IManagedForm managedForm) {
       return new WfeCustomHeader(comp, SWT.NONE, managedForm, workItem, editor);
    }
 
-   public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, IAtsWorkItem workItem, int horizontalSpan) {
+   public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, IAtsWorkItem workItem,
+      int horizontalSpan) {
       Composite headerComp = new Composite(comp, SWT.NONE);
       GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
       gridData.horizontalSpan = horizontalSpan;
@@ -267,11 +269,13 @@ public class WfeHeaderComposite extends Composite {
       workflowNotesHeader = new WfeWorkflowNotesHeader(comp, SWT.NONE, workItem, null, editor);
    }
 
-   public void createStateNotesHeader(Composite comp, IAtsWorkItem workItem, XFormToolkit toolkit, int horizontalSpan, String forStateName, WorkflowEditor editor) {
+   public void createStateNotesHeader(Composite comp, IAtsWorkItem workItem, XFormToolkit toolkit, int horizontalSpan,
+      String forStateName, WorkflowEditor editor) {
       stateNotesHeader = new WfeStateNotesHeader(comp, SWT.NONE, workItem, null, editor);
    }
 
-   public void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, int horizontalSpan, WorkflowEditor editor) {
+   public void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, int horizontalSpan,
+      WorkflowEditor editor) {
       boolean show = workItem.isTeamWorkflow() && ((IAtsTeamWorkflow) workItem).getTeamDefinition().hasWorkPackages();
 
       if (show) {
@@ -411,7 +415,8 @@ public class WfeHeaderComposite extends Composite {
       return widgets;
    }
 
-   public static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str) {
+   public static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan,
+      final String str) {
       if (str.length() > 150) {
          Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
          label.setToolTipText("click to view all");

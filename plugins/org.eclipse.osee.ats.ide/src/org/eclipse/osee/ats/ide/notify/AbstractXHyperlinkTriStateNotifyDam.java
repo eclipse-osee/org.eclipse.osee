@@ -56,7 +56,8 @@ public abstract class AbstractXHyperlinkTriStateNotifyDam extends XHyperlinkTriS
       sendNotifications(attributeType, notifyUserGroup, workItems, AtsApiService.get());
    }
 
-   public static void sendNotifications(AttributeTypeToken attrType, IUserGroupArtifactToken notifyUserGroup, Collection<IAtsWorkItem> workItems, AtsApi atsApi) {
+   public static void sendNotifications(AttributeTypeToken attrType, IUserGroupArtifactToken notifyUserGroup,
+      Collection<IAtsWorkItem> workItems, AtsApi atsApi) {
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       notifications.setSubject(String.format("OSEE modified [%s]", attrType.getUnqualifiedName()));
       IUserGroup userGroup = atsApi.userService().getUserGroupOrSentinel(notifyUserGroup);

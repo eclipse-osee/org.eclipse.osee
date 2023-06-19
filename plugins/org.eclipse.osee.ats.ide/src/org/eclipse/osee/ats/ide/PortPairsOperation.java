@@ -142,7 +142,8 @@ public final class PortPairsOperation extends AbstractOperation {
       }
    }
 
-   private BranchToken getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) {
+   private BranchToken getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow,
+      TeamWorkFlowArtifact destinationWorkflow) {
       if (!sourceWorkflow.isRelated(AtsRelationTypes.Port_To, destinationWorkflow)) {
          sourceWorkflow.addRelation(AtsRelationTypes.Port_To, destinationWorkflow);
          sourceWorkflow.persist("create port relation");

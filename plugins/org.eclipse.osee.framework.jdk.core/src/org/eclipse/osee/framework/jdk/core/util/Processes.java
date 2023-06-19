@@ -35,7 +35,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.OutputRedirector;
 public final class Processes {
    public static final ExecutorService executor = Executors.newCachedThreadPool();
 
-   public static int handleProcess(Process process, Writer output) throws InterruptedException, ExecutionException, TimeoutException {
+   public static int handleProcess(Process process, Writer output)
+      throws InterruptedException, ExecutionException, TimeoutException {
       BufferedReader stdOutputIn = new BufferedReader(new InputStreamReader(process.getInputStream()));
       Future<Long> outFuture = executor.submit(new OutputRedirector(output, stdOutputIn));
 

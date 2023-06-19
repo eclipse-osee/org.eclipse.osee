@@ -126,8 +126,8 @@ public class TeamVersionListDialog extends SelectionDialog {
       if (teamDef != null) {
          objs = new ArrayList<>();
          try {
-            for (IAtsVersion pda : AtsApiService.get().getVersionService().getVersions(teamDef,
-               VersionReleaseType.Both, VersionLockedType.Both)) {
+            for (IAtsVersion pda : AtsApiService.get().getVersionService().getVersions(teamDef, VersionReleaseType.Both,
+               VersionLockedType.Both)) {
                objs.add(pda);
             }
             versionCombo.setInput(objs);

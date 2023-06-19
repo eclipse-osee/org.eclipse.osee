@@ -80,7 +80,8 @@ public interface QueryEngine {
     * @return a map containing the loaded artifacts keyed by the artifact identifiers.
     */
 
-   Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory, Map<ArtifactId, ArtifactReadable> artifacts);
+   Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory,
+      Map<ArtifactId, ArtifactReadable> artifacts);
 
    List<ArtifactReadable> asArtifact(QueryData queryData, QueryFactory queryFactory);
 

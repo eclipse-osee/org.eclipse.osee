@@ -93,7 +93,9 @@ public class DispoConnector {
       return toReturn;
    }
 
-   private void parseThroughAnnotations(Collection<DispoAnnotationData> annotations, Collection<DispoAnnotationData> defaultAnnotations, Collection<DispoAnnotationData> invalidAnnotations, Collection<DispoAnnotationData> analyzeAnnotations) {
+   private void parseThroughAnnotations(Collection<DispoAnnotationData> annotations,
+      Collection<DispoAnnotationData> defaultAnnotations, Collection<DispoAnnotationData> invalidAnnotations,
+      Collection<DispoAnnotationData> analyzeAnnotations) {
       if (annotations != null) {
          for (DispoAnnotationData annotation : annotations) {
             if (annotation.getIsDefault()) {
@@ -130,7 +132,8 @@ public class DispoConnector {
       return toReturn;
    }
 
-   private HashSet<String> getAllCoveredDiscrepanciesFromAnnotations(Map<String, Discrepancy> discrepancies, List<DispoAnnotationData> annotations) {
+   private HashSet<String> getAllCoveredDiscrepanciesFromAnnotations(Map<String, Discrepancy> discrepancies,
+      List<DispoAnnotationData> annotations) {
       HashSet<String> toReturn = new HashSet<>();
       if (annotations != null) {
          for (DispoAnnotationData annotation : annotations) {
@@ -154,7 +157,8 @@ public class DispoConnector {
       }
    }
 
-   private boolean connectNumberLocationRangeAnnotation(DispoAnnotationData annotation, Map<String, Discrepancy> discrepanciesList) {
+   private boolean connectNumberLocationRangeAnnotation(DispoAnnotationData annotation,
+      Map<String, Discrepancy> discrepanciesList) {
       boolean isAllLocRefValid = true;
       HashMap<String, String> testPointNumberToId = getPointNumbersToIds(discrepanciesList);
       List<LocationRange> listOfLocationRefs = sortList(annotation.getLocationRefs());
@@ -189,7 +193,8 @@ public class DispoConnector {
       return isAllLocRefValid;
    }
 
-   private boolean connectStringLocationRangeAnnotation(DispoAnnotationData annotation, Map<String, Discrepancy> discrepanciesList) {
+   private boolean connectStringLocationRangeAnnotation(DispoAnnotationData annotation,
+      Map<String, Discrepancy> discrepanciesList) {
       boolean isAllLocRefValid = true;
       HashMap<String, String> testPointIdentifierToId = getPointIdentifiersToIds(discrepanciesList);
       String locationRef = annotation.getLocationRefs();
@@ -220,7 +225,8 @@ public class DispoConnector {
       return isAllLocRefValid;
    }
 
-   private boolean tryToAddDiscrepancyForStringLocationRef(HashMap<String, String> locationToId, String locationRef, List<String> workingList) {
+   private boolean tryToAddDiscrepancyForStringLocationRef(HashMap<String, String> locationToId, String locationRef,
+      List<String> workingList) {
       String idOfMatched = locationToId.get(locationRef);
       if (idOfMatched == null) {
          return false;
@@ -230,7 +236,8 @@ public class DispoConnector {
       return true;
    }
 
-   private boolean tryToAddDiscrepancyForTestPointNumber(HashMap<String, String> testPointLocationToId, int testPoint, List<String> workingList) {
+   private boolean tryToAddDiscrepancyForTestPointNumber(HashMap<String, String> testPointLocationToId, int testPoint,
+      List<String> workingList) {
       String idOfMatched = testPointLocationToId.get(String.valueOf(testPoint));
       if (idOfMatched == null) {
          return false;

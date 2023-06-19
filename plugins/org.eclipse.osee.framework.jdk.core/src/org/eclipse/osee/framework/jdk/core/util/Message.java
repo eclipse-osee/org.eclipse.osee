@@ -1172,7 +1172,8 @@ public class Message {
     * @return this {@link Message}.
     */
 
-   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor, int limit) {
+   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor,
+      int limit) {
 
       this.cachedResult = null;
 

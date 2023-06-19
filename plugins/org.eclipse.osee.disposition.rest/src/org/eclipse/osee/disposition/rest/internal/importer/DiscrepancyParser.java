@@ -65,7 +65,9 @@ public class DiscrepancyParser {
       }
    }
 
-   public static void buildItemFromFile(DispoItemData dispoItem, String resourceName, InputStream inputStream, final boolean isNewImport, final Date lastUpdate, MutableBoolean isSameFile, MutableBoolean isException, MutableString exMessage) throws Exception {
+   public static void buildItemFromFile(DispoItemData dispoItem, String resourceName, InputStream inputStream,
+      final boolean isNewImport, final Date lastUpdate, MutableBoolean isSameFile, MutableBoolean isException,
+      MutableString exMessage) throws Exception {
       final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
       final MutableBoolean isWithinTestPointElement = new MutableBoolean(false);
       final MutableString location = new MutableString();

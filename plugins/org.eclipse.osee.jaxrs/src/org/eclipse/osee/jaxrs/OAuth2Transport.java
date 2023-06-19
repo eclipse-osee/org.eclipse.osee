@@ -45,7 +45,8 @@ public class OAuth2Transport {
       this.jaxRsApi = jaxRsApi;
    }
 
-   public ClientAccessToken sendAuthorizationCodeGrant(OwnerCredentials owner, Consumer client, String sessionCookie, String tokenUri, String authCode, String redirectUri, Map<String, String> extraParams) {
+   public ClientAccessToken sendAuthorizationCodeGrant(OwnerCredentials owner, Consumer client, String sessionCookie,
+      String tokenUri, String authCode, String redirectUri, Map<String, String> extraParams) {
       AuthorizationCodeGrant grant = new AuthorizationCodeGrant();
       grant.setCode(authCode);
       grant.setRedirectUri(redirectUri);
@@ -54,7 +55,8 @@ public class OAuth2Transport {
       return OAuthClientUtils.getAccessToken(webClient, client, grant, extraParams, setAuthorizationHeader);
    }
 
-   public ClientAccessToken sendRefreshToken(OwnerCredentials owner, Consumer client, String tokenUri, String refreshToken, String scope, Map<String, String> extraParams) {
+   public ClientAccessToken sendRefreshToken(OwnerCredentials owner, Consumer client, String tokenUri,
+      String refreshToken, String scope, Map<String, String> extraParams) {
       RefreshTokenGrant refreshGrant = new RefreshTokenGrant(refreshToken, scope);
       WebClient webClient = newWebClient(owner, tokenUri);
       boolean setAuthorizationHeader = false;
@@ -76,7 +78,8 @@ public class OAuth2Transport {
          Entity.form(form));
    }
 
-   public AccessTokenValidation sendTokenValidationRequest(OwnerCredentials owner, Consumer client, String sessionCookie, String tokenValidationUri, Form form) {
+   public AccessTokenValidation sendTokenValidationRequest(OwnerCredentials owner, Consumer client,
+      String sessionCookie, String tokenValidationUri, Form form) {
       return newTargetBuilder(owner, tokenValidationUri, sessionCookie).accept(MediaType.APPLICATION_JSON).post(
          Entity.form(form), AccessTokenValidation.class);
    }

@@ -56,28 +56,32 @@ public class ArtifactFactory {
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, String guid, ApplicabilityId appId) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, String guid,
+      ApplicabilityId appId) {
       ArtifactData artifactData = factory.create(branch, artifactType, guid, appId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType,
+      ArtifactId artifactId) {
       ArtifactData artifactData = factory.create(branch, artifactType, artifactId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId, ApplicabilityId appId) {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType,
+      ArtifactId artifactId, ApplicabilityId appId) {
       ArtifactData artifactData = factory.create(branch, artifactType, artifactId, appId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<AttributeTypeToken> types, BranchId ontoBranch) {
+   public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<AttributeTypeToken> types,
+      BranchId ontoBranch) {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
       Artifact copy = createArtifact(session, artifactData);
       Collection<AttributeTypeToken> typesToCopy = getAllowedTypes(copy, types);
@@ -109,7 +113,8 @@ public class ArtifactFactory {
       }
    }
 
-   private Artifact processIntroduceArtifact(OrcsSession session, Artifact source, Artifact destination, BranchId ontoBranch) {
+   private Artifact processIntroduceArtifact(OrcsSession session, Artifact source, Artifact destination,
+      BranchId ontoBranch) {
       ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
       destination.setOrcsData(artifactData);
       return destination;

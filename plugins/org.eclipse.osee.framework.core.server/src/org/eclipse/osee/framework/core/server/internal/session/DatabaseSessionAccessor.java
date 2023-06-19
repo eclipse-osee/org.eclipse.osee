@@ -80,7 +80,8 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       ISessionCollector collector = new ISessionCollector() {
 
          @Override
-         public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
+         public void collect(String guid, String userId, Date creationDate, String clientVersion,
+            String clientMachineName, String clientAddress, int clientPort) {
             Session session = getFactory().createLoadedSession(guid, userId, creationDate, clientVersion,
                clientMachineName, clientAddress, clientPort);
             sessions.put(guid, session);
@@ -112,7 +113,8 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       ISessionCollector idCollector = new ISessionCollector() {
 
          @Override
-         public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
+         public void collect(String guid, String userId, Date creationDate, String clientVersion,
+            String clientMachineName, String clientAddress, int clientPort) {
             ids.add(guid);
          }
       };

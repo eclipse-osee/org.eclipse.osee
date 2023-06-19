@@ -30,17 +30,20 @@ public abstract class AbstractViewResolver<T> implements ViewResolver<T> {
       return Strings.UTF_8;
    }
 
-   protected Charset computeEncoding(MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, Charset defaultEncoding) {
+   protected Charset computeEncoding(MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      Charset defaultEncoding) {
       return JaxRsMvcUtils.computeEncoding(mediaType, httpHeaders, defaultEncoding);
    }
 
    @Override
-   public final void write(ViewModel model, T view, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream output) throws IOException {
+   public final void write(ViewModel model, T view, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      OutputStream output) throws IOException {
       Charset defaultEncoding = getDefaultEncoding();
       Charset encoding = computeEncoding(mediaType, httpHeaders, defaultEncoding);
       write(model, view, mediaType, httpHeaders, output, encoding);
    }
 
-   public abstract void write(ViewModel model, T view, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream output, Charset encoding) throws IOException;
+   public abstract void write(ViewModel model, T view, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      OutputStream output, Charset encoding) throws IOException;
 
 }

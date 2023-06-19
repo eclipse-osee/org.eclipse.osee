@@ -55,7 +55,8 @@ public interface IAtsWorldEditorItem {
     * Return menu item objects to add to the World Editor pull-down menu only if applicable for the given
     * worldSearchItem
     */
-   default public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
+   default public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider,
+      WorldEditor worldEditor) {
       return Collections.emptyList();
    }
 

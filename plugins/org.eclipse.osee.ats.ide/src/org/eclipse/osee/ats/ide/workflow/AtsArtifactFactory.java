@@ -84,7 +84,8 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType, boolean inDataStore) {
+   public Artifact getArtifactInstance(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType,
+      boolean inDataStore) {
       Artifact toReturn;
       if (artifactType.inheritsFrom(Task)) {
          toReturn = new TaskArtifact(id, guid, branch, artifactType);

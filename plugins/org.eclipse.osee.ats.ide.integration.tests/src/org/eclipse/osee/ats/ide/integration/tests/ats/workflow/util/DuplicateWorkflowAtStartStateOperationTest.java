@@ -86,8 +86,8 @@ public class DuplicateWorkflowAtStartStateOperationTest {
       }
       Assert.assertNotNull("New Team Workflow \"first\" NOT Found", foundTeamWf);
       // Description attribute should not be copied
-      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         foundTeamWf, AtsAttributeTypes.Description, ""));
+      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(foundTeamWf,
+         AtsAttributeTypes.Description, ""));
       Assert.assertFalse(AtsApiService.get().getQueryServiceIde().getArtifact(foundTeamWf).isDirty());
 
       foundTeamWf = null;
@@ -99,8 +99,8 @@ public class DuplicateWorkflowAtStartStateOperationTest {
          }
       }
       Assert.assertNotNull("New Team Workflow \"second\" NOT Found", foundTeamWf);
-      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         foundTeamWf, AtsAttributeTypes.Description, ""));
+      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(foundTeamWf,
+         AtsAttributeTypes.Description, ""));
       Assert.assertFalse(AtsApiService.get().getQueryServiceIde().getArtifact(foundTeamWf).isDirty());
 
    }

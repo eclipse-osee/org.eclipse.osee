@@ -33,7 +33,8 @@ public final class Readers {
     * @throws IllegalArgumentException If elementName is null
     * @throws IllegalStateException If the balanced closing tag is not found before the reader is emptied
     */
-   public static final void xmlForward(Reader reader, Appendable appendable, CharSequence elementName) throws IOException {
+   public static final void xmlForward(Reader reader, Appendable appendable, CharSequence elementName)
+      throws IOException {
       if (reader == null) {
          throw new IllegalArgumentException("reader can not be null");
       }
@@ -106,7 +107,8 @@ public final class Readers {
     * @throws IllegalArgumentException if sequences is null
     * @throws IllegalArgumentException if any of the sequences elements are length zero
     */
-   public static final CharSequence forward(Reader reader, Appendable appendable, CharSequence... sequences) throws IOException {
+   public static final CharSequence forward(Reader reader, Appendable appendable, CharSequence... sequences)
+      throws IOException {
       if (reader == null) {
          throw new IllegalArgumentException("reader can not be null");
       }

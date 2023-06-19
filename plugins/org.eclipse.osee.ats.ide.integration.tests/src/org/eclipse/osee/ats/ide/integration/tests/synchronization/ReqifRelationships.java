@@ -647,7 +647,8 @@ public class ReqifRelationships {
     * @throws AssertionError when the specified ReqIF Spec Relation is not found.
     */
 
-   private static RequirementTraceVerificationRecord verifyRequirementTrace(String reqifSpecRelationTypeLongName, String sourceSpecObjectLongName, String targetSpecObjectLongName) {
+   private static RequirementTraceVerificationRecord verifyRequirementTrace(String reqifSpecRelationTypeLongName,
+      String sourceSpecObjectLongName, String targetSpecObjectLongName) {
 
       var reqifSpecRelationTypeOptional =
          ReqifRelationships.reqifSpecRelationTypesByLongNameMap.get(reqifSpecRelationTypeLongName);
@@ -696,7 +697,9 @@ public class ReqifRelationships {
     * @throws AssertionError when the ReqIF Spec Relation string attribute does not contain the expected value.
     */
 
-   private static void verifyRequirementTraceAttributeValueEnumeration(RequirementTraceVerificationRecord requirementTraceVerificationRecord, String reqifAttributeDefinitionLongName, String expectedValue) {
+   private static void verifyRequirementTraceAttributeValueEnumeration(
+      RequirementTraceVerificationRecord requirementTraceVerificationRecord, String reqifAttributeDefinitionLongName,
+      String expectedValue) {
 
       var reqifRelationTypeMultiplicityAttributeDefinitionOptional =
          ReqifRelationships.reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap.get(
@@ -732,7 +735,9 @@ public class ReqifRelationships {
     * @throws AssertionError when the ReqIF Spec Relation string attribute does not contain the expected value.
     */
 
-   private static void verifyRequirementTraceAttributeValueString(RequirementTraceVerificationRecord requirementTraceVerificationRecord, String reqifAttributeDefinitionLongName, String expectedValue) {
+   private static void verifyRequirementTraceAttributeValueString(
+      RequirementTraceVerificationRecord requirementTraceVerificationRecord, String reqifAttributeDefinitionLongName,
+      String expectedValue) {
 
       var reqifSideAAttributeDefinitionOptional =
          ReqifRelationships.reqifAttributeDefinitionBySpecTypeIdentifierAndAttributeDefinitionLongNameMap.get(

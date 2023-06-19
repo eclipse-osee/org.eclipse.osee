@@ -63,7 +63,8 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
    protected abstract void checkAccessControl(HttpServletRequest request);
 
    @Override
-   protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void service(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
       long start = 0L;
       if (areLogsAllowed()) {
          start = System.currentTimeMillis();

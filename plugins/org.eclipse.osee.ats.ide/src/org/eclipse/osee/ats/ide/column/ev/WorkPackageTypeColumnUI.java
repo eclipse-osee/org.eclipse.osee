@@ -29,8 +29,8 @@ public class WorkPackageTypeColumnUI extends AbstractWorkPackageRelatedColumnUI 
    }
 
    private WorkPackageTypeColumnUI() {
-      super(AtsColumnTokens.WorkPackageTypeColumn, AtsColumnTokens.WorkPackageTypeColumn.getId(), "Work Package Type", 40,
-         XViewerAlign.Left, false, SortDataType.String, true,
+      super(AtsColumnTokens.WorkPackageTypeColumn, AtsColumnTokens.WorkPackageTypeColumn.getId(), "Work Package Type",
+         40, XViewerAlign.Left, false, SortDataType.String, true,
          "Provides Work Package Type from the selected Work Package related to the selected workflow.");
    }
 

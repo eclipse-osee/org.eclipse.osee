@@ -95,7 +95,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
       shutdown();
    }
 
-   private static OseeServerInfo createOseeServerInfo(Log logger, ApplicationServerDataStore dataStore, String... defaultVersions) {
+   private static OseeServerInfo createOseeServerInfo(Log logger, ApplicationServerDataStore dataStore,
+      String... defaultVersions) {
       String serverAddress = "127.0.0.1";
       try {
          serverAddress = InetAddress.getLocalHost().getCanonicalHostName();

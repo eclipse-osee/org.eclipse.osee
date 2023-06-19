@@ -376,4 +376,3 @@ public class ExceptionLogBlocker implements AutoCloseable {
       this.exceptionRegistryEndpoint.setInclusion(this.expectedException);
    }
 }
-

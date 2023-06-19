@@ -78,7 +78,8 @@ public class EnumFunctionMap<K extends Enum<K>, T, R> extends AbstractEnumFuncti
 
    @SafeVarargs
    @SuppressWarnings({"unchecked", "varargs"})
-   public static <K extends Enum<K>, T, R> EnumFunctionMap<K, T, R> ofEntries(Class<K> enumerationKeyClass, Map.Entry<K, Function<T, R>>... entries) {
+   public static <K extends Enum<K>, T, R> EnumFunctionMap<K, T, R> ofEntries(Class<K> enumerationKeyClass,
+      Map.Entry<K, Function<T, R>>... entries) {
 
       return (EnumFunctionMap<K, T, R>) new EnumFunctionMap<K, T, R>(enumerationKeyClass) {
          @Override

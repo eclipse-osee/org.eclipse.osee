@@ -373,7 +373,8 @@ public class SystemSubsystemReport extends AbstractBlam {
       subsysMarkedAndAllocatedToComponentCount = 0;
    }
 
-   private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact, Set<String> missingAllocationGuids) {
+   private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact,
+      Set<String> missingAllocationGuids) {
       List<Artifact> children = artifact.getChildren();
       if (!children.isEmpty()) {
          ViewIdUtility.removeExcludedArtifacts(children.iterator(), findExcludedArtifactsByView);
@@ -514,7 +515,8 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
       if (xWidget.getLabel().equals("Branch")) {
          viewerWidget = (XBranchSelectWidget) xWidget;

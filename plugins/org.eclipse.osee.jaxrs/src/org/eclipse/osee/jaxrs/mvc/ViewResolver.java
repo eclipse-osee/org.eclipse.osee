@@ -29,6 +29,7 @@ public interface ViewResolver<T> {
 
    T resolve(String viewId, MediaType mediaType);
 
-   void write(ViewModel model, T view, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException;
+   void write(ViewModel model, T view, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      OutputStream entityStream) throws IOException, WebApplicationException;
 
 }

@@ -145,7 +145,8 @@ public class ArtifactPasteOperationTest {
       }
    }
 
-   private void checkPaste(Artifact destination, String expectedChild, Artifact copiedArtifact, RelationSorter expectedOrderType, String... names) {
+   private void checkPaste(Artifact destination, String expectedChild, Artifact copiedArtifact,
+      RelationSorter expectedOrderType, String... names) {
       Artifact newArtifact = destination.getChild(expectedChild);
       Assert.assertNotNull(newArtifact);
       Assert.assertTrue(!copiedArtifact.getGuid().equals(newArtifact.getGuid()));
@@ -200,7 +201,8 @@ public class ArtifactPasteOperationTest {
       }
    }
 
-   private void performPaste(boolean includeChildren, boolean pasteRelationOrder, Artifact destination, List<Artifact> itemsToCopy, String resolvedName) throws Exception {
+   private void performPaste(boolean includeChildren, boolean pasteRelationOrder, Artifact destination,
+      List<Artifact> itemsToCopy, String resolvedName) throws Exception {
       ArtifactPasteConfiguration config = new ArtifactPasteConfiguration();
       config.setIncludeChildrenOfCopiedElements(includeChildren);
       config.setKeepRelationOrderSettings(pasteRelationOrder);

@@ -71,7 +71,8 @@ public class Xml {
 
    public final static String wordTrailer = "</w:wordDocument> ";
 
-   public static final void addNamespacesForWordMarkupLanguage(XPath myXPath, SimpleNamespaceContext mySimpleNamespaceContext) {
+   public static final void addNamespacesForWordMarkupLanguage(XPath myXPath,
+      SimpleNamespaceContext mySimpleNamespaceContext) {
       try {
          if (myXPath.getNamespaceContext() == null) {
             mySimpleNamespaceContext.addNamespace("w", "http://schemas.microsoft.com/office/word/2003/wordml");
@@ -100,7 +101,8 @@ public class Xml {
       }
    }
 
-   public static final Element[] appendNewElementsWithText(Node parentNode, String newElementsTagName, String[] textInstances) {
+   public static final Element[] appendNewElementsWithText(Node parentNode, String newElementsTagName,
+      String[] textInstances) {
       Element[] newElements = null;
       try {
          if (textInstances != null) {
@@ -139,7 +141,8 @@ public class Xml {
       return newElement;
    }
 
-   public static final Element appendNewElementWithTextAndAttributes(Node parentNode, String newElementTagName, String newText, String[][] attributes) {
+   public static final Element appendNewElementWithTextAndAttributes(Node parentNode, String newElementTagName,
+      String newText, String[][] attributes) {
       Element newElement = null;
       try {
          Document ownerDocument =
@@ -161,7 +164,8 @@ public class Xml {
       return newElement;
    }
 
-   public static final Element appendNewElementWithTextAndOneAttribute(Node parentNode, String newElementTagName, String newText, String attributeName, String attributeValue) {
+   public static final Element appendNewElementWithTextAndOneAttribute(Node parentNode, String newElementTagName,
+      String newText, String attributeName, String attributeValue) {
       Element newElement = null;
       try {
          newElement = appendNewElementWithText(parentNode, newElementTagName, newText);
@@ -173,7 +177,8 @@ public class Xml {
       return newElement;
    }
 
-   public static final Element appendNewElementWithTextCData(Node parentNode, String newElementTagName, String newText) {
+   public static final Element appendNewElementWithTextCData(Node parentNode, String newElementTagName,
+      String newText) {
       Element newElement = null;
       try {
          Document ownerDocument =
@@ -196,7 +201,8 @@ public class Xml {
          "(") > -1 || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1;
    }
 
-   public static final Element[] makeDivElementAndTableElement(Element parentDivElement, String caption, String[][] columnDescriptors) {
+   public static final Element[] makeDivElementAndTableElement(Element parentDivElement, String caption,
+      String[][] columnDescriptors) {
       Element[] divAndTableElements =
          new Element[] {parentDivElement, parentDivElement.getOwnerDocument().createElement("div"), null};
       divAndTableElements[2] = makeTable(divAndTableElements[1], caption, columnDescriptors);
@@ -239,7 +245,8 @@ public class Xml {
       return nextRow;
    }
 
-   public static Document readWordFormattedContent(String myInputString) throws IOException, ParserConfigurationException, SAXException {
+   public static Document readWordFormattedContent(String myInputString)
+      throws IOException, ParserConfigurationException, SAXException {
       Document myDocument = null;
       myDocument = Jaxp.readXmlDocumentNamespaceAware(wordLeader.concat(myInputString).concat(wordTrailer));
       return myDocument;
@@ -249,7 +256,8 @@ public class Xml {
       return input.replaceAll(INVALID_XML_CHARS, "");
    }
 
-   public final static String restartNumberingWhenPreparingToEditWithWord(InputStream myInputStream) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException, TransformerException {
+   public final static String restartNumberingWhenPreparingToEditWithWord(InputStream myInputStream)
+      throws XPathExpressionException, ParserConfigurationException, SAXException, IOException, TransformerException {
       SimpleNamespaceContext mySimpleNamespaceContext = new SimpleNamespaceContext();
       addNamespacesForWordMarkupLanguage(myXPath, mySimpleNamespaceContext);
       Document myDocument = Jaxp.readXmlDocumentNamespaceAware(myInputStream);
@@ -292,7 +300,8 @@ public class Xml {
       return myString;
    }
 
-   public static final Node[] selectNodeList(Node startingNode, String xPathExpression) throws XPathExpressionException {
+   public static final Node[] selectNodeList(Node startingNode, String xPathExpression)
+      throws XPathExpressionException {
       Node[] resultNodes = null;
       if (startingNode != null) {
          if (!isSeriousXPath(xPathExpression) && startingNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -324,7 +333,8 @@ public class Xml {
       return resultStringBuffer.toString();
    }
 
-   public static final String selectNodesText(Node startingNode, String xPathExpression) throws XPathExpressionException {
+   public static final String selectNodesText(Node startingNode, String xPathExpression)
+      throws XPathExpressionException {
       String resultString = null;
       if (!isSeriousXPath(xPathExpression) && startingNode.getNodeType() == Node.ELEMENT_NODE) {
          Element foundElement = Jaxp.findElement((Element) startingNode, xPathExpression);

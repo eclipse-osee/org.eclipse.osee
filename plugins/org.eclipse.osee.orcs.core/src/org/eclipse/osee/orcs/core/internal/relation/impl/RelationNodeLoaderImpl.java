@@ -40,7 +40,8 @@ public class RelationNodeLoaderImpl implements RelationNodeLoader {
    }
 
    @Override
-   public <T extends Artifact> Iterable<T> loadNodes(OrcsSession session, final GraphData graph, Collection<ArtifactId> ids, LoadLevel level) {
+   public <T extends Artifact> Iterable<T> loadNodes(OrcsSession session, final GraphData graph,
+      Collection<ArtifactId> ids, LoadLevel level) {
       GraphBuilder builder = graphBuilderFactory.createBuilderForGraph(graph);
 
       DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, graph.getBranch(), ids);

@@ -42,12 +42,15 @@ public class DispoAnnotationListMessageWriter implements MessageBodyWriter<List<
    }
 
    @Override
-   public long getSize(List<DispoAnnotationData> dispoAnnotations, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(List<DispoAnnotationData> dispoAnnotations, Class<?> type, Type genericType,
+      Annotation[] annotations, MediaType mediaType) {
       return -1;
    }
 
    @Override
-   public void writeTo(List<DispoAnnotationData> dispoAnnotations, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(List<DispoAnnotationData> dispoAnnotations, Class<?> type, Type genericType,
+      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+      OutputStream entityStream) throws IOException, WebApplicationException {
       String jsonString = JsonUtil.toJson(dispoAnnotations);
       entityStream.write(jsonString.getBytes(Strings.UTF_8));
    }

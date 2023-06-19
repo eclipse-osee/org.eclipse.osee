@@ -78,8 +78,8 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
                }
             }
             if (allDeleted) {
-               AtsApiService.get().getQueryServiceIde().getArtifact(
-                  parentAction.getArtifactId()).deleteAndPersist(transaction);
+               AtsApiService.get().getQueryServiceIde().getArtifact(parentAction.getArtifactId()).deleteAndPersist(
+                  transaction);
             }
          }
          ((Artifact) destTeamWorkflow.getParentAction().getStoreObject()).persist(transaction);

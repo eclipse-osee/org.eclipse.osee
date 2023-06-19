@@ -47,7 +47,8 @@ public class BranchEventListenerAsync implements IBranchEventListener {
       notify();
    }
 
-   public synchronized List<Pair<Sender, BranchEvent>> getResults(BranchEventType branchEventType) throws InterruptedException {
+   public synchronized List<Pair<Sender, BranchEvent>> getResults(BranchEventType branchEventType)
+      throws InterruptedException {
       while (eventNull(branchEventType)) {
          wait(WAIT_TIME_MSEC);
       }

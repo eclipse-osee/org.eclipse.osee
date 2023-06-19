@@ -56,7 +56,8 @@ public class TmzImporter implements DispoImporterApi {
    }
 
    @Override
-   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report) {
+   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir,
+      OperationReport report) {
       List<DispoItem> toReturn = new LinkedList<>();
       if (!filesDir.exists() || !filesDir.isDirectory()) {
          throw new OseeArgumentException("Input directory does not exists or is not a directory [%s]",

@@ -68,8 +68,7 @@ public class ValidatePeerDefectsAction extends Action {
    }
 
    private void validateReviewDefects(IAtsWorkItem workItem, XResultData rd) {
-      Artifact art =
-         ArtifactQuery.reloadArtifactFromId(workItem.getArtifactId(), AtsApiService.get().getAtsBranch());
+      Artifact art = ArtifactQuery.reloadArtifactFromId(workItem.getArtifactId(), AtsApiService.get().getAtsBranch());
       IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) AtsApiService.get().getWorkItemService().getReview(art);
       Map<String, Attribute<?>> guids = new HashMap<String, Attribute<?>>();
       Map<Long, Attribute<?>> ids = new HashMap<>();

@@ -36,7 +36,9 @@ public class DispoSetMessageReader implements MessageBodyReader<DispoSetData> {
    }
 
    @Override
-   public DispoSetData readFrom(Class<DispoSetData> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+   public DispoSetData readFrom(Class<DispoSetData> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+      throws IOException, WebApplicationException {
       String inputStreamToString = Lib.inputStreamToString(entityStream);
       return JsonUtil.readValue(inputStreamToString, DispoSetData.class);
    }

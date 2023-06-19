@@ -243,7 +243,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout,
+      XModifiedListener modListener, boolean isEditable) {
       xWidgets.put(widget.getLabel(), widget);
       if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
          getVersion().setup(widget);
@@ -297,7 +298,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
          widget.setLabelProvider(new VersionLabelProvider());
       } else if (widget.getLabel().equals(StateNameSearchWidget.STATE_NAME)) {

@@ -70,9 +70,9 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
          changes.getNotifications().getWorkItemNotificationEvents().size());
 
       // duplicate workflow
-      dupTeamWf = AtsApiService.get().getWorkItemService().getTeamWf(
-         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).duplicate(AtsApiService.get().getAtsBranch(),
-            Arrays.asList(AtsAttributeTypes.AtsId)));
+      dupTeamWf =
+         AtsApiService.get().getWorkItemService().getTeamWf(((TeamWorkFlowArtifact) teamWf.getStoreObject()).duplicate(
+            AtsApiService.get().getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId)));
 
       AtsApiService.get().getActionService().initializeNewStateMachine(dupTeamWf, assignees, new Date(),
          AtsCoreUsers.SYSTEM_USER, dupTeamWf.getWorkDefinition(), changes);

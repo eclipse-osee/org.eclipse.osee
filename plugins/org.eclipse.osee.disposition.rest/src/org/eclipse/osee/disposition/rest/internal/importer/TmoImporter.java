@@ -51,7 +51,8 @@ public class TmoImporter implements DispoImporterApi {
    }
 
    @Override
-   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File tmoDirectory, OperationReport report) {
+   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File tmoDirectory,
+      OperationReport report) {
       List<DispoItem> toReturn = new LinkedList<>();
       if (tmoDirectory.isDirectory()) {
 

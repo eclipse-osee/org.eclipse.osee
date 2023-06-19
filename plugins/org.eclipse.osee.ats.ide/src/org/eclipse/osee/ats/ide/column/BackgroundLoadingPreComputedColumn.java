@@ -49,8 +49,10 @@ public abstract class BackgroundLoadingPreComputedColumn extends XViewerAtsColum
    /**
     * Available for columns that can't extend BackgroundLoadingColumn
     */
-   public static void startLoadingThread(String name, Collection<?> objects, AtomicBoolean loading, AtomicBoolean loaded, //
-      final WorldXViewer xViewer, Map<Long, String> preComputedValueMap, final BackgroundLoadingValueProvider valueProvider) {
+   public static void startLoadingThread(String name, Collection<?> objects, AtomicBoolean loading,
+      AtomicBoolean loaded, //
+      final WorldXViewer xViewer, Map<Long, String> preComputedValueMap,
+      final BackgroundLoadingValueProvider valueProvider) {
       if (loading.get() || loaded.get()) {
          return;
       }
@@ -126,7 +128,8 @@ public abstract class BackgroundLoadingPreComputedColumn extends XViewerAtsColum
    /**
     * Available for columns that can't extend BackgroundLoadingColumn but also used by this class's getColumnText above
     */
-   public static String getColumnText(Object obj, AtomicBoolean loading, AtomicBoolean loaded, Map<Long, String> idToValueMap, BackgroundLoadingValueProvider valueProvider) {
+   public static String getColumnText(Object obj, AtomicBoolean loading, AtomicBoolean loaded,
+      Map<Long, String> idToValueMap, BackgroundLoadingValueProvider valueProvider) {
       String value = "";
       try {
          if (obj instanceof IAtsWorkItem) {

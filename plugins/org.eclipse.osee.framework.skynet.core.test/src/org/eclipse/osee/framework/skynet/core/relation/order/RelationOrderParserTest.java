@@ -183,7 +183,8 @@ public class RelationOrderParserTest {
       Assert.assertEquals("<OrderList>\n</OrderList>", parser.toXml(data));
    }
 
-   private void addData(List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side, RelationSorter relationOrderIdGuid, String... guids) {
+   private void addData(List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side,
+      RelationSorter relationOrderIdGuid, String... guids) {
       expectedData.add(new Object[] {relationType, side, relationOrderIdGuid, Arrays.asList(guids)});
    }
 

@@ -338,7 +338,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setRelationsAndOrder(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
+   public void setRelationsAndOrder(Object object, RelationTypeSide relationSide,
+      Collection<? extends Object> objects) {
       Artifact artifact = getArtifact(object);
       Set<Artifact> artifacts = new HashSet<>(objects.size());
       for (Object obj : objects) {
@@ -451,7 +452,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeGeneric<?> attributeType, InputStream inputStream) {
+   public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeGeneric<?> attributeType,
+      InputStream inputStream) {
       Artifact art = getArtifact(artifact);
       art.setSoleAttributeFromStream(attributeType, inputStream);
       add(art);
@@ -464,7 +466,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType, ArtifactId artifactRef) {
+   public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType,
+      ArtifactId artifactRef) {
       Artifact art = getArtifact(artifact);
       art.addAttributeFromString(attributeType, artifactRef.getIdString());
    }
@@ -477,7 +480,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType,
+      List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
          if (attributeType.isString() || attributeType.isEnumerated()) {

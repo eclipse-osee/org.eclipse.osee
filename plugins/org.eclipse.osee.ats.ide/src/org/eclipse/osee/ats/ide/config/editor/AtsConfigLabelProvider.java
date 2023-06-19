@@ -38,7 +38,8 @@ public class AtsConfigLabelProvider extends ResultsXViewerLabelProvider implemen
    }
 
    @Override
-   public org.eclipse.swt.graphics.Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws Exception {
+   public org.eclipse.swt.graphics.Image getColumnImage(Object element, XViewerColumn col, int columnIndex)
+      throws Exception {
       if (col.getName().equals("Type")) {
          if (element instanceof ResultsXViewerRow) {
             Object data = ((ResultsXViewerRow) element).getData();

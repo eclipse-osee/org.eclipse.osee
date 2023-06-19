@@ -65,7 +65,8 @@ public final class FindTraceUnitFromResource {
       return returnCollection;
    }
 
-   private static void resourceToId(HashCollectionSet<ArtifactTypeToken, ResourceIdentifier> idStore, IResource resource, Set<ITraceUnitResourceLocator> locators) {
+   private static void resourceToId(HashCollectionSet<ArtifactTypeToken, ResourceIdentifier> idStore,
+      IResource resource, Set<ITraceUnitResourceLocator> locators) {
       try {
          IFileStore fileStore = EFS.getStore(resource.getLocationURI());
          for (ITraceUnitResourceLocator locator : locators) {

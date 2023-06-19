@@ -66,7 +66,8 @@ import org.eclipse.swt.widgets.Control;
 public final class ShowRequirementDifferencesOperation extends AbstractOperation {
 
    public static interface Display {
-      Artifact getArtifactSelection(IProgressMonitor monitor, Collection<? extends Artifact> selectableArtifacts) throws Exception;
+      Artifact getArtifactSelection(IProgressMonitor monitor, Collection<? extends Artifact> selectableArtifacts)
+         throws Exception;
 
       void showDifferences(Collection<ArtifactDelta> artifactDeltas);
    }
@@ -227,7 +228,8 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       return new ChangeData(changes);
    }
 
-   private TransactionRecord determineTransactionId(Collection<TransactionRecord> records, String taskName, String versionName, MutableInteger dialogResult) {
+   private TransactionRecord determineTransactionId(Collection<TransactionRecord> records, String taskName,
+      String versionName, MutableInteger dialogResult) {
       TransactionRecord toReturn;
       if (records.size() == 1) {
          toReturn = records.iterator().next();
@@ -250,7 +252,8 @@ public final class ShowRequirementDifferencesOperation extends AbstractOperation
       return toReturn;
    }
 
-   private TransactionRecord getTransactionFromSavedOrUser(Map<BranchToken, TransactionRecord> branchToTx, String taskName, String versionName, final MutableInteger dialogResult) {
+   private TransactionRecord getTransactionFromSavedOrUser(Map<BranchToken, TransactionRecord> branchToTx,
+      String taskName, String versionName, final MutableInteger dialogResult) {
       TransactionRecord toReturn = null;
       Set<BranchId> branchesInMap = new LinkedHashSet<>(branchToTx.keySet());
       // remove everything but the user saved branches

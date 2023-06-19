@@ -40,7 +40,8 @@ public final class ChangeItemUtil {
       // Utility Class
    }
 
-   public static ChangeItem newArtifactChange(ArtifactId artId, ArtifactTypeId artTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ApplicabilityToken appToken, TransactionToken txToken) {
+   public static ChangeItem newArtifactChange(ArtifactId artId, ArtifactTypeId artTypeId, GammaId currentSourceGammaId,
+      ModificationType currentSourceModType, ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Artifact);
 
@@ -58,7 +59,9 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newAttributeChange(AttributeId attrId, AttributeTypeId attrTypeId, ArtifactId artId, GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken, TransactionToken txToken) {
+   public static ChangeItem newAttributeChange(AttributeId attrId, AttributeTypeId attrTypeId, ArtifactId artId,
+      GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken,
+      TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Attribute);
 
@@ -77,7 +80,9 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeToken relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityToken appToken, TransactionToken txToken) {
+   public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeToken relTypeId,
+      GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId,
+      String rationale, ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Relation);
 
@@ -97,7 +102,9 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newRelationChange2(RelationTypeToken relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, ApplicabilityToken appToken, TransactionToken txToken) {
+   public static ChangeItem newRelationChange2(RelationTypeToken relTypeId, GammaId currentSourceGammaId,
+      ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder,
+      ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Relation);
 
@@ -118,7 +125,8 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, ModificationType currentSourceModType, TransactionToken txToken, Long... e) {
+   public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken,
+      ModificationType currentSourceModType, TransactionToken txToken, Long... e) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Tuple);
 
@@ -427,7 +435,8 @@ public final class ChangeItemUtil {
       return netModType;
    }
 
-   public static Collection<ArtifactId> getArtifacts(Collection<ChangeItem> changes, ChangeType changeItemType, ModificationType... modificationType) {
+   public static Collection<ArtifactId> getArtifacts(Collection<ChangeItem> changes, ChangeType changeItemType,
+      ModificationType... modificationType) {
       List<ArtifactId> artifacts = new ArrayList<>();
       for (ChangeItem change : changes) {
          if (change.getChangeType().equals(changeItemType)) {

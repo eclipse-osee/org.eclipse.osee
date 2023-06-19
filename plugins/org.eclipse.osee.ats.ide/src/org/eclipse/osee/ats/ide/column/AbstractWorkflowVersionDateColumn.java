@@ -111,7 +111,8 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       return DateUtil.getMMDDYY(getDateFromWorkflow(attributeType, artifact));
    }
 
-   public static String getDateStrFromTargetedVersion(AttributeTypeId attributeType, AbstractWorkflowArtifact artifact) {
+   public static String getDateStrFromTargetedVersion(AttributeTypeId attributeType,
+      AbstractWorkflowArtifact artifact) {
       return DateUtil.getMMDDYY(getDateFromTargetedVersion(attributeType, artifact));
    }
 

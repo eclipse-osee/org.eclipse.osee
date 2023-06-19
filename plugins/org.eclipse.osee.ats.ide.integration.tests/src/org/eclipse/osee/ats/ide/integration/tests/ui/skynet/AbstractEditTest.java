@@ -173,7 +173,8 @@ public abstract class AbstractEditTest {
       return editFile;
    }
 
-   private void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content) throws UnsupportedEncodingException, CoreException, InterruptedException {
+   private void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content)
+      throws UnsupportedEncodingException, CoreException, InterruptedException {
       EventSystemPreferences preferences = OseeEventManager.getPreferences();
 
       boolean eventBoolean = preferences.isDisableEvents();

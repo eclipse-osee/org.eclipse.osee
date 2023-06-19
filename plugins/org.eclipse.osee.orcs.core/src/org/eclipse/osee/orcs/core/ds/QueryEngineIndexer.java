@@ -37,11 +37,14 @@ public interface QueryEngineIndexer {
 
    CancellableCallable<Integer> purgeAllIndexes(OrcsSession session);
 
-   CancellableCallable<Integer> indexBranches(OrcsSession session, OrcsTokenService tokenService, Set<Branch> branches, boolean indexOnlyMissing, IndexerCollector... collector);
+   CancellableCallable<Integer> indexBranches(OrcsSession session, OrcsTokenService tokenService, Set<Branch> branches,
+      boolean indexOnlyMissing, IndexerCollector... collector);
 
-   CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, OrcsTokenService tokenService, IndexerCollector... collector);
+   CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, OrcsTokenService tokenService,
+      IndexerCollector... collector);
 
-   CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, OrcsTokenService tokenService, Iterable<Long> datas, IndexerCollector... collector);
+   CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, OrcsTokenService tokenService,
+      Iterable<Long> datas, IndexerCollector... collector);
 
    void indexAttrTypeIds(OrcsSession session, OrcsTokenService tokenService, Iterable<Long> attrTypeIds);
 

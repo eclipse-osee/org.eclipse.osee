@@ -35,7 +35,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class XResultDataHtmlWriter implements MessageBodyWriter<XResultData> {
 
    @Override
-   public long getSize(XResultData data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(XResultData data, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
@@ -47,7 +48,9 @@ public class XResultDataHtmlWriter implements MessageBodyWriter<XResultData> {
    }
 
    @Override
-   public void writeTo(XResultData resultData, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream outputStream) throws IOException, WebApplicationException {
+   public void writeTo(XResultData resultData, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream outputStream)
+      throws IOException, WebApplicationException {
       XResultPageBase xResultPage = new XResultPageBase(resultData.getTitle(), resultData.toString());
       String html = xResultPage.getManipulatedHtml(
          Arrays.asList(Manipulations.HTML_MANIPULATIONS, Manipulations.ERROR_RED, Manipulations.CONVERT_NEWLINES));

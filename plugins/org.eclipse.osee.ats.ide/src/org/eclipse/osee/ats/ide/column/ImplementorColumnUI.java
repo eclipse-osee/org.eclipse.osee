@@ -36,8 +36,8 @@ public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerVal
    }
 
    private ImplementorColumnUI() {
-      super(AtsColumnTokens.ImplementersColumn.getId(), "Implementer", 80, XViewerAlign.Left, false, SortDataType.String,
-         false, "User assigned to the Implementation of the changes.");
+      super(AtsColumnTokens.ImplementersColumn.getId(), "Implementer", 80, XViewerAlign.Left, false,
+         SortDataType.String, false, "User assigned to the Implementation of the changes.");
    }
 
    /**

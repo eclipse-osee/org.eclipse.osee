@@ -25,10 +25,13 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface OrcsTypesDataStore {
 
-   Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends ArtifactTypeToken> artifactTypes);
+   Callable<Void> purgeArtifactsByArtifactType(OrcsSession session,
+      Collection<? extends ArtifactTypeToken> artifactTypes);
 
-   Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends AttributeTypeId> attributeTypes);
+   Callable<Void> purgeAttributesByAttributeType(OrcsSession session,
+      Collection<? extends AttributeTypeId> attributeTypes);
 
-   Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends RelationTypeToken> relationTypes);
+   Callable<Void> purgeRelationsByRelationType(OrcsSession session,
+      Collection<? extends RelationTypeToken> relationTypes);
 
 }

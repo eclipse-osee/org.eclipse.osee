@@ -111,7 +111,8 @@ public class RealignActionableItemsBlam extends AbstractBlam {
       monitor.done();
    }
 
-   private void realignAiAndTdForActionsIfAllowed(Collection<ArtifactToken> actionableItemsFrom, IAtsActionableItem actionableItemTo, boolean isPersistAllowed, boolean isDeleteAllowed) {
+   private void realignAiAndTdForActionsIfAllowed(Collection<ArtifactToken> actionableItemsFrom,
+      IAtsActionableItem actionableItemTo, boolean isPersistAllowed, boolean isDeleteAllowed) {
       IAtsChangeSet changes = atsApi.createChangeSet("Realign AI/TD References for actions");
       List<ArtifactToken> teamWfs = atsApi.getQueryService().getArtifactsFromAttributeValues(
          AtsAttributeTypes.ActionableItemReference, actionableItemsFrom, CoreBranches.COMMON);
@@ -194,7 +195,8 @@ public class RealignActionableItemsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(ACTIONABLE_ITEM_TO)) {
          xActionableItemCombo = (XActionableItemCombo) xWidget;

@@ -183,7 +183,8 @@ public class AgileFeatureGroupColumn extends BackgroundLoadingPreComputedColumn 
       return true;
    }
 
-   public static FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> openSelectionDialog(long teamId, Collection<? extends AbstractWorkflowArtifact> awas) {
+   public static FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> openSelectionDialog(long teamId,
+      Collection<? extends AbstractWorkflowArtifact> awas) {
       AtsConfigurations configurations = AtsApiService.get().getConfigService().getConfigurations();
       List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
       for (Entry<Long, Long> entry : configurations.getFeatureToAgileTeam().entrySet()) {
@@ -214,7 +215,8 @@ public class AgileFeatureGroupColumn extends BackgroundLoadingPreComputedColumn 
       return dialog;
    }
 
-   private static Collection<JaxAgileFeatureGroup> getSelectedFeatureGroups(Collection<? extends AbstractWorkflowArtifact> awas) {
+   private static Collection<JaxAgileFeatureGroup> getSelectedFeatureGroups(
+      Collection<? extends AbstractWorkflowArtifact> awas) {
       List<JaxAgileFeatureGroup> selected = new LinkedList<>();
       if (awas.size() == 1) {
          for (Artifact featureArt : awas.iterator().next().getRelatedArtifacts(

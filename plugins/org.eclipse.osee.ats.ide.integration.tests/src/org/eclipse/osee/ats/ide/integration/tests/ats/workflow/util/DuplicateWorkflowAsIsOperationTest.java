@@ -107,8 +107,8 @@ public class DuplicateWorkflowAsIsOperationTest {
          }
       }
       Assert.assertNotNull("New Team Workflow \"second\" NOT Found", foundTeamWf);
-      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
-         foundTeamWf, AtsAttributeTypes.Description, "description"));
+      Assert.assertEquals("description", AtsApiService.get().getAttributeResolver().getSoleAttributeValue(foundTeamWf,
+         AtsAttributeTypes.Description, "description"));
       Assert.assertFalse(AtsApiService.get().getQueryServiceIde().getArtifact(foundTeamWf).isDirty());
 
    }

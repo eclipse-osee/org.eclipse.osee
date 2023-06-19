@@ -66,8 +66,7 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
          }
          if (Artifacts.isOfType(element,
             AtsArtifactTypes.Action) && AtsApiService.get().getWorkItemService().getTeams(element).size() == 1) {
-            return getColumnText(AtsApiService.get().getWorkItemService().getFirstTeam(element), column,
-               columnIndex);
+            return getColumnText(AtsApiService.get().getWorkItemService().getFirstTeam(element), column, columnIndex);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

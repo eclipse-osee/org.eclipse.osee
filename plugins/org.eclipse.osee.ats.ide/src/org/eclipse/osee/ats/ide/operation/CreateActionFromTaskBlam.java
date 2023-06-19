@@ -133,7 +133,8 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       });
    }
 
-   private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeTypes changeType, String priority, IProgressMonitor monitor) {
+   private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias,
+      ChangeTypes changeType, String priority, IProgressMonitor monitor) {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
       IAtsChangeSet changes = atsApi.createChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
@@ -168,7 +169,8 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TASKS) && taskArtifacts != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;

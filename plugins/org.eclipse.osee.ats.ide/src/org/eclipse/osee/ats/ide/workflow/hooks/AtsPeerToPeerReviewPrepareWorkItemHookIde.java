@@ -42,7 +42,8 @@ public class AtsPeerToPeerReviewPrepareWorkItemHookIde implements IAtsWorkItemHo
    }
 
    @Override
-   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art,
+      boolean isEditable) {
       try {
          if (ReviewManager.cast(art) != null && //
             art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //

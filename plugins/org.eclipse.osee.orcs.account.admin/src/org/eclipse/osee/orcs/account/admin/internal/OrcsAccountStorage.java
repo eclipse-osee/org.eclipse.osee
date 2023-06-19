@@ -178,7 +178,8 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public AccountSession createAccountSession(String sessionToken, Account account, String remoteAddress, String accessDetails) {
+   public AccountSession createAccountSession(String sessionToken, Account account, String remoteAddress,
+      String accessDetails) {
       ArtifactId artId = ArtifactId.create(account);
       AccountSession session = getFactory().newAccountSession(artId, sessionToken, remoteAddress, accessDetails);
       try {

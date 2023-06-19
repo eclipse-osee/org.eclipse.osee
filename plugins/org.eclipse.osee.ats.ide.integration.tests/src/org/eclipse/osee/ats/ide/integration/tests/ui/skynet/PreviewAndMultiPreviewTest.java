@@ -516,7 +516,8 @@ public class PreviewAndMultiPreviewTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement, String documentString) {
+   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement,
+      String documentString) {
 
       var error = publishingXmlUtils.getLastError();
 

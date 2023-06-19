@@ -110,7 +110,8 @@ public class WorkDefinitionViewer extends XNavigateItemAction {
             handleSelection(definitionViewer, selectedRows);
          }
 
-         private void handleSelection(final WorkDefinitionViewer definitionViewer, Collection<ResultsXViewerRow> selectedRows) {
+         private void handleSelection(final WorkDefinitionViewer definitionViewer,
+            Collection<ResultsXViewerRow> selectedRows) {
             if (!selectedRows.isEmpty()) {
                IWorkbenchPage page = AWorkbench.getActivePage();
                try {

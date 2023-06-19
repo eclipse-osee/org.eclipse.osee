@@ -378,7 +378,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
       viewer.setContents(graph);
    }
 
-   private void connect(ConnectionType connectType, IFigure contents, IFigure source, IFigure target, String toolTip, boolean hasEndPoint, Color color) {
+   private void connect(ConnectionType connectType, IFigure contents, IFigure source, IFigure target, String toolTip,
+      boolean hasEndPoint, Color color) {
       PolylineConnection connection =
          FigureFactory.createConnection(getFigure(), source, target, toolTip, hasEndPoint, color);
       ConnectionMouseListener listener = new ConnectionMouseListener(connection);

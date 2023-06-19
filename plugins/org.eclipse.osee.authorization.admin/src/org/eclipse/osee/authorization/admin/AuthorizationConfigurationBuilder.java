@@ -126,7 +126,8 @@ public class AuthorizationConfigurationBuilder {
          }
       }
 
-      private AuthorizationOverride getOverrideType(Map<String, Object> props, String key, AuthorizationOverride defaultValue) {
+      private AuthorizationOverride getOverrideType(Map<String, Object> props, String key,
+         AuthorizationOverride defaultValue) {
          String toReturn = get(props, key, defaultValue);
          return AuthorizationOverride.parse(toReturn);
       }

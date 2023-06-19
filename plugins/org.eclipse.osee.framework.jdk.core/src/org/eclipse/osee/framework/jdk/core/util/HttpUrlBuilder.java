@@ -50,7 +50,8 @@ public final class HttpUrlBuilder {
       return query.toUrl();
    }
 
-   public static String createURL(URI uri, String context, Map<String, String> parameters) throws UnsupportedEncodingException {
+   public static String createURL(URI uri, String context, Map<String, String> parameters)
+      throws UnsupportedEncodingException {
       StringBuilder sb = new StringBuilder();
       sb.append(uri.getScheme());
       sb.append("://");
@@ -66,7 +67,8 @@ public final class HttpUrlBuilder {
       return sb.toString();
    }
 
-   public static String createURL(String prefix, String context, Map<String, String> parameters) throws UnsupportedEncodingException {
+   public static String createURL(String prefix, String context, Map<String, String> parameters)
+      throws UnsupportedEncodingException {
       StringBuilder sb = new StringBuilder();
       sb.append(prefix);
       sb.append(context);

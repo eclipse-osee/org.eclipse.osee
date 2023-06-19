@@ -272,8 +272,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      }
                      TransitionData transData = new TransitionData("ATS Auto Complete Reviews",
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
-                        TeamState.Completed.getName(), null, null, null, TransitionOption.OverrideTransitionValidityCheck,
-                        TransitionOption.None);
+                        TeamState.Completed.getName(), null, null, null,
+                        TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));

@@ -136,7 +136,8 @@ public class WordTemplateRendererTest {
          this.testIsRegex = testIsRegex;
       }
 
-      void perform(String testName, String filePath, String document, String period, String altString, String pubString, Boolean mergeFlag, Boolean fieldcodeFlag) {
+      void perform(String testName, String filePath, String document, String period, String altString, String pubString,
+         Boolean mergeFlag, Boolean fieldcodeFlag) {
 
          if (this.checkFilter.apply(mergeFlag, fieldcodeFlag)) {
 
@@ -231,45 +232,45 @@ public class WordTemplateRendererTest {
       SINGLE_RENDERER_OPTIONS = getResourceData("SingleRendererOptions.json");
       SLAVE_RENDERER_OPTIONS = getResourceData("SlaveRendererOptions.json");
    }
-   private final List<Check> basicDocumentChecks = List.of(new Check(
-      (testName) -> String.format("%s, Expected 1. Introduction", testName),
-      (period, altString, pubString) -> "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>",
-      (mergeFlag, fieldcodeFlag) -> true),
+   private final List<Check> basicDocumentChecks = List.of(
+      new Check((testName) -> String.format("%s, Expected 1. Introduction", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>",
+         (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 1.1 Background", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 1.1 Background", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> !mergeFlag),
 
-      new Check((testName) -> String.format("%s, Expected 1.2 Scope", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 1.2 Scope", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 2. Notes", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 2. Notes", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 2.1 More Notes", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 2.1 More Notes", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 3. Subsystem", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 3. Subsystem", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 3.1 Hardware", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 3.1 Hardware", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> !fieldcodeFlag),
 
-      new Check((testName) -> String.format("%s, Expected 3.1.1 Hardware Functions", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 3.1.1 Hardware Functions", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 3.2 Software", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 3.2 Software", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> true),
 
-      new Check((testName) -> String.format("%s, Expected 3.2.1 Software Functions", testName),
-         (period, altString, pubString) -> "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
+      new Check((testName) -> String.format("%s, Expected 3.2.1 Software Functions", testName), (period, altString,
+         pubString) -> "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
          (mergeFlag, fieldcodeFlag) -> true));
    private String content;
    private String contentPath;
@@ -315,7 +316,8 @@ public class WordTemplateRendererTest {
 
    private BranchToken updateBranch;
 
-   private void basicDocumentCheck(String filePath, String document, String pubString, boolean merge, boolean fieldcode) {
+   private void basicDocumentCheck(String filePath, String document, String pubString, boolean merge,
+      boolean fieldcode) {
 
       //@formatter:off
       var testName  = method.getQualifiedTestName();

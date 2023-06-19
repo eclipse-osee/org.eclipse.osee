@@ -74,7 +74,8 @@ public class EnumConsumerMap<K extends Enum<K>, T> extends AbstractEnumFunctiona
 
    @SafeVarargs
    @SuppressWarnings({"unchecked", "varargs"})
-   public static <K extends Enum<K>, T> EnumConsumerMap<K, T> ofEntries(Class<K> enumerationKeyClass, Map.Entry<K, Consumer<T>>... entries) {
+   public static <K extends Enum<K>, T> EnumConsumerMap<K, T> ofEntries(Class<K> enumerationKeyClass,
+      Map.Entry<K, Consumer<T>>... entries) {
 
       return (EnumConsumerMap<K, T>) new EnumConsumerMap<K, T>(enumerationKeyClass) {
          @Override

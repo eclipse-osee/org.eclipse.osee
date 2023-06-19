@@ -59,7 +59,8 @@ import org.eclipse.ui.progress.UIJob;
 public class AtsConfigOperation extends AbstractOperation {
 
    public static interface Display {
-      public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, WorkDefinition workDefinition);
+      public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias,
+         WorkDefinition workDefinition);
    }
 
    private final String name;
@@ -131,7 +132,8 @@ public class AtsConfigOperation extends AbstractOperation {
       return teamDef;
    }
 
-   private Collection<IAtsActionableItem> createActionableItems(IAtsChangeSet changes, IAtsTeamDefinition teamDef, AtsApi atsApi) {
+   private Collection<IAtsActionableItem> createActionableItems(IAtsChangeSet changes, IAtsTeamDefinition teamDef,
+      AtsApi atsApi) {
       Collection<IAtsActionableItem> aias = new ArrayList<>();
 
       // Create top actionable item
@@ -183,7 +185,8 @@ public class AtsConfigOperation extends AbstractOperation {
    public static final class OpenAtsConfigEditors implements Display {
 
       @Override
-      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
+      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef,
+         final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
          Job job = new UIJob("Open Ats Configuration Editors") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {

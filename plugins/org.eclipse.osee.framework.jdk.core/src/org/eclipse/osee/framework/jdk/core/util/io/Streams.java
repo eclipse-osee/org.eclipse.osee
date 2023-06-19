@@ -33,7 +33,8 @@ public class Streams {
     * 
     * @return Return input stream reference
     */
-   public static InputStream convertStringToInputStream(String string, String charSet) throws UnsupportedEncodingException {
+   public static InputStream convertStringToInputStream(String string, String charSet)
+      throws UnsupportedEncodingException {
       return new ByteArrayInputStream(string.getBytes(charSet));
    }
 

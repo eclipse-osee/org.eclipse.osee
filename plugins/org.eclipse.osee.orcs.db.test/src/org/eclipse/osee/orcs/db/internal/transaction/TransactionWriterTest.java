@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;

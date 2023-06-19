@@ -81,7 +81,8 @@ public class EnumBiFunctionMap<K extends Enum<K>, T, U, R> extends AbstractEnumF
 
    @SafeVarargs
    @SuppressWarnings({"unchecked", "varargs"})
-   public static <K extends Enum<K>, T, U, R> EnumBiFunctionMap<K, T, U, R> ofEntries(Class<K> enumerationKeyClass, Map.Entry<K, BiFunction<T, U, R>>... entries) {
+   public static <K extends Enum<K>, T, U, R> EnumBiFunctionMap<K, T, U, R> ofEntries(Class<K> enumerationKeyClass,
+      Map.Entry<K, BiFunction<T, U, R>>... entries) {
 
       return (EnumBiFunctionMap<K, T, U, R>) new EnumBiFunctionMap<K, T, U, R>(enumerationKeyClass) {
          @Override

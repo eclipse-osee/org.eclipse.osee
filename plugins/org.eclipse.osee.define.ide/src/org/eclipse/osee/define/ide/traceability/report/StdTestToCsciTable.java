@@ -181,7 +181,8 @@ public class StdTestToCsciTable implements ISimpleTable {
       return toReturn;
    }
 
-   private void processRow(ISheetWriter sheetWriter, String partition, String codeUnit, Collection<Artifact> artifacts) throws Exception {
+   private void processRow(ISheetWriter sheetWriter, String partition, String codeUnit, Collection<Artifact> artifacts)
+      throws Exception {
       List<String> paragraphTitles = new ArrayList<>();
       List<String> paragraphNumbers = new ArrayList<>();
       List<String> artifactTypes = new ArrayList<>();
@@ -205,7 +206,8 @@ public class StdTestToCsciTable implements ISimpleTable {
       sheetWriter.writeRow(partition, codeUnit, paragraphNumber, paragraphTitle, artifactType);
    }
 
-   private void processSingleRow(ISheetWriter sheetWriter, String partition, String codeUnit, Collection<Artifact> artifacts) throws Exception {
+   private void processSingleRow(ISheetWriter sheetWriter, String partition, String codeUnit,
+      Collection<Artifact> artifacts) throws Exception {
       for (Artifact artifact : artifacts) {
          ArtifactOperations operator = new ArtifactOperations(artifact);
          String name = operator.getName();

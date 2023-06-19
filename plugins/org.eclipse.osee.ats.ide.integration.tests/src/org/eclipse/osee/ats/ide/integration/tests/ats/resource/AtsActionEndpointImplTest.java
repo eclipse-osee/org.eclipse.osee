@@ -572,7 +572,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          Arrays.asList(DemoUsers.Kay_Jones.getIdString()));
    }
 
-   public void testSetActionByKey(String defaultAttrValue, String newValue, AttributeTypeToken attrType, AttributeKey attrKey) {
+   public void testSetActionByKey(String defaultAttrValue, String newValue, AttributeTypeToken attrType,
+      AttributeKey attrKey) {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();

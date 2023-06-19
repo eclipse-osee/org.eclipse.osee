@@ -73,7 +73,8 @@ public class CommandDispatcher {
       return execute(cmdId, callable);
    }
 
-   private Callable<?> createCallable(final ConsoleCommand command, final Console console, final ConsoleParameters params) {
+   private Callable<?> createCallable(final ConsoleCommand command, final Console console,
+      final ConsoleParameters params) {
       Callable<?> wrapped = new AbstractConsoleCallable<Object>(console, params) {
 
          @Override

@@ -66,7 +66,8 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    }
 
    @Override
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
+      AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> layouts = new ArrayList<>();
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchId)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);

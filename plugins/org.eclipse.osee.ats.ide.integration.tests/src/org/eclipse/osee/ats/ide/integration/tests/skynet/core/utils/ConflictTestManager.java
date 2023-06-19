@@ -292,7 +292,8 @@ public class ConflictTestManager {
       return child;
    }
 
-   protected static Attribute<?> createAttribute(Artifact artifact, AttributeTypeId attributeType, Class<?> clas, String value) {
+   protected static Attribute<?> createAttribute(Artifact artifact, AttributeTypeId attributeType, Class<?> clas,
+      String value) {
       artifact.addAttribute(attributeType, stringToObject(clas, value));
       artifact.persist(ConflictTestManager.class.getSimpleName());
       return artifact.getSoleAttribute(attributeType);
@@ -656,7 +657,8 @@ public class ConflictTestManager {
       private boolean sourceModified = false;
       private boolean destModified = false;
 
-      protected void setValues(ArtifactTypeToken artifactType, boolean sourceDelete, boolean destDelete, int rootArtifactIndex, int queryNumber) {
+      protected void setValues(ArtifactTypeToken artifactType, boolean sourceDelete, boolean destDelete,
+         int rootArtifactIndex, int queryNumber) {
          this.artifactType = artifactType;
          this.sourceDelete = sourceDelete;
          this.destDelete = destDelete;

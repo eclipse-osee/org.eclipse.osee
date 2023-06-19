@@ -233,7 +233,8 @@ public class WorkflowMetrics {
       return str;
    }
 
-   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, IAtsVersion versionArtifact, double manHoursPerDay, Date estimatedrelDate) {
+   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, IAtsVersion versionArtifact,
+      double manHoursPerDay, Date estimatedrelDate) {
       return new WorkflowMetrics(awas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 

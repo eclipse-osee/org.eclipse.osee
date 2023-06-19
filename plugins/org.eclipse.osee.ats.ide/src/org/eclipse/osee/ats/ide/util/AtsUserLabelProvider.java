@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.util;
 
-
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;

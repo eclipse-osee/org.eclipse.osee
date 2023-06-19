@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -262,7 +261,7 @@ public class SprintColumn extends BackgroundLoadingPreComputedColumn implements 
          }
       }
    }
-   
+
    /**
     * Don't want columns to listen to their own events, so have WorldXViewerEventManager call here to tell columns to
     * handle

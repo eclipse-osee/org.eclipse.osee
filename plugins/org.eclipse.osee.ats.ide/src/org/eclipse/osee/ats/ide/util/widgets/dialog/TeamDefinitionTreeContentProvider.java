@@ -56,8 +56,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
          try {
             TeamDefinition teamDef = (TeamDefinition) parentElement;
             for (Long id : teamDef.getChildren()) {
-               TeamDefinition td =
-                  AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
+               TeamDefinition td = AtsApiService.get().getConfigService().getConfigurations().getIdToTeamDef().get(id);
                if (active == Active.Both || (active == Active.Active && td.isActive()) || (active == Active.InActive && !td.isActive())) {
                   results.add(td);
                }

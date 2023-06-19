@@ -153,7 +153,8 @@ public class XActionableItemWidget extends GenericXWidget implements IsEnabled {
       return selected;
    }
 
-   public Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> createActionableItemTreeViewer(Composite comp, Collection<IAtsActionableItem> selectableAis) {
+   public Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> createActionableItemTreeViewer(Composite comp,
+      Collection<IAtsActionableItem> selectableAis) {
       Composite aiComp = new Composite(comp, SWT.NONE);
       aiComp.setLayout(new GridLayout(1, false));
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));

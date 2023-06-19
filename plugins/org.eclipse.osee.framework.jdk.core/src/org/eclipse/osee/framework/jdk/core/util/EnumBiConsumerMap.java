@@ -78,7 +78,8 @@ public class EnumBiConsumerMap<K extends Enum<K>, T, U> extends AbstractEnumFunc
 
    @SafeVarargs
    @SuppressWarnings({"unchecked", "varargs"})
-   public static <K extends Enum<K>, T, U> EnumBiConsumerMap<K, T, U> ofEntries(Class<K> enumerationKeyClass, Map.Entry<K, BiConsumer<T, U>>... entries) {
+   public static <K extends Enum<K>, T, U> EnumBiConsumerMap<K, T, U> ofEntries(Class<K> enumerationKeyClass,
+      Map.Entry<K, BiConsumer<T, U>>... entries) {
 
       return (EnumBiConsumerMap<K, T, U>) new EnumBiConsumerMap<K, T, U>(enumerationKeyClass) {
          @Override

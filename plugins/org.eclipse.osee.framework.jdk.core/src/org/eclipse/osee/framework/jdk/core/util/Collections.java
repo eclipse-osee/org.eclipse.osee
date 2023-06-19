@@ -74,7 +74,8 @@ public class Collections {
       return toString(items, null, separator, null, function);
    }
 
-   public static <T> String toString(Iterable<T> items, String prefix, String separator, String suffix, Function<T, String> function) {
+   public static <T> String toString(Iterable<T> items, String prefix, String separator, String suffix,
+      Function<T, String> function) {
       StringBuilder strB = new StringBuilder();
       appendToBuilder(items, prefix, separator, suffix, function, strB);
       return strB.toString();
@@ -84,7 +85,8 @@ public class Collections {
       appendToBuilder(items, null, separator, null, String::valueOf, strB);
    }
 
-   public static <T> void appendToBuilder(Iterable<T> items, String prefix, String separator, String suffix, Function<T, String> function, StringBuilder strB) {
+   public static <T> void appendToBuilder(Iterable<T> items, String prefix, String separator, String suffix,
+      Function<T, String> function, StringBuilder strB) {
       if (items == null) {
          return;
       }
@@ -326,7 +328,8 @@ public class Collections {
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     */
    @SuppressWarnings("unchecked")
-   private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
+   private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects,
+      CastOption castOption) {
       List<A> results = new ArrayList<>(objects.size());
       for (Object object : objects) {
          if (object != null) {
@@ -378,7 +381,8 @@ public class Collections {
       return cast(clazz, objects, CastOption.MATCHING);
    }
 
-   public static <A extends Object> boolean moveItem(List<A> currentOrder, A itemToAdd, A targetItem, boolean insertAfter) {
+   public static <A extends Object> boolean moveItem(List<A> currentOrder, A itemToAdd, A targetItem,
+      boolean insertAfter) {
       int newIndex = currentOrder.indexOf(targetItem);
       if (newIndex < 0 || newIndex > currentOrder.size() - 1) {
          return false;

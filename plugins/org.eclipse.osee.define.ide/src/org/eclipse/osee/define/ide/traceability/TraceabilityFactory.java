@@ -46,7 +46,8 @@ public class TraceabilityFactory {
       }
    }
 
-   public static TraceabilityTable getTraceabilityTable(TraceabilityStyle style, RequirementTraceabilityData sourceData) throws Exception {
+   public static TraceabilityTable getTraceabilityTable(TraceabilityStyle style, RequirementTraceabilityData sourceData)
+      throws Exception {
       ISimpleTable simpleTable = null;
       StringWriter stringWriter = new StringWriter();
       ExcelXmlWriter sheetWriter = new ExcelXmlWriter(stringWriter);

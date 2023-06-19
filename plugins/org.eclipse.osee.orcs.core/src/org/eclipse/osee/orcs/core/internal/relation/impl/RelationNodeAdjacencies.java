@@ -64,7 +64,8 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(RelationTypeToken relationType, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
+   public List<Relation> getList(RelationTypeToken relationType, DeletionFlag includeDeleted, ArtifactId id,
+      RelationSide side) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(id, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
@@ -78,7 +79,8 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<Relation> getResultSet(RelationTypeToken type, DeletionFlag includeDeleted, ArtifactId id, RelationSide side) {
+   public ResultSet<Relation> getResultSet(RelationTypeToken type, DeletionFlag includeDeleted, ArtifactId id,
+      RelationSide side) {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(id, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);

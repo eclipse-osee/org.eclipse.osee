@@ -194,7 +194,8 @@ public class WfeAttachmentsComposite extends Composite {
       }
    }
 
-   public static Hyperlink createDeleteHyperlink(Artifact thisArt, final Artifact thatArt, final RelationLink relation, Composite lComp, WorkflowEditor editor) {
+   public static Hyperlink createDeleteHyperlink(Artifact thisArt, final Artifact thatArt, final RelationLink relation,
+      Composite lComp, WorkflowEditor editor) {
       Hyperlink link = editor.getToolkit().createHyperlink(lComp, "Delete", SWT.NONE);
       link.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
@@ -260,7 +261,8 @@ public class WfeAttachmentsComposite extends Composite {
       return link;
    }
 
-   public static Hyperlink createReadHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp, WorkflowEditor editor, String label) {
+   public static Hyperlink createReadHyperlink(Artifact thisArt, final Artifact thatArt, Composite lComp,
+      WorkflowEditor editor, String label) {
       Hyperlink link = editor.getToolkit().createHyperlink(lComp, label, SWT.NONE);
       link.addHyperlinkListener(new HyperlinkAdapter() {
          @Override

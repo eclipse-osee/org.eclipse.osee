@@ -63,7 +63,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType,
+      String defaultValue) {
       String result = defaultValue;
       Artifact artifact = getArtifact(atsObject.getArtifactId());
       if (artifact != null) {
@@ -73,7 +74,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType,
+      String defaultValue) {
       String result = defaultValue;
       Artifact art = (Artifact) atsApi.getQueryService().getArtifact(artifact);
       if (art != null) {
@@ -173,7 +175,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes) {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes) {
       if (changes != null) {
          changes.setSoleAttributeValue(atsObject, attributeType, value);
       } else {
@@ -182,7 +185,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void addAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes) {
+   public void addAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes) {
       if (changes != null) {
          changes.addAttribute(workItem, attributeType, value);
       } else {
@@ -191,7 +195,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes) {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes) {
       if (changes != null) {
          changes.deleteAttribute(workItem, attributeType, value);
       } else {
@@ -200,7 +205,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value,
+      IAtsChangeSet changes) {
       if (changes != null) {
          changes.setValue(workItem, attr, attributeType, value);
       } else {
@@ -276,7 +282,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag) {
       return getArtifact(artifact).getAttributesToStringList(attributeType, deletionFlag);
    }
 

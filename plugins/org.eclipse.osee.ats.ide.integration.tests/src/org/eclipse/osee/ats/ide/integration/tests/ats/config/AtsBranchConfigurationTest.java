@@ -425,7 +425,8 @@ public class AtsBranchConfigurationTest {
       cleanupBranchTest(BRANCH_VIA_TEAM_DEFINITION);
    }
 
-   public static AtsConfigOperation configureAts(String workDefinitionName, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) throws Exception {
+   public static AtsConfigOperation configureAts(String workDefinitionName, String teamDefName,
+      Collection<String> versionNames, Collection<String> actionableItems) throws Exception {
       AtsConfigOperation atsConfigManagerOperation =
          new AtsConfigOperation(workDefinitionName, teamDefName, versionNames, actionableItems);
       Operations.executeWorkAndCheckStatus(atsConfigManagerOperation);

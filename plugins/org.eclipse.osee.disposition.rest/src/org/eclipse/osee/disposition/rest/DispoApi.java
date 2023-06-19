@@ -56,7 +56,8 @@ public interface DispoApi {
 
    List<DispoAnnotationData> getDispoAnnotations(BranchId branch, String itemId);
 
-   List<DispoAnnotationData> getDispoAnnotationsByType(Iterable<DispoAnnotationData> annotationData, String resolutionType);
+   List<DispoAnnotationData> getDispoAnnotationsByType(Iterable<DispoAnnotationData> annotationData,
+      String resolutionType);
 
    DispoAnnotationData getDispoAnnotationById(BranchId branch, String itemId, String annotationId);
 
@@ -71,13 +72,15 @@ public interface DispoApi {
 
    ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName);
 
-   String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName, boolean isCi);
+   String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName,
+      boolean isCi);
 
    String createDispoDiscrepancy(BranchId branch, String itemId, Discrepancy discrepancy, String userName);
 
    void createDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName);
 
-   boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy, String userName);
+   boolean editDispoDiscrepancy(BranchId branch, String itemId, String discrepancyId, Discrepancy newDiscrepancy,
+      String userName);
 
    void editDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName);
 
@@ -87,17 +90,23 @@ public interface DispoApi {
 
    void importAllDispoPrograms(String filterState, String userName);
 
-   boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName, boolean assignUser);
+   boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName,
+      boolean assignUser);
 
-   boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType, String resolution, String userName);
+   boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType,
+      String resolution, String userName);
 
-   boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage, String userName);
+   boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage,
+      String userName);
 
-   boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName, boolean isCi);
+   boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation,
+      String userName, boolean isCi);
 
-   void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params, String userName);
+   void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params,
+      String userName);
 
-   void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params, String userName);
+   void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId,
+      CopySetParams params, String userName);
 
    // Deletes
 
@@ -118,7 +127,8 @@ public interface DispoApi {
 
    boolean isUniqueItemName(BranchId branch, String setId, String itemName);
 
-   Collection<DispoItem> getDispoItemByAnnotationText(BranchId branch, String setId, String keyword, boolean isDetailed);
+   Collection<DispoItem> getDispoItemByAnnotationText(BranchId branch, String setId, String keyword,
+      boolean isDetailed);
 
    DispoApiConfiguration getConfig();
 

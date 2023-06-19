@@ -277,7 +277,8 @@ public class SetupPublishing {
        * <code>null</code>.
        */
 
-      PublishingTemplateMatchCriterionListBuilder appendAlways(PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
+      PublishingTemplateMatchCriterionListBuilder appendAlways(
+         PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
          this.list.add(Objects.requireNonNull(publishingTemplateMatchCriterion));
          return this;
       }
@@ -290,7 +291,8 @@ public class SetupPublishing {
        * @return the {@link PublishingTemplateMatchCriterionListBuilder}.
        */
 
-      PublishingTemplateMatchCriterionListBuilder appendIfMatchByNames(PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
+      PublishingTemplateMatchCriterionListBuilder appendIfMatchByNames(
+         PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
          if (SetupPublishing.matchPreviewTemplatesByName) {
             this.list.add(publishingTemplateMatchCriterion);
          }
@@ -305,7 +307,8 @@ public class SetupPublishing {
        * @return the {@link PublishingTemplateMatchCriterionListBuilder}.
        */
 
-      PublishingTemplateMatchCriterionListBuilder appendIfNotMatchByNames(PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
+      PublishingTemplateMatchCriterionListBuilder appendIfNotMatchByNames(
+         PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
          if (!SetupPublishing.matchPreviewTemplatesByName) {
             this.list.add(publishingTemplateMatchCriterion);
          }

@@ -92,8 +92,8 @@ public class AtsRelationResolverServiceTest {
 
       Assert.assertFalse(
          relationResolver.areRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task, firstUnRelatedTask));
-      Assert.assertFalse(
-         relationResolver.areRelated(firstUnRelatedTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow, sawCodeCommittedWf));
+      Assert.assertFalse(relationResolver.areRelated(firstUnRelatedTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow,
+         sawCodeCommittedWf));
    }
 
    @Test
@@ -103,9 +103,9 @@ public class AtsRelationResolverServiceTest {
          relationResolver.getRelatedOrNull(sawTestAi, CoreRelationTypes.DefaultHierarchical_Parent);
       Assert.assertNotNull(relatedOrNull);
 
-      ArtifactId nullParentId = relationResolver.getRelatedOrNull(
-         AtsApiService.get().getQueryServiceIde().getArtifact(sawCodeCommittedWf),
-         CoreRelationTypes.DefaultHierarchical_Parent);
+      ArtifactId nullParentId =
+         relationResolver.getRelatedOrNull(AtsApiService.get().getQueryServiceIde().getArtifact(sawCodeCommittedWf),
+            CoreRelationTypes.DefaultHierarchical_Parent);
       Assert.assertNull(nullParentId);
    }
 
@@ -116,8 +116,8 @@ public class AtsRelationResolverServiceTest {
       ArtifactToken firstTaskArt = related.iterator().next();
       IAtsTask firstTask = atsApi.getWorkItemService().getTask(firstTaskArt);
 
-      IAtsTeamWorkflow teamWf =
-         relationResolver.getRelatedOrNull(firstTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow, IAtsTeamWorkflow.class);
+      IAtsTeamWorkflow teamWf = relationResolver.getRelatedOrNull(firstTask, AtsRelationTypes.TeamWfToTask_TeamWorkflow,
+         IAtsTeamWorkflow.class);
       Assert.assertNotNull(teamWf);
 
       IAtsTeamWorkflow nullChild = relationResolver.getRelatedOrNull(firstTask,

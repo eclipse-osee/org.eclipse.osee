@@ -272,7 +272,8 @@ public class BranchEventTest {
       return branch;
    }
 
-   private void verifyReceivedBranchStatesEvent(Pair<Sender, BranchEvent> eventPair, BranchEventType expectedEnumState, BranchId expectedBranch) {
+   private void verifyReceivedBranchStatesEvent(Pair<Sender, BranchEvent> eventPair, BranchEventType expectedEnumState,
+      BranchId expectedBranch) {
       Sender receivedSender = eventPair.getFirst();
       BranchEvent receivedBranchEvent = eventPair.getSecond();
 
@@ -288,7 +289,8 @@ public class BranchEventTest {
       }
    }
 
-   private void verifyReceivedBranchStatesEvent(List<Pair<Sender, BranchEvent>> eventPairs, BranchId expectedBranch, BranchEventType expectedEventType) {
+   private void verifyReceivedBranchStatesEvent(List<Pair<Sender, BranchEvent>> eventPairs, BranchId expectedBranch,
+      BranchEventType expectedEventType) {
       Sender receivedSender = null;
       BranchEvent receivedBranchEvent = null;
 

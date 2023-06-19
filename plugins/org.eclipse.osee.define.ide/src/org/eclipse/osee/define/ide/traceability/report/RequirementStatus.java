@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 
-
 /**
  * @author Ryan D. Brooks
  */

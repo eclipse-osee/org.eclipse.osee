@@ -14,8 +14,8 @@
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyCollectionOf;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;

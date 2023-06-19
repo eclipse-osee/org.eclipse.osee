@@ -150,7 +150,8 @@ public class DispoDataFactory {
       annotationToInit.setIsDefault(false);
    }
 
-   public DispoItem createUpdatedItem(List<DispoAnnotationData> annotationsList, Map<String, Discrepancy> discrepanciesList) {
+   public DispoItem createUpdatedItem(List<DispoAnnotationData> annotationsList,
+      Map<String, Discrepancy> discrepanciesList) {
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(annotationsList);
       newItem.setDiscrepanciesList(discrepanciesList);

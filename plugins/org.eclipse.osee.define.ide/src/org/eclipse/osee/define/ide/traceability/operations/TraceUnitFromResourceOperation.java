@@ -40,7 +40,8 @@ public class TraceUnitFromResourceOperation {
       return TraceUnitExtensionManager.getInstance().getTraceUnitHandlerIds();
    }
 
-   private static ResourceToTraceUnit getResourceToTestUnit(Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, boolean addGuidToSourceFile, boolean includeImpd, String... testUnitTraceIds) {
+   private static ResourceToTraceUnit getResourceToTestUnit(Iterable<URI> sources, boolean isRecursive,
+      boolean isFileWithMultiplePaths, boolean addGuidToSourceFile, boolean includeImpd, String... testUnitTraceIds) {
       checkSourceArgument(sources);
       checkTraceUnitHandlerIdsArgument(testUnitTraceIds);
 
@@ -57,7 +58,9 @@ public class TraceUnitFromResourceOperation {
       return operation;
    }
 
-   public static void printTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, boolean addGuidToSourceFile, boolean includeImpd, String... traceUnitHandlerIds) {
+   public static void printTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive,
+      boolean isFileWithMultiplePaths, boolean addGuidToSourceFile, boolean includeImpd,
+      String... traceUnitHandlerIds) {
       ResourceToTraceUnit operation = getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths,
          addGuidToSourceFile, includeImpd, traceUnitHandlerIds);
       if (monitor == null) {
@@ -67,7 +70,9 @@ public class TraceUnitFromResourceOperation {
       operation.execute(monitor);
    }
 
-   public static void importTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, BranchId importToBranch, boolean addGuidToSourceFile, boolean includeImpd, String... traceUnitHandlerIds) {
+   public static void importTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive,
+      boolean isFileWithMultiplePaths, BranchId importToBranch, boolean addGuidToSourceFile, boolean includeImpd,
+      String... traceUnitHandlerIds) {
       checkBranchArguments(importToBranch);
 
       ResourceToTraceUnit operation = getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths,

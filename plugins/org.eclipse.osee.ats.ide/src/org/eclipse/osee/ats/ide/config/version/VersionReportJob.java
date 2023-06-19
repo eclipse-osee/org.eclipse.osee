@@ -153,7 +153,8 @@ public class VersionReportJob extends Job {
       return released;
    }
 
-   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamWfs, Integer backgroundColor, IProgressMonitor monitor) {
+   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamWfs, Integer backgroundColor,
+      IProgressMonitor monitor) {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1, backgroundColor));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "ID"}));

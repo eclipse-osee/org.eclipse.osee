@@ -74,7 +74,8 @@ public abstract class AbstractSaxHandler extends DefaultHandler implements Lexic
       contents.setLength(0); // efficiently reset the StringBuilder to be empty (but preserve its capacity)
    }
 
-   public abstract void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception;
+   public abstract void startElementFound(String uri, String localName, String qName, Attributes attributes)
+      throws Exception;
 
    public abstract void endElementFound(String uri, String localName, String qName) throws Exception;
 

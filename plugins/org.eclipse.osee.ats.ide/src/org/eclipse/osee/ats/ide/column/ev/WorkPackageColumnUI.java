@@ -146,7 +146,8 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       return modified;
    }
 
-   private static String getMessage(Collection<IAtsWorkItem> workItems, Set<IAtsWorkPackage> commonWorkPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
+   private static String getMessage(Collection<IAtsWorkItem> workItems, Set<IAtsWorkPackage> commonWorkPackageOptions,
+      Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
       String message = "Select Work Package";
       if (workItems.size() > 1) {
          message = String.format(
@@ -156,7 +157,8 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       return message;
    }
 
-   private static Result getConfiguredWorkPackageOptions(final Collection<IAtsWorkItem> workItems, Set<IAtsWorkPackage> workPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
+   private static Result getConfiguredWorkPackageOptions(final Collection<IAtsWorkItem> workItems,
+      Set<IAtsWorkPackage> workPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) {
       Result result = null;
       for (IAtsWorkItem workItem : workItems) {
          Collection<IAtsWorkPackage> options =

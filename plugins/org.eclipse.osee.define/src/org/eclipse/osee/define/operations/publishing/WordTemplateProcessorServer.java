@@ -60,13 +60,12 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-
 import org.eclipse.osee.framework.core.publishing.AttributeOptions;
+import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
 import org.eclipse.osee.framework.core.publishing.MetadataOptions;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplateInsertTokenType;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordMLProducer;
-import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.core.server.publishing.WordRenderArtifactWrapperServerImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

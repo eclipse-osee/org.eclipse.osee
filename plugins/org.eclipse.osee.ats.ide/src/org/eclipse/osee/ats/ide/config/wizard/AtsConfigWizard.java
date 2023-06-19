@@ -80,7 +80,8 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
    private static final class OpenAtsConfigEditors implements Display {
 
       @Override
-      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef, final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
+      public void openAtsConfigurationEditors(final IAtsTeamDefinition teamDef,
+         final Collection<IAtsActionableItem> aias, final WorkDefinition workDefinition) {
          Job job = new UIJob("Open Ats Configuration Editors") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {

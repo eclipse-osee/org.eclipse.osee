@@ -47,7 +47,8 @@ public class DispoItemDataCopier {
       report.addEntry(destItem.getName(), message.toString(), DispoSummarySeverity.UPDATE);
    }
 
-   private static void updateTestPointNumbersForAnntations(HashMap<String, String> idsToUpdate, List<DispoAnnotationData> annotations, Map<String, Discrepancy> discrepancies, StringBuilder message) {
+   private static void updateTestPointNumbersForAnntations(HashMap<String, String> idsToUpdate,
+      List<DispoAnnotationData> annotations, Map<String, Discrepancy> discrepancies, StringBuilder message) {
       for (DispoAnnotationData annotation : annotations) {
          List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
          updateIdsCoveredDiscrepancies(idsToUpdate, idsOfCoveredDiscrepancies, annotations, discrepancies, annotation,
@@ -55,7 +56,9 @@ public class DispoItemDataCopier {
       }
    }
 
-   private static void updateIdsCoveredDiscrepancies(HashMap<String, String> idsToUpdate, List<String> idsOfCoveredDiscrepancies, List<DispoAnnotationData> annotations, Map<String, Discrepancy> discrepancies, DispoAnnotationData annotation, StringBuilder message) {
+   private static void updateIdsCoveredDiscrepancies(HashMap<String, String> idsToUpdate,
+      List<String> idsOfCoveredDiscrepancies, List<DispoAnnotationData> annotations,
+      Map<String, Discrepancy> discrepancies, DispoAnnotationData annotation, StringBuilder message) {
       for (String coveredId : idsOfCoveredDiscrepancies) {
          if (idsToUpdate.containsKey(coveredId)) {
             String newLocRef = rebuildLocRef(idsOfCoveredDiscrepancies, discrepancies, idsToUpdate, message);
@@ -68,7 +71,8 @@ public class DispoItemDataCopier {
       }
    }
 
-   private static String rebuildLocRef(List<String> idsOfCoveredDiscrepancies, Map<String, Discrepancy> discrepancies, HashMap<String, String> idsToUpdate, StringBuilder message) {
+   private static String rebuildLocRef(List<String> idsOfCoveredDiscrepancies, Map<String, Discrepancy> discrepancies,
+      HashMap<String, String> idsToUpdate, StringBuilder message) {
       boolean isGaveup = false;
       List<Integer> testPointNumber = new ArrayList<>();
       for (String id : idsOfCoveredDiscrepancies) {
@@ -97,7 +101,9 @@ public class DispoItemDataCopier {
       return toReturn;
    }
 
-   private static HashMap<String, String> matchupOldDiscrepancies(Map<String, Discrepancy> oldDiscrepancies, Map<String, Discrepancy> newDiscrepancies, List<DispoAnnotationData> annotations, StringBuilder message, Boolean needsReview) {
+   private static HashMap<String, String> matchupOldDiscrepancies(Map<String, Discrepancy> oldDiscrepancies,
+      Map<String, Discrepancy> newDiscrepancies, List<DispoAnnotationData> annotations, StringBuilder message,
+      Boolean needsReview) {
       HashMap<String, Pair<Discrepancy, Boolean>> textToNewDiscrepancies =
          createTextToDiscrepanciesMap(newDiscrepancies);
       HashMap<String, String> idsToUpdate = new HashMap<>();
@@ -175,7 +181,8 @@ public class DispoItemDataCopier {
       }
    }
 
-   private static HashMap<String, Pair<Discrepancy, Boolean>> createTextToDiscrepanciesMap(Map<String, Discrepancy> discrepancies) {
+   private static HashMap<String, Pair<Discrepancy, Boolean>> createTextToDiscrepanciesMap(
+      Map<String, Discrepancy> discrepancies) {
       HashMap<String, Pair<Discrepancy, Boolean>> textToDiscrepancy = new HashMap<>();
       for (String key : discrepancies.keySet()) {
          Discrepancy discrepancy = discrepancies.get(key);

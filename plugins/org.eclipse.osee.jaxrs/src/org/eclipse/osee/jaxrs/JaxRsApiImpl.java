@@ -118,7 +118,8 @@ public final class JaxRsApiImpl implements JaxRsApi {
    }
 
    @Override
-   public <T, C extends Collection<T>> C readCollectionValue(String json, Class<? extends Collection> collectionClass, Class<T> elementClass) {
+   public <T, C extends Collection<T>> C readCollectionValue(String json, Class<? extends Collection> collectionClass,
+      Class<T> elementClass) {
       try {
          return mapper.readValue(json, typeFactory.constructCollectionType(collectionClass, elementClass));
       } catch (IOException ex) {
@@ -287,7 +288,8 @@ public final class JaxRsApiImpl implements JaxRsApi {
       return new OAuthFactory() {
 
          @Override
-         public OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String clientId, String clientSecret, String authorizeUri, String tokenUri, String tokenValidationUri) {
+         public OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String clientId,
+            String clientSecret, String authorizeUri, String tokenUri, String tokenValidationUri) {
             OwnerCredentials owner = newOwner(username, password);
             Consumer client = new Consumer(clientId, clientSecret);
             OAuth2Transport transport = new OAuth2Transport(JaxRsApiImpl.this);

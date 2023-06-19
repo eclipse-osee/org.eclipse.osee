@@ -268,7 +268,8 @@ public class PropertyStoreWriter {
          printTag(name, parameters, false, false, close);
       }
 
-      private void printTag(String name, Map<String, String> parameters, boolean shouldTab, boolean newLine, boolean close) {
+      private void printTag(String name, Map<String, String> parameters, boolean shouldTab, boolean newLine,
+         boolean close) {
          StringBuffer sb = new StringBuffer();
          sb.append('<');
          sb.append(name);
