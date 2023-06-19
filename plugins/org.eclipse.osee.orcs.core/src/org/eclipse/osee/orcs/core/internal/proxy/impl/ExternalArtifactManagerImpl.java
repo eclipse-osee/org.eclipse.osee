@@ -65,7 +65,8 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    }
 
    @Override
-   public ResultSet<ArtifactReadable> asExternalArtifacts(final OrcsSession session, Iterable<? extends Artifact> artifacts) {
+   public ResultSet<ArtifactReadable> asExternalArtifacts(final OrcsSession session,
+      Iterable<? extends Artifact> artifacts) {
       Iterable<ArtifactReadable> transformed =
          Iterables.transform(artifacts, new Function<Artifact, ArtifactReadable>() {
 
@@ -78,7 +79,8 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    }
 
    @Override
-   public <T> ResultSet<AttributeReadable<T>> asExternalAttributes(final OrcsSession session, Iterable<? extends Attribute<T>> attributes) {
+   public <T> ResultSet<AttributeReadable<T>> asExternalAttributes(final OrcsSession session,
+      Iterable<? extends Attribute<T>> attributes) {
       Iterable<AttributeReadable<T>> transformed =
          Iterables.transform(attributes, new Function<Attribute<T>, AttributeReadable<T>>() {
 

@@ -36,7 +36,9 @@ public class DispoAnnotationMessageReader implements MessageBodyReader<DispoAnno
    }
 
    @Override
-   public DispoAnnotationData readFrom(Class<DispoAnnotationData> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+   public DispoAnnotationData readFrom(Class<DispoAnnotationData> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+      throws IOException, WebApplicationException {
       String inputStreamToString = Lib.inputStreamToString(entityStream);
       return JsonUtil.readValue(inputStreamToString, DispoAnnotationData.class);
    }

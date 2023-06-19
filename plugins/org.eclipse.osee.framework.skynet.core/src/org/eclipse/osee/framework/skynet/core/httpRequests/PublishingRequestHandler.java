@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
-import java.io.InputStream;
 import java.util.Set;
 import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;

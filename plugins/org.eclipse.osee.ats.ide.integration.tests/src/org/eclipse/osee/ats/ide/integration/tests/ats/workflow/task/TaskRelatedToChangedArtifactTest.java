@@ -71,12 +71,12 @@ public class TaskRelatedToChangedArtifactTest {
          }
       }
       assertNotNull(reqWf);
-      IAtsChangeSet changes = AtsApiService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
-         AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes =
+         AtsApiService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(), AtsCoreUsers.SYSTEM_USER);
       changes.relate(reqWf, AtsRelationTypes.Derive_To, codeWf);
 
-      Artifact robotReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Robot API",
-         DemoBranches.SAW_Bld_2);
+      Artifact robotReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
+         "Robot API", DemoBranches.SAW_Bld_2);
 
       changes.setSoleAttributeValue(codeTask, AtsAttributeTypes.TaskToChangedArtifactReference, robotReq);
       changes.execute();

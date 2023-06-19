@@ -82,7 +82,8 @@ public interface IAtsWizardItem {
     * Add the desired XWidget declarations directly to the composite. These will be displayed after the other xml
     * xwidget extensions.
     */
-   public default void getWizardXWidgetExtensions(Collection<IAtsActionableItem> selectedIAtsActionableItems, Composite comp) {
+   public default void getWizardXWidgetExtensions(Collection<IAtsActionableItem> selectedIAtsActionableItems,
+      Composite comp) {
       // do nothing
    }
 

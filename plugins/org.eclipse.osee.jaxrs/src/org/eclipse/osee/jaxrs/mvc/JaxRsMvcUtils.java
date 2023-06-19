@@ -40,7 +40,8 @@ public final class JaxRsMvcUtils {
       return computeEncoding(mediaType, httpHeaders, null);
    }
 
-   public static Charset computeEncoding(MediaType mediaType, Map<String, List<Object>> httpHeaders, Charset defaultEncoding) {
+   public static Charset computeEncoding(MediaType mediaType, Map<String, List<Object>> httpHeaders,
+      Charset defaultEncoding) {
       String charset = mediaType.getParameters().get(MediaType.CHARSET_PARAMETER);
       Charset encoding = defaultEncoding != null ? defaultEncoding : UTF_8_ENCODING;
       MediaType contentType = mediaType;

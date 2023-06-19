@@ -612,7 +612,8 @@ public class TestDocumentBuilder {
     * @param testBranchCreationComment database creation comment to used when creating the test branch.
     */
 
-   public void buildDocument(List<BuilderRecord> builderRecords, String testBranchName, String testBranchCreationComment) {
+   public void buildDocument(List<BuilderRecord> builderRecords, String testBranchName,
+      String testBranchCreationComment) {
       //@formatter:off
 
       /*

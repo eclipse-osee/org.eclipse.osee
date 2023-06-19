@@ -213,7 +213,8 @@ public class RelationTypeSideSorterTest {
       }
    }
 
-   private static void addData(RelationTypeToken relationType1, RelationTypeToken relationType2, RelationOrderData data, List<Object[]> expected) {
+   private static void addData(RelationTypeToken relationType1, RelationTypeToken relationType2, RelationOrderData data,
+      List<Object[]> expected) {
       addData(data, expected, relationType1, RelationSide.SIDE_A, //
          LEXICOGRAPHICAL_ASC, "1", "2", "3");
       addData(data, expected, relationType2, RelationSide.SIDE_B, //
@@ -239,7 +240,8 @@ public class RelationTypeSideSorterTest {
       }
    }
 
-   private static void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side, RelationSorter sorterId, String... guids) {
+   private static void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType,
+      RelationSide side, RelationSorter sorterId, String... guids) {
       List<String> artGuids = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, sorterId, artGuids);
       expectedData.add(new Object[] {relationType, side, sorterId, artGuids});

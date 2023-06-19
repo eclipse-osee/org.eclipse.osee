@@ -48,7 +48,8 @@ public class NewActionUtil {
       // Util class
    }
 
-   public static Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> createActionableItemTreeViewer(Composite comp, Collection<IAtsActionableItem> selectableAis) {
+   public static Pair<CheckBoxStateFilteredTreeViewer<IAtsActionableItem>, Text> createActionableItemTreeViewer(
+      Composite comp, Collection<IAtsActionableItem> selectableAis) {
       Composite aiComp = new Composite(comp, SWT.NONE);
       aiComp.setLayout(new GridLayout(1, false));
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));

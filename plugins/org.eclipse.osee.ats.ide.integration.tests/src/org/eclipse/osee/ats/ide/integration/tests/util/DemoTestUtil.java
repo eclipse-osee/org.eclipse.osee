@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -117,7 +117,8 @@ public class DemoTestUtil {
    /**
     * Create tasks named title + <num>
     */
-   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, String relatedToState) throws Exception {
+   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks,
+      String relatedToState) throws Exception {
       List<String> names = new ArrayList<>();
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
@@ -203,7 +204,8 @@ public class DemoTestUtil {
       assertTypes(objects, count, clazz, "Expected %d; Found %d", count, numOfType(objects, clazz));
    }
 
-   public static void assertTypes(Collection<? extends Object> objects, int count, Class<?> clazz, String message, Object... data) {
+   public static void assertTypes(Collection<? extends Object> objects, int count, Class<?> clazz, String message,
+      Object... data) {
       int found = numOfType(objects, clazz);
       if (count != found) {
          throw new OseeStateException(message, data);

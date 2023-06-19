@@ -37,7 +37,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class AccountUtil {
 
-   public static String updateSinglePreference(AccountWebPreferences allPreferences, String key, String id, String newValue) {
+   public static String updateSinglePreference(AccountWebPreferences allPreferences, String key, String id,
+      String newValue) {
 
       try {
          ObjectMapper OM = new ObjectMapper();

@@ -444,7 +444,8 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    }
 
    @Override
-   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
+   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered,
+      Collection<Artifact> sprintMemberReordered) {
       if (relModifiedArts.contains(awa)) {
          refresh();
       }

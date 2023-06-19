@@ -74,7 +74,8 @@ public class EnumSupplierMap<K extends Enum<K>, T> extends AbstractEnumFunctiona
 
    @SafeVarargs
    @SuppressWarnings({"unchecked", "varargs"})
-   public static <K extends Enum<K>, T> EnumSupplierMap<K, T> ofEntries(Class<K> enumerationKeyClass, Map.Entry<K, Supplier<T>>... entries) {
+   public static <K extends Enum<K>, T> EnumSupplierMap<K, T> ofEntries(Class<K> enumerationKeyClass,
+      Map.Entry<K, Supplier<T>>... entries) {
 
       return (EnumSupplierMap<K, T>) new EnumSupplierMap<K, T>(enumerationKeyClass) {
          @Override

@@ -245,7 +245,8 @@ public class TraceReportBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
       if (xWidget.getLabel().equals(BRANCH)) {
          branchWidget = (XBranchSelectWidget) xWidget;
@@ -287,7 +288,8 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   private void displayReports(IProgressMonitor monitor, ISheetWriter excelWriter, CharBackedInputStream excelInputStream, OutputType outputType) throws IOException {
+   private void displayReports(IProgressMonitor monitor, ISheetWriter excelWriter,
+      CharBackedInputStream excelInputStream, OutputType outputType) throws IOException {
       try {
          boolean wasEmpty = resultsTabs == null || resultsTabs.isEmpty();
          monitor.beginTask("Open Reports", 2);
@@ -324,7 +326,8 @@ public class TraceReportBlam extends AbstractBlam {
       return output == OutputType.ResultsEditor || output == OutputType.Both;
    }
 
-   private void buildReport(Map<String, AbstractArtifactRelationReport> reports, String title, OutputType output, ISheetWriter writer, AbstractArtifactRelationReport report) {
+   private void buildReport(Map<String, AbstractArtifactRelationReport> reports, String title, OutputType output,
+      ISheetWriter writer, AbstractArtifactRelationReport report) {
       if (isExcelOutput(output)) {
          report.addReportDataCollector(new ExcelReport(title, writer));
       }
@@ -372,7 +375,8 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   private void addRelationToCheck(List<TraceTypeEnum> traceTypes, AbstractArtifactRelationReport report, boolean fromTraceUnit) {
+   private void addRelationToCheck(List<TraceTypeEnum> traceTypes, AbstractArtifactRelationReport report,
+      boolean fromTraceUnit) {
       for (TraceTypeEnum traceTypeEnum : traceTypes) {
          RelationTypeSide relation =
             fromTraceUnit ? traceTypeEnum.getRelatedToRequirement() : traceTypeEnum.getRelatedToTraceUnit();
@@ -380,7 +384,8 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   private void addArtifacts(CodeUnitData codeUnit, TestUnitData testUnit, List<TraceTypeEnum> traceTypes, AbstractArtifactRelationReport report) {
+   private void addArtifacts(CodeUnitData codeUnit, TestUnitData testUnit, List<TraceTypeEnum> traceTypes,
+      AbstractArtifactRelationReport report) {
       if (TraceTypeEnum.Code_Unit_Trace.isIn(traceTypes)) {
          report.setArtifacts(codeUnit.getAllCodeUnits());
       }
@@ -402,14 +407,16 @@ public class TraceReportBlam extends AbstractBlam {
       return report;
    }
 
-   private AbstractArtifactRelationReport getDisconnectedTraceUnitReport(CodeUnitData codeUnit, TestUnitData testUnit, List<TraceTypeEnum> traceTypes) {
+   private AbstractArtifactRelationReport getDisconnectedTraceUnitReport(CodeUnitData codeUnit, TestUnitData testUnit,
+      List<TraceTypeEnum> traceTypes) {
       ArtifactsWithoutRelations report = new ArtifactsWithoutRelations();
       addArtifacts(codeUnit, testUnit, traceTypes, report);
       addRelationToCheck(traceTypes, report, true);
       return report;
    }
 
-   private AbstractArtifactRelationReport getTraceUnitToReqReport(CodeUnitData codeUnit, TestUnitData testUnit, List<TraceTypeEnum> traceTypes) {
+   private AbstractArtifactRelationReport getTraceUnitToReqReport(CodeUnitData codeUnit, TestUnitData testUnit,
+      List<TraceTypeEnum> traceTypes) {
       ArtifactToRelatedArtifact report = new ArtifactToRelatedArtifact();
       addArtifacts(codeUnit, testUnit, traceTypes, report);
       addRelationToCheck(traceTypes, report, true);

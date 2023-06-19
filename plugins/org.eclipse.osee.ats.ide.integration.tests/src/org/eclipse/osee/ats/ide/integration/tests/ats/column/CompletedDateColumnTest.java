@@ -61,9 +61,9 @@ public class CompletedDateColumnTest {
       Assert.assertNull(date);
       Assert.assertEquals("", CompletedDateColumn.getCompletedDateStr(teamArt));
 
-      TransitionData transData = new TransitionData("Transition to Completed", Arrays.asList(teamArt),
-         TeamState.Completed.getName(), null, null, null, TransitionOption.OverrideTransitionValidityCheck,
-         TransitionOption.OverrideAssigneeCheck);
+      TransitionData transData =
+         new TransitionData("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getName(), null,
+            null, null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
@@ -74,8 +74,8 @@ public class CompletedDateColumnTest {
          CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
 
       transData = new TransitionData("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.OverrideTransitionValidityCheck,
-         TransitionOption.OverrideAssigneeCheck);
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null,
+         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       Assert.assertTrue(results.toString(), results.isEmpty());
 

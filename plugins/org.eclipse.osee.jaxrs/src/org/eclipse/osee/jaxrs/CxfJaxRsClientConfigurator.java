@@ -48,7 +48,8 @@ public final class CxfJaxRsClientConfigurator {
 
    public static interface OAuthFactory {
 
-      OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String oauthClientId, String oauthClientSecret, String oauthAuthorizeUri, String oauthTokenUri, String oauthTokenValidationUri);
+      OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String oauthClientId,
+         String oauthClientSecret, String oauthAuthorizeUri, String oauthTokenUri, String oauthTokenValidationUri);
 
       ClientAccessTokenCache newClientAccessTokenCache(int cacheMaxSize, long cacheEvictTimeoutMillis);
 

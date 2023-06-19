@@ -13,11 +13,10 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Ryan D. Brooks

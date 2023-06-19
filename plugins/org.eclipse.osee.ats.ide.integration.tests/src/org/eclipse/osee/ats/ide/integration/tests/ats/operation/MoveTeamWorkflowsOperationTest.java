@@ -54,8 +54,7 @@ public class MoveTeamWorkflowsOperationTest {
          AtsArtifactChecks.setDeletionChecksEnabled(false);
       }
 
-      Assert.assertEquals("Parent Actions should be same", teamWf.getParentAction(),
-         teamWf.getParentAction());
+      Assert.assertEquals("Parent Actions should be same", teamWf.getParentAction(), teamWf.getParentAction());
       Assert.assertEquals("new title", actArt.getName());
       Assert.assertTrue("Action Artifact 2 should be deleted", ((Artifact) actArt2).isDeleted());
       Assert.assertFalse("No artifact should be dirty",

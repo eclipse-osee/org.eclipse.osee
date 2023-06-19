@@ -117,7 +117,8 @@ public class PointsColumn extends XViewerAtsColumn implements IXViewerValueColum
       return promptChangePoints(java.util.Collections.singleton(workItem), pointsAttrType, atsApi);
    }
 
-   public static boolean promptChangePoints(Collection<IAtsWorkItem> workItems, AttributeTypeToken pointsAttrType, AtsApi atsApi) {
+   public static boolean promptChangePoints(Collection<IAtsWorkItem> workItems, AttributeTypeToken pointsAttrType,
+      AtsApi atsApi) {
       if (pointsAttrType == AtsAttributeTypes.PointsNumeric) {
          EntryDialog dialog = new EntryDialog("Enter Points", "Enter Points");
          if (dialog.open() == Window.OK) {

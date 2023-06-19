@@ -72,7 +72,8 @@ public interface AtsBranchServiceIde {
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     * used for developmental testing or automation
     */
-   XResultData commitWorkingBranch(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation, BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd);
+   XResultData commitWorkingBranch(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation,
+      BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd);
 
    ChangeData getChangeDataFromEarliestTransactionId(IAtsTeamWorkflow teamWf);
 
@@ -86,7 +87,8 @@ public interface AtsBranchServiceIde {
    /**
     * @return true if one or more reviews were created
     */
-   boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
+   boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf, Date createdDate,
+      AtsUser createdBy, IAtsChangeSet changes);
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.

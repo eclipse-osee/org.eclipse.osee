@@ -455,7 +455,8 @@ public class BranchStateTest {
       return false;
    }
 
-   private void verifyReceivedBranchStatesEvent(List<Pair<Sender, BranchEvent>> eventPairs, BranchId expectedBranch, BranchEventType expectedEventType) {
+   private void verifyReceivedBranchStatesEvent(List<Pair<Sender, BranchEvent>> eventPairs, BranchId expectedBranch,
+      BranchEventType expectedEventType) {
       Sender receivedSender = null;
       BranchEvent receivedBranchEvent = null;
 

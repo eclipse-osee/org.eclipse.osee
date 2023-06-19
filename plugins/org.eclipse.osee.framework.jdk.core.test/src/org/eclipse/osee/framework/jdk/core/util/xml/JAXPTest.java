@@ -117,7 +117,8 @@ public class JAXPTest {
    // @formatter:on
 
    @Test
-   public void testReadWriteAttributeWithEmptyValue() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+   public void testReadWriteAttributeWithEmptyValue()
+      throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
       Document document = Jaxp.readXmlDocument(ATTR_EMPTY_VALUE);
       Element startElement = document.getDocumentElement();
 
@@ -150,7 +151,8 @@ public class JAXPTest {
    }
 
    @Test
-   public void testReadWriteTrailingTextSpaces() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+   public void testReadWriteTrailingTextSpaces()
+      throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
       Document document = Jaxp.readXmlDocument(SIMPLE_TRAILING_SPACES_DOC);
       Element startElement = document.getDocumentElement();
 
@@ -166,7 +168,8 @@ public class JAXPTest {
    }
 
    @Test
-   public void testReadWriteTrimmed() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+   public void testReadWriteTrimmed()
+      throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
       Document document = Jaxp.readXmlDocument(SIMPLE_TRAILING_SPACES_DOC);
       Element startElement = document.getDocumentElement();
 
@@ -182,12 +185,14 @@ public class JAXPTest {
    }
 
    @Test(expected = SAXParseException.class)
-   public void testParseNamespaceAwareFailsNamespacesUndefined() throws ParserConfigurationException, SAXException, IOException {
+   public void testParseNamespaceAwareFailsNamespacesUndefined()
+      throws ParserConfigurationException, SAXException, IOException {
       Jaxp.readXmlDocumentNamespaceAware(SIMPLE_TRAILING_SPACES_DOC);
    }
 
    @Test
-   public void testReadWriteNamespaceAware() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
+   public void testReadWriteNamespaceAware()
+      throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
       Document document = Jaxp.readXmlDocumentNamespaceAware(
          NAMESPACE_DEFINITIONS_PREFIX + SIMPLE_TRAILING_SPACES_DOC + NAMESPACE_DEFINITIONS_POSTFIX);
 

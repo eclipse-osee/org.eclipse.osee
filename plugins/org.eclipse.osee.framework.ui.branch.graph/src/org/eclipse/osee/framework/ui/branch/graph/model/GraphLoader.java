@@ -45,14 +45,16 @@ public class GraphLoader {
       load(graphCache, graphCache.getRootModel(), true, progress);
    }
 
-   protected static void load(GraphCache graphCache, BranchModel modelToLoad, boolean recurse, IProgressListener progress) {
+   protected static void load(GraphCache graphCache, BranchModel modelToLoad, boolean recurse,
+      IProgressListener progress) {
       //      graphCache.addBranchModel(modelToLoad);
       loadBranches(graphCache, modelToLoad, recurse, progress);
       addParentTxData(graphCache, modelToLoad, recurse, progress);
       updateConnections(graphCache, modelToLoad, recurse, progress);
    }
 
-   protected static void loadBranches(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) {
+   protected static void loadBranches(GraphCache graphCache, BranchModel current, boolean recurse,
+      IProgressListener listener) {
       for (BranchId child : BranchManager.getChildBranches(current.getBranch(), false)) {
          BranchModel childModel = graphCache.getOrCreateBranchModel(child);
          childModel.setDepth(current.getDepth() + 1);
@@ -64,7 +66,8 @@ public class GraphLoader {
       }
    }
 
-   private static void addParentTxData(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) {
+   private static void addParentTxData(GraphCache graphCache, BranchModel current, boolean recurse,
+      IProgressListener listener) {
       try (IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery()) {
          List<BranchId> branches = new ArrayList<>(BranchManager.getChildBranches(current.getBranch(), recurse));
          branches.add(current.getBranch());
@@ -83,7 +86,8 @@ public class GraphLoader {
       }
    }
 
-   private static void updateConnections(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) {
+   private static void updateConnections(GraphCache graphCache, BranchModel current, boolean recurse,
+      IProgressListener listener) {
       TxModel systemRootTx = null;
 
       List<BranchModel> models = new ArrayList<>();

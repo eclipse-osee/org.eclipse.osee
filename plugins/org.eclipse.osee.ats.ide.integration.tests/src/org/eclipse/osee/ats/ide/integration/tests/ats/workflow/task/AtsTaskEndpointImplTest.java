@@ -241,7 +241,8 @@ public class AtsTaskEndpointImplTest {
       Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(taskId3));
    }
 
-   private JaxAtsTask createJaxAtsTask(long taskId, String title, String description, String createdByUserId, Date createdDate, List<String> assigneeUserIds) {
+   private JaxAtsTask createJaxAtsTask(long taskId, String title, String description, String createdByUserId,
+      Date createdDate, List<String> assigneeUserIds) {
       JaxAtsTask task = new JaxAtsTask();
       task.setId(taskId);
       task.setName(title);

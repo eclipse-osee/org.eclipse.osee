@@ -59,8 +59,8 @@ public class AtsWorkDefinitionServiceImplTest {
       aias.add(
          AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_SW_Design_AI));
       ActionResult actionArt = AtsApiService.get().getActionService().createAction(null,
-         getClass().getSimpleName() + " relatedPeerTest", "description", ChangeTypes.Improvement, "3", false, null, aias,
-         new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
+         getClass().getSimpleName() + " relatedPeerTest", "description", ChangeTypes.Improvement, "3", false, null,
+         aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
       IAtsTeamWorkflow teamWf = actionArt.getFirstTeam();
 
       IAtsPeerToPeerReview peerReview = AtsApiService.get().getReviewService().createNewPeerToPeerReview(teamWf,

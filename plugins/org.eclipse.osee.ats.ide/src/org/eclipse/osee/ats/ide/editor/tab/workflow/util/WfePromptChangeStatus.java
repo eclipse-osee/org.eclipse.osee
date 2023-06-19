@@ -100,13 +100,15 @@ public class WfePromptChangeStatus {
       return Result.FalseResult;
    }
 
-   public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours) {
+   public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption,
+      double hours, int percent, boolean splitHours) {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Status");
       performChangeStatus(workItems, selectedOption, hours, percent, splitHours, changes);
       changes.execute();
    }
 
-   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, IAtsChangeSet changes) {
+   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption,
+      double hours, int percent, boolean splitHours, IAtsChangeSet changes) {
       if (splitHours) {
          hours = hours / workItems.size();
       }

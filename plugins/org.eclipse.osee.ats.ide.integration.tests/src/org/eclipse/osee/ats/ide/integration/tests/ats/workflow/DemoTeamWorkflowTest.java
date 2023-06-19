@@ -78,8 +78,8 @@ public class DemoTeamWorkflowTest {
 
       //*** Transition Action to Implement
       transData = new TransitionData("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.OverrideAssigneeCheck,
-         TransitionOption.OverrideTransitionValidityCheck);
+         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, null,
+         TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       results = AtsApiService.get().getWorkItemService().transition(transData);
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 

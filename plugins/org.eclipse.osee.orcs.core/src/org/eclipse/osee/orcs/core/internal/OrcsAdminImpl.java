@@ -115,7 +115,8 @@ public class OrcsAdminImpl implements OrcsAdmin {
       tx.commit();
    }
 
-   private <J extends OrcsTypeJoin<J, T>, T extends NamedId> void addMissingJoins(TransactionBuilder tx, Tuple2Type<J, T> tupleType, Collection<J> registeredJoins) {
+   private <J extends OrcsTypeJoin<J, T>, T extends NamedId> void addMissingJoins(TransactionBuilder tx,
+      Tuple2Type<J, T> tupleType, Collection<J> registeredJoins) {
       List<J> joinsInDb = new ArrayList<>();
       orcsApi.getQueryFactory().tupleQuery().getTuple2UniqueE1(tupleType, COMMON, joinsInDb::add);
 

@@ -529,7 +529,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       }
    }
 
-   private HashCollectionSet<String, Artifact> getTestProcedureTraceability(BranchId testProcedureBranch, IProgressMonitor monitor) {
+   private HashCollectionSet<String, Artifact> getTestProcedureTraceability(BranchId testProcedureBranch,
+      IProgressMonitor monitor) {
       monitor.subTask("Gathering test procedures");
       HashCollectionSet<String, Artifact> requirementNameToTestProcedures = new HashCollectionSet<>(HashSet::new);
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
@@ -601,7 +602,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Versions")) {
@@ -612,7 +614,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       String widgetName = xWidget.getLabel();
       if (widgetName.equals("Program")) {
          XAtsProgramComboWidget programWidget = (XAtsProgramComboWidget) xWidget;

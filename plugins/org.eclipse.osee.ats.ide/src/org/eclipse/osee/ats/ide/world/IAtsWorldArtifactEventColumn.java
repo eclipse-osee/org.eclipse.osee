@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
 public interface IAtsWorldArtifactEventColumn {
 
    public void handleArtifactEvent(ArtifactEvent artifactEvent, WorldXViewer xViewer);
-   
+
    public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, WorldXViewer xViewer);
 
 }

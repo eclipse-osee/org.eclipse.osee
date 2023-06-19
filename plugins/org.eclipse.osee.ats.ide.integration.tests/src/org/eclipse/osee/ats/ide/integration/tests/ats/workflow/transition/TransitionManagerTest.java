@@ -97,10 +97,10 @@ public class TransitionManagerTest {
    @org.junit.Test
    public void testHandleTransitionValidation__NoAwas() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-A");
-      TransitionData transData = new TransitionData(getClass().getSimpleName(), EMPTY_AWAS,
-         AtsTestUtil.getImplementStateDef().getName(),
-         Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
-         AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
+      TransitionData transData =
+         new TransitionData(getClass().getSimpleName(), EMPTY_AWAS, AtsTestUtil.getImplementStateDef().getName(),
+            Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
+            AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -661,9 +661,8 @@ public class TransitionManagerTest {
 
       // transition workflow to cancelled - peer review not cancelled
       changes.clear();
-      TransitionData transData =
-         new TransitionData("Transition Team Workflow Review", Arrays.asList(teamArt), "Cancelled",
-            new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionData transData = new TransitionData("Transition Team Workflow Review", Arrays.asList(teamArt),
+         "Cancelled", new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
       transData.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
       TransitionManager mgr = new TransitionManager(transData, AtsApiService.get());
       results = mgr.handleAll();

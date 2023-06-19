@@ -65,7 +65,8 @@ public class ShowRelatedRequirementDiffsAction extends AbstractShowRelatedAction
    private static final class UISelectArtifactsToDiff implements ShowRequirementDifferencesOperation.Display {
 
       @Override
-      public Artifact getArtifactSelection(IProgressMonitor monitor, final Collection<? extends Artifact> selectableArtifacts) throws Exception {
+      public Artifact getArtifactSelection(IProgressMonitor monitor,
+         final Collection<? extends Artifact> selectableArtifacts) throws Exception {
          final Artifact[] selectedArtifact = new Artifact[1];
          Job job = new UIJob("Select artifacts to diff") {
 

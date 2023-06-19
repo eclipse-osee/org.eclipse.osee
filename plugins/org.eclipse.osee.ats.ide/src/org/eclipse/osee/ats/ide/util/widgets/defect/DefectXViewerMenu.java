@@ -239,7 +239,8 @@ public class DefectXViewerMenu {
       return defectXViewer.isEditable();
    }
 
-   public boolean promptChangeData(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit) {
+   public boolean promptChangeData(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit) {
       boolean modified = false;
       if (defectItems != null && !defectItems.isEmpty()) {
          ReviewDefectItem defectItem = (ReviewDefectItem) defectItems.toArray()[0];
@@ -271,7 +272,8 @@ public class DefectXViewerMenu {
       return false;
    }
 
-   private boolean handleInjectionActivityCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleInjectionActivityCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(),
          InjectionActivity.strValues(), columnMultiEdit ? null : defectItem.getInjectionActivity().name());
       if (enumDialog != null && enumDialog.getResult() != null) {
@@ -289,7 +291,8 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleLocationCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleLocationCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       String loc = XPromptChange.promptChangeString(xCol.getName(), columnMultiEdit ? null : defectItem.getLocation(),
          null, Option.MULTI_LINE);
       if (loc != null) {
@@ -298,7 +301,8 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleResolutionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleResolutionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       String resolution = XPromptChange.promptChangeString(xCol.getName(),
          columnMultiEdit ? null : defectItem.getResolution(), null, Option.MULTI_LINE);
       if (resolution != null) {
@@ -307,7 +311,8 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleDescriptionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleDescriptionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       String desc = XPromptChange.promptChangeString(xCol.getName(),
          columnMultiEdit ? null : defectItem.getDescription(), null, Option.MULTI_LINE);
       if (desc != null) {
@@ -316,11 +321,13 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleClosedCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleClosedCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       return setClosed(defectItems, !defectItem.isClosed());
    }
 
-   private boolean handleCreatedDateCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleCreatedDateCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       Date selDate = XPromptChange.promptChangeDate(xCol.getName(), columnMultiEdit ? defectItem.getDate() : null);
       if (selDate != null) {
          modified = setDate(defectItems, selDate);
@@ -328,7 +335,8 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleDispositionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleDispositionCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(),
          Disposition.strValues(), columnMultiEdit ? null : defectItem.getDisposition().name());
       if (enumDialog != null && enumDialog.getResult() != null) {
@@ -337,7 +345,8 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleSeverityCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleSeverityCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems,
+      boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
       EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(),
          Severity.strValues(), columnMultiEdit ? null : defectItem.getSeverity().name());
       if (enumDialog != null && enumDialog.getResult() != null) {
@@ -346,7 +355,8 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleNotesCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit, boolean modified, ReviewDefectItem defectItem) {
+   private boolean handleNotesCol(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit,
+      boolean modified, ReviewDefectItem defectItem) {
       String desc = XPromptChange.promptChangeString(xCol.getName(), columnMultiEdit ? null : defectItem.getNotes(),
          null, Option.MULTI_LINE);
       if (desc != null) {
@@ -367,7 +377,8 @@ public class DefectXViewerMenu {
       return true;
    }
 
-   private boolean setInjectionActivity(Collection<ReviewDefectItem> defectItems, InjectionActivity newInjectionActivity) {
+   private boolean setInjectionActivity(Collection<ReviewDefectItem> defectItems,
+      InjectionActivity newInjectionActivity) {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getInjectionActivity().equals(newInjectionActivity)) {

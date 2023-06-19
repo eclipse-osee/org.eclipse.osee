@@ -32,7 +32,8 @@ public class AtsXUserRoleValidator extends AtsXWidgetValidator {
    public static String WIDGET_NAME = "XUserRoleViewer";
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();

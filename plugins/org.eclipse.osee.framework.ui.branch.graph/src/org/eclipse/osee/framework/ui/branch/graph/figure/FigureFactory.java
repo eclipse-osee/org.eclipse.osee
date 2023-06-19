@@ -44,7 +44,8 @@ public class FigureFactory {
    private FigureFactory() {
    }
 
-   public static PolylineConnection createConnection(IFigure contents, IFigure source, IFigure target, String toolTip, boolean hasEndPoint, Color color) {
+   public static PolylineConnection createConnection(IFigure contents, IFigure source, IFigure target, String toolTip,
+      boolean hasEndPoint, Color color) {
       PolylineConnection connection = new PolylineConnection();
       ConnectionAnchor targetAnchor = new ChopboxAnchor(target);
       connection.setTargetAnchor(targetAnchor);

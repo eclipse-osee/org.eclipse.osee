@@ -89,7 +89,8 @@ public class DemoProgramManager implements IAtsProgramManager {
       return builder.build();
    }
 
-   private static IOperation createValidationRulesOperation(TeamWorkFlowArtifact teamArt, XResultData results, Set<AbstractValidationRule> rules) {
+   private static IOperation createValidationRulesOperation(TeamWorkFlowArtifact teamArt, XResultData results,
+      Set<AbstractValidationRule> rules) {
       return new DemoCreateValidationRulesOperation(results, teamArt, rules,
          AtsApiService.get().getProgramService().getWorkType(teamArt));
    }

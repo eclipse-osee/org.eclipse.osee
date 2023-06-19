@@ -119,7 +119,8 @@ public final class TestUtil {
     * @return The {@link ArtifactToken} (identifier) for the newly created artifact.
     */
 
-   private static ArtifactToken createChildArtifactToken(BranchId parentBranchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+   private static ArtifactToken createChildArtifactToken(BranchId parentBranchId, ArtifactId parentArtifactId,
+      ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
 
       //@formatter:off
       Artifact parentArtifact;
@@ -163,7 +164,8 @@ public final class TestUtil {
     * @return a list of all the artifact's attributes of the specified type.
     */
 
-   public static List<Attribute<?>> createAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric, int count) {
+   public static List<Attribute<?>> createAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric,
+      int count) {
       for (int i = 0; i < count; i++) {
          artifact.addAttribute(attributeTypeGeneric);
       }
@@ -184,7 +186,8 @@ public final class TestUtil {
       return links;
    }
 
-   public static RelationLink createRelationLink(RelationId relationId, ArtifactId artA, ArtifactId artB, BranchId branch, RelationTypeToken relationType) {
+   public static RelationLink createRelationLink(RelationId relationId, ArtifactId artA, ArtifactId artB,
+      BranchId branch, RelationTypeToken relationType) {
       return new RelationLink(ArtifactToken.valueOf(artA, BranchToken.valueOf(branch)),
          ArtifactToken.valueOf(artB, BranchToken.valueOf(branch)), branch, relationType, relationId, GammaId.valueOf(0),
          "relation: " + relationId, ModificationType.MODIFIED, ApplicabilityId.BASE);
@@ -205,7 +208,8 @@ public final class TestUtil {
       return softArt;
    }
 
-   public static Collection<Artifact> createSimpleArtifacts(ArtifactTypeToken artifactType, int numArts, String name, BranchToken branch) {
+   public static Collection<Artifact> createSimpleArtifacts(ArtifactTypeToken artifactType, int numArts, String name,
+      BranchToken branch) {
       List<Artifact> arts = new ArrayList<>();
       for (int x = 1; x < numArts + 1; x++) {
          arts.add(createSimpleArtifact(artifactType, name + " " + x, branch));
@@ -248,7 +252,8 @@ public final class TestUtil {
     * {@link Attribute<?>} objects; otherwise, an empty {@link Optional}.
     */
 
-   public static Optional<List<Attribute<?>>> getAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric) {
+   public static Optional<List<Attribute<?>>> getAttributes(Artifact artifact,
+      AttributeTypeGeneric<?> attributeTypeGeneric) {
       @SuppressWarnings("unchecked")
       var attributes = (List<Attribute<?>>) (Object) artifact.getAttributes(attributeTypeGeneric);
 
@@ -279,7 +284,8 @@ public final class TestUtil {
     * {@link Optional}.
     */
 
-   public static Optional<ArtifactToken> getChildArtifactTokenByName(RelationEndpoint relationEndpoint, ArtifactId parentArtifactId, String childName) {
+   public static Optional<ArtifactToken> getChildArtifactTokenByName(RelationEndpoint relationEndpoint,
+      ArtifactId parentArtifactId, String childName) {
       return relationEndpoint.getRelatedHierarchy(parentArtifactId, ArtifactId.SENTINEL).stream().filter(
          artifact -> artifact.getName().equals(childName)).findFirst();
    }
@@ -295,7 +301,8 @@ public final class TestUtil {
     * attributes.
     */
 
-   public static List<Attribute<?>> getOrCreateAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric, int count) {
+   public static List<Attribute<?>> getOrCreateAttributes(Artifact artifact,
+      AttributeTypeGeneric<?> attributeTypeGeneric, int count) {
       return TestUtil.getAttributes(artifact, attributeTypeGeneric).orElseGet(
          () -> TestUtil.createAttributes(artifact, attributeTypeGeneric, count));
    }
@@ -313,7 +320,9 @@ public final class TestUtil {
     * @return the {@link ArtifactToken} of the existing or newly created hierarchical child with the specified name.
     */
 
-   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, BranchId branchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, BranchId branchId,
+      ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken,
+      String childName) {
       //@formatter:off
       return
          TestUtil
@@ -397,7 +406,8 @@ public final class TestUtil {
     * @param attributeSetter a {@link BiConsumer} used to assign an attribute's value
     */
 
-   public static void setAttributeValues(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric, List<Object> expectedValueList, BiConsumer<Attribute<?>, Object> attributeSetter) {
+   public static void setAttributeValues(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric,
+      List<Object> expectedValueList, BiConsumer<Attribute<?>, Object> attributeSetter) {
       var attributeList = TestUtil.getOrCreateAttributes(artifact, attributeTypeGeneric, expectedValueList.size());
 
       /*

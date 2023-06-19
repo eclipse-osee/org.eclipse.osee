@@ -89,8 +89,7 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(
-         AtsApiService.get().getActionableItemService().getTopActionableItem(AtsApiService.get()),
+      Assert.assertEquals(AtsApiService.get().getActionableItemService().getTopActionableItem(AtsApiService.get()),
          data.getParentActionableItem());
 
    }

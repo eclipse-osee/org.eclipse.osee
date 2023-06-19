@@ -52,10 +52,10 @@ public class WorkflowMetricsUI {
             showReleaseMetricsLabel.setFont(FontManager.getCourierNew12Bold());
          }
          if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedWorkflowArtifacts() != null && !worldComposite.getXViewer().getSelectedWorkflowArtifacts().isEmpty()) {
-            showReleaseMetricsLabel.setText(
-               WorkflowMetrics.getEstRemainMetrics(worldComposite.getXViewer().getSelectedWorkflowArtifacts(), null,
-                  ((TeamWorkFlowArtifact) worldComposite.getXViewer().getSelectedWorkflowArtifacts().iterator().next()).getManHrsPerDayPreference(),
-                  null));
+            showReleaseMetricsLabel.setText(WorkflowMetrics.getEstRemainMetrics(
+               worldComposite.getXViewer().getSelectedWorkflowArtifacts(), null,
+               ((TeamWorkFlowArtifact) worldComposite.getXViewer().getSelectedWorkflowArtifacts().iterator().next()).getManHrsPerDayPreference(),
+               null));
          } else {
             showReleaseMetricsLabel.setText("");
          }

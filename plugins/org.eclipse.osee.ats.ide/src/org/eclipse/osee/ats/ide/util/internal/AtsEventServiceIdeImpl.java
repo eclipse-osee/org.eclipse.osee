@@ -59,7 +59,8 @@ public class AtsEventServiceIdeImpl extends AbstractAtsEventServiceImpl {
    }
 
    @Override
-   public void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems, TransactionId transaction) {
+   public void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems,
+      TransactionId transaction) {
       TopicEvent topicEvent = new TopicEvent(event.getTopic(), AtsTopicEvent.WORK_ITEM_IDS_KEY,
          AtsObjects.toIdsString(";", workItems), transaction, EventType.RemoteOnly);
       if (transaction != null && transaction.isValid()) {

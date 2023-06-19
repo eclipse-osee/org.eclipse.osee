@@ -22,9 +22,11 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
  */
 public interface RelationDataFactory {
 
-   RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale);
+   RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact,
+      ArtifactId bArtifact, String rationale);
 
-   RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, ArtifactId relArtifact, int order);
+   RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact,
+      ArtifactId bArtifact, ArtifactId relArtifact, int order);
 
    RelationData clone(RelationData source);
 

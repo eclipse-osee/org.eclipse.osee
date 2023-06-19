@@ -47,13 +47,17 @@ public interface BranchDataStore {
 
    Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
-   TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, OrcsApi orcsApi);
+   TransactionId commitBranch(OrcsSession session, ArtifactId committer, OrcsTokenService tokenService, Branch source,
+      TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, OrcsApi orcsApi);
 
-   List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx, TransactionToken destinationTx, OrcsApi orcsApi);
+   List<ChangeItem> compareBranch(OrcsSession session, OrcsTokenService tokenService, TransactionToken sourceTx,
+      TransactionToken destinationTx, OrcsApi orcsApi);
 
-   Callable<URI> exportBranch(OrcsSession session, List<? extends BranchId> branches, PropertyStore options, String exportName);
+   Callable<URI> exportBranch(OrcsSession session, List<? extends BranchId> branches, PropertyStore options,
+      String exportName);
 
-   Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches, PropertyStore options);
+   Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches,
+      PropertyStore options);
 
    Callable<Void> changeBranchState(OrcsSession session, BranchId branch, BranchState branchState);
 

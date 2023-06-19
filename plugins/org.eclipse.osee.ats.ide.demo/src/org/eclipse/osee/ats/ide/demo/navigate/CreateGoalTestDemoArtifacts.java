@@ -114,7 +114,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       changes.add(facilitiesGoal);
    }
 
-   private IAtsTeamWorkflow createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal, IAtsTeamWorkflow teamArt) {
+   private IAtsTeamWorkflow createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal,
+      IAtsTeamWorkflow teamArt) {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getName());
       NewTaskSet newTaskSet = null;
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {

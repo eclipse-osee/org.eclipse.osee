@@ -31,7 +31,8 @@ public class NamedIdSerializer extends StdScalarSerializer<@NonNull NamedId> {
    }
 
    @Override
-   public void serialize(NamedId id, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+   public void serialize(NamedId id, JsonGenerator jgen, SerializerProvider provider)
+      throws IOException, JsonGenerationException {
       jgen.writeStartObject();
       jgen.writeStringField("id", id.getIdString());
       jgen.writeStringField("name", id.getName());

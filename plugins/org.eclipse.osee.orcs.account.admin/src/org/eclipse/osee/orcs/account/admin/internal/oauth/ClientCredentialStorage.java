@@ -121,7 +121,8 @@ public class ClientCredentialStorage extends AbstractDatabaseStorage<OAuthClient
       return certs != null ? org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", certs) : null;
    }
 
-   public OAuthClientCredential newCredential(final long clientId, final long applicationId, final long subjectId, final String clientKey, final String clientSecret, final List<String> clientCert) {
+   public OAuthClientCredential newCredential(final long clientId, final long applicationId, final long subjectId,
+      final String clientKey, final String clientSecret, final List<String> clientCert) {
       return new OAuthClientCredential() {
 
          @Override

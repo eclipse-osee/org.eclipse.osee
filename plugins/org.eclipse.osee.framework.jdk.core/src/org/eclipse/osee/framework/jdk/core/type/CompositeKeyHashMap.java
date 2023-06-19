@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Ken J. Aguilar
  */
- 
+
 public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyOne, KeyTwo>, Value> {
    private final HashCollectionSet<KeyOne, KeyTwo> singleKeyMap;
    private final Map<Pair<KeyOne, KeyTwo>, Value> map;

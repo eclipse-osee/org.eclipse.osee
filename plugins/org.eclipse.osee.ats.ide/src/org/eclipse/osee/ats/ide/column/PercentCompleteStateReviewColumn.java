@@ -78,8 +78,7 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(artifact)) {
             if (!team.isCancelled()) {
-               percent +=
-                  getPercentCompleteStateReview(AtsApiService.get().getQueryServiceIde().getArtifact(team));
+               percent += getPercentCompleteStateReview(AtsApiService.get().getQueryServiceIde().getArtifact(team));
             }
          }
          if (percent == 0) {

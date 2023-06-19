@@ -62,9 +62,8 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IA
          String value = "";
          try {
             if (object instanceof Artifact) {
-               ArtifactId refArtId =
-                  AtsApiService.get().getQueryServiceIde().getArtifact(object).getSoleAttributeValue(
-                     AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+               ArtifactId refArtId = AtsApiService.get().getQueryServiceIde().getArtifact(object).getSoleAttributeValue(
+                  AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
                if (refArtId.isValid()) {
                   Artifact refArt = AtsApiService.get().getQueryServiceIde().getArtifact(refArtId);
                   if (refArt != null) {

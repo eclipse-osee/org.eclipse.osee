@@ -50,7 +50,8 @@ public class CompareLists {
    }
 
    @SuppressWarnings("unchecked")
-   public static void writeDiff(Collection listA, Collection listB, File file, String listDescription1, String listDescription2) throws IOException {
+   public static void writeDiff(Collection listA, Collection listB, File file, String listDescription1,
+      String listDescription2) throws IOException {
       try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
          //Enforce uniqueness
          Set setA = Collections.toSet(listA);

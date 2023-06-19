@@ -34,15 +34,18 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public interface IAtsWorkItemHookIde extends IAtsWorkItemHook {
 
-   default public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   default public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition,
+      Artifact art, boolean isEditable) {
       // provided for subclass implementation
    }
 
-   default public void widgetModified(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   default public void widgetModified(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition,
+      Artifact art, boolean isEditable) {
       // provided for subclass implementation
    }
 
-   default public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   default public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition,
+      Artifact art, boolean isEditable) {
       return Result.TrueResult;
    }
 

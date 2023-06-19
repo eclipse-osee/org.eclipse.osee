@@ -174,7 +174,8 @@ public class ParameterArray {
     * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
     */
 
-   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize, Predicate<Object> elementValidator) {
+   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize,
+      Predicate<Object> elementValidator) {
 
       /*
        * Assert check limits are sane
@@ -229,7 +230,8 @@ public class ParameterArray {
     * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
     */
 
-   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize, Predicate<Object>[] elementValidators) {
+   public static boolean validateNonNullSizeAndElements(Object[] objects, int minSize, int maxSize,
+      Predicate<Object>[] elementValidators) {
 
       /*
        * Assert check limits are sane
@@ -347,7 +349,8 @@ public class ParameterArray {
     * @return <code>true</code> when validation is successful; otherwise, <code>false</code>.
     */
 
-   public static boolean validateSizeAndElements(Object[] objects, int minSize, int maxSize, Predicate<Object>[] elementValidator) {
+   public static boolean validateSizeAndElements(Object[] objects, int minSize, int maxSize,
+      Predicate<Object>[] elementValidator) {
 
       /*
        * Assert check limits are sane

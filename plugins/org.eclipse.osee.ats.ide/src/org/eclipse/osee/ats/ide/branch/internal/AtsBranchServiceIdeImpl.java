@@ -209,7 +209,8 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
     */
    @Override
-   public TransactionToken getTransactionIdOrPopupChoose(IAtsTeamWorkflow teamWf, String title, boolean showMergeManager) {
+   public TransactionToken getTransactionIdOrPopupChoose(IAtsTeamWorkflow teamWf, String title,
+      boolean showMergeManager) {
       Collection<TransactionRecord> transactions =
          atsApi.getBranchService().getTransactionIds(teamWf, showMergeManager);
       final Map<BranchToken, TransactionId> branchToTx = new LinkedHashMap<>();
@@ -321,7 +322,8 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
     * used for developmental testing or automation
     */
    @Override
-   public XResultData commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd) {
+   public XResultData commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup,
+      final boolean overrideStateValidation, BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd) {
       if (rd == null) {
          rd = new XResultData();
       }
@@ -411,7 +413,8 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
     * @return true if one or more reviews were created
     */
    @Override
-   public boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+   public boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf,
+      Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       Conditions.checkNotNull(teamWf, "Team Workflow");
       boolean created = false;
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
@@ -512,7 +515,8 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
    }
 
    @Override
-   public Job createWorkingBranch(final IAtsTeamWorkflow teamWf, final TransactionToken parentTransactionId, boolean pend) {
+   public Job createWorkingBranch(final IAtsTeamWorkflow teamWf, final TransactionToken parentTransactionId,
+      boolean pend) {
       final String branchName = atsApi.getBranchService().getBranchName(teamWf);
       Conditions.checkNotNull(teamWf, "Parent Team Workflow");
       Conditions.checkNotNull(parentTransactionId, "Parent Branch");

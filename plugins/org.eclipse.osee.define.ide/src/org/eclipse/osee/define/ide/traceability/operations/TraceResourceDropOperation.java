@@ -116,7 +116,8 @@ public class TraceResourceDropOperation extends AbstractOperation {
       }
    }
 
-   private void processFile(File file, HierarchyHandler handler, SkynetTransaction transaction, Map<Artifact, String> nameUpdateRequired) throws Exception {
+   private void processFile(File file, HierarchyHandler handler, SkynetTransaction transaction,
+      Map<Artifact, String> nameUpdateRequired) throws Exception {
       CharBuffer fileBuffer = Lib.fileToCharBuffer(file);
       URI fileUri = file.toURI();
       IFileStore fileStore = EFS.getStore(fileUri);

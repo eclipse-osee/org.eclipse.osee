@@ -138,7 +138,8 @@ public class OrderManager implements HasOrderData {
       setOrder(typeAndSide, sorterId, relativeSequence);
    }
 
-   public void setOrder(RelationTypeSide typeAndSide, RelationSorter sorterId, List<? extends ArtifactToken> relativeSequence) {
+   public void setOrder(RelationTypeSide typeAndSide, RelationSorter sorterId,
+      List<? extends ArtifactToken> relativeSequence) {
       List<String> sequence;
       if (!relativeSequence.isEmpty()) {
          sequence = new ArrayList<>();
@@ -151,7 +152,8 @@ public class OrderManager implements HasOrderData {
       setAndStoreOrder(typeAndSide, sorterId, sequence);
    }
 
-   private void setAndStoreOrder(RelationTypeSide typeAndSide, RelationSorter requestedSorterId, List<String> relativeSequence) {
+   private void setAndStoreOrder(RelationTypeSide typeAndSide, RelationSorter requestedSorterId,
+      List<String> relativeSequence) {
       boolean isDifferentSorterId = isDifferentSorterId(typeAndSide, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(typeAndSide, requestedSorterId, relativeSequence);
 
@@ -185,7 +187,8 @@ public class OrderManager implements HasOrderData {
       return defaultSorterId.equals(sorterId);
    }
 
-   private boolean isRelativeOrderChange(RelationTypeSide typeAndSide, RelationSorter sorterId, List<String> relativeSequence) {
+   private boolean isRelativeOrderChange(RelationTypeSide typeAndSide, RelationSorter sorterId,
+      List<String> relativeSequence) {
       boolean result = false;
       if (sorterId.equals(USER_DEFINED)) {
          List<String> currentOrder = getOrderIds(typeAndSide);

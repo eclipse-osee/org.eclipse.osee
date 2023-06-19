@@ -359,7 +359,8 @@ public class ArtifactEventTest {
       return remoteEvent;
    }
 
-   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long relationId, RelationEventType relationEventType, RelationTypeToken relType, Artifact artA, Artifact artB) {
+   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(Long relationId,
+      RelationEventType relationEventType, RelationTypeToken relType, Artifact artA, Artifact artB) {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
@@ -635,7 +636,8 @@ public class ArtifactEventTest {
       return injectArt;
    }
 
-   private Artifact remoteInjection_relations_addNewRelationWithRationale(Artifact rootArt, Artifact injectArt) throws Exception {
+   private Artifact remoteInjection_relations_addNewRelationWithRationale(Artifact rootArt, Artifact injectArt)
+      throws Exception {
       listener.reset();
 
       String RATIONALE_STR = "This is the rationale";
@@ -671,7 +673,8 @@ public class ArtifactEventTest {
       return injectArt;
    }
 
-   private Artifact remoteInjection_relations_modifyRelationRationale(Artifact rootArt, Artifact injectArt) throws Exception {
+   private Artifact remoteInjection_relations_modifyRelationRationale(Artifact rootArt, Artifact injectArt)
+      throws Exception {
       listener.reset();
 
       String NEW_RATIONALE_STR = "This is the NEW rationale";

@@ -75,7 +75,8 @@ public class HelpContextTest {
       }
    }
 
-   private static Map<String, HelpContext> getContexts(Class<?> clazz) throws IllegalArgumentException, IllegalAccessException {
+   private static Map<String, HelpContext> getContexts(Class<?> clazz)
+      throws IllegalArgumentException, IllegalAccessException {
       Map<String, HelpContext> contexts = new HashMap<>();
       for (Field field : clazz.getFields()) {
          Object object = field.get(null);

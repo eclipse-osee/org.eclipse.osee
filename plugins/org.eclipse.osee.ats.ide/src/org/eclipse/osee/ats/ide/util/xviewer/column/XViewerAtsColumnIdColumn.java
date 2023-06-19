@@ -53,8 +53,7 @@ public class XViewerAtsColumnIdColumn extends XViewerAtsColumn implements IXView
       String result = "";
       try {
          if (element instanceof IAtsObject) {
-            result =
-               AtsApiService.get().getColumnService().getColumnText(column.getColumnId(), (IAtsObject) element);
+            result = AtsApiService.get().getColumnService().getColumnText(column.getColumnId(), (IAtsObject) element);
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);

@@ -43,7 +43,8 @@ public interface DispoWriter {
 
    void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data);
 
-   void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation);
+   void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag,
+      String operation);
 
    void updateOperationSummary(UserId author, BranchId branch, String setId, OperationReport summary);
 

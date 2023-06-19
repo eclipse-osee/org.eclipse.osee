@@ -206,7 +206,8 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
       }
    }
 
-   private Artifact testCommitBranchHttpRequestOperationSetup(TeamWorkFlowArtifact reqTeamArt, Artifact testArtifact, Artifact testRelArtifact) {
+   private Artifact testCommitBranchHttpRequestOperationSetup(TeamWorkFlowArtifact reqTeamArt, Artifact testArtifact,
+      Artifact testRelArtifact) {
       /**
        * Setup for testing the CommitBranchHttpRequestOperation cache update code after commit. Load artifact from
        * parent branch which is being changed on the working branch.

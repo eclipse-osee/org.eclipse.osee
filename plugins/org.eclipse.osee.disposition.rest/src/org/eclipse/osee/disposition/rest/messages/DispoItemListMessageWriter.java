@@ -44,12 +44,15 @@ public class DispoItemListMessageWriter implements MessageBodyWriter<List<DispoI
    }
 
    @Override
-   public long getSize(List<DispoItem> dispoItems, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(List<DispoItem> dispoItems, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
    @Override
-   public void writeTo(List<DispoItem> dispoItems, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(List<DispoItem> dispoItems, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       List<DispoItem> reconstructedDispoItems = new ArrayList<>();
       for (DispoItem item : dispoItems) {
          DispoItem dispoItemData = DispoUtil.reconstructDispoItem(item, item.getIsIncludeDetails());

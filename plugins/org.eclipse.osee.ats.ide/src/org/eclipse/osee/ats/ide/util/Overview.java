@@ -141,8 +141,7 @@ public class Overview {
             this.html.append(AHTML.multiColumnTable(
                new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
             this.html.append(AHTML.multiColumnTable(new String[] {
-               AHTML.getLabelStr(labelFont,
-                  "Parent State: ") + ((TaskArtifact) awa).getCurrentStateName()}));
+               AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) awa).getCurrentStateName()}));
          }
          this.html.append(AHTML.multiColumnTable(new String[] {
             AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString("; ",

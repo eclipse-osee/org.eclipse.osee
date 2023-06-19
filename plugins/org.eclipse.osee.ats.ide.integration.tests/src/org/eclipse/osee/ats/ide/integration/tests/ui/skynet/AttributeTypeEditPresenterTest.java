@@ -106,7 +106,8 @@ public class AttributeTypeEditPresenterTest {
       }
    }
 
-   private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage, String expectedNoneMessage, List<AttributeTypeToken> selectableTypes) {
+   private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage,
+      String expectedNoneMessage, List<AttributeTypeToken> selectableTypes) {
       editor.setWasDirtyStateCalled(false);
       display.setAddWidgetsAttributeTypes(null);
       display.setRemoveWidgetsAttributeTypes(null);
@@ -186,7 +187,8 @@ public class AttributeTypeEditPresenterTest {
       Assert.assertEquals(expectedNoneMessage, info.getSecond());
    }
 
-   private static void checkDisplay(MockDisplay display, OperationType expectedType, String title, String message, List<AttributeTypeId> expectedSelectable) {
+   private static void checkDisplay(MockDisplay display, OperationType expectedType, String title, String message,
+      List<AttributeTypeId> expectedSelectable) {
       List<AttributeTypeToken> selectableItems = display.getInput();
 
       Assert.assertFalse(
@@ -250,7 +252,8 @@ public class AttributeTypeEditPresenterTest {
       }
 
       @Override
-      public Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message, List<AttributeTypeToken> input) {
+      public Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message,
+         List<AttributeTypeToken> input) {
          setSelectionInfo(new Pair<>(title, message));
          setInput(input);
          setOperationType(operationType);

@@ -60,7 +60,8 @@ public class RelationSorterProviderTest {
       testSorter(provider, RelationSorter.PREEXISTING, UserDefinedRelationSorter.class);
    }
 
-   private void testSorter(RelationSorterProvider provider, RelationSorter sorterId, Class<? extends IRelationSorter> clazz) {
+   private void testSorter(RelationSorterProvider provider, RelationSorter sorterId,
+      Class<? extends IRelationSorter> clazz) {
       IRelationSorter actual = provider.getRelationOrder(sorterId);
       Assert.assertEquals(sorterId, actual.getSorterId());
       Assert.assertEquals(clazz, actual.getClass());

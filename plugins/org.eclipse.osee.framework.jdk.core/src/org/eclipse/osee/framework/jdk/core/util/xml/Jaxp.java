@@ -396,18 +396,21 @@ public class Jaxp {
       return findElement(e, Arrays.asList(elementPath.split("/")));
    }
 
-   public static Document readXmlDocument(InputStream is, String encoding) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocument(InputStream is, String encoding)
+      throws ParserConfigurationException, SAXException, IOException {
       InputSource inputSource = new InputSource(is);
       inputSource.setEncoding(encoding);
       DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
       return builder.parse(inputSource);
    }
 
-   public static Document nonDeferredreadXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+   public static Document nonDeferredreadXmlDocument(String xmlString)
+      throws ParserConfigurationException, SAXException, IOException {
       return Jaxp.nonDeferredReadXmlDocument(Lib.stringToInputStream(xmlString), "UTF-8");
    }
 
-   public static Document nonDeferredReadXmlDocument(InputStream is, String encoding) throws ParserConfigurationException, SAXException, IOException {
+   public static Document nonDeferredReadXmlDocument(InputStream is, String encoding)
+      throws ParserConfigurationException, SAXException, IOException {
       InputSource inputSource = new InputSource(is);
       inputSource.setEncoding(encoding);
       NonDeferredNamespceUnawareFactory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
@@ -415,7 +418,8 @@ public class Jaxp {
       return builder.parse(inputSource);
    }
 
-   public static Document readXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocument(String xmlString)
+      throws ParserConfigurationException, SAXException, IOException {
       return readXmlDocument(Lib.stringToInputStream(xmlString));
    }
 
@@ -423,27 +427,33 @@ public class Jaxp {
       return readXmlDocument(new FileInputStream(xmlFile));
    }
 
-   public static Document readXmlDocumentFromResource(Class<?> base, String name) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocumentFromResource(Class<?> base, String name)
+      throws ParserConfigurationException, SAXException, IOException {
       return readXmlDocument(base.getResourceAsStream(name));
    }
 
-   public static Document readXmlDocument(InputStream input) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocument(InputStream input)
+      throws ParserConfigurationException, SAXException, IOException {
       return namespceUnawareFactory.newDocumentBuilder().parse(input);
    }
 
-   public static Document readXmlDocumentFromResourceNamespaceAware(Class<?> base, String name) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocumentFromResourceNamespaceAware(Class<?> base, String name)
+      throws ParserConfigurationException, SAXException, IOException {
       return readXmlDocumentNamespaceAware(base.getResourceAsStream(name));
    }
 
-   public static Document readXmlDocumentNamespaceAware(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocumentNamespaceAware(String xmlString)
+      throws ParserConfigurationException, SAXException, IOException {
       return readXmlDocumentNamespaceAware(Lib.stringToInputStream(xmlString));
    }
 
-   public static Document readXmlDocumentNamespaceAware(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocumentNamespaceAware(File xmlFile)
+      throws ParserConfigurationException, SAXException, IOException {
       return readXmlDocumentNamespaceAware(new FileInputStream(xmlFile));
    }
 
-   public static Document readXmlDocumentNamespaceAware(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocumentNamespaceAware(InputStream is)
+      throws ParserConfigurationException, SAXException, IOException {
       return namespceAwareFactory.newDocumentBuilder().parse(is);
    }
 
@@ -483,7 +493,8 @@ public class Jaxp {
     * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
     * indentation off to save space.
     */
-   public static void writeXmlDocument(Document document, File file, Properties format) throws TransformerException, IOException {
+   public static void writeXmlDocument(Document document, File file, Properties format)
+      throws TransformerException, IOException {
       BufferedWriter out = new BufferedWriter(new FileWriter(file));
       outputXmlDocument(document, out, format);
       out.close();
@@ -505,7 +516,8 @@ public class Jaxp {
    /**
     * Sends the XML to the output
     */
-   public static void outputXmlDocument(Node node, Writer output, Properties outputProperties) throws TransformerException {
+   public static void outputXmlDocument(Node node, Writer output, Properties outputProperties)
+      throws TransformerException {
       Transformer transformer = TransformerFactory.newInstance().newTransformer();
       transformer.setOutputProperties(outputProperties);
       transformer.transform(new DOMSource(node), new StreamResult(output));
@@ -561,7 +573,8 @@ public class Jaxp {
       return buffer.toString();
    }
 
-   public static final Collection<Node> selectNodesViaXPath(XPath xPath, Node startingNode, String xPathExpression) throws XPathExpressionException {
+   public static final Collection<Node> selectNodesViaXPath(XPath xPath, Node startingNode, String xPathExpression)
+      throws XPathExpressionException {
       Collection<Node> data = new ArrayList<>();
       XPathExpression expression = xPath.compile(xPathExpression);
       Object result = expression.evaluate(startingNode, XPathConstants.NODESET);
@@ -577,7 +590,8 @@ public class Jaxp {
       return factory.newXPath();
    }
 
-   public static void writeNode(XMLStreamWriter writer, Node node, boolean trimTextNodeWhitespace) throws XMLStreamException {
+   public static void writeNode(XMLStreamWriter writer, Node node, boolean trimTextNodeWhitespace)
+      throws XMLStreamException {
       if (node.getNodeType() == Node.ELEMENT_NODE) {
          Element element = (Element) node;
 
@@ -627,7 +641,8 @@ public class Jaxp {
       }
    }
 
-   public static void serialize(XMLStreamWriter writer, NodeList nodes, boolean trimTextNodeWhitespace) throws XMLStreamException {
+   public static void serialize(XMLStreamWriter writer, NodeList nodes, boolean trimTextNodeWhitespace)
+      throws XMLStreamException {
       for (int index = 0; index < nodes.getLength(); index++) {
          writeNode(writer, nodes.item(index), trimTextNodeWhitespace);
       }
@@ -636,7 +651,8 @@ public class Jaxp {
    /**
     * @param useAttrLocalName calls <code>getLocalName()</code> vs <code>getName()</code> on node.
     */
-   public static void writeAttrNode(XMLStreamWriter writer, Node node, boolean isEmptyValueValid) throws XMLStreamException {
+   public static void writeAttrNode(XMLStreamWriter writer, Node node, boolean isEmptyValueValid)
+      throws XMLStreamException {
       if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
          Attr attrNode = (Attr) node;
 

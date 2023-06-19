@@ -46,7 +46,8 @@ public class CoverageAdapter {
       this.dispoConnector = dispoConnector;
    }
 
-   public List<DispoItem> copyData(Map<String, ArtifactReadable> nameToCoverageUnit, List<DispoItem> dispoItems, OperationReport report) {
+   public List<DispoItem> copyData(Map<String, ArtifactReadable> nameToCoverageUnit, List<DispoItem> dispoItems,
+      OperationReport report) {
       Map<String, DispoItem> nameToDispoItem = getNameToDispoItemMap(dispoItems);
 
       List<DispoItem> modifiedItems = new ArrayList<>();

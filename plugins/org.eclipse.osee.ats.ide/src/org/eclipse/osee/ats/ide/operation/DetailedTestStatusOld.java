@@ -531,7 +531,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       String widgetLabel = xWidget.getLabel();
 
       if (widgetLabel.equals("Versions")) {
@@ -544,7 +545,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       String widgetName = xWidget.getLabel();
       if (widgetName.equals(PROGRAM)) {
          XAtsProgramComboWidget programWidget = (XAtsProgramComboWidget) xWidget;

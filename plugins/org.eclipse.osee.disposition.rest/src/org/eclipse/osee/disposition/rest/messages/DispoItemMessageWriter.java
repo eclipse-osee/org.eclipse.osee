@@ -36,12 +36,15 @@ public class DispoItemMessageWriter implements MessageBodyWriter<DispoItem> {
    }
 
    @Override
-   public long getSize(DispoItem dispoItem, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(DispoItem dispoItem, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
    @Override
-   public void writeTo(DispoItem dispoItem, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(DispoItem dispoItem, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       String jsonString = JsonUtil.toJson(dispoItem);
       entityStream.write(jsonString.getBytes(Strings.UTF_8));
    }

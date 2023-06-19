@@ -448,7 +448,8 @@ public class ArtifactTopicEventTest {
       return false;
    }
 
-   private RemoteArtifactTopicEvent getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt, Collection<EventTopicAttributeChangeTransfer> attributeChanges) {
+   private RemoteArtifactTopicEvent getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt,
+      Collection<EventTopicAttributeChangeTransfer> attributeChanges) {
       // Create fake remote event that would come in from another client
       ArtifactTopicEvent topicEvent = new ArtifactTopicEvent(COMMON);
       topicEvent.setTransaction(tx);
@@ -462,7 +463,9 @@ public class ArtifactTopicEventTest {
       return remoteTopicEvent;
    }
 
-   private RemoteArtifactTopicEvent getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(RelationId relationId, RelationEventType relationEventType, RelationTypeToken relType, Artifact artA, Artifact artB, String rationale) {
+   private RemoteArtifactTopicEvent getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(
+      RelationId relationId, RelationEventType relationEventType, RelationTypeToken relType, Artifact artA,
+      Artifact artB, String rationale) {
       ArtifactTopicEvent topicEvent = new ArtifactTopicEvent(COMMON);
       topicEvent.setTransaction(tx);
       EventTopicRelationTransfer relationTransfer = FrameworkEventUtil.relationTransferFactory(relationEventType, artA,
@@ -720,7 +723,8 @@ public class ArtifactTopicEventTest {
       return injectArt;
    }
 
-   private Artifact remoteInjection_relations_addNewRelationWithRationale(Artifact rootArt, Artifact injectArt) throws Exception {
+   private Artifact remoteInjection_relations_addNewRelationWithRationale(Artifact rootArt, Artifact injectArt)
+      throws Exception {
       listener.reset();
 
       String RATIONALE_STR = "This is the rationale";
@@ -754,7 +758,8 @@ public class ArtifactTopicEventTest {
       return injectArt;
    }
 
-   private Artifact remoteInjection_relations_modifyRelationRationale(Artifact rootArt, Artifact injectArt) throws Exception {
+   private Artifact remoteInjection_relations_modifyRelationRationale(Artifact rootArt, Artifact injectArt)
+      throws Exception {
       listener.reset();
 
       String NEW_RATIONALE_STR = "This is the NEW rationale";

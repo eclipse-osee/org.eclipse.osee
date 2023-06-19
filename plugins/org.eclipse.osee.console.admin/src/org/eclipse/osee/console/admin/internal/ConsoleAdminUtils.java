@@ -134,7 +134,8 @@ public final class ConsoleAdminUtils {
       }
    }
 
-   public static void checkNotNull(Object object, String objectName, String details, Object... data) throws IllegalArgumentException {
+   public static void checkNotNull(Object object, String objectName, String details, Object... data)
+      throws IllegalArgumentException {
       if (object == null) {
          String message = String.format(details, data);
          throw new IllegalArgumentException(String.format("%s cannot be null - %s", objectName, message));

@@ -41,9 +41,8 @@ public class Pdd81CreateButtonWDoesntWorkAction implements IPopulateDemoDatabase
 
       ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), "Problem with the Situation Page",
-         ChangeTypes.Problem, "3", false, null, aias, new Date(),
-         AtsApiService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
-         changes);
+         ChangeTypes.Problem, "3", false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
+         Arrays.asList(new ArtifactTokenActionListener()), changes);
 
       setValidationRequired(changes, actionResult.getFirstTeam());
 

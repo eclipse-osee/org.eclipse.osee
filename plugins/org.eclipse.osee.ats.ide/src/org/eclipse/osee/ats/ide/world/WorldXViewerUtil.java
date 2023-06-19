@@ -121,7 +121,8 @@ public class WorldXViewerUtil {
       return null;
    }
 
-   public static void addColumn(SkynetXViewerFactory factory, XViewerColumn xCol, int width, List<XViewerColumn> xCols) {
+   public static void addColumn(SkynetXViewerFactory factory, XViewerColumn xCol, int width,
+      List<XViewerColumn> xCols) {
       XViewerColumn newCol = xCol.copy();
       newCol.setShow(true);
       newCol.setWidth(width);

@@ -54,12 +54,14 @@ public class AccountFactory {
       return new AccountWebPreferences(webPreferencesJson, artifact.getName());
    }
 
-   public AccountSession newAccountSession(ArtifactId accountId, String sessionToken, String accessedFrom, String accessDetails) {
+   public AccountSession newAccountSession(ArtifactId accountId, String sessionToken, String accessedFrom,
+      String accessDetails) {
       Date currentDate = new Date();
       return newAccountSession(accountId, sessionToken, currentDate, currentDate, accessedFrom, accessDetails);
    }
 
-   public AccountSession newAccountSession(ArtifactId accountId, String sessionToken, Date createdOn, Date lastAccessedOn, String accessedFrom, String accessDetails) {
+   public AccountSession newAccountSession(ArtifactId accountId, String sessionToken, Date createdOn,
+      Date lastAccessedOn, String accessedFrom, String accessDetails) {
       AccountSessionImpl session = new AccountSessionImpl();
       session.setAccountId(accountId.getId());
       session.setSessionToken(sessionToken);

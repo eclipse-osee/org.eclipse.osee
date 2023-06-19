@@ -289,7 +289,8 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       createOptionButton(composite, INCLUDE_IMPD_KEY, INCLUDE_IMPD_BUTTON, INCLUDE_IMPD_TOOLTIP, isImpdIncluded);
    }
 
-   private void createOptionButton(Composite parent, String buttonId, String buttonText, String buttonToolTip, final MutableBoolean toModify) {
+   private void createOptionButton(Composite parent, String buttonId, String buttonText, String buttonToolTip,
+      final MutableBoolean toModify) {
       Button optionButton = new Button(parent, SWT.CHECK);
       optionButton.setText(buttonText);
       optionButton.setToolTipText(buttonToolTip);

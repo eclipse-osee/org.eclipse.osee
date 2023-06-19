@@ -20,14 +20,12 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;

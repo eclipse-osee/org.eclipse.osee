@@ -113,13 +113,15 @@ public final class TestPlanComplianceReportTest {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
    }
 
-   private void buildTest(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) throws Exception {
+   private void buildTest(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount)
+      throws Exception {
       resultBuffer = new StringWriter();
       testCompReport.runOperation(loadArtifacts(amountOfTestProcedures, testProcedureStatus, testResultsAmount),
          new NullProgressMonitor(), resultBuffer, false);
    }
 
-   private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) {
+   private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus,
+      int testResultsAmount) {
       Artifact testPlan =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElementMsWord, SAW_Bld_1, "Sample_Test_Plan");
       testPlan.persist(getClass().getSimpleName());

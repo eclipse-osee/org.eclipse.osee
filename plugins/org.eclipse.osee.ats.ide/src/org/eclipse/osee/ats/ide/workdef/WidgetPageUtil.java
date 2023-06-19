@@ -57,7 +57,8 @@ public class WidgetPageUtil {
       }
    }
 
-   public static String getHtml(String backgroundColor, String preHtml, String postHtml, Set<XWidgetRendererItem> set, String name) {
+   public static String getHtml(String backgroundColor, String preHtml, String postHtml, Set<XWidgetRendererItem> set,
+      String name) {
       StringBuffer sb = new StringBuffer();
       int defaultWidth = 100;
       sb.append(AHTML.startBorderTable(defaultWidth, backgroundColor, name));
@@ -79,7 +80,8 @@ public class WidgetPageUtil {
       return sb.toString();
    }
 
-   public static void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public static void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit,
+      Artifact art, XModifiedListener xModListener, boolean isEditable) {
 
       // If no tool tip, add global tool tip
       if (!Strings.isValid(xWidget.getToolTip())) {
@@ -109,7 +111,8 @@ public class WidgetPageUtil {
 
    }
 
-   public static void generateLayoutDatas(AbstractWorkflowArtifact sma, Collection<LayoutItem> layoutItems, SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static void generateLayoutDatas(AbstractWorkflowArtifact sma, Collection<LayoutItem> layoutItems,
+      SwtXWidgetRenderer dynamicXWidgetLayout) {
       // Add static layoutDatas to statePage
       for (LayoutItem stateItem : layoutItems) {
          if (stateItem instanceof WidgetDefinition) {
@@ -120,7 +123,8 @@ public class WidgetPageUtil {
       }
    }
 
-   public static void processComposite(CompositeLayoutItem compositeLayoutItem, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static void processComposite(CompositeLayoutItem compositeLayoutItem, AbstractWorkflowArtifact sma,
+      SwtXWidgetRenderer dynamicXWidgetLayout) {
       boolean firstWidget = true;
 
       // Group Comp is stand-alone renderer item
@@ -169,7 +173,8 @@ public class WidgetPageUtil {
    /**
     * TODO This will eventually go away and ATS pages will be generated straight from WidgetDefinitions.
     */
-   public static XWidgetRendererItem processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma, SwtXWidgetRenderer dynamicXWidgetLayout) {
+   public static XWidgetRendererItem processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma,
+      SwtXWidgetRenderer dynamicXWidgetLayout) {
       XWidgetRendererItem data = null;
       try {
          data = new XWidgetRendererItem(dynamicXWidgetLayout);

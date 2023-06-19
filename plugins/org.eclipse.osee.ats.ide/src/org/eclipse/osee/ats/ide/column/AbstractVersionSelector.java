@@ -66,7 +66,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       return promptChangeVersion(sma, null, null);
    }
 
-   public boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType verRelType, VersionLockedType verLockType) {
+   public boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType verRelType,
+      VersionLockedType verLockType) {
       return promptChangeVersionMultiSelect(Arrays.asList((TeamWorkFlowArtifact) sma), verRelType, verLockType);
    }
 
@@ -78,7 +79,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       return (getRelation().equals(FoundInVersionColumnUI.getInstance().getRelation()));
    }
 
-   public boolean promptChangeVersionMultiSelect(List<TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) {
+   public boolean promptChangeVersionMultiSelect(List<TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType,
+      VersionLockedType versionLockType) {
       if (awas.isEmpty()) {
          return false;
       }
@@ -151,7 +153,8 @@ public abstract class AbstractVersionSelector extends XViewerAtsColumnIdColumn i
       return true;
    }
 
-   public IAtsVersion promptVersionSelectorDialog(TeamWorkFlowArtifact teamArt, VersionReleaseType versionReleaseType, VersionLockedType versionLockType, IAtsTeamDefinition teamDefHoldingVersions) {
+   public IAtsVersion promptVersionSelectorDialog(TeamWorkFlowArtifact teamArt, VersionReleaseType versionReleaseType,
+      VersionLockedType versionLockType, IAtsTeamDefinition teamDefHoldingVersions) {
       if (teamDefHoldingVersions == null) {
          teamDefHoldingVersions = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
             teamArt.getTeamDefinition());

@@ -384,7 +384,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       }
    }
 
-   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, ArtifactToken folderTok, File file) throws Exception {
+   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, ArtifactToken folderTok,
+      File file) throws Exception {
       Artifact systemReq = ArtifactQuery.getArtifactFromId(folderTok, branch);
 
       IArtifactImportResolver artifactResolver = ArtifactResolverFactory.createAlwaysNewArtifacts(requirementType);

@@ -83,8 +83,7 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
          TeamWorkFlowArtifact teamArt =
             (TeamWorkFlowArtifact) ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          if (teamArt != null) {
-            for (IAtsActionableItem aia : AtsApiService.get().getActionableItemService().getActionableItems(
-               teamArt)) {
+            for (IAtsActionableItem aia : AtsApiService.get().getActionableItemService().getActionableItems(teamArt)) {
                for (ArtifactToken art : AtsApiService.get().getRelationResolver().getRelated(aia.getStoreObject(),
                   AtsRelationTypes.ActionableItem_User)) {
                   users.add((User) art);

@@ -115,7 +115,8 @@ public class EmailActionsBlam extends AbstractBlam {
       logf("Sent %s notifications.", sent);
    }
 
-   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact workItem, AtsNotificationCollector notifications) {
+   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact workItem,
+      AtsNotificationCollector notifications) {
       Collection<AtsUser> recipients = getRecipients(data.getEmailRecipient(), workItem);
       Collection<AtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(recipients);
       if (activeEmailUsers.isEmpty()) {
@@ -145,9 +146,8 @@ public class EmailActionsBlam extends AbstractBlam {
          AtsNotificationEventFactory.getNotificationEvent(AtsApiService.get().getUserService().getCurrentUser(),
             recipients, getIdString(workItem), data.getEmailRecipient().name(),
             String.format("You are the %s of [%s] in state [%s] titled [%s] created on [%s]",
-               data.getEmailRecipient().name(), workItem.getArtifactTypeName(),
-               workItem.getCurrentStateName(), workItem.getName(),
-               DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
+               data.getEmailRecipient().name(), workItem.getArtifactTypeName(), workItem.getCurrentStateName(),
+               workItem.getName(), DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYYHHMM)));
       notificationEvent.setUrl(AtsApiService.get().getWorkItemService().getHtmlUrl(workItem, AtsApiService.get()));
       if (includeCancelHyperlink) {
          if (AtsApiService.get().getWorkItemService().isCancelHyperlinkConfigured()) {
@@ -203,7 +203,8 @@ public class EmailActionsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;

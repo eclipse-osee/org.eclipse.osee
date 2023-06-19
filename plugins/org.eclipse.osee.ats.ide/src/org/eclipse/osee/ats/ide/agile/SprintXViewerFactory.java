@@ -51,7 +51,8 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
 
       // Add default Sprint columns
       WorldXViewerUtil.addColumn(this, SprintOrderColumn.getInstance(), 45, sprintCols);
-      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn), 339, sprintCols);
+      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn), 339,
+         sprintCols);
       WorldXViewerUtil.addColumn(this, AgileTeamPointsColumnUI.getInstance(),
          AtsColumnTokens.AgileTeamPointsColumn.getWidth(), sprintCols);
       WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), 74,

@@ -32,7 +32,9 @@ public final class EncryptUtility {
    private final static String TRANSFORMATION = "AES/ECB/PKCS5Padding";
    private final static String ALGORITHM = "AES";
 
-   public static String encryptWithExceptions(String plainText, String secret, String transformation, String algorithm) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException {
+   public static String encryptWithExceptions(String plainText, String secret, String transformation, String algorithm)
+      throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+      NoSuchPaddingException, UnsupportedEncodingException {
       Cipher cipher = Cipher.getInstance(transformation);
       cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(secret.getBytes(), algorithm));
 
@@ -42,7 +44,9 @@ public final class EncryptUtility {
       return new String(encoder.encode(encrypted), "UTF-8");
    }
 
-   public static String decryptWithExceptions(String codedText, String secret, String transformation, String algorithm) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException {
+   public static String decryptWithExceptions(String codedText, String secret, String transformation, String algorithm)
+      throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
+      NoSuchPaddingException, UnsupportedEncodingException {
       Base64 encoder = new Base64(32, linebreak, true);
       byte[] encypted = encoder.decode(codedText.getBytes());
 

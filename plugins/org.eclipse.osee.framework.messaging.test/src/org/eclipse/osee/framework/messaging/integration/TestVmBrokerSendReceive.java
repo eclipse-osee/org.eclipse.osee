@@ -18,7 +18,7 @@ import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.OSEE_VM
 import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.OSEE_VM_NODE;
 import static org.eclipse.osee.framework.messaging.data.TestMessages.VM_TOPIC;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import java.util.List;

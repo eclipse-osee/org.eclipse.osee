@@ -33,7 +33,8 @@ public class AtsOperationalImpactWithWorkaroundValidator implements IAtsXWidgetV
    public static String WIDGET_NAME = "OperationalImpactWithWorkaroundXWidget";
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Success;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          if (provider instanceof TeamWorkFlowArtifact) {

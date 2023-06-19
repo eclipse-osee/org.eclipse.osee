@@ -79,10 +79,10 @@ public class WordTemplateProcessorTest {
    @Test
    public void getEmptyHeadersTest_case3() {
 
-      Artifact eventImplementation = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
-         "Event Implementation", SAW_Bld_1);
-      Artifact methodName =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord, "Method name", SAW_Bld_1);
+      Artifact eventImplementation = ArtifactQuery.getArtifactFromTypeAndName(
+         CoreArtifactTypes.SoftwareRequirementMsWord, "Event Implementation", SAW_Bld_1);
+      Artifact methodName = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirementMsWord,
+         "Method name", SAW_Bld_1);
 
       Assert.assertFalse(results.contains(eventImplementation));
       Assert.assertFalse(results.contains(methodName));

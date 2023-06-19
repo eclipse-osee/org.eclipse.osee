@@ -107,7 +107,8 @@ public class XMLStreamWriterPrettyPrint implements XMLStreamWriter {
    }
 
    @Override
-   public void writeAttribute(String prefix, String namespaceURI, String localName, String value) throws XMLStreamException {
+   public void writeAttribute(String prefix, String namespaceURI, String localName, String value)
+      throws XMLStreamException {
       writer.writeAttribute(prefix, namespaceURI, localName, value);
    }
 

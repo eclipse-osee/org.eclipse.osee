@@ -190,7 +190,8 @@ public class WordArtifactElementExtractorTest {
       return stringBuilder.toString();
    }
 
-   private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected) throws IOException, XMLStreamException {
+   private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected)
+      throws IOException, XMLStreamException {
       for (int i = 0; i < actuals.size(); i++) {
          String artContent = WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
             MSWordTemplateClientRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
@@ -199,7 +200,8 @@ public class WordArtifactElementExtractorTest {
       }
    }
 
-   private Document getDocumentWrapTags(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+   private Document getDocumentWrapTags(String xmlString)
+      throws ParserConfigurationException, SAXException, IOException {
       return getDocument(WORDML_START + xmlString + WORDML_END);
    }
 

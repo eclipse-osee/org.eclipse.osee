@@ -36,7 +36,9 @@ public class DispoItemMessageReader implements MessageBodyReader<DispoItemData> 
    }
 
    @Override
-   public DispoItemData readFrom(Class<DispoItemData> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+   public DispoItemData readFrom(Class<DispoItemData> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+      throws IOException, WebApplicationException {
       String inputStreamToString = Lib.inputStreamToString(entityStream);
       return JsonUtil.readValue(inputStreamToString, DispoItemData.class);
    }

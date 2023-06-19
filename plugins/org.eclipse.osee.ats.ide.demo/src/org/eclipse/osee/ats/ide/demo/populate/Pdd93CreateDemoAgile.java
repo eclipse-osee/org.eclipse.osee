@@ -383,9 +383,8 @@ public class Pdd93CreateDemoAgile {
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
          DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
-      TransitionData transData =
-         new TransitionData("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
-            null, changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionData transData = new TransitionData("Transition Agile Stprint", Arrays.asList(sprint),
+         TeamState.Completed.getName(), null, null, changes, TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       if (results.isErrors()) {
          throw new OseeStateException("Exception transitioning sprint: %s", results.toString());

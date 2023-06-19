@@ -79,9 +79,8 @@ public class TaskTestUtil {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }
-      TransitionData transData =
-         new TransitionData("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
-            Arrays.asList(toUser), null, null, TransitionOption.OverrideAssigneeCheck);
+      TransitionData transData = new TransitionData("Transition to InWork", Arrays.asList(taskArt),
+         TaskStates.InWork.getName(), Arrays.asList(toUser), null, null, TransitionOption.OverrideAssigneeCheck);
       transData.addTransitionHook(new IAtsTransitionHook() {
 
          @Override

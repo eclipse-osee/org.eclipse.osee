@@ -51,12 +51,16 @@ public class DispoSetCopier {
       this.connector = connector;
    }
 
-   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report) {
+   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems,
+      Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns,
+      OperationReport report) {
       return copyAllDispositions(nameToDestItems, sourceItems, isCoverageCopy, reruns, false, Collections.emptySet(),
          report);
    }
 
-   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns, boolean allowOnlyValidResolutionTypes, Set<String> validResolutionsTypes, OperationReport report) {
+   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems,
+      Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns,
+      boolean allowOnlyValidResolutionTypes, Set<String> validResolutionsTypes, OperationReport report) {
       List<DispoItem> modifiedItems = new ArrayList<>();
 
       // Iterate through every source item since we want to try to find a match for every item in the source
@@ -94,7 +98,8 @@ public class DispoSetCopier {
       return modifiedItems;
    }
 
-   private DispoItemData getCorrespondingDestItem(Map<String, Set<DispoItemData>> nameToDestItems, DispoItem sourceItem) {
+   private DispoItemData getCorrespondingDestItem(Map<String, Set<DispoItemData>> nameToDestItems,
+      DispoItem sourceItem) {
       DispoItemData destItem = null;
       String name = sourceItem.getName();
       Set<DispoItemData> itemsWithSameName = nameToDestItems.get(name);
@@ -115,7 +120,9 @@ public class DispoSetCopier {
       return destItem;
    }
 
-   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report, boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
+   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem,
+      boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report,
+      boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
       DispoItemData toReturn = null;
       boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
       if (!isSameDiscrepancies) {
@@ -129,7 +136,9 @@ public class DispoSetCopier {
       return toReturn;
    }
 
-   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report, boolean isSameDiscrepancies, boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
+   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy,
+      HashMap<String, String> reruns, OperationReport report, boolean isSameDiscrepancies,
+      boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
       boolean isChangesMade = false;
       DispoItemData newItem = initNewItem(destItem, sourceItem);
       List<DispoAnnotationData> newAnnotations = newItem.getAnnotationsList();
@@ -163,25 +172,20 @@ public class DispoSetCopier {
              * isCoverageCopy is true when annotation copier is called by a coverage import, this means we need to also
              * check that the matching dest annotation isn't a DEFAULT resolution before copying over.
              */
-            report.addEntry(destItem.getName(),
-               String.format(
-                  "Did not copy annotations for location(s) [%s] because the destination item already has a default annotations at these locations",
-                  sourceAnnotation.getLocationRefs()),
-               IGNORE);
+            report.addEntry(destItem.getName(), String.format(
+               "Did not copy annotations for location(s) [%s] because the destination item already has a default annotations at these locations",
+               sourceAnnotation.getLocationRefs()), IGNORE);
 
          } else if (newAnnotations.toString().contains(sourceAnnotation.getGuid())) {
-            report.addEntry(destItem.getName(),
-               String.format(
-                  "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
-                  sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid()),
-               IGNORE);
+            report.addEntry(destItem.getName(), String.format(
+               "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
+               sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid()), IGNORE);
 
-         } else if (allowOnlyValidResolutionTypes && !validResolutionTypes.contains(sourceAnnotation.getResolutionType())) {
-            report.addEntry(destItem.getName(),
-               String.format(
-                  "Did not copy annotations for location(s) [%s] because the resolution [%s] does not exist in the destination program",
-                  sourceAnnotation.getLocationRefs(), sourceAnnotation.getResolutionType()),
-               IGNORE);
+         } else if (allowOnlyValidResolutionTypes && !validResolutionTypes.contains(
+            sourceAnnotation.getResolutionType())) {
+            report.addEntry(destItem.getName(), String.format(
+               "Did not copy annotations for location(s) [%s] because the resolution [%s] does not exist in the destination program",
+               sourceAnnotation.getLocationRefs(), sourceAnnotation.getResolutionType()), IGNORE);
          } else {
             // Try to copy but check if Discrepancy is the same and present in the destination set
             if (isSameDiscrepancies && isCoveredDiscrepanciesExistInDest(destDiscrepanciesTextOnly, sourceItem,
@@ -245,7 +249,8 @@ public class DispoSetCopier {
       return newItem;
    }
 
-   private boolean isCoveredDiscrepanciesExistInDest(List<String> destDescrepanciesTextOnly, DispoItem sourceItem, DispoAnnotationData annotation, OperationReport report) {
+   private boolean isCoveredDiscrepanciesExistInDest(List<String> destDescrepanciesTextOnly, DispoItem sourceItem,
+      DispoAnnotationData annotation, OperationReport report) {
       List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
       Map<String, Discrepancy> sourceDiscrepancies = sourceItem.getDiscrepanciesList();
       for (String id : idsOfCoveredDiscrepancies) {
@@ -346,7 +351,8 @@ public class DispoSetCopier {
       return locationToText;
    }
 
-   public void copyCategories(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
+   public void copyCategories(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems,
+      Map<String, DispoItem> toEdit, CopySetParamOption option) {
       for (DispoItem sourceItem : sourceItems) {
          DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
@@ -396,7 +402,8 @@ public class DispoSetCopier {
       }
    }
 
-   public void copyAssignee(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
+   public void copyAssignee(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems,
+      Map<String, DispoItem> toEdit, CopySetParamOption option) {
       for (DispoItem sourceItem : sourceItems) {
          DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
@@ -441,7 +448,8 @@ public class DispoSetCopier {
       }
    }
 
-   public void copyNotes(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
+   public void copyNotes(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems,
+      Map<String, DispoItem> toEdit, CopySetParamOption option) {
       for (DispoItem sourceItem : sourceItems) {
          DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 

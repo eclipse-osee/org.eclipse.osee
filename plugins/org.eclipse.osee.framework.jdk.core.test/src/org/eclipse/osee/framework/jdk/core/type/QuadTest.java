@@ -30,14 +30,10 @@ public class QuadTest {
    private final Quad<Integer, Integer, Integer, Integer> alsoMapToPi = new Quad<>(a, b, c, d);
    private final Quad<Integer, Integer, Integer, Integer> alsoMapToE = new Quad<>(b, c, d, a);
 
-   private final Quad<Integer, Integer, Integer, Integer> firstEntryNull =
-      new Quad<>(null, 222, 333, 444);
-   private final Quad<Integer, Integer, Integer, Integer> secondEntryNull =
-      new Quad<>(111, null, 333, 444);
-   private final Quad<Integer, Integer, Integer, Integer> thirdEntryNull =
-      new Quad<>(111, 222, null, 444);
-   private final Quad<Integer, Integer, Integer, Integer> fourthEntryNull =
-      new Quad<>(111, 222, 333, null);
+   private final Quad<Integer, Integer, Integer, Integer> firstEntryNull = new Quad<>(null, 222, 333, 444);
+   private final Quad<Integer, Integer, Integer, Integer> secondEntryNull = new Quad<>(111, null, 333, 444);
+   private final Quad<Integer, Integer, Integer, Integer> thirdEntryNull = new Quad<>(111, 222, null, 444);
+   private final Quad<Integer, Integer, Integer, Integer> fourthEntryNull = new Quad<>(111, 222, 333, null);
    private final Quad<Integer, Integer, Integer, Integer> nonNull = new Quad<>(111, 222, 333, 444);
 
    @org.junit.Test
@@ -127,8 +123,7 @@ public class QuadTest {
 
    @org.junit.Test
    public void testHashCorrectness() {
-      HashMap<Quad<Integer, Integer, Integer, Integer>, Double> hash =
-         new HashMap<>();
+      HashMap<Quad<Integer, Integer, Integer, Integer>, Double> hash = new HashMap<>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
       Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));

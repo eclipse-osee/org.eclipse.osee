@@ -48,8 +48,8 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
 
    @Override
    public Collection<IAtsWorkPackage> getAllWorkPackages() {
-      Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromType(
-         AtsArtifactTypes.WorkPackage, AtsApiService.get().getAtsBranch());
+      Collection<ArtifactToken> selectableWorkPackageTokens =
+         ArtifactQuery.getArtifactTokenListFromType(AtsArtifactTypes.WorkPackage, AtsApiService.get().getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFrom(selectableWorkPackageTokens,
          AtsApiService.get().getAtsBranch())) {

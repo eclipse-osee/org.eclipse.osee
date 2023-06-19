@@ -81,7 +81,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
     * Usually used for unit-testing.
     */
    //@formatter:on
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor, Writer writer, boolean performFileWrite) throws Exception {
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor, Writer writer, boolean performFileWrite)
+      throws Exception {
       defaultWriter = writer;
       this.performFileWrite = performFileWrite;
 
@@ -117,7 +118,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       }
    }
 
-   private void writeRow(String testPlan, List<String> perfSpecs, List<String> pids, List<String> testProcNames, List<String> testProcStatuses, List<String> testResultNames, List<String> errors) throws IOException {
+   private void writeRow(String testPlan, List<String> perfSpecs, List<String> pids, List<String> testProcNames,
+      List<String> testProcStatuses, List<String> testResultNames, List<String> errors) throws IOException {
       List<List<List<String>>> allPartitions = new LinkedList<>();
       allPartitions.add(Lists.partition(perfSpecs, maxRowsPerCell));
       allPartitions.add(Lists.partition(pids, maxRowsPerCell));

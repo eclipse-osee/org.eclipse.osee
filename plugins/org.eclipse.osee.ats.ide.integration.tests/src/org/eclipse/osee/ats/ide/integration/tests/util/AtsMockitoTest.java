@@ -190,7 +190,8 @@ public class AtsMockitoTest {
       when(version.getId()).thenReturn(Lib.generateId());
    }
 
-   private void initializeState(StateDefinition state, String name, StateType type, int ordinal, List<StateDefinition> toStates, List<StateDefinition> overrideValidationStates) {
+   private void initializeState(StateDefinition state, String name, StateType type, int ordinal,
+      List<StateDefinition> toStates, List<StateDefinition> overrideValidationStates) {
       when(state.getName()).thenReturn(name);
       when(state.getWorkDefinition()).thenReturn(workDef);
       when(state.getStateType()).thenReturn(type);

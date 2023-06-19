@@ -61,9 +61,9 @@ public class CancelledDateColumnTest {
       Assert.assertNull(date);
       Assert.assertEquals("", CancelledDateColumn.getCancelledDateStr(teamArt));
 
-      TransitionData transData = new TransitionData("Transition to Cancelled", Arrays.asList(teamArt),
-         TeamState.Cancelled.getName(), null, "reason", null, TransitionOption.OverrideTransitionValidityCheck,
-         TransitionOption.OverrideAssigneeCheck);
+      TransitionData transData =
+         new TransitionData("Transition to Cancelled", Arrays.asList(teamArt), TeamState.Cancelled.getName(), null,
+            "reason", null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       Assert.assertTrue(results.toString(), results.isEmpty());
 
@@ -74,8 +74,8 @@ public class CancelledDateColumnTest {
          CancelledDateColumnUI.getInstance().getColumnText(teamArt, CancelledDateColumnUI.getInstance(), 0));
 
       transData = new TransitionData("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-         Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()), null, null, TransitionOption.OverrideTransitionValidityCheck,
-         TransitionOption.OverrideAssigneeCheck);
+         Collections.singleton(AtsApiService.get().getUserService().getCurrentUser()), null, null,
+         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       results = AtsApiService.get().getWorkItemServiceIde().transition(transData);
       Assert.assertTrue(results.toString(), results.isEmpty());
 

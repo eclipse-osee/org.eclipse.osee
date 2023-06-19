@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.core.internal.state;
 
 import static org.eclipse.osee.ats.core.users.AbstractUserTest.joe;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;

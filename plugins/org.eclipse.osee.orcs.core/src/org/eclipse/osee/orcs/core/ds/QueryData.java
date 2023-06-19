@@ -327,7 +327,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+   public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values,
+      QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       OptionsUtil.setFollowSearchInProgress(getOptions(), true);
       return addAndCheck(new CriteriaFollowSearch(isIncludeAllTypes, attributeTypes, values, options));
@@ -538,7 +539,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder and(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+   public QueryBuilder and(Collection<AttributeTypeId> attributeTypes, Collection<String> values,
+      QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       return addAndCheck(
          new CriteriaAttributeKeywords(isIncludeAllTypes, attributeTypes, tokenService, values, options));
@@ -636,7 +638,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       return depth;
    }
 
-   private QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, boolean terminalFollow) {
+   private QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
+      boolean terminalFollow) {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow));

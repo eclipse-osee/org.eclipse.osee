@@ -131,7 +131,8 @@ public class ValidationReportOperation extends AbstractOperation {
       rd.addTimeMapToResultData();
    }
 
-   private void processNewTitle(AbstractValidationRule newRule, List<AbstractValidationRule> rulesSorted, XResultData results) {
+   private void processNewTitle(AbstractValidationRule newRule, List<AbstractValidationRule> rulesSorted,
+      XResultData results) {
       results.logf("\n<b>%s</b>\n", newRule.getRuleTitle());
       for (AbstractValidationRule rule : rulesSorted) {
          if (rule.getRuleTitle().equals(newRule.getRuleTitle())) {

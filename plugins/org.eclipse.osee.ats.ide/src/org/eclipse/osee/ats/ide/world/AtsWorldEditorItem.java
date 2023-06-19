@@ -31,7 +31,8 @@ import org.eclipse.osee.ats.ide.world.search.AtsSearchWorkPackageSearchItem;
 public class AtsWorldEditorItem implements IAtsWorldEditorItem {
 
    @Override
-   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
+   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider,
+      WorldEditor worldEditor) {
       return Arrays.asList(new AtsExportAction(worldEditor.getWorldComposite().getWorldXViewer()),
          new DuplicateWorkflowViaWorldEditorAction(worldEditor.getWorldComposite().getWorldXViewer()));
    }

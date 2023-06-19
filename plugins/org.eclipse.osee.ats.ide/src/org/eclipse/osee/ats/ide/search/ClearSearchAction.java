@@ -39,8 +39,8 @@ public final class ClearSearchAction extends Action {
 
    @Override
    public void run() {
-      AtsSearchData searchData = AtsApiService.get().getQueryService().createSearchData(searchItem.getNamespace(),
-         searchItem.getSearchName());
+      AtsSearchData searchData =
+         AtsApiService.get().getQueryService().createSearchData(searchItem.getNamespace(), searchItem.getSearchName());
       searchData.getStateTypes().add(StateType.Working);
       searchItem.loadWidgets(searchData);
    }

@@ -105,8 +105,7 @@ public class ConfigData {
    public IAtsActionableItem getParentActionableItem() {
       IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
-      Collection<ActionableItem> fromAias =
-         AtsApiService.get().getActionableItemService().getActionableItems(teamDef);
+      Collection<ActionableItem> fromAias = AtsApiService.get().getActionableItemService().getActionableItems(teamDef);
       if (fromAias.size() == 1) {
          parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {

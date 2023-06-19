@@ -124,7 +124,9 @@ public class SearchWorkPackageOperationTest {
       }
    }
 
-   private static void addTest(List<Object[]> testData, String toSearch, Collection<Long> teamDefIds, boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active both, Collection<ArtifactId> expectedWpIds) {
+   private static void addTest(List<Object[]> testData, String toSearch, Collection<Long> teamDefIds,
+      boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active both,
+      Collection<ArtifactId> expectedWpIds) {
       testData.add(
          new Object[] {toSearch, teamDefIds, includeChildrenTeamDefs, aiIds, includeChildrenAIs, both, expectedWpIds});
    }

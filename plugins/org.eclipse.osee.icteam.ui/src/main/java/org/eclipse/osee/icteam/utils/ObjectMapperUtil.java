@@ -12,12 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.icteam.utils;
 
-import java.io.IOException;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Ajay Chandrahasan

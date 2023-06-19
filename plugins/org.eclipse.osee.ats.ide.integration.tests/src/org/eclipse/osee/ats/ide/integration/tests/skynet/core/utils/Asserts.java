@@ -54,7 +54,8 @@ public final class Asserts {
     * </ul>
     */
 
-   public static void assertException(String message, Class<? extends Throwable> expectedExceptionClass, String expectedExceptionMessageFragment, Exception exception) {
+   public static void assertException(String message, Class<? extends Throwable> expectedExceptionClass,
+      String expectedExceptionMessageFragment, Exception exception) {
 
       if (!expectedExceptionClass.isInstance(exception)) {
          //@formatter:off

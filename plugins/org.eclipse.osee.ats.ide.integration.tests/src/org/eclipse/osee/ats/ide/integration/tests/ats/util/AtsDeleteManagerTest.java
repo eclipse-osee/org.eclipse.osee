@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -169,7 +169,8 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.ActionPurge, 0, 0, 0, 0, 0);
    }
 
-   private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) {
+   private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows,
+      int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) {
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(),
          AtsApiService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
       CountingMap<ArtifactTypeToken> countMap = new CountingMap<>();

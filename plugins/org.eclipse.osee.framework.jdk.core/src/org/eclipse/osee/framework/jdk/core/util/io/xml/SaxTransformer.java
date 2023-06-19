@@ -30,7 +30,8 @@ public class SaxTransformer extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes)
+      throws XMLStreamException {
       writer.writeStartElement(localName);
       for (int i = 0; i < attributes.getLength(); i++) {
          writer.writeAttribute(attributes.getLocalName(i), attributes.getValue(i));

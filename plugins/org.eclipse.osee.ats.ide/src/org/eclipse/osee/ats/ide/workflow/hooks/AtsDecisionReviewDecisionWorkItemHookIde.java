@@ -54,7 +54,8 @@ public class AtsDecisionReviewDecisionWorkItemHookIde implements IAtsWorkItemHoo
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, boolean isEditable) {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art,
+      boolean isEditable) {
       if (art.isOfType(AtsArtifactTypes.DecisionReview) && stateDefinition.getName().equals(
          DecisionReviewState.Decision.getName())) {
          if (xWidget == null) {

@@ -21,7 +21,8 @@ import javax.xml.stream.XMLStreamWriter;
  */
 public class XMLStreamWriterUtil {
 
-   public static void writeElement(XMLStreamWriter writer, String elementName, String characterData) throws XMLStreamException {
+   public static void writeElement(XMLStreamWriter writer, String elementName, String characterData)
+      throws XMLStreamException {
       writer.writeStartElement(elementName);
       writer.writeCharacters(characterData);
       writer.writeEndElement();

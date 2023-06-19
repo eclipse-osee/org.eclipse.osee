@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.users;
 
-
 import org.eclipse.osee.ats.api.user.AtsUser;
 
 /**

@@ -191,7 +191,8 @@ public final class AtsEditors {
       }
    }
 
-   public static void openInAtsWorldEditor(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData) {
+   public static void openInAtsWorldEditor(String name, Collection<? extends Artifact> artifacts,
+      CustomizeData customizeData) {
       Set<Artifact> otherArts = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {

@@ -93,7 +93,8 @@ public class AtsQueryServiceIde {
       return toArtifacts(queryService.getArtifactsFromQuery(query, data));
    }
 
-   public Collection<Artifact> getArtifacts(BranchId branch, boolean includeInherited, ArtifactTypeToken... artifactType) {
+   public Collection<Artifact> getArtifacts(BranchId branch, boolean includeInherited,
+      ArtifactTypeToken... artifactType) {
       return toArtifacts(queryService.getArtifacts(branch, includeInherited, artifactType));
    }
 
@@ -149,7 +150,8 @@ public class AtsQueryServiceIde {
       return toArtifact(queryService.getArtifact(artifact, branch, deletionFlag));
    }
 
-   public Artifact getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction, DeletionFlag deletionFlag) {
+   public Artifact getHistoricalArtifactOrNull(ArtifactId artifact, TransactionToken transaction,
+      DeletionFlag deletionFlag) {
       return toArtifact(queryService.getHistoricalArtifactOrNull(artifact, transaction, deletionFlag));
    }
 

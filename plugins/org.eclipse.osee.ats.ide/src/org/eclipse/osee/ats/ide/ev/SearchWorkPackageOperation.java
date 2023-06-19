@@ -80,7 +80,8 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       }
    }
 
-   private void addAllAisIds(IProgressMonitor monitor, Collection<IAtsActionableItem> ais2, boolean includeChildrenAis2, List<ArtifactId> ids) {
+   private void addAllAisIds(IProgressMonitor monitor, Collection<IAtsActionableItem> ais2, boolean includeChildrenAis2,
+      List<ArtifactId> ids) {
       for (IAtsActionableItem ai : ais2) {
          ids.add(ai.getStoreObject());
          if (includeChildrenAis2) {
@@ -90,7 +91,8 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       }
    }
 
-   private void addAllTeamDefIds(IProgressMonitor monitor, Collection<TeamDefinition> teamDefs2, boolean includeChildrenTeamDefs2, List<ArtifactId> ids) {
+   private void addAllTeamDefIds(IProgressMonitor monitor, Collection<TeamDefinition> teamDefs2,
+      boolean includeChildrenTeamDefs2, List<ArtifactId> ids) {
       for (IAtsTeamDefinition teamDef : teamDefs2) {
          ids.add(teamDef.getStoreObject());
          if (includeChildrenTeamDefs2) {

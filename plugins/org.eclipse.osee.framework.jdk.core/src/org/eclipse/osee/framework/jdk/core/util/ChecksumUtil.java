@@ -64,7 +64,8 @@ public class ChecksumUtil {
       return getHexString(createChecksum(inputStream, algorithm));
    }
 
-   public static byte[] createChecksum(InputStream inputStream, String algorithm) throws IOException, NoSuchAlgorithmException {
+   public static byte[] createChecksum(InputStream inputStream, String algorithm)
+      throws IOException, NoSuchAlgorithmException {
       MessageDigest checksum = MessageDigest.getInstance(algorithm);
       byte[] buffer = new byte[1024];
       int numRead = -1;

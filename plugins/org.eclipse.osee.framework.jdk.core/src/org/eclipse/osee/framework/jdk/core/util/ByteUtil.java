@@ -59,7 +59,8 @@ public class ByteUtil {
       }
    }
 
-   public static void printHex(byte[] data, int bytesPerGroup, int groupPerLine, boolean isSpaced, StringBuilder strBuilder) {
+   public static void printHex(byte[] data, int bytesPerGroup, int groupPerLine, boolean isSpaced,
+      StringBuilder strBuilder) {
       for (int i = 0; i < data.length; i++) {
          strBuilder.append(ByteUtil.toHexString(data[i]));
          if ((i + 1) % bytesPerGroup == 0 && isSpaced) {
@@ -142,7 +143,8 @@ public class ByteUtil {
    /**
     * writes message data to a buffer in hex format
     */
-   public static void printByteDump(StringBuilder strBuilder, byte[] data, int offset, int length, int columnNum, boolean hex) {
+   public static void printByteDump(StringBuilder strBuilder, byte[] data, int offset, int length, int columnNum,
+      boolean hex) {
       int columnCount = 0;
       final int endIndex = offset + length;
       for (int i = offset; i < endIndex; i++) {

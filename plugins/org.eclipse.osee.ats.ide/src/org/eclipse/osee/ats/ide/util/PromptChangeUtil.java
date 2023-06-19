@@ -34,7 +34,8 @@ public final class PromptChangeUtil {
       // Utility class
    }
 
-   public static boolean promptChangeAttributeWI(final Collection<? extends IAtsWorkItem> workItems, AttributeTypeToken attributeType, boolean persist) {
+   public static boolean promptChangeAttributeWI(final Collection<? extends IAtsWorkItem> workItems,
+      AttributeTypeToken attributeType, boolean persist) {
       List<AbstractWorkflowArtifact> awas = new LinkedList<>();
       for (IAtsWorkItem workItem : workItems) {
          awas.add((AbstractWorkflowArtifact) workItem.getStoreObject());
@@ -42,11 +43,13 @@ public final class PromptChangeUtil {
       return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist);
    }
 
-   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, AttributeTypeToken attributeType, boolean persist) {
+   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas,
+      AttributeTypeToken attributeType, boolean persist) {
       return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist);
    }
 
-   public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, AttributeTypeToken attributeType, final boolean persist) {
+   public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, AttributeTypeToken attributeType,
+      final boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist);
       } catch (Exception ex) {
@@ -55,7 +58,8 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, boolean persist) {
+   public static boolean promptChangeAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType,
+      boolean persist) {
       if (workItem.getStoreObject() instanceof AbstractWorkflowArtifact) {
          return promptChangeAttribute((AbstractWorkflowArtifact) workItem.getStoreObject(), attributeType, persist);
       }

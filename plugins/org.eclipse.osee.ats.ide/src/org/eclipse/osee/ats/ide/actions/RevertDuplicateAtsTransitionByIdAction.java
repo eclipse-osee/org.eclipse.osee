@@ -117,7 +117,8 @@ public class RevertDuplicateAtsTransitionByIdAction extends Action {
       }
    }
 
-   protected static boolean revertTransition(Artifact art, XResultData results, boolean persist, SkynetTransaction persistTransaction) {
+   protected static boolean revertTransition(Artifact art, XResultData results, boolean persist,
+      SkynetTransaction persistTransaction) {
       List<Attribute<Object>> attributes = null;
       for (AttributeTypeId attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
          attributes = art.getAttributes(attrType);

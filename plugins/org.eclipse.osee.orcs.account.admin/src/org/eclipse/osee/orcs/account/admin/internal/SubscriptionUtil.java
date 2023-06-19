@@ -32,7 +32,8 @@ public final class SubscriptionUtil {
       boolean isActive(ArtifactId accountId, SubscriptionGroupId groupId);
    }
 
-   public static String toEncodedUuid(ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId, String subscriptionName) {
+   public static String toEncodedUuid(ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId,
+      String subscriptionName) {
       String rawData =
          String.format("%s:%s:%s:%s", accountId.getIdString(), accountDisplayName, groupId, subscriptionName);
       return EncryptUtility.encrypt(rawData, SUBSCRIPTION_SECRET);
@@ -53,12 +54,14 @@ public final class SubscriptionUtil {
          subscriptionName, delegate);
    }
 
-   public static Subscription fromData(ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId, String subscriptionName, boolean isActive) {
+   public static Subscription fromData(ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId,
+      String subscriptionName, boolean isActive) {
       String encodedUuid = toEncodedUuid(accountId, accountDisplayName, groupId, subscriptionName);
       return new SubscriptionImpl(encodedUuid, accountId, accountDisplayName, groupId, subscriptionName, isActive);
    }
 
-   public static Subscription fromArtifactData(ArtifactReadable account, ArtifactReadable subscription, boolean isActive) {
+   public static Subscription fromArtifactData(ArtifactReadable account, ArtifactReadable subscription,
+      boolean isActive) {
       String accountName = account.getName();
       SubscriptionGroupId subcriptionId = new SubscriptionGroupId(subscription.getId());
       String subscriptionName = subscription.getName();

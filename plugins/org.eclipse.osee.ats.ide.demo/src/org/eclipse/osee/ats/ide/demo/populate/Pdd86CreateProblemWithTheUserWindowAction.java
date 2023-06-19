@@ -41,9 +41,8 @@ public class Pdd86CreateProblemWithTheUserWindowAction implements IPopulateDemoD
 
       ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "Problem with the user window",
-         ChangeTypes.Problem, "4", false, null, aias, new Date(),
-         AtsApiService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
-         changes);
+         ChangeTypes.Problem, "4", false, null, aias, new Date(), AtsApiService.get().getUserService().getCurrentUser(),
+         Arrays.asList(new ArtifactTokenActionListener()), changes);
 
       transitionTo(actionResult.getFirstTeam(), TeamState.Implement, changes);
 

@@ -49,7 +49,8 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
          WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), PriorityColumnUI.getInstance(),
          ChangeTypeColumnUI.getInstance(), AssigneeColumnUI.getInstance(),
          WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow), new CreatedDateColumnUI(),
-         TargetedVersionColumnUI.getInstance(), WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn));
+         TargetedVersionColumnUI.getInstance(),
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn));
       return columns;
    }
    private final Integer[] widths = new Integer[] {

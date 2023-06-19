@@ -29,7 +29,8 @@ public interface ArtifactDataFactory {
 
    ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, ArtifactId artifactId);
 
-   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, ArtifactId artifactId, ApplicabilityId appId);
+   ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, String guid, ArtifactId artifactId,
+      ApplicabilityId appId);
 
    ArtifactData create(BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId);
 

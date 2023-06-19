@@ -407,7 +407,8 @@ public class ExcelAtsActionArtifactExtractor {
       }
    }
 
-   public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(Collection<IAtsActionableItem> aias) {
+   public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(
+      Collection<IAtsActionableItem> aias) {
       Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = new HashMap<>();
       for (IAtsActionableItem aia : aias) {
          IAtsTeamDefinition teamDef =

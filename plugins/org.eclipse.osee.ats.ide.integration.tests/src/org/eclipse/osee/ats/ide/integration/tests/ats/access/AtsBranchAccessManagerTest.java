@@ -57,7 +57,7 @@ public class AtsBranchAccessManagerTest {
       Assert.assertTrue(mgr.isApplicable(branch));
    }
 
-        @Test
+   @Test
    public void testGetContextIds() throws Exception {
       IAtsAccessService accessService = AtsApiService.get().getAtsAccessService();
       TeamWorkFlowArtifact teamArt = DemoUtil.getButtonWDoesntWorkOnSituationPageWf();

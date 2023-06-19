@@ -61,7 +61,8 @@ public abstract class ElementHandlers {
       }
    }
 
-   public abstract Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes);
+   public abstract Object createStartElementFoundObject(String uri, String localName, String name,
+      Attributes attributes);
 
    public Object createEndElementFoundObject(String uri, String localName, String name, String content) {
       return content;

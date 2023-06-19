@@ -27,7 +27,8 @@ import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
 public class AtsXHyperlinkMemberSelValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Success;
       if ("XHyperlabelMemberSelDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
