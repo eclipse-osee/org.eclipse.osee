@@ -622,49 +622,61 @@
 <plugin id="org.glassfish.jaxb.core"/>
 <plugin id="org.glassfish.jaxb.runtime"/>
 <plugin id="com.sun.istack.commons-runtime"/>
-	<plugin id="com.sun.xml.txw2"/>
-	<plugin id="com.jcraft.jsch.source"/>
-	<plugin id="org.apache.commons.codec.source"/>
-	<plugin id="org.apache.commons.io.source"/>
-	<plugin id="org.apache.httpcomponents.httpclient.source"/>
-	<plugin id="org.apache.httpcomponents.httpcore.source"/>
-	<plugin id="org.apache.lucene.analyzers-common.source"/>
-	<plugin id="org.apache.lucene.analyzers-smartcn.source"/>
-	<plugin id="org.apache.lucene.core.source"/>
-	<plugin id="org.eclipse.core.net.win32.x86_64.source"/>
-	<plugin id="org.eclipse.e4.ui.ide.source"/>
-	<plugin id="org.eclipse.ecf.source"/>
-	<plugin id="org.eclipse.emf.common.source"/>
-	<plugin id="org.eclipse.emf.ecore.change.source"/>
-	<plugin id="org.eclipse.emf.ecore.source"/>
-	<plugin id="org.eclipse.equinox.concurrent.source"/>
-	<plugin id="org.eclipse.equinox.http.jetty.source"/>
-	<plugin id="org.eclipse.help.source"/>
-	<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
-	<plugin id="org.eclipse.jdt.apt.ui.source"/>
-	<plugin id="org.eclipse.jdt.ui.source"/>
-	<plugin id="org.eclipse.jetty.http.source"/>
-	<plugin id="org.eclipse.jetty.util.source"/>
-	<plugin id="org.eclipse.pde.genericeditor.extension.source"/>
-	<plugin id="org.eclipse.text.source"/>
-	<plugin id="org.eclipse.ui.genericeditor.source"/>
-	<plugin id="org.eclipse.ui.source"/>
-	<plugin id="org.eclipse.ui.workbench.source"/>
-	<plugin id="org.eclipse.urischeme.source"/>
-	<plugin id="org.eclipse.rmf.reqif10.serialization"/>
-	<plugin id="org.eclipse.rmf.reqif10.xhtml"/>
-	<plugin id="org.eclipse.rmf.reqif10"/>
-	<plugin id="org.eclipse.sphinx.emf.serialization"/>
-	<plugin id="org.hsqldb"/>
+<plugin id="com.sun.xml.txw2"/>
+<plugin id="com.jcraft.jsch.source"/>
+<plugin id="org.apache.commons.codec.source"/>
+<plugin id="org.apache.commons.io.source"/>
+<plugin id="org.apache.httpcomponents.httpclient.source"/>
+<plugin id="org.apache.httpcomponents.httpcore.source"/>
+<plugin id="org.apache.lucene.analyzers-common.source"/>
+<plugin id="org.apache.lucene.analyzers-smartcn.source"/>
+<plugin id="org.apache.lucene.core.source"/>
+<plugin id="org.eclipse.core.net.win32.x86_64.source"/>
+<plugin id="org.eclipse.e4.ui.ide.source"/>
+<plugin id="org.eclipse.ecf.source"/>
+<plugin id="org.eclipse.emf.common.source"/>
+<plugin id="org.eclipse.emf.ecore.change.source"/>
+<plugin id="org.eclipse.emf.ecore.source"/>
+<plugin id="org.eclipse.equinox.concurrent.source"/>
+<plugin id="org.eclipse.equinox.http.jetty.source"/>
+<plugin id="org.eclipse.help.source"/>
+<plugin id="org.eclipse.jdt.annotation.source" version="2.2.600.v20200408-1511"/>
+<plugin id="org.eclipse.jdt.apt.ui.source"/>
+<plugin id="org.eclipse.jdt.ui.source"/>
+<plugin id="org.eclipse.jetty.http.source"/>
+<plugin id="org.eclipse.jetty.util.source"/>
+<plugin id="org.eclipse.pde.genericeditor.extension.source"/>
+<plugin id="org.eclipse.text.source"/>
+<plugin id="org.eclipse.ui.genericeditor.source"/>
+<plugin id="org.eclipse.ui.source"/>
+<plugin id="org.eclipse.ui.workbench.source"/>
+<plugin id="org.eclipse.urischeme.source"/>
+<plugin id="org.eclipse.rmf.reqif10.serialization"/>
+<plugin id="org.eclipse.rmf.reqif10.xhtml"/>
+<plugin id="org.eclipse.rmf.reqif10"/>
+<plugin id="org.eclipse.sphinx.emf.serialization"/>
+<plugin id="org.hsqldb"/>
 <plugin id="swagger-annotations"/>
 <plugin id="swagger-jaxrs2"/>
 <plugin id="swagger-models"/>
 <plugin id="swagger-integration"/>
 <plugin id="swagger-core"/>
-	<plugin id="org.apache.lucene.analyzers-common" version="8.4.1.v20200122-1459"/>
-	<plugin id="org.apache.lucene.core" version="8.4.1.v20200122-1459"/>
-	<plugin id="org.apache.lucene.core" version="6.1.0.v20170814-1820"/>
-	<plugin id="org.apache.commons.codec" version="1.13.0.v20200108-0001"/>
+<plugin id="org.apache.lucene.analyzers-common" version="8.4.1.v20200122-1459"/>
+<plugin id="org.apache.lucene.core" version="6.1.0.v20170814-1820"/>
+<plugin id="org.apache.lucene.core" version="8.4.1.v20200122-1459"/>
+<plugin id="org.apache.commons.codec" version="1.13.0.v20200108-0001"/>
+<plugin id="flexmark"/>
+<plugin id="flexmark-util-ast"/>
+<plugin id="flexmark-util-builder"/>
+<plugin id="flexmark-util-data"/>
+<plugin id="flexmark-util-collection"/>
+<plugin id="flexmark-util-dependency"/>
+<plugin id="flexmark-util-format"/>
+<plugin id="flexmark-util-html"/>
+<plugin id="flexmark-util-misc"/>
+<plugin id="flexmark-util-visitor"/>
+<plugin id="flexmark-util-sequence"/>
+<plugin id="annotations"/>
 </includeBundles>
 <environment>
 <os>win32</os>
