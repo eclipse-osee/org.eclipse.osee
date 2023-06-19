@@ -32,7 +32,7 @@ export class MockGraphNodeMenuComponent {
 		interfaceNodeNumber: '',
 		interfaceNodeGroupId: '',
 		interfaceNodeAddress: '',
-		interfaceNodeBgColor: '',
+		interfaceNodeBackgroundColor: '',
 		interfaceNodeBuildCodeGen: false,
 		interfaceNodeCodeGen: false,
 		interfaceNodeCodeGenName: '',

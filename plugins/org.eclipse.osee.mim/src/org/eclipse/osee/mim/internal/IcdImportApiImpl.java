@@ -83,8 +83,8 @@ public class IcdImportApiImpl implements MimImportApi {
       } else {
          primaryNode = new InterfaceNode(id, primaryNodeName);
          primaryNode.setApplicability(ApplicabilityToken.BASE);
-         primaryNode.setAddress("");
-         primaryNode.setColor("");
+         primaryNode.setInterfaceNodeAddress("");
+         primaryNode.setInterfaceNodeBackgroundColor("");
          primaryNode.setDescription("");
          incrementId();
          summary.getNodes().add(primaryNode);
@@ -94,8 +94,8 @@ public class IcdImportApiImpl implements MimImportApi {
       } else {
          secondaryNode = new InterfaceNode(id, secondaryNodeName);
          secondaryNode.setApplicability(ApplicabilityToken.BASE);
-         secondaryNode.setAddress("");
-         secondaryNode.setColor("");
+         secondaryNode.setInterfaceNodeAddress("");
+         secondaryNode.setInterfaceNodeBackgroundColor("");
          secondaryNode.setDescription("");
          incrementId();
          summary.getNodes().add(secondaryNode);
@@ -110,8 +110,8 @@ public class IcdImportApiImpl implements MimImportApi {
          connection = new InterfaceConnection(id, "");
          incrementId();
          connection.setApplicability(ApplicabilityToken.BASE);
-         connection.getNodes().add(primaryNode.getArtifactId());
-         connection.getNodes().add(secondaryNode.getArtifactId());
+         connection.getNodes().add(primaryNode);
+         connection.getNodes().add(secondaryNode);
          summary.getConnections().add(connection);
          List<String> rels =
             summary.getConnectionNodeRelations().getOrDefault(connection.getIdString(), new LinkedList<>());

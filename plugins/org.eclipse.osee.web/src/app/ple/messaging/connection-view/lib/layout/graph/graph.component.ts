@@ -14,8 +14,9 @@ import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
+import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
 import { Subject } from 'rxjs';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { AsyncPipe, NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
@@ -28,6 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import type {
 	connection,
 	connectionWithChanges,
+	newConnection,
 	node,
 	nodeData,
 	nodeDataWithChanges,
@@ -160,6 +162,28 @@ export class GraphComponent implements OnInit, OnDestroy {
 						dialogResponse !== undefined && dialogResponse !== null
 				),
 				switchMap((results) => this.graphService.createNewNode(results))
+			)
+			.subscribe();
+	}
+
+	createNewConnection() {
+		let dialogRef = this.dialog.open(CreateConnectionDialogComponent, {
+			minWidth: '40%',
+		});
+		dialogRef
+			.afterClosed()
+			.pipe(
+				take(1),
+				filter(
+					(dialogResponse: newConnection) =>
+						dialogResponse !== undefined && dialogResponse !== null
+				),
+				switchMap((res) =>
+					this.graphService.createNewConnection(
+						res.connection as connection,
+						res.nodeIds
+					)
+				)
 			)
 			.subscribe();
 	}

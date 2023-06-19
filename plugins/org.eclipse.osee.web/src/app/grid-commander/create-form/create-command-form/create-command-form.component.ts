@@ -20,7 +20,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { createArtifact } from '@osee/shared/types';
+import { artifact, createArtifact } from '@osee/shared/types';
 import { combineLatest, map, take } from 'rxjs';
 
 import { ContextSelectionService } from '../../services/create-command-form-services/context-selection.service';
@@ -76,8 +76,8 @@ export class CreateCommandFormComponent implements OnDestroy {
 		this.createCommandWithParameterArtifactService.doneFx = '';
 	}
 	onSubmitHandler(e: {
-		command: Partial<createArtifact>;
-		parameter: Partial<createArtifact>;
+		command: Partial<createArtifact & artifact>;
+		parameter: Partial<createArtifact & artifact>;
 	}) {
 		this.createCommandWithParameterArtifactService
 			.createCommandWithParameter(e.command, e.parameter)

@@ -18,23 +18,28 @@ import { applic } from '@osee/shared/types/applicability';
 import { iif, of } from 'rxjs';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { GraphComponent } from '../graph/graph.component';
+import { ConnectionsTableComponent } from '../connections-table/connections-table.component';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { ViewSelectorComponent } from '@osee/messaging/shared/main-content';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-connection-view-host',
-	templateUrl: './host.component.html',
-	styleUrls: ['./host.component.sass'],
+	templateUrl: './connections.component.html',
 	standalone: true,
 	imports: [
 		NgIf,
 		AsyncPipe,
 		GraphComponent,
+		MatButtonModule,
+		MatButtonToggleModule,
 		MessagingControlsComponent,
 		ViewSelectorComponent,
+		ConnectionsTableComponent,
 	],
 })
-export class HostComponent {
+export class ConnectionsComponent {
 	preferences = this.graphService.preferences;
 	inEditMode = this.graphService.preferences.pipe(
 		map((r) => r.inEditMode),

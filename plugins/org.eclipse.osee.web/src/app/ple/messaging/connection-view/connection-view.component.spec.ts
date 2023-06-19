@@ -17,7 +17,7 @@ import { ConnectionViewComponent } from './connection-view.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CurrentGraphService } from '@osee/messaging/connection-view';
 import {
-	MockHostComponent,
+	MockConnectionsComponent,
 	graphServiceMock,
 } from '@osee/messaging/connection-view/testing';
 
@@ -28,14 +28,14 @@ describe('ConnectionViewComponent', () => {
 	beforeEach(async () => {
 		await TestBed.overrideComponent(ConnectionViewComponent, {
 			set: {
-				imports: [MockHostComponent],
+				imports: [MockConnectionsComponent],
 			},
 		})
 			.configureTestingModule({
 				imports: [
 					RouterTestingModule,
 					MatDialogModule,
-					MockHostComponent,
+					MockConnectionsComponent,
 				],
 				providers: [
 					{

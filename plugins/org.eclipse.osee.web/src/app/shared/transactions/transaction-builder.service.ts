@@ -29,7 +29,7 @@ export class TransactionBuilderService {
 
 	constructor() {}
 
-	createArtifact<T extends Partial<createArtifact>>(
+	createArtifact<T extends Partial<createArtifact & artifact>>(
 		value: T,
 		artifactType: string,
 		relations: relation[],
@@ -77,7 +77,7 @@ export class TransactionBuilderService {
 		let artifact: createArtifact = {
 			typeId: artifactType,
 			name: value?.name || '',
-			applicabilityId: value?.applicabilityId,
+			applicabilityId: value?.applicabilityId || value?.applicability?.id,
 			attributes: attributes,
 			relations: relations,
 			key: key,

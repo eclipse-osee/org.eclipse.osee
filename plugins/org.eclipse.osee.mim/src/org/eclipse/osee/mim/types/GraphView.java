@@ -69,7 +69,7 @@ public class GraphView {
 
    @JsonIgnore
    public void removeNode(Long index) {
-      nodes = this.nodes.stream().filter(x -> x.getId() != index).collect(Collectors.toList());
+      nodes = this.nodes.stream().filter(x -> !x.getId().equals(index.toString())).collect(Collectors.toList());
    }
 
    @JsonIgnore

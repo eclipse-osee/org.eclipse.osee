@@ -143,15 +143,15 @@
 					[attr.data-cy]="'node-' + node.data.name">
 					<ng-container
 						*ngIf="
-							node.data.interfaceNodeBgColor !== '';
+							node.data.interfaceNodeBackgroundColor !== '';
 							else noBgColor
 						">
 						<svg:rect
 							[attr.width]="node.dimension.width"
 							[attr.height]="node.dimension.height"
 							[attr.fill]="
-								node.data.interfaceNodeBgColor
-									? node.data.interfaceNodeBgColor
+								node.data.interfaceNodeBackgroundColor
+									? node.data.interfaceNodeBackgroundColor
 									: ''
 							" />
 					</ng-container>
@@ -161,8 +161,8 @@
 							[attr.width]="node.dimension.width"
 							[attr.height]="node.dimension.height"
 							[attr.fill]="
-								node.data.interfaceNodeBgColor
-									? node.data.interfaceNodeBgColor
+								node.data.interfaceNodeBackgroundColor
+									? node.data.interfaceNodeBackgroundColor
 									: node.data.color
 									? node.data.color
 									: ''
@@ -322,6 +322,15 @@
 					data-cy="create-new-node-btn"
 					>add_circle_outline</mat-icon
 				>Create New Node
+			</button>
+			<button
+				mat-menu-item
+				(click)="createNewConnection()">
+				<mat-icon
+					color="success"
+					data-cy="create-new-connection-btn"
+					>add_circle_outline</mat-icon
+				>Create New Connection
 			</button>
 		</ng-container>
 		<ng-container *ngIf="!editMode">

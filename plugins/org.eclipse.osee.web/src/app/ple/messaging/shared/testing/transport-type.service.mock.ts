@@ -27,6 +27,7 @@ export const transportTypes: Required<transportType>[] = [
 		maximumPublisherMultiplicity: 0,
 		minimumSubscriberMultiplicity: 0,
 		maximumSubscriberMultiplicity: 0,
+		directConnection: true,
 	},
 ];
 export const transportTypeServiceMock: Partial<TransportTypeService> = {

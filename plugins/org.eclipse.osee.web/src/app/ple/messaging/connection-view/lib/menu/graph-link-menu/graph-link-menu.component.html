@@ -49,6 +49,12 @@
 <ng-container *ngIf="editMode && !(hasChanges(data) && data.deleted)">
 	<button
 		mat-menu-item
+		*ngIf="canAddNode(data)"
+		(click)="openAddNodeDialog(data)">
+		<mat-icon color="success">add</mat-icon>Add a node
+	</button>
+	<button
+		mat-menu-item
 		(click)="openConnectionEditDialog(data)">
 		<mat-icon color="primary">edit</mat-icon>Edit {{ data.name }}
 	</button>

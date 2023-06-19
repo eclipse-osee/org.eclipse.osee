@@ -42,6 +42,8 @@ import {
 	dialogRef,
 	enumsServiceMock,
 	CurrentTransportTypeServiceMock,
+	nonDirectTransportType,
+	ethernetTransportType,
 } from '@osee/messaging/shared/testing';
 import { CommonModule } from '@angular/common';
 
@@ -141,9 +143,43 @@ describe('CreateConnectionDialogComponent', () => {
 		expect(await select?.getValueText()).toEqual('ETHERNET');
 	});
 
-	it('should select a new node to connect to', async () => {
+	it('should select a new node to connect from', async () => {
+		component.newConnection.connection.transportType =
+			ethernetTransportType;
 		let form = loader.getHarness(
-			MatFormFieldHarness.with({ selector: '#connection-node-selector' })
+			MatFormFieldHarness.with({
+				selector: '#connection-from-node-selector',
+			})
+		);
+		let select = await (await form).getControl(MatSelectHarness);
+		await select?.open();
+		expect((await select?.getOptions())?.length).toEqual(2);
+		await select?.clickOptions({ text: 'Second' });
+		expect(await select?.getValueText()).toEqual('Second');
+	});
+
+	it('should select a new node to connect to', async () => {
+		component.newConnection.connection.transportType =
+			ethernetTransportType;
+		let form = loader.getHarness(
+			MatFormFieldHarness.with({
+				selector: '#connection-to-node-selector',
+			})
+		);
+		let select = await (await form).getControl(MatSelectHarness);
+		await select?.open();
+		expect((await select?.getOptions())?.length).toEqual(2);
+		await select?.clickOptions({ text: 'Second' });
+		expect(await select?.getValueText()).toEqual('Second');
+	});
+
+	it('should select connection nodes', async () => {
+		component.newConnection.connection.transportType =
+			nonDirectTransportType;
+		let form = loader.getHarness(
+			MatFormFieldHarness.with({
+				selector: '#connection-node-selector',
+			})
 		);
 		let select = await (await form).getControl(MatSelectHarness);
 		await select?.open();

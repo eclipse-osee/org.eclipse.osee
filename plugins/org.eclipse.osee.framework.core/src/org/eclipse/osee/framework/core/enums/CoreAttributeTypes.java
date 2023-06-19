@@ -178,7 +178,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString InterfaceNodeAddress= osee.createString(5726596359647826656L,"Interface Node Address",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeGroupId= osee.createString(5726596359647826658L,"Interface Node Group Id",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeNumber= osee.createString(5726596359647826657L,"Interface Node Number",MediaType.TEXT_PLAIN,"");
-   AttributeTypeString InterfaceNodeBackgroundColor = osee.createString(5221290120300474048L,"Interface Node Bg Color",MediaType.TEXT_PLAIN,"");
+   AttributeTypeString InterfaceNodeBackgroundColor = osee.createString(5221290120300474048L,"Interface Node Background Color",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeType= osee.createString(6981431177168910500L,"Interface Node Type",MediaType.TEXT_PLAIN,"");
    AttributeTypeBoolean InterfaceNodeCodeGen = osee.createBoolean(4980834335211418740L, "Interface Node Code Gen", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean InterfaceNodeBuildCodeGen = osee.createBoolean(5806420174793066197L, "Interface Node Build Code Gen", MediaType.TEXT_PLAIN, "");

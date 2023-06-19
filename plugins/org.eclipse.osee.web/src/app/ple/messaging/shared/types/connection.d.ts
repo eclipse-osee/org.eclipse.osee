@@ -14,6 +14,7 @@ import type { Edge } from '@swimlane/ngx-graph';
 import type { difference } from '@osee/shared/types/change-report';
 import type { applic } from '@osee/shared/types/applicability';
 import type { transportType } from './transportType';
+import { nodeData } from './node';
 
 export interface connection extends connectionAttributes, connectionRelations {
 	id?: string;
@@ -28,6 +29,7 @@ interface connectionAttributes {
 
 interface connectionRelations {
 	transportType: transportType;
+	nodes: nodeData[];
 }
 export interface connectionWithChanges extends connection {
 	deleted: boolean;
@@ -47,7 +49,7 @@ export interface _newConnection
 }
 export interface newConnection {
 	connection: _newConnection;
-	nodeId: string;
+	nodeIds: string[];
 }
 
 export interface OseeEdge<T> extends Omit<Edge, 'data'> {

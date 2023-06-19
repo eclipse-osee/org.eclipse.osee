@@ -36,6 +36,7 @@ import type { connectionWithChanges } from '@osee/messaging/shared/types';
 import {
 	enumsServiceMock,
 	ethernetTransportType,
+	nodesMock,
 } from '@osee/messaging/shared/testing';
 
 describe('GraphLinkMenuComponent', () => {
@@ -48,7 +49,6 @@ describe('GraphLinkMenuComponent', () => {
 			imports: [
 				MatButtonModule,
 				MatIconModule,
-				MatDialogModule,
 				NoopAnimationsModule,
 				RouterTestingModule,
 				MatMenuModule,
@@ -56,6 +56,7 @@ describe('GraphLinkMenuComponent', () => {
 				FormsModule,
 				MatSelectModule,
 				MatInputModule,
+				MatDialogModule,
 				CommonModule,
 				GraphLinkMenuComponent,
 			],
@@ -85,6 +86,7 @@ describe('GraphLinkMenuComponent', () => {
 				name: '3',
 				description: '',
 				transportType: ethernetTransportType,
+				nodes: nodesMock,
 			};
 			component.source = {
 				id: '1',
@@ -92,7 +94,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '1',
 					name: '1',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			component.target = {
@@ -101,7 +103,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '2',
 					name: '2',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			fixture.detectChanges();
@@ -166,7 +168,7 @@ describe('GraphLinkMenuComponent', () => {
 						id: '1',
 						name: 'Base',
 					},
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 					interfaceNodeAddress: '',
 					description: '',
 				},
@@ -181,7 +183,7 @@ describe('GraphLinkMenuComponent', () => {
 						id: '1',
 						name: 'Base',
 					},
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 					interfaceNodeAddress: '',
 					description: '',
 				},
@@ -230,6 +232,7 @@ describe('GraphLinkMenuComponent', () => {
 				description: '',
 				applicability: { id: '1', name: 'Base' },
 				transportType: ethernetTransportType,
+				nodes: nodesMock,
 				changes: {
 					name: {
 						previousValue: 'a',
@@ -274,7 +277,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '1',
 					name: '1',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			component.target = {
@@ -283,7 +286,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '2',
 					name: '2',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			fixture.detectChanges();
@@ -349,7 +352,7 @@ describe('GraphLinkMenuComponent', () => {
 						id: '1',
 						name: 'Base',
 					},
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 					interfaceNodeAddress: '',
 					description: '',
 				},
@@ -364,7 +367,7 @@ describe('GraphLinkMenuComponent', () => {
 						id: '1',
 						name: 'Base',
 					},
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 					interfaceNodeAddress: '',
 					description: '',
 				},
@@ -507,6 +510,7 @@ describe('GraphLinkMenuComponent', () => {
 				name: '3',
 				description: '',
 				transportType: ethernetTransportType,
+				nodes: nodesMock,
 			};
 			component.source = {
 				id: '1',
@@ -514,7 +518,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '1',
 					name: '1',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			component.target = {
@@ -523,7 +527,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '2',
 					name: '2',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			fixture.detectChanges();
@@ -544,6 +548,7 @@ describe('GraphLinkMenuComponent', () => {
 				description: '',
 				applicability: { id: '1', name: 'Base' },
 				transportType: ethernetTransportType,
+				nodes: nodesMock,
 				changes: {
 					name: {
 						previousValue: 'a',
@@ -588,7 +593,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '1',
 					name: '1',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			component.target = {
@@ -597,7 +602,7 @@ describe('GraphLinkMenuComponent', () => {
 					id: '2',
 					name: '2',
 					interfaceNodeAddress: '',
-					interfaceNodeBgColor: '',
+					interfaceNodeBackgroundColor: '',
 				},
 			};
 			fixture.detectChanges();

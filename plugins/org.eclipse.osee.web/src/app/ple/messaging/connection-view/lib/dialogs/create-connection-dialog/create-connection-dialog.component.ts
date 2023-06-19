@@ -16,7 +16,15 @@ import {
 	MatDialogRef,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
+import {
+	BehaviorSubject,
+	debounceTime,
+	filter,
+	map,
+	of,
+	Subject,
+	switchMap,
+} from 'rxjs';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import type {
 	newConnection,
@@ -27,11 +35,13 @@ import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ConnectionNodesCountDirective } from 'src/app/ple/messaging/shared/directives/validators/connection-nodes-count.directive';
 
 @Component({
 	selector: 'osee-create-connection-dialog',
@@ -47,36 +57,94 @@ import { CommonModule } from '@angular/common';
 		MatOptionLoadingComponent,
 		MatOptionModule,
 		MatButtonModule,
+		MatAutocompleteModule,
+		ConnectionNodesCountDirective,
 	],
 })
 export class CreateConnectionDialogComponent implements OnDestroy {
-	private _done = new Subject();
-	paginationSize = 5;
+	constructor(
+		private graphService: CurrentGraphService,
+		private transportTypeService: CurrentTransportTypeService,
+		public dialogRef: MatDialogRef<CreateConnectionDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: node | undefined
+	) {
+		this.title = data?.name || '';
+		this.toNode = data?.id || '';
+		if (this.toNode !== '') {
+			this.newConnection.nodeIds.push(this.toNode);
+		}
+	}
 
-	nodes = (pageNum: string | number) =>
+	private _done = new Subject();
+	paginationSize = 50;
+
+	paginatedNodes = (pageNum: string | number) =>
 		this.graphService.getPaginatedNodes(pageNum, this.paginationSize);
+
+	nodes = this.graphService.getPaginatedNodes(0, 0);
+
 	title: string = '';
+	fromNode: string = '';
+	toNode: string = '';
+	nodeSearch = new BehaviorSubject<string>('');
+
 	newConnection: newConnection = {
-		nodeId: '',
 		connection: {
 			name: '',
 			description: '',
 		},
+		nodeIds: [],
 	};
+
+	availableNodes = this.nodeSearch.pipe(
+		debounceTime(250),
+		map(
+			(search) => (pageNum: number | string) =>
+				this.graphService.getPaginatedNodesByName(
+					search,
+					pageNum,
+					this.paginationSize
+				)
+		)
+	);
+
+	availableNodesCount = this.nodeSearch.pipe(
+		debounceTime(250),
+		switchMap((search) => this.graphService.getNodesByNameCount(search))
+	);
+
+	minNodes = of(this.newConnection).pipe(
+		switchMap((newConnection) =>
+			of(newConnection.connection).pipe(
+				filter((connection) => connection.transportType !== undefined),
+				switchMap((connection) => {
+					const minPub =
+						connection.transportType!.minimumPublisherMultiplicity;
+					const minSub =
+						connection.transportType!.minimumSubscriberMultiplicity;
+					const min = Math.min(minPub, minSub);
+					return of(min);
+				})
+			)
+		)
+	);
+
+	maxNodes = of(this.newConnection.connection.transportType).pipe(
+		filter((transportType) => transportType !== undefined),
+		switchMap((transportType) => {
+			const maxPub = transportType!.maximumPublisherMultiplicity;
+			const maxSub = transportType!.maximumSubscriberMultiplicity;
+			const max = maxPub + maxSub;
+			return of(max);
+		})
+	);
 
 	transportTypes = (pageNum: string | number) =>
 		this.transportTypeService.getPaginatedTypes(
 			pageNum,
 			this.paginationSize
 		);
-	constructor(
-		private graphService: CurrentGraphService,
-		private transportTypeService: CurrentTransportTypeService,
-		public dialogRef: MatDialogRef<CreateConnectionDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: node
-	) {
-		this.title = data.name;
-	}
+
 	ngOnDestroy(): void {
 		this._done.next(true);
 	}
@@ -85,7 +153,32 @@ export class CreateConnectionDialogComponent implements OnDestroy {
 		this.dialogRef.close();
 	}
 
+	selectFromNode(change: MatSelectChange) {
+		this.fromNode = change.value;
+		if (this.data?.id) {
+			this.newConnection.nodeIds = [this.fromNode, this.data.id];
+		}
+	}
+
+	selectToNode(change: MatSelectChange) {
+		this.toNode = change.value;
+		this.newConnection.nodeIds = [this.fromNode, this.toNode];
+	}
+
+	applySearchTerm(searchTerm: Event) {
+		const value = (searchTerm.target as HTMLInputElement).value;
+		this.nodeSearch.next(value);
+	}
+
 	compareTransportTypes(o1: transportType, o2: transportType) {
 		return o1?.id === o2?.id && o1?.name === o2?.name;
+	}
+
+	compareNodes(node1: string, node2: string) {
+		return node1 && node2 ? node1 === node2 : false;
+	}
+
+	updateNodes(val: string[]) {
+		this.newConnection.nodeIds = val;
 	}
 }

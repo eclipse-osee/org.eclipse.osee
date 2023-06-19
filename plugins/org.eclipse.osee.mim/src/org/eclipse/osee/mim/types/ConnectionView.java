@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -35,15 +36,11 @@ public class ConnectionView extends PLGenericDBObject {
       this((ArtifactReadable) art);
    }
 
-   public ConnectionView(InterfaceConnection connection) {
-      this(connection.getId(), connection.getName(), connection.getDescription(), connection.getTransportType());
-      // TODO this needs to change to support more than 2 nodes per connection
-      if (connection.getNodes().size() > 0) {
-         this.setSource(connection.getNodes().get(0).getIdString());
-      }
-      if (connection.getNodes().size() > 1) {
-         this.setTarget(connection.getNodes().get(1).getIdString());
-      }
+   public ConnectionView(InterfaceConnection connection, String source, String target) {
+      this(connection.getId(), connection.getName(), connection.getDescription(), connection.getTransportType(),
+         connection.getNodes());
+      this.setSource(source);
+      this.setTarget(target);
       this.setApplicability(connection.getApplicability());
    }
 
@@ -57,12 +54,13 @@ public class ConnectionView extends PLGenericDBObject {
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
-   public ConnectionView(Long id, String name, String description, TransportType transportType) {
+   public ConnectionView(Long id, String name, String description, TransportType transportType, List<InterfaceNode> nodes) {
       this(id, name);
       this.setLabel(name);
       this.setData(new ConnectionViewData(id, name));
       this.setDescription(description);
       this.setTransportType(transportType);
+      this.setNodes(nodes);
    }
 
    public ConnectionView(Long id, String name) {
@@ -169,6 +167,10 @@ public class ConnectionView extends PLGenericDBObject {
    @JsonIgnore
    public void setTransportType(TransportType type) {
       this.data.setTransportType(type);
+   }
+
+   private void setNodes(List<InterfaceNode> nodes) {
+      this.data.setNodes(nodes);
    }
 
    /**

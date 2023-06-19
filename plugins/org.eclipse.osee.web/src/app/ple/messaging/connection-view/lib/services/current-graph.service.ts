@@ -128,11 +128,11 @@ export class CurrentGraphService {
 	) {}
 
 	get branchType() {
-		return this.connectionUiService.branchId;
+		return this.connectionUiService.branchType;
 	}
 
 	get branchId() {
-		return this.connectionUiService.branchType;
+		return this.connectionUiService.branchId;
 	}
 
 	get differences() {
@@ -192,6 +192,32 @@ export class CurrentGraphService {
 			)
 		);
 	}
+
+	getPaginatedNodesByName(
+		name: string,
+		pageNum: string | number,
+		pageSize: number
+	) {
+		return this.routeStateService.id.pipe(
+			take(1),
+			switchMap((id) =>
+				this.nodeService.getPaginatedNodesByName(
+					id,
+					name,
+					pageNum,
+					pageSize
+				)
+			)
+		);
+	}
+
+	getNodesByNameCount(name: string) {
+		return this.routeStateService.id.pipe(
+			take(1),
+			switchMap((id) => this.nodeService.getNodesByNameCount(id, name))
+		);
+	}
+
 	updateConnection(
 		connection: Partial<connection>,
 		oldTransportTypeId: string
@@ -338,32 +364,15 @@ export class CurrentGraphService {
 		return this.deleteNode(nodeId);
 	}
 
-	createNewConnection(
-		connection: connection,
-		sourceId: string,
-		targetId: string
-	) {
-		const { transportType, ...restOfConnection } = connection;
+	createNewConnection(connection: connection, nodeIds: string[]) {
+		const { transportType, nodes, ...restOfConnection } = connection;
 		const transportTypeRelations =
 			this.connectionService.createTransportTypeRelation(
 				transportType.id || ''
 			);
-		const nodeRelations = this.nodeOptions.pipe(
-			concatMap((nodes) =>
-				from(
-					nodes.sort((a, b) =>
-						(a?.id || '-1') < (b?.id || '-1')
-							? -1
-							: (a?.id || '-1') === (b?.id || '-1')
-							? 0
-							: 1
-					)
-				)
-			),
-			filter((val) => val.id === sourceId || val.id === targetId),
-			take(2), //if this returns more than 2, something is very very wrong
-			switchMap((node) =>
-				this.connectionService.createNodeRelation(node.id || '')
+		const nodeRelations = from(nodeIds).pipe(
+			concatMap((id) =>
+				this.connectionService.createNodeRelation(id || '')
 			),
 			reduce((acc, curr) => [...acc, curr], [] as relation[])
 		);
@@ -410,6 +419,60 @@ export class CurrentGraphService {
 			)
 		);
 	}
+
+	createNodeWithRelation(node: node | nodeData, connectionId: string) {
+		return combineLatest([
+			this.branchId,
+			this.createNodeConnectionRelation(connectionId),
+		]).pipe(
+			take(1),
+			switchMap(([branchId, relation]) =>
+				this.nodeService.createNode(branchId, node, [relation]).pipe(
+					take(1),
+					switchMap((tx) =>
+						this.nodeService.performMutation(tx).pipe(
+							tap(() => {
+								this.update = true;
+							})
+						)
+					)
+				)
+			)
+		);
+	}
+
+	createNodeConnectionRelation(connectionId: string, nodeId?: string) {
+		let relation: relation = {
+			typeName: 'Interface Connection Node',
+			sideA: connectionId,
+			sideB: nodeId,
+		};
+		return of(relation);
+	}
+
+	relateNode(connectionId: string, nodeId: string) {
+		return this.branchId.pipe(
+			take(1),
+			switchMap((id) =>
+				this.createNodeConnectionRelation(connectionId, nodeId).pipe(
+					take(1),
+					switchMap((rel) =>
+						this.connectionService.addRelation(id, rel).pipe(
+							take(1),
+							switchMap((tx) =>
+								this.connectionService.performMutation(tx).pipe(
+									tap(() => {
+										this.update = true;
+									})
+								)
+							)
+						)
+					)
+				)
+			)
+		);
+	}
+
 	/**
 	 * Changes edges to have an id containing a+id
 	 * @param apiResponse api response containing nodes and edges
@@ -600,9 +663,10 @@ export class CurrentGraphService {
 			) {
 				node.data.changes.interfaceNodeAddress = changes;
 			} else if (
-				change.itemTypeId === ATTRIBUTETYPEIDENUM.INTERFACENODEBGCOLOR
+				change.itemTypeId ===
+				ATTRIBUTETYPEIDENUM.INTERFACENODEBACKGROUNDCOLOR
 			) {
-				node.data.changes.interfaceNodeBgColor = changes;
+				node.data.changes.interfaceNodeBackgroundColor = changes;
 			}
 		} else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
 			if (change.currentVersion.transactionToken.id !== '-1') {
@@ -695,7 +759,7 @@ export class CurrentGraphService {
 				interfaceNodeGroupId: '',
 				changes: {},
 				interfaceNodeAddress: '',
-				interfaceNodeBgColor: '',
+				interfaceNodeBackgroundColor: '',
 				interfaceNodeBuildCodeGen: false,
 				interfaceNodeCodeGen: false,
 				interfaceNodeCodeGenName: '',
@@ -735,11 +799,12 @@ export class CurrentGraphService {
 					.value as string;
 				node.data.changes.interfaceNodeAddress = changes;
 			} else if (
-				change.itemTypeId === ATTRIBUTETYPEIDENUM.INTERFACENODEBGCOLOR
+				change.itemTypeId ===
+				ATTRIBUTETYPEIDENUM.INTERFACENODEBACKGROUNDCOLOR
 			) {
-				node.data.interfaceNodeBgColor = change.currentVersion
+				node.data.interfaceNodeBackgroundColor = change.currentVersion
 					.value as string;
-				node.data.changes.interfaceNodeBgColor = changes;
+				node.data.changes.interfaceNodeBackgroundColor = changes;
 			}
 		} else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
 			node.data.applicability = change.currentVersion
@@ -769,7 +834,7 @@ export class CurrentGraphService {
 				interfaceNodeGroupId: '',
 				deleted: true,
 				interfaceNodeAddress: '',
-				interfaceNodeBgColor: '',
+				interfaceNodeBackgroundColor: '',
 				interfaceNodeBuildCodeGen: false,
 				interfaceNodeCodeGen: false,
 				interfaceNodeCodeGenName: '',
@@ -801,6 +866,7 @@ export class CurrentGraphService {
 				name: '',
 				description: '',
 				transportType: {} as transportType,
+				nodes: [],
 			},
 		};
 		changes.forEach((value) => {
@@ -822,6 +888,7 @@ export class CurrentGraphService {
 				name: '',
 				description: '',
 				transportType: {} as transportType,
+				nodes: [],
 			};
 		}
 		if (edge.data.changes === undefined) {
@@ -863,8 +930,8 @@ export class CurrentGraphService {
 		return edge;
 	}
 	private fixNode(node: OseeNode<nodeData | nodeDataWithChanges>) {
-		if (node.data.interfaceNodeBgColor === undefined) {
-			node.data.interfaceNodeBgColor = '';
+		if (node.data.interfaceNodeBackgroundColor === undefined) {
+			node.data.interfaceNodeBackgroundColor = '';
 		}
 		if (node.label === undefined) {
 			node.label = '';

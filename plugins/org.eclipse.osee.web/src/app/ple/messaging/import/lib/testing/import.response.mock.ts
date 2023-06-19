@@ -11,23 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { nodesMock } from '@osee/messaging/shared/testing';
 import type { ImportOption, ImportSummary } from '@osee/messaging/shared/types';
 
 export const importSummaryMock: ImportSummary = {
-	nodes: [
-		{
-			id: '1',
-			name: 'Node 1',
-			interfaceNodeNumber: '1',
-			interfaceNodeGroupId: 'group1',
-		},
-		{
-			id: '2',
-			name: 'Node 2',
-			interfaceNodeNumber: '2',
-			interfaceNodeGroupId: 'group1',
-		},
-	],
+	nodes: nodesMock,
 	connections: [
 		{
 			id: '200',
@@ -45,7 +33,9 @@ export const importSummaryMock: ImportSummary = {
 				maximumPublisherMultiplicity: 0,
 				minimumSubscriberMultiplicity: 0,
 				maximumSubscriberMultiplicity: 0,
+				directConnection: false,
 			},
+			nodes: nodesMock,
 		},
 	],
 	messages: [
@@ -63,22 +53,8 @@ export const importSummaryMock: ImportSummary = {
 			interfaceMessageRptCmdWord: '',
 			interfaceMessageRunBeforeProc: false,
 			interfaceMessageVer: '',
-			publisherNodes: [
-				{
-					id: '100',
-					name: 'Node 1',
-					interfaceNodeNumber: '1',
-					interfaceNodeGroupId: 'group1',
-				},
-			],
-			subscriberNodes: [
-				{
-					id: '101',
-					name: 'Node 2',
-					interfaceNodeNumber: '2',
-					interfaceNodeGroupId: 'group1',
-				},
-			],
+			publisherNodes: [nodesMock[0]],
+			subscriberNodes: [nodesMock[1]],
 			description: '',
 			interfaceMessageNumber: '10',
 			interfaceMessageType: 'Operational',

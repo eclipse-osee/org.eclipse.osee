@@ -10,26 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@use 'modern-ple-theme';
-@use './theme' as t;
+import { ConnectionNodesCountDirective } from './connection-nodes-count.directive';
 
-@media (prefers-color-scheme: light) {
-	@include t.material-theme($theme: modern-ple-theme.$modern-ple-light-theme);
-}
-
-@media (prefers-color-scheme: dark) {
-	@include t.material-theme($theme: modern-ple-theme.$modern-ple-dark-theme);
-}
-
-.button-toggle-group {
-	text-align: center;
-	padding-top: 1em;
-}
-
-.toggle-button {
-	width: 200px;
-}
-
-.loading-text {
-	padding: 1em 2em;
-}
+describe('ConnectionNodesCountDirective', () => {
+	it('should create an instance', () => {
+		const directive = new ConnectionNodesCountDirective();
+		expect(directive).toBeTruthy();
+	});
+});

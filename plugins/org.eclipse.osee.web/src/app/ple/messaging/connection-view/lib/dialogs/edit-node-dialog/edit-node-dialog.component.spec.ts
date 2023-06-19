@@ -32,9 +32,8 @@ import { EditNodeDialogComponent } from './edit-node-dialog.component';
 import type { node } from '@osee/messaging/shared/types';
 import { dialogRef } from '@osee/messaging/shared/testing';
 import { AsyncPipe, NgFor } from '@angular/common';
-import { MatOptionModule } from '@angular/material/core';
-import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MockNewNodeFormComponent } from '@osee/messaging/connection-view/testing';
 
 describe('EditNodeDialogComponent', () => {
 	let component: EditNodeDialogComponent;
@@ -50,30 +49,20 @@ describe('EditNodeDialogComponent', () => {
 			set: {
 				imports: [
 					MatDialogModule,
-					MatFormFieldModule,
-					MatInputModule,
-					FormsModule,
 					MatButtonModule,
-					MatSelectModule,
-					MatOptionModule,
-					MatSlideToggleModule,
 					AsyncPipe,
 					NgFor,
-					MockApplicabilitySelectorComponent,
+					MockNewNodeFormComponent,
 				],
 			},
 		})
 			.configureTestingModule({
 				imports: [
 					MatDialogModule,
-					MatFormFieldModule,
-					MatSelectModule,
-					MatInputModule,
 					MatButtonModule,
-					MatSlideToggleModule,
 					NoopAnimationsModule,
-					FormsModule,
 					EditNodeDialogComponent,
+					MockNewNodeFormComponent,
 				],
 				providers: [
 					{ provide: MatDialogRef, useValue: dialogRef },

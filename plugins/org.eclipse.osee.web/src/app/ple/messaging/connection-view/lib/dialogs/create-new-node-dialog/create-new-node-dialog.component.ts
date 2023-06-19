@@ -18,11 +18,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import type { nodeData } from '@osee/messaging/shared/types';
+import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.component';
 
 @Component({
 	selector: 'osee-create-new-node-dialog',
 	templateUrl: './create-new-node-dialog.component.html',
-	styleUrls: ['./create-new-node-dialog.component.sass'],
 	standalone: true,
 	imports: [
 		MatDialogModule,
@@ -31,14 +31,29 @@ import type { nodeData } from '@osee/messaging/shared/types';
 		FormsModule,
 		MatButtonModule,
 		MatSlideToggleModule,
+		NewNodeFormComponent,
 	],
 })
 export class CreateNewNodeDialogComponent {
-	result: Partial<nodeData> = {
+	result: nodeData = {
+		id: '',
 		name: '',
 		description: '',
+		interfaceNodeNumber: '',
+		interfaceNodeGroupId: '',
+		interfaceNodeBackgroundColor: '',
 		interfaceNodeAddress: '',
-		interfaceNodeBgColor: '',
+		interfaceNodeBuildCodeGen: false,
+		interfaceNodeCodeGen: false,
+		interfaceNodeCodeGenName: '',
+		interfaceNodeNameAbbrev: '',
+		interfaceNodeToolUse: false,
+		interfaceNodeType: '',
+		notes: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	};
 	constructor(public dialogRef: MatDialogRef<CreateNewNodeDialogComponent>) {}
 

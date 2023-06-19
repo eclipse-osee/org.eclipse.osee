@@ -23,10 +23,12 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
+import org.eclipse.osee.mim.TransportTypeApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
+import org.eclipse.osee.mim.types.TransportType;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -35,18 +37,20 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewApi {
 
    private ArtifactAccessor<InterfaceConnection> accessor;
+   private final TransportTypeApi transportTypeApi;
    private final List<RelationTypeSide> affectedRelations;
    private final List<RelationTypeSide> relations;
 
-   InterfaceConnectionViewApiImpl(OrcsApi orcsApi) {
+   InterfaceConnectionViewApiImpl(OrcsApi orcsApi, TransportTypeApi transportTypeApi) {
       this.setAccessor(new InterfaceConnectionAccessor(orcsApi));
+      this.transportTypeApi = transportTypeApi;
       this.affectedRelations = this.createAffectedRelationTypeSideList();
       this.relations = createRelationTypeSideList();
    }
 
    private List<RelationTypeSide> createRelationTypeSideList() {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+      relations.add(CoreRelationTypes.InterfaceConnectionNode_Node);
       return relations;
    }
 
@@ -84,7 +88,9 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    @Override
    public InterfaceConnection get(BranchId branch, ArtifactId connectionId) {
       try {
-         return this.getAccessor().get(branch, connectionId, relations);
+         InterfaceConnection connection = this.getAccessor().get(branch, connectionId, relations);
+         setupConnection(branch, connection);
+         return connection;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
@@ -146,7 +152,10 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    public Collection<InterfaceConnection> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
       long pageSize) {
       try {
-         return this.getAccessor().getAllByQuery(branch, query, relations, isExact, pageNum, pageSize);
+         Collection<InterfaceConnection> connections =
+            this.getAccessor().getAllByQuery(branch, query, relations, isExact, pageNum, pageSize);
+         connections.stream().forEach(c -> setupConnection(branch, c));
+         return connections;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -169,12 +178,27 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute, ArtifactId viewId) {
       try {
-         return this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute, viewId);
+         Collection<InterfaceConnection> connections =
+            this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute, viewId);
+         connections.stream().forEach(c -> setupConnection(branch, c));
+         return connections;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
-         //
+         System.out.println(ex);
       }
       return new LinkedList<InterfaceConnection>();
+   }
+
+   /**
+    * Get the transport type for the given connection. This should be removed and replaced by a followFork query once
+    * that is supported in ArtifactAccessor.
+    *
+    * @param branch
+    * @param connection
+    */
+   private void setupConnection(BranchId branch, InterfaceConnection connection) {
+      TransportType tt = this.transportTypeApi.getFromConnection(branch, connection.getArtifactId());
+      connection.setTransportType(tt);
    }
 
 }

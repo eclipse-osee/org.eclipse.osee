@@ -135,7 +135,7 @@ export class DiffReportService {
 									c.baselineVersion.value;
 							} else if (
 								c.itemTypeId ===
-								ATTRIBUTETYPEIDENUM.INTERFACENODEBGCOLOR
+								ATTRIBUTETYPEIDENUM.INTERFACENODEBACKGROUNDCOLOR
 							) {
 								item.diffInfo!.fieldsChanged['color'] =
 									c.baselineVersion.value || 'Default';

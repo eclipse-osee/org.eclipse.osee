@@ -48,11 +48,11 @@ import type {
 	ImportSummary,
 	subMessage,
 	enumSet,
-	node,
 	structure,
 	message,
 	connection,
 	importRelationMap,
+	nodeData,
 } from '@osee/messaging/shared/types';
 import { UiService } from '@osee/shared/services';
 import { TransactionService } from '@osee/shared/transactions';
@@ -242,12 +242,30 @@ export class ImportService {
 											id: node.id,
 											name: node.name,
 											description: node.description,
-										} as node)
+											interfaceNodeNumber:
+												node.interfaceNodeNumber,
+											interfaceNodeGroupId:
+												node.interfaceNodeGroupId,
+											interfaceNodeBuildCodeGen:
+												node.interfaceNodeBuildCodeGen,
+											interfaceNodeCodeGen:
+												node.interfaceNodeCodeGen,
+											interfaceNodeCodeGenName:
+												node.interfaceNodeCodeGenName,
+											interfaceNodeNameAbbrev:
+												node.interfaceNodeNameAbbrev,
+											interfaceNodeToolUse:
+												node.interfaceNodeToolUse,
+											interfaceNodeType:
+												node.interfaceNodeType,
+											notes: node.notes,
+										} as nodeData)
 								),
 								concatMap((node) =>
 									this.nodeService.createNode(
 										branchId,
 										node,
+										[],
 										tx,
 										node.id
 									)

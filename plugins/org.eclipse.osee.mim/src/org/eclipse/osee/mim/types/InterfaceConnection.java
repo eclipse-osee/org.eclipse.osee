@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -31,7 +30,7 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    private String Description;
    private TransportType TransportType;
-   private List<ArtifactId> nodes;
+   private List<InterfaceNode> nodes;
    private ApplicabilityToken applicability;
 
    public InterfaceConnection(ArtifactToken art) {
@@ -41,10 +40,17 @@ public class InterfaceConnection extends PLGenericDBObject {
    public InterfaceConnection(ArtifactReadable art) {
       super(art);
       this.setNodes(art.getRelated(CoreRelationTypes.InterfaceConnectionNode_Node).getList().stream().map(
-         n -> n.getArtifactId()).collect(Collectors.toList()));
-      this.setTransportType(new TransportType(
+         n -> new InterfaceNode(n)).collect(Collectors.toList()));
+      ArtifactReadable transportType =
          art.getRelated(CoreRelationTypes.InterfaceConnectionTransportType_TransportType).getAtMostOneOrDefault(
-            ArtifactReadable.SENTINEL)));
+            ArtifactReadable.SENTINEL);
+      if (!transportType.getExistingAttributeTypes().isEmpty()) {
+         this.setTransportType(new TransportType(
+            art.getRelated(CoreRelationTypes.InterfaceConnectionTransportType_TransportType).getAtMostOneOrDefault(
+               ArtifactReadable.SENTINEL)));
+      } else {
+         this.setTransportType(org.eclipse.osee.mim.types.TransportType.SENTINEL);
+      }
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
@@ -100,11 +106,11 @@ public class InterfaceConnection extends PLGenericDBObject {
       this.applicability = applicability;
    }
 
-   public List<ArtifactId> getNodes() {
+   public List<InterfaceNode> getNodes() {
       return nodes;
    }
 
-   private void setNodes(List<ArtifactId> nodes) {
+   private void setNodes(List<InterfaceNode> nodes) {
       this.nodes = nodes;
    }
 

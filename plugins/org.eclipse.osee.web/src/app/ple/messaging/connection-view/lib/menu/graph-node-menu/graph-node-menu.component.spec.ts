@@ -41,6 +41,7 @@ import { EnumsService } from '@osee/messaging/shared/services';
 import {
 	enumsServiceMock,
 	ethernetTransportType,
+	nodesMock,
 } from '@osee/messaging/shared/testing';
 
 describe('GraphNodeMenuComponent', () => {
@@ -56,7 +57,7 @@ describe('GraphNodeMenuComponent', () => {
 		interfaceNodeNumber: '1',
 		interfaceNodeGroupId: '',
 		interfaceNodeAddress: '',
-		interfaceNodeBgColor: '',
+		interfaceNodeBackgroundColor: '',
 		description: '',
 		interfaceNodeBuildCodeGen: false,
 		interfaceNodeCodeGen: false,
@@ -126,6 +127,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '3',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -138,6 +140,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '4',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -260,7 +263,7 @@ describe('GraphNodeMenuComponent', () => {
 							branchId: '-1',
 						},
 					},
-					interfaceNodeBgColor: {
+					interfaceNodeBackgroundColor: {
 						previousValue: 'abcdef',
 						currentValue: '',
 						transactionToken: {
@@ -301,6 +304,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '3',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -313,6 +317,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '4',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -493,7 +498,7 @@ describe('GraphNodeMenuComponent', () => {
 				expect(spy).toHaveBeenCalledWith(
 					true,
 					(component.data as nodeDataWithChanges).changes
-						.interfaceNodeBgColor || {
+						.interfaceNodeBackgroundColor || {
 						previousValue: '',
 						currentValue: '',
 						transactionToken: { id: '-1', branchId: '-1' },
@@ -539,6 +544,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '3',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -551,6 +557,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '4',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -591,7 +598,7 @@ describe('GraphNodeMenuComponent', () => {
 							branchId: '-1',
 						},
 					},
-					interfaceNodeBgColor: {
+					interfaceNodeBackgroundColor: {
 						previousValue: 'abcdef',
 						currentValue: '',
 						transactionToken: {
@@ -632,6 +639,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '3',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -644,6 +652,7 @@ describe('GraphNodeMenuComponent', () => {
 						name: '4',
 						description: '',
 						transportType: ethernetTransportType,
+						nodes: nodesMock,
 					},
 				},
 			];
@@ -741,7 +750,7 @@ describe('GraphNodeMenuComponent', () => {
 				expect(spy).toHaveBeenCalledWith(
 					true,
 					(component.data as nodeDataWithChanges).changes
-						.interfaceNodeBgColor || {
+						.interfaceNodeBackgroundColor || {
 						previousValue: '',
 						currentValue: '',
 						transactionToken: { id: '-1', branchId: '-1' },

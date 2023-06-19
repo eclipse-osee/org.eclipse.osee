@@ -15,7 +15,12 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, createArtifact, transaction } from '@osee/shared/types';
+import {
+	relation,
+	createArtifact,
+	transaction,
+	artifact,
+} from '@osee/shared/types';
 import { of, switchMap, take, tap } from 'rxjs';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { GCRELATIONTYPEID } from '../../types/grid-commander-constants/gcRelationTypeId.enum';
@@ -33,7 +38,7 @@ export class CreateCommandandAndRelationsService {
 
 	createCommandArtifact(
 		branchId: string,
-		command: Partial<createArtifact>,
+		command: Partial<createArtifact & artifact>,
 		transaction?: transaction,
 		key?: string
 	) {
@@ -91,7 +96,7 @@ export class CreateCommandandAndRelationsService {
 
 	createCommandAndEstablishContextRelation(
 		branchId: string,
-		command: Partial<createArtifact>,
+		command: Partial<createArtifact & artifact>,
 		context: string[],
 		transaction?: transaction,
 		key?: string

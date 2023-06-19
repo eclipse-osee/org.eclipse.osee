@@ -22,7 +22,7 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '@osee/shared/services';
-import { createArtifact } from '@osee/shared/types';
+import { artifact, createArtifact } from '@osee/shared/types';
 import { CreateParameterAndRelationsService } from '../create-command-artifact-and-relations/create-parameter-and-relations.service';
 import { CommandGroupOptionsService } from '../data-services/commands/command-group-options.service';
 import { GCBranchIdService } from '../fetch-data-services/branch/gc-branch-id.service';
@@ -45,7 +45,7 @@ export class CreateParameterService {
 	) {}
 
 	public createParameterArtifact(
-		parameter: Partial<createArtifact>,
+		parameter: Partial<createArtifact & artifact>,
 		commandId: string
 	) {
 		return combineLatest([of(parameter), of(commandId)]).pipe(

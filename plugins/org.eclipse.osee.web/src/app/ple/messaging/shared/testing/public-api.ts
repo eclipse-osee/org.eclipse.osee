@@ -44,6 +44,7 @@ export * from './mim-preferences.service.mock';
 export * from '../forms/new-platform-type-form-page2/new-platform-type-form-page2.component.mock';
 export * from '../forms/new-platform-type-form/new-platform-type-form.component.mock';
 export * from './new-type-form.component.mock';
+export * from './nodes-response.mock';
 export * from './platform-type-card.component.mock';
 export * from './platform-types.response.mock';
 export * from './preferences-ui-service.mock';

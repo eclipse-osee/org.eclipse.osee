@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class ConnectionViewData extends PLGenericDBObject {
    private TransportType TransportType; //will need logic for both of these or data stored in DB
+   private List<InterfaceNode> nodes;
    private boolean isDashed;
    private ApplicabilityToken applicability;
    private String Description;
@@ -58,6 +60,14 @@ public class ConnectionViewData extends PLGenericDBObject {
       } else {
          setDashed(true);
       }
+   }
+
+   public List<InterfaceNode> getNodes() {
+      return nodes;
+   }
+
+   public void setNodes(List<InterfaceNode> nodes) {
+      this.nodes = nodes;
    }
 
    /**

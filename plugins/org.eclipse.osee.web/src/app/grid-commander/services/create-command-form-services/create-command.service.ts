@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { createArtifact } from '@osee/shared/types';
+import { artifact, createArtifact } from '@osee/shared/types';
 import {
 	combineLatest,
 	of,
@@ -46,7 +46,9 @@ export class CreateCommandService {
 		private uiService: UiService
 	) {}
 
-	public createCommandArtifact(commandObject: Partial<createArtifact>) {
+	public createCommandArtifact(
+		commandObject: Partial<createArtifact & artifact>
+	) {
 		return combineLatest([of(commandObject), this.contextData]).pipe(
 			take(1),
 			switchMap(([commandObject, contextData]) =>

@@ -25,7 +25,7 @@ import type {
 	ImportEnumSet,
 	ImportSummary,
 	messageToken,
-	nodeToken,
+	nodeData,
 	platformTypeImportToken,
 	subMessage,
 } from '@osee/messaging/shared/types';
@@ -242,7 +242,20 @@ export class ImportComponent implements OnInit, OnDestroy {
 	);
 
 	nodeHeaderDetails = nodeHeaderDetails;
-	nodeHeaders: (keyof nodeToken)[] = ['name', 'description', 'applicability'];
+	nodeHeaders: (keyof nodeData)[] = [
+		'name',
+		'interfaceNodeNameAbbrev',
+		'interfaceNodeCodeGenName',
+		'interfaceNodeType',
+		'interfaceNodeNumber',
+		'interfaceNodeGroupId',
+		'description',
+		'interfaceNodeToolUse',
+		'interfaceNodeCodeGen',
+		'interfaceNodeBuildCodeGen',
+		'notes',
+		'applicability',
+	];
 
 	connectionHeaderDetails = connectionHeaderDetails;
 	connectionHeaders: (keyof connection)[] = [

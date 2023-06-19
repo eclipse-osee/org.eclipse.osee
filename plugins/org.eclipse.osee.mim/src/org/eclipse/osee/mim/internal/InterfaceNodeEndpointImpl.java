@@ -48,7 +48,7 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
    @Override
    public InterfaceNode getNode(ArtifactId nodeId) {
       try {
-         return interfaceNodeApi.getAccessor().get(branch, nodeId, InterfaceNode.class);
+         return interfaceNodeApi.getAccessor().get(branch, nodeId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -68,6 +68,16 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
          System.out.println(ex);
       }
       return null;
+   }
+
+   @Override
+   public Collection<InterfaceNode> getNodesByName(String name, long pageNum, long pageSize) {
+      return this.interfaceNodeApi.getNodesByName(branch, name, pageNum, pageSize);
+   }
+
+   @Override
+   public int getNodesByNameCount(String name) {
+      return this.interfaceNodeApi.getNodesByNameCount(branch, name);
    }
 
 }

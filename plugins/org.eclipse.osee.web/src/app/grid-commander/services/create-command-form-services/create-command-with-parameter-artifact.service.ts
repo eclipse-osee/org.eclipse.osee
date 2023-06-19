@@ -21,7 +21,7 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '@osee/shared/services';
-import { createArtifact } from '@osee/shared/types';
+import { artifact, createArtifact } from '@osee/shared/types';
 import { CreateCommandService } from './create-command.service';
 import { CreateParameterService } from './create-parameter.service';
 
@@ -42,8 +42,8 @@ export class CreateCommandWithParameterArtifactService {
 	) {}
 
 	public createCommandWithParameter(
-		command: Partial<createArtifact>,
-		parameter: Partial<createArtifact>
+		command: Partial<createArtifact & artifact>,
+		parameter: Partial<createArtifact & artifact>
 	) {
 		return combineLatest([of(command), of(parameter)]).pipe(
 			switchMap(([command, parameter]) =>

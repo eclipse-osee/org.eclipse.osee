@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { from, of } from 'rxjs';
-import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
+import { from, iif, of, OperatorFunction } from 'rxjs';
+import { take, filter, mergeMap, reduce, switchMap, tap } from 'rxjs/operators';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
@@ -34,11 +34,13 @@ import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { AddNodeDialogComponent } from '../../dialogs/add-node-dialog/add-node-dialog.component';
+import { DefaultAddNodeDialog } from '../../dialogs/add-node-dialog/add-node-dialog.default';
+import { AddNodeDialog } from '../../dialogs/add-node-dialog/add-node-dialog';
 
 @Component({
 	selector: 'osee-messaging-graph-link-menu',
 	templateUrl: './graph-link-menu.component.html',
-	styleUrls: ['./graph-link-menu.component.sass'],
 	standalone: true,
 	imports: [
 		NgIf,
@@ -56,6 +58,7 @@ export class GraphLinkMenuComponent {
 		dashed: false,
 		description: '',
 		transportType: {} as transportType,
+		nodes: [],
 	};
 
 	@Input()
@@ -68,6 +71,37 @@ export class GraphLinkMenuComponent {
 		private graphService: CurrentGraphService,
 		public dialog: MatDialog
 	) {}
+
+	openAddNodeDialog(value: connection) {
+		let dialogRef = this.dialog.open(AddNodeDialogComponent, {
+			minWidth: '80%',
+			data: new DefaultAddNodeDialog(value),
+		});
+		dialogRef
+			.afterClosed()
+			.pipe(
+				take(1),
+				filter(
+					(res) => res !== undefined && res !== null
+				) as OperatorFunction<any, AddNodeDialog>,
+				switchMap((res) =>
+					iif(
+						() => res.node.id === '-1' || res.node.id === '',
+						this.graphService
+							.createNodeWithRelation(
+								res.node,
+								res.connection.id!
+							)
+							.pipe(),
+						this.graphService.relateNode(
+							res.connection.id!,
+							res.node.id!
+						)
+					)
+				)
+			)
+			.subscribe();
+	}
 
 	openConnectionEditDialog(value: connection) {
 		let dialogRef = this.dialog.open(EditConnectionDialogComponent, {
@@ -184,6 +218,14 @@ export class GraphLinkMenuComponent {
 			previousValue: prev,
 			transaction: value.transactionToken,
 		};
+	}
+
+	canAddNode(connection: connection | connectionWithChanges) {
+		if (!connection.transportType.directConnection) {
+			return true;
+		} else {
+			return connection.nodes.length < 2;
+		}
 	}
 
 	hasChanges(

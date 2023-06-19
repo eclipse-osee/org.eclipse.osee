@@ -11,18 +11,68 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { headerDetail } from '@osee/shared/types';
-import { nodeToken } from '../types';
+import { nodeData } from '../types';
 
-export const nodeHeaderDetails: headerDetail<nodeToken>[] = [
+export const nodeHeaderDetails: headerDetail<nodeData>[] = [
 	{
 		header: 'name',
 		description: 'Name of the node',
 		humanReadable: 'Name',
 	},
 	{
+		header: 'interfaceNodeNameAbbrev',
+		description: 'Name abbreviation',
+		humanReadable: 'Name Abbrev.',
+	},
+	{
+		header: 'interfaceNodeCodeGenName',
+		description: 'Name used for code gen',
+		humanReadable: 'Code Gen Name',
+	},
+	{
+		header: 'interfaceNodeType',
+		description: 'Node Type',
+		humanReadable: 'Node Type',
+	},
+	{
+		header: 'interfaceNodeNumber',
+		description: 'Node number',
+		humanReadable: 'Node Number',
+	},
+	{
+		header: 'interfaceNodeGroupId',
+		description: 'Node Group ID',
+		humanReadable: 'Group ID',
+	},
+	{
+		header: 'interfaceNodeAddress',
+		description: 'Node Address',
+		humanReadable: 'Address',
+	},
+	{
 		header: 'description',
 		description: 'Description of the node',
 		humanReadable: 'Description',
+	},
+	{
+		header: 'interfaceNodeToolUse',
+		description: 'Node used in code gen tool',
+		humanReadable: 'Used in Tool',
+	},
+	{
+		header: 'interfaceNodeCodeGen',
+		description: 'Generate code for this node',
+		humanReadable: 'Code Gen',
+	},
+	{
+		header: 'interfaceNodeBuildCodeGen',
+		description: 'Generate code for this node on build',
+		humanReadable: 'Build Code Gen',
+	},
+	{
+		header: 'notes',
+		description: 'Node notes',
+		humanReadable: 'Notes',
 	},
 	{
 		header: 'applicability',

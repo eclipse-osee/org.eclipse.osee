@@ -10,5 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './host.component.mock';
+export * from './connections.component.mock';
 export * from './current-graph.service.mock';
+export * from './connections-table.component.mock';
+export * from './new-node-form.component.mock';

@@ -44,6 +44,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private final OrcsApi orcsApi;
 
+   @SuppressWarnings("unchecked")
    private Class<T> getType() {
       return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
    }
@@ -117,6 +118,7 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       return this.getByRelationWithoutId(branch, relation, relatedId, new LinkedList<RelationTypeSide>(), clazz);
    }
 
+   @SuppressWarnings("unused")
    private boolean hasSetApplic(Class<?> type) {
       if (getSetApplic(type) != null) {
          return true;
@@ -772,15 +774,13 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, AttributeTypeId orderByAttribute)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
+      throws IllegalArgumentException, SecurityException {
       return this.getAllByQuery(branch, query, false, orderByAttribute);
    }
 
    @Override
    public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact,
-      AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException {
+      AttributeTypeId orderByAttribute) throws IllegalArgumentException, SecurityException {
       return null;
    }
 

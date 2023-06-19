@@ -1,0 +1,109 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-grid tw-grid-cols-3 tw-gap-4">
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} name</mat-label>
+		<input
+			matInput
+			[(ngModel)]="node.name"
+			required
+			data-cy="field-name" />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} name abbreviation</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="node.interfaceNodeNameAbbrev"
+			#input />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} code gen name</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="node.interfaceNodeCodeGenName"
+			#input />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} node number</mat-label>
+		<input
+			matInput
+			[(ngModel)]="node.interfaceNodeNumber"
+			data-cy="field-node-number" />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} node group ID</mat-label>
+		<input
+			matInput
+			[(ngModel)]="node.interfaceNodeGroupId"
+			data-cy="field-node-group-id" />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} node type</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="node.interfaceNodeType"
+			#input />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} description</mat-label>
+		<input
+			matInput
+			[(ngModel)]="node.description"
+			data-cy="field-description" />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} notes</mat-label>
+		<input
+			matInput
+			type="text"
+			[(ngModel)]="node.notes"
+			#input />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} network address</mat-label>
+		<input
+			matInput
+			[(ngModel)]="node.interfaceNodeAddress"
+			data-cy="field-address" />
+	</mat-form-field>
+	<mat-form-field>
+		<mat-label>{{ fieldPrefix }} color</mat-label>
+		<input
+			matInput
+			type="color"
+			[(ngModel)]="node.interfaceNodeBackgroundColor"
+			data-cy="field-color" />
+	</mat-form-field>
+	<osee-applicability-selector
+		[(applicability)]="node.applicability"></osee-applicability-selector>
+</div>
+<div class="tw-flex tw-flex-col tw-gap-4">
+	<mat-slide-toggle
+		[(ngModel)]="node.interfaceNodeToolUse"
+		labelPosition="before">
+		Used in code gen tool
+	</mat-slide-toggle>
+	<mat-slide-toggle
+		[(ngModel)]="node.interfaceNodeCodeGen"
+		labelPosition="before">
+		Code Gen
+	</mat-slide-toggle>
+	<mat-slide-toggle
+		[(ngModel)]="node.interfaceNodeBuildCodeGen"
+		labelPosition="before">
+		Code Gen for Builds
+	</mat-slide-toggle>
+</div>

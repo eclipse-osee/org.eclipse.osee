@@ -41,6 +41,7 @@ import {
 	connectionServiceMock,
 	sharedConnectionServiceMock,
 	ethernetTransportType,
+	nodesMock,
 } from '@osee/messaging/shared/testing';
 import {
 	applicabilityListServiceMock,
@@ -72,7 +73,7 @@ describe('CurrentGraphService', () => {
 							interfaceNodeNumber: '1',
 							interfaceNodeGroupId: 'group1',
 							interfaceNodeAddress: '',
-							interfaceNodeBgColor: '',
+							interfaceNodeBackgroundColor: '',
 						},
 					},
 					{
@@ -84,7 +85,7 @@ describe('CurrentGraphService', () => {
 							interfaceNodeNumber: '2',
 							interfaceNodeGroupId: 'group2',
 							interfaceNodeAddress: '',
-							interfaceNodeBgColor: '',
+							interfaceNodeBackgroundColor: '',
 						},
 					},
 					{
@@ -96,7 +97,7 @@ describe('CurrentGraphService', () => {
 							interfaceNodeNumber: '3',
 							interfaceNodeGroupId: 'group3',
 							interfaceNodeAddress: '',
-							interfaceNodeBgColor: '',
+							interfaceNodeBackgroundColor: '',
 							applicability: { id: '1', name: 'Base' },
 						},
 					},
@@ -109,7 +110,7 @@ describe('CurrentGraphService', () => {
 							interfaceNodeNumber: '4',
 							interfaceNodeGroupId: 'group4',
 							interfaceNodeAddress: '',
-							interfaceNodeBgColor: '',
+							interfaceNodeBackgroundColor: '',
 							applicability: { id: '1', name: 'Base' },
 						},
 					},
@@ -290,6 +291,7 @@ describe('CurrentGraphService', () => {
 								name: 'abcd',
 								description: '',
 								transportType: ethernetTransportType,
+								nodes: nodesMock,
 							},
 						},
 						{
@@ -300,6 +302,7 @@ describe('CurrentGraphService', () => {
 								name: 'abcd',
 								description: '',
 								transportType: ethernetTransportType,
+								nodes: nodesMock,
 							},
 						},
 					])
@@ -321,9 +324,9 @@ describe('CurrentGraphService', () => {
 							name: 'connection',
 							description: '',
 							transportType: ethernetTransportType,
+							nodes: [],
 						},
-						'1',
-						'2'
+						['1', '2']
 					)
 				)
 				.toBe(expectedMarble, expectedfilterValues);
@@ -343,9 +346,9 @@ describe('CurrentGraphService', () => {
 							name: 'connection',
 							description: '',
 							transportType: ethernetTransportType,
+							nodes: [],
 						},
-						'2',
-						'1'
+						['2', '1']
 					)
 				)
 				.toBe(expectedMarble, expectedfilterValues);
@@ -377,7 +380,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '1',
 								interfaceNodeGroupId: 'group1',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 							},
 						},
 						{
@@ -389,7 +392,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '2',
 								interfaceNodeGroupId: 'group2',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 							},
 						},
 						{
@@ -401,7 +404,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '3',
 								interfaceNodeGroupId: 'group3',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 								applicability: { id: '1', name: 'Base' },
 							},
 						},
@@ -414,7 +417,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '4',
 								interfaceNodeGroupId: 'group4',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 								applicability: { id: '1', name: 'Base' },
 							},
 						},
@@ -525,7 +528,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '1',
 								interfaceNodeGroupId: 'group1',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 							},
 						},
 						{
@@ -537,7 +540,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '2',
 								interfaceNodeGroupId: 'group2',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 							},
 						},
 						{
@@ -547,7 +550,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '3',
 								interfaceNodeGroupId: 'group3',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 								applicability: {
 									id: '1',
 									name: 'Base',
@@ -575,7 +578,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '4',
 								interfaceNodeGroupId: 'group4',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 								applicability: { id: '1', name: 'Base' },
 								changes: {
 									applicability: Object({
@@ -606,7 +609,7 @@ describe('CurrentGraphService', () => {
 											branchId: '2780650236653788489',
 										}),
 									}),
-									interfaceNodeBgColor: Object({
+									interfaceNodeBackgroundColor: Object({
 										previousValue: null,
 										currentValue: '',
 										transactionToken: Object({
@@ -647,7 +650,7 @@ describe('CurrentGraphService', () => {
 											branchId: '2780650236653788489',
 										},
 									},
-									interfaceNodeBgColor: {
+									interfaceNodeBackgroundColor: {
 										previousValue: null,
 										currentValue: null,
 										transactionToken: {
@@ -667,7 +670,7 @@ describe('CurrentGraphService', () => {
 								interfaceNodeNumber: '',
 								interfaceNodeGroupId: '',
 								interfaceNodeAddress: '',
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 								description: '',
 								interfaceNodeBuildCodeGen: false,
 								interfaceNodeCodeGen: false,
@@ -768,6 +771,7 @@ describe('CurrentGraphService', () => {
 								},
 								name: '',
 								transportType: {},
+								nodes: [],
 								added: false,
 							},
 						},
@@ -799,6 +803,7 @@ describe('CurrentGraphService', () => {
 								},
 								name: 'T7_TC',
 								transportType: {},
+								nodes: [],
 								applicability: { id: '1', name: 'Base' },
 								added: false,
 							},

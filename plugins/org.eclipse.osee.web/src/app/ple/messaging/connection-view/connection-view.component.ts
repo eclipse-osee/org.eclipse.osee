@@ -14,7 +14,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
 	CurrentGraphService,
-	HostComponent,
+	ConnectionsComponent,
 	RouteStateService,
 } from '@osee/messaging/connection-view';
 import { combineLatest, iif, of } from 'rxjs';
@@ -24,7 +24,7 @@ import { combineLatest, iif, of } from 'rxjs';
 	templateUrl: './connection-view.component.html',
 	styleUrls: ['./connection-view.component.sass'],
 	standalone: true,
-	imports: [HostComponent],
+	imports: [ConnectionsComponent],
 })
 export class ConnectionViewComponent implements OnInit {
 	constructor(

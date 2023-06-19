@@ -1,0 +1,111 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="data | async as _data">
+	<table
+		mat-table
+		multiTemplateDataRows
+		[dataSource]="_data"
+		class="mat-elevation-z8 tw-w-full">
+		<ng-container
+			[matColumnDef]="header"
+			*ngFor="let header of headers">
+			<th
+				mat-header-cell
+				*matHeaderCellDef
+				[matTooltip]="
+					(getTableHeaderByName(header) | async)?.description || ''
+				"
+				class="tw-font-bold tw-text-primary-600">
+				{{
+					(getTableHeaderByName(header) | async)?.humanReadable || ''
+				}}
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let connection">
+				<div class="tw-flex tw-items-center tw-gap-2">
+					<ng-container *ngIf="header === 'name'">
+						<ng-container
+							*ngIf="{
+								value: rowIsExpanded(connection.id)
+							} as _expanded">
+							<button
+								mat-icon-button
+								[@expandButton]="
+									!_expanded.value ? 'closed' : 'open'
+								"
+								[attr.data-cy]="
+									_expanded.value
+										? 'close-nodes-btn-' + connection.name
+										: 'expand-nodes-btn-' + connection.name
+								"
+								(click)="
+									toggleExpanded(
+										connection.id,
+										!_expanded.value
+									)
+								">
+								<mat-icon>expand_more</mat-icon>
+							</button>
+						</ng-container>
+					</ng-container>
+					<ng-container *ngIf="false; else no_edit">
+						<div>editing not enabled yet</div>
+					</ng-container>
+					<ng-template #no_edit>
+						<ng-container [ngSwitch]="header">
+							<ng-container *ngSwitchCase="'applicability'">
+								<ng-container
+									*ngIf="connection[header].name !== 'Base'">
+									{{ connection[header] }}
+								</ng-container>
+							</ng-container>
+							<ng-container *ngSwitchCase="'transportType'">
+								{{ connection[header].name }}
+							</ng-container>
+							<ng-container *ngSwitchDefault>
+								{{ connection[header] || '' }}
+							</ng-container>
+						</ng-container>
+					</ng-template>
+				</div>
+			</td>
+		</ng-container>
+		<ng-container matColumnDef="expandedConnection">
+			<td
+				mat-cell
+				*matCellDef="let connection">
+				<div
+					class="tw-flex tw-flex-col tw-overflow-auto"
+					[@detailExpand]="
+						rowIsExpanded(connection.id) ? 'expanded' : 'collapsed'
+					">
+					<ng-container *ngIf="rowIsExpanded(connection.id)">
+						Nodes table goes here
+					</ng-container>
+				</div>
+			</td>
+		</ng-container>
+		<tr
+			mat-header-row
+			*matHeaderRowDef="headers; sticky: true"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: headers"
+			[attr.data-cy]="'connections-table-row-' + row.name"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: ['expandedConnection']"
+			[ngClass]="rowIsExpanded(row.id) ? '' : 'tw-hidden tw-h-0'"></tr>
+	</table>
+</ng-container>

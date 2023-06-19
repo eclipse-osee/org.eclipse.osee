@@ -12,6 +12,7 @@
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +25,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MockNewNodeFormComponent } from '@osee/messaging/connection-view/testing';
 import { dialogRef } from '@osee/messaging/shared/testing';
 
 import { CreateNewNodeDialogComponent } from './create-new-node-dialog.component';
@@ -34,21 +36,35 @@ describe('CreateNewNodeDialogComponent', () => {
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatDialogModule,
-				MatButtonModule,
-				MatFormFieldModule,
-				MatInputModule,
-				NoopAnimationsModule,
-				FormsModule,
-				CreateNewNodeDialogComponent,
-			],
-			providers: [
-				{ provide: MatDialogRef, useValue: dialogRef },
-				{ provide: MAT_DIALOG_DATA, useValue: {} },
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(CreateNewNodeDialogComponent, {
+			set: {
+				imports: [
+					CommonModule,
+					MatDialogModule,
+					MatButtonModule,
+					MatFormFieldModule,
+					MatInputModule,
+					FormsModule,
+					MockNewNodeFormComponent,
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatDialogModule,
+					MatButtonModule,
+					MatFormFieldModule,
+					MatInputModule,
+					NoopAnimationsModule,
+					FormsModule,
+					CreateNewNodeDialogComponent,
+				],
+				providers: [
+					{ provide: MatDialogRef, useValue: dialogRef },
+					{ provide: MAT_DIALOG_DATA, useValue: {} },
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

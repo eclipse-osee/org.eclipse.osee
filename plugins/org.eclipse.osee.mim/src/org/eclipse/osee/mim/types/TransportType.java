@@ -26,7 +26,6 @@ public class TransportType extends PLGenericDBObject {
 
    public static final TransportType SENTINEL = new TransportType();
 
-   private String Name;
    private boolean byteAlignValidation;
    private boolean messageGeneration;
    private int byteAlignValidationSize;
@@ -257,6 +256,10 @@ public class TransportType extends PLGenericDBObject {
 
    public void setAvailableElementHeaders(List<String> availableElementHeaders) {
       this.availableElementHeaders = availableElementHeaders;
+   }
+
+   public boolean isDirectConnection() {
+      return getMinimumPublisherMultiplicity() == 1 && getMaximumPublisherMultiplicity() == 1 && getMinimumSubscriberMultiplicity() == 1 && getMaximumSubscriberMultiplicity() == 1;
    }
 
    @JsonIgnore

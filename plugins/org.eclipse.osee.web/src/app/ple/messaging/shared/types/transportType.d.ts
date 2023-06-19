@@ -25,4 +25,5 @@ export interface transportTypeAttributes {
 	maximumPublisherMultiplicity: number;
 	minimumSubscriberMultiplicity: number;
 	maximumSubscriberMultiplicity: number;
+	directConnection?: boolean;
 }
