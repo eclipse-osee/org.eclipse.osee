@@ -13,11 +13,13 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
@@ -168,6 +170,23 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
          System.out.println(ex);
       }
       return new LinkedList<>();
+   }
+
+   @Override
+   public Collection<InterfaceNode> getNodesByName(BranchId branch, String name, long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAll(branch, new LinkedList<>(), name, Arrays.asList(CoreAttributeTypes.Name),
+            pageNum, pageSize, CoreAttributeTypes.Name);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public int getNodesByNameCount(BranchId branch, String name) {
+      return this.getAccessor().getAllByFilterAndCount(branch, name, Arrays.asList(CoreAttributeTypes.Name));
    }
 
 }

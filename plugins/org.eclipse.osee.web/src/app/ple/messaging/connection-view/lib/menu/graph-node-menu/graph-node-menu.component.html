@@ -18,7 +18,8 @@
 		<mat-icon color="accent">pageview</mat-icon>View Diff for
 	</button>
 </ng-container>
-<ng-container *ngIf="editMode && !(hasChanges(data) && data.deleted)">
+<ng-container
+	*ngIf="editMode && data.id !== '-1' && !(hasChanges(data) && data.deleted)">
 	<button
 		mat-menu-item
 		(click)="openEditNodeDialog(data)">
@@ -43,7 +44,7 @@
 		><span>Create Connection To {{ data.name }}</span>
 	</button>
 </ng-container>
-<ng-container *ngIf="!(hasChanges(data) || editMode)">
+<ng-container *ngIf="data.id === '-1' || !(hasChanges(data) || editMode)">
 	<mat-label
 		mat-menu-item
 		[disabled]="true"
@@ -83,13 +84,14 @@
 				Address/Port
 			</button>
 		</ng-container>
-		<ng-container *ngIf="data?.changes?.interfaceNodeBgColor !== undefined">
+		<ng-container
+			*ngIf="data?.changes?.interfaceNodeBackgroundColor !== undefined">
 			<button
 				mat-menu-item
 				(click)="
 					viewDiff(
 						true,
-						data.changes.interfaceNodeBgColor,
+						data.changes.interfaceNodeBackgroundColor,
 						'Background Color'
 					)
 				">

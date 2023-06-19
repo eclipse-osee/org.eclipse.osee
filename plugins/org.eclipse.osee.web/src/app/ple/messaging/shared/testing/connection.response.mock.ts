@@ -12,10 +12,16 @@
  **********************************************************************/
 
 import type { connection } from '@osee/messaging/shared/types';
+import { nodesMock } from 'src/app/ple/messaging/shared/testing/nodes-response.mock';
 import { ethernetTransportType } from './transport-type.response.mock';
 
 export const connectionMock: connection = {
 	name: 'connection1',
 	description: '',
 	transportType: ethernetTransportType,
+	nodes: nodesMock,
+	applicability: {
+		id: '1',
+		name: 'Base',
+	},
 };

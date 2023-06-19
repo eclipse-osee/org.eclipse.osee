@@ -10,3 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'osee-connection-view-host',
+	template: '<div>Dummy</div>',
+	standalone: true,
+})
+export class MockConnectionsComponent {}

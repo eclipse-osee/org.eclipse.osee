@@ -110,7 +110,7 @@
 				[multiple]="type.maximumPublisherMultiplicity !== 1"
 				#pubSelect="ngModel"
 				[oseeMessageNodesCount]="true"
-				data-cy="field-init-node">
+				data-cy="field-pub-node">
 				<mat-option
 					*ngFor="let option of nodes | async"
 					[value]="option"
@@ -140,7 +140,7 @@
 				[multiple]="type.maximumSubscriberMultiplicity !== 1"
 				#subSelect="ngModel"
 				[oseeMessageNodesCount]="false"
-				data-cy="field-init-node">
+				data-cy="field-sub-node">
 				<mat-option
 					*ngFor="let option of nodes | async"
 					[value]="option"

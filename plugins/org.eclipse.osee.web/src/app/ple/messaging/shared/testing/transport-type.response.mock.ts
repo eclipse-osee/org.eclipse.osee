@@ -20,8 +20,24 @@ export const ethernetTransportType: Required<transportType> = {
 	byteAlignValidationSize: 4,
 	messageGenerationType: '',
 	messageGenerationPosition: '',
+	minimumPublisherMultiplicity: 1,
+	maximumPublisherMultiplicity: 1,
+	minimumSubscriberMultiplicity: 1,
+	maximumSubscriberMultiplicity: 1,
+	directConnection: true,
+};
+
+export const nonDirectTransportType: Required<transportType> = {
+	id: '1233456',
+	name: 'Not Direct',
+	byteAlignValidation: true,
+	messageGeneration: true,
+	byteAlignValidationSize: 8,
+	messageGenerationType: '',
+	messageGenerationPosition: '',
 	minimumPublisherMultiplicity: 0,
 	maximumPublisherMultiplicity: 0,
 	minimumSubscriberMultiplicity: 0,
 	maximumSubscriberMultiplicity: 0,
+	directConnection: false,
 };

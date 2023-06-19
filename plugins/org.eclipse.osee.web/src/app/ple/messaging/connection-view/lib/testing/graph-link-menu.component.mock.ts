@@ -11,7 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import { ethernetTransportType } from '@osee/messaging/shared/testing';
+import {
+	ethernetTransportType,
+	nodesMock,
+} from '@osee/messaging/shared/testing';
 import type {
 	connection,
 	connectionWithChanges,
@@ -32,6 +35,7 @@ export class MockGraphLinkMenuComponent {
 		name: '',
 		description: '',
 		transportType: ethernetTransportType,
+		nodes: nodesMock,
 	};
 
 	@Input()

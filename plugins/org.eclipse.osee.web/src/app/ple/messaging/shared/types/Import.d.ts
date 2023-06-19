@@ -15,13 +15,13 @@ import type { messageToken } from './messages';
 import type { subMessage } from './sub-messages';
 import type { elementImportToken } from './element';
 import type { enumeration, enumSet } from './enum';
-import type { nodeToken } from './node';
+import type { nodeData } from './node';
 import type { platformTypeImportToken } from './platformType';
 import type { structure } from './structure';
 import { connection } from 'src/app/ple/messaging/shared/types/connection';
 
 export interface ImportSummary {
-	nodes: nodeToken[];
+	nodes: nodeData[];
 	connections: connection[];
 	messages: messageToken[];
 	subMessages: subMessage[];

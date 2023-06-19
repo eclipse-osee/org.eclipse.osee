@@ -19,7 +19,7 @@ import { MockGraphComponent } from '../../testing/graph.component.mock';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
-import { HostComponent } from './host.component';
+import { ConnectionsComponent } from './connections.component';
 import { CurrentGraphService } from '../../services/current-graph.service';
 import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -33,26 +33,30 @@ import {
 	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
 import { MockSingleDiffComponent } from '@osee/shared/testing';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MockConnectionsTableComponent } from '@osee/messaging/connection-view/testing';
 
 describe('HostComponent', () => {
-	let component: HostComponent;
+	let component: ConnectionsComponent;
 	let routeState: RouteStateService;
 	let loader: HarnessLoader;
-	let fixture: ComponentFixture<HostComponent>;
+	let fixture: ComponentFixture<ConnectionsComponent>;
 
 	beforeEach(async () => {
-		await TestBed.overrideComponent(HostComponent, {
+		await TestBed.overrideComponent(ConnectionsComponent, {
 			set: {
 				imports: [
 					MatDialogModule,
 					MatIconModule,
 					MatButtonModule,
+					MatButtonToggleModule,
 					MatSidenavModule,
 					RouterTestingModule,
 					NgIf,
 					AsyncPipe,
 					MockSingleDiffComponent,
 					MockGraphComponent,
+					MockConnectionsTableComponent,
 					ViewSelectorMockComponent,
 					MessagingControlsMockComponent,
 				],
@@ -63,12 +67,14 @@ describe('HostComponent', () => {
 					MatDialogModule,
 					MatIconModule,
 					MatButtonModule,
+					MatButtonToggleModule,
 					MatSidenavModule,
 					RouterTestingModule,
 					NoopAnimationsModule,
 					MockSingleDiffComponent,
-					HostComponent,
+					ConnectionsComponent,
 					MockGraphComponent,
+					MockConnectionsTableComponent,
 					ViewSelectorMockComponent,
 					MessagingControlsMockComponent,
 				],
@@ -87,7 +93,7 @@ describe('HostComponent', () => {
 
 	beforeEach(() => {
 		routeState.branchId = '10';
-		fixture = TestBed.createComponent(HostComponent);
+		fixture = TestBed.createComponent(ConnectionsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);

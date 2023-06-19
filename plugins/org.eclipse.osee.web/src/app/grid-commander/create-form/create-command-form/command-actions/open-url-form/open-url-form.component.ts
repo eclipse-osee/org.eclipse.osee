@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { createArtifact } from '@osee/shared/types';
+import { artifact, createArtifact } from '@osee/shared/types';
 import { OpenUrlFormService } from '../../../../services/create-command-form-services/open-url-form.service';
 import {
 	commandObject,
@@ -40,11 +40,11 @@ import {
 })
 export class OpenUrlFormComponent {
 	@Output('submitOpenURLCommandForm') submitOpenUrlForm: EventEmitter<{
-		command: Partial<createArtifact>;
-		parameter: Partial<createArtifact>;
+		command: Partial<createArtifact & artifact>;
+		parameter: Partial<createArtifact & artifact>;
 	}> = new EventEmitter<{
-		command: Partial<createArtifact>;
-		parameter: Partial<createArtifact>;
+		command: Partial<createArtifact & artifact>;
+		parameter: Partial<createArtifact & artifact>;
 	}>();
 
 	displayParameterOptions: boolean = false;

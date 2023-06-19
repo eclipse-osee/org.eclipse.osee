@@ -14,7 +14,7 @@ import type { difference } from '@osee/shared/types/change-report';
 import type { applic } from '@osee/shared/types/applicability';
 import type { subMessage, subMessageWithChanges } from './sub-messages';
 import type { ConnectionNode } from './connection-nodes';
-import type { nodeToken } from './node';
+import type { nodeData } from './node';
 
 export interface message {
 	[index: string]:
@@ -103,6 +103,6 @@ export interface messageToken
 		| 'interfaceMessageRunBeforeProc'
 		| 'interfaceMessageVer'
 	> {
-	publisherNodes: nodeToken[];
-	subscriberNodes: nodeToken[];
+	publisherNodes: nodeData[];
+	subscriberNodes: nodeData[];
 }

@@ -29,7 +29,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 		TraceReportTableComponent,
 	],
 	templateUrl: './trace-report.component.html',
-	styleUrls: ['./trace-report.component.scss'],
 })
 export class NodeTraceReportRequirementsComponent {
 	constructor(

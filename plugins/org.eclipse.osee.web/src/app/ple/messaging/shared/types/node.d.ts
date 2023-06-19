@@ -20,7 +20,7 @@ export interface nodeData {
 	description?: string;
 	interfaceNodeNumber: string;
 	interfaceNodeGroupId: string;
-	interfaceNodeBgColor: string;
+	interfaceNodeBackgroundColor: string;
 	interfaceNodeAddress: string;
 	applicability?: applic;
 	interfaceNodeBuildCodeGen: boolean;
@@ -42,7 +42,7 @@ export interface nodeChanges {
 	description?: difference;
 	interfaceNodeNumber?: string;
 	interfaceNodeGroupId?: string;
-	interfaceNodeBgColor?: difference;
+	interfaceNodeBackgroundColor?: difference;
 	interfaceNodeAddress?: difference;
 	applicability?: difference;
 	interfaceNodeBuildCodeGen?: difference;
@@ -59,24 +59,6 @@ export interface node {
 	name: string;
 	description?: string;
 	applicability?: applic;
-}
-
-export interface nodeToken {
-	id?: string;
-	name: string;
-	description?: string;
-	interfaceNodeNumber: string;
-	interfaceNodeGroupId: string;
-	applicability?: applic;
-	color?: string;
-	address?: string;
-	interfaceNodeBuildCodeGen?: boolean;
-	interfaceNodeCodeGen?: boolean;
-	interfaceNodeCodeGenName?: string;
-	interfaceNodeNameAbbrev?: string;
-	interfaceNodeToolUse?: boolean;
-	interfaceNodeType?: string;
-	notes?: string;
 }
 
 export interface OseeNode<T> extends Omit<Node, 'data'> {

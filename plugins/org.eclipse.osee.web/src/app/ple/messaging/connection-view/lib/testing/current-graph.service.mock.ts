@@ -52,11 +52,7 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
 	deleteNodeAndUnrelate(nodeId: string, edges: []) {
 		return of(transactionResultMock);
 	},
-	createNewConnection(
-		connection: connection,
-		sourceId: string,
-		targetId: string
-	) {
+	createNewConnection(connection: connection, nodeIds: string[]) {
 		return of(transactionResultMock);
 	},
 	createNewNode(node: node) {

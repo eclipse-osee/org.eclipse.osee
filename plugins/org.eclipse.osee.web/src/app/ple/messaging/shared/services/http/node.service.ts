@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from '@osee/environments';
-import type { node } from '../../types/node';
+import type { node, nodeData } from '../../types/node';
 import {
 	ATTRIBUTETYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
@@ -23,7 +23,7 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { transaction } from '@osee/shared/types';
+import { relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -53,6 +53,35 @@ export class NodeService {
 					count: pageSize,
 					pageNum: pageNum,
 					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+				},
+			}
+		);
+	}
+
+	getPaginatedNodesByName(
+		branchId: string,
+		name: string,
+		pageNum: string | number,
+		pageSize: number
+	) {
+		return this.http.get<nodeData[]>(
+			apiURL + '/mim/branch/' + branchId + '/nodes/name',
+			{
+				params: {
+					name: name,
+					count: pageSize,
+					pageNum: pageNum,
+				},
+			}
+		);
+	}
+
+	getNodesByNameCount(branchId: string, name: string) {
+		return this.http.get<number>(
+			apiURL + '/mim/branch/' + branchId + '/nodes/name/count',
+			{
+				params: {
+					name: name,
 				},
 			}
 		);
@@ -88,7 +117,8 @@ export class NodeService {
 
 	createNode(
 		branchId: string,
-		node: Partial<node>,
+		node: Partial<node | nodeData>,
+		relations?: relation[],
 		transaction?: transaction,
 		key?: string
 	) {
@@ -96,7 +126,7 @@ export class NodeService {
 			this.builder.createArtifact(
 				node,
 				ARTIFACTTYPEIDENUM.NODE,
-				[],
+				relations || [],
 				transaction,
 				branchId,
 				'Create Node',

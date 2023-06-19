@@ -10,103 +10,195 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 mat-dialog-title>Create Connection to Node: {{ title }}</h1>
-<mat-dialog-content>
-	<mat-form-field
-		id="connection-name-field"
-		class="tw-w-full">
-		<mat-label>Add a Name</mat-label>
-		<input
-			matInput
-			type="text"
-			[(ngModel)]="newConnection.connection.name"
-			#input
-			required
-			data-cy="field-name" />
-	</mat-form-field>
-	<br />
-	<mat-form-field
-		id="connection-description-field"
-		class="tw-w-full">
-		<mat-label>Add a Description</mat-label>
-		<input
-			matInput
-			type="text"
-			[(ngModel)]="newConnection.connection.description"
-			#input
-			data-cy="field-description" />
-	</mat-form-field>
-	<br />
-	<mat-form-field
-		id="connection-transport-type-selector"
-		class="tw-w-full">
-		<mat-label>Select a Transport Type</mat-label>
-		<mat-select
-			[(ngModel)]="newConnection.connection.transportType"
-			required
-			data-cy="field-transport-type"
-			[compareWith]="compareTransportTypes">
-			<osee-mat-option-loading
-				[data]="transportTypes"
-				objectName="Transport Types"
-				paginationMode="AUTO"
-				[paginationSize]="paginationSize">
-				<ng-template let-option>
-					<mat-option
-						[value]="option"
-						[attr.data-cy]="'option-' + option.name"
-						[value]="option"
-						[id]="option.id">
-						{{ option.name }}
-					</mat-option>
-				</ng-template>
-			</osee-mat-option-loading>
-		</mat-select>
-	</mat-form-field>
-	<br />
-	<mat-form-field
-		id="connection-node-selector"
-		class="tw-w-full">
-		<mat-label>Select a Node to Connect To</mat-label>
-		<mat-select
-			[(ngModel)]="newConnection.nodeId"
-			data-cy="field-toNode">
-			<osee-mat-option-loading
-				[data]="nodes"
-				objectName="Nodes"
-				paginationMode="AUTO"
-				[paginationSize]="paginationSize">
-				<ng-template let-option>
-					<mat-option
-						*ngIf="option.id !== data.id"
-						[value]="option.id"
-						[attr.data-cy]="'option-' + option.name">
-						{{ option.name }}
-					</mat-option>
-				</ng-template>
-			</osee-mat-option-loading>
-		</mat-select>
-	</mat-form-field>
-</mat-dialog-content>
-<div mat-dialog-actions>
-	<button
-		mat-button
-		(click)="onNoClick()"
-		data-cy="cancel-btn">
-		Cancel
-	</button>
-	<button
-		mat-raised-button
-		[mat-dialog-close]="newConnection"
-		color="primary"
-		[disabled]="
-			newConnection.connection.name.length === 0 ||
-			newConnection.nodeId.length === 0
-		"
-		data-cy="submit-btn">
-		Ok
-	</button>
-</div>
-<!--
-
--->
+<form #connectionForm="ngForm">
+	<h1 mat-dialog-title>
+		Create Connection{{ title ? ' to Node: ' + title : '' }}
+	</h1>
+	<mat-dialog-content>
+		<div class="tw-flex tw-flex-col tw-gap-2">
+			<mat-form-field
+				id="connection-name-field"
+				class="tw-w-full">
+				<mat-label>Add a Name</mat-label>
+				<input
+					matInput
+					name="name"
+					type="text"
+					[(ngModel)]="newConnection.connection.name"
+					#input
+					required
+					data-cy="field-name" />
+			</mat-form-field>
+			<mat-form-field
+				id="connection-description-field"
+				class="tw-w-full">
+				<mat-label>Add a Description</mat-label>
+				<input
+					matInput
+					name="description"
+					type="text"
+					[(ngModel)]="newConnection.connection.description"
+					#input
+					data-cy="field-description" />
+			</mat-form-field>
+			<mat-form-field
+				id="connection-transport-type-selector"
+				class="tw-w-full">
+				<mat-label>Select a Transport Type</mat-label>
+				<mat-select
+					[(ngModel)]="newConnection.connection.transportType"
+					required
+					name="transportType"
+					data-cy="field-transport-type"
+					[compareWith]="compareTransportTypes">
+					<osee-mat-option-loading
+						[data]="transportTypes"
+						objectName="Transport Types"
+						paginationMode="AUTO"
+						[paginationSize]="paginationSize">
+						<ng-template let-option>
+							<mat-option
+								[value]="option"
+								[attr.data-cy]="'option-' + option.name"
+								[value]="option"
+								[id]="option.id">
+								{{ option.name }}
+							</mat-option>
+						</ng-template>
+					</osee-mat-option-loading>
+				</mat-select>
+			</mat-form-field>
+			<ng-container
+				*ngIf="newConnection.connection.transportType as transportType">
+				<ng-container *ngIf="transportType.directConnection">
+					<mat-form-field
+						id="connection-from-node-selector"
+						class="tw-w-full">
+						<mat-label>Select a Node to Connect From</mat-label>
+						<mat-select
+							[(ngModel)]="fromNode"
+							required
+							name="fromNode"
+							(selectionChange)="selectFromNode($event)"
+							data-cy="field-toNode">
+							<osee-mat-option-loading
+								[data]="paginatedNodes"
+								objectName="Nodes"
+								paginationMode="AUTO"
+								[paginationSize]="paginationSize">
+								<ng-template let-option>
+									<mat-option
+										[value]="option.id"
+										[disabled]="
+											option.id === data?.id ||
+											option.id === toNode
+										"
+										[attr.data-cy]="
+											'option-' + option.name
+										">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						</mat-select>
+					</mat-form-field>
+					<ng-container *ngIf="!data?.id">
+						<mat-form-field
+							id="connection-to-node-selector"
+							class="tw-w-full">
+							<mat-label>Select a Node to Connect To</mat-label>
+							<mat-select
+								[(ngModel)]="toNode"
+								required
+								name="toNode"
+								(selectionChange)="selectToNode($event)"
+								data-cy="field-toNode">
+								<osee-mat-option-loading
+									[data]="paginatedNodes"
+									objectName="Nodes"
+									paginationMode="AUTO"
+									[paginationSize]="paginationSize">
+									<ng-template let-option>
+										<mat-option
+											[value]="option.id"
+											[disabled]="
+												option.id === data?.id ||
+												option.id === fromNode
+											"
+											[attr.data-cy]="
+												'option-' + option.name
+											">
+											{{ option.name }}
+										</mat-option>
+									</ng-template>
+								</osee-mat-option-loading>
+							</mat-select>
+						</mat-form-field>
+					</ng-container>
+				</ng-container>
+				<ng-container *ngIf="!transportType.directConnection">
+					<ng-container *ngIf="nodes | async as _nodes">
+						<mat-form-field id="connection-node-selector">
+							<mat-label>Select Nodes</mat-label>
+							<mat-select
+								[ngModel]="newConnection.nodeIds"
+								required
+								multiple
+								name="connectionNodes"
+								#nodesSelect="ngModel"
+								data-cy="field-init-node"
+								[compareWith]="compareNodes"
+								[oseeConnectionNodesCount]="transportType">
+								<mat-option
+									*ngFor="let option of _nodes"
+									[value]="option.id"
+									[attr.data-cy]="'option-' + option.name">
+									{{ option.name }}
+								</mat-option>
+							</mat-select>
+							<mat-error
+								*ngIf="
+									nodesSelect.control.errors?.min ||
+									nodesSelect.control.errors?.required
+								">
+								Minimum nodes is
+								{{ nodesSelect.control.errors?.min?.min || 1 }}
+							</mat-error>
+							<mat-error *ngIf="nodesSelect.control.errors?.max"
+								>Maximum nodes is
+								{{ nodesSelect.control.errors?.max.max }}
+							</mat-error>
+						</mat-form-field>
+					</ng-container>
+				</ng-container>
+			</ng-container>
+		</div>
+	</mat-dialog-content>
+	<div
+		mat-dialog-actions
+		align="end">
+		<button
+			mat-button
+			(click)="onNoClick()"
+			data-cy="cancel-btn">
+			Cancel
+		</button>
+		<ng-container *ngIf="newConnection.connection.transportType as type">
+			<button
+				mat-raised-button
+				[mat-dialog-close]="newConnection"
+				color="primary"
+				[disabled]="
+					newConnection.connection.name.length === 0 ||
+					!type ||
+					(type.directConnection &&
+						newConnection.nodeIds.length !== 2) ||
+					connectionForm.invalid ||
+					connectionForm.pending
+				"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</ng-container>
+	</div>
+</form>

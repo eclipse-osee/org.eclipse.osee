@@ -1,0 +1,191 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Add Node to {{ data.connection.name }}</h1>
+<mat-horizontal-stepper
+	#stepper
+	class="new-node-stepper">
+	<mat-step
+		label="Select Node options"
+		#step1>
+		<mat-dialog-content>
+			<div class="tw-flex tw-items-center tw-justify-between">
+				<button
+					mat-raised-button
+					color="primary"
+					class="tw-w-full tw-p-6"
+					matStepperNext
+					(click)="createNew()"
+					data-cy="create-new-btn">
+					Create new Node
+				</button>
+
+				<p class="tw-w-full tw-text-center">or</p>
+
+				<mat-form-field
+					class="tw-w-full"
+					appearance="fill"
+					subscriptSizing="dynamic">
+					<mat-label>Select an existing Node</mat-label>
+					<input
+						type="text"
+						matInput
+						[matAutocomplete]="auto"
+						(keyup)="applySearchTerm($event)"
+						name="autocomplete-text" />
+					<mat-autocomplete #auto="matAutocomplete">
+						<ng-container *ngIf="availableNodes | async as nodes">
+							<osee-mat-option-loading
+								[data]="nodes"
+								[count]="(availableNodesCount | async) || -1"
+								objectName="Nodes"
+								paginationMode="AUTO"
+								[paginationSize]="paginationSize">
+								<ng-template let-option>
+									<mat-option
+										[value]="option.name"
+										(click)="selectExistingNode(option)"
+										[disabled]="isDisabledOption(option)"
+										[matTooltip]="option.description"
+										[matTooltipClass]="
+											'tw-whitespace-pre-line'
+										"
+										matTooltipShowDelay="250">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						</ng-container>
+					</mat-autocomplete>
+				</mat-form-field>
+			</div>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				color="primary"
+				*ngIf="selectedNode"
+				(click)="moveToReview(stepper)">
+				Proceed to Review
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
+	<mat-step
+		label="Define Node"
+		#step2>
+		<mat-dialog-content>
+			<osee-new-node-form
+				[node]="data.node"
+				fieldPrefix="Add"></osee-new-node-form>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				matStepperPrevious
+				data-cy="back-2">
+				Back
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				*ngIf="data.node.name !== ''"
+				matStepperNext
+				data-cy="stepper-next">
+				Next
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
+	<mat-step
+		label="Review"
+		#step3>
+		<mat-dialog-content>
+			<ng-container
+				*ngIf="
+					data.node.id === '' || data.node.id === '-1';
+					else relate
+				">
+				<div class="tw-flex tw-flex-col">
+					A node will be created and added to:
+					<span class="tw-font-bold">{{ data.connection.name }}</span>
+					with the following properties:
+					<mat-label>Name: {{ data.node.name }}</mat-label>
+					<mat-label
+						>Name Abbreviation:
+						{{ data.node.interfaceNodeNameAbbrev }}</mat-label
+					>
+					<mat-label
+						>Code Gen Name:
+						{{ data.node.interfaceNodeCodeGenName }}</mat-label
+					>
+					<mat-label
+						>Node Number:
+						{{ data.node.interfaceNodeNumber }}</mat-label
+					>
+					<mat-label
+						>Node Group ID:
+						{{ data.node.interfaceNodeGroupId }}</mat-label
+					>
+					<mat-label
+						>Node Type: {{ data.node.interfaceNodeType }}</mat-label
+					>
+					<mat-label
+						>Description: {{ data.node.description }}</mat-label
+					>
+					<mat-label>Notes: {{ data.node.notes }}</mat-label>
+					<mat-label
+						>Node Network Address:
+						{{ data.node.interfaceNodeAddress }}</mat-label
+					>
+					<mat-label *ngIf="data.node.applicability"
+						>Applicability:
+						{{ data.node.applicability.name }}</mat-label
+					>
+					<mat-label
+						>Used in code gen tool:
+						{{ data.node.interfaceNodeToolUse }}</mat-label
+					>
+					<mat-label
+						>Code Generation:
+						{{ data.node.interfaceNodeCodeGen }}</mat-label
+					>
+					<mat-label
+						>Build Code Generation:
+						{{ data.node.interfaceNodeBuildCodeGen }}</mat-label
+					>
+				</div>
+			</ng-container>
+			<ng-template #relate>
+				<div>
+					The node
+					<span class="tw-font-bold">{{ data.node.name }}</span> will
+					be added to the connection
+					<span class="tw-font-bold">{{ data.connection.name }}</span>
+				</div>
+			</ng-template>
+		</mat-dialog-content>
+		<mat-dialog-actions align="end">
+			<button
+				mat-button
+				matStepperPrevious
+				data-cy="cancel-btn">
+				Back
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				[mat-dialog-close]="data"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</mat-dialog-actions>
+	</mat-step>
+</mat-horizontal-stepper>

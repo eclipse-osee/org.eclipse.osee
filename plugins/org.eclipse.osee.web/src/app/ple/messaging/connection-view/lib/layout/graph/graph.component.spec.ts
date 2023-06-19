@@ -147,7 +147,7 @@ describe('GraphComponent', () => {
 									id: '1',
 									name: 'Base',
 								},
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 								interfaceNodeAddress: '',
 								description: '',
 							},
@@ -162,7 +162,7 @@ describe('GraphComponent', () => {
 									id: '1',
 									name: 'Base',
 								},
-								interfaceNodeBgColor: '',
+								interfaceNodeBackgroundColor: '',
 								interfaceNodeAddress: '',
 								description: '',
 							},
@@ -183,6 +183,7 @@ describe('GraphComponent', () => {
 								name: 'Base',
 							},
 							transportType: ethernetTransportType,
+							nodes: [],
 							deleted: false,
 							added: false,
 							changes: {
@@ -233,7 +234,7 @@ describe('GraphComponent', () => {
 										id: '1',
 										name: 'Base',
 									},
-									interfaceNodeBgColor: '',
+									interfaceNodeBackgroundColor: '',
 									interfaceNodeAddress: '',
 									description: '',
 								},
@@ -248,7 +249,7 @@ describe('GraphComponent', () => {
 										id: '1',
 										name: 'Base',
 									},
-									interfaceNodeBgColor: '',
+									interfaceNodeBackgroundColor: '',
 									interfaceNodeAddress: '',
 									description: '',
 								},
@@ -276,7 +277,7 @@ describe('GraphComponent', () => {
 							id: '1',
 							name: 'Base',
 						},
-						interfaceNodeBgColor: '',
+						interfaceNodeBackgroundColor: '',
 						interfaceNodeAddress: '',
 						description: '',
 					},
@@ -289,6 +290,7 @@ describe('GraphComponent', () => {
 							name: '',
 							description: '',
 							transportType: ethernetTransportType,
+							nodes: [],
 							deleted: false,
 							added: false,
 							changes: {},
@@ -301,6 +303,7 @@ describe('GraphComponent', () => {
 							name: '',
 							description: '',
 							transportType: ethernetTransportType,
+							nodes: [],
 							deleted: false,
 							added: false,
 							changes: {},
@@ -337,6 +340,7 @@ describe('GraphComponent', () => {
 										name: 'a',
 										description: '',
 										transportType: ethernetTransportType,
+										nodes: [],
 									},
 								},
 								{
@@ -347,6 +351,7 @@ describe('GraphComponent', () => {
 										name: 'b',
 										description: '',
 										transportType: ethernetTransportType,
+										nodes: [],
 									},
 								},
 							]
@@ -402,7 +407,7 @@ describe('GraphComponent', () => {
 						items = await menuGraphHarness.getItems();
 					});
 					it('should have the correct amount of items(1)', () => {
-						expect(items.length).toEqual(1);
+						expect(items.length).toEqual(2);
 					});
 					it('should open create new node dialog', async () => {
 						let response: node = {

@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.concurrent.ThreadLocalRandom;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -25,12 +26,12 @@ public class InterfaceNode extends PLGenericDBObject {
 
    public static final InterfaceNode SENTINEL = new InterfaceNode();
 
-   private String Description;
-   private String nodeNumber;
-   private String nodeGroupId;
+   private String description;
+   private String interfaceNodeNumber;
+   private String interfaceNodeGroupId;
    private ApplicabilityToken applicability;
-   private String Color;
-   private String Address;
+   private String interfaceNodeBackgroundColor = generateColor() ? "#81d4fa" : "#c5e1a5";
+   private String interfaceNodeAddress;
    private String interfaceNodeNameAbbrev;
    private String interfaceNodeCodeGenName;
    private String InterfaceNodeType;
@@ -47,10 +48,11 @@ public class InterfaceNode extends PLGenericDBObject {
    public InterfaceNode(ArtifactReadable art) {
       super(art);
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
-      this.setColor(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBackgroundColor, ""));
-      this.setAddress(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeAddress, ""));
-      this.setNodeNumber(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeNumber, ""));
-      this.setNodeGroupId(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeGroupId, ""));
+      this.setInterfaceNodeBackgroundColor(
+         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBackgroundColor, ""));
+      this.setInterfaceNodeAddress(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeAddress, ""));
+      this.setInterfaceNodeNumber(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeNumber, ""));
+      this.setInterfaceNodeGroupId(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeGroupId, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
       this.setInterfaceNodeNameAbbrev(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeNameAbbrev, ""));
@@ -74,14 +76,14 @@ public class InterfaceNode extends PLGenericDBObject {
     * @return the description
     */
    public String getDescription() {
-      return Description;
+      return description;
    }
 
    /**
     * @param description the description to set
     */
    public void setDescription(String description) {
-      this.Description = description;
+      this.description = description;
    }
 
    /**
@@ -101,45 +103,45 @@ public class InterfaceNode extends PLGenericDBObject {
    /**
     * @return the color
     */
-   public String getColor() {
-      return Color;
+   public String getInterfaceNodeBackgroundColor() {
+      return interfaceNodeBackgroundColor;
    }
 
    /**
-    * @param color the color to set
+    * @param interfaceNodeBackgroundColor the color to set
     */
-   public void setColor(String color) {
-      Color = color;
+   public void setInterfaceNodeBackgroundColor(String interfaceNodeBackgroundColor) {
+      this.interfaceNodeBackgroundColor = interfaceNodeBackgroundColor;
    }
 
    /**
     * @return the address
     */
-   public String getAddress() {
-      return Address;
+   public String getInterfaceNodeAddress() {
+      return interfaceNodeAddress;
    }
 
    /**
-    * @param address the address to set
+    * @param interfaceNodeAddress the address to set
     */
-   public void setAddress(String address) {
-      Address = address;
+   public void setInterfaceNodeAddress(String interfaceNodeAddress) {
+      this.interfaceNodeAddress = interfaceNodeAddress;
    }
 
-   public String getNodeNumber() {
-      return nodeNumber;
+   public String getInterfaceNodeNumber() {
+      return interfaceNodeNumber;
    }
 
-   public void setNodeNumber(String nodeNumber) {
-      this.nodeNumber = nodeNumber;
+   public void setInterfaceNodeNumber(String interfaceNodeNumber) {
+      this.interfaceNodeNumber = interfaceNodeNumber;
    }
 
-   public String getNodeGroupId() {
-      return nodeGroupId;
+   public String getInterfaceNodeGroupId() {
+      return interfaceNodeGroupId;
    }
 
-   public void setNodeGroupId(String nodeGroupId) {
-      this.nodeGroupId = nodeGroupId;
+   public void setInterfaceNodeGroupId(String interfaceNodeGroupId) {
+      this.interfaceNodeGroupId = interfaceNodeGroupId;
    }
 
    @JsonIgnore
@@ -205,6 +207,15 @@ public class InterfaceNode extends PLGenericDBObject {
 
    public void setInterfaceNodeToolUse(boolean interfaceNodeToolUse) {
       this.interfaceNodeToolUse = interfaceNodeToolUse;
+   }
+
+   public String getColor() {
+      return interfaceNodeBackgroundColor;
+   }
+
+   @JsonIgnore
+   private boolean generateColor() {
+      return ThreadLocalRandom.current().nextInt(1, 3) > 1 ? true : false;
    }
 
 }

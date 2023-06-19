@@ -12,45 +12,34 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-
 /**
  * @author Luciano T. Vaglienti
  */
-public class NodeView extends PLGenericDBObject {
+public class NodeView {
 
-   private String label = ""; //label to display on connection line, should be same as {@Name}
-   private NodeViewData data;
-
-   public NodeView(ArtifactToken art) {
-      this((ArtifactReadable) art);
-   }
+   private String id = "";
+   private String label = "";
+   private InterfaceNode data;
 
    public NodeView(InterfaceNode node) {
-      this(node.getId(), node.getName());
+      this(node.getIdString(), node.getName());
       this.setLabel(node.getName());
-      this.setData(new NodeViewData(node));
-      this.setApplicability(node.getApplicability());
-      this.setDescription(node.getDescription());
-      this.setbgColor(node.getColor());
-      this.setInterfaceNodeAddress(node.getAddress());
+      this.setData(node);
    }
 
-   public NodeView(ArtifactReadable art) {
-      super(art);
-      this.setData(new NodeViewData(art));
-      this.setApplicability(
-         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-   }
-
-   public NodeView(Long id, String name) {
-      super(id, name);
+   public NodeView(String id, String name) {
+      this.setId(id);
    }
 
    public NodeView() {
+   }
+
+   public String getId() {
+      return id;
+   }
+
+   public void setId(String id) {
+      this.id = id;
    }
 
    /**
@@ -67,81 +56,18 @@ public class NodeView extends PLGenericDBObject {
       this.label = label;
    }
 
-   @Override
-   @JsonIgnore
-   public String getName() {
-      return super.getName();
-   }
-
-   @Override
-   public void setName(String name) {
-      super.setName(name);
-      this.setLabel(name);
-   }
-
-   /**
-    * @return the description
-    */
-   @JsonIgnore
-   public String getDescription() {
-      return data.getDescription();
-   }
-
-   /**
-    * @param description the description to set
-    */
-   public void setDescription(String description) {
-      this.data.setDescription(description);
-   }
-
    /**
     * @return the data
     */
-   public NodeViewData getData() {
+   public InterfaceNode getData() {
       return data;
    }
 
    /**
     * @param data the data to set
     */
-   public void setData(NodeViewData data) {
+   public void setData(InterfaceNode data) {
       this.data = data;
-   }
-
-   /**
-    * @return color of node
-    */
-   @JsonIgnore
-   public String getInterfaceNodeAddress() {
-      return data.getInterfaceNodeAddress();
-   }
-
-   /**
-    * @param color the color to set
-    */
-   @JsonIgnore
-   public void setInterfaceNodeAddress(String address) {
-      this.data.setInterfaceNodeAddress(address);
-   }
-
-   /**
-    * @return color of node
-    */
-   @JsonIgnore
-   public String getbgColor() {
-      return data.getinterfaceNodeBgColor();
-   }
-
-   /**
-    * @param color the color to set
-    */
-   @JsonIgnore
-   public void setbgColor(String color) {
-      this.data.setinterfaceNodeBgColor(color);
-   }
-
-   public void setApplicability(ApplicabilityToken applicability) {
-      this.data.setApplicability(applicability);
    }
 
 }

@@ -16,7 +16,12 @@ import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, createArtifact, transaction } from '@osee/shared/types';
+import {
+	relation,
+	createArtifact,
+	transaction,
+	artifact,
+} from '@osee/shared/types';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { GCRELATIONTYPEID } from '../../types/grid-commander-constants/gcRelationTypeId.enum';
 
@@ -31,7 +36,7 @@ export class CreateParameterAndRelationsService {
 
 	createParameterArtifact(
 		branchId: string,
-		parameter: Partial<createArtifact>,
+		parameter: Partial<createArtifact & artifact>,
 		parameterType: string,
 		transaction?: transaction,
 		key?: string
@@ -93,7 +98,7 @@ export class CreateParameterAndRelationsService {
 
 	createParameterAndEstablishCommandRelation(
 		branchId: string,
-		parameter: Partial<createArtifact>,
+		parameter: Partial<createArtifact & artifact>,
 		commandId: string,
 		parameterType: string = ARTIFACTTYPEIDENUM.PARAMETERSTRING,
 		transaction?: transaction,

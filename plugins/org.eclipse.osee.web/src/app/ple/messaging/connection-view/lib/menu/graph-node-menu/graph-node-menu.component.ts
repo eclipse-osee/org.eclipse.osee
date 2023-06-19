@@ -39,7 +39,6 @@ import type {
 @Component({
 	selector: 'osee-messaging-graph-node-menu',
 	templateUrl: './graph-node-menu.component.html',
-	styleUrls: ['./graph-node-menu.component.sass'],
 	standalone: true,
 	imports: [NgIf, MatMenuModule, MatIconModule, MatButtonModule, AsyncPipe],
 })
@@ -51,7 +50,7 @@ export class GraphNodeMenuComponent {
 		interfaceNodeNumber: '',
 		interfaceNodeGroupId: '',
 		interfaceNodeAddress: '',
-		interfaceNodeBgColor: '',
+		interfaceNodeBackgroundColor: '',
 		interfaceNodeBuildCodeGen: false,
 		interfaceNodeCodeGen: false,
 		interfaceNodeCodeGenName: '',
@@ -161,6 +160,7 @@ export class GraphNodeMenuComponent {
 	createConnectionToNode(value: nodeData | nodeDataWithChanges) {
 		//todo open dialog to select node to connect to this node
 		let dialogRef = this.dialog.open(CreateConnectionDialogComponent, {
+			minWidth: '40%',
 			data: value,
 		});
 		dialogRef
@@ -178,8 +178,7 @@ export class GraphNodeMenuComponent {
 				switchMap((results) =>
 					this.graphService.createNewConnection(
 						results.connection as connection, //typescript bug relating to type narrowing not being inferred by filter
-						results.nodeId,
-						value.id
+						results.nodeIds
 					)
 				)
 			)

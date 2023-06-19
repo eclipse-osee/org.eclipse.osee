@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './layout/host/host.component';
+export * from './layout/connections/connections.component';
+export * from './layout/connections-table/connections-table.component';
 export * from './services/current-graph.service';
 export * from './services/route-state-service.service';

@@ -25,6 +25,11 @@ export const connectionHeaderDetails: headerDetail<connection>[] = [
 		humanReadable: 'Description',
 	},
 	{
+		header: 'transportType',
+		description: 'Transport Type of the connection',
+		humanReadable: 'Transport Type',
+	},
+	{
 		header: 'applicability',
 		description: 'Applicability of the connection',
 		humanReadable: 'Applicability',

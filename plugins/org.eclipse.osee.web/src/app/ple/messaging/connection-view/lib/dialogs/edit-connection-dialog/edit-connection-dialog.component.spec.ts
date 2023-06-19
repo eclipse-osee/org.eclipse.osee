@@ -42,6 +42,7 @@ import {
 	enumsServiceMock,
 	CurrentTransportTypeServiceMock,
 	ethernetTransportType,
+	nodesMock,
 } from '@osee/messaging/shared/testing';
 import {
 	MockApplicabilitySelectorComponent,
@@ -59,6 +60,7 @@ describe('EditConnectionDialogComponent', () => {
 		name: '',
 		description: '',
 		transportType: ethernetTransportType,
+		nodes: nodesMock,
 		applicability: { id: '1', name: 'Base' },
 	};
 
@@ -114,6 +116,7 @@ describe('EditConnectionDialogComponent', () => {
 			name: 'Connection',
 			description: '',
 			transportType: ethernetTransportType,
+			nodes: nodesMock,
 			applicability: {
 				id: '1',
 				name: 'Base',

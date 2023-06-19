@@ -16,34 +16,21 @@ import {
 	MatDialogRef,
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
 import { AsyncPipe, NgFor } from '@angular/common';
 import type { nodeData } from '@osee/messaging/shared/types';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.component';
 
 @Component({
 	selector: 'osee-edit-node-dialog',
 	templateUrl: './edit-node-dialog.component.html',
-	styleUrls: ['./edit-node-dialog.component.sass'],
 	standalone: true,
 	imports: [
 		MatDialogModule,
-		MatFormFieldModule,
-		MatInputModule,
-		FormsModule,
 		MatButtonModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatSlideToggleModule,
 		AsyncPipe,
 		NgFor,
-		ApplicabilitySelectorComponent,
+		NewNodeFormComponent,
 	],
 })
 export class EditNodeDialogComponent {
