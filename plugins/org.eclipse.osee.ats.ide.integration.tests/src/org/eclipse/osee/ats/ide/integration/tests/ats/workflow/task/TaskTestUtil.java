@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -61,7 +62,7 @@ public class TaskTestUtil {
 
          @Override
          public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
             AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, taskArt.getStateDefinition(),
                additionalHours, 100, true, AtsApiService.get().getUserService().getCurrentUser(), changes);
          }
@@ -90,7 +91,7 @@ public class TaskTestUtil {
 
          @Override
          public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
             if (AtsApiService.get().getWorkItemMetricsService().getPercentComplete(
                taskArt) != percentComplete || additionalHours > 0) {
                AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, fromState, additionalHours,

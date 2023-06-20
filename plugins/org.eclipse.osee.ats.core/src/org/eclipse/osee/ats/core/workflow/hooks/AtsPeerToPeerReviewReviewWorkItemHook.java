@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.workflow.hooks;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
@@ -44,7 +45,7 @@ public class AtsPeerToPeerReviewReviewWorkItemHook implements IAtsTransitionHook
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       if (workItem instanceof IAtsPeerToPeerReview && toState.getName().equals(
          PeerToPeerReviewState.Review.getName())) {
          // Set Assignees to all user roles users

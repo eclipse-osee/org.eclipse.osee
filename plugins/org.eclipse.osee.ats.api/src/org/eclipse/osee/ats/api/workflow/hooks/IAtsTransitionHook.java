@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.workflow.hooks;
 
 import java.util.Collection;
 import java.util.Map;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -36,7 +37,7 @@ public interface IAtsTransitionHook {
     * ONLY USE IF NEED TO ADD SOMETHING TO TRANSITION PERSIST
     */
    default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       // Provided for subclass implementation
    }
 
@@ -46,7 +47,7 @@ public interface IAtsTransitionHook {
     * SLOWED
     */
    default public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems,
-      Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName, AtsUser asUser) {
+      Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName, AtsUser asUser, AtsApi atsApi) {
       // Provided for subclass implementation
    }
 
@@ -55,7 +56,7 @@ public interface IAtsTransitionHook {
     * ONLY USE IF NEED TO CHECK SOMETHING BEFORE TRANSITION; CHECK SHOULD BE QUICK
     */
    default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-      IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+      IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
       // Provided for subclass implementation
    }
 

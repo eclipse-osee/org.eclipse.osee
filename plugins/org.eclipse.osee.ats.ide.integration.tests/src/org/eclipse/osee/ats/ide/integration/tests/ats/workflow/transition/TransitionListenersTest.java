@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
@@ -65,7 +66,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             results.addResult(new TransitionResult(reason1));
          }
 
@@ -79,7 +80,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             results.addResult(workItem, new TransitionResult(reason2));
          }
 
@@ -93,7 +94,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             // do nothing
          }
 
@@ -107,7 +108,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             throw new OseeCoreException(exceptionStr);
          }
 

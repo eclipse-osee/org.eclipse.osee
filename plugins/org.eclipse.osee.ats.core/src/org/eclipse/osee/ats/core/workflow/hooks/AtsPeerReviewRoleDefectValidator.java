@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.workflow.hooks;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewDefectManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -32,8 +33,8 @@ public class AtsPeerReviewRoleDefectValidator implements IAtsTransitionHook {
 
    @Override
    public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-      IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
-      IAtsTransitionHook.super.transitioning(results, workItem, fromState, toState, toAssignees, asUser);
+      IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+      IAtsTransitionHook.super.transitioning(results, workItem, fromState, toState, toAssignees, asUser, atsApi);
       if (workItem.isPeerReview() && toState.isCompleted()) {
          IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) workItem;
          IAtsPeerReviewDefectManager defectMgr = review.getDefectManager();

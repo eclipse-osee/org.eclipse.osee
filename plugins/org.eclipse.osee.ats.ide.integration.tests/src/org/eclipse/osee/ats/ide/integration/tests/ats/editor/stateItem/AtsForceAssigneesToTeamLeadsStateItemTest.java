@@ -96,7 +96,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       stateItem.transitioned(teamArt, fromState, toState,
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
-         AtsApiService.get().getUserService().getCurrentUser(), changes);
+         AtsApiService.get().getUserService().getCurrentUser(), changes, AtsApiService.get());
       changes.execute();
 
       // assignee should be Joe Smith
