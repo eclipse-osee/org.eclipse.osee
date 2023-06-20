@@ -74,7 +74,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void addAssignees(String stateName, Collection<? extends AtsUser> assignees) {
+   public void addAssignees(String stateName, Collection<AtsUser> assignees) {
       if (assignees == null || assignees.isEmpty()) {
          return;
       }
@@ -108,17 +108,12 @@ public class StateManager implements IAtsStateManager {
       }
    }
 
-   @Override
-   public void setAssignees(Collection<? extends AtsUser> assignees) {
-      setAssignees(getCurrentStateNameInternal(), new LinkedList<AtsUser>(assignees));
-   }
-
    /**
     * Sets the assignees as attributes and relations AND writes to store. Does not persist.
     */
 
    @Override
-   public void setAssignees(String stateName, List<? extends AtsUser> assignees) {
+   public void setAssignees(String stateName, Collection<AtsUser> assignees) {
       if (assignees == null) {
          return;
       }
@@ -128,7 +123,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void setAssignees(String stateName, StateType stateType, List<? extends AtsUser> assignees) {
+   public void setAssignees(String stateName, StateType stateType, Collection<AtsUser> assignees) {
       if (assignees == null) {
          return;
       }
@@ -173,7 +168,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void transitionHelper(List<? extends AtsUser> toAssignees, IStateToken fromState, IStateToken toState) {
+   public void transitionHelper(Collection<AtsUser> toAssignees, IStateToken fromState, IStateToken toState) {
       createState(toState);
       setAssignees(toState.getName(), toAssignees);
       setCurrentStateName(toState.getName());
@@ -222,7 +217,7 @@ public class StateManager implements IAtsStateManager {
       addAssignees(stateName, Arrays.asList(assignee));
    }
 
-   protected void addState(String name, List<? extends AtsUser> assignees, boolean logError) {
+   protected void addState(String name, Collection<AtsUser> assignees, boolean logError) {
       if (getVisitedStateNames().contains(name)) {
          String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, workItem.getAtsId());
          if (logError) {
@@ -288,13 +283,13 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void addState(String stateName, List<? extends AtsUser> assignees) {
+   public void addState(String stateName, Collection<AtsUser> assignees) {
       WorkState state = createState(stateName);
       state.setAssignees(assignees);
    }
 
    @Override
-   public void setAssignees(List<? extends AtsUser> assignees) {
+   public void setAssignees(Collection<AtsUser> assignees) {
       setAssignees(getCurrentStateNameInternal(), assignees);
    }
 
@@ -389,7 +384,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void addAssignees(Collection<? extends AtsUser> assignees) {
+   public void addAssignees(Collection<AtsUser> assignees) {
       addAssignees(getCurrentStateNameInternal(), assignees);
    }
 

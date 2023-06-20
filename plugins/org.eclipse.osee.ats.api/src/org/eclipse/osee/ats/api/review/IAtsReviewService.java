@@ -53,7 +53,7 @@ public interface IAtsReviewService {
 
    IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
 
-   IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
+   IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes);
 
    List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions();
 

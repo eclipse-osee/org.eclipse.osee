@@ -370,7 +370,7 @@ public class TransitionManager implements IExecuteListener {
                   }
                   logStateStartedEvent(workItem, toState, transitionDate, transitionUser);
                   // Get transition to assignees, do some checking to ensure someone is assigneed and UnAssigned
-                  List<? extends AtsUser> updatedAssigees = getToAssignees(workItem, toState);
+                  Collection<AtsUser> updatedAssigees = getToAssignees(workItem, toState);
 
                   workItem.getStateMgr().transitionHelper(updatedAssigees, fromState, toState);
 
@@ -699,10 +699,10 @@ public class TransitionManager implements IExecuteListener {
     * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
-   public List<? extends AtsUser> getToAssignees(IAtsWorkItem workItem, StateDefinition toState) {
+   public Collection<AtsUser> getToAssignees(IAtsWorkItem workItem, StateDefinition toState) {
       List<AtsUser> toAssignees = new ArrayList<>();
       if (toState.isWorking()) {
-         Collection<? extends AtsUser> requestedAssignees = getToAssignees(workItem);
+         Collection<AtsUser> requestedAssignees = getToAssignees(workItem);
          if (requestedAssignees != null) {
             for (AtsUser user : requestedAssignees) {
                toAssignees.add(user);

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.util;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -34,7 +35,7 @@ public class AtsUserGroup implements IAtsUserGroup {
    }
 
    @Override
-   public void setUsers(List<? extends AtsUser> users) {
+   public void setUsers(Collection<AtsUser> users) {
       this.users.clear();
       for (AtsUser user : users) {
          this.users.add(user);

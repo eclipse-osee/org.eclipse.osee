@@ -66,7 +66,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+            IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             results.addResult(new TransitionResult(reason1));
          }
 
@@ -80,7 +80,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+            IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             results.addResult(workItem, new TransitionResult(reason2));
          }
 
@@ -94,7 +94,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+            IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             // do nothing
          }
 
@@ -108,7 +108,7 @@ public class TransitionListenersTest {
 
          @Override
          public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-            IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+            IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
             throw new OseeCoreException(exceptionStr);
          }
 

@@ -83,7 +83,7 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!(workItem instanceof IAtsTeamWorkflow)) {
          return;

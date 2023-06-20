@@ -70,7 +70,7 @@ public class MockWorkItem implements IAtsWorkItem {
       return implementers.getUsers();
    }
 
-   public void setImplementers(List<? extends AtsUser> implementers) {
+   public void setImplementers(Collection<AtsUser> implementers) {
       this.implementers.setUsers(implementers);
    }
 

@@ -32,7 +32,7 @@ public final class AtsUsersUtility {
       // UtilityClass
    }
 
-   public static Collection<AtsUser> getValidEmailUsers(Collection<? extends AtsUser> users) {
+   public static Collection<AtsUser> getValidEmailUsers(Collection<AtsUser> users) {
       Set<AtsUser> validUsers = new HashSet<>();
       for (AtsUser user : users) {
          if (isEmailValid(user.getEmail())) {
@@ -42,7 +42,7 @@ public final class AtsUsersUtility {
       return validUsers;
    }
 
-   public static Collection<AtsUser> getActiveEmailUsers(Collection<? extends AtsUser> users) {
+   public static Collection<AtsUser> getActiveEmailUsers(Collection<AtsUser> users) {
       Set<AtsUser> activeUsers = new HashSet<>();
       for (AtsUser user : users) {
          if (user.isActive()) {
@@ -59,7 +59,7 @@ public final class AtsUsersUtility {
       return false;
    }
 
-   public static Collection<? extends AtsUser> getUsers(Collection<String> userIds, IAtsUserService userService) {
+   public static Collection<AtsUser> getUsers(Collection<String> userIds, IAtsUserService userService) {
       Set<AtsUser> users = new HashSet<>();
       for (String userId : userIds) {
          users.add(userService.getUserByUserId(userId));

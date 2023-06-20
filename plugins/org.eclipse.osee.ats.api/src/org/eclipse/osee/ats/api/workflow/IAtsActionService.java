@@ -36,7 +36,7 @@ public interface IAtsActionService {
 
    IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<AtsUser> assignees, IAtsChangeSet changes, Date createdDate, AtsUser createdBy, Collection<INewActionListener> newActionListeners, CreateTeamOption... createTeamOption);
 
-   IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption);
+   IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes, CreateTeamOption... createTeamOption);
 
    /**
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
@@ -49,7 +49,7 @@ public interface IAtsActionService {
 
    IAtsAction getAction(IAtsTeamWorkflow teamWf);
 
-   void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes);
+   void initializeNewStateMachine(IAtsWorkItem workItem, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes);
 
    void setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IWorkItemListener workItemListener, IAtsChangeSet changes);
 

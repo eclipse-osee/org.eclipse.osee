@@ -14,8 +14,8 @@
 package org.eclipse.osee.ats.core.workflow.state;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -37,7 +37,7 @@ public class StateManagerUtility {
     * Initializes state machine and sets the current state to stateName
     */
    public static void initializeStateMachine(IAtsStateManager stateMgr, IStateToken workPage,
-      List<? extends AtsUser> assignees, AtsUser currentUser, IAtsChangeSet changes) {
+      Collection<AtsUser> assignees, AtsUser currentUser, IAtsChangeSet changes) {
       stateMgr.createState(workPage.getName());
       stateMgr.setCurrentStateName(workPage.getName());
       if (assignees == null) {

@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.api.team;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 
@@ -27,12 +26,12 @@ public class CreateTeamData {
 
    private final IAtsTeamDefinition teamDef;
    private final Collection<IAtsActionableItem> actionableItems;
-   private final List<? extends AtsUser> assignees;
+   private final Collection<AtsUser> assignees;
    private final Date createdDate;
    private final AtsUser createdBy;
    private final CreateTeamOption[] createTeamOption;
 
-   public CreateTeamData(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, CreateTeamOption... createTeamOption) {
+   public CreateTeamData(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, CreateTeamOption... createTeamOption) {
       this.teamDef = teamDef;
       this.actionableItems = new ArrayList<>(actionableItems);
       this.assignees = assignees;
@@ -50,7 +49,7 @@ public class CreateTeamData {
       return actionableItems;
    }
 
-   public List<? extends AtsUser> getAssignees() {
+   public Collection<AtsUser> getAssignees() {
       return assignees;
    }
 

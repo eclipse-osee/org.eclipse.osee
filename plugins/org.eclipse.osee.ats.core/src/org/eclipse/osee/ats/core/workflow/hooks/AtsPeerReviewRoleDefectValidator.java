@@ -33,7 +33,7 @@ public class AtsPeerReviewRoleDefectValidator implements IAtsTransitionHook {
 
    @Override
    public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-      IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+      IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
       IAtsTransitionHook.super.transitioning(results, workItem, fromState, toState, toAssignees, asUser, atsApi);
       if (workItem.isPeerReview() && toState.isCompleted()) {
          IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) workItem;

@@ -37,7 +37,7 @@ public interface IAtsTransitionHook {
     * ONLY USE IF NEED TO ADD SOMETHING TO TRANSITION PERSIST
     */
    default public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+      Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       // Provided for subclass implementation
    }
 
@@ -56,7 +56,7 @@ public interface IAtsTransitionHook {
     * ONLY USE IF NEED TO CHECK SOMETHING BEFORE TRANSITION; CHECK SHOULD BE QUICK
     */
    default public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState,
-      IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+      IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
       // Provided for subclass implementation
    }
 
