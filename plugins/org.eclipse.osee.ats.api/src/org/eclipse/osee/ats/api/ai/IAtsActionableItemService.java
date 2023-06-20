@@ -53,7 +53,7 @@ public interface IAtsActionableItemService {
    List<IAtsActionableItem> getActiveActionableItemsAndChildren(IAtsTeamDefinition teamDef);
 
    /**
-    * @return this object casted, else if hard artifact constructed, else load and construct
+    * @return this object casted, else if hard artifact constructed, else valid then load/construct, else return null
     */
    ActionableItem getActionableItemById(ArtifactId aiId);
 

@@ -79,7 +79,10 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
             ai.setAtsApi(atsApi);
          } else {
             ArtifactToken aiArt = atsApi.getQueryService().getArtifact(aiId);
-            if (aiArt.isValid()) {
+            // Return null if not found else add new
+            if (aiArt == null) {
+               return ai;
+            } else if (aiArt.isValid()) {
                ActionableItem ai2 = createActionableItem(aiArt);
                atsApi.getConfigService().getConfigurations().addAi(ai2);
                ai = ai2;
@@ -192,7 +195,8 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    }
 
    @Override
-   public Result setActionableItems(IAtsWorkItem workItem, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) {
+   public Result setActionableItems(IAtsWorkItem workItem, Collection<IAtsActionableItem> newItems,
+      IAtsChangeSet changes) {
       Set<IAtsActionableItem> existingAias = getActionableItems(workItem);
 
       // Remove non-selected items
@@ -390,7 +394,8 @@ public class ActionableItemServiceImpl implements IAtsActionableItemService {
    }
 
    @Override
-   public Collection<IAtsActionableItem> getUserEditableActionableItems(Collection<IAtsActionableItem> actionableItems) {
+   public Collection<IAtsActionableItem> getUserEditableActionableItems(
+      Collection<IAtsActionableItem> actionableItems) {
       List<IAtsActionableItem> ais = new LinkedList<>();
       for (IAtsActionableItem ai : actionableItems) {
          if (ai.isAllowUserActionCreation()) {
