@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.review.hooks;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.DecisionReviewOptions;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
@@ -41,7 +42,7 @@ public class AtsDecisionReviewPrepareWorkItemHook implements IAtsTransitionHook 
    }
 
    @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
       if (workItem instanceof IAtsDecisionReview && fromState.getName().equals(
          DecisionReviewState.Prepare.getName()) && toState.getName().equals(DecisionReviewState.Decision.getName())) {
          DecisionReviewOptions decOptions =

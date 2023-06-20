@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.workflow.hooks;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -43,7 +44,7 @@ public class AtsCommitBranchWhenCompleteHook implements IAtsTransitionHook {
 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       try {
          if (workItem instanceof IAtsTeamWorkflow && toState.isCompleted()) {
             BranchToken branch =

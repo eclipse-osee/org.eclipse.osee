@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.util.hooks;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
@@ -34,7 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class AtsNotificationTransitionHook implements IAtsTransitionHook {
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       try {
          changes.addWorkItemNotificationEvent(
             AtsNotificationEventFactory.getWorkItemNotificationEvent(AtsCoreUsers.SYSTEM_USER, workItem,

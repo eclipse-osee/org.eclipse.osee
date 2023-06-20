@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.workflow.hooks;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -39,7 +40,7 @@ public class AtsHoldOrBlockedTransitionHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser) {
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
       boolean isBlocked = workItem.getAtsApi().getWorkItemService().isBlocked(workItem);
       if (isBlocked) {
          String reason = workItem.getAtsApi().getAttributeResolver().getSoleAttributeValue(workItem,

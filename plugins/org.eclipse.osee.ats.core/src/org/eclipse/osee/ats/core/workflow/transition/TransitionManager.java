@@ -296,7 +296,7 @@ public class TransitionManager implements IExecuteListener {
          try {
             logTimeStart("05.51 - transitioning 1 - " + listener.getClass().getSimpleName());
             listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
-               transData.getTransitionUser());
+               transData.getTransitionUser(), atsApi);
             logTimeSpent("05.51 - transitioning 1 - " + listener.getClass().getSimpleName());
             if (results.isCancelled() || !results.isEmpty()) {
                continue;
@@ -315,7 +315,7 @@ public class TransitionManager implements IExecuteListener {
             try {
                logTimeStart("05.52 - transitioning 2 - " + listener.getClass().getSimpleName());
                listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
-                  AtsApiService.get().getUserService().getCurrentUser());
+                  AtsApiService.get().getUserService().getCurrentUser(), atsApi);
                logTimeSpent("05.52 - transitioning 2 - " + listener.getClass().getSimpleName());
                if (results.isCancelled() || !results.isEmpty()) {
                   continue;
@@ -399,14 +399,14 @@ public class TransitionManager implements IExecuteListener {
                   for (IAtsTransitionHook listener : getTransitionHooks()) {
                      logTimeStart("20.1 - hooks transitioned " + listener.getClass().getSimpleName());
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, transData.getTransitionUser(),
-                        changes);
+                        changes, atsApi);
                      logTimeSpent("20.1 - hooks transitioned " + listener.getClass().getSimpleName());
                   }
                   // Notify any state transition listeners
                   for (IAtsTransitionHook listener : toState.getTransitionListeners()) {
                      logTimeStart("20.2 - state hook transitioned " + listener.getClass().getSimpleName());
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, transData.getTransitionUser(),
-                        changes);
+                        changes, atsApi);
                      logTimeSpent("20.2 - state hook transitioned " + listener.getClass().getSimpleName());
                   }
                   if (toState.isCompletedOrCancelled()) {
@@ -729,7 +729,7 @@ public class TransitionManager implements IExecuteListener {
       for (IAtsTransitionHook listener : getTransitionHooks()) {
          logTimeStart("25.0 - transitionPersisted " + listener.getClass().getSimpleName());
          listener.transitionPersisted(transData.getWorkItems(), workItemFromStateMap, transData.getToStateName(),
-            transData.getTransitionUser());
+            transData.getTransitionUser(), atsApi);
          logTimeSpent("25.0 - transitionPersisted " + listener.getClass().getSimpleName());
       }
    }
