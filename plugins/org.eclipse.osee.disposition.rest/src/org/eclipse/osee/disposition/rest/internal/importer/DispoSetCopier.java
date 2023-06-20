@@ -188,8 +188,7 @@ public class DispoSetCopier {
                sourceAnnotation.getLocationRefs(), sourceAnnotation.getResolutionType()), IGNORE);
          } else {
             // Try to copy but check if Discrepancy is the same and present in the destination set
-            if (isSameDiscrepancies && isCoveredDiscrepanciesExistInDest(destDiscrepanciesTextOnly, sourceItem,
-               sourceAnnotation, report)) {
+            if (isCoveredDiscrepanciesExistInDest(destDiscrepanciesTextOnly, sourceItem, sourceAnnotation, report)) {
                DispoAnnotationData newAnnotation = sourceAnnotation;
                if (destDefaultAnntationLocations.contains(sourceLocation)) {
                   /**
