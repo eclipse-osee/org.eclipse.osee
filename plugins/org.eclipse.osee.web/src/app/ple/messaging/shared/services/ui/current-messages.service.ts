@@ -291,6 +291,7 @@ export class CurrentMessagesService {
 
 	set filter(filter: string) {
 		this.ui.filterString = filter;
+		this.page = 0;
 	}
 
 	set branch(id: string) {

@@ -135,7 +135,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 	 * no-op implementation
 	 */
 	set page(page: number) {}
-
+	returnToFirstPage() {}
 	get currentPageSize(): Observable<number> {
 		return of();
 	}

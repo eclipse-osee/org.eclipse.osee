@@ -71,7 +71,7 @@
 	<ng-container *ngIf="element.logicalType !== 'enumeration'">
 		<button
 			mat-menu-item
-			(click)="openEnumLiteralDialog(element.notes, element.id)"
+			(click)="openEnumLiteralDialog(element.enumLiteral, element.id)"
 			data-cy="element-open-enum-literal-btn">
 			<mat-icon color="primary">notes</mat-icon>Open Enum Literals
 		</button>
