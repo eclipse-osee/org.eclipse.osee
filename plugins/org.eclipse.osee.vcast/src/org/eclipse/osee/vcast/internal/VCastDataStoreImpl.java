@@ -626,24 +626,23 @@ public class VCastDataStoreImpl implements VCastDataStore {
       try {
          // @formatter:off
          String query =
-            "WITH temp as (SELECT sc.id as sc_id, mcdc.id as mcdc_id, sc.hit_count, sc.max_hit_count, sc.line, mcdc.simplified_expr," +
-            " mcdc.num_conditions FROM statement_coverage sc left outer join mcdc_coverage mcdc on (sc.line = mcdc.line and sc.function_id" +
-            " = mcdc.function_id) where sc.function_id = ?) select temp.sc_id, temp.mcdc_id, temp.line, temp.hit_count, temp.max_hit_count," +
-            " temp.simplified_expr, temp.num_conditions, mcdc_c.cond_index, mcdc_c.cond_variable, mcdc_c.cond_expr from temp left outer" +
-            " join mcdc_coverage_conditions mcdc_c on temp.mcdc_id = mcdc_c.mcdc_id";
+            "WITH temp as (SELECT sc.id as sc_id, mcdc.id as mcdc_id, sc.hit_count, sc.max_hit_count, sc.line, mcdc.id, mcdc.simplified_expr, mcdc.num_conditions"+
+            " FROM statement_coverage sc left outer join mcdc_coverage mcdc on (sc.line = mcdc.line and sc.function_id = mcdc.function_id)"+
+            " where sc.function_id = ?) select temp.sc_id, temp.line, temp.mcdc_id, temp.hit_count, temp.max_hit_count, temp.simplified_expr, temp.num_conditions, mcdc_c.cond_index,"+
+            " mcdc_c.cond_variable, mcdc_c.cond_expr from temp left outer join mcdc_coverage_conditions mcdc_c on temp.mcdc_id = mcdc_c.mcdc_id";
          // @formatter:on
 
          stmt.runPreparedQuery(query, function.getId());
 
          while (stmt.next()) {
-            Integer id = stmt.getInt("temp.sc_id");
             Integer line = stmt.getInt("temp.line");
+            String variable = stmt.getString("mcdc_c.cond_variable");
+            Integer id = stmt.getInt("temp.sc_id");
             Integer mcdc_id = stmt.getInt("temp.mcdc_id");
             Integer hit_count = stmt.getInt("temp.hit_count");
             Integer max_hit_count = stmt.getInt("temp.max_hit_count");
             String simp_expr = stmt.getString("temp.simplified_expr");
             Integer num_conditions = stmt.getInt("temp.num_conditions");
-            String variable = stmt.getString("mcdc_c.cond_variable");
             String cond_expr = stmt.getString("mcdc_c.cond_expr");
             Integer cond_index = stmt.getInt("mcdc_c.cond_index");
 
