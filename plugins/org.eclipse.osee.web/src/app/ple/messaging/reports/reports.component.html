@@ -15,14 +15,11 @@
 	<ng-container *ngIf="_branch !== '0' && _branch !== ' '">
 		<ng-container *ngIf="branchType | async as _branchType">
 			<div class="reports-view-buttons">
-				<ng-container
-					*ngIf="
-						_branchType === 'working' &&
-						(webReportRoutes | async) as routes
-					">
+				<ng-container *ngIf="webReportRoutes | async as routes">
 					<h2 class="mat-headline-6">Web-Based Reports</h2>
 					<div class="reports-view-web-based">
 						<a
+							*ngIf="_branchType === 'working'"
 							mat-raised-button
 							color="primary"
 							[routerLink]="routes.diffRoute">

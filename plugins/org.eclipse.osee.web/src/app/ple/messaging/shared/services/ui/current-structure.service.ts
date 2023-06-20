@@ -76,6 +76,8 @@ export abstract class CurrentStructureService {
 
 	abstract set page(page: number);
 
+	abstract returnToFirstPage(): void;
+
 	abstract get currentPageSize(): Observable<number>;
 
 	abstract set pageSize(page: number);
@@ -146,6 +148,7 @@ export abstract class CurrentStructureService {
 
 	set filter(value: string) {
 		this.ui.filterString = value;
+		this.returnToFirstPage();
 	}
 
 	set branchId(value: string) {

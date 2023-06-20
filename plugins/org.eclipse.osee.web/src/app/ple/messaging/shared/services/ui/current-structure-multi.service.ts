@@ -221,6 +221,9 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 	set pageSize(page: number) {
 		this._currentPageSize$.next(page);
 	}
+	returnToFirstPage() {
+		this.page = 0;
+	}
 
 	get structuresCount() {
 		return this._structuresCount;

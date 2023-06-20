@@ -349,7 +349,7 @@ export class SubElementTableDropdownComponent {
 						this.structureService.partialUpdateElement(
 							{
 								id: elementId,
-								description: (
+								enumLiteral: (
 									response as EditViewFreeTextDialog
 								).return,
 							},

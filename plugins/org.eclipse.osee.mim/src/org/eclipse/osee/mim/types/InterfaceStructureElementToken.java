@@ -60,6 +60,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
    private boolean hasNegativeEndByteOffset = false;
    private PlatformTypeToken platformType;
    private ArtifactReadable artifactReadable;
+   private boolean shouldValidate;
+   private int validationSize;
    /**
     * @param art
     */
@@ -306,7 +308,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     * @return the endByte
     */
    public Double getEndByte() {
-      return (this.beginByte + (this.getInterfacePlatformTypeByteSize() * Math.max(1, this.getArrayLength())) - 1) % 4;
+      return (this.beginByte + (this.getInterfacePlatformTypeByteSize() * Math.max(1,
+         this.getArrayLength())) - 1) % (this.getValidationSize() / 2);
    }
 
    /**
@@ -328,8 +331,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    public Double getEndWord() {
       return Math.ceil(
-         ((this.getBeginWord() * 4) + this.getBeginByte() + (this.getInterfacePlatformTypeByteSize() * Math.max(1,
-            this.getArrayLength()))) / 4) - 1;
+         ((this.getBeginWord() * (this.getValidationSize() / 2)) + this.getBeginByte() + (this.getInterfacePlatformTypeByteSize() * Math.max(
+            1, this.getArrayLength()))) / (this.getValidationSize() / 2)) - 1;
    }
 
    /**
@@ -337,7 +340,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    @JsonIgnore
    public Double getEndingByteNoReset() {
-      return this.getEndWord() * 4;
+      return this.getEndWord() * (this.getValidationSize() / 2);
    }
 
    /**
@@ -484,7 +487,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    @JsonIgnore
    public double getInterfacePlatformTypeWordSize() {
-      return Math.floor(this.getInterfacePlatformTypeByteSize() / 4);
+      return Math.floor(this.getInterfacePlatformTypeByteSize() / (this.getValidationSize() / 2));
    }
 
    /**
@@ -579,6 +582,38 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    public void setEnumLiteral(String enumLiteral) {
       this.enumLiteral = enumLiteral;
+   }
+
+   /**
+    * @return the validationSize
+    */
+   @JsonIgnore
+   public int getValidationSize() {
+      return validationSize;
+   }
+
+   /**
+    * @param validationSize the validationSize to set
+    */
+   @JsonIgnore
+   public void setValidationSize(int validationSize) {
+      this.validationSize = validationSize;
+   }
+
+   /**
+    * @return the shouldValidate
+    */
+   @JsonIgnore
+   public boolean isShouldValidate() {
+      return shouldValidate;
+   }
+
+   /**
+    * @param shouldValidate the shouldValidate to set
+    */
+   @JsonIgnore
+   public void setShouldValidate(boolean shouldValidate) {
+      this.shouldValidate = shouldValidate;
    }
 
 }

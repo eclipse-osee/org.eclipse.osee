@@ -1010,7 +1010,12 @@ public class MimIcdGenerator {
          defaultValue};
 
       if (!startIndex.equals(endIndex)) {
+
          for (int i = startIndex; i < endIndex + 1; i++) {
+            values[0] = beginWord;
+            values[1] = beginByte;
+            values[3] = endWord;
+            values[4] = endByte;
             values[6] = elementName + " " + Integer.toString(i);
             //@formatter:off
             writer.writeCell(rowIndex.get(), 0, values[0], byteStyle);

@@ -30,7 +30,8 @@
 			*matHeaderCellDef
 			class="message-element-interface-table-view-sub-message-header"
 			[matTooltip]="(getHeaderByName(header) | async)?.description || ''"
-			[attr.data-cy]="'element-table-header-' + header">
+			[attr.data-cy]="'element-table-header-' + header"
+			[class.edit]="editMode">
 			{{ (getHeaderByName(header) | async)?.humanReadable || '' }}
 		</th>
 		<td
@@ -47,7 +48,8 @@
 			"
 			(contextmenu)="
 				openGeneralMenu($event, element, header, element[header])
-			">
+			"
+			[class.edit]="editMode">
 			<osee-messaging-sub-element-table-field
 				[header]="header"
 				[editMode]="editMode"
