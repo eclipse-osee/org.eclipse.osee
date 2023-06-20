@@ -454,37 +454,18 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.bouncycastle.bcpg"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.bouncycastle.bcprov"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+  
 
    <plugin
          id="org.eclipse.jetty.io"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
 
   <plugin
          id="jakarta.activation-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
- <plugin
-         id="com.sun.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -521,35 +502,35 @@
          id="org.eclipse.jetty.http"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.security"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.server"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.servlet"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.jetty.util"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin
@@ -591,7 +572,7 @@
          id="org.objenesis"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.6.0.v20180420-1519"
          unpack="false"/>
 
    <plugin
@@ -2010,7 +1991,7 @@
          id="org.eclipse.jetty.util.ajax"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin
@@ -2052,7 +2033,7 @@
          id="com.sun.xml.bind"
          download-size="0"
          install-size="0"
-         version="2.2.0.v20201118-1845"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -2143,7 +2124,7 @@
          id="org.eclipse.jetty.webapp"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin
@@ -2157,7 +2138,7 @@
          id="org.eclipse.jetty.xml"
          download-size="0"
          install-size="0"
-         version="9.4.48.v20220622"
+         version="9.4.51.v20230217"
          unpack="false"/>
 
    <plugin

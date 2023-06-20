@@ -74,7 +74,7 @@
  	 <repository>
 			<id>jetty</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.48.v20220622/</url>
+			<url>https://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.4.51.v20230217</url>
 	  </repository>	
  <repository>
 			<id>sphinx</id>
@@ -97,7 +97,7 @@
  	<repository>
 			<id>orbit_new</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository</url>
+			<url>https://download.eclipse.org/tools/orbit/downloads/drops/R20230531010532/repository</url>
 	  </repository>
 
  	 <repository>
