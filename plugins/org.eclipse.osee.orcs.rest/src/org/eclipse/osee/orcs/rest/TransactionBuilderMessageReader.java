@@ -14,11 +14,14 @@
 package org.eclipse.osee.orcs.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -227,10 +230,22 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
             JsonNode value = attribute.get("value");
             if (value.isArray()) {
                ArrayList<String> values = new ArrayList<>();
+               ArrayList<InputStream> streams = new ArrayList<>();
                for (JsonNode attrValue : value) {
-                  values.add(attrValue.asText());
+                  if (attributeType.isInputStream()) {
+                     Decoder decoder = Base64.getDecoder();
+                     ByteArrayInputStream bais = new ByteArrayInputStream(decoder.decode(attrValue.asText()));
+                     streams.add(bais);
+                  } else {
+                     values.add(attrValue.asText());
+                  }
                }
-               tx.setAttributesFromStrings(artifact, attributeType, values);
+               if (!values.isEmpty()) {
+                  tx.setAttributesFromStrings(artifact, attributeType, values);
+               }
+               if (!streams.isEmpty()) {
+                  tx.setAttributesFromValues(artifact, attributeType, streams);
+               }
             } else {
                tx.setSoleAttributeFromString(artifact, attributeType, value.asText());
             }

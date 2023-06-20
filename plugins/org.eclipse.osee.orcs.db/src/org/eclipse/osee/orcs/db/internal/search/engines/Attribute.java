@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
@@ -67,15 +68,35 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
       }
    }
 
+   private InputStream loadBinaryAttributeAsInputStream() {
+      try {
+         DataResource dataResource = new DataResource();
+         dataResource.setLocator(uri);
+         byte[] rawData = resourceManager.acquire(dataResource);
+         if (rawData == null) {
+            return null;
+         } else {
+            return new ByteArrayInputStream(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
+         }
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
    @Override
    public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public T getValue() {
       if (Strings.isValid(uri) && value == null) {
-         this.value = (T) loadBinaryAttribute();
+         if (attributeType.isInputStream()) {
+            this.value = (T) loadBinaryAttributeAsInputStream();
+         } else {
+            this.value = (T) loadBinaryAttribute();
+         }
       }
       return value;
    }

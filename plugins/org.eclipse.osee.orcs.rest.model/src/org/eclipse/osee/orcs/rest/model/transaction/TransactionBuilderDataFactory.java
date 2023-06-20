@@ -12,8 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.model.transaction;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Base64.Encoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +35,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 
 public class TransactionBuilderDataFactory {
@@ -304,7 +309,18 @@ public class TransactionBuilderDataFactory {
          List<Date> dates = art.getAttributeValues(attrType);
          item.setValue(Arrays.asList(Long.valueOf(dates.get(0).getTime()).toString()));
       } else if (attrType.isInputStream()) {
-         throw new OseeCoreException("Not handling Binary Data");
+         Encoder encoder = Base64.getEncoder();
+         List<String> list = new ArrayList<>();
+         List<InputStream> isList = art.getAttributeValues(attrType);
+         for (InputStream is : isList) {
+            try {
+               list.add(encoder.encodeToString(Lib.inputStreamToBytes(is)));
+            } catch (IOException ex) {
+               throw new OseeCoreException("Could not encode binary attribute");
+            }
+         }
+
+         item.setValue(list);
       } else {
          item.setValue(art.fetchAttributesAsStringList(attrType));
       }
