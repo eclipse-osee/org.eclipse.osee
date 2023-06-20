@@ -32,6 +32,9 @@ public enum SoftwareReqVolatilityId {
    AddedHeading("Added (Heading Details)"),
    ModifiedHeading("Modified (Heading Details)"),
    DeletedHeading("Deleted (Heading Details)"),
+   AddedImpl("Added (Impl Details)"),
+   ModifiedImpl("Modified (Impl Details)"),
+   DeletedImpl("Deleted (Impl Details)"),
    Week("Week"),
    Month("Month");
 

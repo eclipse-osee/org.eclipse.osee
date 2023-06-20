@@ -82,7 +82,10 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       SoftwareReqVolatilityId.DeletedSub,
       SoftwareReqVolatilityId.AddedHeading,
       SoftwareReqVolatilityId.ModifiedHeading,
-      SoftwareReqVolatilityId.DeletedHeading};
+      SoftwareReqVolatilityId.DeletedHeading,
+      SoftwareReqVolatilityId.AddedImpl,
+      SoftwareReqVolatilityId.ModifiedImpl,
+      SoftwareReqVolatilityId.DeletedImpl};
 
    public SoftwareReqVolatilityMetrics(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime) {
       this.orcsApi = orcsApi;
@@ -237,6 +240,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          int headAdded = 0;
          int headModified = 0;
          int headDeleted = 0;
+         int implAdded = 0;
+         int implModified = 0;
+         int implDeleted = 0;
 
          for (ChangeItem changeItem : attrChangeItems) {
             BranchId workingBranch = atsApi.getBranchService().getBranch(reqWorkflow);
@@ -287,6 +293,16 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
                   ModificationType.ARTIFACT_DELETED)) {
                   headDeleted++;
                }
+            } else if (artType.inheritsFrom(CoreArtifactTypes.AbstractImplementationDetails)) {
+               ModificationType modType = changeItem.getNetChange().getModType();
+               if (modType.equals(ModificationType.NEW)) {
+                  implAdded++;
+               } else if (modType.equals(ModificationType.MODIFIED) || modType.equals(ModificationType.MERGED)) {
+                  implModified++;
+               } else if (modType.equals(ModificationType.DELETED) || modType.equals(
+                  ModificationType.ARTIFACT_DELETED)) {
+                  implDeleted++;
+               }
             } else {
                continue;
             }
@@ -302,6 +318,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             buffer[13] = headAdded;
             buffer[14] = headModified;
             buffer[15] = headDeleted;
+            buffer[16] = implAdded;
+            buffer[17] = implModified;
+            buffer[18] = implDeleted;
          } else {
             buffer[7] = "";
             buffer[8] = "";
@@ -312,6 +331,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             buffer[13] = "";
             buffer[14] = "";
             buffer[15] = "";
+            buffer[16] = "";
+            buffer[17] = "";
+            buffer[18] = "";
          }
 
          try {
