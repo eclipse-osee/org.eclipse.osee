@@ -40,7 +40,7 @@ public class AtsHoldOrBlockedTransitionHook implements IAtsTransitionHook {
    }
 
    @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
       boolean isBlocked = workItem.getAtsApi().getWorkItemService().isBlocked(workItem);
       if (isBlocked) {
          String reason = workItem.getAtsApi().getAttributeResolver().getSoleAttributeValue(workItem,

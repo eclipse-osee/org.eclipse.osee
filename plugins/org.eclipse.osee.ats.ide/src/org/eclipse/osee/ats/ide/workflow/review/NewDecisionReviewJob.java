@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.ide.workflow.review;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,12 +39,12 @@ public class NewDecisionReviewJob extends Job {
    private final String reviewTitle;
    private final String againstState;
    private final List<IAtsDecisionReviewOption> options;
-   private final List<? extends AtsUser> assignees;
+   private final Collection<AtsUser> assignees;
    private final String description;
    private final Date createdDate;
    private final AtsUser createdBy;
 
-   public NewDecisionReviewJob(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<IAtsDecisionReviewOption> options, List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy) {
+   public NewDecisionReviewJob(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<IAtsDecisionReviewOption> options, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy) {
       super("Creating New Decision Review");
       this.teamWf = teamWf;
       this.reviewTitle = reviewTitle;

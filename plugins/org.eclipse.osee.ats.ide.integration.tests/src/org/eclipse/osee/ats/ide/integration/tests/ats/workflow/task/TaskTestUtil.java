@@ -62,7 +62,7 @@ public class TaskTestUtil {
 
          @Override
          public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+            Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
             AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, taskArt.getStateDefinition(),
                additionalHours, 100, true, AtsApiService.get().getUserService().getCurrentUser(), changes);
          }
@@ -91,7 +91,7 @@ public class TaskTestUtil {
 
          @Override
          public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-            Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+            Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
             if (AtsApiService.get().getWorkItemMetricsService().getPercentComplete(
                taskArt) != percentComplete || additionalHours > 0) {
                AtsApiService.get().getWorkItemMetricsService().updateMetrics(taskArt, fromState, additionalHours,

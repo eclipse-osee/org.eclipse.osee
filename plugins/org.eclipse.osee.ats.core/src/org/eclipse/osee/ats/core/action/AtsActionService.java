@@ -455,7 +455,7 @@ public class AtsActionService implements IAtsActionService {
 
    @Override
    public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef,
-      Collection<IAtsActionableItem> actionableItems, List<? extends AtsUser> assignees, Date createdDate,
+      Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, Date createdDate,
       AtsUser createdBy, ArtifactTypeToken artifactType, Collection<INewActionListener> newActionListeners,
       IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
@@ -558,7 +558,7 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
-   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends AtsUser> assignees, Date createdDate,
+   public void initializeNewStateMachine(IAtsWorkItem workItem, Collection<AtsUser> assignees, Date createdDate,
       AtsUser createdBy, WorkDefinition workDefinition, IAtsChangeSet changes) {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");

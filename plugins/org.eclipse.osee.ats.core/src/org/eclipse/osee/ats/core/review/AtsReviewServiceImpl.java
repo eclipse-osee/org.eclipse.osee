@@ -207,7 +207,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType,
       String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options,
-      List<? extends AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
+      Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy, IAtsChangeSet changes) {
       ArtifactToken decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
       IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemService().getReview(decRevArt);
 

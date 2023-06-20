@@ -42,7 +42,7 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState,
-      Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+      Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       if (!workItem.isTeamWorkflow()) {
          return;
       }

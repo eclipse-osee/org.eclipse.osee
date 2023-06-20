@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class WorkState extends NamedBase {
    private double hoursSpent = 0;
    private int percentComplete = 0;
 
-   private WorkState(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
+   private WorkState(String name, Collection<AtsUser> assignees, double hoursSpent, int percentComplete) {
       this.name = name;
       this.assignees.addAll(assignees);
       this.hoursSpent = hoursSpent;
@@ -69,7 +70,7 @@ public class WorkState extends NamedBase {
       }
    }
 
-   public void setAssignees(List<? extends AtsUser> users) {
+   public void setAssignees(Collection<AtsUser> users) {
       assignees.clear();
       for (AtsUser user : users) {
          addAssignee(user);
@@ -85,7 +86,7 @@ public class WorkState extends NamedBase {
       assignees.remove(assignee);
    }
 
-   public static WorkState create(String name, List<? extends AtsUser> assignees, double hoursSpent, int percentComplete) {
+   public static WorkState create(String name, Collection<AtsUser> assignees, double hoursSpent, int percentComplete) {
       return new WorkState(name, assignees, hoursSpent, percentComplete);
    }
 
@@ -93,7 +94,7 @@ public class WorkState extends NamedBase {
       return new WorkState(name, Collections.emptyList(), 0, 0);
    }
 
-   public static WorkState create(String name, List<? extends AtsUser> assignees) {
+   public static WorkState create(String name, Collection<AtsUser> assignees) {
       Conditions.checkNotNullOrContainNull(assignees, "assignees");
       return new WorkState(name, assignees, 0, 0);
    }

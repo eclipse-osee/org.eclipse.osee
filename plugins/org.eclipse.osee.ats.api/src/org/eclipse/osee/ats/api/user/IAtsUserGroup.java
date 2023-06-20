@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.user;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public interface IAtsUserGroup {
 
    public List<AtsUser> getUsers();
 
-   public void setUsers(List<? extends AtsUser> users);
+   public void setUsers(Collection<AtsUser> users);
 
    public void addUser(AtsUser user);
 

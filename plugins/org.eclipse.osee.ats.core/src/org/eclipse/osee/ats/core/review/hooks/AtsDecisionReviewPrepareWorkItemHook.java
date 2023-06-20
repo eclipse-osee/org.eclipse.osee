@@ -42,7 +42,7 @@ public class AtsDecisionReviewPrepareWorkItemHook implements IAtsTransitionHook 
    }
 
    @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, AtsApi atsApi) {
       if (workItem instanceof IAtsDecisionReview && fromState.getName().equals(
          DecisionReviewState.Prepare.getName()) && toState.getName().equals(DecisionReviewState.Decision.getName())) {
          DecisionReviewOptions decOptions =

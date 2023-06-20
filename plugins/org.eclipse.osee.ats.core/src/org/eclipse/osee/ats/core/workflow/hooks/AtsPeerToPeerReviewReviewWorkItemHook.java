@@ -45,7 +45,7 @@ public class AtsPeerToPeerReviewReviewWorkItemHook implements IAtsTransitionHook
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<AtsUser> toAssignees, AtsUser asUser, IAtsChangeSet changes, AtsApi atsApi) {
       if (workItem instanceof IAtsPeerToPeerReview && toState.getName().equals(
          PeerToPeerReviewState.Review.getName())) {
          // Set Assignees to all user roles users

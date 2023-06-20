@@ -31,18 +31,16 @@ public interface IAtsStateManager {
 
    IStateToken getCurrentState();
 
-   void addAssignees(String stateName, Collection<? extends AtsUser> assignees);
+   void addAssignees(String stateName, Collection<AtsUser> assignees);
 
    void setAssignee(AtsUser assignee);
-
-   void setAssignees(Collection<? extends AtsUser> assignees);
 
    /**
     * Sets the assignees as attributes and relations AND writes to store. Does not persist.
     */
-   void setAssignees(String stateName, List<? extends AtsUser> assignees);
+   void setAssignees(String stateName, Collection<AtsUser> assignees);
 
-   void transitionHelper(List<? extends AtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName);
+   void transitionHelper(Collection<AtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName);
 
    long getTimeInState();
 
@@ -62,10 +60,10 @@ public interface IAtsStateManager {
 
    void addAssignee(AtsUser assignee);
 
-   void addState(String stateName, List<? extends AtsUser> assignees);
+   void addState(String stateName, Collection<AtsUser> assignees);
 
    @JsonSetter
-   void setAssignees(List<? extends AtsUser> assignees);
+   void setAssignees(Collection<AtsUser> assignees);
 
    WorkState createState(String stateName);
 
@@ -97,7 +95,7 @@ public interface IAtsStateManager {
 
    String getAssigneesStr(String stateName);
 
-   void addAssignees(Collection<? extends AtsUser> assignees);
+   void addAssignees(Collection<AtsUser> assignees);
 
    void setAssignee(String stateName, AtsUser assignee);
 
@@ -113,13 +111,13 @@ public interface IAtsStateManager {
 
    IAtsLogItem getStateCompletedData(String stateName);
 
-   Collection<? extends AtsUser> getAssigneesAdded();
+   Collection<AtsUser> getAssigneesAdded();
 
    WorkState getState(String string);
 
    boolean isInState(IStateToken state);
 
-   void setAssignees(String stateName, StateType stateType, List<? extends AtsUser> assignees);
+   void setAssignees(String stateName, StateType stateType, Collection<AtsUser> assignees);
 
    void setCreatedBy(AtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
 
