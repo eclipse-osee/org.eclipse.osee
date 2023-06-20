@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -150,6 +151,17 @@ public class TransactionEndpointTest {
          AttributeTypeId.valueOf(CoreAttributeTypes.Annotation.getId()), testString);
       testWrapUp(json, CoreAttributeTypes.Annotation, testString);
    }
+   
+   @Test
+   public void testAddMultiStringsAttribute() {
+      List<String> values = new ArrayList<>();
+      values.add("Test Add String Attribute1");
+      values.add("Test Add String Attribute2");
+      values.add("Test Add String Attribute3");
+      String json = setupTransferJsonFromStrings(CoreArtifactTypes.Artifact,
+         AttributeTypeId.valueOf(CoreAttributeTypes.Annotation.getId()), values);
+      testWrapUpFromStrings(json, CoreAttributeTypes.Annotation, values);
+   }
 
    @Test
    public void testAddIntegerAttribute() {
@@ -274,6 +286,44 @@ public class TransactionEndpointTest {
       }
       return json;
    }
+   
+   /**
+    * Helper method that will create a new Artifact with a single added attribute with multiple Strings 
+    * and return the Transfer Json created from the exportTxsDiff
+    */
+   private String setupTransferJsonFromStrings(ArtifactTypeToken artType, AttributeTypeId attrType, List<String> values) {
+      //Create a new Artifact of type artType on SAWL_PL_Working_Branch
+      SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + attrType.getIdString());
+      Artifact artifact = ArtifactTypeManager.addArtifact(artType, DemoBranches.SAW_PL_Working_Branch);
+      //Check if the artifact already has an attribute of the supplied type, then create a new Attribute on the Artifact of type attrType with supplied value
+      if (!artifact.getAttributes(attrType).isEmpty()) {
+         artifact.deleteAttributes(attrType);
+      }
+      
+      artifact.setAttributeFromValues(attrType, values);
+      
+      //Commit transaction and return the newly created TransactionToken
+      transaction.addArtifact(artifact);
+      TransactionToken currentTx = transaction.execute();
+      TransactionToken startingTx = TransactionManager.getPriorTransaction(currentTx);
+      TransactionBuilderData txData = transactionEndpoint.exportTxsDiff(startingTx, currentTx);
+      //Switch branches in TransactionBuilderData so the transfer will be onto a different branch
+      txData.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      ObjectMapper mapper = new ObjectMapper();
+      String json;
+      try {
+         json = mapper.writeValueAsString(txData);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json in TransactionEndpointTest");
+      }
+      try {
+         purge(currentTx);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to purge Transaction:" + currentTx.getIdString());
+      }
+      return json;
+   }
 
    /**
     * Helper method that tests to ensure the new attribute is on the artifact from the created transaction and then
@@ -296,6 +346,34 @@ public class TransactionEndpointTest {
          purge(TransactionToken.valueOf(txId, branchId));
       } catch (Exception ex) {
          throw new OseeCoreException("Failed to convert response to String");
+      }
+   }
+   
+   /**
+    * Helper method that tests to ensure the new attributes are on the artifact from the created transaction and then
+    * cleans up the newly added transaction
+    */
+   private void testWrapUpFromStrings(String json, AttributeTypeToken attrType, List<String> expectedValues) {
+      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+      try {
+         //Pull all the important bits out of the readTree
+         JsonNode readTree = jaxRsApi.readTree(Lib.inputStreamToString((InputStream) response.getEntity()));
+         ArtifactId artId = ArtifactId.valueOf(readTree.get("results").get("ids").get(0).asLong());
+         BranchId branchId = BranchId.valueOf(readTree.get("tx").get("branchId").asLong());
+         TransactionId txId = TransactionId.valueOf(readTree.get("tx").get("id").asLong());
+         //Find the artifact with the new Attribute and ensure the expectedValues are on the artifact
+         Artifact art = ArtifactQuery.getArtifactFromId(artId, branchId);
+         List<Attribute<Object>> attributes;
+         for(String value : expectedValues) {
+            attributes = art.getAttributesByValue(attrType, value);
+            assertTrue(!attributes.isEmpty());             
+         }         
+         
+         //Cleanup and purge the Transaction on the new branch
+         purge(TransactionToken.valueOf(txId, branchId));
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to convert response to Strings");
       }
    }
 
