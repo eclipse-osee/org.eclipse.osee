@@ -62,8 +62,7 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
 
    }
 
-   private final ConcurrentHashMap<String, JaxRsContainerProvider> servlets =
-      new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, JaxRsContainerProvider> servlets = new ConcurrentHashMap<>();
 
    private Log logger;
    private JaxRsFactory factory;
@@ -95,7 +94,9 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
    }
 
    public String getBaseContext() {
-      return baseContext;
+      synchronized (this) {
+         return baseContext;
+      }
    }
 
    public synchronized void configure(JaxRsConfiguration config) {
@@ -112,7 +113,8 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
                container.stop();
                container.accept(new JaxRsVisitor() {
                   @Override
-                  public void onApplication(String applicationContext, String componentName, Bundle bundle, Application application) {
+                  public void onApplication(String applicationContext, String componentName, Bundle bundle,
+                     Application application) {
                      final String baseContext = getBaseContext();
                      JaxRsContainer newContainer = getContainerInitIfNull(baseContext);
                      newContainer.addApplication(componentName, applicationContext, bundle, application);

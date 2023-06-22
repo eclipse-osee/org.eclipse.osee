@@ -1127,6 +1127,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
       if (!found) {
          IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
+         Objects.requireNonNull(team, "team can not be null");
          for (ArtifactReadable featureArt : ((ArtifactReadable) team.getStoreObject()).getRelated(
             AtsRelationTypes.AgileTeamToFeatureGroup_AgileFeatureGroup)) {
             if (featureArt.getName().equals(featureGroupName)) {

@@ -128,19 +128,20 @@ public class DevProgressMetricsBlam extends AbstractBlam {
 
                   String filePath =
                      String.format("%s%s%s", fileLocation, File.separator, res.getHeaderString("FileName"));
-                  BufferedWriter bwr = new BufferedWriter(new FileWriter(new File(filePath)));
+                  try (BufferedWriter bwr = new BufferedWriter(new FileWriter(new File(filePath)));) {
 
-                  GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
-                  StringBuffer sb = new StringBuffer();
-                  try (BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));) {
-                     String inputLine = "";
-                     while ((inputLine = in.readLine()) != null) {
-                        sb.append(inputLine);
+                     GZIPInputStream gzInputStream = (GZIPInputStream) res.getEntity();
+                     StringBuffer sb = new StringBuffer();
+                     try (BufferedReader in = new BufferedReader(new InputStreamReader(gzInputStream));) {
+                        String inputLine = "";
+                        while ((inputLine = in.readLine()) != null) {
+                           sb.append(inputLine);
+                        }
                      }
+                     bwr.write(sb.toString());
+                     bwr.flush();
+                     bwr.close();
                   }
-                  bwr.write(sb.toString());
-                  bwr.flush();
-                  bwr.close();
                   res.close();
                }
             } catch (Exception ex) {

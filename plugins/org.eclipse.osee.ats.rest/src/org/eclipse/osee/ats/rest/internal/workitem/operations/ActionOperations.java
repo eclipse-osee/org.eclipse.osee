@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -121,6 +122,7 @@ public class ActionOperations {
             if (currVersion == null || !currVersion.getName().equals(version)) {
                IAtsVersion newVer = null;
                IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinition(workItem);
+               Objects.requireNonNull(teamDef, "teamDef can not be null");
                IAtsTeamDefinition teamDefHoldVer = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(teamDef);
                for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDefHoldVer)) {
                   if (teamDefVer.getName().equals(version)) {

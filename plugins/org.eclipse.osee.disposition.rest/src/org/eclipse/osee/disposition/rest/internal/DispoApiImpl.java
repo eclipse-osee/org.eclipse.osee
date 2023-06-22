@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import org.eclipse.osee.disposition.model.CiItemData;
 import org.eclipse.osee.disposition.model.CiSetData;
@@ -366,6 +367,7 @@ public class DispoApiImpl implements DispoApi {
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          DispoAnnotationData origAnnotation = DispoUtil.getById(annotationsList, annotationId);
+         Objects.requireNonNull(origAnnotation, "Original Annotation can not be null");
          int indexOfAnnotation = origAnnotation.getIndex();
 
          boolean needToReconnect = false;

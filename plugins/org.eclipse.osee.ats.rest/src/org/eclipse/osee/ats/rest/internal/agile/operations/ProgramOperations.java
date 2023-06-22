@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.rest.internal.agile.operations;
 import com.google.common.base.Strings;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileProgram;
@@ -82,6 +83,7 @@ public class ProgramOperations {
    }
 
    public UiGridProgram getUiGridTree(IAgileProgram program) {
+      Objects.requireNonNull(program, "Agile Program can not be");
       ArtifactToken progArt = atsApi.getQueryService().getArtifact(program.getId());
       UiGridProgram progItem = new UiGridProgram();
       progItem.setId(program.getId());

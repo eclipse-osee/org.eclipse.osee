@@ -772,10 +772,12 @@ public class LisFileParser implements DispoImporterApi {
             }
          } catch (Exception ex) {
             report.addEntry("EXCEPTION", ex.getMessage(), ERROR);
+            BufferedReader br2 = null;
             try {
-               br = new BufferedReader(new FileReader(resultsFile));
+               br2 = new BufferedReader(new FileReader(resultsFile));
                String resultsLine;
-               while ((resultsLine = br.readLine()) != null) {
+
+               while ((resultsLine = br2.readLine()) != null) {
                   // Loop through results file and log coverageItem as Test_Unit for each entry
                   if (Strings.isValid(resultsLine)) {
                      Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
@@ -791,8 +793,10 @@ public class LisFileParser implements DispoImporterApi {
                }
             } catch (Exception ex2) {
                report.addEntry("EXCEPTION", ex2.getMessage(), ERROR);
+            } finally {
+               Lib.close(br2);
+               Lib.close(br);
             }
-
          } finally {
             Lib.close(br);
          }
