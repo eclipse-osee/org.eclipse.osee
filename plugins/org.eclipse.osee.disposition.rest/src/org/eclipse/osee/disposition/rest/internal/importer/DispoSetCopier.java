@@ -35,6 +35,7 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.report.FindReruns;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -150,6 +151,9 @@ public class DispoSetCopier {
       for (DispoAnnotationData sourceAnnotation : sourceAnnotations) {
          String sourceLocation = sourceAnnotation.getLocationRefs();
 
+         if (sourceAnnotation.getGuid() == null) {
+            sourceAnnotation.setId(String.valueOf(Lib.generateUuid()));
+         }
          // Check for ignore cases
          if (DispoUtil.isDefaultAnotation(sourceAnnotation) || !Strings.isValid(sourceAnnotation.getResolutionType())) {
             /**
