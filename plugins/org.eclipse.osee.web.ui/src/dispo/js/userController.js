@@ -330,8 +330,6 @@ app.controller('userController', [
         $scope.getTextResolutionType = function(annotation) {
             if (annotation.isLeaf) {
                 return annotation.resolutionType;
-            } else if (annotation.locationRefs.match(/^\d+\.\d+ \(.*\)$/)) {
-                return annotation.resolutionType;
             } else {
                 return "-----------------";
             }
@@ -354,25 +352,29 @@ app.controller('userController', [
         }
 
         $scope.getPairs = function(annotation) {
-        	if($scope.isCoverage) {
-				var pairs = CoverageFactory.getPairs(annotation);
-				if(pairs == "No Pairs Satisfied") {
-					return CoverageFactory.getPossiblePairs(annotation);
-				}
-				return CoverageFactory.getPairs(annotation);
-        	} else {
-        		return "";
-        	}
+            if($scope.isCoverage) {
+                var pairs = CoverageFactory.getPairs(annotation);
+                var possiblePairs = CoverageFactory.getPossiblePairs(annotation);
+                if(annotation.isTopLevel) {
+                    return "-------";
+                } else if (pairs != "" && pairs != null) {
+                    return pairs;
+                } else if(possiblePairs != "" && possiblePairs != null) {
+                    return possiblePairs;
+                } else {
+                    return "-------";
+                }
+            } else {
+                return "";
+            }
         }
         
         $scope.getTextCoverage = function(annotation) {
-        	if(annotation.isLeaf) {
-        		return annotation.customerNotes;
-        	} else if (annotation.locationRefs.match(/^\d+\.\d+ \(.*\)$/)) {
-            return annotation.customerNotes;
-         } else {
-        		return "";
-        	}
+            if(annotation.isLeaf || !annotation.isTopLevel) {
+                return annotation.customerNotes;
+            } else {
+                return "";
+            }
         }
         
         $scope.subGridOptions = {

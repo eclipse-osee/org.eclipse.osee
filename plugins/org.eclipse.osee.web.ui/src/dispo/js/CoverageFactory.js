@@ -46,7 +46,7 @@ app.factory('CoverageFactory', function() {
 	}
 	
 	CoverageFactory.getPairs = function(annotation) {
-		return annotation.Pairs;
+		return annotation.pairs;
 	}
     
 	var getReasonWhyIncomplete = function(annotation) {
@@ -103,11 +103,11 @@ app.factory('CoverageFactory', function() {
 				
                 var metadata = {};
                 metadata.childrenComplete = true;
-            	 metadata.totalCount = 0;
-            	 metadata.completeCount = 0;
-            	 metadata.runningTotalCount = 0;
-            	 metadata.runningCompleteCount = 0;
-            	 parentAnnotation.isTopLevel = true;
+                metadata.totalCount = 0;
+                metadata.completeCount = 0;
+                metadata.runningTotalCount = 0;
+                metadata.runningCompleteCount = 0;
+                parentAnnotation.isTopLevel = true;
                 parentAnnotation.childMetadata = metadata;
 				
                 var childrenStack = getAnnotationsStartsWith(annotationsStack, parentLocRefs + ".", true);
@@ -128,23 +128,25 @@ app.factory('CoverageFactory', function() {
 
                 var metadata = {};
                 metadata.childrenComplete = true;
-            	 metadata.totalCount = 0;
-            	 metadata.completeCount = 0;
-            	 metadata.runningTotalCount = 0;
-            	 metadata.runningCompleteCount = 0;
-            	 parentAnnotation.isTopLevel = true;
+                metadata.totalCount = 0;
+                metadata.completeCount = 0;
+                metadata.runningTotalCount = 0;
+                metadata.runningCompleteCount = 0;
+                parentAnnotation.isTopLevel = true;
                 parentAnnotation.childMetadata = metadata;
 
-				    var conditionStack = getAnnotationsStartsWith(annotationsStack, parentLocRefs + ".", true);
+                var conditionStack = getAnnotationsStartsWith(annotationsStack, parentLocRefs + ".", true);
                 var conditionStackForPairs = conditionStack.slice();
-				    var conditionAsTree = createTreeAnnotations(annotationsStack, parentAnnotation, conditionStack, 2, metadata);
-				    parentAnnotation.children = conditionAsTree;
-				    parentAnnotation.$treeLevel = 0;
-				    for (var i = 0; i < conditionStackForPairs.length; i++) {
-	                var pairsAsTree = createTreeAnnotations(annotationsStack, conditionStackForPairs[i], Object.values(conditionStackForPairs[i].pairAnnotations), 3, metadata);
-					    conditionStackForPairs[i].children = pairsAsTree;
-					    conditionStackForPairs[i].$treeLevel = 2;
-				    }
+                var conditionAsTree = createTreeAnnotations(annotationsStack, parentAnnotation, conditionStack, 2, metadata);
+                parentAnnotation.children = conditionAsTree;
+                parentAnnotation.$treeLevel = 0;
+                for (var i = 0; i < conditionStackForPairs.length; i++) {
+                    if (conditionStackForPairs[i].pairAnnotations != null) {
+	                     var pairsAsTree = createTreeAnnotations(annotationsStack, conditionStackForPairs[i], Object.values(conditionStackForPairs[i].pairAnnotations), 3, metadata);
+	                     conditionStackForPairs[i].children = pairsAsTree;
+	                     conditionStackForPairs[i].$treeLevel = 2;
+                    }
+                }
                 toReturn.push(parentAnnotation);              
             } else {
                 annotationsStack.pop();
@@ -207,7 +209,7 @@ app.factory('CoverageFactory', function() {
                 self.locationRefs = leadingLocRefs;
                 self.$$treeLevel = level;
                 var childMetadata = {};
-				    self.children = createTreeAnnotations(annotationsStack, self, childrenStack, level + 1, childMetadata);
+                self.children = createTreeAnnotations(annotationsStack, self, childrenStack, level + 1, childMetadata);
                 self.childMetadata = childMetadata
                 metadata.childrenComplete = metadata.childrenComplete && childMetadata.childMetadata;
                 if(metadata.childrenComplete) {
