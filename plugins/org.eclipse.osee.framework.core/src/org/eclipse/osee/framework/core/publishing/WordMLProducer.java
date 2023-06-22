@@ -16,11 +16,9 @@ package org.eclipse.osee.framework.core.publishing;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Ryan D. Brooks
@@ -484,7 +482,8 @@ public class WordMLProducer {
     * @param restartNumbering - Restart the numbering from the previous section
     * @param pageType - Set to landscape if needed
     */
-   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering, WordCoreUtil.pageType pageType) {
+   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering,
+      WordCoreUtil.pageType pageType) {
 
       this.startParagraph();
       this.startParagraphPresentation();
@@ -552,7 +551,8 @@ public class WordMLProducer {
       return paragraphNumber;
    }
 
-   public void startOutlineSubSection(CharSequence style, int outlineLevel, CharSequence outlineNumber, CharSequence font, CharSequence headingText) {
+   public void startOutlineSubSection(CharSequence style, int outlineLevel, CharSequence outlineNumber,
+      CharSequence font, CharSequence headingText) {
       this.startSubSection();
       if (Strings.isValid(headingText)) {
          this.startParagraph();
@@ -595,9 +595,6 @@ public class WordMLProducer {
          this.flattenedLevelCount++;
 
          this.endOutlineSubSection(true);
-
-         OseeLog.log(this.getClass(), Level.WARNING,
-            "Outline level flattened, max outline level is currently set to " + this.maxOutlineLevel + ", ms word only goes 9 levels deep");
 
          return this.startOutlineSubSection(font, headingText, outlineType);
 
