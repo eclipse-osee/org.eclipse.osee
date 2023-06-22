@@ -145,6 +145,10 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
             (
                ( entry ) ->
                {
+                  if( !this.logger.isInfoEnabled() ) {
+                     return;
+                  }
+
                   var matchCriteria = entry.getKey(1);
                   var publishingTemplateInternalList = entry.getValue();
 
@@ -165,7 +169,7 @@ abstract class AbstractPublishingTemplateCache implements PublishingTemplateCach
                             .segmentIndexedList( "Matching Publishing Templates", publishingTemplateInternalList )
                             ;
 
-                  this.logger.error( message.toString().replace( "%", "%%" ) );
+                  this.logger.infoNoFormat( null, message.toString() );
                }
             );
       //@formatter:on
