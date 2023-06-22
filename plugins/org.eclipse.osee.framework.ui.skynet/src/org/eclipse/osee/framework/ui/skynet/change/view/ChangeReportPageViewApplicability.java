@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -95,7 +96,9 @@ public class ChangeReportPageViewApplicability {
 
    private String getArtifactViewApplicabiltyText() {
       ArtifactId view = editor.getViewId();
-      String viewText = view.isValid() ? ArtifactQuery.getArtifactTokenFromId(getBranch(), view).getName() : Widgets.NOT_SET;
+      Objects.requireNonNull(getBranch(), "Branch can not be null");
+      String viewText =
+         view.isValid() ? ArtifactQuery.getArtifactTokenFromId(getBranch(), view).getName() : Widgets.NOT_SET;
       return "<form><p><b>Branch View:</b> " + viewText + "</p></form>";
    }
 

@@ -77,9 +77,9 @@ public class TagEncoder {
             }
             int pos = Arrays.binarySearch(tagChars, c);
             if (pos < 0) {
-               tagBits |= 0x3F << tagBitsPos;
+               tagBits |= 0x3F << (long) tagBitsPos;
             } else {
-               tagBits |= pos << tagBitsPos;
+               tagBits |= pos << (long) tagBitsPos;
             }
             tagBitsPos += 4;
          }

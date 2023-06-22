@@ -137,7 +137,9 @@ public abstract class AbstractClientService {
          sessionToken = (String) session.getAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN);
          if (!Strings.isValid(sessionToken)) {
             sessionToken = UUID.randomUUID().toString();
-            session.setAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, sessionToken);
+            synchronized (this) {
+               session.setAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, sessionToken);
+            }
          }
       }
       data.setAuthenticityToken(sessionToken);

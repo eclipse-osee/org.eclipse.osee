@@ -13,9 +13,12 @@
 
 package org.eclipse.osee.orcs.db.internal.exchange.export;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportTableConstants;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
@@ -34,24 +37,28 @@ public abstract class AbstractXmlExportItem extends AbstractExportItem {
       checkForCancelled();
       Writer writer = null;
       try {
-         writer = ExchangeUtil.createXmlWriter(getWriteLocation(), getFileName(), getBufferSize());
-         if (writer != null) {
-            ExportImportXml.openXmlNode(writer, ExportTableConstants.DATA);
-            try {
-               checkForCancelled();
-               doWork(writer);
-            } finally {
-               ExportImportXml.closeXmlNode(writer, ExportTableConstants.DATA);
-               writer.close();
-            }
+
+         File indexFile = new File(getWriteLocation(), getFileName());
+         writer = new BufferedWriter(
+            new OutputStreamWriter(new FileOutputStream(indexFile), ExportTableConstants.ENCODING), getBufferSize());
+         writer.write(ExportTableConstants.XML_HEADER);
+
+         ExportImportXml.openXmlNode(writer, ExportTableConstants.DATA);
+         try {
+            checkForCancelled();
+            doWork(writer);
+         } finally {
+            ExportImportXml.closeXmlNode(writer, ExportTableConstants.DATA);
             writer.close();
          }
+         writer.close();
 
       } catch (Exception e) {
 
          if (writer != null) {
             writer.close();
          }
+
       }
 
    }

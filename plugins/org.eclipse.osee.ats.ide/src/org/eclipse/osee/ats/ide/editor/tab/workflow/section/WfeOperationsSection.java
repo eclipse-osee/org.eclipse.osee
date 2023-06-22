@@ -76,12 +76,14 @@ public class WfeOperationsSection extends SectionPart {
    }
 
    private synchronized void registerAdvancedSectionsFromExtensionPoints() {
-      if (operationsSectionProviders == null) {
-         operationsSectionProviders = new ArrayList<>();
-         ExtensionDefinedObjects<IWfeOperationsSection> extensions = new ExtensionDefinedObjects<>(
-            Activator.PLUGIN_ID + ".AtsAdvancedOperationAction", "AtsAdvancedOperationAction", "classname", true);
-         for (IWfeOperationsSection item : extensions.getObjects()) {
-            operationsSectionProviders.add(item);
+      synchronized (this) {
+         if (operationsSectionProviders == null) {
+            operationsSectionProviders = new ArrayList<>();
+            ExtensionDefinedObjects<IWfeOperationsSection> extensions = new ExtensionDefinedObjects<>(
+               Activator.PLUGIN_ID + ".AtsAdvancedOperationAction", "AtsAdvancedOperationAction", "classname", true);
+            for (IWfeOperationsSection item : extensions.getObjects()) {
+               operationsSectionProviders.add(item);
+            }
          }
       }
    }

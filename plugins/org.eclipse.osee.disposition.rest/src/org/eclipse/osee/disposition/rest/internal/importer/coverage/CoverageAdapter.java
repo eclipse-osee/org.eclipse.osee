@@ -128,11 +128,8 @@ public class CoverageAdapter {
                annotationToUpdate.setDeveloperNotes("");
                dispoConnector.connectAnnotation(annotationToUpdate, dest.getDiscrepanciesList());
 
-               if (isReplace) {
-                  annotations.set(annotationToUpdate.getIndex(), annotationToUpdate);
-               } else {
-                  annotations.add(annotationToUpdate.getIndex(), annotationToUpdate);
-               }
+               annotations.add(annotationToUpdate.getIndex(), annotationToUpdate);
+
             }
          } else if (matchedDiscrepancy == null) {
             report.addEntry(source.getName(),
