@@ -400,16 +400,10 @@
 <plugin id="org.eclipse.jdt.launching"/>
 <plugin id="org.eclipse.jdt.launching.source"/>
 <plugin id="org.eclipse.jdt.ui"/>
-<plugin id="org.eclipse.jetty.http" version="9.4.48.v20220622"/>
-<plugin id="org.eclipse.jetty.io" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.io.source"/>
-<plugin id="org.eclipse.jetty.security" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.security.source"/>
-<plugin id="org.eclipse.jetty.server" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.server.source"/>
-<plugin id="org.eclipse.jetty.servlet" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.servlet.source"/>
-<plugin id="org.eclipse.jetty.util" version="9.4.48.v20220622"/>
 <plugin id="org.eclipse.jetty.util.ajax"/>
 <plugin id="org.eclipse.jface"/>
 <plugin id="org.eclipse.jface.databinding"/>
@@ -677,6 +671,14 @@
 <plugin id="flexmark-util-visitor"/>
 <plugin id="flexmark-util-sequence"/>
 <plugin id="annotations"/>
+<plugin id="org.eclipse.jetty.http" version="9.4.51.v20230217"/>
+<plugin id="org.eclipse.jetty.io" version="9.4.51.v20230217"/>
+<plugin id="org.eclipse.jetty.security" version="9.4.51.v20230217"/>
+<plugin id="org.eclipse.jetty.server" version="9.4.51.v20230217"/>
+<plugin id="org.eclipse.jetty.servlet" version="9.4.51.v20230217"/>
+<plugin id="org.eclipse.jetty.util" version="9.4.51.v20230217"/>
+<plugin id="com.sun.jna.platform" version="5.12.1.v20221103-2317"/>
+<plugin id="com.sun.jna" version="5.12.1.v20221103-2317"/>
 </includeBundles>
 <environment>
 <os>win32</os>
