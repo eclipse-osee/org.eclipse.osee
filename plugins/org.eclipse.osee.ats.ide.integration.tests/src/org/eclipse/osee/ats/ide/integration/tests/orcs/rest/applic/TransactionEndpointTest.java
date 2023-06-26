@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -151,7 +152,7 @@ public class TransactionEndpointTest {
          AttributeTypeId.valueOf(CoreAttributeTypes.Annotation.getId()), testString);
       testWrapUp(json, CoreAttributeTypes.Annotation, testString);
    }
-   
+
    @Test
    public void testAddMultiStringsAttribute() {
       List<String> values = new ArrayList<>();
@@ -189,6 +190,118 @@ public class TransactionEndpointTest {
     * jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
     * assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily()); }
     */
+
+   @Test
+   public void testApplicabilityChange() {
+      //Create a transaction and add a artifact with a changed applicabilityId
+      SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + ": Create Applicability Change");
+      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement,
+         DemoBranches.SAW_PL_Working_Branch, "Artifact for Applicability Change");
+      artifact.internalSetApplicablityId(ApplicabilityId.valueOf(1234321L));
+      //Test to ensure applicabilityId was actually changed successfully
+      assertTrue(artifact.getApplicablityId().equals(1234321L));
+
+      //Complete transfer of transaction to a new branch
+      transaction.addArtifact(artifact);
+      TransactionToken currentTx = transaction.execute();
+      TransactionToken startingTx = TransactionManager.getPriorTransaction(currentTx);
+      TransactionBuilderData txData = transactionEndpoint.exportTxsDiff(startingTx, currentTx);
+      txData.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      ObjectMapper mapper = new ObjectMapper();
+      String json;
+      try {
+         json = mapper.writeValueAsString(txData);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json in TransactionEndpointTest");
+      }
+
+      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+      try {
+         //Pull all the important bits out of the readTree
+         JsonNode readTree = jaxRsApi.readTree(Lib.inputStreamToString((InputStream) response.getEntity()));
+         ArtifactId artId = ArtifactId.valueOf(readTree.get("results").get("ids").get(0).asLong());
+         BranchId branchId = BranchId.valueOf(readTree.get("tx").get("branchId").asLong());
+         TransactionId txId = TransactionId.valueOf(readTree.get("tx").get("id").asLong());
+         Artifact transferArt = ArtifactQuery.getArtifactFromId(artId, branchId);
+         //Ensure the applicabilityId was transferred correctly
+         assertEquals(artifact.getApplicablityId(), transferArt.getApplicablityId());
+         //Cleanup and purge the transactions
+         purge(currentTx);
+         purge(TransactionToken.valueOf(txId, branchId));
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to convert response to String");
+      }
+   }
+
+   @Test
+   public void testApplicabilityDeletion() {
+      //Create a transaction and add a artifact with a changed applicabilityId
+      SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + ": Create Applicability Change");
+      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement,
+         DemoBranches.SAW_PL_Working_Branch, "Artifact for Applicability Change");
+      artifact.internalSetApplicablityId(ApplicabilityId.valueOf(1234321L));
+      transaction.addArtifact(artifact);
+      //Test to ensure applicabilityId was actually changed successfully
+      assertTrue(artifact.getApplicablityId().equals(1234321L));
+
+      //Complete transfer of transaction to a new branch
+      TransactionToken createTx = transaction.execute();
+      TransactionToken priorTxToken = TransactionManager.getPriorTransaction(createTx);
+      TransactionBuilderData txData = transactionEndpoint.exportTxsDiff(priorTxToken, createTx);
+      txData.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      ObjectMapper mapper = new ObjectMapper();
+      String json;
+      try {
+         json = mapper.writeValueAsString(txData);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json in TransactionEndpointTest");
+      }
+      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+
+      //Ensure Artifact is created on SAW_PL_Hardening_Branch with the correct ApplicabilityId
+      assertTrue(artifact.getApplicablityId().equals(
+         ArtifactQuery.getArtifactFromId(artifact, DemoBranches.SAW_PL_Hardening_Branch).getApplicablityId()));
+
+      //Delete the applicability on the SAW_PL_Working_Branch and transfer it to SAW_PL_Hardening_Branch
+      SkynetTransaction deleteTransaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + ": Set Applicability to Base");
+      deleteTransaction.addArtifact(artifact);
+      artifact.internalSetApplicablityId(ApplicabilityId.BASE);
+      artifact.setName("Changed ApplicabilityId and Name");
+      artifact.persist(deleteTransaction);
+      TransactionToken deleteTx = deleteTransaction.execute();
+      priorTxToken = TransactionManager.getPriorTransaction(deleteTx);
+      TransactionBuilderData txDataDelete = transactionEndpoint.exportTxsDiff(priorTxToken, deleteTx);
+      txDataDelete.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      ObjectMapper mapperDeleteArt = new ObjectMapper();
+      String deleteJson;
+      try {
+         deleteJson = mapperDeleteArt.writeValueAsString(txDataDelete);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json for deleting a applicability");
+      }
+      Response responseDeleteArt =
+         jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(deleteJson));
+      assertEquals(Family.SUCCESSFUL, responseDeleteArt.getStatusInfo().getFamily());
+      //Need to decache the branch because it was previously getting old unchanged artifact from the cache
+      ArtifactCache.deCache(DemoBranches.SAW_PL_Hardening_Branch);
+
+      //Ensure Artifact is changed on SAW_PL_Hardening_Branch with the Base ApplicabilityId
+      assertTrue(ApplicabilityId.BASE.equals(
+         ArtifactQuery.getArtifactFromId(artifact, DemoBranches.SAW_PL_Hardening_Branch).getApplicablityId()));
+
+      //Test Cleanup
+      try {
+         purge(createTx);
+         purge(deleteTx);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to purge Transaction in testArtifactDeletionTransfer");
+      }
+   }
 
    @Test
    public void testArtifactDeletionTransfer() {
@@ -286,10 +399,10 @@ public class TransactionEndpointTest {
       }
       return json;
    }
-   
+
    /**
-    * Helper method that will create a new Artifact with a single added attribute with multiple Strings 
-    * and return the Transfer Json created from the exportTxsDiff
+    * Helper method that will create a new Artifact with a single added attribute with multiple Strings and return the
+    * Transfer Json created from the exportTxsDiff
     */
    private String setupTransferJsonFromStrings(ArtifactTypeToken artType, AttributeTypeId attrType, List<String> values) {
       //Create a new Artifact of type artType on SAWL_PL_Working_Branch
@@ -300,9 +413,9 @@ public class TransactionEndpointTest {
       if (!artifact.getAttributes(attrType).isEmpty()) {
          artifact.deleteAttributes(attrType);
       }
-      
+
       artifact.setAttributeFromValues(attrType, values);
-      
+
       //Commit transaction and return the newly created TransactionToken
       transaction.addArtifact(artifact);
       TransactionToken currentTx = transaction.execute();
@@ -348,7 +461,7 @@ public class TransactionEndpointTest {
          throw new OseeCoreException("Failed to convert response to String");
       }
    }
-   
+
    /**
     * Helper method that tests to ensure the new attributes are on the artifact from the created transaction and then
     * cleans up the newly added transaction
@@ -365,11 +478,11 @@ public class TransactionEndpointTest {
          //Find the artifact with the new Attribute and ensure the expectedValues are on the artifact
          Artifact art = ArtifactQuery.getArtifactFromId(artId, branchId);
          List<Attribute<Object>> attributes;
-         for(String value : expectedValues) {
+         for (String value : expectedValues) {
             attributes = art.getAttributesByValue(attrType, value);
-            assertTrue(!attributes.isEmpty());             
-         }         
-         
+            assertTrue(!attributes.isEmpty());
+         }
+
          //Cleanup and purge the Transaction on the new branch
          purge(TransactionToken.valueOf(txId, branchId));
       } catch (Exception ex) {
