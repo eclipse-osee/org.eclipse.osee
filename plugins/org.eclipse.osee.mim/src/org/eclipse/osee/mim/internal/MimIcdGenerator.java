@@ -93,13 +93,15 @@ public class MimIcdGenerator {
       boolean diff) {
       ArtifactReadable conn =
          orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
-            connectionId).follow(CoreRelationTypes.InterfaceConnectionMessage_Message).follow(
-               CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).follow(
-                  CoreRelationTypes.InterfaceSubMessageContent_Structure).follow(
-                     CoreRelationTypes.InterfaceStructureContent_DataElement).follow(
-                        CoreRelationTypes.InterfaceElementPlatformType_PlatformType).follow(
-                           CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).follow(
-                              CoreRelationTypes.InterfaceEnumeration_EnumerationState).asArtifact();
+            connectionId) //
+            .followFork(CoreRelationTypes.InterfaceConnectionNode_Node, CoreArtifactTypes.InterfaceNode, null) //
+            .follow(CoreRelationTypes.InterfaceConnectionMessage_Message) //
+            .follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage) //
+            .follow(CoreRelationTypes.InterfaceSubMessageContent_Structure) //
+            .follow(CoreRelationTypes.InterfaceStructureContent_DataElement) //
+            .follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType) //
+            .follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet) //
+            .follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState).asArtifact();
 
       ArtifactReadable primaryNode = ArtifactReadable.SENTINEL;
       ArtifactReadable secondaryNode = ArtifactReadable.SENTINEL;
@@ -951,10 +953,20 @@ public class MimIcdGenerator {
          validRange = "see enumerated literals";
       } else if (dataType.equals("boolean")) {
          validRange = "0 to 1";
-      } else if (platformType != null && platformType.isValid() && !platformType.getInterfacePlatformTypeValidRangeDescription().isEmpty()) {
-         validRange = platformType.getInterfacePlatformTypeValidRangeDescription();
-      } else {
-         validRange = minVal + " to " + maxVal;
+      } else if (platformType != null && platformType.isValid()) {
+         if (minVal.equals(maxVal)) {
+            validRange = minVal;
+         } else if (maxVal.equals("n/a")) {
+            validRange = minVal;
+         } else if (minVal.equals("n/a")) {
+            validRange = maxVal;
+         } else {
+            validRange = minVal + " to " + maxVal;
+         }
+         if ((validRange.isEmpty() || validRange.equals(
+            "n/a")) && !platformType.getInterfacePlatformTypeValidRangeDescription().isEmpty()) {
+            validRange = platformType.getInterfacePlatformTypeValidRangeDescription();
+         }
       }
 
       String alterable = elementToken.getInterfaceElementAlterable() ? "Yes" : "No";
