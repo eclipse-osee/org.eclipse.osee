@@ -28,7 +28,9 @@ import org.eclipse.osee.ats.core.task.AbstractAtsTaskProvider;
  */
 public class AtsTaskProviderDemo extends AbstractAtsTaskProvider {
 
-   // for ReviewOsgiXml public void setAtsApi(AtsApi atsApi)
+   public AtsTaskProviderDemo() {
+      // for jax-rs
+   }
 
    @Override
    public IAutoGenTaskData getAutoGenTaskData(String autoGenVerStr, IAtsTask task) {
