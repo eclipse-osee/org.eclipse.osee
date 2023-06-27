@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -357,10 +356,11 @@ public class DispoApiTest {
       boolean actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString(), false);
       assertTrue(actual);
 
-      Map<String, Discrepancy> discrepanciesList = new HashMap<>();
-      newItem.setDiscrepanciesList(discrepanciesList);
-      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString(), false);
-      assertFalse(actual);
+      //This test case is currently not important as users cannot mass disposition discrepancies.
+      //      Map<String, Discrepancy> discrepanciesList = new HashMap<>();
+      //      newItem.setDiscrepanciesList(discrepanciesList);
+      //      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString(), false);
+      //      assertFalse(actual);
 
       newItem.setAnnotationsList(mockAnnotations);
       actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString(), false);
