@@ -110,7 +110,9 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
 
       // 6 columns
       wb.andChangeType().andComposite(6).andRequired().endWidget();
-      wb.andPriority().andComposite(6).andRequired().endWidget();
+      if (includePriority()) {
+         wb.andPriority().andComposite(6).andRequired().endWidget();
+      }
       wb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endComposite().endWidget();
 
       wb.andXHyperlinkTriStateBoolean(
@@ -186,6 +188,10 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       }
    }
 
+   public boolean includePriority() {
+      return true;
+   }
+
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       this.variableMap = variableMap;
@@ -248,13 +254,13 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       log(results.toString());
 
       // Return if failed
-      if (priority == null || results.isErrors()) {
+      if (includePriority() && (priority == null || results.isErrors())) {
          return;
       }
 
       IAtsChangeSet changes = atsApi.createChangeSet(getName());
       actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
-         cType, priority.getName(), false, needBy, getNewActionAis(programAi), new Date(),
+         cType, priority == null ? null : priority.getName(), false, needBy, getNewActionAis(programAi), new Date(),
          atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
       changes.execute();
       if (actionResult.getResults().isErrors()) {
