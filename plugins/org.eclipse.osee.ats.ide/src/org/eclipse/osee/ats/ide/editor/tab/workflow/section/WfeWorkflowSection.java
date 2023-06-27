@@ -208,9 +208,16 @@ public class WfeWorkflowSection extends SectionPart {
       createReviewFooter(workComp, statePage);
 
       XWidgetUtility.setLabelFontsBold(allXWidgets);
+      adaptWidgets();
 
       computeTextSizesAndReflow();
       return workComp;
+   }
+
+   private void adaptWidgets() {
+      for (XWidget widget : allXWidgets) {
+         widget.adaptControls(editor.getToolkit());
+      }
    }
 
    private void createSectionBody(StateXWidgetPage statePage, Composite workComp) {
