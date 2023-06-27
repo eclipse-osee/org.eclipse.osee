@@ -16,8 +16,8 @@ package org.eclipse.osee.disposition.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
@@ -41,9 +41,16 @@ public class DispoAnnotationData {
    private boolean isDefault;
    private boolean isAnalyze;
    private String resolutionMethodType;
+   private boolean isPairAnnotation = false; //For MCDC to determine if it is a pair annotation
+
+   //These are used on Annotations that are parents to Pair Annotations.
    private String possiblePairs; //Used for MCDC pair coverage, gets all of the possible pairs
-   private String pairs; //Used for MCDC pair coverage, gets all of the satisfied pairs for a Pair Px
-   private Map<Integer, DispoPairAnnotation> pairAnnotations; //Used for MCDC pair coverage
+   private String satisfiedPairs; //Used for MCDC pair coverage, gets all of the satisfied pairs for a Pair Px
+
+   //These are used specifically on Pair Annotations.
+   private Collection<Integer> pairedWith; //Used for MCDC coverage to show what a pair annotation pairs with
+   private int row; //Used for MCDC pair coverage to show this annotations row
+   private boolean isRowCovered;
 
    public DispoAnnotationData() {
       guid = GUID.create();
@@ -114,12 +121,24 @@ public class DispoAnnotationData {
       return possiblePairs;
    }
 
-   public String getPairs() {
-      return pairs;
+   public String getSatisfiedPairs() {
+      return satisfiedPairs;
    }
 
-   public Map<Integer, DispoPairAnnotation> getPairAnnotations() {
-      return pairAnnotations;
+   public boolean getIsPairAnnotation() {
+      return isPairAnnotation;
+   }
+
+   public Collection<Integer> getPairedWith() {
+      return pairedWith;
+   }
+
+   public int getRow() {
+      return row;
+   }
+
+   public boolean getIsRowCovered() {
+      return isRowCovered;
    }
 
    public void setLocationRefs(String locationRefs) {
@@ -197,11 +216,23 @@ public class DispoAnnotationData {
       this.possiblePairs = possiblePairs;
    }
 
-   public void setPairs(String pairs) {
-      this.pairs = pairs;
+   public void setSatisfiedPairs(String satisfiedPairs) {
+      this.satisfiedPairs = satisfiedPairs;
    }
 
-   public void setPairAnnotations(Map<Integer, DispoPairAnnotation> pairAnnotation) {
-      this.pairAnnotations = pairAnnotation;
+   public void setIsPairAnnotation(boolean isPairAnnotation) {
+      this.isPairAnnotation = isPairAnnotation;
+   }
+
+   public void setPairedWith(Collection<Integer> pairedWith) {
+      this.pairedWith = pairedWith;
+   }
+
+   public void setRow(int row) {
+      this.row = row;
+   }
+
+   public void setIsRowCovered(boolean isRowCovered) {
+      this.isRowCovered = isRowCovered;
    }
 }

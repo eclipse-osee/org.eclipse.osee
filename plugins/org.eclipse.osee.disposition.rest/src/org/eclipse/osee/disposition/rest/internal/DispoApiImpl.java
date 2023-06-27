@@ -266,7 +266,7 @@ public class DispoApiImpl implements DispoApi {
       DispoItem dispoItemToEdit = getQuery().findDispoItemById(branch, itemId);
 
       // We will not allow the user to do mass edit of Annotations or discrepancies
-      if (assignUser || dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null && newDispoItem.getDiscrepanciesList() == null) {
+      if (assignUser || dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null) {
          UserId author = getQuery().findUserByName(userName);
          getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
@@ -369,8 +369,8 @@ public class DispoApiImpl implements DispoApi {
          DispoAnnotationData origAnnotation = DispoUtil.getById(annotationsList, annotationId);
          Objects.requireNonNull(origAnnotation, "Original Annotation can not be null");
          int indexOfAnnotation = origAnnotation.getIndex();
-
          boolean needToReconnect = false;
+
          // now if the new Annotation modified the location Reference or resolution then disconnect the annotation and try to match it to discrepancies again
          String newLocationRefs = newAnnotation.getLocationRefs();
          String newResolution = newAnnotation.getResolution();
@@ -395,12 +395,54 @@ public class DispoApiImpl implements DispoApi {
          UserId author = getQuery().findUserByName(userName);
          DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
 
+         modifiedDispoItem.setDiscrepanciesList(discrepanciesList);
          modifiedDispoItem.setAnnotationsList(annotationsList);
          modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
 
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem);
 
          wasUpdated = true;
+
+         //For MCDC, if it is a pair, check to see if the parent should be set to complete, if so set it.
+         if (newAnnotation.getIsPairAnnotation() && newAnnotation.getIsResolutionValid()) {
+            String[] splitPairLoc = newAnnotation.getLocationRefs().split("\\.", 3);
+            if (splitPairLoc.length >= 2) {
+               String parentLoc = String.format("%s.%s", splitPairLoc[0], splitPairLoc[1]);
+               DispoAnnotationData parentAnnotation = DispoUtil.getByLocation(annotationsList, parentLoc);
+               if (!parentAnnotation.getIsResolutionValid()) {
+                  List<String> satisfiedPairs = new ArrayList<>();
+                  String newParentResolutionType = newAnnotation.getResolutionType();
+                  String newParentResolution = newAnnotation.getResolution();
+                  for (int pairNumber : newAnnotation.getPairedWith()) {
+                     String pairLoc = String.format("%s.%d", parentLoc, pairNumber);
+                     DispoAnnotationData pairAnnotation = DispoUtil.getByLocation(annotationsList, pairLoc);
+                     if (pairAnnotation.getIsResolutionValid()) {
+                        if (newAnnotation.getRow() < pairNumber) {
+                           satisfiedPairs.add(String.format("%s/%s", newAnnotation.getRow(), pairNumber));
+                        } else {
+                           satisfiedPairs.add(String.format("%s/%s", pairNumber, newAnnotation.getRow()));
+                        }
+                        if (!pairAnnotation.getResolutionType().equals(newParentResolutionType)) {
+                           newParentResolutionType = newParentResolutionType + "/" + pairAnnotation.getResolutionType();
+                        }
+                        if (!pairAnnotation.getResolution().equals(newParentResolution)) {
+                           newParentResolution = newParentResolution + "/" + pairAnnotation.getResolution();
+                        }
+                     }
+                  }
+                  if (!satisfiedPairs.isEmpty()) {
+                     DispoAnnotationData newParentAnnotation = new DispoAnnotationData();
+                     newParentAnnotation = parentAnnotation;
+                     newParentAnnotation.setResolutionType(newParentResolutionType);
+                     newParentAnnotation.setResolution(newParentResolution);
+                     newParentAnnotation.setSatisfiedPairs(
+                        String.format("Pairs Satisfied By: %s", satisfiedPairs.toString()));
+                     editDispoAnnotation(branch, itemId, parentAnnotation.getGuid(), newParentAnnotation, userName,
+                        isCi);
+                  }
+               }
+            }
+         }
       }
       return wasUpdated;
    }
