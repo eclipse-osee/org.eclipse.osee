@@ -101,7 +101,7 @@ public class DispoConnector {
             if (annotation.getIsDefault()) {
                defaultAnnotations.add(annotation);
             }
-            if (!annotation.isValid()) {
+            if (!annotation.isValid() && !annotation.getLocationRefs().contains(").")) {
                invalidAnnotations.add(annotation);
             }
             if (annotation.getIsAnalyze()) {

@@ -1056,6 +1056,7 @@ public class ExportSet {
       return toReturn;
    }
 
+   //Any changes must also be made in DispoUtil.java
    private String[] coverageMethodList() {
       String[] toReturn = {
          "Test_Script",

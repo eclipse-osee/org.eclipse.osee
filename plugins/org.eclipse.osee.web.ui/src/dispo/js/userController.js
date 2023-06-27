@@ -353,14 +353,17 @@ app.controller('userController', [
 
         $scope.getPairs = function(annotation) {
             if($scope.isCoverage) {
-                var pairs = CoverageFactory.getPairs(annotation);
-                var possiblePairs = CoverageFactory.getPossiblePairs(annotation);
+                var satisfiedPairs = annotation.satisfiedPairs;
+                var possiblePairs = annotation.possiblePairs;
+                var pairedWith = annotation.pairedWith;
                 if(annotation.isTopLevel) {
                     return "-------";
-                } else if (pairs != "" && pairs != null) {
-                    return pairs;
-                } else if(possiblePairs != "" && possiblePairs != null) {
-                    return possiblePairs;
+                } else if (satisfiedPairs) {
+                    return satisfiedPairs;
+                } else if (possiblePairs) {
+                     return possiblePairs;
+                } else if (pairedWith) {
+                     return pairedWith;
                 } else {
                     return "-------";
                 }

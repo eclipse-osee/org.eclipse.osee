@@ -27,7 +27,7 @@ public class Discrepancy {
    private String location; //Code Line
    private String devNotes;
    private boolean isOverloadedCondition; //Used for MCDC pair coverage, vectorcast does not do pairs with over 8 conditions
-   private Map<Integer, DispoPairAnnotation> pairAnnotations; //Used for MCDC pair coverage
+   private Map<Integer, DispoAnnotationData> pairAnnotations; //Used for MCDC pair coverage
 
    public Discrepancy() {
 
@@ -53,7 +53,7 @@ public class Discrepancy {
       return isOverloadedCondition;
    }
 
-   public Map<Integer, DispoPairAnnotation> getPairAnnotations() {
+   public Map<Integer, DispoAnnotationData> getPairAnnotations() {
       return pairAnnotations;
    }
 
@@ -77,7 +77,7 @@ public class Discrepancy {
       this.isOverloadedCondition = isOverloadedCondition;
    }
 
-   public void setPairAnnotations(Map<Integer, DispoPairAnnotation> pairAnnotations) {
+   public void setPairAnnotations(Map<Integer, DispoAnnotationData> pairAnnotations) {
       this.pairAnnotations = pairAnnotations;
    }
 }

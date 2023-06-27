@@ -421,7 +421,7 @@ app.factory('ColumnFactory', function() {
     }, {
         field: 'pairs',
         displayName: 'Pairs',
-        width: '10%',
+        width: '5%',
         cellTemplate: pairsTmpl,
         enableCellEdit: false
     }, {

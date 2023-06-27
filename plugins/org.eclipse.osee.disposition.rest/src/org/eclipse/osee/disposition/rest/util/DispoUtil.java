@@ -59,6 +59,9 @@ public final class DispoUtil {
    }
 
    public static boolean isDefaultAnotation(DispoAnnotationData annotation) {
+      if (annotation.getResolutionType() == null) {
+         return false;
+      }
       return annotation.getResolutionType().equalsIgnoreCase(
          DispoStrings.Test_Unit_Resolution) || annotation.getResolutionType().equalsIgnoreCase(
             DispoStrings.Exception_Handling_Resolution);
@@ -91,6 +94,15 @@ public final class DispoUtil {
    public static DispoAnnotationData getById(List<DispoAnnotationData> list, String id) {
       for (DispoAnnotationData annotation : list) {
          if (annotation.getGuid() != null && annotation.getGuid().equals(id)) {
+            return annotation;
+         }
+      }
+      return null;
+   }
+
+   public static DispoAnnotationData getByLocation(List<DispoAnnotationData> list, String location) {
+      for (DispoAnnotationData annotation : list) {
+         if (annotation.getLocationRefs() != null && annotation.getLocationRefs().equals(location)) {
             return annotation;
          }
       }
@@ -397,5 +409,30 @@ public final class DispoUtil {
          }
       }
       return missingDiscrepanciesLoc;
+   }
+
+   //Any changes must also be made in ExportSet.java. This version includes only valid types, excluding Modify_* types)
+   private static List<String> getValidCoverageTypes() {
+      List<String> validCoverageTypes = new ArrayList<>();
+      validCoverageTypes.add("Test_Script");
+      validCoverageTypes.add("Defensive_Programming");
+      validCoverageTypes.add("Exception_Handling");
+      validCoverageTypes.add("Analysis");
+      validCoverageTypes.add("Deactivated_IN_AIR_OR_ENG_ON");
+      validCoverageTypes.add("Deactivated_EXT_ATE_PRESENT");
+      validCoverageTypes.add("Deactivated_J4_Connector");
+      validCoverageTypes.add("Deactivated_Compile_Time");
+      validCoverageTypes.add("Defensive_Programming/Test_Script");
+      validCoverageTypes.add("Exception_Handling/Test_Script");
+      validCoverageTypes.add("Analysis/Test_Script");
+      validCoverageTypes.add("Deactivated_EXT_ATE_PRESENT/Test_Script");
+      validCoverageTypes.add("Deactivated_IN_AIR_OR_ENG_ON/Test_Script");
+      validCoverageTypes.add("Deactivated_J4_Connector/Test_Script");
+      validCoverageTypes.add("Deactivated_Compile_Time/Test_Script");
+      return validCoverageTypes;
+   }
+
+   public static boolean isResolutionValid(String resolution) {
+      return getValidCoverageTypes().contains(resolution);
    }
 }
