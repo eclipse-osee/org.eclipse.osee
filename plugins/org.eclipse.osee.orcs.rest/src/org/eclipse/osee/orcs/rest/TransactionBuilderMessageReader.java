@@ -121,7 +121,7 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
             }
 
             readAttributes(tx, artifactJson, artifact, "attributes");
-            readrelations(tx, artifactsByName, artifactJson, artifact);
+            readrelations(tx, artifactsByName, artifactsByKeys, artifactJson, artifact);
          }
       }
    }
@@ -264,13 +264,13 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       }
    }
 
-   private void readrelations(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName, JsonNode artifactJson,
-      ArtifactToken artifact) {
+   private void readrelations(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName,
+      Map<String, ArtifactToken> artifactsByKey, JsonNode artifactJson, ArtifactToken artifact) {
       if (artifactJson.has("relations")) {
          for (JsonNode relation : artifactJson.get("relations")) {
             RelationTypeToken relationType = getRelationType(relation);
             if (relation.isTextual() || relation.isArray()) {
-               relate(tx, artifactsByName, relation, relationType, artifact, RelationSide.SIDE_A, "",
+               relate(tx, artifactsByName, artifactsByKey, relation, relationType, artifact, RelationSide.SIDE_A, "",
                   ArtifactId.SENTINEL, "end");
             } else if (relation.isObject()) {
                String rationale = relation.has("rationale") ? relation.get("rationale").asText() : "";
@@ -279,12 +279,12 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
                String afterArtifact = relation.has("afterArtifact") ? relation.get("afterArtifact").asText() : "end";
 
                if (relation.has("sideA")) {
-                  relate(tx, artifactsByName, relation.get("sideA"), relationType, artifact, RelationSide.SIDE_B,
-                     rationale, relatedArtifact, afterArtifact);
+                  relate(tx, artifactsByName, artifactsByKey, relation.get("sideA"), relationType, artifact,
+                     RelationSide.SIDE_B, rationale, relatedArtifact, afterArtifact);
                }
                if (relation.has("sideB")) { //both sides are allowed for the same relation entry
-                  relate(tx, artifactsByName, relation.get("sideB"), relationType, artifact, RelationSide.SIDE_A,
-                     rationale, relatedArtifact, afterArtifact);
+                  relate(tx, artifactsByName, artifactsByKey, relation.get("sideB"), relationType, artifact,
+                     RelationSide.SIDE_A, rationale, relatedArtifact, afterArtifact);
                }
             } else {
                throw new OseeStateException("Json Node of unexpected type %s", relation.getNodeType());
@@ -293,16 +293,16 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       }
    }
 
-   private void relate(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName, JsonNode relations,
-      RelationTypeToken relationType, ArtifactToken artifact, RelationSide side, String rationale,
-      ArtifactId relatedArtifact, String afterArtifact) {
+   private void relate(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName,
+      Map<String, ArtifactToken> artifactsByKey, JsonNode relations, RelationTypeToken relationType,
+      ArtifactToken artifact, RelationSide side, String rationale, ArtifactId relatedArtifact, String afterArtifact) {
       if (relations.isTextual()) {
-         relateOne(tx, artifactsByName, relations, relationType, artifact, side, rationale, relatedArtifact,
-            afterArtifact);
+         relateOne(tx, artifactsByName, artifactsByKey, relations, relationType, artifact, side, rationale,
+            relatedArtifact, afterArtifact);
       } else if (relations.isArray()) {
          for (JsonNode name : relations) {
-            relateOne(tx, artifactsByName, name, relationType, artifact, side, rationale, relatedArtifact,
-               afterArtifact);
+            relateOne(tx, artifactsByName, artifactsByKey, name, relationType, artifact, side, rationale,
+               relatedArtifact, afterArtifact);
          }
       } else {
          throw new OseeStateException("Json Node of unexpected type %s", relations.getNodeType());
@@ -327,21 +327,25 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       }
    }
 
-   private void relateOne(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName, JsonNode relation,
-      RelationTypeToken relationType, ArtifactToken artifact, RelationSide side, String rationale,
-      ArtifactId relatedArtifact, String afterArtifact) {
+   private void relateOne(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName,
+      Map<String, ArtifactToken> artifactsByKey, JsonNode relation, RelationTypeToken relationType,
+      ArtifactToken artifact, RelationSide side, String rationale, ArtifactId relatedArtifact, String afterArtifact) {
       ArtifactId otherArtifact;
       if (Strings.isNumeric(relation.asText(""))) {
          otherArtifact = ArtifactId.valueOf(relation.asLong());
       } else {
-         otherArtifact = getArtifactByName(tx, artifactsByName, relation.asText());
+         otherArtifact = getArtifactByName(tx, artifactsByName, artifactsByKey, relation.asText());
       }
       relate(tx, relationType, artifact, side, rationale, otherArtifact, relatedArtifact, afterArtifact);
    }
 
    private ArtifactToken getArtifactByName(TransactionBuilder tx, Map<String, ArtifactToken> artifactsByName,
-      String name) {
+      Map<String, ArtifactToken> artifactsByKey, String name) {
       ArtifactToken artifact = artifactsByName.get(name);
+      if (artifact != null) {
+         return artifact;
+      }
+      artifact = artifactsByKey.get(name);
       if (artifact != null) {
          return artifact;
       }
