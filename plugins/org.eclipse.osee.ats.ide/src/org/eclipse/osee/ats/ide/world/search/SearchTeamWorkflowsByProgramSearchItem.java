@@ -66,7 +66,7 @@ public class SearchTeamWorkflowsByProgramSearchItem extends WorldUISearchItem {
       if (!includeCompletedCancelled) {
          data.setStateTypes(Arrays.asList(StateType.Working));
       }
-      arts.addAll(Collections.castAll(AtsApiService.get().getQueryService().getArtifacts(data, null)));
+      arts.addAll(Collections.castAll(AtsApiService.get().getQueryService().getArtifacts(data, null).getArtifacts()));
 
       return arts;
    }

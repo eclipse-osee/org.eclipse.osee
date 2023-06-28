@@ -90,6 +90,7 @@ import org.eclipse.osee.ats.ide.world.search.SearchTeamWorkflowsByProgramSearchI
 import org.eclipse.osee.ats.ide.world.search.ShowOpenWorkflowsByReviewType;
 import org.eclipse.osee.ats.ide.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.ats.ide.world.search.WorkingCompletePeerReviewReportSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -529,6 +530,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          REVIEW));
       items.add(new NewPeerToPeerReviewItem());
       items.add(new GenerateReviewParticipationReport());
+      items.add(new SearchNavigateItem(new WorkingCompletePeerReviewReportSearchItem(), REVIEW));
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
          items.add(new XNavigateItemAction(new ValidatePeerDefectsAction(), AtsImage.PEER_REVIEW, REVIEW));
       }

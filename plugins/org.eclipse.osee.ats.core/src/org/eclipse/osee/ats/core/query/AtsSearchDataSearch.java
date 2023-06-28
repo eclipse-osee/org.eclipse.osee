@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
@@ -27,8 +28,10 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AttributeValue;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,14 +45,16 @@ public class AtsSearchDataSearch {
    private final AtsApi atsApi;
    private final ISearchCriteriaProvider criteriaProvider;
    private AtsUser userById;
+   private final XResultData rd;
 
    public AtsSearchDataSearch(AtsSearchData data, AtsApi atsApi, ISearchCriteriaProvider criteriaProvider) {
       this.atsApi = atsApi;
       this.criteriaProvider = criteriaProvider;
       this.data = data.copy();
+      rd = new XResultData();
    }
 
-   public Collection<ArtifactToken> performSearch() {
+   public AtsSearchDataResults performSearch() {
 
       Pair<IAtsQuery, Boolean> result = createAtsQuery();
       boolean assigneesWithCompletedOrCancelled = result.getSecond();
@@ -69,7 +74,8 @@ public class AtsSearchDataSearch {
          setUserType(AtsSearchUserType.AssigneeWas, query);
          results.addAll(Collections.castAll(query2.getResultArtifacts().getList()));
       }
-      return results;
+      List<ArtifactToken> arts = Collections.castAll(AtsObjects.getArtifacts(results));
+      return new AtsSearchDataResults(arts, rd);
    }
 
    public void setUserType(AtsSearchUserType userType, IAtsQuery query) {

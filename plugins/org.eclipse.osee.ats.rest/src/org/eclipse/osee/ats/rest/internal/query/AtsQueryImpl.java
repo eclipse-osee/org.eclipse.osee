@@ -120,7 +120,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<ArtifactId> getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
+   public List<ArtifactId> getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(
+      List<AtsAttributeQuery> teamWorkflowAttr) {
       AtsQueryImpl search = new AtsQueryImpl(atsApi, orcsApi);
       search.isOfType(AtsArtifactTypes.TeamWorkflow);
       if (teamDefIds != null && !teamDefIds.isEmpty()) {

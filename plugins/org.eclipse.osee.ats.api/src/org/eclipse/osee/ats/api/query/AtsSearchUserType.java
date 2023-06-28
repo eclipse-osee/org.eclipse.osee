@@ -33,4 +33,28 @@ public enum AtsSearchUserType {
       }
    }
 
+   public boolean isNone() {
+      return AtsSearchUserType.None.equals(this);
+   }
+
+   public boolean isAssignee() {
+      return AtsSearchUserType.Assignee.equals(this);
+   }
+
+   public boolean isOriginated() {
+      return AtsSearchUserType.Originated.equals(this);
+   }
+
+   public boolean isFavorites() {
+      return AtsSearchUserType.Favorites.equals(this);
+   }
+
+   public boolean isSubscribed() {
+      return AtsSearchUserType.Subscribed.equals(this);
+   }
+
+   public boolean isAssigneeWas() {
+      return AtsSearchUserType.AssigneeWas.equals(this);
+   }
+
 }

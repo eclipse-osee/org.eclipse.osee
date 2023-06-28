@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.rest.internal.world;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -22,11 +21,13 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.ResultRow;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -49,14 +50,14 @@ public class AtsWorldResultRowOperation {
          rows.getRd().error("CustomizeData can not be null or empty.");
       }
 
-      Collection<ArtifactToken> artifacts = getArtifacts();
+      AtsSearchDataResults results = getArtifacts();
       List<XViewerColumn> showCols = new ArrayList<>();
       for (XViewerColumn col : atsSearchData.getCustomizeData().getColumnData().getColumns()) {
          if (col.isShow()) {
             showCols.add(col);
          }
       }
-      for (ArtifactToken art : artifacts) {
+      for (ArtifactToken art : results.getArtifacts()) {
          ResultRow row = new ResultRow(art.getId(), atsApi.getAtsBranch().getId());
          rows.add(row);
          for (XViewerColumn col : showCols) {
@@ -68,7 +69,7 @@ public class AtsWorldResultRowOperation {
       return rows;
    }
 
-   private Collection<ArtifactToken> getArtifacts() {
+   private AtsSearchDataResults getArtifacts() {
       if (teamWfsInState) {
          StringBuilder sb = new StringBuilder("\'");
          for (Long teamDefId : atsSearchData.getTeamDefIds()) {
@@ -84,7 +85,8 @@ public class AtsWorldResultRowOperation {
          String stateType = sb.toString().replaceFirst(",'$", "");
          String query = String.format(getQuery(), teamIds, stateType);
          List<ArtifactId> artIds = atsApi.getQueryService().getArtifactIdsFromQuery(query);
-         return atsApi.getQueryService().getArtifacts(artIds, atsApi.getAtsBranch());
+         return new AtsSearchDataResults(atsApi.getQueryService().getArtifacts(artIds, atsApi.getAtsBranch()),
+            XResultData.OK_STATUS);
       } else {
          return atsApi.getQueryService().getArtifacts(atsSearchData, null);
       }

@@ -166,7 +166,8 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) {
+   public IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values,
+      QueryOption... queryOptions) {
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }
