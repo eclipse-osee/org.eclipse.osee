@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OseeDb;
@@ -60,11 +60,11 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    @Override
    public void writeCommonTableExpression(AbstractSqlWriter writer) {
       if (!OptionsUtil.getFollowSearchInProgress(writer.getOptions())) {
-         Collection<AttributeTypeId> types = criteria.getTypes();
+         Collection<AttributeTypeToken> types = criteria.getTypes();
          AbstractJoinQuery joinQuery = null;
          if (!criteria.isIncludeAllTypes() && types.size() > 1) {
-            Set<AttributeTypeId> typeIds = new HashSet<>();
-            for (AttributeTypeId type : types) {
+            Set<AttributeTypeToken> typeIds = new HashSet<>();
+            for (AttributeTypeToken type : types) {
                typeIds.add(type);
             }
             joinQuery = writer.writeJoin(typeIds);

@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,14 +36,14 @@ public class AttributeTypePredicateHandler implements PredicateHandler {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.ATTRIBUTE_TYPE);
       }
       List<String> typeParameters = predicate.getTypeParameters();
-      Collection<AttributeTypeId> attributeTypes = PredicateHandlerUtil.getAttributeTypes(typeParameters);
+      Collection<AttributeTypeToken> attributeTypes = PredicateHandlerUtil.getAttributeTypes(typeParameters);
       Collection<String> values = predicate.getValues();
       Conditions.checkNotNull(values, "values");
 
       if (values.size() == 1) {
          builder = builder.and(attributeTypes, values.iterator().next(), predicate.getOptions());
       } else {
-         for (AttributeTypeId type : attributeTypes) {
+         for (AttributeTypeToken type : attributeTypes) {
             builder = builder.and(type, values, predicate.getOptions());
          }
       }

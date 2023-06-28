@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface IAtsConfigQuery {
 
-   IAtsConfigQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption);
+   IAtsConfigQuery andAttr(AttributeTypeToken attributeType, String value, QueryOption... queryOption);
 
    <T extends IAtsConfigObject> ResultSet<T> getConfigObjectResultSet();
 
@@ -41,7 +41,7 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery isOfType(ArtifactTypeToken... artifactType);
 
-   IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions);
+   IAtsConfigQuery andAttr(AttributeTypeToken attributeType, Collection<String> values, QueryOption... queryOptions);
 
    IAtsConfigQuery andId(ArtifactId id);
 

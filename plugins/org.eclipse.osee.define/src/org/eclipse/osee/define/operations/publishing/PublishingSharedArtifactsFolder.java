@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
@@ -127,7 +128,7 @@ public abstract class PublishingSharedArtifactsFolder {
             BranchId           publishingBranchId,
             String             sharedFolderDescription,
             ArtifactToken      sharedFolderArtifactToken,
-            AttributeTypeId    childAttributeTypeId
+            AttributeTypeToken    childAttributeTypeId
          ) {
 
       Objects.requireNonNull( publishingUtils,           "PublishingSharedArtifactsFolder::create, parameter \"publishingUtils\" is null."           );
@@ -252,7 +253,7 @@ public abstract class PublishingSharedArtifactsFolder {
             String             sharedFolderDescription,
             ArtifactToken      sharedFolderArtifactToken,
             ArtifactTypeToken  childArtifactTypeToken,
-            AttributeTypeId    childAttributeTypeId
+            AttributeTypeToken    childAttributeTypeId
          ) {
 
       Objects.requireNonNull( publishingUtils,           "PublishingSharedArtifactsFolder::create, parameter \"publishingUtils\" is null."           );

@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeJoin;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -47,6 +48,11 @@ public interface OrcsTokenService {
     * @return singleton full attribute type token with the given id or throw OseeTypeDoesNotExist if not found
     */
    AttributeTypeGeneric<?> getAttributeType(Long id);
+
+   /**
+    * @return singleton full attribute type token with the given id or throw OseeTypeDoesNotExist if not found
+    */
+   AttributeTypeGeneric<?> getAttributeType(AttributeTypeId id);
 
    /**
     * @return singleton full attribute type token with the given name or throw OseeTypeDoesNotExist if not found

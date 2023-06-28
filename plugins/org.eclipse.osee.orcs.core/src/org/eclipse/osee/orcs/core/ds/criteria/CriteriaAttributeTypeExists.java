@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -24,13 +24,13 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaAttributeTypeExists extends Criteria {
 
-   private final Collection<AttributeTypeId> attributeTypes;
+   private final Collection<AttributeTypeToken> attributeTypes;
 
-   public CriteriaAttributeTypeExists(Collection<AttributeTypeId> attributeTypes) {
+   public CriteriaAttributeTypeExists(Collection<AttributeTypeToken> attributeTypes) {
       this.attributeTypes = attributeTypes;
    }
 
-   public Collection<AttributeTypeId> getTypes() {
+   public Collection<AttributeTypeToken> getTypes() {
       return attributeTypes;
    }
 

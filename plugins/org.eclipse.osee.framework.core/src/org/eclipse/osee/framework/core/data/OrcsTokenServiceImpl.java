@@ -89,6 +89,11 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public AttributeTypeGeneric<?> getAttributeType(AttributeTypeId id) {
+      return getAttributeType(id.getId());
+   }
+
+   @Override
    public AttributeTypeGeneric<?> getAttributeType(String name) {
       for (AttributeTypeGeneric<?> attributeType : attributeTypes.values()) {
          if (attributeType.getName().equals(name)) {

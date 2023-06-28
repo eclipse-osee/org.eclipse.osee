@@ -14,7 +14,7 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -27,12 +27,12 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaFollowSearch extends Criteria {
 
-   private final Collection<AttributeTypeId> attributeTypes;
+   private final Collection<AttributeTypeToken> attributeTypes;
    private final Collection<String> values;
    private final QueryOption[] options;
    private final boolean includeAllTypes;
 
-   public CriteriaFollowSearch(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+   public CriteriaFollowSearch(boolean includeAllTypes, Collection<AttributeTypeToken> attributeTypes, Collection<String> values, QueryOption... options) {
       super();
       this.includeAllTypes = includeAllTypes;
       this.attributeTypes = attributeTypes;
@@ -41,7 +41,7 @@ public class CriteriaFollowSearch extends Criteria {
 
    }
 
-   public CriteriaFollowSearch(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
+   public CriteriaFollowSearch(boolean includeAllTypes, Collection<AttributeTypeToken> attributeTypes, String value, QueryOption... options) {
       this(includeAllTypes, attributeTypes, java.util.Collections.singleton(value), options);
    }
 
@@ -49,7 +49,7 @@ public class CriteriaFollowSearch extends Criteria {
       return includeAllTypes;
    }
 
-   public Collection<AttributeTypeId> getTypes() {
+   public Collection<AttributeTypeToken> getTypes() {
       return attributeTypes;
    }
 

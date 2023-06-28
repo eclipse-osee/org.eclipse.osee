@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -36,25 +36,25 @@ public class CriteriaAttributeRaw extends Criteria {
       Arrays.asList(QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE, QueryOption.CASE__MATCH);
 
-   private final Collection<AttributeTypeId> attributeTypes;
+   private final Collection<AttributeTypeToken> attributeTypes;
    private final Collection<String> values;
    private final List<QueryOption> options;
 
-   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values, List<QueryOption> options) {
+   public CriteriaAttributeRaw(Collection<AttributeTypeToken> attributeTypes, Collection<String> values, List<QueryOption> options) {
       this.attributeTypes = attributeTypes;
       this.values = values;
       this.options = options;
    }
 
-   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+   public CriteriaAttributeRaw(Collection<AttributeTypeToken> attributeTypes, Collection<String> values, QueryOption... options) {
       this(attributeTypes, values, Arrays.asList(options));
    }
 
-   public CriteriaAttributeRaw(Collection<AttributeTypeId> attributeTypes, Collection<String> values) {
+   public CriteriaAttributeRaw(Collection<AttributeTypeToken> attributeTypes, Collection<String> values) {
       this(attributeTypes, values, java.util.Collections.emptyList());
    }
 
-   public Collection<AttributeTypeId> getAttributeTypes() {
+   public Collection<AttributeTypeToken> getAttributeTypes() {
       return attributeTypes;
    }
 

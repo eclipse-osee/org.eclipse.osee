@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -27,18 +27,19 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
  */
 public class PredicateHandlerUtil {
 
-   public static Collection<AttributeTypeId> getAttributeTypes(Collection<String> types) {
-      Collection<AttributeTypeId> attrTypes = new LinkedHashSet<>();
+   public static Collection<AttributeTypeToken> getAttributeTypes(Collection<String> types) {
+      Collection<AttributeTypeToken> attrTypes = new LinkedHashSet<>();
       for (String value : types) {
          long uuid = parseUuid(value);
          if (uuid != -1L) {
-            attrTypes.add(AttributeTypeId.valueOf(uuid));
+            attrTypes.add(AttributeTypeToken.valueOf(uuid, ""));
          }
       }
       return attrTypes;
    }
 
-   public static Collection<RelationTypeToken> getIRelationTypes(Collection<String> rels, OrcsTokenService tokenService) {
+   public static Collection<RelationTypeToken> getIRelationTypes(Collection<String> rels,
+      OrcsTokenService tokenService) {
       Collection<RelationTypeToken> types = new LinkedHashSet<>();
       for (String value : rels) {
          long longUuid = parseUuid(value);
@@ -49,7 +50,8 @@ public class PredicateHandlerUtil {
       return types;
    }
 
-   public static Collection<RelationTypeSide> getRelationTypeSides(Collection<String> rels, OrcsTokenService orcsTokenService) {
+   public static Collection<RelationTypeSide> getRelationTypeSides(Collection<String> rels,
+      OrcsTokenService orcsTokenService) {
       Collection<RelationTypeSide> relSides = new LinkedHashSet<>();
       for (String value : rels) {
          char sideChar = value.charAt(0);

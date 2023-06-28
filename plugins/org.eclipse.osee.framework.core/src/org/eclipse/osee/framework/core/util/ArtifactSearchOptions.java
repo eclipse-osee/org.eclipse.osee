@@ -20,13 +20,13 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 public class ArtifactSearchOptions {
    private List<ArtifactId> artIds = new ArrayList<>();
    private List<ArtifactTypeToken> artTypeIds = new ArrayList<>();
-   private List<AttributeTypeId> attrTypeIds = new ArrayList<>();
+   private List<AttributeTypeToken> attrTypeIds = new ArrayList<>();
    private String searchString;
    private ApplicabilityId applic = ApplicabilityId.SENTINEL;
    private ArtifactId view = ArtifactId.SENTINEL;
@@ -38,7 +38,7 @@ public class ArtifactSearchOptions {
    public ArtifactSearchOptions() {
    };
 
-   public ArtifactSearchOptions(ArtifactId view, ApplicabilityId applic, List<ArtifactId> artIds, List<ArtifactTypeToken> artTypeIds, List<AttributeTypeId> attrTypeIds, String searchString, boolean caseSensitive, boolean matchWordOrder, boolean exactMatch, DeletionFlag includeDeleted) {
+   public ArtifactSearchOptions(ArtifactId view, ApplicabilityId applic, List<ArtifactId> artIds, List<ArtifactTypeToken> artTypeIds, List<AttributeTypeToken> attrTypeIds, String searchString, boolean caseSensitive, boolean matchWordOrder, boolean exactMatch, DeletionFlag includeDeleted) {
       super();
       this.setView(view);
       this.setApplic(applic);
@@ -60,7 +60,7 @@ public class ArtifactSearchOptions {
       return artTypeIds;
    }
 
-   public List<AttributeTypeId> getAttrTypeIds() {
+   public List<AttributeTypeToken> getAttrTypeIds() {
       return attrTypeIds;
    }
 
@@ -80,7 +80,7 @@ public class ArtifactSearchOptions {
       this.artTypeIds = artTypeIds;
    }
 
-   public void setAttrTypeIds(List<AttributeTypeId> attrTypeIds) {
+   public void setAttrTypeIds(List<AttributeTypeToken> attrTypeIds) {
       this.attrTypeIds = attrTypeIds;
    }
 

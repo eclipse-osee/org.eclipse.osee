@@ -18,7 +18,7 @@ import static org.mockito.Mockito.doReturn;
 import java.util.ArrayList;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -80,7 +80,7 @@ public class SearchCriteriaTest {
    public void notTaggedList() {
       assertEquals(false, tokenService.getAttributeType(CoreAttributeTypes.FavoriteBranch.getId()).isTaggable());
 
-      ArrayList<AttributeTypeId> types = new ArrayList<>();
+      ArrayList<AttributeTypeToken> types = new ArrayList<>();
       types.add(CoreAttributeTypes.Developmental);
       types.add(CoreAttributeTypes.FavoriteBranch);
 

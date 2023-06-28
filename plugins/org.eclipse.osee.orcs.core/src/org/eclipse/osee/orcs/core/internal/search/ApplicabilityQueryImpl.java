@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -577,8 +576,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
        * Find artifacts which use the applicability; using Set to prevent duplicates
        */
       Set<ArtifactToken> artSet = new HashSet<>();
-      //unfortunately the .and which takes List<AttributeTypeId> cannot accept a List<AttributeTypeToken>
-      List<AttributeTypeId> attrTypes = attrs.stream().map(a -> (AttributeTypeId) (a)).collect(Collectors.toList());
+      //unfortunately the .and which takes List<AttributeTypeToken> cannot accept a List<AttributeTypeToken>
+      List<AttributeTypeToken> attrTypes = attrs.stream().map(a -> (a)).collect(Collectors.toList());
       artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch, appToken).asArtifactTokens());
       for (String str : searchStrings) {
 

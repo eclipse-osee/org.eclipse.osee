@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.core.query;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 
 /**
@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
  */
 public class AtsAttributeQuery {
 
-   private AttributeTypeId attrType;
+   private AttributeTypeToken attrType;
    private Collection<String> values;
    private QueryOption[] queryOption;
 
-   public AtsAttributeQuery(AttributeTypeId attrType, Collection<String> values, QueryOption... queryOption) {
+   public AtsAttributeQuery(AttributeTypeToken attrType, Collection<String> values, QueryOption... queryOption) {
       this.attrType = attrType;
       this.values = values;
       if (queryOption.length > 0) {
@@ -37,16 +37,16 @@ public class AtsAttributeQuery {
       }
    }
 
-   public AtsAttributeQuery(AttributeTypeId attrType, String value, QueryOption... queryOption) {
+   public AtsAttributeQuery(AttributeTypeToken attrType, String value, QueryOption... queryOption) {
       this(attrType, Arrays.asList(value), queryOption);
       this.setQueryOption(queryOption);
    }
 
-   public AttributeTypeId getAttrType() {
+   public AttributeTypeToken getAttrType() {
       return attrType;
    }
 
-   public void setAttrType(AttributeTypeId attrType) {
+   public void setAttrType(AttributeTypeToken attrType) {
       this.attrType = attrType;
    }
 

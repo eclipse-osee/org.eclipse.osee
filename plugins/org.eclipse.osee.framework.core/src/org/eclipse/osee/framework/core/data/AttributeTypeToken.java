@@ -106,6 +106,10 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return valueOf(Long.valueOf(id), Named.SENTINEL);
    }
 
+   public static AttributeTypeToken valueOf(Long id) {
+      return valueOf(id, Named.SENTINEL);
+   }
+
    static AttributeTypeToken valueOf(int id, String name) {
       return valueOf(Long.valueOf(id), name, "");
    }
@@ -119,11 +123,13 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
          TaggerTypeToken.SENTINEL);
    }
 
-   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
+   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType,
+      String description, TaggerTypeToken taggerType, String fileExtension) {
       return new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension);
    }
 
-   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType, String description, String fileExtension) {
+   static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType,
+      String description, String fileExtension) {
       return createString(id, namespace, name, mediaType, description, determineTaggerType(mediaType), fileExtension);
    }
 

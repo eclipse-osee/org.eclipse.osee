@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -136,9 +135,9 @@ public interface QueryBuilder extends Query {
 
    boolean areApplicabilityTokensIncluded();
 
-   QueryBuilder setOrderByAttribute(AttributeTypeId attributeTypeId);
+   QueryBuilder setOrderByAttribute(AttributeTypeToken AttributeTypeToken);
 
-   AttributeTypeId orderByAttribute();
+   AttributeTypeToken orderByAttribute();
 
    /**
     * Used to set the order mechanism i.e. RELATION, ATTRIBUTE, or RELATION AND ATTRIBUTE It is advisable instead to use
@@ -162,10 +161,10 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder isOnPage(long pageNum, long pageSize);
 
-   QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values,
+   QueryBuilder followSearch(Collection<AttributeTypeToken> attributeTypes, Collection<String> values,
       QueryOption... options);
 
-   QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options);
+   QueryBuilder followSearch(Collection<AttributeTypeToken> attributeTypes, String value, QueryOption... options);
 
    QueryBuilder andId(ArtifactId id);
 
@@ -228,12 +227,12 @@ public interface QueryBuilder extends Query {
    /**
     * Search criteria that checks for the existence of an attribute types.
     */
-   QueryBuilder andExists(Collection<AttributeTypeId> attributeTypes);
+   QueryBuilder andExists(Collection<AttributeTypeToken> attributeTypes);
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   QueryBuilder andNotExists(Collection<AttributeTypeId> attributeTypes);
+   QueryBuilder andNotExists(Collection<AttributeTypeToken> attributeTypes);
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
@@ -283,21 +282,21 @@ public interface QueryBuilder extends Query {
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options);
+   QueryBuilder and(AttributeTypeToken attributeType, Collection<String> values, QueryOption... options);
 
    /**
     * Search criteria that finds an attribute of the given type with its current value relative to the given value.
     */
-   QueryBuilder and(AttributeTypeId attributeType, String value, QueryOption... options);
+   QueryBuilder and(AttributeTypeToken attributeType, String value, QueryOption... options);
 
    /**
     * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options);
+   QueryBuilder and(Collection<AttributeTypeToken> attributeTypes, String value, QueryOption... options);
 
-   QueryBuilder and(Collection<AttributeTypeId> attributeTypes, Collection<String> value, QueryOption... options);
+   QueryBuilder and(Collection<AttributeTypeToken> attributeTypes, Collection<String> value, QueryOption... options);
 
    /**
     * Search for related artifacts
@@ -320,7 +319,7 @@ public interface QueryBuilder extends Query {
     */
    QueryBuilder andIsHeirarchicalRootArtifact();
 
-   QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value);
+   QueryBuilder andAttributeIs(AttributeTypeToken attributeType, String value);
 
    QueryBuilder follow(RelationTypeSide relationTypeSide);
 

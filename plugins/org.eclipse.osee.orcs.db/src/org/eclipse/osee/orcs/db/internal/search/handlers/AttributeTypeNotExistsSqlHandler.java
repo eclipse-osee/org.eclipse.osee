@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -50,7 +50,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      Collection<AttributeTypeId> types = criteria.getTypes();
+      Collection<AttributeTypeToken> types = criteria.getTypes();
       writer.write("NOT EXISTS (SELECT 1 FROM ");
       String attAlias = writer.writeTable(OseeDb.ATTRIBUTE_TABLE);
       writer.write(", ");
@@ -59,8 +59,8 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       writer.writeEqualsAnd(attAlias, artAlias, "art_id");
 
       if (types.size() > 1) {
-         Set<AttributeTypeId> typeIds = new HashSet<>();
-         for (AttributeTypeId type : types) {
+         Set<AttributeTypeToken> typeIds = new HashSet<>();
+         for (AttributeTypeToken type : types) {
             typeIds.add(type);
          }
          joinQuery = writer.writeJoin(typeIds);

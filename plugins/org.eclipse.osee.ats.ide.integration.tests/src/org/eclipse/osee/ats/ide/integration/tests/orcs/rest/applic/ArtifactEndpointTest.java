@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable.ArtifactReadableImpl;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -100,7 +100,7 @@ public class ArtifactEndpointTest {
       ArtifactSearchOptions options1 = new ArtifactSearchOptions();
       List<ArtifactTypeToken> artTypes = options1.getArtTypeIds();
       artTypes.add(CoreArtifactTypes.Folder);
-      List<AttributeTypeId> attrTypes = options1.getAttrTypeIds();
+      List<AttributeTypeToken> attrTypes = options1.getAttrTypeIds();
       attrTypes.add(CoreAttributeTypes.Name);
 
       options1.setSearchString(newArtifact.getName());

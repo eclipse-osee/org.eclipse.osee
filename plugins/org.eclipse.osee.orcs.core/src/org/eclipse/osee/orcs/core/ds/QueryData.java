@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
@@ -327,7 +326,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, Collection<String> values,
+   public QueryBuilder followSearch(Collection<AttributeTypeToken> attributeTypes, Collection<String> values,
       QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       OptionsUtil.setFollowSearchInProgress(getOptions(), true);
@@ -335,7 +334,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder followSearch(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
+   public QueryBuilder followSearch(Collection<AttributeTypeToken> attributeTypes, String value,
+      QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       OptionsUtil.setFollowSearchInProgress(getOptions(), true);
       return addAndCheck(new CriteriaFollowSearch(isIncludeAllTypes, attributeTypes, value, options));
@@ -346,7 +346,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       this.tableoptions = tableOptions;
    }
 
-   public AttributeTypeId getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
@@ -479,7 +479,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andExists(Collection<AttributeTypeId> attributeTypes) {
+   public QueryBuilder andExists(Collection<AttributeTypeToken> attributeTypes) {
       return addAndCheck(new CriteriaAttributeTypeExists(attributeTypes));
    }
 
@@ -494,7 +494,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder andNotExists(Collection<AttributeTypeId> attributeTypes) {
+   public QueryBuilder andNotExists(Collection<AttributeTypeToken> attributeTypes) {
       return addAndCheck(new CriteriaAttributeTypeNotExists(attributeTypes));
    }
 
@@ -519,27 +519,27 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) {
+   public QueryBuilder and(AttributeTypeToken attributeType, Collection<String> values, QueryOption... options) {
       return and(Collections.singleton(attributeType), values, options);
    }
 
    @Override
-   public QueryBuilder andAttributeIs(AttributeTypeId attributeType, String value) {
+   public QueryBuilder andAttributeIs(AttributeTypeToken attributeType, String value) {
       return addAndCheck(new CriteriaAttributeRaw(Collections.singleton(attributeType), Collections.singleton(value)));
    }
 
    @Override
-   public QueryBuilder and(AttributeTypeId attributeType, String value, QueryOption... options) {
+   public QueryBuilder and(AttributeTypeToken attributeType, String value, QueryOption... options) {
       return and(Collections.singleton(attributeType), Collections.singleton(value), options);
    }
 
    @Override
-   public QueryBuilder and(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
+   public QueryBuilder and(Collection<AttributeTypeToken> attributeTypes, String value, QueryOption... options) {
       return and(attributeTypes, Collections.singleton(value), options);
    }
 
    @Override
-   public QueryBuilder and(Collection<AttributeTypeId> attributeTypes, Collection<String> values,
+   public QueryBuilder and(Collection<AttributeTypeToken> attributeTypes, Collection<String> values,
       QueryOption... options) {
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       return addAndCheck(
@@ -901,19 +901,19 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder setOrderByAttribute(AttributeTypeId attributeTypeId) {
+   public QueryBuilder setOrderByAttribute(AttributeTypeToken attributeTypeToken) {
       if (orderMechanism().equals("RELATION")) {
          setOrderMechanism("RELATION AND ATTRIBUTE");
       } else {
          setOrderMechanism("ATTRIBUTE");
       }
-      OptionsUtil.setOrderByAttribute(getOptions(), attributeTypeId);
-      return addAndCheck(new CriteriaAttributeSort(attributeTypeId));
+      OptionsUtil.setOrderByAttribute(getOptions(), attributeTypeToken);
+      return addAndCheck(new CriteriaAttributeSort(attributeTypeToken));
    }
 
    @Override
-   public AttributeTypeId orderByAttribute() {
-      return AttributeTypeId.valueOf(OptionsUtil.getOrderByAttribute(getOptions()));
+   public AttributeTypeToken orderByAttribute() {
+      return AttributeTypeToken.valueOf(OptionsUtil.getOrderByAttribute(getOptions()), "");
    }
 
    @Override
