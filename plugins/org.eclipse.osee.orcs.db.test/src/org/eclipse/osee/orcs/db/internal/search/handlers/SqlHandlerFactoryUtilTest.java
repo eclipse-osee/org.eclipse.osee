@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -71,7 +71,7 @@ public class SqlHandlerFactoryUtilTest {
       queryData.addCriteria(new CriteriaArtifactType(null, true));
       queryData.addCriteria(new CriteriaRelationTypeExists(null));
       queryData.addCriteria(new CriteriaAttributeTypeExists(null));
-      queryData.addCriteria(new CriteriaAttributeTypeNotExists((Collection<AttributeTypeId>) null));
+      queryData.addCriteria(new CriteriaAttributeTypeNotExists((Collection<AttributeTypeToken>) null));
       queryData.addCriteria(new CriteriaAttributeRaw(null, null));
       queryData.addCriteria(
          new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
@@ -101,7 +101,8 @@ public class SqlHandlerFactoryUtilTest {
       assertHandler(actual, type, priority, null);
    }
 
-   private void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, TagProcessor actualProcessor) {
+   private void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority,
+      TagProcessor actualProcessor) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());

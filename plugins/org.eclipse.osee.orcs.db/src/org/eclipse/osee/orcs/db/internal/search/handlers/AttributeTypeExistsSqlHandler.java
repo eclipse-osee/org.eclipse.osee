@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -46,7 +46,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       if (OptionsUtil.isHistorical(writer.getOptions())) {
          cteAlias = writer.startCommonTableExpression("attrExt");
          writer.write("SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n");
-         Collection<AttributeTypeId> types = criteria.getTypes();
+         Collection<AttributeTypeToken> types = criteria.getTypes();
          if (types.size() > 1) {
             writer.write(" FROM osee_txs txs, osee_attribute attr, osee_join_id id\n");
          } else {
@@ -82,7 +82,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      Collection<AttributeTypeId> types = criteria.getTypes();
+      Collection<AttributeTypeToken> types = criteria.getTypes();
       if (types.size() > 1) {
          joinQuery = writer.writeJoin(types);
 
@@ -96,7 +96,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          writer.addParameter(joinQuery.getQueryId());
 
       } else {
-         AttributeTypeId type = types.iterator().next();
+         AttributeTypeToken type = types.iterator().next();
          writer.write(attrAlias);
          writer.write(".attr_type_id = ?");
          writer.addParameter(type);

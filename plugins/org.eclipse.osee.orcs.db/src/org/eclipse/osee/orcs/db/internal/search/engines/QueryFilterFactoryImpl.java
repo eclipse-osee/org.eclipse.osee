@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.executor.CancellableRunnable;
@@ -69,7 +69,8 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
    }
 
    @Override
-   public CountingLoadDataHandler createHandler(QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) {
+   public CountingLoadDataHandler createHandler(QueryData queryData, QuerySqlContext queryContext,
+      LoadDataHandler handler) {
       List<CriteriaAttributeKeywords> criterias = queryData.getCriteriaByType(CriteriaAttributeKeywords.class);
       CountingLoadDataHandler countingHandler;
       if (criterias.isEmpty()) {
@@ -178,12 +179,13 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          };
       }
 
-      private List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, LoadDataHandler handler, Set<CriteriaAttributeKeywords> remaining) throws Exception {
+      private List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, LoadDataHandler handler,
+         Set<CriteriaAttributeKeywords> remaining) throws Exception {
          List<MatchLocation> locations = Lists.newLinkedList();
          for (CriteriaAttributeKeywords criteria : criterias) {
             cancellation.checkForCancelled();
             Collection<String> valuesToMatch = criteria.getValues();
-            Collection<AttributeTypeId> typesFilter = criteria.getTypes();
+            Collection<AttributeTypeToken> typesFilter = criteria.getTypes();
             QueryOption[] options = criteria.getOptions();
             List<MatchLocation> matches = matcher.process(cancellation, data, valuesToMatch, typesFilter, options);
             if (Conditions.hasValues(matches)) {

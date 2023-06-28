@@ -18,6 +18,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -370,11 +371,12 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(artifactType);
       if (Strings.isValid(filter)) {
-         query = query.and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-            QueryOption.TOKEN_MATCH_ORDER__ANY);
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
       }
       if (orderByAttribute != null && orderByAttribute.isValid()) {
-         query = query.setOrderByAttribute(orderByAttribute);
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
@@ -446,10 +448,10 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       NoSuchMethodException, SecurityException {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).and(
-            attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-            QueryOption.TOKEN_MATCH_ORDER__ANY);
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
       if (orderByAttribute != null && orderByAttribute.isValid()) {
-         query = query.setOrderByAttribute(orderByAttribute);
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
@@ -465,8 +467,9 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
       if (Strings.isValid(filter)) {
-         query = query.and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-            QueryOption.TOKEN_MATCH_ORDER__ANY);
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
       }
       return query.getCount();
    }
@@ -603,14 +606,18 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
             artifactType).andRelatedTo(relation, relatedId);
       if (Strings.isValid(filter)) {
-         query = query.and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-            QueryOption.TOKEN_MATCH_ORDER__ANY);
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
          if (followAttributes.size() > 0) {
-            query = query.followSearch(followAttributes, filter);
+            query = query.followSearch(
+               followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(
+                  Collectors.toList()),
+               filter);
          }
       }
       if (orderByAttribute != null && orderByAttribute.isValid()) {
-         query = query.setOrderByAttribute(orderByAttribute);
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
@@ -711,13 +718,16 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andRelatedTo(relation,
-            relatedId).and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-               QueryOption.TOKEN_MATCH_ORDER__ANY);
+            relatedId).and(
+               attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+               filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
       if (followAttributes.size() > 0) {
-         query = query.followSearch(followAttributes, filter);
+         query = query.followSearch(
+            followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter);
       }
       if (orderByAttribute != null && orderByAttribute.isValid()) {
-         query = query.setOrderByAttribute(orderByAttribute);
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
@@ -825,10 +835,11 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
             RelationSide.fromString(query.getRelated().getSide())), query.getRelated().getRelatedId());
       }
       for (MimAttributeQueryElement q : query.getQueries()) {
-         executeQuery = executeQuery.and(q.getAttributeId(), q.getValue(), queryOptions);
+         executeQuery =
+            executeQuery.and(orcsApi.tokenService().getAttributeType(q.getAttributeId()), q.getValue(), queryOptions);
       }
       if (orderByAttribute != null && orderByAttribute.isValid()) {
-         executeQuery = executeQuery.setOrderByAttribute(orderByAttribute);
+         executeQuery = executeQuery.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
       if (pageCount != 0L && pageSize != 0L) {
          executeQuery = executeQuery.isOnPage(pageCount, pageSize);
@@ -859,10 +870,13 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       Collection<AttributeTypeId> followAttributes) throws IllegalArgumentException, SecurityException {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andRelatedTo(relation,
-            relatedId).and(attributes, filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE,
-               QueryOption.TOKEN_MATCH_ORDER__ANY);
+            relatedId).and(
+               attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+               filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
       if (followAttributes.size() > 0) {
-         query = query.followSearch(followAttributes, filter);
+         query = query.followSearch(
+            followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter);
       }
       for (RelationTypeSide rel : followRelations) {
          query = query.follow(rel);

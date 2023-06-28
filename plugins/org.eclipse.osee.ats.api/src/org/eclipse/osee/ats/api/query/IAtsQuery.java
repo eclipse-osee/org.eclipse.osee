@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -47,7 +46,7 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz);
 
-   IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOption);
+   IAtsQuery andAttr(AttributeTypeToken attributeType, Collection<String> values, QueryOption... queryOption);
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
 
@@ -61,7 +60,7 @@ public interface IAtsQuery {
 
    IAtsQuery andIds(Long... id);
 
-   IAtsQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption);
+   IAtsQuery andAttr(AttributeTypeToken attributeType, String value, QueryOption... queryOption);
 
    <T extends IAtsWorkItem> ResultSet<T> getResults();
 
@@ -111,7 +110,7 @@ public interface IAtsQuery {
 
    IAtsQuery andReleased(ReleasedOption releaseOption);
 
-   IAtsQuery andTeamWorkflowAttr(AttributeTypeId attributeType, List<String> values, QueryOption... queryOptions);
+   IAtsQuery andTeamWorkflowAttr(AttributeTypeToken attributeType, List<String> values, QueryOption... queryOptions);
 
    IAtsQuery andFilter(IAtsQueryFilter queryFilter);
 

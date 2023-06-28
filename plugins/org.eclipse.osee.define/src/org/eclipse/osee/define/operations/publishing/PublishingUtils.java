@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -136,7 +136,8 @@ public class PublishingUtils {
     * artifact; otherwise, an empty {@link Optional}.
     */
 
-   public Optional<ArtifactReadable> getArtifactReadableByIdentifierFilteredForView(BranchId branchId, ArtifactId viewId, ArtifactId artifactId) {
+   public Optional<ArtifactReadable> getArtifactReadableByIdentifierFilteredForView(BranchId branchId,
+      ArtifactId viewId, ArtifactId artifactId) {
       this.startOperation();
       try {
          //@formatter:off
@@ -163,7 +164,8 @@ public class PublishingUtils {
       return Optional.empty();
    }
 
-   public Optional<ArtifactReadable> getArtifactReadableByName(BranchId branchId, ArtifactId viewId, String artifactName) {
+   public Optional<ArtifactReadable> getArtifactReadableByName(BranchId branchId, ArtifactId viewId,
+      String artifactName) {
       this.startOperation();
       try {
          //@formatter:off
@@ -203,7 +205,8 @@ public class PublishingUtils {
     * {@link Optional}.
     */
 
-   public Optional<ArtifactReadable> getArtifactReadableByTypeAndName(BranchId branchId, ArtifactId viewId, ArtifactTypeToken artifactTypeToken, String artifactName) {
+   public Optional<ArtifactReadable> getArtifactReadableByTypeAndName(BranchId branchId, ArtifactId viewId,
+      ArtifactTypeToken artifactTypeToken, String artifactName) {
       this.startOperation();
       try {
          //@formatter:off
@@ -244,7 +247,8 @@ public class PublishingUtils {
     * {@link Optional}.
     */
 
-   public Optional<ArtifactReadable> getArtifactReadableByTypeNameAndName(BranchId branchId, ArtifactId viewId, String artifactTypeName, String artifactName) {
+   public Optional<ArtifactReadable> getArtifactReadableByTypeNameAndName(BranchId branchId, ArtifactId viewId,
+      String artifactTypeName, String artifactName) {
       //@formatter:off
       return
          this.getArtifactTypeTokenByName(artifactTypeName)
@@ -266,7 +270,8 @@ public class PublishingUtils {
     * artifact; otherwise, and empty {@link Optional}.
     */
 
-   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes(BranchId branchId, ArtifactId artifactId, TransactionId transactionId) {
+   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes(
+      BranchId branchId, ArtifactId artifactId, TransactionId transactionId) {
       this.startOperation();
       try {
          //@formatter:off
@@ -305,7 +310,8 @@ public class PublishingUtils {
     * artifact; otherwise, and empty {@link Optional}.
     */
 
-   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes(BranchId branchId, ArtifactId artifactId) {
+   public Optional<ArtifactReadable> getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes(
+      BranchId branchId, ArtifactId artifactId) {
       this.startOperation();
       try {
         //@formatter:off
@@ -344,7 +350,8 @@ public class PublishingUtils {
     * artifact; otherwise, an empty {@link Optional}.
     */
 
-   public Optional<ArtifactToken> getArtifactTokenByIdentifier(BranchId branchId, ArtifactId viewId, ArtifactId artifactId) {
+   public Optional<ArtifactToken> getArtifactTokenByIdentifier(BranchId branchId, ArtifactId viewId,
+      ArtifactId artifactId) {
       this.startOperation();
       try {
          //@formatter:off
@@ -488,7 +495,8 @@ public class PublishingUtils {
     * {@link Optional}.
     */
 
-   public Optional<ArtifactReadable> getChildArtifactReadableByTypeNameAndName(BranchId branchId, ArtifactId viewId, ArtifactId parent, String artifactTypeName, String artifactName) {
+   public Optional<ArtifactReadable> getChildArtifactReadableByTypeNameAndName(BranchId branchId, ArtifactId viewId,
+      ArtifactId parent, String artifactTypeName, String artifactName) {
       //@formatter:off
       return
          this.getArtifactTypeTokenByName( artifactTypeName )
@@ -535,7 +543,8 @@ public class PublishingUtils {
     * matching the search criteria; otherwise, an empty {@link Optional}.
     */
 
-   public Optional<List<ArtifactReadable>> getRecursiveChildenArtifactReadablesByAttributeTypeAndAttributeValue(BranchId branchId, ArtifactId viewId, ArtifactId parent, AttributeTypeId attributeTypeId, String value) {
+   public Optional<List<ArtifactReadable>> getRecursiveChildenArtifactReadablesByAttributeTypeAndAttributeValue(
+      BranchId branchId, ArtifactId viewId, ArtifactId parent, AttributeTypeToken attributeTypeId, String value) {
       this.startOperation();
       try {
          //@formatter:off
@@ -573,7 +582,9 @@ public class PublishingUtils {
     * matching the search criteria; otherwise, an empty {@link Optional}.
     */
 
-   public Optional<List<ArtifactReadable>> getRecursiveChildenArtifactReadablesOfTypeByAttributeTypeAndAttributeValue(BranchId branchId, ArtifactId viewId, ArtifactId parent, ArtifactTypeToken artifactTypeToken, AttributeTypeId attributeTypeId, String value) {
+   public Optional<List<ArtifactReadable>> getRecursiveChildenArtifactReadablesOfTypeByAttributeTypeAndAttributeValue(
+      BranchId branchId, ArtifactId viewId, ArtifactId parent, ArtifactTypeToken artifactTypeToken,
+      AttributeTypeToken attributeTypeId, String value) {
       this.startOperation();
       try {
          //@formatter:off

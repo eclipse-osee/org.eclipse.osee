@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.OrcsTokenService;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -50,7 +50,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
       if (typeParameters.size() >= 1) {
          String existsType = typeParameters.get(0);
          if ("attrType".equals(existsType)) {
-            Collection<AttributeTypeId> attributeTypes = PredicateHandlerUtil.getAttributeTypes(values);
+            Collection<AttributeTypeToken> attributeTypes = PredicateHandlerUtil.getAttributeTypes(values);
             if (!attributeTypes.isEmpty()) {
                if (checkExists(predicate.getType())) {
                   builder.andExists(attributeTypes);

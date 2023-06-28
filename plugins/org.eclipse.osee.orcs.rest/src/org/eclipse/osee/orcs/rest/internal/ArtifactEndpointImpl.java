@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -329,7 +328,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          if (Strings.isValid(searchCriteria.getSearchString())) {
 
             if (searchCriteria.getAttrTypeIds().isEmpty()) {
-               List<AttributeTypeId> attrs = searchCriteria.getAttrTypeIds();
+               List<AttributeTypeToken> attrs = searchCriteria.getAttrTypeIds();
                attrs.add(QueryBuilder.ANY_ATTRIBUTE_TYPE);
                searchCriteria.setAttrTypeIds(attrs);
             }

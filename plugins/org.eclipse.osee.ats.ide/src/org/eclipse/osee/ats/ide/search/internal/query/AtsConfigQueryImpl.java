@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -63,7 +63,7 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public void queryAnd(AttributeTypeId attrType, Collection<String> values) {
+   public void queryAnd(AttributeTypeToken attrType, Collection<String> values) {
       getQuery().and(attrType, values);
    }
 
@@ -83,17 +83,17 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public void queryAnd(AttributeTypeId attrType, String value) {
+   public void queryAnd(AttributeTypeToken attrType, String value) {
       getQuery().and(attrType, value);
    }
 
    @Override
-   public void queryAnd(AttributeTypeId attrType, Collection<String> values, QueryOption[] queryOption) {
+   public void queryAnd(AttributeTypeToken attrType, Collection<String> values, QueryOption[] queryOption) {
       getQuery().and(attrType, values, queryOption);
    }
 
    @Override
-   public void queryAnd(AttributeTypeId attrType, String value, QueryOption[] queryOption) {
+   public void queryAnd(AttributeTypeToken attrType, String value, QueryOption[] queryOption) {
       getQuery().and(attrType, value, queryOption);
    }
 

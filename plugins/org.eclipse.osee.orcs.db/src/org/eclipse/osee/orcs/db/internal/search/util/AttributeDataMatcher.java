@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
@@ -54,7 +53,9 @@ public class AttributeDataMatcher {
       this.engine = engine;
    }
 
-   public List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, Collection<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) throws Exception {
+   public List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data,
+      Collection<String> valuesToMatch, Collection<AttributeTypeToken> typesFilter, QueryOption... options)
+      throws Exception {
       logger.debug("Attribute Data match for attr[%s] - [%s]", data.getId(), valuesToMatch);
       if (Conditions.hasValues(options)) {
          return matchTokenizedValue(cancellation, data, valuesToMatch, typesFilter, options);
@@ -69,7 +70,8 @@ public class AttributeDataMatcher {
       }
    }
 
-   private List<MatchLocation> matchValuesExactly(HasCancellation cancellation, AttributeData<?> data, Iterable<String> valuesToMatch) throws Exception {
+   private List<MatchLocation> matchValuesExactly(HasCancellation cancellation, AttributeData<?> data,
+      Iterable<String> valuesToMatch) throws Exception {
       String value = getValue(data);
       List<MatchLocation> matched = Lists.newLinkedList();
       for (String toMatch : valuesToMatch) {
@@ -82,7 +84,8 @@ public class AttributeDataMatcher {
       return matched;
    }
 
-   private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData<?> data, Iterable<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) {
+   private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData<?> data,
+      Iterable<String> valuesToMatch, Collection<AttributeTypeToken> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
       AttributeTypeToken attrType = source.getAttributeType();
       if (typesFilter.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE) || typesFilter.contains(attrType)) {

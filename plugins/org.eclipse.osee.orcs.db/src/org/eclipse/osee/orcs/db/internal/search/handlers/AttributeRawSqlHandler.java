@@ -17,7 +17,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
@@ -44,7 +44,7 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
 
    private Collection<String> values;
    private boolean ignoreCase;
-   private Collection<AttributeTypeId> types;
+   private Collection<AttributeTypeToken> types;
 
    @Override
    public void setData(CriteriaAttributeRaw criteria) {
@@ -86,7 +86,7 @@ public class AttributeRawSqlHandler extends SqlHandler<CriteriaAttributeRaw> {
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
-      Collection<AttributeTypeId> attributeTypes = criteria.getAttributeTypes();
+      Collection<AttributeTypeToken> attributeTypes = criteria.getAttributeTypes();
 
       if (attributeTypes.size() == 1) {
          writer.write(attrAlias);

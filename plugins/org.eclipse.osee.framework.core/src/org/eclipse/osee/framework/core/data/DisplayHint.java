@@ -27,7 +27,7 @@ public class DisplayHint extends NamedIdBase {
    public static DisplayHint YesNoBoolean = new DisplayHint(5L, "Show Yes/No for Boolean Value");
    // Allows for true/false/clear and yes/no/clear in display and edit; Not valid for anything but boolean
    public static DisplayHint TriStateBoolean = new DisplayHint(6L, "Allow for Clear in Boolean");
-
+   public static DisplayHint IndexBased = new DisplayHint(7L, "IndexBased Search");
    private DisplayHint(Long id, String name) {
       super(id, name);
    }
