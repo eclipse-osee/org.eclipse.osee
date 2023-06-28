@@ -170,4 +170,8 @@ public interface IAtsWorkItemService {
 
    String getCurrentStateName(IAtsWorkItem workItem);
 
+   boolean isFavorite(IAtsWorkItem workItem, AtsUser user);
+
+   boolean isSubcribed(IAtsWorkItem workItem, AtsUser user);
+
 }

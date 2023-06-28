@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -389,9 +390,9 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(AtsSearchData atsSearchData, ISearchCriteriaProvider provider) {
+   public AtsSearchDataResults getArtifacts(AtsSearchData atsSearchData, ISearchCriteriaProvider provider) {
       AtsSearchDataSearch query = new AtsSearchDataSearch(atsSearchData, atsApi, provider);
-      return Collections.castAll(query.performSearch());
+      return query.performSearch();
    }
 
    @Override

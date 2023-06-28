@@ -15,13 +15,16 @@ package org.eclipse.osee.ats.ide.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.ISearchCriteriaProvider;
 import org.eclipse.osee.ats.core.query.AtsSearchDataSearch;
+import org.eclipse.osee.ats.core.query.AtsSearchDataVersionSearch;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Donald G. Dunne
@@ -47,8 +50,22 @@ public class WorldSearchItem extends WorldUISearchItem implements ISearchCriteri
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
+      // Version search performs better by starting from the version and filtering
+      if (data.getVersionId() != null && data.getVersionId() > 0) {
+         AtsSearchDataVersionSearch query = new AtsSearchDataVersionSearch(data, AtsApiService.get());
+         AtsSearchDataResults results = query.performSearch();
+         if (results.getRd().isErrors()) {
+            XResultDataUI.report(results.getRd(), getName());
+         }
+         return Collections.castAll(results.getArtifacts());
+      }
+      // Else do query with search criteria
       AtsSearchDataSearch query = new AtsSearchDataSearch(data, AtsApiService.get(), this);
-      return Collections.castAll(query.performSearch());
+      AtsSearchDataResults results = query.performSearch();
+      if (results.getRd().isErrors()) {
+         XResultDataUI.report(results.getRd(), getName());
+      }
+      return Collections.castAll(results.getArtifacts());
    }
 
    /**

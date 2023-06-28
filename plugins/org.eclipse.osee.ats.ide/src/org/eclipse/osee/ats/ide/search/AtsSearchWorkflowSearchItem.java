@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -118,6 +119,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return super.getParameterXWidgetXml();
    }
 
+   @SuppressWarnings("cast")
    public AtsSearchData loadSearchData(AtsSearchData data) {
       if (searchId > 0) {
          data.setId(searchId);
@@ -153,7 +155,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.getAiIds().addAll(getAi().getIds());
       }
 
-      if (getVersion().get() != null) {
+      if (getVersion().get() != null && (getVersion().get() instanceof IAtsVersion)) {
          data.setVersionId(getVersion().get().getId());
       }
       if (getStateName() != null && Strings.isValid(getStateName().get())) {

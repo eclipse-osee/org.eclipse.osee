@@ -757,4 +757,16 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public String getCurrentStateName(IAtsWorkItem workItem) {
       return workItem.getStateMgr().getCurrentStateNameInternal();
    }
+
+   @Override
+   public boolean isFavorite(IAtsWorkItem workItem, AtsUser user) {
+      return atsApi.getRelationResolver().areRelated(workItem.getStoreObject(), AtsRelationTypes.FavoriteUser_User,
+         user.getStoreObject());
+   }
+
+   @Override
+   public boolean isSubcribed(IAtsWorkItem workItem, AtsUser user) {
+      return atsApi.getRelationResolver().areRelated(workItem.getStoreObject(), AtsRelationTypes.SubscribedUser_User,
+         user.getStoreObject());
+   }
 }

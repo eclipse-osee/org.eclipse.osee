@@ -40,6 +40,10 @@ public class AttributeValues {
       return !attributes.isEmpty();
    }
 
+   public boolean isEmpty() {
+      return attributes.isEmpty();
+   }
+
    @JsonIgnore
    public void addAttrValue(AttributeTypeToken attrType, String... values) {
       attributes.add(new AttributeValue(attrType, values));
