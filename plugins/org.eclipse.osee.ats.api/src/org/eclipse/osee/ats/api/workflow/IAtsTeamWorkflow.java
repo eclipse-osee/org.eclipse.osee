@@ -209,6 +209,11 @@ public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvid
             return null;
          }
 
+         @Override
+         public IStateToken getCurrentState() {
+            return null;
+         }
+
       }
       return new IAtsWorkItemSentinel();
    }

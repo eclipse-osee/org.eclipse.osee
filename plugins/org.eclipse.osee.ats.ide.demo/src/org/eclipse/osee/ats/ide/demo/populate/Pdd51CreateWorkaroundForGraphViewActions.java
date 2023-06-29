@@ -54,7 +54,7 @@ public class Pdd51CreateWorkaroundForGraphViewActions implements IPopulateDemoDa
 
    @Override
    public void run() {
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Adapter_AI);
       Date createdDate = new Date();

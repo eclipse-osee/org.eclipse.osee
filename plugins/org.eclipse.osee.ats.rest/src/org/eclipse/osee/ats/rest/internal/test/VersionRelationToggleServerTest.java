@@ -42,6 +42,7 @@ public class VersionRelationToggleServerTest {
       testSettingSameVersionDoesNotCreateTransaction();
       testToggledTargetVersionLoadsCorrectly();
 
+      AtsTestUtilCore.cleanupSimpleTest(getClass().getSimpleName());
       return rd;
    }
 
@@ -68,6 +69,8 @@ public class VersionRelationToggleServerTest {
       atsApi.getVersionService().setTargetedVersion(teamWf, version1, changes);
       TransactionToken tx = changes.executeIfNeeded();
       assertEquals(Boolean.TRUE, tx.isInvalid(), rd);
+
+      AtsTestUtilCore.cleanup();
 
       rd.log("Completed");
    }
@@ -110,6 +113,8 @@ public class VersionRelationToggleServerTest {
       changes.execute();
       teamWf = reloadAttributesAndRelations(teamWf, atsApi, rd);
       testVersionCalls(atsApi, teamWf, version2, rd);
+
+      AtsTestUtilCore.cleanup();
 
       rd.log("Completed");
    }

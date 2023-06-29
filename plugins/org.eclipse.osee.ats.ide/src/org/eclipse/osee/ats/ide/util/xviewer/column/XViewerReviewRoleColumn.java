@@ -21,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -55,8 +54,8 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       try {
-         if (element instanceof AbstractReviewArtifact) {
-            return getRolesStr((AbstractReviewArtifact) element, user);
+         if (element instanceof PeerToPeerReviewArtifact) {
+            return getRolesStr((PeerToPeerReviewArtifact) element, user);
          }
          return "";
       } catch (OseeCoreException ex) {
@@ -64,9 +63,9 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       }
    }
 
-   private static String getRolesStr(AbstractReviewArtifact reviewArt, AtsUser user) {
+   private static String getRolesStr(PeerToPeerReviewArtifact reviewArt, AtsUser user) {
       StringBuilder builder = new StringBuilder();
-      IAtsPeerReviewRoleManager roleMgr = ((PeerToPeerReviewArtifact) reviewArt).getRoleManager();
+      IAtsPeerReviewRoleManager roleMgr = reviewArt.getRoleManager();
       for (UserRole role : roleMgr.getUserRoles()) {
          if (role.getUserId().equals(user.getUserId())) {
             builder.append(role.getRole().getName());

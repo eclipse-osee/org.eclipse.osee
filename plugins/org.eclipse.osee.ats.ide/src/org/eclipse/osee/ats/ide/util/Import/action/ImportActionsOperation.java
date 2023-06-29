@@ -484,7 +484,7 @@ public class ImportActionsOperation {
          changes.setSoleAttributeValue((ArtifactId) teamWf, AtsAttributeTypes.EstimatedHours, aData.estimatedHours);
       }
       if (aData.assigneeStrs.size() > 0) {
-         teamWf.getStateMgr().setAssignees(aData.assignees);
+         changes.setAssignees(teamWf, aData.assignees);
       }
       if (aData.originator != null) {
          changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, aData.originator.getUserId());

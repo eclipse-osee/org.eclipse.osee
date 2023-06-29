@@ -22,7 +22,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigCacheQuery;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
@@ -347,17 +346,6 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       BranchToken branch) {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).and(attrType, Arrays.asList(value)).getResults().getList());
-   }
-
-   @Override
-   public Collection<ArtifactToken> getAssigned(AtsUser user, boolean useNewAttr) {
-      if (useNewAttr) {
-         return super.getAssigned(user, useNewAttr);
-      } else {
-         return Collections.castAll(
-            orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).and(AtsAttributeTypes.CurrentState,
-               "<" + user.getUserId() + ">", QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getList());
-      }
    }
 
 }

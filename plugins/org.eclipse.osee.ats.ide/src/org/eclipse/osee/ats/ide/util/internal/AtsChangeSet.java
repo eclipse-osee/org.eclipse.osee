@@ -90,11 +90,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
             if (atsObject instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
+
+               // Update StateManager for backwards compatibility
                IAtsStateManager stateMgr = workItem.getStateMgr();
                Conditions.assertNotNull(stateMgr, "StateManager");
-               if (stateMgr.isDirty()) {
-                  AtsApiService.get().getStateFactory().writeToStore(asUser, workItem, this);
-               }
+               workItem.getStateMgr().writeToStore(this);
+
                if (workItem.getLog().isDirty()) {
                   AtsApiService.get().getLogFactory().writeToStore(workItem, AtsApiService.get().getAttributeResolver(),
                      this);
@@ -133,6 +134,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          listener.changesStored(this);
       }
       if (getNotifications().isValid()) {
+         addAssigneeNotificationEvents();
          AtsApiService.get().getNotificationService().sendNotifications(getNotifications());
       }
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {

@@ -65,9 +65,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
-import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.bids.BidsOperations;
@@ -86,7 +84,6 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -260,115 +257,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public Attribute setActionAttributeByType(String id, String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
       IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemsByIds(id).iterator().next();
-      IAtsChangeSet changes = atsApi.createChangeSet("Set attr by type/key [" + attrTypeIdOrKey + "]");
-      AttributeTypeToken attrTypeId = null;
-      if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
-         changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
-         attrTypeId = CoreAttributeTypes.Name;
-      } else if (attrTypeIdOrKey.equals(AttributeKey.Priority.name())) {
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.Priority, values.iterator().next());
-         attrTypeId = AtsAttributeTypes.Priority;
-      } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
-         String state = values.iterator().next();
-         TransitionData transData = new TransitionData("Transition Workflow", Arrays.asList(workItem), state,
-            new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
-         transData.setTransitionUser(atsApi.getUserService().getCurrentUser());
-         TransitionManager mgr = new TransitionManager(transData);
-         TransitionResults results = new TransitionResults();
-         mgr.handleTransitionValidation(results);
-         if (!results.isEmpty()) {
-            throw new OseeArgumentException("Exception transitioning " + results.toString());
-         }
-         mgr.handleTransition(results);
-         if (!results.isEmpty()) {
-            throw new OseeArgumentException("Exception transitioning " + results.toString());
-         }
-         attrTypeId = AtsAttributeTypes.CurrentState;
-      } else if (attrTypeIdOrKey.equals(AttributeKey.Version.name())) {
-         if (!workItem.isTeamWorkflow()) {
-            throw new OseeArgumentException("Not valid to set version for [%s]", workItem.getArtifactTypeName());
-         }
-         // If values emtpy, clear current version
-         IAtsVersion currVersion = atsApi.getVersionService().getTargetedVersion(workItem);
-         if (values.isEmpty() && currVersion != null) {
-            atsApi.getVersionService().removeTargetedVersion(workItem.getParentTeamWorkflow(), changes);
-         }
-         // If id, find matching id for this team
-         else if (Strings.isNumeric(values.iterator().next())) {
-            String version = values.iterator().next();
-            if (currVersion == null || !currVersion.getIdString().equals(version)) {
-               IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(
-                  workItem.getParentTeamWorkflow().getTeamDefinition());
-               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
-                  if (teamDefVer.getIdString().equals(version)) {
-                     newVer = teamDefVer;
-                     break;
-                  }
-               }
-               if (newVer == null) {
-                  throw new OseeArgumentException("Version id [%s] not valid for team ", version,
-                     teamDef.toStringWithId());
-               }
-               atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
-            }
-         }
-         // Else if name, match name with version names for this team
-         else if (Strings.isValid(values.iterator().next())) {
-            String version = values.iterator().next();
-            if (currVersion == null || !currVersion.getName().equals(version)) {
-               IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefHoldingVersions(
-                  workItem.getParentTeamWorkflow().getTeamDefinition());
-               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
-                  if (teamDefVer.getName().equals(version)) {
-                     newVer = teamDefVer;
-                     break;
-                  }
-               }
-               if (newVer == null) {
-                  throw new OseeArgumentException("Version name [%s] not valid for team ", version,
-                     teamDef.toStringWithId());
-               }
-               atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
-            }
-         }
-      } else if (attrTypeIdOrKey.equals(AttributeKey.Originator.name())) {
-         String accountId = values.iterator().next();
-         if (!Strings.isNumeric(accountId)) {
-            AtsUser originator = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountId));
-            if (originator == null) {
-               throw new OseeArgumentException("No user with account id [%s]", accountId);
-            }
-            atsApi.getActionService().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
-         }
-      } else if (attrTypeIdOrKey.equals(AttributeKey.Assignee.name())) {
-         List<AtsUser> assignees = new LinkedList<>();
-         for (String accountIdOrName : values) {
-            if (Strings.isNumeric(accountIdOrName)) {
-               AtsUser assignee = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountIdOrName));
-               if (assignee == null) {
-                  throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
-               } else {
-                  assignees.add(assignee);
-               }
-            } else {
-               AtsUser assignee = atsApi.getUserService().getUserByName(accountIdOrName);
-               if (assignee == null) {
-                  throw new OseeArgumentException("No user with account name [%s]", accountIdOrName);
-               } else {
-                  assignees.add(assignee);
-               }
-            }
-         }
-         workItem.getStateMgr().setAssignees(assignees);
-         changes.add(workItem);
-      } else {
-         attrTypeId = atsApi.tokenService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
-         if (attrTypeId != null) {
-            changes.setAttributeValuesAsStrings(workItem, attrTypeId, values);
-         }
-      }
       ActionOperations actionOps = new ActionOperations(workItem, atsApi, orcsApi);
       return actionOps.setActionAttributeByType(id, attrTypeIdOrKey, values);
    }

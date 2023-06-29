@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2013 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,13 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * This test suite MUST be done first after all the DemoDbPopulateSuite so query tests are not corrupted by future tests
+ *
+ * @author Donald G. Dunne
+ */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite.SuiteClasses({ //
+   AtsActionEndpointImplTest.class,
+   AtsActionUiEndpointTest.class,
+   AtsProductLineEndpointTest.class,
+   AtsAttributeEndpointImplTest.class,
+   AtsActionEndpointImplOptionsTest.class,
    WorldSearchItemTest.class,
    AtsQueryServiceImplTest.class,
    AtsConfigQueryImplTest.class,
@@ -29,10 +39,8 @@ import org.junit.runners.Suite;
    VersionTargetedForTeamSearchItemTest.class,
    ShowOpenWorkflowsByArtifactTypeTest.class,
    LegacyPcrIdQuickSearchTest.class,
-   TeamDefinitionQuickSearchTest.class})
-/**
- * @author Donald G. Dunne
- */
-public class AtsTest_World_Search_Suite {
+   TeamDefinitionQuickSearchTest.class, //
+})
+public class AtsTest_Query_Suite {
    // do nothing
 }

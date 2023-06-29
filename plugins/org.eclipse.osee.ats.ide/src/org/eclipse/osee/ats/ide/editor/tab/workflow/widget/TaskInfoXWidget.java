@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -187,22 +188,26 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         return;
                      }
                      try {
+                        IAtsChangeSet changes = AtsApiService.get().createChangeSet("Auto Compelte Tasks");
                         for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf, forState)) {
                            TaskArtifact taskArt = (TaskArtifact) task.getStoreObject();
                            if (!taskArt.isCompletedOrCancelled()) {
-                              if (taskArt.getStateMgr().isUnAssigned()) {
-                                 taskArt.getStateMgr().setAssignee(
-                                    AtsApiService.get().getUserService().getCurrentUser());
+                              if (taskArt.isUnAssigned()) {
+                                 changes.setAssignee(task, AtsApiService.get().getUserService().getCurrentUser());
                               }
-                              TransitionData transData = new TransitionData("Transition to Completed",
-                                 Arrays.asList(taskArt), TaskStates.Completed.getName(), null, null, null,
-                                 TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                              TransitionResults results =
-                                 AtsApiService.get().getWorkItemServiceIde().transition(transData);
-                              if (!results.isEmpty()) {
-                                 AWorkbench.popup(String.format("Transition Error %s", results.toString()));
-                                 return;
-                              }
+                           }
+                        }
+                        changes.executeIfNeeded();
+
+                        for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf, forState)) {
+                           TransitionData transData = new TransitionData("Transition to Completed", Arrays.asList(task),
+                              TaskStates.Completed.getName(), null, null, null,
+                              TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                           TransitionResults results =
+                              AtsApiService.get().getWorkItemServiceIde().transition(transData);
+                           if (!results.isEmpty()) {
+                              AWorkbench.popup(String.format("Transition Error %s", results.toString()));
+                              return;
                            }
                         }
                      } catch (OseeCoreException ex) {

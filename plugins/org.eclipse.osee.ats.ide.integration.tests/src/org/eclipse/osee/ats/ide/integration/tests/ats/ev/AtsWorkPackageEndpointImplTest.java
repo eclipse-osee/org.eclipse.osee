@@ -20,6 +20,8 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,13 +40,6 @@ public class AtsWorkPackageEndpointImplTest {
    }
 
    @Test
-   public void testGetWorkItems() {
-      Collection<IAtsWorkItem> workItems =
-         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId());
-      assertEquals(2, workItems.size());
-   }
-
-   @Test
    public void testGetEmptyWorkItems() {
       Collection<IAtsWorkItem> workItems =
          workPackageEp.getWorkItems(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getId());
@@ -52,20 +47,24 @@ public class AtsWorkPackageEndpointImplTest {
    }
 
    @Test
-   public void testSetRemoveWorkPackageItems() {
+   public void testGetAndRemoveWorkPackageItems() {
+      // Test Get
       Collection<IAtsWorkItem> workItems =
          workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId());
-      assertEquals(2, workItems.size());
+      assertEquals(3, workItems.size());
+
+      // Test Remove
       IAtsWorkItem workItem = workItems.iterator().next();
       JaxWorkPackageData data = new JaxWorkPackageData();
       data.setAsUserId(AtsApiService.get().getUserService().getCurrentUserId());
       data.getWorkItemIds().add(workItem.getId());
-
-      workPackageEp.deleteWorkPackageItems(0L, data);
-      assertEquals(1, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()).size());
-
-      workPackageEp.setWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId(), data);
+      XResultData rd = workPackageEp.deleteWorkPackageItems(0L, data);
+      Assert.assertTrue(rd.toString(), rd.isSuccess());
       assertEquals(2, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()).size());
+
+      // Test Add
+      workPackageEp.setWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId(), data);
+      assertEquals(3, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()).size());
    }
 
 }

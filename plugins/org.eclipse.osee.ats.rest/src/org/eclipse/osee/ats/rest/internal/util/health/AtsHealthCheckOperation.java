@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsOperationCache;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
@@ -116,7 +115,6 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestStateMgrAndDupStates());
       healthChecks.add(new TestCurrentState());
       healthChecks.add(new TestClosedWorkflowsWithAssignees());
-      healthChecks.add(new TestAssignees());
       healthChecks.add(new TestWorkflowHasAction());
       healthChecks.add(new TestTeamDefinitionsBaslineBranch());
       healthChecks.add(new TestTeamDefinitionsWorkDefRef());
@@ -464,38 +462,6 @@ public class AtsHealthCheckOperation {
          return true;
       }
 
-   }
-   public static class TestAssignees implements IAtsHealthCheck {
-      @Override
-      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
-         IAtsChangeSet changes, IAtsOperationCache cache) {
-         String currentStatename =
-            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
-         List<Long> userArtIds = new ArrayList<>();
-         for (AtsUser user : atsApi.getWorkStateFactory().getUsers(currentStatename)) {
-            userArtIds.add(user.getArtifactId().getId());
-         }
-         List<Long> currUserArtIds = new ArrayList<>();
-         for (String id : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
-            AtsAttributeTypes.CurrentStateAssignee)) {
-            if (Strings.isNumeric(id)) {
-               currUserArtIds.add(Long.valueOf(id));
-            } else {
-               results.log(artifact, "TestAssignees",
-                  String.format("Error: Invalid Current State Assigne [%s] for %s", id, workItem.toStringWithId()));
-            }
-         }
-         if (Collections.setComplement(currUserArtIds, userArtIds).size() > 0 || Collections.setComplement(userArtIds,
-            currUserArtIds).size() > 0) {
-            results.log(artifact, "TestAssignees", String.format(
-               "Info: Updated Current State Assignees attr to [%s] for %s", userArtIds, workItem.toStringWithId()));
-            if (changes != null) {
-               changes.setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee,
-                  Collections.castAll(userArtIds));
-            }
-         }
-         return true;
-      }
    }
 
    /**

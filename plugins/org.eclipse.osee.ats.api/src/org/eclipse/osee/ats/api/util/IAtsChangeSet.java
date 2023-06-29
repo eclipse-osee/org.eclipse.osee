@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.util;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -189,5 +191,23 @@ public interface IAtsChangeSet {
    void addTag(IAtsObject atsObject, String tag);
 
    void addAtsIdSequence(String seqName, String seqStart);
+
+   // Assignees methods
+
+   void addAssignee(IAtsWorkItem workItem, AtsUser assignee);
+
+   void removeAssignee(IAtsWorkItem workItem, AtsUser assignee);
+
+   void setAssignee(IAtsWorkItem workItem, IStateToken state, AtsUser assignee);
+
+   void clearAssignees(IAtsWorkItem workItem);
+
+   void setAssignees(IAtsWorkItem workItem, Collection<AtsUser> assignees);
+
+   void addAssignees(IAtsWorkItem workItem, Collection<AtsUser> assignees);
+
+   void setAssignee(IAtsWorkItem workItem, AtsUser assignee);
+
+   void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date);
 
 }

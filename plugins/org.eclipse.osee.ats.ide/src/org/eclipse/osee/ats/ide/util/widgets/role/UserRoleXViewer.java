@@ -262,7 +262,7 @@ public class UserRoleXViewer extends XViewer {
    public boolean executeTransaction(Collection<UserRole> userRoles) {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Modify Review Roles");
       for (UserRole userRole : userRoles) {
-         xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);
+         xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole, changes);
          update(userRole, null);
       }
       xUserRoleViewer.getUserRoleMgr().saveToArtifact(changes);

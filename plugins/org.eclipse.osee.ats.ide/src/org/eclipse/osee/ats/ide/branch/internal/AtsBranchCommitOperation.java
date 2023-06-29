@@ -140,7 +140,7 @@ public class AtsBranchCommitOperation {
             }
 
             // Notify stateDef IAtsWorkItemHooks
-            IStateToken currStateToken = teamArt.getStateMgr().getCurrentState();
+            IStateToken currStateToken = teamArt.getCurrentState();
             WorkDefinition workDef = teamArt.getWorkDefinition();
             StateDefinition currState = workDef.getStateByName(currStateToken.getName());
             List<IAtsWorkItemHook> listeners = currState.getWorkItemListeners();

@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -174,7 +175,11 @@ public class AtsProgramServiceTest {
       IAtsTeamWorkflow codeTeamWf = (IAtsTeamWorkflow) workflows.toArray()[1];
 
       assertEquals(WorkType.Code, programService.getWorkType(codeTeamWf));
+   }
 
+   @Test
+   public void testGetSiblingWorkType() {
+      IAtsTeamWorkflow codeTeamWf = DemoUtil.getSawCodeCommittedWf();
       Collection<IAtsTeamWorkflow> workflows2 =
          programService.getWorkflows(sawProgram, Collections.singleton(WorkType.Test), codeTeamWf);
       assertEquals(1, workflows2.size());

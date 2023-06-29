@@ -35,4 +35,8 @@ public interface IStateToken extends Named {
    default public boolean isState(IStateToken state) {
       return state.getName().equals(getName());
    }
+
+   default public boolean isNotState(IStateToken state) {
+      return !isState(state);
+   }
 }

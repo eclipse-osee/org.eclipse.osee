@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2013 Boeing
+ * Copyright (c) 2004, 2007 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,18 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.api.workflow;
 
-import java.util.List;
-import org.eclipse.osee.ats.api.user.AtsUser;
+package org.eclipse.osee.ats.core.internal.state;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({WorkStateTest.class})
 /**
+ * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
+ *
  * @author Donald G. Dunne
  */
-public interface HasAssignees {
-
-   public List<AtsUser> getAssignees();
-
-   public List<AtsUser> getImplementers();
-
+public class AtsCore_Internal_State_JT_Suite {
+   // Test Suite
 }

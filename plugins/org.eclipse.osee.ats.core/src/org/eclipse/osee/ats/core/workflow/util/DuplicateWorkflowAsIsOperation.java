@@ -146,7 +146,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             assignees.add(AtsCoreUsers.UNASSIGNED_USER);
          }
       } else {
-         assignees.addAll(fromWorkItem.getStateMgr().getAssignees());
+         assignees.addAll(fromWorkItem.getAssignees());
       }
       if (fromWorkItem.isTeamWorkflow()) {
          IAtsTeamWorkflow fromTeamWf = (IAtsTeamWorkflow) fromWorkItem;
@@ -207,7 +207,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          }
       }
       IAtsWorkItem newWorkItem = atsApi.getWorkItemService().getWorkItem(newWorkItemArt);
-      newWorkItem.getStateMgr().setAssignees(assignees);
+      changes.setAssignees(newWorkItem, assignees);
 
       // If action created, set values off original action
       if (newAction) {

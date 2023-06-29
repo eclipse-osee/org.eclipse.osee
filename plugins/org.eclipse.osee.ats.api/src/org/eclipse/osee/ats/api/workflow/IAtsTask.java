@@ -193,6 +193,11 @@ public interface IAtsTask extends IAtsWorkItem {
             return null;
          }
 
+         @Override
+         public IStateToken getCurrentState() {
+            return null;
+         }
+
       }
       return new IAtsTaskSentinel();
    }

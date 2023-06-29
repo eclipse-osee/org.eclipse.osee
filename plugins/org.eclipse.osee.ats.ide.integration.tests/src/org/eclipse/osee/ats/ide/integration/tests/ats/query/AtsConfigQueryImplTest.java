@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import static org.junit.Assert.assertEquals;
 import java.util.Collection;

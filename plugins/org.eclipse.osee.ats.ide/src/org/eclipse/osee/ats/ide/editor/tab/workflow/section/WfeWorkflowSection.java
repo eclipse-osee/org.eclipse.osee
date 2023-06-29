@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -333,55 +335,56 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
-   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName,
-      boolean isCurrentState, boolean isCancelledState) {
+   protected static String getCurrentStateTitle(IAtsWorkItem workItem, String statePageName, boolean isCurrentState,
+      boolean isCancelledState) {
       StringBuffer sb = new StringBuffer(statePageName);
-      if (isCurrentState && !sma.isCompleted() && !sma.isCancelled()) {
+      AtsApi atsApi = AtsApiService.get();
+      if (isCurrentState && !workItem.isCompleted() && !workItem.isCancelled()) {
          sb.append(" - Current State");
       }
-      if (sma.isCancelled()) {
+      if (workItem.isCancelled()) {
          if (isCancelledState) {
-            if (Strings.isValid(sma.getCancelledReason())) {
+            if (Strings.isValid(workItem.getCancelledReason())) {
                sb.append(" - Reason: ");
-               sb.append(Strings.truncate(sma.getCancelledReason(), 50, true));
+               sb.append(Strings.truncate(workItem.getCancelledReason(), 50, true));
             }
          }
       }
       if (isCurrentState) {
-         if (sma.isCompleted()) {
-            if (!sma.getCurrentStateName().equals(StateType.Completed.toString())) {
+         if (workItem.isCompleted()) {
+            if (!workItem.getCurrentStateName().equals(StateType.Completed.toString())) {
                sb.append(" (Completed)");
             }
             sb.append(" - ");
-            sb.append(DateUtil.getMMDDYYHHMM(sma.getCompletedDate()));
-            IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
+            sb.append(DateUtil.getMMDDYYHHMM(workItem.getCompletedDate()));
+            IAtsLogItem item = atsApi.getWorkItemService().getStateStartedData(workItem, statePageName);
             if (item != null) {
                sb.append(" by ");
                sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
             }
-         } else if (sma.isCancelled()) {
-            if (!sma.getCurrentStateName().equals(StateType.Cancelled.toString())) {
+         } else if (workItem.isCancelled()) {
+            if (!workItem.getCurrentStateName().equals(StateType.Cancelled.toString())) {
                sb.append(" (Cancelled)");
             }
             sb.append(" - ");
-            sb.append(DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()));
-            IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
+            sb.append(DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()));
+            IAtsLogItem item = atsApi.getWorkItemService().getStateStartedData(workItem, statePageName);
             if (item != null) {
                sb.append(" by ");
                sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
             }
          }
-         if (sma.getStateMgr().getAssignees().size() > 0) {
+         if (workItem.getAssignees().size() > 0) {
             sb.append(" assigned to ");
-            sb.append(sma.getStateMgr().getAssigneesStr(80));
+            sb.append(workItem.getAssigneesStr(80));
          }
       } else {
          IAtsLogItem item = null;
-         if (sma.isCancelled() && sma.getCancelledFromState().equals(statePageName)) {
-            item = sma.getStateCancelledData(statePageName);
+         if (workItem.isCancelled() && workItem.getCancelledFromState().equals(statePageName)) {
+            item = atsApi.getWorkItemService().getStateCancelledData(workItem, statePageName);
             sb.append(" - State Cancelled ");
          } else {
-            item = sma.getStateCompletedData(statePageName);
+            item = atsApi.getWorkItemService().getStateCompletedData(workItem, statePageName);
             sb.append(" - State Completed ");
          }
          if (item != null) {

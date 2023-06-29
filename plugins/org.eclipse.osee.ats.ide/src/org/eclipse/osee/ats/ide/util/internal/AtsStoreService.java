@@ -36,6 +36,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
+import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -190,9 +192,13 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public TransactionId getTransactionId(IAtsWorkItem workItem) {
       TransactionId transId = TransactionId.SENTINEL;
-      ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getStoreObject());
-      if (artifact instanceof Artifact) {
-         transId = ((Artifact) atsApi.getQueryService().getArtifact(artifact)).getTransaction();
+      if (workItem.getStoreObject() instanceof Artifact) {
+         transId = ((Artifact) workItem.getStoreObject()).getTransaction();
+      } else {
+         ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getStoreObject());
+         if (artifact instanceof Artifact) {
+            transId = ((Artifact) artifact).getTransaction();
+         }
       }
       return transId;
    }
@@ -375,6 +381,12 @@ public class AtsStoreService implements IAtsStoreService {
    public void purgeArtifacts(List<ArtifactToken> artifacts) {
       Operations.executeWorkAndCheckStatus(
          new PurgeArtifacts(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(artifacts)));
+   }
+
+   @Override
+   public void deleteArtifacts(List<ArtifactToken> artifacts) {
+      AtsDeleteManager.handleDeletePurgeAtsObject(
+         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(artifacts), false, DeleteOption.Delete);
    }
 
 }

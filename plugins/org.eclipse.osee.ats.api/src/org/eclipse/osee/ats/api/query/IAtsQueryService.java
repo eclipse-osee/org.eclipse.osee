@@ -252,7 +252,7 @@ public interface IAtsQueryService {
 
    List<ArtifactToken> getArtifactsFromIds(Collection<String> atsIds);
 
-   Collection<ArtifactToken> getAssigned(AtsUser user, boolean useNewAttr);
+   Collection<ArtifactToken> getAssigned(AtsUser user);
 
    Collection<? extends ArtifactToken> getArtifactsFromName(String title, BranchToken atsBranch,
       DeletionFlag excludeDeleted, QueryOption[] containsMatchOptions);

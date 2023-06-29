@@ -73,4 +73,9 @@ public interface IAtsUserService {
 
    AtsUser getCurrentUserOrNull();
 
+   /*
+    * @return <userId1><userId2>
+    */
+   String getUserStorageString(Collection<AtsUser> users);
+
 }

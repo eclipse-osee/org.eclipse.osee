@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.mock;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
+import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
@@ -76,7 +78,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public List<AtsUser> getAssignees() {
-      return stateMgr.getAssignees();
+      return Collections.emptyList();
    }
 
    public void addImplementer(AtsUser joe) {
@@ -305,6 +307,11 @@ public class MockWorkItem implements IAtsWorkItem {
 
    public void setStateType(StateType stateType) {
       this.stateType = stateType;
+   }
+
+   @Override
+   public IStateToken getCurrentState() {
+      return new SimpleTeamState(getCurrentStateName(), getCurrentStateType());
    }
 
 }

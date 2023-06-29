@@ -82,7 +82,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
 
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decArt.getCurrentStateName());
-      Assert.assertEquals("UnAssigned", decArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals("UnAssigned", decArt.getAssigneesStr());
       Assert.assertEquals(ReviewBlockType.Transition.name(),
          decArt.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
       Assert.assertEquals("This is my review title", decArt.getName());
@@ -119,7 +119,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewOnTransit
 
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decArt.getCurrentStateName());
       // Current user assigned if non specified
-      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decArt.getAssigneesStr());
       Assert.assertEquals(ReviewBlockType.Commit.name(), decArt.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
       Assert.assertEquals("This is the title", decArt.getName());
       Assert.assertEquals("the description", decArt.getSoleAttributeValue(AtsAttributeTypes.Description));

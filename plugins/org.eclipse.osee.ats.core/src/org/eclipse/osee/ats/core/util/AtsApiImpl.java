@@ -59,8 +59,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemMetricsService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
 import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.ats.core.agile.AgileService;
@@ -69,8 +67,6 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.internal.AtsWorkItemMetricsServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
-import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
-import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.task.internal.AtsTaskSetDefinitionProviderService;
@@ -113,11 +109,9 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsWorkItemMetricsService workItemMetricsService;
    protected ISequenceProvider sequenceProvider;
    protected IAtsProgramService programService;
-   protected IAtsStateFactory stateFactory;
    protected IArtifactResolver artifactResolver;
    protected IAtsBranchService branchService;
    protected IAtsReviewService reviewService;
-   protected IAtsWorkStateFactory workStateFactory;
    protected IAtsColumnService columnServices;
    protected IAtsActionableItemService actionableItemManager;
    protected IRelationResolver relationResolver;
@@ -399,22 +393,6 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public IAtsReviewService getReviewService() {
       return reviewService;
-   }
-
-   @Override
-   public IAtsStateFactory getStateFactory() {
-      if (stateFactory == null) {
-         stateFactory = new AtsStateFactory(this, new AtsWorkStateFactory(userService), new AtsLogFactory());
-      }
-      return stateFactory;
-   }
-
-   @Override
-   public IAtsWorkStateFactory getWorkStateFactory() {
-      if (workStateFactory == null) {
-         workStateFactory = new AtsWorkStateFactory(userService);
-      }
-      return workStateFactory;
    }
 
    @Override

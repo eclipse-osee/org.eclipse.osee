@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
@@ -77,7 +78,7 @@ public class PeerToPeerReviewManagerTest {
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
-      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getName(), peerArt.getAssigneesStr());
       Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getCreatedBy().getName());
       Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getName(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
@@ -103,7 +104,7 @@ public class PeerToPeerReviewManagerTest {
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
-      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getName(), peerArt.getAssigneesStr());
       Assert.assertEquals(AtsTestUtil.getAnalyzeStateDef().getName(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 
@@ -128,7 +129,7 @@ public class PeerToPeerReviewManagerTest {
          String.format("PeerToPeer Review artifact should not be dirty [%s]", Artifacts.getDirtyReport(peerArt)),
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
-      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), peerArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getName(), peerArt.getAssigneesStr());
       Assert.assertEquals(AtsTestUtil.getTestAi(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItemReference));
    }

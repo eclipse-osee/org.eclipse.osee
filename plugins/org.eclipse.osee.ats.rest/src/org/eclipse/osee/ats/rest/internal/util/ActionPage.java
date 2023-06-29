@@ -125,7 +125,7 @@ public class ActionPage {
    }
 
    public static String getAssigneesStr(IAtsWorkItem workItem, ArtifactReadable action) {
-      return workItem.getStateMgr().getAssigneesStr();
+      return workItem.getAssigneesStr();
    }
 
    public static String getTeamStr(AtsApi atsApi, ArtifactReadable action) {

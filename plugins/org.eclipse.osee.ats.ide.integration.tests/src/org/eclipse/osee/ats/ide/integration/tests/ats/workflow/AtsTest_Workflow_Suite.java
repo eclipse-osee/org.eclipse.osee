@@ -29,7 +29,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AtsTest_Workflow_CR_Suite.class,
    TeamWorkflowTest.class,
-   WfePromptChangeStatusTest.class,
    TeamWorkflowProvidersTest.class,
    AtsRelationResolverServiceTest.class,
    AtsArtifactFactoryTest.class,

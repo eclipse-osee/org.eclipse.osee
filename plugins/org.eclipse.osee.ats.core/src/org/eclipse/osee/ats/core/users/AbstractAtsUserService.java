@@ -170,4 +170,14 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       }
       return results;
    }
+
+   @Override
+   public String getUserStorageString(Collection<AtsUser> users) {
+      StringBuilder sb = new StringBuilder();
+      for (AtsUser u : users) {
+         sb.append("<" + u.getUserId() + ">");
+      }
+      return sb.toString();
+   }
+
 }

@@ -404,7 +404,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    public String getAssignee(Artifact artifact) {
       try {
          if (artifact instanceof AbstractWorkflowArtifact) {
-            return AtsObjects.toString("; ", ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
+            return AtsObjects.toString("; ", ((AbstractWorkflowArtifact) artifact).getAssignees());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -184,7 +184,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public void addOrUpdateUserRole(UserRole userRole) {
+   public void addOrUpdateUserRole(UserRole userRole, IAtsChangeSet changes) {
       List<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
@@ -196,7 +196,11 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       if (!found) {
          roleItems.add(userRole);
          if (!peerRev.getAssignees().contains(getUser(userRole, atsApi))) {
-            peerRev.getStateMgr().addAssignee(getUser(userRole, atsApi));
+            changes.addAssignee(peerRev, getUser(userRole, atsApi));
+         }
+         for (UserRole uRole : roleItems) {
+            AtsUser user = atsApi.getUserService().getUserByUserId(uRole.getUserId());
+            peerRev.getStateMgr().addAssignee(user);
          }
       }
    }
@@ -265,7 +269,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          atsApi.getUserService().getCurrentUser(), new Date(), changes);
    }
 
-   private void validateUserRolesCompleted(List<UserRole> currentUserRoles, List<UserRole> newUserRoles, IAtsChangeSet changes) {
+   private void validateUserRolesCompleted(List<UserRole> currentUserRoles, List<UserRole> newUserRoles,
+      IAtsChangeSet changes) {
       //all reviewers are complete; send notification to author/moderator
       int numCurrentCompleted = 0, numNewCompleted = 0;
       for (UserRole role : newUserRoles) {

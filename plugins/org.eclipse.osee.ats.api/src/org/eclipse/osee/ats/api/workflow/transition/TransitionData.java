@@ -231,7 +231,7 @@ public class TransitionData {
    }
 
    public boolean isSystemUserAssingee(IAtsWorkItem workItem) {
-      return workItem.getStateMgr().getAssignees().stream().anyMatch(SystemUser.OseeSystem::equals);
+      return workItem.getAssignees().stream().anyMatch(SystemUser.OseeSystem::equals);
    }
 
    public boolean isSystemUser() {

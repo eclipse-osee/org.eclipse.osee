@@ -126,9 +126,9 @@ public class Overview {
          getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(awa.getCreatedDate())));
       if (awa.isTeamWorkflow()) {
          addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) awa).getTeamName()),
-            getLabelValue("Assignees", AtsObjects.toString("; ", awa.getStateMgr().getAssignees())));
+            getLabelValue("Assignees", AtsObjects.toString("; ", awa.getAssignees())));
       } else {
-         addTable(getLabelValue("Assignees", AtsObjects.toString("; ", awa.getStateMgr().getAssignees())));
+         addTable(getLabelValue("Assignees", AtsObjects.toString("; ", awa.getAssignees())));
       }
       addTable(getLabelValue("Description", awa.getDescription()));
       if (awa.isCancelled()) {
@@ -145,7 +145,7 @@ public class Overview {
          }
          this.html.append(AHTML.multiColumnTable(new String[] {
             AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString("; ",
-               awa.getStateMgr().getAssignees())}));
+               awa.getAssignees())}));
       }
       endBorderTable();
    }

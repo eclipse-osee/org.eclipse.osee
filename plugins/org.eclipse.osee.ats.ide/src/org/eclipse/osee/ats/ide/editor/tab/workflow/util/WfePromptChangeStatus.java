@@ -113,9 +113,9 @@ public class WfePromptChangeStatus {
          hours = hours / workItems.size();
       }
       for (IAtsWorkItem workItem : workItems) {
-         if (workItem.getStateMgr().isUnAssigned()) {
-            workItem.getStateMgr().removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
-            workItem.getStateMgr().addAssignee(AtsApiService.get().getUserService().getCurrentUser());
+         if (workItem.isUnAssigned()) {
+            changes.removeAssignee(workItem, AtsCoreUsers.UNASSIGNED_USER);
+            changes.addAssignee(workItem, AtsApiService.get().getUserService().getCurrentUser());
          }
          AtsApiService.get().getWorkItemMetricsService().updateMetrics(workItem, workItem.getStateDefinition(), hours,
             percent, true, AtsApiService.get().getUserService().getCurrentUser(), changes);

@@ -18,12 +18,12 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -32,12 +32,13 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkItem extends IAtsObject, HasAssignees {
+public interface IAtsWorkItem extends IAtsObject {
 
    String getAtsId();
 
@@ -127,8 +128,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
       return true;
    }
 
-   void setStateMgr(IAtsStateManager stateMgr);
-
    void clearCaches();
 
    boolean isInState(IStateToken state);
@@ -176,6 +175,26 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    public String getCurrentStateName();
 
    StateType getCurrentStateType();
+
+   IStateToken getCurrentState();
+
+   public List<AtsUser> getAssignees();
+
+   public List<AtsUser> getImplementers();
+
+   void setStateMgr(IAtsStateManager stateMgr);
+
+   default String getAssigneesStr() {
+      return Collections.toString("; ", getAssignees());
+   }
+
+   default public String getAssigneesStr(int length) {
+      return Strings.truncate(Collections.toString("; ", getAssigneesStr()), length);
+   }
+
+   default public boolean isUnAssigned() {
+      return getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
+   }
 
    public static IAtsWorkItem createSentinel() {
       final class IAtsWorkItemSentinel extends NamedIdBase implements IAtsWorkItem {
@@ -281,11 +300,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          }
 
          @Override
-         public void setStateMgr(IAtsStateManager stateMgr) {
-            // do nothing
-         }
-
-         @Override
          public void clearCaches() {
             // do nothing
          }
@@ -333,6 +347,16 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
          @Override
          public StateType getCurrentStateType() {
             return null;
+         }
+
+         @Override
+         public IStateToken getCurrentState() {
+            return null;
+         }
+
+         @Override
+         public void setStateMgr(IAtsStateManager stateMgr) {
+            // do nothing
          }
 
       }

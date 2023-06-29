@@ -17,12 +17,12 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -88,7 +88,7 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
          return rollPercent.intValue();
       }
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getPercentCompleteStateReview(artifact, WorkflowManager.getStateManager(artifact).getCurrentState());
+         return getPercentCompleteStateReview(artifact, ((IAtsWorkItem) artifact).getCurrentState());
       }
       return 0;
    }

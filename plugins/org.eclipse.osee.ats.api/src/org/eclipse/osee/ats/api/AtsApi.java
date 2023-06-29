@@ -53,8 +53,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemMetricsService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -140,10 +138,6 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    void clearCaches();
 
    ITeamWorkflowProvidersLazy getTeamWorkflowProviders();
-
-   IAtsStateFactory getStateFactory();
-
-   IAtsWorkStateFactory getWorkStateFactory();
 
    IAtsLogFactory getLogFactory();
 

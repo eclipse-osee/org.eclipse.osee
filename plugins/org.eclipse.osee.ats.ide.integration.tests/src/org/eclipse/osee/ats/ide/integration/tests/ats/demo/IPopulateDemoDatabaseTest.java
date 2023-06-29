@@ -53,12 +53,12 @@ public interface IPopulateDemoDatabaseTest {
       Assert.assertEquals(title, review.getName());
       Assert.assertEquals(currentStateName, review.getCurrentStateName());
 
-      Collection<String> assigneeNames = Named.getNames(review.getStateMgr().getAssignees());
+      Collection<String> assigneeNames = Named.getNames(review.getAssignees());
 
       Assert.assertEquals(assigneeStrs.length, assigneeNames.size());
       for (String assignee : assigneeStrs) {
          if (!assigneeNames.contains(assignee)) {
-            Assert.fail(String.format("revArt.getStateMgr().getAssignees(), does not contain user: %s", assignee));
+            Assert.fail(String.format("revArt.getAssignees(), does not contain user: %s", assignee));
          }
       }
    }
@@ -78,7 +78,7 @@ public interface IPopulateDemoDatabaseTest {
       Assert.assertEquals(versionName, targetedVerStr);
       Assert.assertEquals(artifactType, teamWf.getArtifactType());
       Assert.assertEquals(teamDef, teamWf.getTeamDefinition());
-      Assert.assertEquals(assigneeStr, teamWf.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(assigneeStr, teamWf.getAssigneesStr());
       Assert.assertEquals(actionableItemStr,
          AtsApiService.get().getActionableItemService().getActionableItemsStr(teamWf));
    }

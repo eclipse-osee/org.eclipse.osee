@@ -78,8 +78,8 @@ public class WfeJournalSubscribersComp extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  if (!isEditable && !workItem.getStateMgr().getAssignees().contains(
-                     AtsCoreUsers.UNASSIGNED_USER) && !workItem.getStateMgr().getAssignees().contains(
+                  if (!isEditable && !workItem.getAssignees().contains(
+                     AtsCoreUsers.UNASSIGNED_USER) && !workItem.getAssignees().contains(
                         AtsApiService.get().getUserService().getCurrentUser())) {
                      AWorkbench.popup("ERROR", "You must be assigned to modify assignees.\nContact current Assignee.");
                      return;

@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -58,14 +59,21 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
          return EMPTY_SET;
       }
 
+      AtsApi atsApi = AtsApiService.get();
       List<ArtifactToken> arts = new ArrayList<>();
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
             user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
+         arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
+            atsUser.getArtifactId().getIdString(), false, EXCLUDE_DELETED, false,
+            AtsAttributeTypes.CurrentStateAssignee));
       } else {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
             user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
             AtsAttributeTypes.Log));
+         arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
+            atsUser.getArtifactId().getIdString(), false, EXCLUDE_DELETED, false,
+            AtsAttributeTypes.CurrentStateAssignee));
       }
 
       arts.addAll(

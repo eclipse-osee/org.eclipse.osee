@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;

@@ -58,9 +58,17 @@ public class AtsImplementersService implements IAtsImplementerService {
    public List<AtsUser> getImplementers(IAtsObject atsObject) {
       List<AtsUser> implementers = new LinkedList<>();
       if (atsObject instanceof IAtsAction) {
-         implementers.addAll(getActionGroupImplementers((IAtsAction) atsObject));
+         for (AtsUser user : getActionGroupImplementers((IAtsAction) atsObject)) {
+            if (!implementers.contains(user)) {
+               implementers.add(user);
+            }
+         }
       } else if (atsObject instanceof IAtsWorkItem) {
-         implementers.addAll(getWorkItemImplementers((IAtsWorkItem) atsObject));
+         for (AtsUser user : getWorkItemImplementers((IAtsWorkItem) atsObject)) {
+            if (!implementers.contains(user)) {
+               implementers.add(user);
+            }
+         }
       }
       implementers.remove(AtsCoreUsers.UNASSIGNED_USER);
       Collections.sort(implementers);
@@ -85,7 +93,7 @@ public class AtsImplementersService implements IAtsImplementerService {
          fromStateName = workItem.getCancelledFromState();
       }
       if (Strings.isValid(fromStateName)) {
-         for (AtsUser user : workItem.getStateMgr().getAssigneesForState(fromStateName)) {
+         for (AtsUser user : workItem.getStateMgr().getAssignees(fromStateName)) {
             if (!implementers.contains(user)) {
                implementers.add(user);
             }

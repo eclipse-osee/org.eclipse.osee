@@ -26,8 +26,6 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -56,17 +54,13 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsStoreServiceImpl implements IAtsStoreService {
 
    private final OrcsApi orcsApi;
-   private final IAtsStateFactory stateFactory;
-   private final IAtsLogFactory logFactory;
    private final AtsApi atsApi;
 
    private final JdbcService jdbcService;
 
-   public AtsStoreServiceImpl(AtsApi atsApi, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory) {
+   public AtsStoreServiceImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-      this.logFactory = logFactory;
-      this.stateFactory = stateFactory;
       this.jdbcService = atsApi.getJdbcService();
    }
 
@@ -83,7 +77,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
-      return new AtsChangeSet(atsApi, atsApi.getAttributeResolver(), orcsApi, stateFactory, logFactory, comment, asUser,
+      return new AtsChangeSet(atsApi, atsApi.getAttributeResolver(), orcsApi, atsApi.getLogFactory(), comment, asUser,
          branch);
    }
 
@@ -293,6 +287,17 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public void purgeArtifacts(List<ArtifactToken> artifacts) {
       throw new UnsupportedOperationException("unsupported on server");
+   }
+
+   @Override
+   public void deleteArtifacts(List<ArtifactToken> artifacts) {
+      IAtsChangeSet changes = atsApi.createChangeSet("Delete Artifacts");
+      for (ArtifactToken art : artifacts) {
+         if (!atsApi.getStoreService().isDeleted(art)) {
+            changes.deleteArtifact(art);
+         }
+      }
+      changes.executeIfNeeded();
    }
 
 }

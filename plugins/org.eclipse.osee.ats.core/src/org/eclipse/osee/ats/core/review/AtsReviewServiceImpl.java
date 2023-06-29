@@ -74,7 +74,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class AtsReviewServiceImpl implements IAtsReviewService {
 
    private final AtsApi atsApi;
-   private final static String VALIDATE_REVIEW_TITLE = "Is the resolution of this Action valid?";
+   private final static String VALIDATE_REVIEW_TITLE = "Is the resolution of Action %s valid?";
    private static Set<IAtsReviewHook> reviewHooks = new HashSet<>();
 
    public void addReviewHook(IAtsReviewHook hook) {
@@ -101,6 +101,11 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
+   public String getValidateReviewTitle(IAtsTeamWorkflow teamWf) {
+      return String.format(VALIDATE_REVIEW_TITLE, teamWf.getAtsId());
+   }
+
+   @Override
    public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate,
       AtsUser transitionUser, IAtsChangeSet changes) {
       // If not validate page, don't do anything
@@ -110,7 +115,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       // If validate review already created for this state, return
       if (!force && getReviewsFromCurrentState(teamWf).size() > 0) {
          for (IAtsAbstractReview review : getReviewsFromCurrentState(teamWf)) {
-            if (review.getName().equals(VALIDATE_REVIEW_TITLE)) {
+            if (review.getName().equals(getValidateReviewTitle(teamWf))) {
                return null;
             }
          }
@@ -121,7 +126,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          IAtsDecisionReview decRev = createNewDecisionReview(teamWf,
             isValidateReviewBlocking(teamWf.getStateDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
             true, new Date(), atsApi.getUserService().getCurrentUser(), changes);
-         changes.setName(decRev, VALIDATE_REVIEW_TITLE);
+         changes.setName(decRev, getValidateReviewTitle(teamWf));
          changes.setSoleAttributeValue(decRev, AtsAttributeTypes.DecisionReviewOptions,
             "No;Followup;" + getValidateReviewFollowupUsersStr(teamWf) + "\n" + "Yes;Completed;");
 
@@ -146,7 +151,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public String getValidateReviewFollowupUsersStr(IAtsTeamWorkflow teamWf) {
       try {
          Collection<AtsUser> users = getValidateReviewFollowupUsers(teamWf);
-         return atsApi.getWorkStateFactory().getStorageString(users);
+         return atsApi.getUserService().getUserStorageString(users);
       } catch (Exception ex) {
          OseeLog.log(AtsReviewServiceImpl.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
@@ -174,6 +179,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       String description, String againstState, ReviewBlockType reviewBlockType,
       Collection<IAtsDecisionReviewOption> options, Collection<AtsUser> assignees, Date createdDate, AtsUser createdBy,
       IAtsChangeSet changes) {
+
       IAtsDecisionReview decRev = createNewDecisionReview(teamWf, reviewBlockType, reviewTitle, againstState,
          description, options, assignees, createdDate, createdBy, changes);
       changes.add(decRev);
@@ -189,8 +195,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
             decRev.toStringWithId(), results.toString());
       }
       // ensure assignees are as requested
-      decRev.getStateMgr().setAssignees(assignees);
-      changes.add(decRev);
+      changes.setAssignees(decRev, assignees);
       return decRev;
    }
 
@@ -220,7 +225,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       // Initialize state machine
       atsApi.getActionService().initializeNewStateMachine(decRev, null, createdDate, createdBy, workDefinition,
          changes);
-      decRev.getStateMgr().setAssignees(workDefinition.getStartState().getName(), StateType.Working, assignees);
+      changes.setAssignees(decRev, assignees);
 
       if (Strings.isValid(relatedToState)) {
          changes.setSoleAttributeValue(decRev, AtsAttributeTypes.RelatedToState, relatedToState);
@@ -274,7 +279,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    @Override
    public Collection<IAtsAbstractReview> getReviewsFromCurrentState(IAtsTeamWorkflow teamWf) {
-      return atsApi.getWorkItemService().getReviews(teamWf, teamWf.getStateMgr().getCurrentState());
+      return atsApi.getWorkItemService().getReviews(teamWf, teamWf.getCurrentState());
    }
 
    @Override
@@ -456,8 +461,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public Result transitionDecisionToState(StateType StateType, boolean popup, IStateToken toState,
       IAtsDecisionReview decRev, AtsUser user, IAtsChangeSet changes) {
       TransitionData transData = new TransitionData("Transition to " + toState.getName(), Arrays.asList(decRev),
-         toState.getName(), Arrays.asList(user == null ? decRev.getStateMgr().getAssignees().iterator().next() : user),
-         null, changes, TransitionOption.OverrideAssigneeCheck);
+         toState.getName(), Arrays.asList(user == null ? decRev.getAssignees().iterator().next() : user), null, changes,
+         TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
@@ -524,7 +529,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    private Result transitionToState(StateType StateType, boolean popup, IAtsPeerToPeerReview peerRev,
       IStateToken toState, IAtsChangeSet changes) {
       TransitionData transData = new TransitionData("Transition to " + toState.getName(), Arrays.asList(peerRev),
-         toState.getName(), Arrays.asList(peerRev.getStateMgr().getAssignees().iterator().next()), null, changes,
+         toState.getName(), Arrays.asList(peerRev.getAssignees().iterator().next()), null, changes,
          TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(transData);
       TransitionResults results = transitionMgr.handleAll();
@@ -547,7 +552,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       if (roles != null) {
          IAtsPeerReviewRoleManager roleMgr = peerRev.getRoleManager();
          for (UserRole role : roles) {
-            roleMgr.addOrUpdateUserRole(role);
+            roleMgr.addOrUpdateUserRole(role, changes);
          }
          roleMgr.saveToArtifact(changes);
       }
@@ -564,7 +569,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       if (roles != null) {
          IAtsPeerReviewRoleManager roleMgr = peerRev.getRoleManager();
          for (UserRole role : roles) {
-            roleMgr.addOrUpdateUserRole(role);
+            roleMgr.addOrUpdateUserRole(role, changes);
          }
          roleMgr.saveToArtifact(changes);
       }

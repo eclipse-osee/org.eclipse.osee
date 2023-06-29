@@ -269,12 +269,12 @@ public class Pdd93CreateDemoAgile {
    }
 
    private void createSawAgileTeam(IAgileProgram aProgram) {
-      AgileEndpointApi agile = agileEp;
+      AgileEndpointApi agileEp = AtsApiService.get().getServerEndpoints().getAgileEndpoint();
 
       // Create Team
       JaxNewAgileTeam newTeam = getJaxAgileTeam();
       newTeam.setProgramId(aProgram.getIdString());
-      Response response = agile.createTeam(newTeam);
+      Response response = agileEp.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
@@ -303,7 +303,7 @@ public class Pdd93CreateDemoAgile {
 
       // Create Backlog
       JaxNewAgileBacklog backlog = getBacklog();
-      response = agile.createBacklog(DemoArtifactToken.SAW_Agile_Team.getId(), backlog);
+      response = agileEp.createBacklog(DemoArtifactToken.SAW_Agile_Team.getId(), backlog);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Add items to backlog
@@ -323,7 +323,7 @@ public class Pdd93CreateDemoAgile {
       for (IAtsWorkItem workItem : items) {
          item.getIds().add(workItem.getId());
       }
-      AgileWriterResult result = agile.updateItems(item);
+      AgileWriterResult result = agileEp.updateItems(item);
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
       // Set backlog as user_defined member order
@@ -334,13 +334,14 @@ public class Pdd93CreateDemoAgile {
 
       // Create Sprints
       JaxNewAgileSprint sprint1 = newSprint(DemoArtifactToken.SAW_Sprint_1);
-      try (Response sprint1Response = agile.createSprint(sprint1.getTeamId(), sprint1)) {
+      try (Response sprint1Response = agileEp.createSprint(sprint1.getTeamId(), sprint1)) {
          Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
       }
       JaxNewAgileSprint sprint2 = newSprint(DemoArtifactToken.SAW_Sprint_2);
-      try (Response sprint2Response = agile.createSprint(sprint2.getTeamId(), sprint2)) {
+      try (Response sprint2Response = agileEp.createSprint(sprint2.getTeamId(), sprint2)) {
          Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
       }
+
       // Add items to Sprint
       JaxAgileItem completedItems = new JaxAgileItem();
       completedItems.setSprintId(DemoArtifactToken.SAW_Sprint_1.getId());
@@ -357,9 +358,9 @@ public class Pdd93CreateDemoAgile {
             inworkItems.getIds().add(workItem.getId());
          }
       }
-      result = agile.updateItems(inworkItems);
+      result = agileEp.updateItems(inworkItems);
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
-      result = agile.updateItems(completedItems);
+      result = agileEp.updateItems(completedItems);
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
       Artifact sprint1Art = AtsApiService.get().getQueryServiceIde().getArtifact(sprint1.getId());
@@ -382,21 +383,19 @@ public class Pdd93CreateDemoAgile {
       changes.execute();
 
       // Transition First Sprint to completed
-      changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type - 3");
       IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
          DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
       TransitionData transData = new TransitionData("Transition Agile Stprint", Arrays.asList(sprint),
-         TeamState.Completed.getName(), null, null, changes, TransitionOption.OverrideAssigneeCheck);
+         TeamState.Completed.getName(), null, null, null, TransitionOption.OverrideAssigneeCheck);
       TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
       if (results.isErrors()) {
          throw new OseeStateException("Exception transitioning sprint: %s", results.toString());
       }
-      changes.execute();
 
       // Create Feature Groups
       for (String name : Arrays.asList("Communications", "UI", "Documentation", "Framework")) {
          JaxNewAgileFeatureGroup featureGroup = newFeatureGroup(name);
-         try (Response featGroup = agile.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup)) {
+         try (Response featGroup = agileEp.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup)) {
             Assert.isTrue(Response.Status.CREATED.getStatusCode() == featGroup.getStatus());
          }
       }
@@ -482,10 +481,11 @@ public class Pdd93CreateDemoAgile {
          "Communications", "10/03/2016"));
 
       int x = 1;
-      for (JaxAtsObject jaxWorkItem : agileEp.getSprintItemsAsJax(teamId, sprint.getId()).getAtsObjects()) {
+      List<JaxAtsObject> jaxObjects = agileEp.getSprintItemsAsJax(teamId, sprint.getId()).getAtsObjects();
+      for (JaxAtsObject jaxWorkItem : jaxObjects) {
          SprintItemData data = getSprintData(datas, x++, jaxWorkItem);
          if (data == null) {
-            throw new RuntimeException("data is null");
+            throw new OseeStateException("data is null for " + jaxWorkItem);
          }
          String featureGroupName = data.getFeature();
          if (Strings.isValid(featureGroupName)) {

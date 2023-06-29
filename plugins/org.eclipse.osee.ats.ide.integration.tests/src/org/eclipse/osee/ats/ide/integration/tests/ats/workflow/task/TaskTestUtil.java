@@ -45,8 +45,10 @@ public class TaskTestUtil {
          return Result.TrueResult;
       }
       // Assign current user if unassigned
-      if (taskArt.getStateMgr().isUnAssigned()) {
-         taskArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getCurrentUser());
+      if (taskArt.isUnAssigned()) {
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Transition");
+         changes.setAssignee(taskArt, AtsApiService.get().getUserService().getCurrentUser());
+         changes.executeIfNeeded();
       }
       if (estimatedHours > 0.0) {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);

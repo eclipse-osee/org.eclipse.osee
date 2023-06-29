@@ -320,6 +320,9 @@ public class AtsTestUtilCore {
          AtsApiService.get().getActionService().createAction(null, getTitle("Team WF", postFixName), "description",
             ChangeTypes.Improvement, "1", false, null, Arrays.asList(testAi), new Date(), getUser(), null, changes);
 
+      if (result.getResults().isErrors()) {
+         throw new OseeStateException("Error creating action %s", result.getResults().toString());
+      }
       actionArt = AtsApiService.get().getWorkItemService().getAction(result.getAction().getStoreObject());
       teamWf = AtsApiService.get().getWorkItemService().getTeamWf(result.getFirstTeam().getStoreObject());
 
@@ -529,20 +532,25 @@ public class AtsTestUtilCore {
    /**
     * Deletes any artifact with name that starts with title
     */
-   public static void cleanupSimpleTest(String title) throws Exception {
+   public static void cleanupSimpleTest(String title) {
       cleanupSimpleTest(Arrays.asList(title));
    }
 
    /**
     * Deletes all artifacts with names that start with any title given
     */
-   public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
+   public static void cleanupSimpleTest(Collection<String> titles) {
       List<ArtifactToken> artifacts = new ArrayList<>();
       for (String title : titles) {
          artifacts.addAll(AtsApiService.get().getQueryService().getArtifactsFromName(title,
             AtsApiService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS));
       }
-      AtsApiService.get().getStoreService().purgeArtifacts(artifacts);
+      if (AtsApiService.get().isIde()) {
+         AtsApiService.get().getStoreService().purgeArtifacts(artifacts);
+      } else {
+         AtsApiService.get().getStoreService().deleteArtifacts(artifacts);
+      }
+
    }
 
    public static Result transitionTo(AtsTestUtilState atsTestUtilState, AtsUser user,
@@ -552,7 +560,7 @@ public class AtsTestUtilCore {
 
    public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, AtsUser user,
       TransitionOption... transitionOptions) {
-      if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.getStateMgr().isInState(AtsTestUtilState.Analyze)) {
+      if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
 

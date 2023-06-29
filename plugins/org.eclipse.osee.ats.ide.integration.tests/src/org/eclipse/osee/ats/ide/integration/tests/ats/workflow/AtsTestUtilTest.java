@@ -75,8 +75,8 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getTeamDefinition());
       String atsId = AtsTestUtil.getTeamWf().getAtsId();
       Assert.assertTrue(atsId.startsWith("TW"));
-      Assert.assertEquals(1, AtsTestUtil.getTeamWf().getStateMgr().getAssignees().size());
-      Assert.assertEquals(DemoUsers.Joe_Smith, AtsTestUtil.getTeamWf().getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(1, AtsTestUtil.getTeamWf().getAssignees().size());
+      Assert.assertEquals(DemoUsers.Joe_Smith, AtsTestUtil.getTeamWf().getAssignees().iterator().next());
    }
 
    public void testGetTeamWf2() {

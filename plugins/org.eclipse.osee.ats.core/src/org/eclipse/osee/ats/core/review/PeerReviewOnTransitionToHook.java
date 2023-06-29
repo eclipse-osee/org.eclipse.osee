@@ -71,7 +71,7 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
       }
       Collection<AtsUser> assignees = atsApi.getUserService().getUsersByUserIds(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
-         peerRev.getStateMgr().setAssignees(assignees);
+         changes.setAssignees(peerRev, assignees);
       }
       peerRev.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", peerRevDef.getName()),
          atsApi.getUserService().getCurrentUser().getUserId());

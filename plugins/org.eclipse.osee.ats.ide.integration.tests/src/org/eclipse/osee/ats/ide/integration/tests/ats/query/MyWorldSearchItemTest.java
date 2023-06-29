@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -38,15 +38,15 @@ public class MyWorldSearchItemTest {
       AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       MyWorldSearchItem search = new MyWorldSearchItem("Search", currentUser);
       Collection<Artifact> results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 17, IAtsWorkItem.class);
-      DemoTestUtil.assertTypes(results, 13, IAtsTeamWorkflow.class);
+      DemoTestUtil.assertTypes(results, 11, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 8, IAtsTeamWorkflow.class);
       DemoTestUtil.assertTypes(results, 2, IAtsDecisionReview.class);
-      DemoTestUtil.assertTypes(results, 2, IAtsPeerToPeerReview.class);
+      DemoTestUtil.assertTypes(results, 1, IAtsPeerToPeerReview.class);
 
       search = new MyWorldSearchItem("Search",
          AtsApiService.get().getUserService().getUserByUserId(DemoUsers.Kay_Jones.getUserId()));
       results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 14, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 12, IAtsWorkItem.class);
       DemoTestUtil.assertTypes(results, 1, IAtsPeerToPeerReview.class);
    }
 

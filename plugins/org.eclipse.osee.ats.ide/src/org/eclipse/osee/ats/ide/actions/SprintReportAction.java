@@ -188,7 +188,7 @@ public class SprintReportAction extends AbstractAtsAction {
                // Add points per assignee
                List<AtsUser> assignees = null;
                if (forBacklog) {
-                  assignees = sprintItem.getStateMgr().getAssignees();
+                  assignees = sprintItem.getAssignees();
                } else {
                   assignees = atsApi.getImplementerService().getImplementers(sprintItem);
                }

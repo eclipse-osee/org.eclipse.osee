@@ -52,7 +52,7 @@ public class EarnedValueReportOperationTest {
       // Run report and validate results
       EarnedValueReportOperation earnedValueOperation2 = new EarnedValueReportOperation("report2", workPackages);
       Operations.executeWorkAndCheckStatus(earnedValueOperation2);
-      Assert.assertEquals(3, earnedValueOperation2.getResults().size());
+      Assert.assertEquals(4, earnedValueOperation2.getResults().size());
       int num01 = 0, num03 = 0;
       for (EarnedValueReportResult result : earnedValueOperation2.getResults()) {
          String id = result.getValue(EarnedValueReportOperation.Work_Package_Id);
@@ -64,7 +64,7 @@ public class EarnedValueReportOperationTest {
             Assert.fail(String.format("Unexpected result [%s]", id));
          }
       }
-      Assert.assertEquals("Should be 2 items with WP_01, was %d", 2, num01);
+      Assert.assertEquals("Should be 3 items with WP_01, was %d", 3, num01);
       Assert.assertEquals("Should be 1 items with WP_03, was %d", 1, num03);
    }
 

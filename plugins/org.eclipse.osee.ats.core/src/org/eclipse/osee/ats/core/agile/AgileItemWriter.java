@@ -71,15 +71,15 @@ public class AgileItemWriter {
                if (atsApi.getWorkItemService().getCurrentStateName(workItem).equals(newItem.getToState())) {
                   Collection<AtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
                   resolveAssignees(toStateAssignees);
-                  workItem.getStateMgr().setAssignees(toStateAssignees);
-                  changes.add(workItem);
+                  changes.setAssignees(workItem, toStateAssignees);
                }
                // transition change
                else {
                   Collection<AtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
                   resolveAssignees(toStateAssignees);
                   TransitionData transData = new TransitionData("Transition Agile Workflow", Arrays.asList(workItem),
-                     newItem.getToState(), toStateAssignees, "Cancelled via Agile Kanban", changes, TransitionOption.OverrideAssigneeCheck);
+                     newItem.getToState(), toStateAssignees, "Cancelled via Agile Kanban", changes,
+                     TransitionOption.OverrideAssigneeCheck);
                   transData.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
                   TransitionManager mgr = new TransitionManager(transData);
                   TransitionResults results = new TransitionResults();
@@ -156,7 +156,7 @@ public class AgileItemWriter {
          if (newItem.isSetAssignees()) {
             Collection<AtsUser> assignees = getAssignees(newItem.getAssigneesAccountIds());
             for (IAtsWorkItem workItem : getWorkItems()) {
-               workItem.getStateMgr().setAssignees(assignees);
+               changes.setAssignees(workItem, assignees);
                changes.add(workItem);
             }
 

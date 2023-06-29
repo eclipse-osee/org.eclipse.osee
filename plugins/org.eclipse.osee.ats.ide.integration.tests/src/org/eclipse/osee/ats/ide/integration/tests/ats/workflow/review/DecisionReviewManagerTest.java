@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -81,7 +82,7 @@ public class DecisionReviewManagerTest {
             Artifacts.getDirtyReport(AtsApiService.get().getQueryServiceIde().getArtifact(decRev))),
          AtsApiService.get().getQueryServiceIde().getArtifact(decRev).isDirty());
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getCurrentStateName());
-      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getAssigneesStr());
 
    }
 
@@ -111,7 +112,7 @@ public class DecisionReviewManagerTest {
             Artifacts.getDirtyReport(AtsApiService.get().getQueryServiceIde().getArtifact(decRev))),
          AtsApiService.get().getQueryServiceIde().getArtifact(decRev).isDirty());
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decRev.getCurrentStateName());
-      Assert.assertEquals("UnAssigned", decRev.getStateMgr().getAssigneesStr());
+      Assert.assertEquals("UnAssigned", decRev.getAssigneesStr());
 
    }
 
@@ -132,7 +133,7 @@ public class DecisionReviewManagerTest {
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getCurrentStateName());
-      Assert.assertEquals("Alex Kay", decRev.getStateMgr().getAssigneesStr());
+      Assert.assertEquals("Alex Kay", decRev.getAssigneesStr());
       Assert.assertEquals(TeamState.Implement.getName(),
          AtsApiService.get().getAttributeResolver().getSoleAttributeValue(decRev, AtsAttributeTypes.RelatedToState,
             ""));
@@ -156,7 +157,7 @@ public class DecisionReviewManagerTest {
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());
-      Assert.assertEquals("UnAssigned", decRev.getStateMgr().getAssigneesStr());
+      Assert.assertEquals("UnAssigned", decRev.getAssigneesStr());
    }
 
    @org.junit.Test
@@ -172,7 +173,7 @@ public class DecisionReviewManagerTest {
       Assert.assertNotNull(decRev);
       Assert.assertEquals("Should we do this?  Yes will require followup, No will not", decRev.getName());
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getCurrentStateName());
-      Assert.assertEquals(DemoUsers.Joe_Smith.getName(), decRev.getStateMgr().getAssigneesStr());
+      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getName(), decRev.getAssigneesStr());
       Assert.assertEquals(TeamState.Analyze.getName(), AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          decRev, AtsAttributeTypes.RelatedToState, ""));
       Assert.assertEquals(ReviewBlockType.Commit.name(),

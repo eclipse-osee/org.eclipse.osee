@@ -147,10 +147,10 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          if (!workItem.isGoal()) {
             writer.writeStringField("TeamName", ActionPage.getTeamStr(atsApi, workItemArt));
          }
-         writer.writeStringField("Assignees", workItem.getStateMgr().getAssigneesStr());
+         writer.writeStringField("Assignees", workItem.getAssigneesStr());
          if (options.contains(WorkItemWriterOptions.WriteRelatedAsTokens)) {
             writer.writeArrayFieldStart("AssigneesTokens");
-            for (AtsUser assignee : workItem.getStateMgr().getAssignees()) {
+            for (AtsUser assignee : workItem.getAssignees()) {
                writer.writeStartObject();
                writer.writeStringField("id", assignee.getIdString());
                writer.writeStringField("name", assignee.getName());
@@ -229,7 +229,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       AttributeReadable<Object> attr =
          action.getAttributeById(action.getSoleAttributeId(AtsAttributeTypes.CurrentState));
       writer.writeArrayFieldStart("AssigneesTokens");
-      for (AtsUser assignee : workItem.getStateMgr().getAssignees()) {
+      for (AtsUser assignee : workItem.getAssignees()) {
          writer.writeStartObject();
          writer.writeStringField("id", assignee.getIdString());
          writer.writeStringField("name", assignee.getName());

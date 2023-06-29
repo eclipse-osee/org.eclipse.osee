@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
  */
 public interface IAtsPeerReviewRoleManager {
 
-   void addOrUpdateUserRole(UserRole userRole);
+   void addOrUpdateUserRole(UserRole userRole, IAtsChangeSet changes);
 
    void removeUserRole(UserRole userRole);
 

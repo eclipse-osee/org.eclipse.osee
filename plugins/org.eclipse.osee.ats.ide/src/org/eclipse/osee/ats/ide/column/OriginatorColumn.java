@@ -123,7 +123,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          AtsUser selectedUser = dialog.getSelection();
          IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Originator");
          for (IAtsWorkItem workItem : workItems) {
-            workItem.getStateMgr().setCreatedBy(selectedUser, true, null, changes);
+            changes.setCreatedBy(workItem, selectedUser, true, null);
             addOriginatorNotification(workItem, changes);
             changes.add(workItem);
          }

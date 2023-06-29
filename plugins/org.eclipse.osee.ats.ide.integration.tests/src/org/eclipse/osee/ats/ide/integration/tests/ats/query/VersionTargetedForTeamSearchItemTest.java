@@ -11,33 +11,33 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
-import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.ide.world.search.NextVersionSearchItem;
+import org.eclipse.osee.ats.ide.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.Test;
 
 /**
- * Test Case for {@link NextVersionSearchItem}
+ * Test Case for {@link VersionTargetedForTeamSearchItem}
  *
  * @author Donald G. Dunne
  */
-public class NextVersionSearchItemTest {
+public class VersionTargetedForTeamSearchItemTest {
 
    @Test
-   public void testByTeam() {
-      IAtsTeamDefinition teamDef =
-         AtsApiService.get().getTeamDefinitionService().getTeamDefinitions(Arrays.asList("SAW SW")).iterator().next();
-      NextVersionSearchItem search = new NextVersionSearchItem(teamDef, LoadView.WorldEditor);
+   public void testByVersion() {
+      IAtsVersion version = AtsApiService.get().getVersionService().getVersionById(DemoArtifactToken.SAW_Bld_2);
+      VersionTargetedForTeamSearchItem search =
+         new VersionTargetedForTeamSearchItem(null, version, false, LoadView.WorldEditor);
       Collection<Artifact> results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 20, IAtsTeamWorkflow.class);
+      DemoTestUtil.assertTypes(results, 14, IAtsTeamWorkflow.class);
    }
 
 }

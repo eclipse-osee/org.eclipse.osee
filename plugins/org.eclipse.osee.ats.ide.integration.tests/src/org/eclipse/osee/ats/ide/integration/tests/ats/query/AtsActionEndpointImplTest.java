@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager.DeleteOption;
@@ -98,7 +99,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Title", "SAW"//
       );
 
-      getFirstAndCount(target, 5);
+      getFirstAndCount(target, 4);
    }
 
    @Test
@@ -109,7 +110,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          AtsAttributeTypes.Priority.getIdString(), "3"//
       );
 
-      getAndCountWorkItems(target, 5);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
@@ -118,7 +119,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Team", codeWfId, //
          "StateType", StateType.Working.name()//
       );
-      getAndCountWorkItems(target, 6);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
@@ -127,7 +128,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Team", codeWfId, //
          "Assignee", "4444", //
          "Assignee", "3333");
-      getAndCountWorkItems(target, 6);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
@@ -136,13 +137,13 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Team", codeWfId, //
          "Originator", "3333" //
       );
-      getAndCountWorkItems(target, 6);
+      getAndCountWorkItems(target, 4);
    }
 
    @Test
    public void testQueryTeam() {
       WebTarget target = createWebTarget("Team", codeWfId);
-      getFirstAndCount(target, 6);
+      getFirstAndCount(target, 4);
    }
 
    @Test
@@ -153,7 +154,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          "Priority", "3", //
          "StateType", StateType.Working.name() //
       );
-      getFirstAndCount(target, 3);
+      getFirstAndCount(target, 2);
    }
 
    public TeamWorkFlowArtifact getCodeWorkflow() {
@@ -539,7 +540,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionAssigneesByKey() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      List<AtsUser> assignees = teamWf.getStateMgr().getAssignees();
+      List<AtsUser> assignees = teamWf.getAssignees();
       Assert.assertEquals(1, assignees.size());
       Assert.assertEquals(DemoUsers.Joe_Smith, assignees.iterator().next());
 
@@ -547,7 +548,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          Arrays.asList(DemoUsers.Joe_Smith.getIdString(), DemoUsers.Kay_Jones.getIdString()));
 
       teamWf.reloadAttributesAndRelations();
-      assignees = teamWf.getStateMgr().getAssignees();
+      assignees = teamWf.getAssignees();
       Assert.assertEquals(2, assignees.size());
       Assert.assertTrue(assignees.contains(AtsApiService.get().getUserService().getUserById(DemoUsers.Kay_Jones)));
       Assert.assertTrue(assignees.contains(AtsApiService.get().getUserService().getUserById(DemoUsers.Joe_Smith)));
@@ -556,7 +557,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Assignee.name(),
          Arrays.asList(DemoUsers.Joe_Smith.getIdString()));
       teamWf.reloadAttributesAndRelations();
-      assignees = teamWf.getStateMgr().getAssignees();
+      assignees = teamWf.getAssignees();
       Assert.assertEquals(1, assignees.size());
       Assert.assertEquals(DemoUsers.Joe_Smith, assignees.iterator().next());
    }

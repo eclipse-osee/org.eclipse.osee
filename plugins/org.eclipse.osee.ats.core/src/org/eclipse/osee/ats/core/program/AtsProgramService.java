@@ -473,7 +473,7 @@ public class AtsProgramService implements IAtsProgramService {
       if (workTypes.contains(WorkType.All)) {
          throw new OseeArgumentException("Invalid option ALL for getWorkflow");
       }
-      Set<IAtsTeamWorkflow> teamArts = new HashSet<>();
+      Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
       Collection<IAtsTeamDefinition> workTypeTeamDefs = getTeamDefs(program, workTypes);
       if (workTypeTeamDefs.size() > 0) {
 
@@ -485,14 +485,14 @@ public class AtsProgramService implements IAtsProgramService {
             useWorkItem = (IAtsObject) ((IAtsTeamWorkflow) useWorkItem).getParentAction().getStoreObject();
          }
          if (useWorkItem != null && useWorkItem instanceof IAtsAction) {
-            for (IAtsTeamWorkflow team : atsApi.getWorkItemService().getTeams(useWorkItem)) {
-               if (workTypeTeamDefs.contains(team.getTeamDefinition())) {
-                  teamArts.add(team);
+            for (IAtsTeamWorkflow teamWf : atsApi.getWorkItemService().getTeams(useWorkItem)) {
+               if (workTypeTeamDefs.contains(teamWf.getTeamDefinition())) {
+                  teamWfs.add(teamWf);
                }
             }
          }
       }
-      return teamArts;
+      return teamWfs;
    }
 
    @Override

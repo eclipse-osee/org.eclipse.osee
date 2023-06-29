@@ -91,7 +91,7 @@ public class WorkflowMetrics {
          if (art instanceof AbstractWorkflowArtifact) {
             awas.add((AbstractWorkflowArtifact) art);
             Collection<AtsUser> users = new HashSet<>();
-            users.addAll(((AbstractWorkflowArtifact) art).getStateMgr().getAssignees());
+            users.addAll(((AbstractWorkflowArtifact) art).getAssignees());
             assignees.addAll(users);
             assigneesAssignedOrCompleted.addAll(users);
             for (AtsUser user : users) {

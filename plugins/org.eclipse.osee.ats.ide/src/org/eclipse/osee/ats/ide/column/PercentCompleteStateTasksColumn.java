@@ -87,8 +87,7 @@ public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements
          return rollPercent.intValue();
       }
       if (artifact instanceof TeamWorkFlowArtifact) {
-         return getPercentCompleteFromStateTasks(artifact,
-            ((TeamWorkFlowArtifact) artifact).getStateMgr().getCurrentState());
+         return getPercentCompleteFromStateTasks(artifact, ((TeamWorkFlowArtifact) artifact).getCurrentState());
       }
       return 0;
    }
