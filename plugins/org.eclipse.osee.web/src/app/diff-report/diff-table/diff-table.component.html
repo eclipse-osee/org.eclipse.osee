@@ -76,14 +76,14 @@
 					<ng-container *ngIf="link | async as _link">
 						<ng-container *ngIf="artifact.changeReport">
 							<br />
-							<a href="{{ _link + artifact.changeReport }}"
+							<a href="{{ _link + '/' + artifact.changeReport }}"
 								>REQ</a
 							>
 						</ng-container>
 						<ng-container *ngIf="artifact.icdDiff">
 							<br /><a
 								target="_blank"
-								href="{{ _link + artifact.icdDiff }}"
+								href="{{ _link + '/' + artifact.icdDiff }}"
 								>ICD</a
 							>
 						</ng-container>
