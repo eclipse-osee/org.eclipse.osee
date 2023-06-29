@@ -890,8 +890,7 @@ public class MimIcdGenerator {
          "sShort").replace("unsigned integer", "uInteger").replace("integer", "sInteger");
       String units =
          (platformType == null || platformType.getInterfacePlatformTypeUnits() == Strings.EMPTY_STRING) ? "n/a" : platformType.getInterfacePlatformTypeUnits();
-      String validRange =
-         (platformType == null || platformType.getInterfacePlatformTypeValidRangeDescription() == Strings.EMPTY_STRING) ? "n/a" : platformType.getInterfacePlatformTypeValidRangeDescription();
+      String validRange = getValidRangeString(element, platformType, dataType);
 
       String alterable = element.getInterfaceElementAlterable() ? "Yes" : "No";
       String description = element.getDescription() == Strings.EMPTY_STRING ? "n/a" : element.getDescription();
@@ -944,30 +943,7 @@ public class MimIcdGenerator {
       String units = elementToken.getUnits().isEmpty() ? "n/a" : elementToken.getUnits();
       Integer startIndex = elementToken.getInterfaceElementIndexStart();
       Integer endIndex = elementToken.getInterfaceElementIndexEnd();
-      String minVal =
-         elementToken.getInterfacePlatformTypeMinval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMinval();
-      String maxVal =
-         elementToken.getInterfacePlatformTypeMaxval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMaxval();
-      String validRange = "";
-      if (dataType.equals("enumeration")) {
-         validRange = "see enumerated literals";
-      } else if (dataType.equals("boolean")) {
-         validRange = "0 to 1";
-      } else if (platformType != null && platformType.isValid()) {
-         if (minVal.equals(maxVal)) {
-            validRange = minVal;
-         } else if (maxVal.equals("n/a")) {
-            validRange = minVal;
-         } else if (minVal.equals("n/a")) {
-            validRange = maxVal;
-         } else {
-            validRange = minVal + " to " + maxVal;
-         }
-         if ((validRange.isEmpty() || validRange.equals(
-            "n/a")) && !platformType.getInterfacePlatformTypeValidRangeDescription().isEmpty()) {
-            validRange = platformType.getInterfacePlatformTypeValidRangeDescription();
-         }
-      }
+      String validRange = getValidRangeString(elementToken, platformType, dataType);
 
       String alterable = elementToken.getInterfaceElementAlterable() ? "Yes" : "No";
 
@@ -1076,6 +1052,35 @@ public class MimIcdGenerator {
       }
 
       return createStringLengthArray(values);
+   }
+
+   private String getValidRangeString(InterfaceStructureElementToken elementToken, PlatformTypeToken platformType,
+      String dataType) {
+      String minVal =
+         elementToken.getInterfacePlatformTypeMinval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMinval();
+      String maxVal =
+         elementToken.getInterfacePlatformTypeMaxval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMaxval();
+      String validRange = "";
+      if (dataType.equals("enumeration")) {
+         validRange = "see enumerated literals";
+      } else if (dataType.equals("boolean")) {
+         validRange = "0 to 1";
+      } else if (platformType != null) {
+         if (minVal.equals(maxVal)) {
+            validRange = minVal;
+         } else if (maxVal.equals("n/a")) {
+            validRange = minVal;
+         } else if (minVal.equals("n/a")) {
+            validRange = maxVal;
+         } else {
+            validRange = minVal + " to " + maxVal;
+         }
+         if ((validRange.isEmpty() || validRange.equals(
+            "n/a")) && !platformType.getInterfacePlatformTypeValidRangeDescription().isEmpty()) {
+            validRange = platformType.getInterfacePlatformTypeValidRangeDescription();
+         }
+      }
+      return validRange;
    }
 
    private void createMessageSubMessageSummary(ExcelWorkbookWriter writer, ArtifactReadable connection,

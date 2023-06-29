@@ -58,6 +58,9 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
 
    List<InterfaceMessageToken> getAllRelatedFromSubMessage(InterfaceSubMessageToken subMessage);
 
+   InterfaceMessageToken getWithRelations(BranchId branch, ArtifactId messageId,
+      List<RelationTypeSide> followRelations);
+
    InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId);
 
    InterfaceSubMessageToken getMessageHeader(InterfaceMessageToken message);
