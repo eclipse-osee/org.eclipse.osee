@@ -174,6 +174,18 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
+   public InterfaceMessageToken getWithRelations(BranchId branch, ArtifactId messageId,
+      List<RelationTypeSide> followRelations) {
+      try {
+         return this.setUpMessage(branch, this.getAccessor().get(branch, messageId, followRelations));
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return InterfaceMessageToken.SENTINEL;
+   }
+
+   @Override
    public InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId) {
       try {
          List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceConnectionMessage_Connection,
