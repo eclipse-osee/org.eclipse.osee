@@ -129,8 +129,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Make current user assignee for convenience to developer
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - set assignee");
-      teamWf.getStateMgr().addAssignee(AtsApiService.get().getUserService().getCurrentUser());
-      changes.add(teamWf);
+      changes.addAssignee(teamWf, AtsApiService.get().getUserService().getCurrentUser());
       changes.execute();
 
       validateActionAtStart(teamWf);

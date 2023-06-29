@@ -77,8 +77,8 @@ public class WfeAssigneesHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  if (!isEditable && !workItem.getStateMgr().getAssignees().contains(
-                     AtsCoreUsers.UNASSIGNED_USER) && !workItem.getStateMgr().getAssignees().contains(
+                  if (!isEditable && !workItem.getAssignees().contains(
+                     AtsCoreUsers.UNASSIGNED_USER) && !workItem.getAssignees().contains(
                         AtsApiService.get().getUserService().getCurrentUser())) {
                      AWorkbench.popup("ERROR", "You must be assigned to modify assignees.\nContact current Assignee.");
                      return;
@@ -106,11 +106,11 @@ public class WfeAssigneesHeader extends Composite {
          try {
             if (workItem.isCompletedOrCancelled()) {
                value = "N/A";
-            } else if (workItem.getStateMgr().getAssignees().isEmpty()) {
+            } else if (workItem.getAssignees().isEmpty()) {
                value = "Error: State has no assignees";
             } else {
-               valueLabel.setToolTipText(workItem.getStateMgr().getAssigneesStr());
-               value = workItem.getStateMgr().getAssigneesStr();
+               valueLabel.setToolTipText(workItem.getAssigneesStr());
+               value = workItem.getAssigneesStr();
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -14,8 +14,8 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -26,19 +26,24 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.Priorities;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -80,10 +85,6 @@ public interface IAtsWorkItemService {
    ITeamWorkflowProvidersLazy getTeamWorkflowProviders();
 
    IAtsWorkItem getWorkItemByAnyId(String actionId);
-
-   void clearAssignees(IAtsWorkItem workItem, IAtsChangeSet changes);
-
-   void setAssignees(IAtsWorkItem workItem, Set<AtsUser> assignees, IAtsChangeSet changes);
 
    IAtsWorkItem getWorkItem(ArtifactToken artifact);
 
@@ -178,5 +179,64 @@ public interface IAtsWorkItemService {
    boolean isFavorite(IAtsWorkItem workItem, AtsUser user);
 
    boolean isSubcribed(IAtsWorkItem workItem, AtsUser user);
+
+   List<AtsUser> getAssignees(IAtsWorkItem workItem);
+
+   default public boolean isUnAssignedSolely(IAtsWorkItem workItem) {
+      return getAssignees(workItem).size() == 1 && isUnAssigned(workItem);
+   }
+
+   default public String getAssigneesStr(IAtsWorkItem workItem) {
+      return Collections.toString("; ", getAssignees(workItem));
+   }
+
+   default public String getAssigneesStr(IAtsWorkItem workItem, int length) {
+      return Strings.truncate(Collections.toString("; ", getAssignees(workItem)), length);
+   }
+
+   default public boolean isUnAssigned(IAtsWorkItem workItem) {
+      return getAssignees(workItem).contains(AtsCoreUsers.UNASSIGNED_USER);
+   }
+
+   default public long getTimeInState(IAtsWorkItem workItem, IStateToken state) {
+      if (state == null) {
+         return 0;
+      }
+      IAtsLogItem logItem = getStateStartedData(workItem, state);
+      if (logItem == null) {
+         return 0;
+      }
+      return new Date().getTime() - logItem.getDate().getTime();
+   }
+
+   default public IAtsLogItem getStateStartedData(IAtsWorkItem workItem, IStateToken state) {
+      return getStateStartedData(workItem, state.getName());
+   }
+
+   default public IAtsLogItem getStateStartedData(IAtsWorkItem workItem, String stateName) {
+      return workItem.getLog().getStateEvent(LogType.StateEntered, stateName);
+   }
+
+   default public IAtsLogItem getStateCompletedData(IAtsWorkItem workItem, IStateToken state) {
+      return getStateCompletedData(workItem, state.getName());
+   }
+
+   default public IAtsLogItem getStateCompletedData(IAtsWorkItem workItem, String stateName) {
+      return workItem.getLog().getStateEvent(LogType.StateComplete, stateName);
+   }
+
+   default public IAtsLogItem getStateCancelledData(IAtsWorkItem workItem, IStateToken state) {
+      return getStateCancelledData(workItem, state.getName());
+   }
+
+   default public IAtsLogItem getStateCancelledData(IAtsWorkItem workItem, String stateName) {
+      return workItem.getLog().getStateEvent(LogType.StateCancelled, stateName);
+   }
+
+   default public double getTimeInState(IAtsWorkItem workItem) {
+      return getTimeInState(workItem, workItem.getCurrentState());
+   }
+
+   IAtsStateManager createStateManager(IAtsWorkItem workItem);
 
 }

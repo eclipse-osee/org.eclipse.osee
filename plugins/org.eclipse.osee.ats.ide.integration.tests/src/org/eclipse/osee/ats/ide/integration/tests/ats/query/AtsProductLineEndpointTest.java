@@ -11,11 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.resource;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.junit.Assert;
 import org.junit.Test;

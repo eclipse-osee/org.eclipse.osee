@@ -19,11 +19,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    OrcsWriterEndpointTest.class,
-   AtsActionEndpointImplTest.class,
-   AtsActionEndpointImplOptionsTest.class,
-   AtsProductLineEndpointTest.class,
-   AtsAttributeEndpointImplTest.class,
-   AtsActionUiEndpointTest.class,
    ConvertResourceTest.class,
    UserResourceTest.class,
    StateResourceTest.class

@@ -108,16 +108,17 @@ public class PeerToPeerReviewColumnsTest {
 
       UserRole role = new UserRole(ReviewRole.Author, DemoUsers.Alex_Kay);
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerArt).getRoleManager();
-      roleMgr.addOrUpdateUserRole(role);
+      roleMgr.addOrUpdateUserRole(role, changes);
 
       role = new UserRole(ReviewRole.Moderator, DemoUsers.Jason_Michael);
-      roleMgr.addOrUpdateUserRole(role);
+      roleMgr.addOrUpdateUserRole(role, changes);
 
       role = new UserRole(ReviewRole.Reviewer, DemoUsers.Joe_Smith);
-      roleMgr.addOrUpdateUserRole(role);
+      roleMgr.addOrUpdateUserRole(role, changes);
       role = new UserRole(ReviewRole.Reviewer, DemoUsers.Kay_Jones);
-      roleMgr.addOrUpdateUserRole(role);
+      roleMgr.addOrUpdateUserRole(role, changes);
       roleMgr.saveToArtifact(changes);
+
       changes.add(peerArt);
       changes.execute();
 

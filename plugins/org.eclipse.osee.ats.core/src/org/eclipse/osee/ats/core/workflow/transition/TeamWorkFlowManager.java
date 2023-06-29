@@ -79,7 +79,7 @@ public class TeamWorkFlowManager {
          }
          return Result.TrueResult;
       }
-      if (teamWf.getStateMgr().isInState(TeamState.Endorse)) {
+      if (teamWf.isInState(TeamState.Endorse)) {
          Result result = processEndorseState(popup, teamWf, currentStateUser, transitionToAssignees, date, changes);
          if (result.isFalse()) {
             return result;
@@ -89,7 +89,7 @@ public class TeamWorkFlowManager {
          return Result.TrueResult;
       }
 
-      if (teamWf.getStateMgr().isInState(TeamState.Analyze)) {
+      if (teamWf.isInState(TeamState.Analyze)) {
          Result result = processAnalyzeState(popup, teamWf, currentStateUser, transitionToAssignees, date, changes);
          if (result.isFalse()) {
             return result;
@@ -100,7 +100,7 @@ public class TeamWorkFlowManager {
          return Result.TrueResult;
       }
 
-      if (teamWf.getStateMgr().isInState(TeamState.Authorize)) {
+      if (teamWf.isInState(TeamState.Authorize)) {
          Result result = processAuthorizeState(popup, teamWf, currentStateUser, transitionToAssignees, date, changes);
          if (result.isFalse()) {
             return result;
@@ -111,7 +111,7 @@ public class TeamWorkFlowManager {
          return Result.TrueResult;
       }
 
-      if (teamWf.getStateMgr().isInState(TeamState.Implement)) {
+      if (teamWf.isInState(TeamState.Implement)) {
          Result result = transitionToState(popup, teamWf, TeamState.Completed, transitionToAssignees, changes, atsApi);
          if (result.isFalse()) {
             return result;
@@ -174,7 +174,7 @@ public class TeamWorkFlowManager {
 
    public Result setEndorseData(boolean popup, String propRes, int statePercentComplete, double stateHoursSpent,
       AtsUser user, Date date, IAtsChangeSet changes) {
-      if (!teamWf.getStateMgr().isInState(TeamState.Endorse)) {
+      if (!teamWf.isInState(TeamState.Endorse)) {
          Result result = new Result("Action not in Endorse state");
          if (result.isFalse() && popup) {
             return result;
@@ -187,7 +187,7 @@ public class TeamWorkFlowManager {
 
    public Result setAnalyzeData(boolean popup, String problem, String propRes, int statePercentComplete,
       double stateHoursSpent, AtsUser user, Date date, IAtsChangeSet changes) {
-      if (!teamWf.getStateMgr().isInState(TeamState.Analyze)) {
+      if (!teamWf.isInState(TeamState.Analyze)) {
          Result result = new Result("Action not in Analyze state");
          if (result.isFalse() && popup) {
             return result;
@@ -200,7 +200,7 @@ public class TeamWorkFlowManager {
 
    public Result setAuthorizeData(boolean popup, int statePercentComplete, double stateHoursSpent, AtsUser user,
       Date date, IAtsChangeSet changes) {
-      if (!teamWf.getStateMgr().isInState(TeamState.Authorize)) {
+      if (!teamWf.isInState(TeamState.Authorize)) {
          Result result = new Result("Action not in Authorize state");
          if (result.isFalse() && popup) {
             return result;
@@ -213,7 +213,7 @@ public class TeamWorkFlowManager {
 
    public Result setImplementData(boolean popup, String resolution, int statePercentComplete, double stateHoursSpent,
       AtsUser user, Date date, IAtsChangeSet changes) {
-      if (!teamWf.getStateMgr().isInState(TeamState.Implement)) {
+      if (!teamWf.isInState(TeamState.Implement)) {
          Result result = new Result("Action not in Implement state");
          if (result.isFalse() && popup) {
             return result;

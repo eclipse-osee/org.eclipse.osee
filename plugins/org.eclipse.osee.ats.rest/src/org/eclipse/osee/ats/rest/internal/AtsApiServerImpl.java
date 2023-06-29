@@ -105,7 +105,7 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
 
       relationResolver = new AtsRelationResolverServiceImpl(this, orcsApi);
 
-      storeService = new AtsStoreServiceImpl(this, orcsApi, stateFactory, logFactory);
+      storeService = new AtsStoreServiceImpl(this, orcsApi);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService, orcsApi);
       actionableItemManager = new ActionableItemServiceImpl(attributeResolverService, this);

@@ -48,8 +48,7 @@ public class AtsForceAssigneesToTeamLeadsWorkItemHook implements IAtsTransitionH
          Collection<AtsUser> teamLeads =
             atsApi.getTeamDefinitionService().getLeads(((IAtsTeamWorkflow) workItem).getTeamDefinition());
          if (!teamLeads.isEmpty()) {
-            workItem.getStateMgr().setAssignees(teamLeads);
-            changes.add(workItem);
+            changes.setAssignees(workItem, teamLeads);
          }
       }
    }

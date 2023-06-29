@@ -130,7 +130,7 @@ public class CreateTasksWorkflow {
                   CreateTeamOption.Duplicate_If_Exists);
 
                if (createTasksOptions.contains(CreateTasksOption.CreateWorkflowsAsOseeSystem)) {
-                  newTeamWf.getStateMgr().internalSetCreatedBy(AtsCoreUsers.SYSTEM_USER, changes);
+                  changes.setCreatedBy(newTeamWf, AtsCoreUsers.SYSTEM_USER, false, null);
                }
 
                destTeam = newTeamWf;

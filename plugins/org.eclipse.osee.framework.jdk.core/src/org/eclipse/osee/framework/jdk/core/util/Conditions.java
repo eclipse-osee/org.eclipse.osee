@@ -232,8 +232,8 @@ public final class Conditions {
       }
    }
 
-   public static void assertNotNullOrEmpty(String title, String message, Object... data) {
-      if (!Strings.isValid(title)) {
+   public static void assertNotNullOrEmpty(String value, String message, Object... data) {
+      if (!Strings.isValid(value)) {
          throw new OseeArgumentException(message, data);
       }
    }

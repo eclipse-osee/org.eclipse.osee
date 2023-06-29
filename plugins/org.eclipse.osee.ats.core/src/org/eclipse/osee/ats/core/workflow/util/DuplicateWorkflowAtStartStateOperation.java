@@ -57,7 +57,7 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
 
          // assignees == add in existing assignees, leads and originator (current user)
          List<AtsUser> assignees = new LinkedList<>();
-         assignees.addAll(teamWf.getStateMgr().getAssignees());
+         assignees.addAll(teamWf.getAssignees());
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
          assignees.addAll(AtsApiService.get().getTeamDefinitionService().getLeads(teamDef));
          AtsUser user = atsApi.getUserService().getCurrentUser();

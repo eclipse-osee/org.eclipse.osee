@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -156,22 +157,25 @@ public class ActionOperations {
             }
          }
       } else if (attrTypeIdOrKey.equals(AttributeKey.Assignee.name())) {
-         String accountIdOrName = values.iterator().next();
-         if (Strings.isNumeric(accountIdOrName)) {
-            AtsUser assignee = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountIdOrName));
-            if (assignee == null) {
-               throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
+         List<AtsUser> assignees = new LinkedList<>();
+         for (String accountIdOrName : values) {
+            if (Strings.isNumeric(accountIdOrName)) {
+               AtsUser assignee = atsApi.getUserService().getUserById(ArtifactId.valueOf(accountIdOrName));
+               if (assignee == null) {
+                  throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
+               } else {
+                  assignees.add(assignee);
+               }
+            } else {
+               AtsUser assignee = atsApi.getUserService().getUserByName(accountIdOrName);
+               if (assignee == null) {
+                  throw new OseeArgumentException("No user with account name [%s]", accountIdOrName);
+               } else {
+                  assignees.add(assignee);
+               }
             }
-            workItem.getStateMgr().addAssignee(assignee);
-            changes.add(workItem);
-         } else {
-            AtsUser assignee = atsApi.getUserService().getUserByName(accountIdOrName);
-            if (assignee == null) {
-               throw new OseeArgumentException("No user with user name [%s]", accountIdOrName);
-            }
-            workItem.getStateMgr().addAssignee(assignee);
-            changes.add(workItem);
          }
+         changes.setAssignees(workItem, assignees);
       } else {
          attrTypeId = getAttributeType(attrTypeIdOrKey);
          if (attrTypeId != null) {
@@ -207,7 +211,11 @@ public class ActionOperations {
       if (changeType.equals(AttributeKey.Assignee.name())) {
          if (artifacts.isEmpty()) {
             IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees");
-            atsApi.getWorkItemService().clearAssignees(workItem, changes);
+            if (workItem.isCompletedOrCancelled()) {
+               changes.clearAssignees(workItem);
+            } else {
+               changes.clearAssignees(workItem);
+            }
             changes.executeIfNeeded();
          } else {
             Set<AtsUser> assignees = new HashSet<>();
@@ -217,7 +225,7 @@ public class ActionOperations {
                assignees.add(user);
             }
             IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees");
-            atsApi.getWorkItemService().setAssignees(workItem, assignees, changes);
+            changes.setAssignees(workItem, assignees);
             changes.executeIfNeeded();
          }
 

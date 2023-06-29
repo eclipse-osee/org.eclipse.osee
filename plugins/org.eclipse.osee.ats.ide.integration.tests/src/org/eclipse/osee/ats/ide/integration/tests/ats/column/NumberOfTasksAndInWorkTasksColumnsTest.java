@@ -49,7 +49,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
 
       IAtsTask task = AtsApiService.get().getTaskService().getTasks(codeArt).iterator().next();
       Collection<AtsUser> taskAssignees = new HashSet<>();
-      taskAssignees.addAll(codeArt.getStateMgr().getAssignees());
+      taskAssignees.addAll(codeArt.getAssignees());
       Result result = TaskTestUtil.transitionToCompleted((TaskArtifact) task, 0.0, 2);
       Assert.assertEquals(true, result.isTrue());
 

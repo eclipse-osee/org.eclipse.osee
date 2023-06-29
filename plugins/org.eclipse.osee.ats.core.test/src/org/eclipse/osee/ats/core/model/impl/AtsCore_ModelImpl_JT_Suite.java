@@ -13,12 +13,11 @@
 
 package org.eclipse.osee.ats.core.model.impl;
 
-import org.eclipse.osee.ats.core.internal.state.StateManagerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({StateManagerTest.class, AtsObjectTest.class, WorkStateTest.class})
+@Suite.SuiteClasses({AtsObjectTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

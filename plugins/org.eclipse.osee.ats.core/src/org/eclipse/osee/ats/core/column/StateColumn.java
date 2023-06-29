@@ -31,6 +31,7 @@ public class StateColumn extends AbstractServicesColumn {
    @Override
    public String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
+         IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          String isBlocked =
             atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.BlockedReason, "");
          String isHold =
@@ -41,15 +42,7 @@ public class StateColumn extends AbstractServicesColumn {
             return hold + block;
          }
 
-         String currStateName = "";
-         if (atsApi.getConfigValue("UseStateAssignAttrs", "true").equals("true")) {
-            currStateName =
-               atsApi.getAttributeResolver().getSoleAttributeValue(atsObject, AtsAttributeTypes.CurrentStateName, "");
-         }
-         if (Strings.isInValid(currStateName)) {
-            currStateName = ((IAtsWorkItem) atsObject).getCurrentStateName();
-         }
-
+         String currStateName = workItem.getCurrentStateName();
          if (Strings.isValid(isBlocked)) {
             return currStateName + " (Blocked)";
          } else if (Strings.isValid(isHold)) {

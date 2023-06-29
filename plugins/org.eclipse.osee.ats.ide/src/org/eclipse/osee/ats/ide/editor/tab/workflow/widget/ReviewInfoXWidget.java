@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -260,16 +261,19 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   }
                   try {
                      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
+                     IAtsChangeSet changes = AtsApiService.get().createChangeSet("Auto Compelte Reviews");
                      for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         AbstractReviewArtifact revArt =
                            (AbstractReviewArtifact) AtsApiService.get().getQueryService().getArtifact(review);
                         if (!revArt.isCompletedOrCancelled()) {
-                           if (revArt.getStateMgr().isUnAssigned()) {
-                              revArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getCurrentUser());
+                           if (revArt.isUnAssigned()) {
+                              changes.setAssignee(revArt, AtsApiService.get().getUserService().getCurrentUser());
                            }
                            awas.add(revArt);
                         }
                      }
+                     changes.execute();
+
                      TransitionData transData = new TransitionData("ATS Auto Complete Reviews",
                         org.eclipse.osee.framework.jdk.core.util.Collections.castAll(awas),
                         TeamState.Completed.getName(), null, null, null,

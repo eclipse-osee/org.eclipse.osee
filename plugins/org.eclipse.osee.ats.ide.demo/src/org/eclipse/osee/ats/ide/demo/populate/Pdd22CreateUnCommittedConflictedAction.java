@@ -76,7 +76,7 @@ public class Pdd22CreateUnCommittedConflictedAction implements IPopulateDemoData
 
          if (!teamWf.isCompletedOrCancelled()) {
             // Reset assignees that may have been overwritten during transition
-            teamWf.getStateMgr().setAssignees(
+            changes.setAssignees(teamWf,
                AtsApiService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
          }
 

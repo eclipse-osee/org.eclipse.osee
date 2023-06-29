@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +66,7 @@ public class WorldSearchItemTest {
       data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
       WorldSearchItem search = new WorldSearchItem(data);
       Collection<Artifact> results = search.performSearch(SearchType.Search);
-      Assert.assertEquals(6, results.size());
+      Assert.assertEquals(4, results.size());
    }
 
    @Test

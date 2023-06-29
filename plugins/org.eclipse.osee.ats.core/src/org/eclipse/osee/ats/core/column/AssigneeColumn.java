@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.Action;
@@ -79,18 +78,13 @@ public class AssigneeColumn extends AbstractServicesColumn {
             pocs) + (implementers.isEmpty() ? "" : "(" + AtsObjects.toString("; ", implementers) + ")");
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         StateType stateType = workItem.getCurrentStateType();
-         if (stateType != null) {
-            if (stateType.isCompletedOrCancelled()) {
-               String implementers = getImplementersStringProvider().getImplementersStr(workItem);
-               if (Strings.isValid(implementers)) {
-                  return "(" + implementers + ")";
-               }
+         if (workItem.isCompletedOrCancelled()) {
+            String implementers = getImplementersStringProvider().getImplementersStr(workItem);
+            if (Strings.isValid(implementers)) {
+               return "(" + implementers + ")";
             }
          }
-         if (atsObject instanceof HasAssignees) {
-            return AtsObjects.toString("; ", ((HasAssignees) atsObject).getAssignees());
-         }
+         return workItem.getAssigneesStr();
       }
       return "";
    }

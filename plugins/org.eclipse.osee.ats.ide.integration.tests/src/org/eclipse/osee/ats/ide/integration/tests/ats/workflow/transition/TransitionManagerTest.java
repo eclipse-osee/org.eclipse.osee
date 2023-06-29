@@ -50,8 +50,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -153,7 +151,6 @@ public class TransitionManagerTest {
       results.clear();
       transData.addTransitionOption(TransitionOption.OverrideAssigneeCheck);
       Assert.assertTrue(transData.isOverrideAssigneeCheck());
-      teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
@@ -161,12 +158,8 @@ public class TransitionManagerTest {
       results.clear();
       transData.removeTransitionOption(TransitionOption.OverrideAssigneeCheck);
       Assert.assertFalse(transData.isOverrideAssigneeCheck());
-      teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByToken(SystemUser.UnAssigned));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(getResultsAndDebug(results, teamArt, transData), results.isEmpty());
-
-      // cleanup test
-      teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByToken(SystemUser.UnAssigned));
    }
 
    private String getResultsAndDebug(TransitionResults results, TeamWorkFlowArtifact teamArt,
@@ -174,7 +167,7 @@ public class TransitionManagerTest {
       StringBuilder sb = new StringBuilder(results.toString());
       sb.append("\n\n");
       sb.append("assignees: ");
-      sb.append(teamArt.getStateMgr().getAssigneesStr());
+      sb.append(teamArt.getAssigneesStr());
       sb.append("\n\n");
       sb.append("transitionOptions: ");
       boolean firstOption = true;

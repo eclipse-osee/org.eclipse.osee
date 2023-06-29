@@ -42,16 +42,16 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    private static final String JOE_SMITH = DemoUsers.Joe_Smith.getName();
    private static final String ALEX_KAY = "Alex Kay";
 
-   private static TeamWorkFlowArtifact teamArt;
+   private static TeamWorkFlowArtifact teamWf;
 
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
       assertFalse("Test should not be run in production db", AtsApiService.get().getStoreService().isProductionDb());
 
-      if (teamArt == null) {
+      if (teamWf == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-         teamArt = (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(getClass().getSimpleName(),
+         teamWf = (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(getClass().getSimpleName(),
             changes).getStoreObject();
          changes.execute();
       }
@@ -61,7 +61,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    @AfterClass
    public static void testCleanup() throws Exception {
       // Test adds the atsForceAssigneesToTeamLeads; remove it before and after test
-      if (teamArt != null) {
+      if (teamWf != null) {
          // StateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
          // authStateDef.removeRule(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
       }
@@ -71,37 +71,39 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
    @Test
    public void testTransitioned() {
-      Assert.assertNotNull(teamArt);
+      Assert.assertNotNull(teamWf);
 
       // assignee should be Joe Smith
-      Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
+      Assert.assertEquals(1, teamWf.getAssignees().size());
       Assert.assertEquals(AtsApiService.get().getUserService().getUserByName(JOE_SMITH),
-         teamArt.getStateMgr().getAssignees().iterator().next());
+         teamWf.getAssignees().iterator().next());
 
       // set assignee to Alex Kay
-      teamArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getUserByName(ALEX_KAY));
-      teamArt.persist(getClass().getSimpleName());
-      Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      changes.setAssignee(teamWf, AtsApiService.get().getUserService().getUserByName(ALEX_KAY));
+      changes.execute();
+
+      Assert.assertEquals(1, teamWf.getAssignees().size());
       Assert.assertEquals(AtsApiService.get().getUserService().getUserByName(ALEX_KAY),
-         teamArt.getStateMgr().getAssignees().iterator().next());
+         teamWf.getAssignees().iterator().next());
 
-      IStateToken fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getName());
-      IStateToken toState = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+      IStateToken fromState = teamWf.getWorkDefinition().getStateByName(TeamState.Analyze.getName());
+      IStateToken toState = teamWf.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
 
-      StateDefinition authStateDef = teamArt.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
+      StateDefinition authStateDef = teamWf.getWorkDefinition().getStateByName(TeamState.Authorize.getName());
       authStateDef.getRules().add(RuleDefinitionOption.ForceAssigneesToTeamLeads.name());
 
       // make call to state item that should set options based on artifact's attribute value
       AtsForceAssigneesToTeamLeadsWorkItemHook stateItem = new AtsForceAssigneesToTeamLeadsWorkItemHook();
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
-      stateItem.transitioned(teamArt, fromState, toState,
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
+      stateItem.transitioned(teamWf, fromState, toState,
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
          AtsApiService.get().getUserService().getCurrentUser(), changes, AtsApiService.get());
       changes.execute();
 
       // assignee should be Joe Smith
-      Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
+      Assert.assertEquals(1, teamWf.getAssignees().size());
       Assert.assertEquals(AtsApiService.get().getUserService().getUserByName(JOE_SMITH),
-         teamArt.getStateMgr().getAssignees().iterator().next());
+         teamWf.getAssignees().iterator().next());
    }
 }

@@ -39,13 +39,11 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Stephen J. Molaro
  */
 public final class DevProgressMetrics implements StreamingOutput {
-   private final OrcsApi orcsApi;
    private final AtsApi atsApi;
    private String programVersion;
    private final String targetVersion;
@@ -83,8 +81,7 @@ public final class DevProgressMetrics implements StreamingOutput {
       DevProgressItemId.CompletedDeletedCount,
       DevProgressItemId.CancelledDeletedCount};
 
-   public DevProgressMetrics(OrcsApi orcsApi, AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime) {
-      this.orcsApi = orcsApi;
+   public DevProgressMetrics(AtsApi atsApi, String targetVersion, Date startDate, Date endDate, boolean allTime) {
       this.atsApi = atsApi;
       this.programVersion = null;
       this.targetVersion = targetVersion;
@@ -422,17 +419,17 @@ public final class DevProgressMetrics implements StreamingOutput {
       }
    }
 
-   private String getStateAtDate(IAtsWorkItem teamWorkflow, Date iterationDate) {
+   private String getStateAtDate(IAtsWorkItem teamWf, Date iterationDate) {
       if (allTime) {
-         return teamWorkflow.getCurrentStateName();
+         return teamWf.getCurrentStateName();
       }
-      String stateName = teamWorkflow.getStateMgr().getCurrentStateNameFast();
+      String stateName = teamWf.getCurrentStateName();
       Date stateStartDate = new GregorianCalendar(1916, 7, 15).getTime();
       try {
-         Date newStateStartDate = teamWorkflow.getStateMgr().getStateStartedData(stateName).getDate();
+         Date newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName).getDate();
          if (newStateStartDate.after(iterationDate)) {
-            for (String visitedState : teamWorkflow.getStateMgr().getVisitedStateNames()) {
-               newStateStartDate = teamWorkflow.getStateMgr().getStateStartedData(visitedState).getDate();
+            for (String visitedState : teamWf.getStateMgr().getVisitedStateNames()) {
+               newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, visitedState).getDate();
                if (newStateStartDate.before(iterationDate) && newStateStartDate.after(stateStartDate)) {
                   stateName = visitedState;
                   stateStartDate = newStateStartDate;
@@ -445,9 +442,9 @@ public final class DevProgressMetrics implements StreamingOutput {
       return stateName;
    }
 
-   private Date getStateStartedDate(IAtsWorkItem teamWorkflow, Date iterationDate, String stateName) {
+   private Date getStateStartedDate(IAtsWorkItem teamWf, Date iterationDate, String stateName) {
       try {
-         IAtsLogItem stateStartedData = teamWorkflow.getStateMgr().getStateStartedData(stateName);
+         IAtsLogItem stateStartedData = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName);
          if (stateStartedData.getDate().before(iterationDate)) {
             return stateStartedData.getDate();
          }

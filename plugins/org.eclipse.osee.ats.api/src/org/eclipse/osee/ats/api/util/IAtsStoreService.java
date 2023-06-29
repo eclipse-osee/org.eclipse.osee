@@ -132,4 +132,6 @@ public interface IAtsStoreService {
 
    void purgeArtifacts(List<ArtifactToken> artifacts);
 
+   void deleteArtifacts(List<ArtifactToken> artifacts);
+
 }

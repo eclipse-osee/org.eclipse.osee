@@ -46,7 +46,7 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {
          testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
-         Assert.assertEquals(DemoUsers.Joe_Smith_And_Kay_Jones, task.getStateMgr().getAssigneesStr());
+         Assert.assertEquals(DemoUsers.Joe_Smith_And_Kay_Jones, task.getAssigneesStr());
       }
       if (!taskNames.isEmpty()) {
          Assert.assertEquals(String.format("Not all tasks exist.  [%s] remain", taskNames), taskNames.size(),
@@ -59,7 +59,7 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {
          testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
-         Assert.assertEquals(DemoUsers.Joe_Smith.getName(), task.getStateMgr().getAssigneesStr());
+         Assert.assertEquals(DemoUsers.Joe_Smith.getName(), task.getAssigneesStr());
       }
       if (!taskNames.isEmpty()) {
          Assert.assertEquals(String.format("Not all tasks exist.  [%s] remain", taskNames), taskNames.size(),

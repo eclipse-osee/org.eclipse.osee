@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.world.search;
+package org.eclipse.osee.ats.ide.integration.tests.ats.query;
 
 import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -51,35 +52,79 @@ import org.junit.Test;
  */
 public class AtsQueryImplTest {
 
+   private AtsApi atsApi;
+   private IAtsQueryService queryService;
+   private AtsUser joeSmith;
+
+   @Before
+   public void setup() {
+      atsApi = AtsApiService.get();
+      queryService = atsApi.getQueryService();
+      joeSmith = atsApi.getUserService().getUserByUserId("3333");
+   }
+
    @Test
-   public void test() {
-      AtsApi atsApi = AtsApiService.get();
-      IAtsQueryService queryService = atsApi.getQueryService();
-
-      AtsUser joeSmith = atsApi.getUserService().getUserByUserId("3333");
-
-      // test by type
+   public void testByAssignee() {
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      assertEquals(33, query.getResults().size());
+      query.andAssignee(joeSmith);
+      assertEquals(8, query.getResults().size());
+   }
 
-      query = queryService.createQuery(WorkItemType.Task);
-      assertEquals(55, query.getResults().size());
-
-      // assignee
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
+   @Test
+   public void testByUserId() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andAssignee(atsApi.getUserService().getUserByUserId("3333"));
-      assertEquals(13, query.getResults().size());
+      assertEquals(8, query.getResults().size());
+   }
 
-      // team
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
+   @Test
+   public void testByOriginator() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
+      query.andOriginator(joeSmith);
+      assertEquals(26, query.getResults().size());
+   }
+
+   @Test
+   public void testByFavorite() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
+      query.andStateType(StateType.Working);
+      query.andFavorite(joeSmith);
+      assertEquals(3, query.getResults().size());
+   }
+
+   @Test
+   public void testBySubscribed() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
+      query.andStateType(StateType.Working);
+      query.andSubscribed(joeSmith);
+      assertEquals(1, query.getResults().size());
+   }
+
+   @Test
+   public void testByTeamWf() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
+      assertEquals(26, query.getResults().size());
+   }
+
+   @Test
+   public void testByTask() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.Task);
+      assertEquals(14, query.getResults().size());
+   }
+
+   @Test
+   public void testByTeamId() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andTeam(Arrays.asList(30013695L));
-      assertEquals(6, query.getResults().size());
+      assertEquals(4, query.getResults().size());
+   }
 
-      // ai
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
+   @Test
+   public void testByAis() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId ai = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
       query.andActionableItem(Arrays.asList(ai.getId()));
-      assertEquals(6, query.getResults().size());
+      assertEquals(4, query.getResults().size());
 
       // by ids (hijack two workflows from previous search)
       List<Long> ids = new LinkedList<>();
@@ -90,60 +135,56 @@ public class AtsQueryImplTest {
       Iterator<Long> iterator = ids.iterator();
       query.andIds(iterator.next(), iterator.next());
       assertEquals(2, query.getResults().size());
+   }
 
-      // by state name
-      query = queryService.createQuery(WorkItemType.WorkItem);
+   @Test
+   public void testByStateName() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.WorkItem);
       query.isOfType(WorkItemType.PeerReview);
       query.andState("Prepare");
       assertEquals(6, query.getResults().size());
 
-      // by state type
-      query = queryService.createQuery(WorkItemType.WorkItem);
-      query.andStateType(StateType.Working);
-      assertEquals(102, query.getResults().size());
+   }
 
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
+   @Test
+   public void testByWorkingWorkItem() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
-      assertEquals(29, query.getResults().size());
+      assertEquals(55, query.getResults().size());
+   }
 
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
+   @Test
+   public void testByWorkingTeamWf() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
+      query.andStateType(StateType.Working);
+      assertEquals(23, query.getResults().size());
+   }
+
+   @Test
+   public void testByCompletedTeamWf() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed);
-      assertEquals(4, query.getResults().size());
+      assertEquals(3, query.getResults().size());
+   }
 
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
+   @Test
+   public void testByCompletedWorkingTeamWf() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Completed, StateType.Working);
-      assertEquals(33, query.getResults().size());
+      assertEquals(26, query.getResults().size());
+   }
 
-      // by version
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
+   @Test
+   public void testByVersion() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId version = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
       query.andVersion(version.getId());
-      assertEquals(20, query.getResults().size());
+      assertEquals(14, query.getResults().size());
+   }
 
-      // by assignee
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      query.andAssignee(joeSmith);
-      assertEquals(13, query.getResults().size());
-
-      // by originator
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      query.andOriginator(joeSmith);
-      assertEquals(33, query.getResults().size());
-
-      // by favorite
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      query.andStateType(StateType.Working);
-      query.andFavorite(joeSmith);
-      assertEquals(3, query.getResults().size());
-
-      // by subscribed
-      query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      query.andStateType(StateType.Working);
-      query.andSubscribed(joeSmith);
-      assertEquals(1, query.getResults().size());
-
+   @Test
+   public void testByWorkPackage() {
       // setup code workflow and task to have a work package
-
       IAtsProgramService programService = atsApi.getProgramService();
 
       IAtsWorkPackage wp =
@@ -164,6 +205,10 @@ public class AtsQueryImplTest {
       Conditions.checkNotNull(codeTask, "Code Team Workflow");
 
       atsApi.getProgramService().setWorkPackage(wp, Arrays.asList(codeWf, codeTask), AtsCoreUsers.SYSTEM_USER);
+
+      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
+      query.andWorkPackage(wp.getId());
+      assertEquals(2, query.getResults().size());
 
       // by program
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -186,11 +231,6 @@ public class AtsQueryImplTest {
       // by insertion activity
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
       query.andInsertionActivity(activity.getId());
-      assertEquals(2, query.getResults().size());
-
-      // by work package
-      query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
-      query.andWorkPackage(wp.getId());
       assertEquals(2, query.getResults().size());
    }
 

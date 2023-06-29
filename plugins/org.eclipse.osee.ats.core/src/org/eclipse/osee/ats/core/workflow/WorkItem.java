@@ -55,6 +55,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    IAtsAction parentAction;
    private final ArtifactTypeToken artifactType;
    private WorkDefinition workDef;
+   private IAtsStateManager stateMgr;
 
    public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact, ArtifactTypeToken artifactType) {
       super(artifact.getName(), artifact.getId());
@@ -72,7 +73,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public List<AtsUser> getAssignees() {
-      return getStateMgr().getAssignees();
+      return atsApi.getWorkItemService().getAssignees(this);
    }
 
    @Override
@@ -134,11 +135,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public boolean isGoal() {
       return this instanceof IAtsGoal;
-   }
-
-   @Override
-   public IAtsStateManager getStateMgr() {
-      return atsApi.getStateFactory().getStateManager(this);
    }
 
    @Override
@@ -292,21 +288,16 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public void setStateMgr(IAtsStateManager stateMgr) {
-      atsApi.getStateFactory().setStateMgr(this, stateMgr);
-   }
-
-   @Override
    public void clearCaches() {
       parentAction = null;
-      atsApi.getStateFactory().clearStateManager(this);
+      getStateMgr().clearCaches();
       atsLog = null;
       atsApi.getWorkDefinitionService().internalClearWorkDefinition(this);
    }
 
    @Override
    public boolean isInState(IStateToken state) {
-      return getStateMgr().getCurrentState().getName().equals(state.getName());
+      return getCurrentStateName().equals(state.getName());
    }
 
    @Override
@@ -318,6 +309,24 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public StateType getCurrentStateType() {
       return StateType.valueOf(atsApi.getAttributeResolver().getSoleAttributeValue(artifact,
          AtsAttributeTypes.CurrentStateType, StateType.Working.name()));
+   }
+
+   @Override
+   public IStateToken getCurrentState() {
+      return getWorkDefinition().getStateByName(getCurrentStateName());
+   }
+
+   @Override
+   public void setStateMgr(IAtsStateManager stateMgr) {
+      this.stateMgr = stateMgr;
+   }
+
+   @Override
+   public IAtsStateManager getStateMgr() {
+      if (stateMgr == null) {
+         stateMgr = atsApi.getWorkItemService().createStateManager(this);
+      }
+      return stateMgr;
    }
 
 }

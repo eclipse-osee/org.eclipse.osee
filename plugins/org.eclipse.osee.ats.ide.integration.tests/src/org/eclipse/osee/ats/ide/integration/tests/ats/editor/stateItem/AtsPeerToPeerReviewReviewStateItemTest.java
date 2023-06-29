@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -69,29 +70,30 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       Assert.assertNotNull(peerRevArt);
 
       // assignee should be user creating review
-      Assert.assertEquals(1, peerRevArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsApiService.get().getUserService().getCurrentUser(),
-         peerRevArt.getStateMgr().getAssignees().iterator().next());
+      Assert.assertEquals(1, peerRevArt.getAssignees().size());
+      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER, peerRevArt.getAssignees().iterator().next());
 
       // set roles
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("test transition");
       UserRole userRole = new UserRole(ReviewRole.Author, DemoUsers.Joe_Smith);
       IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerRevArt).getRoleManager();
-      roleMgr.addOrUpdateUserRole(userRole);
+      roleMgr.addOrUpdateUserRole(userRole, changes);
       userRole = new UserRole(ReviewRole.Reviewer, DemoUsers.Alex_Kay);
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("test transition");
-      roleMgr.addOrUpdateUserRole(userRole);
+      roleMgr.addOrUpdateUserRole(userRole, changes);
       roleMgr.saveToArtifact(changes);
       changes.execute();
 
       // assignee should be user roles
-      Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());
+      Assert.assertEquals(peerRevArt.getAssigneesStr(), 2, peerRevArt.getAssignees().size());
 
       // change assignees back to single user so can test transition
-      peerRevArt.getStateMgr().setAssignee(AtsApiService.get().getUserService().getCurrentUser());
-      peerRevArt.persist(getClass().getSimpleName());
-      Assert.assertEquals(1, peerRevArt.getStateMgr().getAssignees().size());
+      changes = AtsApiService.get().createChangeSet("test transition");
+      changes.setAssignee(peerRevArt, AtsApiService.get().getUserService().getCurrentUser());
+      changes.execute();
+
+      Assert.assertEquals(1, peerRevArt.getAssignees().size());
       Assert.assertEquals(AtsApiService.get().getUserService().getCurrentUser(),
-         peerRevArt.getStateMgr().getAssignees().iterator().next());
+         peerRevArt.getAssignees().iterator().next());
 
       IStateToken fromState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
       IStateToken toState = peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Review.getName());
@@ -106,9 +108,9 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       changes.execute();
 
       // Joe and Alex should have been added to assignees
-      Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());
+      Assert.assertEquals(2, peerRevArt.getAssignees().size());
       boolean joeFound = false, alexFound = false;
-      for (AtsUser user : peerRevArt.getStateMgr().getAssignees()) {
+      for (AtsUser user : peerRevArt.getAssignees()) {
          if (user.getName().equals(DemoUsers.Joe_Smith.getName())) {
             joeFound = true;
          }

@@ -76,7 +76,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewOnTransitionToHoo
       PeerToPeerReviewArtifact decArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
 
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), decArt.getCurrentStateName());
-      Assert.assertEquals("UnAssigned", decArt.getStateMgr().getAssigneesStr());
+      Assert.assertEquals("UnAssigned", decArt.getAssigneesStr());
       Assert.assertEquals(ReviewBlockType.Transition.name(),
          decArt.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
       Assert.assertEquals("This is my review title", decArt.getName());

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -59,7 +59,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
 
-   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, AtsUser user, BranchToken branch) {
+   public AtsChangeSet(AtsApi atsApi, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsLogFactory logFactory, String comment, AtsUser user, BranchToken branch) {
       super(comment, branch, user);
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
@@ -90,9 +90,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
          if (atsObject instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-            if (workItem.getStateMgr().isDirty()) {
-               atsApi.getStateFactory().writeToStore(asUser, workItem, this);
-            }
+
+            // Update StateManager for backwards compatibility
+            IAtsStateManager stateMgr = workItem.getStateMgr();
+            Conditions.assertNotNull(stateMgr, "StateManager");
+            stateMgr.writeToStore(this);
+
             if (workItem.getLog().isDirty()) {
                atsApi.getLogFactory().writeToStore(workItem, atsApi.getAttributeResolver(), this);
             }

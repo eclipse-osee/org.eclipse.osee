@@ -22,10 +22,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AssigneeColumnTest.class,
    BacklogColumnTest.class,
    CountryColumnTest.class,
-   ImplementersColumnTest.class,
    InsertionColumnTest.class,
    InsertionActivityColumnTest.class,
    ParentTopTeamColumnTest.class,

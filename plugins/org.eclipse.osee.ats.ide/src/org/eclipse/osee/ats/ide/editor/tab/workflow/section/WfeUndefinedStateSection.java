@@ -113,8 +113,7 @@ public class WfeUndefinedStateSection extends SectionPart {
 
       String infoStr = "";
       try {
-         infoStr =
-            String.format("Name: [%s] Assignees: [%s]", stateName, awa.getStateMgr().getAssigneesStr(stateName, 100));
+         infoStr = String.format("Name: [%s]", stateName);
       } catch (OseeCoreException ex) {
          infoStr = "Exception processing state data (see log for details) " + ex.getLocalizedMessage();
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

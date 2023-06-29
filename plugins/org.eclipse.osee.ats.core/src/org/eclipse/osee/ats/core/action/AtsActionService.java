@@ -55,9 +55,7 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
-import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -264,8 +262,7 @@ public class AtsActionService implements IAtsActionService {
             }
             if (!assignees.isEmpty()) {
                for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-                  teamWf.getStateMgr().setAssignees(assignees);
-                  changes.add(teamWf);
+                  changes.setAssignees(teamWf, assignees);
                }
             }
          }
@@ -570,11 +567,14 @@ public class AtsActionService implements IAtsActionService {
       atsApi.getWorkDefinitionService().internalSetWorkDefinition(workItem, workDefinition);
 
       StateDefinition startState = workDefinition.getStartState();
-      StateManager stateMgr = new StateManager(workItem, atsApi);
-      workItem.setStateMgr(stateMgr);
       changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, startState.getStateType().name());
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, startState.getName());
+      changes.setAssignees(workItem, assignees);
 
-      StateManagerUtility.initializeStateMachine(stateMgr, startState, assignees, createdBy, changes);
+      // Update StateManager for backwards compatibility
+      workItem.getStateMgr().createOrUpdateState(startState.getName(), assignees);
+      workItem.getStateMgr().setCurrentState(startState.getName());
+
       AtsUser user = createdBy;
       setCreatedBy(workItem, user, true, createdDate, changes);
       TransitionManager.logStateStartedEvent(workItem, startState, createdDate, user);

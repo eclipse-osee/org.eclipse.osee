@@ -114,7 +114,7 @@ public class WorkItemNotificationProcessor {
                if (!notifyUsers.isEmpty()) {
                   assignees.addAll(notifyUsers);
                } else {
-                  assignees.addAll(workItem.getStateMgr().getAssignees());
+                  assignees.addAll(workItem.getAssignees());
                }
                assignees.remove(fromUser);
                assignees = AtsUsersUtility.getValidEmailUsers(assignees);

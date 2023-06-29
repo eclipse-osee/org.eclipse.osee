@@ -39,7 +39,7 @@ public class MetricsReportOperations {
 
    public Response generateDevProgressReport(String targetVersion, Date startDate, Date endDate, boolean allTime) {
       StreamingOutput streamingOutput =
-         new DevProgressMetrics(orcsApi, atsApi, targetVersion, startDate, endDate, allTime);
+         new DevProgressMetrics(atsApi, targetVersion, startDate, endDate, allTime);
       String fileName = String.format("DevelopmentProgressMetrics_%s_%s.xml", targetVersion, Lib.getDateTimeString());
 
       ResponseBuilder builder = Response.ok(streamingOutput, MediaType.APPLICATION_OCTET_STREAM);

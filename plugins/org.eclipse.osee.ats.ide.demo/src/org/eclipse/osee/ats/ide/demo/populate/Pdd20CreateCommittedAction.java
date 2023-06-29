@@ -94,12 +94,9 @@ public class Pdd20CreateCommittedAction implements IPopulateDemoDatabase {
 
          if (!teamWf.isCompletedOrCancelled()) {
             // Reset assignees that may have been overwritten during transition
-            teamWf.getStateMgr().setAssignees(
+            changes.setAssignees(teamWf,
                AtsApiService.get().getTeamDefinitionService().getLeads(teamWf.getTeamDefinition()));
          }
-
-         changes.add(teamWf);
-
          setVersion(teamWf, DemoArtifactToken.SAW_Bld_2, changes);
       }
       changes.execute();

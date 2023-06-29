@@ -18,26 +18,27 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   RelatedToStateColumnTest.class,
-   NumberOfTasksAndInWorkTasksColumnsTest.class,
-   EstimatedHoursColumnTest.class,
-   PriorityColumnTest.class,
-   TargetedVersionColumnTest.class,
-   FoundInVersionColumnTest.class,
-   TypeColumnTest.class,
-   ParentStateAndIdColumnTest.class,
-   StateColumnTest.class,
-   OriginatorColumnTest.class,
-   GroupsColumnTest.class,
-   DescriptionColumnTest.class,
-   PeerToPeerReviewColumnsTest.class,
-   ChangeTypeColumnTest.class,
-   DeadlineColumnTest.class,
-   CreatedDateColumnTest.class,
+   AssigneeColumnTest.class,
    BranchStatusColumnTest.class,
    CancelledDateColumnTest.class,
+   CategoryColumnTest.class,
+   ChangeTypeColumnTest.class,
    CompletedDateColumnTest.class,
-   CategoryColumnTest.class,})
+   CreatedDateColumnTest.class,
+   DeadlineColumnTest.class,
+   DescriptionColumnTest.class,
+   EstimatedHoursColumnTest.class,
+   FoundInVersionColumnTest.class,
+   GroupsColumnTest.class,
+   NumberOfTasksAndInWorkTasksColumnsTest.class,
+   OriginatorColumnTest.class,
+   ParentStateAndIdColumnTest.class,
+   PeerToPeerReviewColumnsTest.class,
+   PriorityColumnTest.class,
+   RelatedToStateColumnTest.class,
+   StateColumnTest.class,
+   TargetedVersionColumnTest.class,
+   TypeColumnTest.class,})
 /**
  * @author Donald G. Dunne
  */

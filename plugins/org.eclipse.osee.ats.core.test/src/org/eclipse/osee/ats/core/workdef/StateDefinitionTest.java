@@ -46,6 +46,9 @@ public class StateDefinitionTest {
       StateDefinition def = new StateDefinition("Endorse");
       assertTrue(def.isState(TeamState.Endorse));
       assertFalse(def.isState(TeamState.Implement));
+
+      assertTrue(def.isNotState(TeamState.Implement));
+      assertFalse(def.isNotState(TeamState.Endorse));
    }
 
    @Test

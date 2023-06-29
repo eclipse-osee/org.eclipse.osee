@@ -14,8 +14,10 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,13 +28,20 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -44,6 +53,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -69,11 +79,14 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected Set<ArtifactId> ids = new HashSet<>();
    protected Map<String, String> seqNameToStartNum = new HashMap<>();
    protected boolean executed = false;
+   protected HashCollection<IAtsWorkItem, AtsUser> initialAssignees = new HashCollection<>();
+   protected AtsApi atsApi;
 
    public AbstractAtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       this.comment = comment;
       this.branch = branch;
       this.asUser = asUser;
+      this.atsApi = AtsApiService.get();
       Conditions.checkNotNullOrEmpty(comment, "comment");
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(asUser, "user");
@@ -347,6 +360,97 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
             entry.getValue(), entry.getKey());
          atsApi.getQueryService().runUpdate(query);
       }
+      addAssigneeNotificationEvents();
+   }
+
+   @Override
+   public void addAssignee(IAtsWorkItem workItem, AtsUser assignee) {
+      assigneesChanging(workItem);
+      List<AtsUser> assignees = workItem.getAssignees();
+      assignees.add(assignee);
+      setAssignees(workItem, assignees);
+   }
+
+   @Override
+   public void setAssignees(IAtsWorkItem workItem, Collection<AtsUser> newAssignees) {
+      assigneesChanging(workItem);
+      if (newAssignees == null || newAssignees.isEmpty()) {
+         newAssignees = new HashSet<>();
+         newAssignees.add(AtsCoreUsers.UNASSIGNED_USER);
+      }
+
+      for (AtsUser assignee : newAssignees) {
+         if (AtsCoreUsers.isSystemUser(assignee)) {
+            throw new OseeArgumentException("Can not assign workflow to System User");
+         }
+      }
+
+      if (newAssignees.size() > 1 && newAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+         newAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+      }
+
+      List<Object> newAssigneeIds = new ArrayList<>();
+      for (AtsUser user : newAssignees) {
+         newAssigneeIds.add(user.getIdString());
+      }
+
+      setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, newAssigneeIds);
+   }
+
+   @Override
+   public void setAssignee(IAtsWorkItem workItem, IStateToken state, AtsUser assignee) {
+      assigneesChanging(workItem);
+
+      setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, Arrays.asList(assignee.getIdString()));
+   }
+
+   @Override
+   public void removeAssignee(IAtsWorkItem workItem, AtsUser assignee) {
+      assigneesChanging(workItem);
+      List<AtsUser> assignees = workItem.getAssignees();
+      assignees.remove(assignee);
+      setAssignees(workItem, assignees);
+   }
+
+   @Override
+   public void clearAssignees(IAtsWorkItem workItem) {
+      assigneesChanging(workItem);
+      deleteAttributes(workItem, AtsAttributeTypes.CurrentStateAssignee);
+   }
+
+   @Override
+   public void addAssignees(IAtsWorkItem workItem, Collection<AtsUser> assignees) {
+      assigneesChanging(workItem);
+      Set<AtsUser> newAssignees = new HashSet<>();
+      newAssignees.addAll(workItem.getAssignees());
+      newAssignees.addAll(assignees);
+      setAssignees(workItem, newAssignees);
+   }
+
+   @Override
+   public void setAssignee(IAtsWorkItem workItem, AtsUser assignee) {
+      assigneesChanging(workItem);
+      setAssignees(workItem, Arrays.asList(assignee));
+   }
+
+   private void assigneesChanging(IAtsWorkItem workItem) {
+      if (initialAssignees.getValues(workItem) == null) {
+         initialAssignees.put(workItem, workItem.getAssignees());
+      }
+   }
+
+   protected void addAssigneeNotificationEvents() {
+      for (Entry<IAtsWorkItem, List<AtsUser>> entry : initialAssignees.entrySet()) {
+         IAtsWorkItem workItem = entry.getKey();
+         List<AtsUser> initialAssignees = entry.getValue();
+         List<AtsUser> assigneesAdded = org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
+            workItem.getAssignees(), initialAssignees);
+         if (!assigneesAdded.isEmpty()) {
+            AtsWorkItemNotificationEvent notificationEvent = AtsNotificationEventFactory.getWorkItemNotificationEvent(
+               asUser, workItem, assigneesAdded, AtsNotifyType.Assigned);
+            addWorkItemNotificationEvent(notificationEvent);
+         }
+      }
    }
 
    public boolean isExecuted() {
@@ -355,6 +459,26 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    public void setExecuted(boolean executed) {
       this.executed = executed;
+   }
+
+   @Override
+   public void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date) {
+      if (logChange) {
+         logCreatedByChange(workItem, user);
+      }
+      atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
+      if (date != null) {
+         atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
+      }
+   }
+
+   private void logCreatedByChange(IAtsWorkItem workItem, AtsUser user) {
+      if (atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
+         workItem.getLog().addLog(LogType.Originated, "", "", new Date(), user.getUserId());
+      } else {
+         workItem.getLog().addLog(LogType.Originated, "",
+            "Changed by " + atsApi.getUserService().getCurrentUser().getName(), new Date(), user.getUserId());
+      }
    }
 
 }

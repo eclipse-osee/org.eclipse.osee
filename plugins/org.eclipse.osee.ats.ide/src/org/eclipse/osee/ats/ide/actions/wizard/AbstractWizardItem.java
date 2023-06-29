@@ -77,7 +77,6 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    public void getWizardXWidgetExtensions(Collection<IAtsActionableItem> ais, Composite comp) {
 
       Collection<IAtsTeamDefinition> teamDefs = AtsApiService.get().getActionableItemService().getImpactedTeamDefs(ais);
-      boolean first = true;
       for (IAtsTeamDefinition teamDef : teamDefs) {
 
          if (hasWizardXWidgetExtensions(teamDef)) {
@@ -203,7 +202,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       for (IAtsTeamWorkflow teamWf : actionResult.getTeamWfs()) {
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
 
-         wizardCompletedAssignees(teamWf, teamDef);
+         wizardCompletedAssignees(teamWf, teamDef, changes);
          wizardCompletedOriginator(teamWf, teamDef, changes);
          wizardCompletedPointsNumeric(teamWf, teamDef, changes);
          wizardCompletedPoints(teamWf, teamDef, changes);
@@ -299,11 +298,11 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       }
    }
 
-   private void wizardCompletedAssignees(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef) {
+   private void wizardCompletedAssignees(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
       XAssigneesHyperlinkWidget assigneesWidget =
          (XAssigneesHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Assignees);
       if (assigneesWidget != null && !assigneesWidget.getSelected().isEmpty()) {
-         teamWf.getStateMgr().setAssignees(assigneesWidget.getSelected());
+         changes.setAssignees(teamWf, assigneesWidget.getSelected());
       }
    }
 
@@ -311,7 +310,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       XOriginatorHyperlinkWidget originatorWidget =
          (XOriginatorHyperlinkWidget) teamDefFieldToWidget.get(teamDef, WizardFields.Originator);
       if (originatorWidget != null && originatorWidget.getSelected() != null) {
-         teamWf.getStateMgr().setCreatedBy(originatorWidget.getSelected(), true, new Date(), changes);
+         changes.setCreatedBy(teamWf, originatorWidget.getSelected(), true, new Date());
       }
    }
 

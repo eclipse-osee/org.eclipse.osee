@@ -110,10 +110,16 @@ public interface IAtsProgramService {
 
    IAtsVersion getVersion(IAtsProgram program, String versionName);
 
-   // workflows
+   /**
+    * @return Sibling workflows of workType
+    */
    Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, WorkType workType, IAtsWorkItem workItem);
 
-   Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes, IAtsWorkItem workItem);
+   /**
+    * @return Sibling workflows of workTypes
+    */
+   Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes,
+      IAtsWorkItem workItem);
 
    Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes);
 

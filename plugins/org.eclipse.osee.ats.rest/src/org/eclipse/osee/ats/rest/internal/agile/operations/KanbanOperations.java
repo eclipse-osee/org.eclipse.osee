@@ -162,7 +162,7 @@ public class KanbanOperations {
          assigneeNames = aItemToRowMap.get(aItem.getId());
       } else {
          @SuppressWarnings("unchecked")
-         Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getStateMgr().getAssignees(),
+         Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getAssignees(),
             atsApi.getImplementerService().getImplementers(workItem));
          for (AtsUser user : assigneeImplementers) {
             if (!AtsCoreUsers.isSystemUser(user)) {
@@ -217,7 +217,7 @@ public class KanbanOperations {
       //   "jod6us" : "John Doe",
       //   "sam5us" : "Sam Smith"
       //  },
-      Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getStateMgr().getAssignees(),
+      Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getAssignees(),
          atsApi.getImplementerService().getImplementers(workItem));
       Set<String> assigneeNames = new HashSet<>(assigneeImplementers.size());
       Set<String> assigneeIds = new HashSet<>(assigneeImplementers.size());
@@ -265,7 +265,7 @@ public class KanbanOperations {
    }
 
    private Collection<String> getAssigneeUserIdsString(IAtsWorkItem workItem, AtsApi atsApi, Set<ArtifactToken> teamMembers) {
-      List<AtsUser> assignees = workItem.getStateMgr().getAssignees();
+      List<AtsUser> assignees = workItem.getAssignees();
       Set<String> ids = new HashSet<>();
       // Make sure team includes any assigned even if not configured as part of team
       for (AtsUser assignee : assignees) {

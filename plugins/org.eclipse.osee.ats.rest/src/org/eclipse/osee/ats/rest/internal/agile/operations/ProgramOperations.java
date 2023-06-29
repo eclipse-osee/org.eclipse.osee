@@ -151,7 +151,7 @@ public class ProgramOperations {
       if (org.eclipse.osee.framework.jdk.core.util.Strings.isValid(points)) {
          taskItem.setAgilePoints(points);
       }
-      String assignees = workItem.getStateMgr().getAssigneesStr();
+      String assignees = workItem.getAssigneesStr();
       if (org.eclipse.osee.framework.jdk.core.util.Strings.isValid(assignees)) {
          taskItem.setAssigneesOrImplementers(assignees);
       }

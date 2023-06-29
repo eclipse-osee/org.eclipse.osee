@@ -40,6 +40,11 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    DbInitTest.class,
    DemoDbPopulateSuite.class,
+   /**
+    * AtsTest_AllAts_Suite suite needs to be right after populate because<br/>
+    * search counts are used from populate and need to remain the same.
+    */
+   AtsTest_AllAts_Suite.class,
    DefineIntegrationTestSuite.class,
    FrameworkAccess_Suite.class,
    OrcsRestTestSuite.class,
@@ -48,7 +53,6 @@ import org.junit.runners.Suite;
    SkynetCoreIntegrationTestSuite.class,
    SkynetUiCoreIntegrationTestSuite.class,
    SynchronizationTestSuite.class,
-   AtsTest_AllAts_Suite.class,
    FrameworkUiSkynetTest_Dialog_Suite.class,
    ClientEndpointTest.class,
    DirtyArtifactCacheTest.class,

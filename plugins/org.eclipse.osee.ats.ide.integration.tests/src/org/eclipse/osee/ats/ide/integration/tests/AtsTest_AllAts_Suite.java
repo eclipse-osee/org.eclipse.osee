@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.AtsTest_Ats_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.actions.AtsTest_Action_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.query.AtsTest_Query_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.TransitionManagerTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
@@ -35,6 +36,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   // This must be first so query tests aren't corrupted by future tests
+   AtsTest_Query_Suite.class,
    AtsTest_Ats_Suite.class,
    AtsApiServiceTest.class,
    // Long running tests at bottom for ease of development/re-run

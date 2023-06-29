@@ -89,9 +89,9 @@ public class XTaskEstWidgetTest implements TaskEstNameProvider {
       Assert.assertNotNull(rTask);
       Assert.assertEquals("Estimates for Requirements", rTask.getName());
       Assert.assertEquals("desc", rTask.getDescription());
-      Assert.assertEquals(2, rTask.getStateMgr().getAssignees().size());
-      Assert.assertTrue(rTask.getStateMgr().getAssignees().contains(DemoUsers.Joe_Smith));
-      Assert.assertTrue(rTask.getStateMgr().getAssignees().contains(DemoUsers.Kay_Jones));
+      Assert.assertEquals(2, rTask.getAssignees().size());
+      Assert.assertTrue(rTask.getAssignees().contains(DemoUsers.Joe_Smith));
+      Assert.assertTrue(rTask.getAssignees().contains(DemoUsers.Kay_Jones));
    }
 
 }

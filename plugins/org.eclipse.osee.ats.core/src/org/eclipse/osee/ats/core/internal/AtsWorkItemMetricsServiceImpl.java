@@ -49,14 +49,16 @@ public class AtsWorkItemMetricsServiceImpl implements IAtsWorkItemMetricsService
    }
 
    @Override
-   public void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, AtsUser user, Date date, IAtsChangeSet changes) {
+   public void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, AtsUser user,
+      Date date, IAtsChangeSet changes) {
       IAtsLogItem logItem = atsApi.getLogFactory().newLogItem(LogType.Metrics, date, user, state.getName(),
          String.format("Percent %s Hours %s", getPercentCompleteTotal(workItem), Double.parseDouble(hours)));
       workItem.getLog().addLogItem(logItem);
    }
 
    @Override
-   public void updateMetrics(IAtsWorkItem workItem, IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, AtsUser user, IAtsChangeSet changes) {
+   public void updateMetrics(IAtsWorkItem workItem, IStateToken state, double additionalHours, int percentComplete,
+      boolean logMetrics, AtsUser user, IAtsChangeSet changes) {
       double hoursSpent = getHoursSpent(workItem);
       double totalHours = hoursSpent + additionalHours;
       if (totalHours < 0.0) {
@@ -65,7 +67,7 @@ public class AtsWorkItemMetricsServiceImpl implements IAtsWorkItemMetricsService
       setHoursSpent(workItem, totalHours, changes);
       setPercentComplete(workItem, percentComplete, changes);
       if (logMetrics) {
-         logMetrics(workItem, workItem.getStateMgr().getCurrentState(), user, new Date(), changes);
+         logMetrics(workItem, workItem.getCurrentState(), user, new Date(), changes);
       }
    }
 
@@ -75,7 +77,8 @@ public class AtsWorkItemMetricsServiceImpl implements IAtsWorkItemMetricsService
    }
 
    @Override
-   public void setMetrics(IAtsWorkItem workItem, double hoursSpent, int percentComplete, boolean logMetrics, AtsUser user, Date date, IAtsChangeSet changes) {
+   public void setMetrics(IAtsWorkItem workItem, double hoursSpent, int percentComplete, boolean logMetrics,
+      AtsUser user, Date date, IAtsChangeSet changes) {
       setHoursSpent(workItem, hoursSpent, changes);
       setPercentComplete(workItem, percentComplete, changes);
       if (logMetrics) {

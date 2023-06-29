@@ -25,7 +25,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    // Note: TransitionManagerTest in top level suite
    StateManagerTest.class, //
-   TransitionListenersTest.class})
+   TransitionListenersTest.class, //
+   TransitionCompletedCancelledTest.class})
 public class AtsTest_Workflow_Transition_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

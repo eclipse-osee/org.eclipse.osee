@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -54,6 +53,7 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
+import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
@@ -290,18 +291,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public ITeamWorkflowProvidersLazy getTeamWorkflowProviders() {
       return teamWorkflowProvidersLazy;
-   }
-
-   @Override
-   public void clearAssignees(IAtsWorkItem workItem, IAtsChangeSet changes) {
-      workItem.getStateMgr().clearAssignees();
-      changes.add(workItem);
-   }
-
-   @Override
-   public void setAssignees(IAtsWorkItem workItem, Set<AtsUser> assignees, IAtsChangeSet changes) {
-      workItem.getStateMgr().setAssignees(assignees);
-      changes.add(workItem);
    }
 
    @Override
@@ -793,7 +782,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public String getCurrentStateName(IAtsWorkItem workItem) {
-      return workItem.getStateMgr().getCurrentStateNameInternal();
+      return atsApi.getAttributeResolver().getSoleAttributeValue(workItem.getStoreObject(),
+         AtsAttributeTypes.CurrentStateName, "UnKnown");
    }
 
    @Override
@@ -807,4 +797,23 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return atsApi.getRelationResolver().areRelated(workItem.getStoreObject(), AtsRelationTypes.SubscribedUser_User,
          user.getStoreObject());
    }
+
+   @Override
+   public List<AtsUser> getAssignees(IAtsWorkItem workItem) {
+      List<AtsUser> users = new ArrayList<>();
+      for (String userArtId : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
+         AtsAttributeTypes.CurrentStateAssignee)) {
+         AtsUser atsUser = atsApi.getConfigService().getConfigurations().getIdToUser().get((Long.valueOf(userArtId)));
+         users.add(atsUser);
+      }
+      return users;
+   }
+
+   @Override
+   public IAtsStateManager createStateManager(IAtsWorkItem workItem) {
+      StateManager stateMgr = new StateManager(workItem, atsApi);
+      workItem.setStateMgr(stateMgr);
+      return stateMgr;
+   }
+
 }

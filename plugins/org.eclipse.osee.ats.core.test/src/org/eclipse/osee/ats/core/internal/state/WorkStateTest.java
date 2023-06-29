@@ -11,10 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.model.impl;
+package org.eclipse.osee.ats.core.internal.state;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.core.users.AbstractUserTest;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +25,7 @@ public class WorkStateTest extends AbstractUserTest {
 
    @Test
    public void testWorkStateImplStringListOfQextendsAtsUser() {
-      WorkState state = WorkState.create("Endorse", Arrays.asList(joe));
+      WorkState state = WorkState.create(null, "Endorse", Arrays.asList(joe), false);
       Assert.assertEquals("Endorse", state.getName());
       Assert.assertEquals(0.0, state.getHoursSpent(), 0);
       Assert.assertSame(0, state.getPercentComplete());
@@ -35,7 +34,7 @@ public class WorkStateTest extends AbstractUserTest {
 
    @Test
    public void getGetSetAssignees() {
-      WorkState state = WorkState.create("Endorse", Arrays.asList(joe));
+      WorkState state = WorkState.create(null, "Endorse", Arrays.asList(joe), false);
       Assert.assertEquals(1, state.getAssignees().size());
       Assert.assertEquals(joe, state.getAssignees().iterator().next());
       state.addAssignee(steve);
@@ -57,7 +56,7 @@ public class WorkStateTest extends AbstractUserTest {
 
    @Test
    public void testSetName() {
-      WorkState state = WorkState.create("Endorse", Arrays.asList(joe));
+      WorkState state = WorkState.create(null, "Endorse", Arrays.asList(joe), false);
       Assert.assertEquals("Endorse", state.getName());
       state.setName("Implement");
       Assert.assertEquals("Implement", state.getName());
@@ -65,7 +64,7 @@ public class WorkStateTest extends AbstractUserTest {
 
    @Test
    public void testGetSetHoursSpent() {
-      WorkState state = WorkState.create("Endorse", Arrays.asList(joe));
+      WorkState state = WorkState.create(null, "Endorse", Arrays.asList(joe), false);
       Assert.assertEquals(0.0, state.getHoursSpent(), 0);
       state.setHoursSpent(3);
       Assert.assertEquals(3.0, state.getHoursSpent(), 0);
@@ -73,7 +72,7 @@ public class WorkStateTest extends AbstractUserTest {
 
    @Test
    public void testSetPercentComplete() {
-      WorkState state = WorkState.create("Endorse", Arrays.asList(joe));
+      WorkState state = WorkState.create(null, "Endorse", Arrays.asList(joe), false);
       Assert.assertEquals(0, state.getPercentComplete());
       state.setPercentComplete(3);
       Assert.assertEquals(3, state.getPercentComplete());

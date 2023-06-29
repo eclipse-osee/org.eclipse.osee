@@ -464,12 +464,9 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getAssigned(AtsUser user, boolean useNewAttr) {
-      if (useNewAttr) {
-         return atsApi.getQueryService().getArtifacts(AtsAttributeTypes.CurrentStateAssignee,
-            user.getArtifactId().getIdString(), atsApi.getAtsBranch());
-      }
-      return java.util.Collections.emptyList();
+   public Collection<ArtifactToken> getAssigned(AtsUser user) {
+      return atsApi.getQueryService().getArtifacts(AtsAttributeTypes.CurrentStateAssignee,
+         user.getArtifactId().getIdString(), atsApi.getAtsBranch());
    }
 
    @Override

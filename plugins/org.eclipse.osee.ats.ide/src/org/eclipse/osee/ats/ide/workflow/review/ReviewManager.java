@@ -36,7 +36,7 @@ public class ReviewManager {
    }
 
    public static Collection<IAtsAbstractReview> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) {
-      return Collections.castAll(getReviews(teamArt, teamArt.getStateMgr().getCurrentState()));
+      return Collections.castAll(getReviews(teamArt, teamArt.getCurrentState()));
    }
 
    public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, IStateToken state) {

@@ -98,7 +98,8 @@ public class JiraReportEpicDiffsOperation {
    /**
     * @return false to stop processing lines
     */
-   private boolean processWorkflows(Map<String, IAtsWorkItem> workItemMap, Map<String, JiraTask> jTaskMap, XResultData rd) {
+   private boolean processWorkflows(Map<String, IAtsWorkItem> workItemMap, Map<String, JiraTask> jTaskMap,
+      XResultData rd) {
       for (Entry<String, JiraTask> entry : jTaskMap.entrySet()) {
          JiraTask jTask = entry.getValue();
          String atsId = null;
@@ -131,7 +132,7 @@ public class JiraReportEpicDiffsOperation {
          String oState = null;
          boolean stateNoMatch = workItem.isCompletedOrCancelled() && !jState.equals("Closed");
          if (!stateNoMatch) {
-            oState = workItem.getStateMgr().getCurrentStateNameFast();
+            oState = workItem.getCurrentStateName();
             stateNoMatch = oState.equals(TeamState.Analyze.getName()) && !jState.equals("To Do");
          }
          if (!stateNoMatch) {

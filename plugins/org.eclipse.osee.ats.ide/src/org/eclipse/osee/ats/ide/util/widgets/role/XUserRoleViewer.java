@@ -318,7 +318,7 @@ public class XUserRoleViewer extends GenericXWidget implements ArtifactWidget, I
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Add Review Roles");
             for (AtsUser user : dialog.getUsers()) {
                UserRole userRole = new UserRole(dialog.getRole(), user.getUserId());
-               roleMgr.addOrUpdateUserRole(userRole);
+               roleMgr.addOrUpdateUserRole(userRole, changes);
                changes.add(reviewArt);
             }
             roleMgr.saveToArtifact(changes);

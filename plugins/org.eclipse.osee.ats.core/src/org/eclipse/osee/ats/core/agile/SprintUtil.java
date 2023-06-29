@@ -128,7 +128,7 @@ public class SprintUtil {
          item.setImplementers(implementers);
          item.setAssigneesOrImplementers("(" + implementers + ")");
       } else {
-         String assignees = Collections.toString("; ", aItem.getStateMgr().getAssigneesStr());
+         String assignees = Collections.toString("; ", aItem.getAssigneesStr());
          item.setAssignees(assignees);
          item.setAssigneesOrImplementers(assignees);
       }

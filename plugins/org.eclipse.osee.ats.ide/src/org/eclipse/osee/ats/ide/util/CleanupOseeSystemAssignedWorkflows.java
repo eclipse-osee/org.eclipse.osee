@@ -45,11 +45,10 @@ public class CleanupOseeSystemAssignedWorkflows extends XNavigateItemAction {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("OSEE System Assignee Cleanup");
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
-            workItem.getStateMgr().removeAssignee(AtsCoreUsers.SYSTEM_USER);
+            changes.removeAssignee(workItem, AtsCoreUsers.SYSTEM_USER);
             results.log("Removed System User from " + workItem.toStringWithId());
-            changes.add(workItem);
-            if (workItem.getStateMgr().getAssignees().isEmpty()) {
-               workItem.getStateMgr().addAssignee(AtsCoreUsers.UNASSIGNED_USER);
+            if (workItem.getAssignees().isEmpty()) {
+               changes.addAssignee(workItem, AtsCoreUsers.UNASSIGNED_USER);
                results.log("Added UnAssigned to " + workItem.toStringWithId());
             }
          }

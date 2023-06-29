@@ -13,121 +13,39 @@
 
 package org.eclipse.osee.ats.api.workflow.state;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.WorkState;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsStateManager {
 
-   IStateToken getCurrentState();
+   void transitionHelper(IStateToken fromStateName, IStateToken toStateName);
 
-   void addAssignees(String stateName, Collection<AtsUser> assignees);
-
-   void setAssignee(AtsUser assignee);
-
-   /**
-    * Sets the assignees as attributes and relations AND writes to store. Does not persist.
-    */
-   void setAssignees(String stateName, Collection<AtsUser> assignees);
-
-   void transitionHelper(Collection<AtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName);
-
-   long getTimeInState();
-
-   long getTimeInState(IStateToken state);
-
-   void addAssignee(String stateName, AtsUser assignee);
-
-   boolean isDirty();
-
-   List<AtsUser> getAssignees(String stateName);
-
-   List<AtsUser> getAssigneesForState(String fromStateName);
-
-   List<AtsUser> getAssignees();
-
-   void setCurrentStateName(String currentStateName);
-
-   void addAssignee(AtsUser assignee);
-
-   void addState(String stateName, Collection<AtsUser> assignees);
-
-   @JsonSetter
-   void setAssignees(Collection<AtsUser> assignees);
-
-   WorkState createState(String stateName);
+   Collection<AtsUser> getAssignees(String stateName);
 
    List<String> getVisitedStateNames();
-
-   void removeAssignee(String stateName, AtsUser assignee);
-
-   void setAssignee(IStateToken state, AtsUser assignee);
-
-   void createState(IStateToken state);
-
-   boolean isUnAssignedSolely();
-
-   String getAssigneesStr();
-
-   void removeAssignee(AtsUser assignee);
-
-   boolean isUnAssigned();
-
-   void clearAssignees();
 
    Collection<AtsUser> getAssignees(IStateToken state);
 
    boolean isStateVisited(IStateToken state);
 
-   String getAssigneesStr(int length);
-
-   String getAssigneesStr(String stateName, int length);
-
-   String getAssigneesStr(String stateName);
-
-   void addAssignees(Collection<AtsUser> assignees);
-
-   void setAssignee(String stateName, AtsUser assignee);
-
    boolean isStateVisited(String stateName);
 
-   void addState(WorkState workState);
+   void writeToStore(IAtsChangeSet changes);
 
-   IAtsLogItem getStateStartedData(IStateToken state);
+   void createOrUpdateState(String stateName, Collection<AtsUser> assignees);
 
-   IAtsLogItem getStateStartedData(String stateName);
+   void clearCaches();
 
-   IAtsLogItem getStateCompletedData(IStateToken state);
+   void addAssignee(AtsUser user);
 
-   IAtsLogItem getStateCompletedData(String stateName);
+   void createOrUpdateState(IStateToken state);
 
-   Collection<AtsUser> getAssigneesAdded();
-
-   WorkState getState(String string);
-
-   boolean isInState(IStateToken state);
-
-   void setAssignees(String stateName, StateType stateType, Collection<AtsUser> assignees);
-
-   void setCreatedBy(AtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
-
-   void internalSetCreatedBy(AtsUser user, IAtsChangeSet changes);
-
-   String getCurrentStateNameFast();
-
-   /**
-    * Should not be called except by WorkItemService or in test
-    */
-   String getCurrentStateNameInternal();
+   void setCurrentState(String stateName);
 
 }

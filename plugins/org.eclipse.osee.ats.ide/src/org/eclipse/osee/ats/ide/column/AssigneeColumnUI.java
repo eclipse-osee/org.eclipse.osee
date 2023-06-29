@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.column.AtsColumnTokens;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -141,7 +142,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             AtsApiService.get().getTeamDefinitionService().getMembersAndLeads(parentWorklfow.getTeamDefinition()));
       }
       if (workItems.size() == 1) {
-         uld.setInitialSelections(workItems.iterator().next().getStateMgr().getAssignees());
+         uld.setInitialSelections(workItems.iterator().next().getAssignees());
       }
       if (uld.open() != 0) {
          return false;
@@ -154,10 +155,12 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       if (selected.size() > 1) {
          users.remove(AtsCoreUsers.UNASSIGNED_USER);
       }
+
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Assignee - Prompt Change");
       for (IAtsWorkItem workItem : workItems) {
-         workItem.getStateMgr().setAssignees(selected);
+         changes.setAssignees(workItem, selected);
       }
-      AtsApiService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", workItems);
+      changes.executeIfNeeded();
       return true;
    }
 
@@ -203,7 +206,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
          List<User> users = new ArrayList<>();
-         for (AtsUser aUser : ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()) {
+         for (AtsUser aUser : ((AbstractWorkflowArtifact) artifact).getAssignees()) {
             User user = UserManager.getUserByArtId(aUser);
             if (user != null) {
                users.add(user);

@@ -108,4 +108,6 @@ public interface IAtsReviewService {
 
    IAtsAbstractReview getReview(ArtifactToken artifact);
 
+   String getValidateReviewTitle(IAtsTeamWorkflow teamWf);
+
 }
