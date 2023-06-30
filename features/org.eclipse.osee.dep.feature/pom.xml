@@ -28,24 +28,29 @@
 						</goals>
 						<configuration>
 							<excludes>
-														   <plugin id="jackson-dataformat-yaml"/>
-							<plugin id="snakeyaml"/>
+							 	<plugin id="jackson-dataformat-yaml"/>
+								<plugin id="snakeyaml"/>
 							        <plugin id="swagger-models"/>
-							        						<plugin	id="jackson-datatype-jsr310"/>
-							          							 <plugin id="commons-lang3"/>
-							        								<plugin id="flexmark"/>
-																<plugin id="flexmark-util-builder"/>
-																<plugin id="flexmark-util-ast"/>
-																<plugin id="flexmark-util-dependency"/>
-																<plugin id="flexmark-util-collection"/>
-																<plugin id="flexmark-util-data"/>
-																<plugin id="flexmark-util-format"/>
-																<plugin id="flexmark-util-misc"/>
-																<plugin id="flexmark-util-sequence"/>
-																<plugin id="flexmark-util-visitor"/>
-																<plugin id="flexmark-util-html"/>
-																<plugin id="annotations"/>
-
+							        <plugin	id="jackson-datatype-jsr310"/>
+							        <plugin id="commons-lang3"/>
+							        <plugin id="flexmark"/>
+								<plugin id="flexmark-util-builder"/>
+								<plugin id="flexmark-util-ast"/>
+								<plugin id="flexmark-util-dependency"/>
+								<plugin id="flexmark-util-collection"/>
+								<plugin id="flexmark-util-data"/>
+								<plugin id="flexmark-util-format"/>
+								<plugin id="flexmark-util-misc"/>
+								<plugin id="flexmark-util-sequence"/>
+								<plugin id="flexmark-util-visitor"/>
+								<plugin id="flexmark-util-html"/>
+								<plugin id="annotations"/>
+								<plugin id="flexmark-ext-gfm-tasklist"/>
+								<plugin id="flexmark-ext-autolink"/>
+								<plugin id="flexmark-ext-gitlab"/>
+								<plugin id="flexmark-ext-toc"/>
+								<plugin id="flexmark-ext-tables"/>
+								<plugin id="autolink"/>
                 			                        <plugin id="swagger-integration"/>
                 			                        <plugin id="jackson-datatype-jsr310"/>
                 			                        <plugin id="jackson-annotations"/>

@@ -1,0 +1,152 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.ide.parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
+	</parent>
+
+	<groupId>org.eclipse.osee</groupId>
+	<artifactId>org.eclipse.osee.client.parent</artifactId>
+	<packaging>pom</packaging>
+	<name>OSEE Client - Parent (Incubation)</name>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<profiles>
+
+
+		<profile>
+			<id>coverage-minimal</id>
+			<activation>
+				<property>
+					<name>skip-int-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.postgresql.driver</module>		
+			
+				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.client</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.database.init</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.messaging.event.res</module>
+				<module>../../plugins/org.eclipse.osee.framework.messaging.event.res.test</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.dev.help.ui</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.help.ui</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.skynet.core</module>
+				<module>../../plugins/org.eclipse.osee.framework.skynet.core.test</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.templates</module>
+				<module>../../plugins/org.eclipse.osee.ote.define</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.ui.skynet</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.skynet.test</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
+				<module>../../plugins/org.eclipse.osee.ote.ui.define</module>
+
+				<module>../../plugins/org.eclipse.osee.define.ide</module>
+				<module>../../plugins/org.eclipse.osee.define.ide.test</module>
+
+
+				<module>../../features/org.eclipse.osee.framework.feature</module>
+
+				<module>../../features/org.eclipse.osee.framework.ui.feature</module>
+
+				
+
+				<module>../../plugins/org.eclipse.osee.client.demo</module>
+
+				<module>../../plugins/org.eclipse.osee.client.test.framework</module>
+
+				
+				<module>../../plugins/org.eclipse.osee.client.test.framework.p2</module>
+
+				<module>../../features/org.eclipse.osee.client.feature</module>
+
+				<module>../../plugins/org.eclipse.osee.client.p2</module>
+				
+			</modules>
+		</profile>
+
+		<profile>
+			<id>coverage-release</id>
+			<activation>
+				<property>
+					<name>!skip-int-tests</name>
+				</property>
+			</activation>
+			<modules>
+							<module>../../plugins/org.postgresql.driver</module>		
+			
+				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.client</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.database.init</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.messaging.event.res</module>
+				<module>../../plugins/org.eclipse.osee.framework.messaging.event.res.test</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.dev.help.ui</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.help.ui</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.skynet.core</module>
+				<module>../../plugins/org.eclipse.osee.framework.skynet.core.test</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.templates</module>
+				<module>../../plugins/org.eclipse.osee.ote.define</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.ui.skynet</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.skynet.test</module>
+
+				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
+				<module>../../plugins/org.eclipse.osee.ote.ui.define</module>
+
+				<module>../../plugins/org.eclipse.osee.define.ide</module>
+				<module>../../plugins/org.eclipse.osee.define.ide.test</module>
+
+				<module>../../features/org.eclipse.osee.framework.feature</module>
+				<module>../../features/org.eclipse.osee.framework.ui.feature</module>
+
+				<module>../../plugins/org.eclipse.osee.client.demo</module>
+
+				<module>../../plugins/org.eclipse.osee.client.test.framework</module>
+				<module>../../plugins/org.eclipse.osee.client.test.framework.p2</module>
+
+				<module>../../features/org.eclipse.osee.client.feature</module>
+<<<<<<< HEAD
+=======
+			 	<module>../../plugins/org.eclipse.osee.client.integration.tests</module> 
+>>>>>>> parent of 30abcfa276 (feature[TW19755]: Remove Bootstrap)
+				<module>../../plugins/org.eclipse.osee.client.p2</module>
+
+			</modules>
+		</profile>
+
+		<profile>
+			<id>osee-client-help-test</id>
+			<activation>
+				<property>
+					<name>!skip-help-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.framework.dev.help.ui.test</module>
+			   <module>../../plugins/org.eclipse.osee.framework.help.ui.test</module>
+			</modules>
+		</profile>
+	</profiles>
+</project>
