@@ -56,7 +56,7 @@ import {
 	PlatformTypeSentinel,
 } from '@osee/messaging/shared/enumerations';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
-import { TypesService, EnumsService } from '@osee/messaging/shared/services';
+import { TypesService } from '@osee/messaging/shared/services';
 import {
 	ApplicabilitySelectorComponent,
 	MatOptionLoadingComponent,
@@ -72,6 +72,7 @@ import {
 	PLATFORMTYPEATTRIBUTETYPEID,
 } from '@osee/messaging/shared/attr';
 import { applic } from '@osee/shared/types/applicability';
+import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-edit-type-dialog',
@@ -95,6 +96,7 @@ import { applic } from '@osee/shared/types/applicability';
 		UniquePlatformTypeAttributesDirective,
 		EditEnumSetFieldComponent,
 		ApplicabilitySelectorComponent,
+		UnitDropdownComponent,
 	],
 })
 export class EditTypeDialogComponent implements OnDestroy {
@@ -117,7 +119,6 @@ export class EditTypeDialogComponent implements OnDestroy {
 		),
 		reduce((acc, curr) => [...acc, curr], [] as logicalType[])
 	);
-	units = this.enumService.units;
 	enumSet: {
 		createArtifacts: createArtifact[];
 		modifyArtifacts: modifyArtifact[];
@@ -277,13 +278,12 @@ export class EditTypeDialogComponent implements OnDestroy {
 		),
 		map((v) => v.required)
 	);
-	reference: PlatformType = new PlatformTypeSentinel();
+	reference: Partial<PlatformType> = new PlatformTypeSentinel();
 
 	constructor(
 		public dialogRef: MatDialogRef<EditTypeDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData,
-		private typesService: TypesService,
-		private enumService: EnumsService
+		private typesService: TypesService
 	) {
 		this.platform_type = this.data.type.name;
 		this.reference = { ...this.data.type };

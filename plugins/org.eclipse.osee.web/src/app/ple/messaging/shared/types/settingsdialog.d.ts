@@ -15,10 +15,10 @@ import type { structure } from './structure.d';
  **********************************************************************/
 export interface settingsDialogData {
 	branchId: string;
-	allowedHeaders1: (keyof element)[];
-	allHeaders1: (keyof element)[];
-	allHeaders2: (keyof structure)[];
-	allowedHeaders2: (keyof structure)[];
+	allowedHeaders1: (keyof structure)[];
+	allHeaders1: (keyof structure)[];
+	allowedHeaders2: (keyof element)[];
+	allHeaders2: (keyof element)[];
 	editable: boolean;
 	headers1Label: string;
 	headers2Label: string;

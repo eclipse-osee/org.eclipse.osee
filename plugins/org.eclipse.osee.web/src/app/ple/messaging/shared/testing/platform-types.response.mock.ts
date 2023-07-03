@@ -15,6 +15,7 @@ import type { PlatformType } from '@osee/messaging/shared/types';
 
 export const platformTypesMock: PlatformType[] = [
 	{
+		id: '1',
 		interfaceLogicalType: 'boolean',
 		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '8',
@@ -33,8 +34,19 @@ export const platformTypesMock: PlatformType[] = [
 			id: '1',
 			name: 'Base',
 		},
+		enumSet: {
+			id: '-1',
+			name: '',
+			description: '',
+			enumerations: [],
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
+		},
 	},
 	{
+		id: '2',
 		interfaceLogicalType: 'boolean',
 		interfacePlatformType2sComplement: false,
 		interfacePlatformTypeAnalogAccuracy: '8',
@@ -52,6 +64,16 @@ export const platformTypesMock: PlatformType[] = [
 		applicability: {
 			id: '1',
 			name: 'Base',
+		},
+		enumSet: {
+			id: '-1',
+			name: '',
+			description: '',
+			enumerations: [],
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
 		},
 	},
 ];
@@ -76,6 +98,16 @@ export const platformTypes1: PlatformType[] = [
 			id: '1',
 			name: 'Base',
 		},
+		enumSet: {
+			id: '-1',
+			name: '',
+			description: '',
+			enumerations: [],
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
+		},
 	},
 	{
 		interfaceLogicalType: '',
@@ -97,6 +129,16 @@ export const platformTypes1: PlatformType[] = [
 			id: '1',
 			name: 'Base',
 		},
+		enumSet: {
+			id: '-1',
+			name: '',
+			description: '',
+			enumerations: [],
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
+		},
 	},
 	{
 		interfaceLogicalType: '',
@@ -117,6 +159,16 @@ export const platformTypes1: PlatformType[] = [
 		applicability: {
 			id: '1',
 			name: 'Base',
+		},
+		enumSet: {
+			id: '-1',
+			name: '',
+			description: '',
+			enumerations: [],
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
 		},
 	},
 ];

@@ -44,6 +44,9 @@ const connections = navigationStructure[0].children
 const help = navigationStructure[0].children
 	.filter((c) => c.label === 'Messaging Configuration')[0]
 	.children.find((page) => page.label === 'Help');
+const lists = navigationStructure[0].children
+	.filter((c) => c.label === 'Messaging Configuration')[0]
+	.children.find((page) => page.label === 'Enumeration List Configuration');
 const routes: Routes = [
 	{
 		path: '',
@@ -133,6 +136,14 @@ const routes: Routes = [
 		canActivate: [RoleGuard],
 		data: { requiredRoles: imports?.requiredRoles },
 		loadChildren: () => import('./transports/transports.routes'),
+	},
+	{
+		path: 'lists',
+		title: lists?.pageTitle || 'OSEE',
+		canActivate: [RoleGuard],
+		data: { requiredRoles: imports?.requiredRoles },
+		loadChildren: () =>
+			import('./list-configuration/list-configuration.routes'),
 	},
 ];
 

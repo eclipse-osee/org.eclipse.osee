@@ -88,6 +88,16 @@ describe('AddElementDialogComponent', () => {
 				id: '1',
 				name: 'Base',
 			},
+			enumSet: {
+				id: '-1',
+				name: '',
+				description: '',
+				enumerations: [],
+				applicability: {
+					id: '1',
+					name: 'Base',
+				},
+			},
 		},
 		element: {
 			id: '-1',

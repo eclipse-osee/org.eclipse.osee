@@ -17,16 +17,6 @@ import type { ConnectionNode } from './connection-nodes';
 import type { nodeData } from './node';
 
 export interface message {
-	[index: string]:
-		| string
-		| subMessage
-		| subMessageWithChanges
-		| boolean
-		| applic
-		| Array<subMessage | subMessageWithChanges>
-		| undefined
-		| messageChanges
-		| Array<ConnectionNode>;
 	id: string;
 	name: string;
 	description: string;

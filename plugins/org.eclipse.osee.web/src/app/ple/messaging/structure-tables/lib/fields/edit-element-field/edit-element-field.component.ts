@@ -56,10 +56,13 @@ import {
 	scan,
 	iif,
 	ReplaySubject,
+	filter,
+	skip,
 } from 'rxjs';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { applic } from '@osee/shared/types/applicability';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-messaging-edit-element-field',
@@ -85,19 +88,18 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 		A11yModule,
 		RouterLink,
 		ApplicabilitySelectorComponent,
+		UnitDropdownComponent,
 	],
 })
-export class EditElementFieldComponent<
-	T extends element[U],
-	U extends keyof element
-> implements OnDestroy, OnChanges
+export class EditElementFieldComponent<U extends keyof element>
+	implements OnDestroy, OnChanges
 {
 	private _done = new Subject();
 	availableTypes = this.structureService.types;
 	@Input() structureId: string = '';
 	@Input() elementId: string = '';
 	@Input() header!: U;
-	@Input() value: T = {} as T;
+	@Input() value!: element[U];
 	@Input() elementStart: number = 0;
 	@Input() elementEnd: number = 0;
 	@Input() editingDisabled: boolean = false;
@@ -105,8 +107,8 @@ export class EditElementFieldComponent<
 	@Input() platformType: PlatformType = new PlatformTypeSentinel();
 	@Output() contextMenu = new EventEmitter<MouseEvent>();
 
-	private _value: Subject<T> = new Subject();
-	private _immediateValue: Subject<T> = new Subject();
+	private _value: Subject<element[U]> = new Subject();
+	private _immediateValue: Subject<element[U]> = new Subject();
 	private _units: Subject<string> = new Subject();
 	paginationSize = 10;
 	_element: Partial<element> = {
@@ -133,6 +135,7 @@ export class EditElementFieldComponent<
 		share(),
 		debounceTime(500),
 		distinctUntilChanged(),
+		skip(1), //note: we might want to move the skip above the debounceTime to make things a bit faster in the future
 		switchMap((unit) =>
 			this.structureService.updatePlatformTypeValue({
 				id: this.platformType.id,
@@ -169,7 +172,7 @@ export class EditElementFieldComponent<
 			{ count: 0, type: '', value: undefined } as {
 				count: number;
 				type: string | null;
-				value: T | undefined;
+				value: element[U] | undefined;
 			}
 		),
 		switchMap((update) =>
@@ -247,7 +250,6 @@ export class EditElementFieldComponent<
 		)
 	);
 
-	units = () => this.structureService.units;
 	menuPosition = {
 		x: '0',
 		y: '0',
@@ -266,7 +268,9 @@ export class EditElementFieldComponent<
 		if (this.header !== 'platformType') {
 			this.updateTypeAhead(this.value);
 		} else {
-			this.updateTypeAhead(this.value.name);
+			if (this.isPlatformType(this.value)) {
+				this.updateTypeAhead(this.value.name);
+			}
 		}
 		if (
 			changes.elementId !== undefined &&
@@ -278,7 +282,7 @@ export class EditElementFieldComponent<
 	ngOnDestroy(): void {
 		this._done.next(true);
 	}
-	updateElement(header: keyof element, value: T) {
+	updateElement(header: keyof element, value: element[U]) {
 		if (this.header === 'applicability') {
 			this.focusChanged('applicability');
 		}
@@ -287,7 +291,7 @@ export class EditElementFieldComponent<
 			this.focusChanged(null);
 		}
 	}
-	updateImmediately(header: string, value: T) {
+	updateImmediately(header: string, value: element[U]) {
 		this._immediateValue.next(value);
 	}
 	updateType(value: PlatformType) {
@@ -306,11 +310,11 @@ export class EditElementFieldComponent<
 		this._typeValue.next(searchTerm);
 	}
 
-	openMenu(event: MouseEvent, location: T) {
+	openMenu(event: MouseEvent, location: element[U]) {
 		event.preventDefault();
 		this.contextMenu.emit(event);
 	}
-	isString(val: T | string): val is string {
+	isString(val: unknown): val is string {
 		return typeof val === 'string';
 	}
 	focusChanged(event: string | null) {
@@ -341,8 +345,8 @@ export class EditElementFieldComponent<
 	/**
 	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
 	 */
-	returnAsT(value: unknown): T {
-		return value as T;
+	returnAsT(value: unknown): element[U] {
+		return value as element[U];
 	}
 
 	/**

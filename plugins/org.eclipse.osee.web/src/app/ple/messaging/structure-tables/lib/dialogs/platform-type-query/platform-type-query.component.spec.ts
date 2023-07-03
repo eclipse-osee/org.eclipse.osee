@@ -49,6 +49,8 @@ import {
 } from '@osee/messaging/shared/services';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
+import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
+import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 
 describe('PlatformTypeQueryComponent', () => {
 	let component: PlatformTypeQueryComponent;
@@ -56,45 +58,54 @@ describe('PlatformTypeQueryComponent', () => {
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatSelectModule,
-				MatFormFieldModule,
-				FormsModule,
-				MatDividerModule,
-				MatButtonModule,
-				MatIconModule,
-				MatSliderModule,
-				MatDividerModule,
-				MatInputModule,
-				MatAutocompleteModule,
-				NoopAnimationsModule,
-			],
-			providers: [
-				{
-					provide: TransactionBuilderService,
-					useValue: transactionBuilderMock,
-				},
-				{
-					provide: MimPreferencesService,
-					useValue: MimPreferencesServiceMock,
-				},
-				{
-					provide: UserDataAccountService,
-					useValue: userDataAccountServiceMock,
-				},
-				{ provide: TypesService, useValue: typesServiceMock },
-				{ provide: EnumsService, useValue: enumsServiceMock },
-				{
-					provide: EnumerationSetService,
-					useValue: enumerationSetServiceMock,
-				},
-				{
-					provide: ApplicabilityListService,
-					useValue: applicabilityListServiceMock,
-				},
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(PlatformTypeQueryComponent, {
+			remove: {
+				imports: [UnitDropdownComponent],
+			},
+			add: {
+				imports: [MockUnitDropdownComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatSelectModule,
+					MatFormFieldModule,
+					FormsModule,
+					MatDividerModule,
+					MatButtonModule,
+					MatIconModule,
+					MatSliderModule,
+					MatDividerModule,
+					MatInputModule,
+					MatAutocompleteModule,
+					NoopAnimationsModule,
+				],
+				providers: [
+					{
+						provide: TransactionBuilderService,
+						useValue: transactionBuilderMock,
+					},
+					{
+						provide: MimPreferencesService,
+						useValue: MimPreferencesServiceMock,
+					},
+					{
+						provide: UserDataAccountService,
+						useValue: userDataAccountServiceMock,
+					},
+					{ provide: TypesService, useValue: typesServiceMock },
+					{ provide: EnumsService, useValue: enumsServiceMock },
+					{
+						provide: EnumerationSetService,
+						useValue: enumerationSetServiceMock,
+					},
+					{
+						provide: ApplicabilityListService,
+						useValue: applicabilityListServiceMock,
+					},
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {
@@ -134,7 +145,6 @@ describe('PlatformTypeQueryComponent', () => {
 	}
 
 	it('should create a query', async () => {
-		await testSelect('unit', 'Feet^2', 3);
 		await testSelect('logical-type', 'boolean', 0);
 		await testSelect('min-val', '4', 2, '=');
 		await testSelect('max-val', '8', 1, '=');

@@ -49,7 +49,7 @@ import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 })
 export class EditMessageNodesFieldComponent {
 	@Input() message!: message;
-	@Input() header: keyof message = '';
+	@Input() header!: keyof message;
 	@Input() value: ConnectionNode[] = [];
 
 	constructor(

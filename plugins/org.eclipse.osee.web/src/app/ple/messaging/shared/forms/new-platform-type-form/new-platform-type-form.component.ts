@@ -53,12 +53,16 @@ import {
 	tap,
 } from 'rxjs';
 import { NewAttributeFormFieldComponent } from '../new-attribute-form-field/new-attribute-form-field.component';
+import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdown.component';
 /**
  * Form that handles the selection of platform type attributes for a new platform type based on it's logical type.
  */
 @Component({
 	selector: 'osee-new-platform-type-form',
 	standalone: true,
+	templateUrl: './new-platform-type-form.component.html',
+	styleUrls: ['./new-platform-type-form.component.sass'],
+	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 	imports: [
 		NgIf,
 		NgFor,
@@ -69,14 +73,11 @@ import { NewAttributeFormFieldComponent } from '../new-attribute-form-field/new-
 		MatInputModule,
 		MatSelectModule,
 		TitleCasePipe,
-		NewAttributeFormFieldComponent,
 		UniquePlatformTypeAttributesDirective,
 		FirstLetterLowerPipe,
 		NgTemplateOutlet,
+		UnitDropdownComponent,
 	],
-	templateUrl: './new-platform-type-form.component.html',
-	styleUrls: ['./new-platform-type-form.component.sass'],
-	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class NewPlatformTypeFormComponent implements OnChanges {
 	/**
@@ -96,7 +97,6 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 		idIntValue: -1,
 	});
 
-	units = this.constantEnumService.units;
 	_formInfo = this.logicalTypeSubject.pipe(
 		filter((val) => val.id !== '' && val.id !== '-1'),
 		distinctUntilChanged(),
@@ -121,10 +121,12 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 
 	parentMatcher = new ParentErrorStateMatcher();
 
-	constructor(
-		private typesService: TypesService,
-		private constantEnumService: EnumsService
-	) {}
+	constructor(private typesService: TypesService) {
+		//@ts-ignore
+		delete this._platformType.id;
+		//@ts-ignore
+		delete this._platformType.enumSet;
+	}
 	ngOnChanges(changes: SimpleChanges) {
 		if (
 			changes.logicalType !== undefined &&

@@ -239,7 +239,7 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					platformType: {
-						previousValue: undefined,
+						previousValue: new PlatformTypeSentinel(),
 						currentValue: new PlatformTypeSentinel(),
 						transactionToken: {
 							id: '1223',
@@ -248,7 +248,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					interfaceElementIndexEnd: {
 						previousValue: 1,
-						currentValue: '',
+						currentValue: 1,
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -256,7 +256,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					interfaceElementIndexStart: {
 						previousValue: 0,
-						currentValue: '',
+						currentValue: 0,
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -264,7 +264,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					interfaceElementAlterable: {
 						previousValue: true,
-						currentValue: '',
+						currentValue: true,
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -272,7 +272,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					applicability: {
 						previousValue: undefined,
-						currentValue: '',
+						currentValue: { id: '1', name: 'Base' },
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -307,7 +307,7 @@ export const structuresMockWithChangesMulti: (
 				added: true,
 				changes: {
 					applicability: {
-						previousValue: null,
+						previousValue: undefined,
 						currentValue: {
 							id: '1',
 							name: 'Base',
@@ -421,7 +421,7 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					platformType: {
-						previousValue: null,
+						previousValue: new PlatformTypeSentinel(),
 						currentValue: {
 							...new PlatformTypeSentinel(),
 							name: 'testingUnits',
@@ -433,8 +433,8 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					interfaceElementIndexEnd: {
-						previousValue: '7',
-						currentValue: '9',
+						previousValue: 7,
+						currentValue: 9,
 						transactionToken: {
 							id: '1229',
 							branchId: '2780650236653788489',
@@ -476,7 +476,7 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					applicability: {
-						previousValue: null,
+						previousValue: undefined,
 						currentValue: { id: '1', name: 'Base' },
 						transactionToken: {
 							id: '1225',
@@ -484,7 +484,7 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					name: {
-						previousValue: null,
+						previousValue: '',
 						currentValue: 'testaddingelement',
 						transactionToken: {
 							id: '1225',
@@ -492,7 +492,7 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					description: {
-						previousValue: null,
+						previousValue: '',
 						currentValue: 'dsfads',
 						transactionToken: {
 							id: '1225',
@@ -500,7 +500,7 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					notes: {
-						previousValue: null,
+						previousValue: '',
 						currentValue: '',
 						transactionToken: {
 							id: '1225',
@@ -508,15 +508,15 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					interfaceElementAlterable: {
-						previousValue: null,
-						currentValue: 'true',
+						previousValue: false,
+						currentValue: true,
 						transactionToken: {
 							id: '1225',
 							branchId: '2780650236653788489',
 						},
 					},
 					platformType: {
-						previousValue: null,
+						previousValue: new PlatformTypeSentinel(),
 						currentValue: {
 							...new PlatformTypeSentinel(),
 							name: 'Name',
@@ -622,7 +622,7 @@ export const structuresMockWithChangesMulti: (
 				units: '',
 				changes: {
 					platformType: {
-						previousValue: null,
+						previousValue: new PlatformTypeSentinel(),
 						currentValue: {
 							...new PlatformTypeSentinel(),
 							name: 'testingUnits',
@@ -729,7 +729,7 @@ export const structuresMockWithChangesMulti: (
 				units: '',
 				changes: {
 					platformType: {
-						previousValue: null,
+						previousValue: new PlatformTypeSentinel(),
 						currentValue: {
 							...new PlatformTypeSentinel(),
 							name: 'testingUnits',
@@ -868,7 +868,7 @@ export const structuresMockWithChangesMulti: (
 						},
 					},
 					platformType: {
-						previousValue: undefined,
+						previousValue: new PlatformTypeSentinel(),
 						currentValue: new PlatformTypeSentinel(),
 						transactionToken: {
 							id: '1223',
@@ -877,7 +877,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					interfaceElementIndexEnd: {
 						previousValue: 1,
-						currentValue: '',
+						currentValue: 1,
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -885,7 +885,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					interfaceElementIndexStart: {
 						previousValue: 0,
-						currentValue: '',
+						currentValue: 0,
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -893,7 +893,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					interfaceElementAlterable: {
 						previousValue: true,
-						currentValue: '',
+						currentValue: true,
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -901,7 +901,7 @@ export const structuresMockWithChangesMulti: (
 					},
 					applicability: {
 						previousValue: undefined,
-						currentValue: '',
+						currentValue: { id: '1', name: 'Base' },
 						transactionToken: {
 							id: '1223',
 							branchId: '2780650236653788489',
@@ -1212,7 +1212,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 				},
 				platformType: {
 					previousValue: new PlatformTypeSentinel(),
-					currentValue: '',
+					currentValue: new PlatformTypeSentinel(),
 					transactionToken: {
 						id: '1223',
 						branchId: '2780650236653788489',
@@ -1220,7 +1220,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 				},
 				interfaceElementIndexEnd: {
 					previousValue: 1,
-					currentValue: '',
+					currentValue: 1,
 					transactionToken: {
 						id: '1223',
 						branchId: '2780650236653788489',
@@ -1228,7 +1228,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 				},
 				interfaceElementIndexStart: {
 					previousValue: 0,
-					currentValue: '',
+					currentValue: 0,
 					transactionToken: {
 						id: '1223',
 						branchId: '2780650236653788489',
@@ -1236,7 +1236,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 				},
 				interfaceElementAlterable: {
 					previousValue: true,
-					currentValue: '',
+					currentValue: true,
 					transactionToken: {
 						id: '1223',
 						branchId: '2780650236653788489',
@@ -1244,7 +1244,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 				},
 				applicability: {
 					previousValue: undefined,
-					currentValue: '',
+					currentValue: { id: '1', name: 'Base' },
 					transactionToken: {
 						id: '1223',
 						branchId: '2780650236653788489',
@@ -1279,7 +1279,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			added: true,
 			changes: {
 				applicability: {
-					previousValue: null,
+					previousValue: { id: '1', name: 'Base' },
 					currentValue: { id: '1', name: 'Base' },
 					transactionToken: {
 						id: '1222',
@@ -1287,8 +1287,8 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 					},
 				},
 				interfaceElementAlterable: {
-					previousValue: 'true',
-					currentValue: 'false',
+					previousValue: true,
+					currentValue: false,
 					transactionToken: {
 						id: '1227',
 						branchId: '2780650236653788489',
@@ -1346,8 +1346,8 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			units: '',
 			changes: {
 				interfaceElementIndexEnd: {
-					previousValue: '7',
-					currentValue: '9',
+					previousValue: 7,
+					currentValue: 9,
 					transactionToken: {
 						id: '1229',
 						branchId: '2780650236653788489',
@@ -1373,7 +1373,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			units: '',
 			changes: {
 				applicability: {
-					previousValue: null,
+					previousValue: { id: '1', name: 'Base' },
 					currentValue: { id: '1', name: 'Base' },
 					transactionToken: {
 						id: '1225',
@@ -1381,7 +1381,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 					},
 				},
 				name: {
-					previousValue: null,
+					previousValue: '',
 					currentValue: 'testaddingelement',
 					transactionToken: {
 						id: '1225',
@@ -1389,7 +1389,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 					},
 				},
 				description: {
-					previousValue: null,
+					previousValue: '',
 					currentValue: 'dsfads',
 					transactionToken: {
 						id: '1225',
@@ -1397,15 +1397,15 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 					},
 				},
 				interfaceElementAlterable: {
-					previousValue: null,
-					currentValue: 'true',
+					previousValue: false,
+					currentValue: true,
 					transactionToken: {
 						id: '1225',
 						branchId: '2780650236653788489',
 					},
 				},
 				platformType: {
-					previousValue: '',
+					previousValue: new PlatformTypeSentinel(),
 					currentValue: {
 						...new PlatformTypeSentinel(),
 						name: 'Name',

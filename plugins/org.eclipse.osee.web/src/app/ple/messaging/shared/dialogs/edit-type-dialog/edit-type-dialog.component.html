@@ -402,42 +402,13 @@
 							matches.</mat-error
 						>
 					</mat-form-field>
-					<mat-form-field>
-						<mat-label for="interfacePlatformTypeUnits"
-							>Units</mat-label
-						>
-						<mat-select
-							[(ngModel)]="data.type.interfacePlatformTypeUnits"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'4026643196432874344',
-									$event
-								)
-							"
-							#input
-							[errorStateMatcher]="parentMatcher"
-							[required]="(unitsRequired | async) || false"
-							id="interfacePlatformTypeUnits"
-							name="interfacePlatformTypeUnits"
-							#interfacePlatformTypeUnits="ngModel">
-							<osee-mat-option-loading
-								[data]="units"
-								objectName="Units">
-								<ng-template let-option>
-									<mat-option [value]="option">
-										{{ option }}
-									</mat-option>
-								</ng-template>
-							</osee-mat-option-loading>
-						</mat-select>
-						<mat-hint align="end">Select a Unit</mat-hint>
-						<mat-error
-							id="interfacePlatformTypeUnits"
-							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
-							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
-							matches.</mat-error
-						>
-					</mat-form-field>
+					<osee-unit-dropdown
+						[(unit)]="data.type.interfacePlatformTypeUnits"
+						(unitChange)="
+							updatePTypeManifest('4026643196432874344', $event)
+						"
+						[required]="(unitsRequired | async) || false"
+						[errorMatcher]="parentMatcher"></osee-unit-dropdown>
 				</div>
 			</form>
 		</mat-dialog-content>

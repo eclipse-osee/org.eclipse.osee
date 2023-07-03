@@ -40,7 +40,8 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 	],
 })
 export class UniquePlatformTypeNameDirective implements AsyncValidator {
-	@Input() referencePlatform: PlatformType = new PlatformTypeSentinel();
+	@Input() referencePlatform: PlatformType | Partial<PlatformType> =
+		new PlatformTypeSentinel();
 	private __referencePlatform = new PlatformTypeSentinel();
 	constructor(private queryService: CurrentQueryService) {}
 

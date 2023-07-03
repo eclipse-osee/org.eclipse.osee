@@ -23,14 +23,12 @@
 			>
 			<br />
 			<ng-container *ngFor="let form of formInfo.fields; index as i">
-				<ng-container *ngIf="units | async as _units">
-					<!-- Render form field inline instead of passing stuff down -->
-					<ng-container
-						*ngTemplateOutlet="
-							platformTypeEditor;
-							context: { form: form, units: _units }
-						"></ng-container>
-				</ng-container>
+				<!-- Render form field inline instead of passing stuff down -->
+				<ng-container
+					*ngTemplateOutlet="
+						platformTypeEditor;
+						context: { form: form }
+					"></ng-container>
 			</ng-container>
 		</div>
 	</ng-container>
@@ -45,49 +43,29 @@
 			>
 			<br />
 			<ng-container *ngFor="let form of formInfo.fields; index as i">
-				<ng-container *ngIf="units | async as _units">
-					<ng-container
-						*ngTemplateOutlet="
-							platformTypeEditor;
-							context: { form: form, units: _units }
-						"></ng-container>
-				</ng-container>
+				<ng-container
+					*ngTemplateOutlet="
+						platformTypeEditor;
+						context: { form: form }
+					"></ng-container>
 			</ng-container>
 		</div>
 	</ng-template>
 </ng-container>
 <ng-template
 	#platformTypeEditor
-	let-form="form"
-	let-units="units">
+	let-form="form">
 	<ng-container *ngIf="isLogicalTypeFieldInfo(form)">
 		<ng-container *ngIf="form.editable">
 			<ng-container *ngIf="form.name === 'Units'; else genericInput">
 				<ng-container
 					*ngIf="isString(_platformType[form.jsonPropertyName])">
-					<mat-form-field class="wide-form">
-						<mat-label>{{ form.name }}</mat-label>
-						<mat-select
-							[(ngModel)]="_platformType[form.jsonPropertyName]"
-							(ngModelChange)="updateField()"
-							[name]="form.attributeType | oseeFirstLetterLower"
-							[id]="form.attributeTypeId"
-							[required]="form.required"
-							#ctrl="ngModel"
-							[attr.data-cy]="'field-' + form.attributeType">
-							<mat-option
-								*ngFor="let unit of units"
-								[value]="unit">
-								{{ unit }}
-							</mat-option>
-							<ng-container *ngIf="form.defaultValue">
-								<mat-hint align="end"
-									>Default Value:
-									{{ form.defaultValue }}</mat-hint
-								>
-							</ng-container>
-						</mat-select>
-					</mat-form-field>
+					<osee-unit-dropdown
+						(unitChange)="
+							_platformType[form.jsonPropertyName] = $event;
+							updateField()
+						"
+						[required]="form.required"></osee-unit-dropdown>
 				</ng-container>
 			</ng-container>
 			<ng-template #genericInput>

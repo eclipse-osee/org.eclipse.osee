@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,13 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim.types;
-
-/**
- * @author Luciano T. Vaglienti
- */
-public enum ConnectionViewType {
-   HSDN, //sub-type of ETHERNET
-   ETHERNET,
-   MILSTD1553_B,
-}
+export * from './unit-dropdown/unit-dropdown.component';
+export * from './rate-dropdown/rate-dropdown.component';
+export * from './message-type-dropdown/message-type-dropdown.component';

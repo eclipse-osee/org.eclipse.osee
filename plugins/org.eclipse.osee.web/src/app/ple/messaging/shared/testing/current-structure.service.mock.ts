@@ -96,7 +96,6 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	branchType: new BehaviorSubject('working'),
 	MessageId: new BehaviorSubject('10'),
 	connectionId: new BehaviorSubject('10'),
-	units: of(unitsMock),
 	getType(typeId: string) {
 		return of(platformTypesMock[0]);
 	},

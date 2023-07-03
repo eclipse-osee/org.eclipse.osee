@@ -51,18 +51,22 @@
 					<mat-selection-list
 						[(ngModel)]="data.allowedHeaders1"
 						color="primary">
-						<mat-list-option
-							*ngFor="let header of data.allHeaders1"
-							[value]="header"
-							[attr.data-cy]="'header-' + header"
-							[attr.data-cy-checked]="
-								'selection-' + isChecked(0, header)
-							">
-							{{
-								(getHeaderByName(header, 'structure') | async)
-									?.humanReadable
-							}}
-						</mat-list-option>
+						<ng-container *ngFor="let header of data.allHeaders1">
+							<mat-list-option
+								*ngIf="isString(header)"
+								[value]="header"
+								[attr.data-cy]="'header-' + header"
+								[attr.data-cy-checked]="
+									'selection-' + isChecked(0, header)
+								">
+								{{
+									(
+										getHeaderByName(header, 'structure')
+										| async
+									)?.humanReadable
+								}}
+							</mat-list-option>
+						</ng-container>
 					</mat-selection-list>
 				</td>
 				<td class="mat-cell column-preferences-align-top">

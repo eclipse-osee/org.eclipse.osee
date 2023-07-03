@@ -50,6 +50,8 @@ import {
 	MockMatOptionLoadingComponent,
 } from '@osee/shared/components/testing';
 import { MockUniquePlatformTypeNameDirective } from 'src/app/ple/messaging/shared/testing/unique-platform-type-name.directive.mock';
+import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
 
 let loader: HarnessLoader;
 
@@ -60,6 +62,7 @@ describe('EditTypeDialogComponent', () => {
 	let matDialogData: editPlatformTypeDialogData = {
 		mode: editPlatformTypeDialogDataMode.edit,
 		type: {
+			id: '1',
 			interfaceLogicalType: 'boolean',
 			description: '',
 			interfacePlatformType2sComplement: false,
@@ -77,6 +80,12 @@ describe('EditTypeDialogComponent', () => {
 			applicability: {
 				id: '1',
 				name: 'Base',
+			},
+			enumSet: {
+				id: '-1',
+				name: '',
+				description: '',
+				applicability: { id: '1', name: 'Base' },
 			},
 		},
 	};
@@ -101,6 +110,7 @@ describe('EditTypeDialogComponent', () => {
 					MockUniquePlatformTypeAttributesDirective,
 					MockUniquePlatformTypeNameDirective,
 					MockApplicabilitySelectorComponent,
+					MockUnitDropdownComponent,
 				],
 				providers: [
 					{ provide: QueryService, useValue: QueryServiceMock },

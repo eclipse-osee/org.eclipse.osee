@@ -13,13 +13,11 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.EnumEndpoint;
-import org.eclipse.osee.mim.types.ConnectionViewType;
 
 public class EnumEndpointImpl implements EnumEndpoint {
 
@@ -63,11 +61,6 @@ public class EnumEndpointImpl implements EnumEndpoint {
       categories.addAll(CoreAttributeTypes.InterfaceStructureCategory.getEnumStrValues());
       categories.sort(Comparator.comparing(String::toString));
       return categories;
-   }
-
-   @Override
-   public Collection<ConnectionViewType> getConnectionTypes() {
-      return Arrays.asList(ConnectionViewType.values());
    }
 
    @Override

@@ -124,6 +124,9 @@
 			"@osee/messaging/shared/headers/*": [
 				"src/app/ple/messaging/shared/headers/*"
 			],
+			"@osee/messaging/shared/dropdowns": [
+				"src/app/ple/messaging/shared/dropdowns"
+			],
 			"@osee/messaging/shared/constants": [
 				"src/app/ple/messaging/shared/constants"
 			],

@@ -19,6 +19,7 @@ import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edi
 import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
 import type {
 	element,
+	elementWithChanges,
 	PlatformType,
 	structure,
 } from '@osee/messaging/shared/types';
@@ -39,10 +40,10 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 	],
 })
 export class SubElementTableFieldComponent {
-	@Input() header: string = '';
+	@Input() header!: keyof element;
 	@Input() editMode: boolean = false;
 
-	@Input() element: element = {
+	@Input() element: element | elementWithChanges = {
 		id: '',
 		name: '',
 		description: '',
@@ -69,7 +70,7 @@ export class SubElementTableFieldComponent {
 		interfaceTaskFileType: 0,
 		interfaceStructureCategory: '',
 	};
-	editableElementHeaders: string[] = [
+	editableElementHeaders: (keyof element)[] = [
 		'name',
 		'platformType',
 		'interfaceElementAlterable',
@@ -100,5 +101,13 @@ export class SubElementTableFieldComponent {
 		field?: string | number | boolean | applic | PlatformType
 	) {
 		this.menu.emit({ event, element, field });
+	}
+
+	hasChanges(v: element | elementWithChanges): v is elementWithChanges {
+		return (
+			(v as any).changes !== undefined ||
+			(v as any).added !== undefined ||
+			(v as any).deleted !== undefined
+		);
 	}
 }

@@ -1,3 +1,5 @@
+import { element, structure } from '@osee/messaging/shared/types';
+
 /*********************************************************************
  * Copyright (c) 2022 Boeing
  *
@@ -10,7 +12,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export const defaultEditElementProfile = [
+export const defaultEditElementProfile: (keyof element)[] = [
 	'name',
 	'description',
 	'platformType',
@@ -31,7 +33,7 @@ export const defaultEditElementProfile = [
 	'units',
 ];
 
-export const defaultViewElementProfile = [
+export const defaultViewElementProfile: (keyof element)[] = [
 	'name',
 	'description',
 	'logicalType',
@@ -39,7 +41,7 @@ export const defaultViewElementProfile = [
 	'notes',
 ];
 
-export const defaultEditStructureProfile = [
+export const defaultEditStructureProfile: (keyof structure | 'txRate')[] = [
 	'name',
 	'description',
 	'interfaceMinSimultaneity',
@@ -54,7 +56,7 @@ export const defaultEditStructureProfile = [
 	'txRate',
 ];
 
-export const defaultViewStructureProfile = [
+export const defaultViewStructureProfile: (keyof structure)[] = [
 	'name',
 	'description',
 	'interfaceMinSimultaneity',

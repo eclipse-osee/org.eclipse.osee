@@ -34,34 +34,54 @@ import { EditMessageFieldComponent } from './edit-message-field.component';
 import { MessageUiService } from '@osee/messaging/shared/services';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
+import {
+	MockMessageTypeDropdownComponent,
+	MockRateDropdownComponent,
+} from '@osee/messaging/shared/dropdowns/testing';
+import {
+	RateDropdownComponent,
+	MessageTypeDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
 
 describe('EditMessageFieldComponent', () => {
-	let component: EditMessageFieldComponent;
-	let fixture: ComponentFixture<EditMessageFieldComponent>;
+	let component: EditMessageFieldComponent<any>;
+	let fixture: ComponentFixture<EditMessageFieldComponent<any>>;
 	let httpTestingController: HttpTestingController;
 	let uiService: MessageUiService;
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				HttpClientTestingModule,
-				FormsModule,
-				MatFormFieldModule,
-				MatInputModule,
-				MatSelectModule,
-				MatDialogModule,
-				NoopAnimationsModule,
-				EditMessageFieldComponent,
-			],
-			providers: [
-				{
-					provide: ApplicabilityListService,
-					useValue: applicabilityListServiceMock,
-				},
-			],
-			teardown: { destroyAfterEach: false },
-		}).compileComponents();
+		await TestBed.overrideComponent(EditMessageFieldComponent, {
+			remove: {
+				imports: [RateDropdownComponent, MessageTypeDropdownComponent],
+			},
+			add: {
+				imports: [
+					MockRateDropdownComponent,
+					MockMessageTypeDropdownComponent,
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					HttpClientTestingModule,
+					FormsModule,
+					MatFormFieldModule,
+					MatInputModule,
+					MatSelectModule,
+					MatDialogModule,
+					NoopAnimationsModule,
+					EditMessageFieldComponent,
+				],
+				providers: [
+					{
+						provide: ApplicabilityListService,
+						useValue: applicabilityListServiceMock,
+					},
+				],
+				teardown: { destroyAfterEach: false },
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

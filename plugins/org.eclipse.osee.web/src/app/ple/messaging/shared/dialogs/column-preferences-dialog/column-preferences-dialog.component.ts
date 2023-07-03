@@ -97,23 +97,33 @@ export class ColumnPreferencesDialogComponent {
 	 * solely for generating test attributes for integration tests, do not use elsewhere
 	 */
 	/* istanbul ignore next */
-	isChecked(
-		columnNumber: 0 | 1,
-		preference: keyof structure | keyof element
+	isChecked<T extends 0 | 1>(
+		columnNumber: T,
+		preference: T extends 0
+			? Exclude<keyof structure, number>
+			: Exclude<keyof element, number>
 	) {
 		const headerList = this.getHeaderList(columnNumber);
+		//typescript being dumb here
+		//@ts-ignore
 		return headerList.includes(preference);
 	}
 	/**
 	 * solely for generating test attributes for integration tests, do not use elsewhere
 	 */
 	/* istanbul ignore next */
-	getHeaderList(
-		columnNumber: 0 | 1
-	): (keyof element)[] | (keyof structure)[] {
+	getHeaderList<T extends 0 | 1>(
+		columnNumber: T
+	): T extends 0 ? (keyof structure)[] : (keyof element)[] {
 		if (columnNumber) {
 			return this.data.allowedHeaders2;
 		}
+		//typescript being dumb here
+		//@ts-ignore
 		return this.data.allowedHeaders1;
+	}
+
+	protected isString(value: unknown): value is string {
+		return typeof value === 'string';
 	}
 }

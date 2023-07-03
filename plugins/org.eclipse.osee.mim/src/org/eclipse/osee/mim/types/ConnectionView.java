@@ -182,14 +182,6 @@ public class ConnectionView extends PLGenericDBObject {
    }
 
    /**
-    * @param isDashed set whether the line is dashed or not
-    */
-   @JsonIgnore
-   public void setIsDashed(boolean isDashed) {
-      this.data.setDashed(isDashed);
-   }
-
-   /**
     * @return the applicability
     */
    @JsonIgnore

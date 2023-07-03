@@ -18,7 +18,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.mim.types.ConnectionViewType;
 
 /**
  * @author Luciano T. Vaglienti
@@ -32,11 +31,21 @@ public interface EnumEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Collection<String> getPeriodicity();
 
+   /**
+    * @deprecated
+    * @see org.eclipse.osee.mim.InterfaceMessageRatesEndpoint
+    */
+   @Deprecated
    @GET()
    @Path("MessageRates")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<String> getMessageRates();
 
+   /**
+    * @deprecated
+    * @see org.eclipse.osee.mim.InterfaceMessageTypesEndpoint
+    */
+   @Deprecated
    @GET()
    @Path("MessageTypes")
    @Produces(MediaType.APPLICATION_JSON)
@@ -47,11 +56,11 @@ public interface EnumEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Collection<String> getStructureCategories();
 
-   @GET()
-   @Path("ConnectionTypes")
-   @Produces(MediaType.APPLICATION_JSON)
-   Collection<ConnectionViewType> getConnectionTypes();
-
+   /**
+    * @deprecated
+    * @see org.eclipse.osee.mim.InterfaceUnitEndpoint
+    */
+   @Deprecated
    @GET()
    @Path("Units")
    @Produces(MediaType.APPLICATION_JSON)

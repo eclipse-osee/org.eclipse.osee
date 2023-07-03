@@ -34,6 +34,10 @@ import {
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-message-dialog.component';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import {
+	RateDropdownComponent,
+	MessageTypeDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-messaging-add-message-dialog',
@@ -55,6 +59,8 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 		AsyncPipe,
 		MessageNodesCountDirective,
 		ApplicabilitySelectorComponent,
+		RateDropdownComponent,
+		MessageTypeDropdownComponent,
 	],
 })
 export class AddMessageDialogComponent {
@@ -66,8 +72,6 @@ export class AddMessageDialogComponent {
 		private transportTypeService: TransportTypeUiService
 	) {}
 
-	rates = this.enumService.rates;
-	types = this.enumService.types;
 	periodicities = this.enumService.periodicities;
 	nodes = this.currentMessagesService.connectionNodes;
 	transportType = this.transportTypeService.currentTransportType;

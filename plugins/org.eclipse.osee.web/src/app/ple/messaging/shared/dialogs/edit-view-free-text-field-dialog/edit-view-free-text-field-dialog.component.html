@@ -20,7 +20,7 @@
 <mat-dialog-content>
 	<ng-container *ngIf="(editMode | async) === true; else noEditContent">
 		<mat-form-field class="full-width full-height">
-			<mat-label>Description</mat-label>
+			<mat-label>{{ data.type }}</mat-label>
 			<textarea
 				matInput
 				[(ngModel)]="data.return"

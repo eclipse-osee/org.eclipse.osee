@@ -28,7 +28,7 @@
 			"></osee-applicability-selector>
 	</ng-container>
 	<mat-form-field
-		*ngIf="header !== 'applicability'"
+		*ngIf="header !== 'applicability' && header !== 'units'"
 		cdkMonitorSubtreeFocus
 		(cdkFocusChange)="focusChanged($event)"
 		subscriptSizing="dynamic"
@@ -52,8 +52,9 @@
 				</p>
 			</ng-container>
 		</ng-container>
-		<ng-container *ngIf="header === 'platformType' || header === 'units'">
-			<ng-container *ngIf="header === 'platformType'">
+		<ng-container *ngIf="header === 'platformType'">
+			<ng-container
+				*ngIf="header === 'platformType' && isPlatformType(value)">
 				<div class="tw-flex">
 					<input
 						matInput
@@ -103,24 +104,16 @@
 					</ng-container>
 				</mat-autocomplete>
 			</ng-container>
-			<ng-container *ngIf="header === 'units'">
-				<mat-select
-					[(ngModel)]="value"
-					(ngModelChange)="updateUnits($event)"
-					typeaheadDebounceInterval="1000"
-					[disabled]="editingDisabled"
-					class="unit-selector">
-					<osee-mat-option-loading
-						[data]="units"
-						objectName="Units">
-						<ng-template let-option>
-							<mat-option [value]="option">
-								{{ option }}
-							</mat-option>
-						</ng-template>
-					</osee-mat-option-loading>
-				</mat-select>
-			</ng-container>
 		</ng-container>
 	</mat-form-field>
+	<ng-container *ngIf="header === 'units'">
+		<ng-container *ngIf="isString(value)">
+			<form>
+				<osee-unit-dropdown
+					[unit]="value"
+					(unitChange)="updateUnits($event)"
+					[hintHidden]="true"></osee-unit-dropdown>
+			</form>
+		</ng-container>
+	</ng-container>
 </div>

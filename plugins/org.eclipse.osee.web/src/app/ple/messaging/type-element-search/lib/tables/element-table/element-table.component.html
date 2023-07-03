@@ -29,7 +29,7 @@
 				*matHeaderCellDef
 				[attr.colspan]="headers[i]"
 				class="message-interface-table-view-message-header">
-				<ng-container *ngIf="header !== 'path'; else path">
+				<ng-container *ngIf="header !== 'paths'; else path">
 					{{ getHumanReadable(header) | async }}
 				</ng-container>
 				<ng-template #path> Connection View </ng-template>
@@ -53,7 +53,7 @@
 					}}
 				</ng-container>
 				<ng-template #noShrink>
-					<ng-container *ngIf="header !== 'path'; else pathButton">
+					<ng-container *ngIf="header !== 'paths'; else pathButton">
 						<ng-container *ngIf="isPlatformType(element[header])">
 							{{ element[header].name }}
 						</ng-container>

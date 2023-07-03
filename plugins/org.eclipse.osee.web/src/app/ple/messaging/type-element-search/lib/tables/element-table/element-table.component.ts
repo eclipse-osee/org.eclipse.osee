@@ -51,7 +51,7 @@ export class ElementTableComponent {
 	headers: Extract<keyof elementWithPathsAndButtons, string>[] = [
 		'name',
 		'platformType',
-		'path',
+		'paths',
 		'interfaceElementAlterable',
 		'description',
 		'notes',

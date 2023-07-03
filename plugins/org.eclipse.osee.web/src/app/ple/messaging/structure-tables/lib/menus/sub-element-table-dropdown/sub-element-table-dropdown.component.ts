@@ -43,6 +43,7 @@ import type {
 	enumerationSet,
 	PlatformType,
 	EditViewFreeTextDialog,
+	elementWithChanges,
 } from '@osee/messaging/shared/types';
 import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
 import {
@@ -111,7 +112,7 @@ export class SubElementTableDropdownComponent {
 		interfaceStructureCategory: '',
 	};
 
-	@Input() header!: string;
+	@Input() header!: keyof element;
 	@Input() field?: string | number | boolean | PlatformType | applic;
 
 	@Input('branchId') _branchId: string = '';
@@ -463,17 +464,26 @@ export class SubElementTableDropdownComponent {
 		return this.headerService.getHeaderByName(value, 'element');
 	}
 
-	viewDiff(value: difference, header: string) {
-		this.structureService.sideNav = {
-			opened: true,
-			field: header,
-			currentValue: value.currentValue as string | number | applic,
-			previousValue: value.previousValue as
-				| string
-				| number
-				| applic
-				| undefined,
-			transaction: value.transactionToken,
-		};
+	viewDiff<T>(value: difference<T> | undefined, header: string) {
+		if (value !== undefined) {
+			this.structureService.sideNav = {
+				opened: true,
+				field: header,
+				currentValue: value.currentValue as string | number | applic,
+				previousValue: value.previousValue as
+					| string
+					| number
+					| applic
+					| undefined,
+				transaction: value.transactionToken,
+			};
+		}
+	}
+	hasChanges(v: element | elementWithChanges): v is elementWithChanges {
+		return (
+			(v as any).changes !== undefined ||
+			(v as any).added !== undefined ||
+			(v as any).deleted !== undefined
+		);
 	}
 }

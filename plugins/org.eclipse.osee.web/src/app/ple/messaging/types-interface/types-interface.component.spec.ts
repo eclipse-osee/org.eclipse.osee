@@ -32,6 +32,7 @@ describe('TypesInterfaceComponent', () => {
 	let typesService: Partial<CurrentTypesService> = {
 		typeData: of([
 			{
+				id: '1',
 				interfaceLogicalType: 'boolean',
 				description: '',
 				interfacePlatformType2sComplement: false,
@@ -51,8 +52,19 @@ describe('TypesInterfaceComponent', () => {
 					id: '1',
 					name: 'Base',
 				},
+				enumSet: {
+					id: '-1',
+					name: '',
+					description: '',
+					enumerations: [],
+					applicability: {
+						id: '1',
+						name: 'Base',
+					},
+				},
 			},
 			{
+				id: '2',
 				interfaceLogicalType: 'integer',
 				description: '',
 				interfacePlatformType2sComplement: false,
@@ -71,6 +83,16 @@ describe('TypesInterfaceComponent', () => {
 				applicability: {
 					id: '1',
 					name: 'Base',
+				},
+				enumSet: {
+					id: '-1',
+					name: '',
+					description: '',
+					enumerations: [],
+					applicability: {
+						id: '1',
+						name: 'Base',
+					},
 				},
 			},
 		]),
