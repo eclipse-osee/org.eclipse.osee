@@ -639,7 +639,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>   
-    
+  
+   <plugin
+         id="autolink"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  
    <plugin
          id="flexmark-ext-gitlab"
          download-size="0"
@@ -674,6 +681,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+   
    <plugin
          id="flexmark"
          download-size="0"
