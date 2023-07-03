@@ -679,6 +679,13 @@
 <plugin id="org.eclipse.jetty.util" version="9.4.51.v20230217"/>
 <plugin id="com.sun.jna.platform" version="5.12.1.v20221103-2317"/>
 <plugin id="com.sun.jna" version="5.12.1.v20221103-2317"/>
+<plugin id="autolink"/>
+<plugin id="flexmark-ext-autolink"/>
+<plugin id="flexmark-ext-gfm-tasklist"/>
+<plugin id="flexmark-ext-gitlab"/>
+<plugin id="flexmark-ext-tables"/>
+<plugin id="flexmark-ext-toc"/>
+<plugin id="flexmark-util-options"/>
 </includeBundles>
 <environment>
 <os>win32</os>

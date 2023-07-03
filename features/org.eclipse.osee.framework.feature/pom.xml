@@ -38,6 +38,7 @@
 						                <plugin	id="jackson-datatype-jsr310"/>
 						           	<plugin id="swagger-models"/>
 						                <plugin id="commons-lang3"/>
+						                <plugin id="autolink"/>
 						           	<plugin id="flexmark"/>
 								<plugin id="flexmark-util-builder"/>
 								<plugin id="flexmark-util-ast"/>

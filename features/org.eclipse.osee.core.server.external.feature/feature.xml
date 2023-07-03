@@ -37,35 +37,35 @@
          id="org.eclipse.jgit.ssh.apache"
          version="0.0.0"/>
 
-<plugin	
-		id="commons-lang3"
-		download-size="0"
+ <plugin	
+      id="commons-lang3"
+      download-size="0"
       install-size="0"
       version="0.0.0"
       unpack="false"/>
       
-	<plugin	
-		id="jackson-datatype-jsr310"
-		download-size="0"
+  <plugin	
+      id="jackson-datatype-jsr310"
+      download-size="0"
       install-size="0"
       version="0.0.0"
       unpack="false"/>
 
-<plugin
+ <plugin
          id="snakeyaml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+  <plugin
          id="jackson-dataformat-yaml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+   <plugin
          id="javax.validation"
          download-size="0"
          install-size="0"
@@ -1376,63 +1376,70 @@
          version="0.0.0"
          unpack="false"/>  
   
- <plugin
+   <plugin
+         id="autolink"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   
+  <plugin
          id="flexmark"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+  <plugin
          id="flexmark-util-format"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+  <plugin
          id="flexmark-util-dependency"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+  <plugin
          id="flexmark-util-html"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+  <plugin
          id="flexmark-util-ast"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+  <plugin
          id="flexmark-util-sequence"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+  <plugin
          id="flexmark-util-builder"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+  <plugin
          id="flexmark-util-collection"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+  <plugin
          id="flexmark-util-data"
          download-size="0"
          install-size="0"
@@ -1446,7 +1453,7 @@
          version="0.0.0"
          unpack="false"/>
 
-<plugin
+  <plugin
          id="flexmark-util-visitor"
          download-size="0"
          install-size="0"
