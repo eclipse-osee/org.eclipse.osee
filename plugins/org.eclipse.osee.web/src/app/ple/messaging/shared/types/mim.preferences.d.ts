@@ -21,7 +21,7 @@ export interface MimPreferences<T = { name: '' }> {
 
 export interface MimColumnPreference<T = { name: '' }> {
 	enabled: boolean;
-	name: Extract<keyof T, string>;
+	name: Exclude<keyof T, number>;
 }
 
 export interface MimUserGlobalPreferences {

@@ -48,6 +48,12 @@ public interface MimApi {
 
    InterfaceDifferenceReportApi getInterfaceDifferenceReportApi();
 
+   InterfaceUnitApi getInterfaceUnitApi();
+
+   InterfaceRateApi getInterfaceRateApi();
+
+   InterfaceMessageTypeApi getInterfaceMessageTypeApi();
+
    MimArtifactsApi getMimArtifactsApi();
 
    MimReportsApi getMimReportsApi();

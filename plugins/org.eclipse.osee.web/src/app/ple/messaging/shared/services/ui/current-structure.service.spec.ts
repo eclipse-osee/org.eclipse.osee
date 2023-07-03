@@ -213,6 +213,7 @@ servicesUnderTest.forEach((testCase) => {
 				scheduler
 					.expectObservable(
 						service.changeElementPlatformType('10', '20', {
+							id: '1',
 							description: '',
 							interfaceLogicalType: '',
 							interfacePlatformType2sComplement: false,
@@ -230,6 +231,13 @@ servicesUnderTest.forEach((testCase) => {
 							applicability: {
 								id: '1',
 								name: 'Base',
+							},
+							enumSet: {
+								id: '-1',
+								name: '',
+								description: '',
+								enumerations: [],
+								applicability: { id: '1', name: 'Base' },
 							},
 						})
 					)

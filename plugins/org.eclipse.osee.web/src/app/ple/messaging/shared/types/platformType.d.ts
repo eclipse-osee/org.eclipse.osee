@@ -18,8 +18,8 @@ import type { enumerationSet } from './enum';
  * Platform Type as defined by the API, ids are required when fetching or updating a platform type
  */
 export interface PlatformType {
-	[index: string]: string | boolean | enumerationSet | applic | undefined;
-	id?: string;
+	[index: string]: string | boolean | enumerationSet | applic;
+	id: string;
 	description: string;
 	interfaceLogicalType: string;
 	interfacePlatformType2sComplement: boolean;
@@ -28,7 +28,7 @@ export interface PlatformType {
 	interfacePlatformTypeBitSize: string;
 	interfacePlatformTypeCompRate: string;
 	interfaceDefaultValue: string;
-	enumSet?: enumerationSet; //typically unavailable, only present on query
+	enumSet: enumerationSet; //typically unavailable, only present on query
 	interfacePlatformTypeMaxval: string;
 	interfacePlatformTypeMinval: string;
 	interfacePlatformTypeMsbValue: string;

@@ -325,9 +325,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 				)
 			)
 		),
-		switchMap((finalHeaders) =>
-			of<(keyof structure & string)[]>([' ', ...finalHeaders])
-		),
+		switchMap((finalHeaders) => of([' ', ...finalHeaders])),
 		share(),
 		shareReplay(1)
 	);

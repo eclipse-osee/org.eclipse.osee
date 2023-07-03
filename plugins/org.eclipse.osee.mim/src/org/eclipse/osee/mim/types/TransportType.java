@@ -35,6 +35,7 @@ public class TransportType extends PLGenericDBObject {
    private int maximumSubscriberMultiplicity = 0;
    private int minimumPublisherMultiplicity = 0;
    private int maximumPublisherMultiplicity = 0;
+   private boolean isDashed = false;
    private List<String> interfaceLevelsToUse = new LinkedList<String>();
    private List<String> availableMessageHeaders = new LinkedList<String>();
    private List<String> availableSubmessageHeaders = new LinkedList<String>();
@@ -96,6 +97,7 @@ public class TransportType extends PLGenericDBObject {
             this.getJSONContents(art.getSoleAttributeValue(CoreAttributeTypes.AvailableStructureHeaders, "[]")));
          this.setAvailableElementHeaders(
             this.getJSONContents(art.getSoleAttributeValue(CoreAttributeTypes.AvailableElementHeaders, "[]")));
+         this.setDashed(art.getSoleAttributeValue(CoreAttributeTypes.DashedPresentation));
       } else {
          this.setByteAlignValidation(false);
          this.setMessageGeneration(false);
@@ -106,6 +108,7 @@ public class TransportType extends PLGenericDBObject {
          this.setMinimumSubscriberMultiplicity(0);
          this.setMaximumPublisherMultiplicity(0);
          this.setMaximumSubscriberMultiplicity(0);
+         this.setDashed(false);
       }
    }
 
@@ -268,6 +271,20 @@ public class TransportType extends PLGenericDBObject {
       List<String> innerStrings = Arrays.asList(innerString.split(","));
       return innerStrings.stream().map(s -> s.replaceAll("'", "")).collect(Collectors.toList());
 
+   }
+
+   /**
+    * @return the isDashed
+    */
+   public boolean isDashed() {
+      return isDashed;
+   }
+
+   /**
+    * @param isDashed the isDashed to set
+    */
+   public void setDashed(boolean isDashed) {
+      this.isDashed = isDashed;
    }
 
 }

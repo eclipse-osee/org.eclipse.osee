@@ -30,12 +30,15 @@ import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
+import org.eclipse.osee.mim.InterfaceMessageTypeEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeEndpoint;
+import org.eclipse.osee.mim.InterfaceRateEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureCountEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageFilterEndpoint;
+import org.eclipse.osee.mim.InterfaceUnitEndpoint;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.PlatformTypesEndpoint;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
@@ -213,5 +216,20 @@ public class BranchAccessor {
    public IcdEndpoint getIcd(@PathParam("branch") BranchId branch, @PathParam("id") ArtifactId connectionId) {
 
       return new IcdEndpointImpl(branch, ArtifactId.SENTINEL, connectionId, mimApi);
+   }
+
+   @Path("{branch}/units")
+   public InterfaceUnitEndpoint getUnitsEndpoint(@PathParam("branch") BranchId branch) {
+      return new InterfaceUnitEndpointImpl(branch, mimApi.getInterfaceUnitApi());
+   }
+
+   @Path("{branch}/rates")
+   public InterfaceRateEndpoint getRatesEndpoint(@PathParam("branch") BranchId branch) {
+      return new InterfaceRateEndpointImpl(branch, mimApi.getInterfaceRateApi());
+   }
+
+   @Path("{branch}/messageTypes")
+   public InterfaceMessageTypeEndpoint getMessageTypesEndpoint(@PathParam("branch") BranchId branch) {
+      return new InterfaceMessageTypeEndpointImpl(branch, mimApi.getInterfaceMessageTypeApi());
    }
 }

@@ -39,26 +39,6 @@ describe('EnumsService', () => {
 	});
 
 	describe('Message Interface', () => {
-		it('should fetch message rates', () => {
-			let testData = ['r1', 'r2', 'r3'];
-			service.rates.subscribe();
-			const req = httpTestingController.expectOne(
-				apiURL + '/mim/enums/' + 'MessageRates'
-			);
-			expect(req.request.method).toEqual('GET');
-			req.flush(testData);
-		});
-
-		it('should fetch message types', () => {
-			let testData = ['t1', 't2', 't3'];
-			service.types.subscribe();
-			const req = httpTestingController.expectOne(
-				apiURL + '/mim/enums/' + 'MessageTypes'
-			);
-			expect(req.request.method).toEqual('GET');
-			req.flush(testData);
-		});
-
 		it('should fetch message periodicities', () => {
 			let testData = ['p1', 'p2', 'p3'];
 			service.periodicities.subscribe();
@@ -68,15 +48,6 @@ describe('EnumsService', () => {
 			expect(req.request.method).toEqual('GET');
 			req.flush(testData);
 		});
-	});
-	it('should fetch platform type units', () => {
-		let testData = ['p1', 'p2', 'p3'];
-		service.units.subscribe();
-		const req = httpTestingController.expectOne(
-			apiURL + '/mim/enums/' + 'Units'
-		);
-		expect(req.request.method).toEqual('GET');
-		req.flush(testData);
 	});
 
 	describe('Message Element Interface', () => {

@@ -28,6 +28,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 import {
+	MockMessageTypeDropdownComponent,
+	MockRateDropdownComponent,
+} from '@osee/messaging/shared/dropdowns/testing';
+import {
 	CurrentMessagesService,
 	EnumsService,
 	TransportTypeUiService,
@@ -73,8 +77,6 @@ describe('AddMessageDialogComponent', () => {
 		],
 	};
 	let enumServiceMock: Partial<EnumsService> = {
-		types: of(['type1', 'type2', 'type3']),
-		rates: of(['r1', 'r2', 'r3']),
 		periodicities: of(['p1', 'p2', 'p3']),
 	};
 
@@ -112,6 +114,8 @@ describe('AddMessageDialogComponent', () => {
 					AsyncPipe,
 					MessageNodesCountDirective,
 					MockApplicabilitySelectorComponent,
+					MockRateDropdownComponent,
+					MockMessageTypeDropdownComponent,
 				],
 			},
 		})

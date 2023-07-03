@@ -39,6 +39,8 @@ import {
 } from 'rxjs/operators';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
+import { RateDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { MessageTypeDropdownComponent } from '../../../../shared/dropdowns/message-type-dropdown/message-type-dropdown.component';
 
 @Component({
 	selector: 'osee-messaging-edit-message-field',
@@ -59,17 +61,16 @@ import { applic } from '@osee/shared/types/applicability';
 		MatAutocompleteModule,
 		MatOptionLoadingComponent,
 		ApplicabilitySelectorComponent,
+		RateDropdownComponent,
+		MessageTypeDropdownComponent,
 	],
 })
-export class EditMessageFieldComponent<
-	R extends keyof message = any,
-	T extends Pick<message, keyof message> = any
-> {
+export class EditMessageFieldComponent<R extends keyof message> {
 	@Input() messageId!: string;
-	@Input() header: R = {} as R;
-	@Input() value: T = {} as T;
-	private _value: Subject<T> = new Subject();
-	private _immediateValue: Subject<T> = new Subject();
+	@Input() header!: R;
+	@Input() value!: message[R];
+	private _value: Subject<message[R]> = new Subject();
+	private _immediateValue: Subject<message[R]> = new Subject();
 	_message: Partial<message> = {
 		id: this.messageId,
 	};
@@ -94,8 +95,6 @@ export class EditMessageFieldComponent<
 			this.messageService.partialUpdateMessage(this._message)
 		)
 	);
-	rates = this.enumService.rates.pipe(takeUntil(this.messageService.done));
-	types = this.enumService.types.pipe(takeUntil(this.messageService.done));
 	periodicities = this.enumService.periodicities.pipe(
 		takeUntil(this.messageService.done)
 	);
@@ -116,7 +115,7 @@ export class EditMessageFieldComponent<
 			{ count: 0, type: '', value: undefined } as {
 				count: number;
 				type: string | null;
-				value: T | undefined;
+				value: message[R] | undefined;
 			}
 		),
 		switchMap((update) =>
@@ -139,10 +138,10 @@ export class EditMessageFieldComponent<
 		this._immediateSendValue.subscribe();
 	}
 
-	updateMessage(value: T) {
+	updateMessage(value: message[R]) {
 		this._value.next(value);
 	}
-	updateImmediately(value: T) {
+	updateImmediately(value: message[R]) {
 		this._immediateValue.next(value);
 	}
 	focusChanged(event: string | null) {
@@ -167,7 +166,11 @@ export class EditMessageFieldComponent<
 	/**
 	 * Note, this is a hack until we improve the types, don't use unless you know what you are doing
 	 */
-	returnAsT(value: unknown): T {
-		return value as T;
+	returnAsT(value: unknown): message[R] {
+		return value as message[R];
+	}
+
+	isString(val: unknown): val is string {
+		return typeof val === 'string';
 	}
 }

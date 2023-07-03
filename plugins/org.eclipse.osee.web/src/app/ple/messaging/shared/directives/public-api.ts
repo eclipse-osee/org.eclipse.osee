@@ -14,3 +14,4 @@ export * from './validators/enum-set-unique-description.directive';
 export * from './validators/message-nodes-count.directive';
 export * from './validators/unique-platform-type-attributes.directive';
 export * from './validators/unique-platform-type-name.directive';
+export * from './validators/connection-nodes-count.directive';

@@ -438,7 +438,7 @@ export class HeaderService {
 				map((structure) => structure.header),
 				reduce(
 					(acc, curr) => [...acc, curr],
-					[] as Extract<keyof structure, string>[]
+					[] as (keyof structure | string)[]
 				)
 			)
 		),

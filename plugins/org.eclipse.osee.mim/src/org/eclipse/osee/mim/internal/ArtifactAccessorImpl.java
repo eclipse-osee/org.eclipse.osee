@@ -464,8 +464,15 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public int getAllByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes) {
+      return this.getAllByFilterAndCount(branch, filter, attributes, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public int getAllByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
-         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(artifactType);
       if (Strings.isValid(filter)) {
          query = query.and(
             attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),

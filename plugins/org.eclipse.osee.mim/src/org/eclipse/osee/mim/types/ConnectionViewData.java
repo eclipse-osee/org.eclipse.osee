@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class ConnectionViewData extends PLGenericDBObject {
    private TransportType TransportType; //will need logic for both of these or data stored in DB
    private List<InterfaceNode> nodes;
-   private boolean isDashed;
    private ApplicabilityToken applicability;
    private String Description;
 
@@ -55,11 +54,6 @@ public class ConnectionViewData extends PLGenericDBObject {
     */
    public void setTransportType(TransportType type) {
       this.TransportType = type;
-      if (type.equals(ConnectionViewType.ETHERNET) || type.equals(ConnectionViewType.HSDN)) {
-         setDashed(false);
-      } else {
-         setDashed(true);
-      }
    }
 
    public List<InterfaceNode> getNodes() {
@@ -74,14 +68,7 @@ public class ConnectionViewData extends PLGenericDBObject {
     * @return the isDashed
     */
    public boolean isDashed() {
-      return isDashed;
-   }
-
-   /**
-    * @param isDashed the isDashed to set
-    */
-   public void setDashed(boolean isDashed) {
-      this.isDashed = isDashed;
+      return TransportType.isDashed();
    }
 
    /**

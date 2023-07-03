@@ -22,10 +22,13 @@ import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
+import org.eclipse.osee.mim.InterfaceMessageTypeApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
+import org.eclipse.osee.mim.InterfaceRateApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
+import org.eclipse.osee.mim.InterfaceUnitApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimArtifactsApi;
 import org.eclipse.osee.mim.MimReportsApi;
@@ -68,6 +71,9 @@ public class MimApiImpl implements MimApi {
    private InterfaceEnumerationApi interfaceEnumerationApi;
    private InterfaceEnumerationSetApi interfaceEnumerationSetApi;
    private InterfaceDifferenceReportApi interfaceDifferenceReportApi;
+   private InterfaceUnitApi interfaceUnitApi;
+   private InterfaceRateApi interfaceRateApi;
+   private InterfaceMessageTypeApi interfaceMessageTypeApi;
    private TransportTypeApi transportTypeApi;
    private CrossReferenceApi crossReferenceApi;
    private MimArtifactsApi mimArtifactsApi;
@@ -129,6 +135,9 @@ public class MimApiImpl implements MimApi {
          this.getInterfacePlatformTypeApi(), this.getInterfaceElementApi(), this.interfaceMessageApi);
       this.interfaceEnumerationApi = new InterfaceEnumerationApiImpl(orcsApi);
       this.interfaceEnumerationSetApi = new InterfaceEnumerationSetApiImpl(orcsApi, interfaceEnumerationApi);
+      this.interfaceUnitApi = new InterfaceUnitApiImpl(orcsApi);
+      this.interfaceRateApi = new InterfaceRateApiImpl(orcsApi);
+      this.interfaceMessageTypeApi = new InterfaceMessageTypeApiImpl(orcsApi);
       this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi, interfaceNodeViewApi,
          interfaceConnectionViewApi, interfaceMessageApi, interfaceSubMessageApi, interfaceStructureApi,
          interfaceElementApi, interfacePlatformApi, interfaceEnumerationSetApi, interfaceEnumerationApi);
@@ -225,6 +234,24 @@ public class MimApiImpl implements MimApi {
    @Override
    public CrossReferenceApi getCrossReferenceApi() {
       return this.crossReferenceApi;
+   }
+
+   @Override
+   public InterfaceUnitApi getInterfaceUnitApi() {
+      return this.interfaceUnitApi;
+   }
+
+   /**
+    * @return the interfaceRateApi
+    */
+   @Override
+   public InterfaceRateApi getInterfaceRateApi() {
+      return interfaceRateApi;
+   }
+
+   @Override
+   public InterfaceMessageTypeApi getInterfaceMessageTypeApi() {
+      return interfaceMessageTypeApi;
    }
 
 }

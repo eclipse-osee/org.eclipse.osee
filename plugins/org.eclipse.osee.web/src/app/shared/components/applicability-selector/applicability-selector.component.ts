@@ -132,7 +132,7 @@ export class ApplicabilitySelectorComponent implements OnChanges {
 		distinctUntilChanged(),
 		switchMap((_) =>
 			this._typeAhead.pipe(
-				switchMap(([filter, count]) =>
+				switchMap((filter) =>
 					this.applicService.getApplicabilityCount(filter)
 				)
 			)

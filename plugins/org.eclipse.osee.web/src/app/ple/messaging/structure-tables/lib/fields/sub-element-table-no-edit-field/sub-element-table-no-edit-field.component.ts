@@ -55,7 +55,7 @@ export class SubElementTableNoEditFieldComponent implements OnInit {
 		interfaceElementAlterable: false,
 		enumLiteral: '',
 	};
-	@Input() header: string = '';
+	@Input() header!: keyof element;
 	@Input() width: string = '';
 	_branchId: string = '';
 	_branchType: string = '';

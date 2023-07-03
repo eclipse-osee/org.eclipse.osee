@@ -16,8 +16,8 @@ import { enumerationSet } from '../types/enum';
 import type { PlatformType } from '../types/platformType';
 
 export class PlatformTypeSentinel implements PlatformType {
-	[index: string]: string | boolean | enumerationSet | applic | undefined;
-	id?: string | undefined = '-1';
+	[index: string]: string | boolean | enumerationSet | applic;
+	id: string = '-1';
 	description: string = '';
 	interfaceLogicalType: string = '';
 	interfacePlatformType2sComplement: boolean = false;
@@ -35,5 +35,14 @@ export class PlatformTypeSentinel implements PlatformType {
 	applicability: applic = {
 		id: '1',
 		name: 'Base',
+	};
+	enumSet: enumerationSet = {
+		id: '-1',
+		name: '',
+		description: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	};
 }

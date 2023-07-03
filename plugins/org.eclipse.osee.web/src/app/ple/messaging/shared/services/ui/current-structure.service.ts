@@ -263,10 +263,6 @@ export abstract class CurrentStructureService {
 		this.ui.updateMessages = value;
 	}
 
-	get units() {
-		return this.enumListService.units;
-	}
-
 	get availableStructures() {
 		return this.BranchId.pipe(
 			switchMap((id) =>

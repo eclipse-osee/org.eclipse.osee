@@ -38,6 +38,10 @@ import type {
 	structure,
 } from '@osee/messaging/shared/types';
 import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
+import {
+	defaultEditElementProfile,
+	defaultViewElementProfile,
+} from '@osee/messaging/shared/constants';
 
 @Component({
 	selector: 'osee-messaging-usermenu',
@@ -69,13 +73,20 @@ export class UsermenuComponent {
 					from(r).pipe(
 						filter(
 							(column) =>
-								allHeaders.includes(column.name) &&
-								column.enabled
+								allHeaders.includes(
+									column.name as Extract<
+										keyof element,
+										string
+									>
+								) && column.enabled
 						),
-						map((header) => header.name),
+						map(
+							(header) =>
+								header.name as Extract<keyof element, string>
+						),
 						reduce(
 							(acc, curr) => [...acc, curr],
-							[] as Extract<keyof element, string>[]
+							[] as (keyof element)[]
 						)
 					)
 				)
@@ -84,21 +95,14 @@ export class UsermenuComponent {
 		mergeMap((headers) =>
 			iif(
 				() => headers.length !== 0,
-				of(headers).pipe(
-					map((array) => {
-						array.push(
-							array.splice(array.indexOf('applicability'), 1)[0]
-						);
-						return array;
-					})
-				),
-				of([
-					'name',
-					'platformType',
-					'interfaceElementAlterable',
-					'description',
-					'notes',
-				])
+				of(headers),
+				this.isEditing.pipe(
+					switchMap((_isEditing) =>
+						_isEditing
+							? of(defaultEditElementProfile)
+							: of(defaultViewElementProfile)
+					)
+				)
 			)
 		),
 		share(),
@@ -175,10 +179,10 @@ export class UsermenuComponent {
 					.open(ColumnPreferencesDialogComponent, {
 						data: {
 							branchId: branch,
+							allowedHeaders1: structures,
+							allHeaders1: allStructureHeaders,
 							allHeaders2: allElementHeaders,
 							allowedHeaders2: elements,
-							allHeaders1: allStructureHeaders,
-							allowedHeaders1: structures,
 							editable: edit,
 							headers1Label: 'Structure Headers',
 							headers2Label: 'Element Headers',

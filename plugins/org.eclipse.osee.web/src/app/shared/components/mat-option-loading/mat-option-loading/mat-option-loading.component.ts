@@ -248,24 +248,20 @@ export class MatOptionLoadingComponent<T>
 								this._paginationComplete.next(true);
 								return acc;
 							}
-
-							const deDupedArr = [...acc, ...curr].filter(
-								(value, index, array) =>
-									array.findIndex(
-										(value2) =>
-											JSON.stringify(value) ===
-											JSON.stringify(value2)
-									) === index
-							);
-
-							if (
-								deDupedArr.length !==
-								acc.length + curr.length
-							) {
-								return deDupedArr;
-							}
 						} else if (acc.length + curr.length >= count) {
 							this._paginationComplete.next(true);
+						}
+						const deDupedArr = [...acc, ...curr].filter(
+							(value, index, array) =>
+								array.findIndex(
+									(value2) =>
+										JSON.stringify(value) ===
+										JSON.stringify(value2)
+								) === index
+						);
+
+						if (deDupedArr.length !== acc.length + curr.length) {
+							return deDupedArr;
 						}
 						return [...acc, ...curr];
 					}, [] as T[])

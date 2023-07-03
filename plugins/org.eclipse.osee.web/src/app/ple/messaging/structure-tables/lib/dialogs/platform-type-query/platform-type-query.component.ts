@@ -20,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
+import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 import {
 	PlatformTypeQuery,
 	andQuery,
@@ -33,7 +34,6 @@ import {
 	andNameQuery,
 	andDescriptionQuery,
 } from '@osee/messaging/shared/query';
-import { EnumsService } from '@osee/messaging/shared/services';
 import type { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
@@ -52,12 +52,12 @@ import type { PlatformType } from '@osee/messaging/shared/types';
 		MatSelectModule,
 		AsyncPipe,
 		NgFor,
+		UnitDropdownComponent,
 	],
 })
 export class PlatformTypeQueryComponent {
 	@Input() platformTypes: PlatformType[] = [];
 	@Input() bitSizeSliderStepSize: number = 0.05;
-	units = this.constantEnumService.units;
 	unit = '';
 	logicalType = '';
 	defaultVal = '';
@@ -68,7 +68,6 @@ export class PlatformTypeQueryComponent {
 	name = '';
 	description = '';
 	@Output('query') returnQuery = new EventEmitter<PlatformTypeQuery>();
-	constructor(private constantEnumService: EnumsService) {}
 	get logicalTypes() {
 		return this.platformTypes
 			.filter(

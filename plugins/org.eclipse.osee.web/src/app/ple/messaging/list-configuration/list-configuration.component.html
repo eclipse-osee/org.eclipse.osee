@@ -1,0 +1,51 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<osee-messaging-controls [actionControls]="true">
+	<osee-view-selector
+		*ngIf="(branchId | async) && (branchType | async)"></osee-view-selector>
+</osee-messaging-controls>
+<div class="tw-flex tw-flex-row">
+	<osee-named-id-list-editor
+		[name]="'Units'"
+		[allowedToEdit]="(branchType | async) === 'working'"
+		[dataToDisplay]="(units | async) || []"
+		[pageIndex]="(unitsPageIndex | async) || 0"
+		[pageSize]="(unitsPageSize | async) || 10"
+		[count]="(unitsCount | async) || 0"
+		(pageEvent)="updateUnitsPages($event)"
+		(filterChange)="unitsFilterChange($event)"
+		(namedIdEdit)="updateUnit($event)"
+		(createNew)="createUnit($event)"></osee-named-id-list-editor>
+	<osee-named-id-list-editor
+		[name]="'Rates'"
+		[allowedToEdit]="(branchType | async) === 'working'"
+		[dataToDisplay]="(rates | async) || []"
+		[pageIndex]="(ratesPageIndex | async) || 0"
+		[pageSize]="(ratesPageSize | async) || 10"
+		[count]="(ratesCount | async) || 0"
+		(pageEvent)="updateRatesPages($event)"
+		(filterChange)="ratesFilterChange($event)"
+		(namedIdEdit)="updateRate($event)"
+		(createNew)="createRate($event)"></osee-named-id-list-editor>
+	<osee-named-id-list-editor
+		[name]="'Message Types'"
+		[allowedToEdit]="(branchType | async) === 'working'"
+		[dataToDisplay]="(messageTypes | async) || []"
+		[pageIndex]="(messageTypesPageIndex | async) || 0"
+		[pageSize]="(messageTypesPageSize | async) || 10"
+		[count]="(messageTypesCount | async) || 0"
+		(pageEvent)="updateMessageTypesPages($event)"
+		(filterChange)="messageTypesFilterChange($event)"
+		(namedIdEdit)="updateMessageType($event)"
+		(createNew)="createMessageType($event)"></osee-named-id-list-editor>
+</div>

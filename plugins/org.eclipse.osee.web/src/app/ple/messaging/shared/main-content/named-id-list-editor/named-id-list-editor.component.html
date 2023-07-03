@@ -1,0 +1,54 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-form-field class="tw-w-full">
+	<input
+		type="text"
+		matInput
+		[placeholder]="'Filter ' + name"
+		[(ngModel)]="filter"
+		(ngModelChange)="updateFilter($any($event))"
+		#input />
+</mat-form-field>
+<mat-action-list>
+	<ng-container *ngFor="let artifact of dataToDisplay">
+		<ng-container *ngIf="allowedToEdit; else noEdit">
+			<button
+				mat-list-item
+				(click)="openNameDialog(artifact)">
+				{{ artifact.name }}
+			</button>
+		</ng-container>
+		<ng-template #noEdit>
+			<button mat-list-item>
+				{{ artifact.name }}
+			</button>
+		</ng-template>
+		<mat-divider></mat-divider>
+	</ng-container>
+	<button
+		mat-list-item
+		class="tw-w-full"
+		(click)="addNamedId()">
+		<mat-icon
+			class="tw-text-success"
+			matListItemIcon>
+			add
+		</mat-icon>
+		Add New {{ name }}
+	</button>
+</mat-action-list>
+<mat-paginator
+	[length]="count"
+	[pageIndex]="pageIndex"
+	[pageSize]="pageSize"
+	(page)="pageEvent.next($event)"></mat-paginator>

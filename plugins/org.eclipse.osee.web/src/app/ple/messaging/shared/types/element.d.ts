@@ -15,7 +15,6 @@ import type { applic } from '@osee/shared/types/applicability';
 import type { hasChanges } from '@osee/shared/types/change-report';
 import { PlatformType } from './platformType';
 export interface element {
-	[index: string]: any;
 	id: string;
 	name: string;
 	description: string;

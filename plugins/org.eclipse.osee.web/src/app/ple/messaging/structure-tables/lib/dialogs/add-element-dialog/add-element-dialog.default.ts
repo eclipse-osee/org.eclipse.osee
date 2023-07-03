@@ -55,6 +55,15 @@ export class DefaultAddElementDialog implements AddElementDialog {
 			id: '1',
 			name: 'Base',
 		},
+		enumSet: {
+			id: '-1',
+			name: '',
+			description: '',
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
+		},
 	};
 
 	constructor(id?: string, name?: string, element?: Partial<element>) {

@@ -13,3 +13,4 @@
 export * from './platform-type-card/platform-type-card.component';
 export * from './view-selector/view-selector.component';
 export * from './messaging-controls/messaging-controls.component';
+export * from './named-id-list-editor/named-id-list-editor.component';

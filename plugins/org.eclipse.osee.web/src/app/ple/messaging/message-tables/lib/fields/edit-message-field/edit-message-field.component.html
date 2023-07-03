@@ -13,44 +13,22 @@
 <ng-container
 	*ngIf="header !== 'interfaceMessageWriteAccess'; else writeAccess">
 	<mat-form-field
-		*ngIf="header !== 'applicability'"
+		*ngIf="
+			header !== 'applicability' &&
+			header !== 'interfaceMessageRate' &&
+			header !== 'interfaceMessageType'
+		"
 		cdkMonitorSubtreeFocus
 		(cdkFocusChange)="focusChanged($event)"
 		class="wide-form"
 		subscriptSizing="dynamic">
 		<ng-container
 			*ngIf="
-				header === 'interfaceMessageRate' ||
-					header === 'interfaceMessagePeriodicity' ||
-					header === 'interfaceMessageType' ||
+				header === 'interfaceMessagePeriodicity' ||
 					header === 'publisherNodes' ||
 					header === 'subscriberNodes';
 				else generalEdit
 			">
-			<ng-container *ngIf="header === 'interfaceMessageRate'">
-				<mat-select
-					[(ngModel)]="value"
-					(ngModelChange)="updateImmediately(value)"
-					required>
-					<mat-option
-						*ngFor="let option of rates | async"
-						[value]="option">
-						{{ option }}
-					</mat-option>
-				</mat-select>
-			</ng-container>
-			<ng-container *ngIf="header === 'interfaceMessageType'">
-				<mat-select
-					[(ngModel)]="value"
-					(ngModelChange)="updateImmediately(value)"
-					required>
-					<mat-option
-						*ngFor="let option of types | async"
-						[value]="option">
-						{{ option }}
-					</mat-option>
-				</mat-select>
-			</ng-container>
 			<ng-container *ngIf="header === 'interfaceMessagePeriodicity'">
 				<mat-select
 					[(ngModel)]="value"
@@ -77,6 +55,28 @@
 			(applicabilityChange)="
 				updateImmediately(returnAsT($event))
 			"></osee-applicability-selector>
+	</ng-container>
+	<ng-container *ngIf="header === 'interfaceMessageRate'">
+		<ng-container *ngIf="isString(value)">
+			<form>
+				<osee-rate-dropdown
+					[rate]="value"
+					[required]="true"
+					(rateChange)="updateImmediately(returnAsT($event))"
+					[hintHidden]="true"></osee-rate-dropdown>
+			</form>
+		</ng-container>
+	</ng-container>
+	<ng-container *ngIf="header === 'interfaceMessageType'">
+		<ng-container *ngIf="isString(value)">
+			<form>
+				<osee-message-type-dropdown
+					[messageType]="value"
+					[required]="true"
+					(messageTypeChange)="updateImmediately(returnAsT($event))"
+					[hintHidden]="true"></osee-message-type-dropdown>
+			</form>
+		</ng-container>
 	</ng-container>
 </ng-container>
 

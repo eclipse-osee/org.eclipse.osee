@@ -45,19 +45,28 @@ import {
 	platformTypesMock,
 } from '@osee/messaging/shared/testing';
 import {
+	CurrentStructureService,
 	EnumsService,
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
+import { of } from 'rxjs';
 
 describe('EditElementFieldComponent', () => {
-	let component: EditElementFieldComponent<any, any>;
-	let fixture: ComponentFixture<EditElementFieldComponent<any, any>>; //@todo Luciano fix these types later when the types are smarter
+	let component: EditElementFieldComponent<any>;
+	let fixture: ComponentFixture<EditElementFieldComponent<any>>; //@todo Luciano fix these types later when the types are smarter
 	let loader: HarnessLoader;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [NoopAnimationsModule],
+			providers: [
+				{
+					provide: STRUCTURE_SERVICE_TOKEN,
+					useValue: CurrentStateServiceMock,
+				},
+			],
 		})
 			.overrideComponent(EditElementFieldComponent, {
 				set: {
@@ -77,6 +86,7 @@ describe('EditElementFieldComponent', () => {
 						NgIf,
 						NgFor,
 						MockApplicabilitySelectorComponent,
+						MockUnitDropdownComponent,
 					],
 					providers: [
 						{ provide: EnumsService, useValue: enumsServiceMock },
@@ -141,18 +151,18 @@ describe('EditElementFieldComponent', () => {
 			component.value = unitsMock[0];
 		});
 		it('should update the units', fakeAsync(async () => {
-			component.focusChanged('mouse');
-			component.focusChanged('mouse');
-			component.focusChanged(null);
-			let select = await loader.getHarness(
-				MatSelectHarness.with({ selector: '.unit-selector' })
-			);
-			await select.focus();
-			await select.open();
-			await select.isOpen();
-			await select.clickOptions({ text: unitsMock[5] });
+			let serviceSpy = spyOn(
+				TestBed.inject(STRUCTURE_SERVICE_TOKEN),
+				'updatePlatformTypeValue'
+			).and.callFake(() => of());
+			component.updateUnits('');
 			tick(500);
-			expect(await select.getValueText()).toBe(unitsMock[5]);
+			component.updateUnits('radians');
+			tick(500);
+			expect(serviceSpy).toHaveBeenCalledWith({
+				id: '1',
+				interfacePlatformTypeUnits: 'radians',
+			});
 		}));
 	});
 });

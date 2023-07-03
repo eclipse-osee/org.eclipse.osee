@@ -31,6 +31,7 @@ import {
 	enumerationSetServiceMock,
 	enumsServiceMock,
 	warningDialogServiceMock,
+	unitsServiceMock,
 } from '@osee/messaging/shared/testing';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import type {
@@ -49,10 +50,17 @@ import {
 	EnumerationSetService,
 	EnumsService,
 	WarningDialogService,
+	UnitsService,
 } from '@osee/messaging/shared/services';
 import { UserDataAccountService } from '@osee/auth';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import {
+	TransactionBuilderService,
+	TransactionService,
+} from '@osee/shared/transactions';
+import {
+	transactionBuilderMock,
+	transactionServiceMock,
+} from '@osee/shared/transactions/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
@@ -88,6 +96,14 @@ describe('PlatformTypeCardComponent', () => {
 						{
 							provide: WarningDialogService,
 							useValue: warningDialogServiceMock,
+						},
+						{
+							provide: UnitsService,
+							useValue: unitsServiceMock,
+						},
+						{
+							provide: TransactionService,
+							useValue: transactionServiceMock,
 						},
 					],
 				},
@@ -129,6 +145,14 @@ describe('PlatformTypeCardComponent', () => {
 						provide: WarningDialogService,
 						useValue: warningDialogServiceMock,
 					},
+					{
+						provide: UnitsService,
+						useValue: unitsServiceMock,
+					},
+					{
+						provide: TransactionService,
+						useValue: transactionServiceMock,
+					},
 				],
 				schemas: [NO_ERRORS_SCHEMA], //weirdness with standalone component + dialog
 			})
@@ -159,6 +183,12 @@ describe('PlatformTypeCardComponent', () => {
 			applicability: {
 				id: '1',
 				name: 'Base',
+			},
+			enumSet: {
+				id: '-1',
+				name: '',
+				description: '',
+				applicability: { id: '1', name: 'Base' },
 			},
 		};
 		component.typeData = expectedData;
@@ -216,6 +246,7 @@ describe('PlatformTypeCardComponent', () => {
 			afterClosed: of<editPlatformTypeDialogData>({
 				mode: editPlatformTypeDialogDataMode.copy,
 				type: {
+					id: '1',
 					name: '',
 					description: '',
 					interfaceLogicalType: '',
@@ -233,6 +264,12 @@ describe('PlatformTypeCardComponent', () => {
 					applicability: {
 						id: '1',
 						name: 'Base',
+					},
+					enumSet: {
+						id: '-1',
+						name: '',
+						description: '',
+						applicability: { id: '1', name: 'Base' },
 					},
 				},
 			}),

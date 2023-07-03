@@ -46,6 +46,7 @@ import {
 	ethernetTransportType,
 } from '@osee/messaging/shared/testing';
 import { CommonModule } from '@angular/common';
+import { ConnectionNodesCountDirective } from '@osee/messaging/shared/directives';
 
 describe('CreateConnectionDialogComponent', () => {
 	let component: CreateConnectionDialogComponent;
@@ -78,6 +79,7 @@ describe('CreateConnectionDialogComponent', () => {
 					MockMatOptionLoadingComponent,
 					MatOptionModule,
 					MatButtonModule,
+					ConnectionNodesCountDirective,
 				],
 			},
 		})

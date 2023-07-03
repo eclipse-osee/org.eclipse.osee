@@ -17,6 +17,7 @@
 	<input
 		type="text"
 		matInput
+		name="applicability"
 		[required]="required"
 		[ngModel]="filter | async"
 		(focusin)="autoCompleteOpened()"
@@ -38,7 +39,6 @@
 					[count]="_count">
 					<ng-template let-option>
 						<mat-option
-							[value]="option"
 							[attr.data-cy]="'option-' + option.name"
 							[value]="option"
 							[id]="option.id">

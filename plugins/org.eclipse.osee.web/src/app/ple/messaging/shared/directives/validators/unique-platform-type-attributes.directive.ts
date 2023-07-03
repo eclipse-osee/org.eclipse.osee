@@ -53,7 +53,8 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 		idIntValue: 0,
 		fields: [],
 	};
-	@Input() referencePlatform: PlatformType = new PlatformTypeSentinel();
+	@Input() referencePlatform: PlatformType | Partial<PlatformType> =
+		new PlatformTypeSentinel();
 	private __referencePlatform = new PlatformTypeSentinel();
 	constructor(private queryService: CurrentQueryService) {}
 	validate(

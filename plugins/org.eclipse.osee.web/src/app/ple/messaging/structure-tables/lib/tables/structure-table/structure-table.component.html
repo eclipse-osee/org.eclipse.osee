@@ -84,7 +84,7 @@
 					</th>
 				</ng-container>
 				<ng-container
-					[matColumnDef]="header"
+					[matColumnDef]="header.toString()"
 					*ngFor="
 						let header of currentHeaders;
 						let i = index;

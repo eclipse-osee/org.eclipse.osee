@@ -199,6 +199,17 @@ export const navigationStructure: navigationElement[] = [
 						icon: 'cloud_upload',
 						children: [],
 					},
+					{
+						label: 'Enumeration List Configuration',
+						cypressLabel: 'enum-list-config-nav-button',
+						pageTitle: 'OSEE - MIM - Enum List Configuration',
+						isDropdown: false,
+						isDropdownOpen: false,
+						requiredRoles: [UserRoles.OSEE_ADMIN],
+						routerLink: '/ple/messaging/lists',
+						icon: 'view_list',
+						children: [],
+					},
 				],
 			},
 			{
