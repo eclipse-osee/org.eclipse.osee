@@ -191,6 +191,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                         Math.floor(
                            ((previousElement.getEndWord() * (validationSize / 2)) + previousElement.getEndByte() + 1) / (validationSize / 2)),
                         (int) Math.floor(((validationSize / 2) - 1) - (previousElement.getEndByte())), true);
+                     previousElement.setShouldValidate(shouldValidate);
                      previousElement.setValidationSize(validationSize);
                      tempElements.add(previousElement);
                   }
@@ -205,6 +206,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                            ((previousElement.getEndWord() * (validationSize / 2)) + previousElement.getEndByte() + 1) / (validationSize / 2)),
                         (int) (Math.floor(
                            (currentElement.getInterfacePlatformTypeWordSize() - ((previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize()))) * (validationSize / 2)) - 1);
+                     previousElement.setShouldValidate(shouldValidate);
                      previousElement.setValidationSize(validationSize);
                      tempElements.add(previousElement);
                      //make a spare to fill remaining area until beginWord % WordSize=1
@@ -232,6 +234,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      Math.floor(
                         ((previousElement.getEndWord() * (validationSize / 2)) + previousElement.getEndByte() + 1) / (validationSize / 2)),
                      (int) Math.floor(((validationSize / 2) - 1) - (previousElement.getEndByte())), true);
+                  previousElement.setShouldValidate(shouldValidate);
                   previousElement.setValidationSize(validationSize);
                   tempElements.add(previousElement);
                }
@@ -245,6 +248,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                         ((previousElement.getEndWord() * (validationSize / 2)) + previousElement.getEndByte() + 1) / (validationSize / 2)),
                      (int) (Math.floor(
                         (currentElement.getInterfacePlatformTypeWordSize() - ((previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize()))) * (validationSize / 2)) - 1);
+                  previousElement.setShouldValidate(shouldValidate);
                   previousElement.setValidationSize(validationSize);
                   tempElements.add(previousElement);
                   //make a spare to fill remaining area until beginWord % WordSize=1
@@ -264,6 +268,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                   Math.floor(
                      ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
                   (int) Math.floor(((validationSize / 2) - 1) - (currentElement.getEndByte())), true);
+               tempElement.setShouldValidate(shouldValidate);
                tempElement.setValidationSize(validationSize);
                tempElements.add(tempElement);
             }
@@ -277,6 +282,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                   Math.floor(
                      ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
                   validationSize / 2);
+               currentElement.setShouldValidate(shouldValidate);
                currentElement.setValidationSize(validationSize);
                tempElements.add(currentElement);
             }
@@ -287,8 +293,10 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
              */
             InterfaceStructureElementToken lastElement = new InterfaceStructureElementToken("Insert Spare",
                "byte align spare for aligning to word start", 0.0, 0.0, 0);
+            lastElement.setShouldValidate(shouldValidate);
             lastElement.setValidationSize(validationSize);
             for (InterfaceStructureElementToken element : elements) {
+               element.setShouldValidate(shouldValidate);
                element.setValidationSize(validationSize);
                element.setBeginByte(0.0);
                element.setBeginWord(0.0);
@@ -321,6 +329,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                   Math.floor(
                      ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) / (validationSize / 2)),
                   (int) Math.floor(((validationSize / 2) - 1) - (lastElement.getEndByte())), true);
+               tempElement.setShouldValidate(shouldValidate);
                tempElement.setValidationSize(validationSize);
                tempElements.add(tempElement);
             }
@@ -333,6 +342,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                   Math.floor(
                      ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) / (validationSize / 2)),
                   validationSize / 2);
+               lastElement.setShouldValidate(shouldValidate);
                lastElement.setValidationSize(validationSize);
                tempElements.add(lastElement);
             }
@@ -519,6 +529,10 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       InterfaceMessageToken message = interfaceMessageApi.getWithRelations(branch, messageId,
          Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceSubMessageContent_Structure));
+      InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
+      System.out.println(connection.getTransportType().getId());
+      boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
+      int validationSize = connection.getTransportType().getByteAlignValidationSize();
       ApplicabilityToken applic = message.getApplicability();
       String initiatingNode = "Node"; // This should always be overwritten below, but initializing just in case.
       if (message.getPublisherNodes().size() > 0) {
@@ -546,6 +560,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
       // Timetag
       InterfaceStructureElementToken timetag = new InterfaceStructureElementToken(id, "Timetag", applic, doubleType);
+      timetag.setValidationSize(validationSize);
+      timetag.setShouldValidate(shouldValidate);
       timetag.setDescription("Indicates the time that the message was prepared for transmission.");
       timetag.setInterfaceElementAlterable(false);
       elements.add(timetag);
@@ -553,6 +569,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       // Message number
       InterfaceStructureElementToken element =
          new InterfaceStructureElementToken(id, "Message Number", applic, messageNumberType);
+      element.setValidationSize(validationSize);
+      element.setShouldValidate(shouldValidate);
       element.setDescription("Indicates the message number for this message.");
       elements.add(element);
 
@@ -583,6 +601,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
          element = new InterfaceStructureElementToken(id, "Number of Structures in Submessage " + number, applic,
             structuresType);
+         element.setValidationSize(validationSize);
+         element.setShouldValidate(shouldValidate);
          element.setDescription(
             "Indicates the number of structures in the submessage for a given transmission of it's message.");
          elements.add(element);
@@ -592,6 +612,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             new InterfaceStructureElementToken(id, "Submessage " + number + " Relative Offset", applic, offsetType);
          element.setDescription(
             "Indicates the byte offset from the beginning of the message to the start of the submessage data.");
+         element.setValidationSize(validationSize);
+         element.setShouldValidate(shouldValidate);
          elements.add(element);
       }
 
@@ -600,6 +622,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       // We want spares to be included in counts for autogenerated headers
       messageHeader.getElements().stream().forEach(e -> {
          e.setIncludedInCounts(true);
+         e.setShouldValidate(shouldValidate);
+         e.setValidationSize(validationSize);
          if (e.getName().equals("Insert Spare")) {
             PlatformTypeToken spareType = new PlatformTypeToken(0L, "UINTEGER", "unsigned integer", "32", "", "", "");
             spareType.setInterfacePlatformTypeValidRangeDescription("n/a");
