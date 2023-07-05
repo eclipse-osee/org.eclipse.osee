@@ -2,9 +2,15 @@ include:
   - project: $TEMPLATE_PROJECT_LOCATION
     ref: dev
     file:
+      - $RULES_TEMPLATE
+      - $BUILD_BASE_TEMPLATE
+      - $TEST_BASE_TEMPLATE
+
       - $BUILD_OSEE_TEMPLATE
       - $BUILD_AND_TEST_OSEE_TEMPLATE
+      - $BUILD_DEV_ALPHA_OSEE_TEMPLATE
       - $VALIDATE_OSEE_BUILD_TEMPLATE
+      
 
 stages:
   - validate
@@ -59,13 +65,17 @@ Angular Tests:
 
 Build_Org_Eclipse_OSEE:
   stage: build_OSEE
-  when: manual
+  rules: !reference [.Rules_Default, rules]
 
 Build_And_Test_Org_Eclipse_OSEE:
   stage: build_and_test_OSEE
-  when: manual
+  rules: !reference [.Rules_Default, rules]
 
 Validate_Org_Eclipse_OSEE_Build:
   stage: validate_OSEE_build
-  only:
-    - merge_requests
+  rules: !reference [.Rules_Merge_Request_Only, rules]
+
+
+Build_Dev_Alpha_Org_Eclipse_OSEE:
+  stage: build_OSEE
+  rules: !reference [.Rules_Dev_Alpha_Build, rules]
