@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -58,6 +60,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -634,10 +637,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public TransactionToken commit() {
       validateBuilder();
       try {
-         TransactionToken txId = txFactory.createTx(txData).call();
-         if (txId.isValid()) {
-            committed = true;
-            return txId;
+         if (validateGammaIds()) {
+
+            TransactionToken txId = txFactory.createTx(txData).call();
+            if (txId.isValid()) {
+               committed = true;
+               return txId;
+            }
+            return TransactionToken.SENTINEL;
          }
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
@@ -863,4 +870,209 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          throw new OseeStateException("Transaction has been committed and can not be re-used");
       }
    }
+
+   @Override
+   public <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeToken attributeType, T value, GammaId gammaId) {
+      addGamma(gammaId);
+      setSoleAttributeValue(art, attributeType, value);
+   }
+
+   @Override
+   public void setSoleAttributeFromStream(ArtifactId art, AttributeTypeToken attributeType, InputStream stream,
+      GammaId gammaId) {
+      addGamma(gammaId);
+      setSoleAttributeFromStream(art, attributeType, stream);
+   }
+
+   @Override
+   public void setSoleAttributeFromString(ArtifactId art, AttributeTypeToken attributeType, String value,
+      GammaId gammaId) {
+      addGamma(gammaId);
+      setSoleAttributeFromString(art, attributeType, value);
+   }
+
+   @Override
+   public <T> void setAttributesFromValues(ArtifactId art, AttributeTypeToken attributeType, Collection<T> values,
+      Collection<GammaId> gammaIds) {
+      for (GammaId gammaId : gammaIds) {
+         addGamma(gammaId);
+      }
+      setAttributesFromValues(art, attributeType, values);
+   }
+
+   @Override
+   public void setAttributesFromStrings(ArtifactId art, AttributeTypeToken attributeType, GammaId gammaId,
+      String... values) {
+      addGamma(gammaId);
+      setAttributesFromStrings(art, attributeType, values);
+   }
+
+   @Override
+   public void setAttributesFromStrings(ArtifactId art, AttributeTypeToken attributeType, Collection<String> values,
+      Collection<GammaId> gammaIds) {
+      for (GammaId gammaId : gammaIds) {
+         addGamma(gammaId);
+      }
+      setAttributesFromStrings(art, attributeType, values);
+   }
+
+   @Override
+   public <T> void setAttributeById(ArtifactId art, AttributeId attrId, T value, GammaId gammaId) {
+      addGamma(gammaId);
+      setAttributeById(art, attrId, value);
+   }
+
+   @Override
+   public void setAttributeById(ArtifactId art, AttributeId attrId, String value, GammaId gammaId) {
+      addGamma(gammaId);
+      setAttributeById(art, attrId, value);
+   }
+
+   @Override
+   public void setAttributeById(ArtifactId art, AttributeId attrId, InputStream stream, GammaId gammaId) {
+      addGamma(gammaId);
+      setAttributeById(art, attrId, stream);
+   }
+
+   @Override
+   public void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId,
+      GammaId gammaId) {
+      addGamma(gammaId);
+      setAttributeApplicability(art, attrId, applicId);
+   }
+
+   private void addGamma(GammaId gammaId) {
+      txData.addGammaId(gammaId);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, GammaId gammaId) {
+      addGamma(gammaId);
+      relate(artA, relType, artB);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, GammaId gammaId) {
+      addGamma(gammaId);
+      relate(artA, relType, artB, rationale);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType,
+      GammaId gammaId) {
+      addGamma(gammaId);
+      relate(artA, relType, artB, sortType);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale,
+      RelationSorter sortType, GammaId gammaId) {
+      addGamma(gammaId);
+      relate(artA, relType, artB, rationale, sortType);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String insertType, int afterIndex, int beforeIndex, GammaId gammaId) {
+      addGamma(gammaId);
+      relate(artA, relType, artB, relatedArtifact, insertType, afterIndex, beforeIndex);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String afterArtifact, GammaId gammaId) {
+      addGamma(gammaId);
+      relate(artA, relType, artB, relatedArtifact, afterArtifact);
+   }
+
+   @Override
+   public void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs,
+      GammaId gammaId) {
+      addGamma(gammaId);
+      setRelations(artA, relType, artBs);
+   }
+
+   @Override
+   public void setRationale(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale,
+      GammaId gammaId) {
+      addGamma(gammaId);
+      setRationale(artA, relType, artB, rationale);
+   }
+
+   @Override
+   public void unrelate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, GammaId gammaId) {
+      addGamma(gammaId);
+      unrelate(artA, relType, artB);
+   }
+
+   @Override
+   public void unrelateFromAll(ArtifactId art, GammaId gammaId) {
+      addGamma(gammaId);
+      unrelateFromAll(art);
+   }
+
+   @Override
+   public void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art, GammaId gammaId) {
+      addGamma(gammaId);
+      unrelateFromAll(typeSide, art);
+   }
+
+   @Override
+   public void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB,
+      ApplicabilityId applicId, GammaId gammaId) {
+      addGamma(gammaId);
+      setRelationApplicability(artA, relType, artB, applicId);
+   }
+
+   @Override
+   public void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide,
+      List<? extends ArtifactId> artifacts, GammaId gammaId) {
+      addGamma(gammaId);
+      setRelationsAndOrder(artifact, relationSide, artifacts);
+   }
+
+   @Override
+   public void deleteByAttributeId(ArtifactId art, AttributeId attrId, GammaId gammaId) {
+      addGamma(gammaId);
+      deleteByAttributeId(art, attrId);
+   }
+
+   @Override
+   public void deleteSoleAttribute(ArtifactId art, AttributeTypeToken attributeType, GammaId gammaId) {
+      addGamma(gammaId);
+      deleteSoleAttribute(art, attributeType);
+   }
+
+   @Override
+   public void deleteAttributes(ArtifactId art, AttributeTypeToken attributeType, GammaId gammaId) {
+      addGamma(gammaId);
+      deleteAttributes(art, attributeType);
+   }
+
+   @Override
+   public void deleteAttributesWithValue(ArtifactId art, AttributeTypeToken attributeType, Object value,
+      GammaId gammaId) {
+      addGamma(gammaId);
+      deleteAttributesWithValue(art, attributeType, value);
+   }
+
+   private boolean validateGammaIds() {
+      if (txData.getGammaIdsModified().size() == 0) {
+         return true;
+      }
+      Consumer<JdbcStatement> consumer = stmt -> {
+         txData.addFailedGammaId(GammaId.valueOf(stmt.getLong("gamma_id")));
+      };
+      String query =
+         "SELECT gamma_id FROM osee_txs txs where txs.branch_id = ? and txs.tx_current = 0 and txs.gamma_id IN (" + txData.getGammaIdsModified().stream().map(
+            g -> g.getIdString()).collect(Collectors.joining(",")) + ")";
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, txData.getBranch().getId());
+      return !(txData.getGammaIdsFailed().size() > 0);
+   }
+
+   @Override
+   public List<GammaId> getGammaIdsFailed() {
+      return txData.getGammaIdsFailed();
+   }
+
 }
