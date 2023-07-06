@@ -174,6 +174,7 @@ public class OmeEditTab extends OmeAbstractTab {
       gd.widthHint = 100;
       editComposite = new OmeEditComposite(bodyComp, SWT.BORDER, this, omeData);
       editComposite.setLayoutData(gd);
+
       if (omeData instanceof ArtOmeData) {
          new OmeEditTabDrop(this, (ArtOmeData) omeData).setDropTarget();
       }
@@ -195,6 +196,10 @@ public class OmeEditTab extends OmeAbstractTab {
    public void doSave() {
       if (Widgets.isAccessible(editComposite)) {
          editComposite.doSave();
+         // refresh the html preview if in split view
+         if (Widgets.isAccessible(htmlComposite)) {
+            htmlComposite.handleRefreshAction(omeData);
+         }
       }
    }
 
