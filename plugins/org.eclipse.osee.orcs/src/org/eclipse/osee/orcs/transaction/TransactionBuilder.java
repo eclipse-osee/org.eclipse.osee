@@ -132,6 +132,29 @@ public interface TransactionBuilder {
 
    void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId);
 
+   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeToken attributeType, T value, GammaId gammaId);
+
+   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeToken attributeType, InputStream stream,
+      GammaId gammaId);
+
+   void setSoleAttributeFromString(ArtifactId art, AttributeTypeToken attributeType, String value, GammaId gammaId);
+
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeToken attributeType, Collection<T> values,
+      Collection<GammaId> gammaIds);
+
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeToken attributeType, GammaId gammaId, String... values);
+
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeToken attributeType, Collection<String> values,
+      Collection<GammaId> gammaIds);
+
+   <T> void setAttributeById(ArtifactId art, AttributeId attrId, T value, GammaId gammaId);
+
+   void setAttributeById(ArtifactId art, AttributeId attrId, String value, GammaId gammaId);
+
+   void setAttributeById(ArtifactId art, AttributeId attrId, InputStream stream, GammaId gammaId);
+
+   void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId, GammaId gammaId);
+
    void deleteByAttributeId(ArtifactId art, AttributeId attrId);
 
    void deleteSoleAttribute(ArtifactId art, AttributeTypeToken attributeType);
@@ -139,6 +162,14 @@ public interface TransactionBuilder {
    void deleteAttributes(ArtifactId art, AttributeTypeToken attributeType);
 
    void deleteAttributesWithValue(ArtifactId art, AttributeTypeToken attributeType, Object value);
+
+   void deleteByAttributeId(ArtifactId art, AttributeId attrId, GammaId gammaId);
+
+   void deleteSoleAttribute(ArtifactId art, AttributeTypeToken attributeType, GammaId gammaId);
+
+   void deleteAttributes(ArtifactId art, AttributeTypeToken attributeType, GammaId gammaId);
+
+   void deleteAttributesWithValue(ArtifactId art, AttributeTypeToken attributeType, Object value, GammaId gammaId);
 
    /// TX
 
@@ -168,11 +199,42 @@ public interface TransactionBuilder {
 
    void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art);
 
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, GammaId gammaId);
+
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, GammaId gammaId);
+
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType, GammaId gammaId);
+
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType,
+      GammaId gammaId);
+
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String insertType, int afterIndex, int beforeIndex, GammaId gammaId);
+
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
+      String afterArtifact, GammaId gammaId);
+
+   void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs, GammaId gammaId);
+
+   void setRationale(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, GammaId gammaId);
+
+   void unrelate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, GammaId gammaId);
+
+   void unrelateFromAll(ArtifactId art, GammaId gammaId);
+
+   void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art, GammaId gammaId);
+
    void unrelateFromInvalidArtifact(ArtifactId validArt, ArtifactId invalidArt);
 
    void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ApplicabilityId applicId);
 
    void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide, List<? extends ArtifactId> artifacts);
+
+   void setRelationApplicability(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ApplicabilityId applicId,
+      GammaId gammaId);
+
+   void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide, List<? extends ArtifactId> artifacts,
+      GammaId gammaId);
 
    // Applicability
 
@@ -228,5 +290,7 @@ public interface TransactionBuilder {
    void introduceTuple(TupleTypeId tupleType, GammaId tupleGamma);
 
    <T> AttributeId createAttributeNoAccess(ArtifactId artifact, AttributeTypeToken attributeType, T value);
+
+   public List<GammaId> getGammaIdsFailed();
 
 }

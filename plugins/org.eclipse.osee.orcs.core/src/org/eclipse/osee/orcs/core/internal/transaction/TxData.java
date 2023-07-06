@@ -62,6 +62,8 @@ public class TxData implements HasSession, HasBranchId {
    private final Set<Relation> relations = new HashSet<>();
    private final CompositeKeyHashMap<RelationTypeToken, ArtifactId, RelationDataSideA> newRelations =
       new CompositeKeyHashMap<>();
+   private final List<GammaId> gammaIdsModified = new ArrayList<>();
+   private final List<GammaId> gammaIdsFailed = new ArrayList<>();
 
    private UserToken author;
    private String comment;
@@ -226,5 +228,21 @@ public class TxData implements HasSession, HasBranchId {
 
    public int calculateInsertionOrderIndex(int afterIndex, int beforeIndex) {
       return (int) ((long) (afterIndex) + beforeIndex) / 2;
+   }
+
+   public void addGammaId(GammaId gammaId) {
+      this.gammaIdsModified.add(gammaId);
+   }
+
+   public List<GammaId> getGammaIdsModified() {
+      return this.gammaIdsModified;
+   }
+
+   public void addFailedGammaId(GammaId gammaId) {
+      this.gammaIdsFailed.add(gammaId);
+   }
+
+   public List<GammaId> getGammaIdsFailed() {
+      return this.gammaIdsFailed;
    }
 }
