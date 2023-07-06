@@ -22,12 +22,21 @@ import java.util.List;
 public class StructurePath extends PLGenericDBObject {
    public static final StructurePath SENTINEL = new StructurePath();
    private final LinkedList<ResolvedStructurePath> paths = new LinkedList<ResolvedStructurePath>();
+   private final InterfaceStructureToken structure;
+
    public StructurePath(Long id, String name) {
       super(id, name);
+      this.structure = InterfaceStructureToken.SENTINEL;
+   }
+
+   public StructurePath(InterfaceStructureToken structure) {
+      super(structure.getId(), structure.getName());
+      this.structure = structure;
    }
 
    public StructurePath() {
       super();
+      this.structure = InterfaceStructureToken.SENTINEL;
    }
 
    @Override
@@ -42,6 +51,11 @@ public class StructurePath extends PLGenericDBObject {
 
    public void addPath(ResolvedStructurePath path) {
       this.paths.add(path);
+   }
+
+   @JsonIgnore
+   public InterfaceStructureToken getStructure() {
+      return structure;
    }
 
 }
