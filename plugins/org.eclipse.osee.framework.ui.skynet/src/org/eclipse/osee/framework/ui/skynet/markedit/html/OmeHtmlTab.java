@@ -13,11 +13,14 @@
 
 package org.eclipse.osee.framework.ui.skynet.markedit.html;
 
+import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
@@ -67,24 +70,31 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
          }
 
          MutableDataSet options = new MutableDataSet();
-         //add extensions here
+         options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create()));
          Parser parser = Parser.builder(options).build();
          HtmlRenderer renderer = HtmlRenderer.builder(options).build();
          Node document = parser.parse(mdContent);
          String html = renderer.render(document);
+         String styledHtml = addHTMLStyling(html);
 
-         omeData.setHtmlContent(html);
+         omeData.setHtmlContent(styledHtml);
          Displays.ensureInDisplayThread(new Runnable() {
 
             @Override
             public void run() {
-               browser.setText(html);
+               browser.setText(styledHtml);
                if (managedForm != null) {
                   managedForm.reflow(true);
                }
             }
          });
       }
+   }
+
+   private static String addHTMLStyling(String html) {
+      String tableStyle =
+         "<style> table { width: 100%; } table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; } </style>";
+      return tableStyle + html;
    }
 
    private static String execCmd(String cmd) throws java.io.IOException {

@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.ui.skynet.markedit.edit;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.swt.SWT;
@@ -28,8 +28,20 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class OmeEditSubToolbar extends Composite {
 
+   private static final String BOLD_TIP = "<b>bold</b> or **bold**";
+   private static final String UNDERLINE_TIP = "<u>underline</u>";
+   private static final String ITALICS_TIP = "<i>italics</i> or *italics*";
+   private static final String BULLET_LIST_TIP = "* one\n* one\n\t* two\n\t* two\n\t\t* three\n\t\t* three";
+   private static final String NUMBER_LIST_TIP = "1. one\n1. one\n\t1. two\n\t1. two\n\t\t1. three\n\t\t1. three";
+   private static final String TASK_LIST_TIP =
+      "- [x] Complete task 1\n- [ ] Incomplete task 2\n\t- [x] Complete sub-task 1\n\t- [ ] Incomplete sub-task 2";
+   private static final String HEADING_TIP = "## Heading";
+   private static final String TABLE_TIP =
+      "| Col 1 | Col 2 | Col 3 |\n| :--- | :---: | ---: |\n| col 1 is | left-aligned | $1600 |\n| col 2 is | centered | $12 |\n| col 3 is | right-aligned | $1 |";
+   private static final String LINK_TIP = "[Google](https://www.google.com)";
+
    private final OmeEditTab omeEditTab;
-   private final Map<String, String> nameToMd = new HashMap<>();
+   private final Map<String, String> nameToMd = new LinkedHashMap<>();
 
    public OmeEditSubToolbar(Composite parent, OmeEditTab omeEditTab) {
       super(parent, SWT.NONE);
@@ -37,16 +49,15 @@ public class OmeEditSubToolbar extends Composite {
       setLayout(new GridLayout(10, false));
       setLayoutData(new GridData());
 
-      nameToMd.put("bold", "<b>bold</b> or **bold**");
-      nameToMd.put("bullets", "* one\n* two\n* three");
-      nameToMd.put("heading", "## Heading");
-      nameToMd.put("tasks",
-         "- [x] Completed task\n- [~] Inapplicable task\n- [ ] Incomplete task\n   - [x] Sub-task 1\n   - [~] Sub-task 2\n   - [ ] Sub-task 3\n");
-      nameToMd.put("numbered",
-         "1. [x] Completed task\n1. [~] Inapplicable task\n1. [ ] Incomplete task\n   1. [x] Sub-task 1\n   1. [~] Sub-task 2\n   1.   [ ] Sub-task 3\n");
-      nameToMd.put("link", "[Google](https://www.google.com)");
-      nameToMd.put("table",
-         "| Tables        | Are           | Cool  |\n| ------------- |:-------------:| -----:|\n| col 3 is      | right-aligned | $1600 |\n| col 2 is      | centered      |   $12 |\n| zebra stripes | are neat      |    $1 |\n\n");
+      nameToMd.put("bold", BOLD_TIP);
+      nameToMd.put("underline", UNDERLINE_TIP);
+      nameToMd.put("italics", ITALICS_TIP);
+      nameToMd.put("bullet list", BULLET_LIST_TIP);
+      nameToMd.put("number list", NUMBER_LIST_TIP);
+      nameToMd.put("task list", TASK_LIST_TIP);
+      nameToMd.put("heading", HEADING_TIP);
+      nameToMd.put("table", TABLE_TIP);
+      nameToMd.put("link", LINK_TIP);
    }
 
    public void create() {
