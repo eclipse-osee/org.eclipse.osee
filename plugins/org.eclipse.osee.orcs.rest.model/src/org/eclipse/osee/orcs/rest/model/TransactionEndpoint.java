@@ -22,6 +22,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -31,7 +32,9 @@ import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
+import org.eclipse.osee.orcs.rest.model.transaction.TransferInitData;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -87,4 +90,22 @@ public interface TransactionEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<ChangeItem> getArtifactHistory(@PathParam("art-id") ArtifactId artifact,
       @PathParam("branch-id") BranchId branch);
+
+   // transaction transfer section
+   @PUT
+   @Path("xfer/init")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   TransferInitData initTransactionTransfer(TransferInitData data);
+
+   @GET
+   @Path("xfer/getXferFile")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData generateTransferFile(@QueryParam("exportId") TransactionId exportId);
+
+   @POST
+   @Path("xfer/apply")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData applyTransferFile(@QueryParam("file") String pathToFile);
 }
