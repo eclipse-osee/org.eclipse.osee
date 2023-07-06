@@ -21,12 +21,13 @@ import org.eclipse.osee.framework.core.data.TupleFamilyId;
 public final class CoreTupleFamilyTypes {
 
    public static final TupleFamilyId DefaultFamily = TupleFamilyId.valueOf(1L);
-   public static final TupleFamilyId ArtifatFamily = TupleFamilyId.valueOf(2L);
+   public static final TupleFamilyId ArtifactFamily = TupleFamilyId.valueOf(2L);
    public static final TupleFamilyId AttribueFamily = TupleFamilyId.valueOf(3L);
    public static final TupleFamilyId RelationFamily = TupleFamilyId.valueOf(4L);
    public static final TupleFamilyId ProductLineFamily = TupleFamilyId.valueOf(5L);
    public static final TupleFamilyId GitFamily = TupleFamilyId.valueOf(6L);
    public static final TupleFamilyId JoinFamily = TupleFamilyId.valueOf(7L);
+   public static final TupleFamilyId TransferFamily = TupleFamilyId.valueOf(8L);
 
    private CoreTupleFamilyTypes() {
       // Constants
