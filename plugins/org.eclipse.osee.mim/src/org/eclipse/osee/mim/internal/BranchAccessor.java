@@ -156,9 +156,7 @@ public class BranchAccessor {
    @Produces(MediaType.APPLICATION_JSON)
    public GetAllMIMRelatedObjectsEndpoint getRelated(@PathParam("branch") BranchId branch) {
       return new GetAllMIMRelatedObjectsEndpointImpl(branch, mimApi.getInterfaceStructureApi(),
-         mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(), mimApi.getInterfaceNodeViewApi(),
-         mimApi.getInterfaceConnectionViewApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
-         mimApi.getInterfacePlatformTypeApi());
+         mimApi.getInterfaceElementApi());
    }
 
    @Path("{branch}/query")

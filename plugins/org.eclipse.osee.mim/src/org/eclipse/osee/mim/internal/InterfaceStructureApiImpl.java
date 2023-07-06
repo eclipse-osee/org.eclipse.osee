@@ -770,6 +770,18 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
+   public List<InterfaceStructureToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> followRelations,
+      String filter, Collection<AttributeTypeId> attributes, AttributeTypeId orderByAttribute) {
+      try {
+         return (List<InterfaceStructureToken>) this.getAccessor().getAll(branch, followRelations, filter, attributes,
+            0, 0, orderByAttribute);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         return new LinkedList<>();
+      }
+   }
+
+   @Override
    public List<InterfaceStructureToken> getFiltered(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
       List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();
