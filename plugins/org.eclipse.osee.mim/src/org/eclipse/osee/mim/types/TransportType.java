@@ -97,7 +97,7 @@ public class TransportType extends PLGenericDBObject {
             this.getJSONContents(art.getSoleAttributeValue(CoreAttributeTypes.AvailableStructureHeaders, "[]")));
          this.setAvailableElementHeaders(
             this.getJSONContents(art.getSoleAttributeValue(CoreAttributeTypes.AvailableElementHeaders, "[]")));
-         this.setDashed(art.getSoleAttributeValue(CoreAttributeTypes.DashedPresentation));
+         this.setDashed(art.getSoleAttributeValue(CoreAttributeTypes.DashedPresentation, false));
       } else {
          this.setByteAlignValidation(false);
          this.setMessageGeneration(false);
