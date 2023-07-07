@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
@@ -530,7 +531,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceSubMessageContent_Structure));
       InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
-      System.out.println(connection.getTransportType().getId());
       boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
       int validationSize = connection.getTransportType().getByteAlignValidationSize();
       ApplicabilityToken applic = message.getApplicability();
@@ -581,26 +581,32 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             CoreRelationTypes.InterfaceSubMessageContent_Structure).stream().map(
                s -> new InterfaceStructureToken(s)).collect(Collectors.toList());
          PlatformTypeToken structuresType = new PlatformTypeToken(0L, "UINTEGER", "unsigned integer", "32", "", "", "");
-         if (structures.size() == 1) {
-            structuresType.setInterfacePlatformTypeMinval(structures.get(0).getInterfaceMinSimultaneity());
-            structuresType.setInterfacePlatformTypeMaxval(structures.get(0).getInterfaceMaxSimultaneity());
-         } else if (structures.size() > 1) {
-            structuresType.setInterfacePlatformTypeValidRangeDescription("Calculated");
-         }
-         // Timetag should be alterable if any of the structures in the submessages have variable simultaneity.
-         if (!timetag.getInterfaceElementAlterable()) {
-            for (InterfaceStructureToken struct : structures) {
-               String minSimult = struct.getInterfaceMinSimultaneity();
-               String maxSimult = struct.getInterfaceMaxSimultaneity();
-               if (!minSimult.equals(maxSimult)) {
-                  timetag.setInterfaceElementAlterable(true);
-                  break;
-               }
+
+         Integer minSimult = null;
+         Integer maxSimult = null;
+
+         for (InterfaceStructureToken struct : structures) {
+            String min = struct.getInterfaceMinSimultaneity();
+            String max = struct.getInterfaceMaxSimultaneity();
+            if (Strings.isNumeric(min) && Strings.isNumeric(max)) {
+               minSimult = minSimult == null ? Integer.parseInt(min) : Math.min(minSimult, Integer.parseInt(min));
+               maxSimult = maxSimult == null ? Integer.parseInt(max) : Math.min(maxSimult, Integer.parseInt(max));
+            } else {
+               structuresType.setInterfacePlatformTypeValidRangeDescription("Calculated");
             }
+         }
+
+         if (minSimult != null && maxSimult != null) {
+            structuresType.setInterfacePlatformTypeMinval(minSimult + "");
+            structuresType.setInterfacePlatformTypeMaxval(maxSimult + "");
          }
 
          element = new InterfaceStructureElementToken(id, "Number of Structures in Submessage " + number, applic,
             structuresType);
+         if (minSimult != maxSimult) {
+            element.setInterfaceElementAlterable(true);
+            timetag.setInterfaceElementAlterable(true);
+         }
          element.setValidationSize(validationSize);
          element.setShouldValidate(shouldValidate);
          element.setDescription(
