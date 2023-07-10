@@ -124,7 +124,7 @@
          name="ActionsViaSpreadsheetBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam">
+            className="org.eclipse.osee.ats.ide.util.Import.action.ImportActionsViaSpreadsheetBlam">
       </Operation>
    </extension>
    <extension

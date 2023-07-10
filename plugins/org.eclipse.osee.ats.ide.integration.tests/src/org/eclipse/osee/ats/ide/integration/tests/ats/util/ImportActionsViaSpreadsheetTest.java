@@ -28,9 +28,9 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
-import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam;
-import org.eclipse.osee.ats.ide.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
 import org.eclipse.osee.ats.ide.util.Import.ImportAgileActionsViaSpreadsheetBlam;
+import org.eclipse.osee.ats.ide.util.Import.action.ImportActionsViaSpreadsheetBlam;
+import org.eclipse.osee.ats.ide.util.Import.action.ImportActionsViaSpreadsheetBlam.ImportOption;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -81,7 +81,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertNotNull(file);
 
       XResultData rd = blam.importActions(file, null, ImportOption.PERSIST);
-      Assert.assertEquals("No errors should be reported", "", rd.toString());
+      Assert.assertTrue(rd.toString(), rd.isSuccess());
 
       List<Artifact> arts =
          ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsApiService.get().getAtsBranch());
@@ -153,7 +153,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertNotNull(file);
 
       XResultData rd = blam.importActions(file, goal, ImportOption.PERSIST);
-      Assert.assertEquals("No errors should be reported", "", rd.toString());
+      Assert.assertTrue(rd.toString(), rd.isSuccess());
       List<Artifact> members = goal.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Should be 5 members", 5, members.size());
       Assert.assertTrue("members should be in order",
@@ -182,7 +182,7 @@ public class ImportActionsViaSpreadsheetTest {
 
       // Import actions to backlog and sprint
       XResultData rd = blam.importActions(file, null, ImportOption.PERSIST);
-      Assert.assertEquals("No errors should be reported", "", rd.toString());
+      Assert.assertTrue(rd.toString(), rd.isSuccess());
 
       // Validate backlog
       Collection<ArtifactToken> members =
