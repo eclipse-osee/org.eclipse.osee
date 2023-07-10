@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+<Styles>
+<Style ss:ID="Default" ss:Name="Normal">
+ <Alignment ss:Vertical="Bottom"/>
+ <Borders/>
+ <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
+ <Interior/>
+ <NumberFormat/>
+ <Protection/>
+</Style>
+<Style ss:ID="OseeDate"><NumberFormat ss:Format="Short Date"/></Style>
+<Style ss:ID="OseeDateGoodBackground"><NumberFormat ss:Format="Short Date"/><Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/></Style>
+<Style ss:ID="OseeDateNeutralBackground"><NumberFormat ss:Format="Short Date"/><Interior ss:Color="#FFEB9C" ss:Pattern="Solid"/></Style>
+<Style ss:ID="OseeBoldStyle"><Font x:Family="Swiss" ss:Bold="1"/></Style>
+<Style ss:ID="OseeBoldGoodBackground"><Font x:Family="Swiss" ss:Bold="1"/><Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/></Style>
+<Style ss:ID="OseeBoldNeutralBackground"><Font x:Family="Swiss" ss:Bold="1"/><Interior ss:Color="#FFEB9C" ss:Pattern="Solid"/></Style>
+<Style ss:ID="OseeItalicStyle"><Font x:Family="Swiss" ss:Italic="1"/></Style>
+<Style ss:ID="OseeErrorStyle"><Font x:Family="Swiss" ss:Color="#FF0000" ss:Bold="1"/></Style>
+<Style ss:ID="OseeCentered"><Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/></Style>
+<Style ss:ID="OseeWraped"><Alignment ss:Vertical="Top" ss:WrapText="1"/></Style>
+<Style ss:ID="OseeGoodBackground"><Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/></Style>
+<Style ss:ID="OseeNeutralBackground"><Interior ss:Color="#FFEB9C" ss:Pattern="Solid"/></Style>
+<Style ss:ID="OseeHyperlink" ss:Name="Hyperlink"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Color="#0563C1" ss:Underline="Single"/></Style>
+<Style ss:ID="OseeHyperlinkGoodBackground" ss:Name="HyperlinkGoodBg"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Color="#0563C1" ss:Underline="Single"/><Interior ss:Color="#C6EFCE" ss:Pattern="Solid"/></Style>
+<Style ss:ID="OseeHyperlinkNeutralBackground" ss:Name="HyperlinkNeutralBg"><Font ss:FontName="Calibri" x:Family="Swiss" ss:Color="#0563C1" ss:Underline="Single"/><Interior ss:Color="#FFEB9C" ss:Pattern="Solid"/></Style></Styles>
+ <Worksheet ss:Name="Sheet1">
+  <Table x:FullColumns="1" x:FullRows="1" ss:ExpandedColumnCount="7">
+   <Column ss:Width="85.0"/>
+   <Column ss:Width="85.0"/>
+   <Column ss:Width="85.0"/>
+   <Column ss:Width="85.0"/>
+   <Column ss:Width="85.0"/>
+   <Column ss:Width="85.0"/>
+   <Column ss:Width="85.0"/>
+   <Row>
+    <Cell><Data ss:Type="String">Title</Data></Cell>
+    <Cell><Data ss:Type="String">Description</Data></Cell>
+    <Cell><Data ss:Type="String">ChangeType</Data></Cell>
+    <Cell><Data ss:Type="String">Priority</Data></Cell>
+    <Cell><Data ss:Type="String">Version</Data></Cell>
+    <Cell><Data ss:Type="String">EstimatedHours</Data></Cell>
+    <Cell><Data ss:Type="String">Category</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">My Title 1</Data></Cell>
+    <Cell><Data ss:Type="String">Desc 1</Data></Cell>
+    <Cell><Data ss:Type="String">Improvement</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">Ver 1</Data></Cell>
+    <Cell><Data ss:Type="String">11</Data></Cell>
+    <Cell><Data ss:Type="String">111</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Tester 2</Data></Cell>
+    <Cell><Data ss:Type="String">Desc 2</Data></Cell>
+    <Cell><Data ss:Type="String">Problem</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">Ver 1</Data></Cell>
+    <Cell><Data ss:Type="String">22</Data></Cell>
+    <Cell><Data ss:Type="String">222</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+</Workbook>

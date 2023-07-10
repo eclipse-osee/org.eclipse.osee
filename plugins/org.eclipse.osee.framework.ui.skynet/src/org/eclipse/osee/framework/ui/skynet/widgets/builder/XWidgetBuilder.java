@@ -246,6 +246,20 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXButton(String name) {
+      newXWidget();
+      currItem.setXWidgetName("XButton");
+      currItem.setName(name);
+      return this;
+   }
+
+   public XWidgetBuilder andXButtonPush(String name) {
+      newXWidget();
+      currItem.setXWidgetName("XButtonPush");
+      currItem.setName(name);
+      return this;
+   }
+
    public XWidgetBuilder andXLabel(String name) {
       newXWidget();
       currItem.setXWidgetName("XLabel");
@@ -333,6 +347,11 @@ public class XWidgetBuilder {
       currItem.setXWidgetName("XHyperlinkPrioritySelection");
       String string = Collections.toString(";", priorities);
       currItem.addParameter("Priority", string);
+      return this;
+   }
+
+   public XWidgetBuilder andDisplayLabel(boolean b) {
+      currItem.getXOptionHandler().add(XOption.NO_LABEL);
       return this;
    }
 

@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import org.eclipse.osee.framework.jdk.core.util.annotation.AnnotationTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.io.IoTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.io.excel.pojo.ExcelPojoTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.regex.RegexTestSuite;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlTestSuite;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AnnotationTestSuite.class,
    IoTestSuite.class,
+   ExcelPojoTestSuite.class,
    XmlTestSuite.class,
    CollectionsTest.class,
    CompareTest.class,

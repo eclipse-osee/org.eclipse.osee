@@ -321,8 +321,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteArtifact(ArtifactId artifact) {
-      getTransaction().deleteArtifact(artifact);
-      add(artifact);
+      if (!atsApi.getStoreService().isDeleted(artifact)) {
+         getTransaction().deleteArtifact(artifact);
+         add(artifact);
+      }
    }
 
    @Override
