@@ -29,13 +29,7 @@
          id="org.eclipse.jgit"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.jgit.ssh.jsch"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.jgit.ssh.apache"
-         version="0.0.0"/>
+  
 
  <plugin	
       id="commons-lang3"
@@ -290,19 +284,13 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+ <plugin
          id="org.eclipse.jgit.ssh.jsch"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.jgit.ssh.apache"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="javax.transaction"
