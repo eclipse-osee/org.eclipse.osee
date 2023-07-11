@@ -18,31 +18,31 @@
    </license>
 
    <includes
-         id="org.eclipse.jgit.lfs"
-         version="0.0.0"/>
-  
-   <includes
-         id="org.eclipse.jgit.gpg.bc"
-         version="0.0.0"/>
-         
-   <includes
-         id="org.eclipse.jgit.http.apache"
-         version="0.0.0"/>         
-
-   <includes
          id="org.eclipse.jgit.ssh.jsch"
-         version="0.0.0"/>    
+         version="0.0.0"/>
 
    <includes
          id="org.eclipse.jgit.ssh.apache"
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.jgit"
+         id="org.eclipse.jgit.gpg.bc"
          version="0.0.0"/>
 
    <includes
          id="org.eclipse.egit"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.jgit.lfs"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.jgit.http.apache"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.jgit"
          version="0.0.0"/>
 
    <includes
@@ -124,9 +124,11 @@
    <includes
          id="org.eclipse.equinox.server.jetty"
          version="0.0.0"/>
-<!--
- 
--->
+
+   <includes
+         id="org.eclipse.equinox.sdk"
+         version="0.0.0"/>
+
    <includes
          id="org.eclipse.emf"
          version="0.0.0"/>
@@ -268,6 +270,10 @@
          version="0.0.0"/>
 
    <includes
+         id="org.eclipse.equinox.core.sdk"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.equinox.compendium.sdk"
          version="0.0.0"/>
 
@@ -353,6 +359,7 @@
 
    <requires>
       <import plugin="org.slf4j.api"/>
+      <import plugin="org.apache.sshd.core"/>
       <import plugin="javax.servlet"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.jobs"/>
@@ -375,7 +382,7 @@
       version="0.0.0"
       unpack="false"/>
 
-   <plugin	
+<plugin	
 		id="commons-lang3"
 		download-size="0"
       install-size="0"
@@ -383,28 +390,28 @@
       unpack="false"/>
 
 
-   <plugin
+<plugin
          id="snakeyaml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
          
-   <plugin
+ <plugin
          id="jackson-dataformat-yaml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-  <plugin
+ <plugin
          id="javax.validation"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+ <plugin
          id="org.apache.commons.math3"
          download-size="0"
          install-size="0"
@@ -431,6 +438,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
 
    <plugin
          id="org.eclipse.jgit.ssh.jsch"
@@ -525,6 +533,12 @@
          version="9.4.51.v20230217"
          unpack="false"/>
 
+   <plugin
+         id="org.apache.sshd.sftp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="net.i2p.crypto.eddsa"
@@ -966,20 +980,6 @@
          version="0.0.0"
          unpack="false"/>
 
- <plugin
-         id="org.apache.sshd.osgi"
-         download-size="0"
-         install-size="0"
-         version="2.8.0.v20211227-1750"
-         unpack="false"/>
-
- <plugin
-         id="org.apache.sshd.sftp"
-         download-size="0"
-         install-size="0"
-         version="2.8.0.v20211227-1750"
-         unpack="false"/>
-
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-oauth2"
          download-size="0"
@@ -1255,6 +1255,13 @@
 
    <plugin
          id="org.apache.commons.pool"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.sshd.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
