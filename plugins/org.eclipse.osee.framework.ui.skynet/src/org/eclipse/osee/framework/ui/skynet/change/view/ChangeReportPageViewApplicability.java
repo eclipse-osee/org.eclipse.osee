@@ -119,6 +119,10 @@ public class ChangeReportPageViewApplicability {
             button.setEnabled(false);
          }
       }
+      // bug[tw23643] resolves UI issue of not displaying transaction(s) change report on working branches
+      if(branch == null) {
+         branch = BranchId.SENTINEL;         
+      }
       return branch;
    }
 
