@@ -303,8 +303,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                element.setBeginWord(0.0);
                PlatformTypeToken currentPlatformType;
                currentPlatformType = this.interfacePlatformTypeApi.getAccessor().getByRelationWithoutId(branch,
-                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()),
-                  PlatformTypeToken.class);
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()));
                element.setPlatformType(currentPlatformType);
                element.setInterfacePlatformTypeBitSize(currentPlatformType.getInterfacePlatformTypeBitSize());
                element.setLogicalType(
@@ -386,8 +385,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    public InterfaceStructureToken get(BranchId branch, ArtifactId artId) {
       InterfaceStructureToken structure;
       try {
-         structure =
-            this.getAccessor().get(branch, artId, this.getFullFollowRelationDetails(), InterfaceStructureToken.class);
+         structure = this.getAccessor().get(branch, artId, this.getFullFollowRelationDetails());
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -516,7 +514,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
             CoreRelationTypes.InterfaceConnectionMessage_Connection,
             CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
-         return this.getAccessor().get(branch, structureId, parentRelations, InterfaceStructureToken.class);
+         return this.getAccessor().get(branch, structureId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);

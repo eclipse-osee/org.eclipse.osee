@@ -113,9 +113,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    @Override
    public InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId) {
       try {
-         InterfaceStructureElementToken element =
-            this.getAccessor().getByRelation(branch, elementId, CoreRelationTypes.InterfaceStructureContent_Structure,
-               structureId, this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
+         InterfaceStructureElementToken element = this.getAccessor().getByRelation(branch, elementId,
+            CoreRelationTypes.InterfaceStructureContent_Structure, structureId, this.getFollowRelationDetails());
          element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL);
          return element;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -128,8 +127,8 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    @Override
    public InterfaceStructureElementToken get(BranchId branch, ArtifactId elementId) {
       try {
-         InterfaceStructureElementToken element = this.getAccessor().get(branch, elementId,
-            this.getFollowRelationDetails(), InterfaceStructureElementToken.class);
+         InterfaceStructureElementToken element =
+            this.getAccessor().get(branch, elementId, this.getFollowRelationDetails());
          if (element.isValid()) {
             element = this.defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL);
             return element;
@@ -312,7 +311,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
             CoreRelationTypes.InterfaceConnectionMessage_Connection,
             CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
-         return this.getAccessor().get(branch, elementId, parentRelations, InterfaceStructureElementToken.class);
+         return this.getAccessor().get(branch, elementId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);

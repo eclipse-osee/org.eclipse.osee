@@ -65,7 +65,7 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
    @Override
    public InterfaceEnumeration get(BranchId branch, ArtifactId enumId, List<RelationTypeSide> relations) {
       try {
-         return this.getAccessor().get(branch, enumId, relations, InterfaceEnumeration.class);
+         return this.getAccessor().get(branch, enumId, relations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -94,17 +94,20 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
    }
 
    @Override
-   public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceEnumeration> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<InterfaceEnumeration> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<InterfaceEnumeration> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+      long pageNum, long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

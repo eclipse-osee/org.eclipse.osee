@@ -73,11 +73,10 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
    @Override
    public InterfaceEnumerationSet get(BranchId branch, ArtifactId enumSetId) {
       try {
-         InterfaceEnumerationSet enumSet = this.getAccessor().get(branch, enumSetId, InterfaceEnumerationSet.class);
+         InterfaceEnumerationSet enumSet = this.getAccessor().get(branch, enumSetId);
          enumSet.setEnumerations(
             (List<InterfaceEnumeration>) this.interfaceEnumerationApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(enumSet.getId()),
-               InterfaceEnumeration.class));
+               CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(enumSet.getId())));
          return enumSet;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
