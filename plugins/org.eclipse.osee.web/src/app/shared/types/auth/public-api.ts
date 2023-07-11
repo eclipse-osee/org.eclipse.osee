@@ -10,5 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './user.d';
+export * from './user';
 export * from './user-roles';

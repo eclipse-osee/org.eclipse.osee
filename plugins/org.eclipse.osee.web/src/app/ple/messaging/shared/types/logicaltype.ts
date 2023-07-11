@@ -23,7 +23,7 @@ export interface logicalType {
 export interface logicalTypeFormDetail extends logicalType {
 	fields: logicalTypeFieldInfo[];
 }
-interface logicalTypeFieldInfo {
+export interface logicalTypeFieldInfo {
 	attributeType: Capitalize<
 		Readonly<
 			Exclude<
