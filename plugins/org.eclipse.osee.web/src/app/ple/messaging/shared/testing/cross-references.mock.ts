@@ -19,6 +19,7 @@ export const crossReferencesMock: CrossReference[] = [
 		crossReferenceValue: 'CR Val 1',
 		crossReferenceArrayValues: '0=ABC;1=DEF',
 		crossReferenceAdditionalContent: 'Additional Content',
+		connections: [],
 	},
 	{
 		id: '2',
@@ -26,5 +27,6 @@ export const crossReferencesMock: CrossReference[] = [
 		crossReferenceValue: 'CR Val 2',
 		crossReferenceArrayValues: '0=GHI;1=JKL',
 		crossReferenceAdditionalContent: 'More Additional Content',
+		connections: [],
 	},
 ];

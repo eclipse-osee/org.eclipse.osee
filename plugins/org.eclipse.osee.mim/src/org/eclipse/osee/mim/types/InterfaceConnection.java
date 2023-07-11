@@ -39,8 +39,8 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    public InterfaceConnection(ArtifactReadable art) {
       super(art);
-      this.setNodes(art.getRelated(CoreRelationTypes.InterfaceConnectionNode_Node).getList().stream().map(
-         n -> new InterfaceNode(n)).collect(Collectors.toList()));
+      this.setNodes(art.getRelated(CoreRelationTypes.InterfaceConnectionNode_Node).getList().stream().filter(
+         a -> !a.getExistingAttributeTypes().isEmpty()).map(n -> new InterfaceNode(n)).collect(Collectors.toList()));
       ArtifactReadable transportType =
          art.getRelated(CoreRelationTypes.InterfaceConnectionTransportType_TransportType).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);

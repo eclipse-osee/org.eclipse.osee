@@ -66,7 +66,7 @@ export class NewCrossReferenceDialogComponent {
 		}
 	}
 
-	crossReference: CrossReference = {
+	crossReference: Partial<CrossReference> = {
 		name: '',
 		crossReferenceValue: '',
 		crossReferenceArrayValues: '',

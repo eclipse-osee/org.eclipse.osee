@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim;
 
 import java.util.Collection;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -29,18 +30,20 @@ import org.eclipse.osee.mim.types.CrossReference;
 public interface CrossReferenceEndpoint {
 
    @GET()
-   @Path("connection/{connectionId}")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<CrossReference> getAll(@PathParam("connectionId") ArtifactId connectionId,
-      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
-      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<CrossReference> getAll(@QueryParam("connectionId") @DefaultValue("-1") ArtifactId connectionId,
+      @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType,
+      @QueryParam("viewId") ArtifactId viewId);
 
    @GET()
-   @Path("connection/{connectionId}/{filter}")
+   @Path("count")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<CrossReference> getAllAndFilter(@PathParam("connectionId") ArtifactId connectionId,
-      @PathParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
-      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   /**
+    * Gets count of cross references returned
+    */
+   int getCount(@QueryParam("connectionId") @DefaultValue("-1") ArtifactId connectionId,
+      @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("viewId") ArtifactId viewId);
 
    @GET()
    @Path("{id}")

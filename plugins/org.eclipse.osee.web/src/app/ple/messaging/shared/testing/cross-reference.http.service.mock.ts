@@ -17,7 +17,15 @@ import { crossReferencesMock } from './cross-references.mock';
  **********************************************************************/
 export const CrossReferenceHttpServiceMock: Partial<CrossReferenceHttpService> =
 	{
-		getAll: function (branchId: string): Observable<CrossReference[]> {
+		getAll: function (
+			branchId: string,
+			connectionId: string,
+			filter: string,
+			viewId: string,
+			pageNum?: string | number,
+			pageSize?: number,
+			orderByName?: boolean
+		): Observable<CrossReference[]> {
 			return of(crossReferencesMock);
 		},
 		get: function (
@@ -25,5 +33,13 @@ export const CrossReferenceHttpServiceMock: Partial<CrossReferenceHttpService> =
 			artId: string
 		): Observable<CrossReference> {
 			return of(crossReferencesMock[0]);
+		},
+		getCount(
+			branchId: string,
+			connectionId: string,
+			filter: string,
+			viewId: string
+		) {
+			return of(crossReferencesMock.length);
 		},
 	};

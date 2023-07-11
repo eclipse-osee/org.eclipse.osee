@@ -44,13 +44,14 @@ public class CrossReferenceApiImpl implements CrossReferenceApi {
 
    @Override
    public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter) {
-      return this.getAll(branch, connectionId, filter, 0L, 0L);
+      return this.getAll(branch, connectionId, filter, ArtifactId.SENTINEL);
    }
 
    @Override
    public CrossReference get(BranchId branch, ArtifactId artId) {
       try {
-         return this.accessor.get(branch, artId);
+         return this.accessor.get(branch, artId,
+            Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
@@ -59,34 +60,96 @@ public class CrossReferenceApiImpl implements CrossReferenceApi {
    }
 
    @Override
-   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum, long pageSize) {
-      return this.getAll(branch, connectionId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
+   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize) {
+      return this.getAll(branch, connectionId, filter, pageNum, pageSize, ArtifactId.SENTINEL);
    }
 
    @Override
-   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, AttributeTypeId orderByAttribute) {
-      return this.getAll(branch, connectionId, filter, 0L, 0L, orderByAttribute);
+   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter,
+      AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, connectionId, filter, orderByAttribute, ArtifactId.SENTINEL);
    }
 
    @Override
-   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, connectionId, filter, pageNum, pageSize, orderByAttribute, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter,
+      ArtifactId viewId) {
+      return this.getAll(branch, connectionId, filter, 0L, 0L, viewId);
+   }
+
+   @Override
+   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter,
+      AttributeTypeId orderByAttribute, ArtifactId viewId) {
+      return this.getAll(branch, connectionId, filter, 0L, 0L, orderByAttribute, viewId);
+   }
+
+   @Override
+   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize, ArtifactId viewId) {
+      return this.getAll(branch, connectionId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL, viewId);
+   }
+
+   @Override
+   public Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId) {
       List<AttributeTypeId> attributes = Arrays.asList(CoreAttributeTypes.Name, CoreAttributeTypes.CrossReferenceValue,
          CoreAttributeTypes.CrossReferenceArrayValues);
       try {
-         if (filter.isEmpty()) {
+         if (filter.isEmpty() && connectionId.isValid()) {
             return this.accessor.getAllByRelation(branch,
-               CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, pageNum, pageSize,
-               orderByAttribute);
-         } else {
+               CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId,
+               Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection), pageNum,
+               pageSize, orderByAttribute, viewId);
+         } else if (connectionId.isValid()) {
             return this.accessor.getAllByRelationAndFilter(branch,
                CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, filter,
-               attributes, pageNum, pageSize, orderByAttribute);
+               attributes, Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection),
+               pageNum, pageSize, orderByAttribute, viewId);
+         } else if (filter.isEmpty()) {
+            return this.accessor.getAll(branch,
+               Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection), pageNum,
+               pageSize, orderByAttribute, viewId);
+         } else {
+            return this.accessor.getAllByFilter(branch, filter, attributes,
+               Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection), pageNum,
+               pageSize, orderByAttribute, viewId);
          }
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
       }
       return new LinkedList<CrossReference>();
+   }
+
+   @Override
+   public int getCount(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId) {
+      List<AttributeTypeId> attributes = Arrays.asList(CoreAttributeTypes.Name, CoreAttributeTypes.CrossReferenceValue,
+         CoreAttributeTypes.CrossReferenceArrayValues);
+      try {
+
+         if (filter.isEmpty() && connectionId.isValid()) {
+            return this.accessor.getAllByRelationAndCount(branch,
+               CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, viewId);
+         } else if (connectionId.isValid()) {
+            return this.accessor.getAllByRelationAndFilterAndCount(branch,
+               CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, filter,
+               attributes, viewId);
+         } else if (filter.isEmpty()) {
+            return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
+         } else {
+            return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
+         }
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return 0;
    }
 
 }

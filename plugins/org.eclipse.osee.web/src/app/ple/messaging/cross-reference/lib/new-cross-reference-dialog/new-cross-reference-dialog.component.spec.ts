@@ -43,6 +43,7 @@ describe('NewCrossReferenceDialogComponent', () => {
 						crossReferenceValue: 'Val',
 						crossReferenceArrayValues: '0=test;1=testing',
 						crossReferenceAdditionalContent: 'Additional Content',
+						connections: [],
 					}),
 				},
 			],

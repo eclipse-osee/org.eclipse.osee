@@ -14,12 +14,15 @@ package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.applicability.NameValuePair;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class CrossReference extends PLGenericDBObject {
@@ -29,6 +32,7 @@ public class CrossReference extends PLGenericDBObject {
    private String crossReferenceValue;
    private String crossReferenceArrayValues;
    private String crossReferenceAdditionalContent;
+   private Collection<InterfaceConnection> connections = new LinkedList<InterfaceConnection>();
 
    public CrossReference(ArtifactToken art) {
       super(art);
@@ -42,6 +46,10 @@ public class CrossReference extends PLGenericDBObject {
             art.getSoleAttributeAsString(CoreAttributeTypes.CrossReferenceArrayValues, ""));
          this.setCrossReferenceAdditionalContent(
             art.getSoleAttributeAsString(CoreAttributeTypes.CrossReferenceAdditionalContent, ""));
+         this.setConnections(art.getRelated(
+            CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection).getList().stream().filter(
+               a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceConnection(a)).collect(
+                  Collectors.toList()));
       } else {
          this.setCrossReferenceValue("");
          this.setCrossReferenceArrayValues("");
@@ -91,6 +99,14 @@ public class CrossReference extends PLGenericDBObject {
          }
          return null;
       }).collect(Collectors.toList());
+   }
+
+   public void setConnections(Collection<InterfaceConnection> connections) {
+      this.connections = connections;
+   }
+
+   public Collection<InterfaceConnection> getConnections() {
+      return this.connections;
    }
 
 }

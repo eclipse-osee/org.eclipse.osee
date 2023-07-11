@@ -25,11 +25,27 @@ public interface CrossReferenceApi {
 
    Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter);
 
-   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, AttributeTypeId orderByAttribute);
+   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter,
+      AttributeTypeId orderByAttribute);
 
-   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum, long pageSize);
+   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize);
 
-   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute);
 
    CrossReference get(BranchId branch, ArtifactId artId);
+
+   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId);
+
+   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter,
+      AttributeTypeId orderByAttribute, ArtifactId viewId);
+
+   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize, ArtifactId viewId);
+
+   Collection<CrossReference> getAll(BranchId branch, ArtifactId connectionId, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId);
+
+   int getCount(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId);
 }

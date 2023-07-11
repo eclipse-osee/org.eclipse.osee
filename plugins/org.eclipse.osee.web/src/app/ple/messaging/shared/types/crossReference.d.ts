@@ -10,7 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './unit-dropdown/unit-dropdown.component';
-export * from './rate-dropdown/rate-dropdown.component';
-export * from './message-type-dropdown/message-type-dropdown.component';
-export * from './cross-reference-dropdown/cross-reference-dropdown.component';
+import type { connection } from './connection';
+export interface CrossReference {
+	id?: string;
+	name: string;
+	crossReferenceValue: string;
+	crossReferenceArrayValues: string;
+	crossReferenceAdditionalContent: string;
+	connections: connection[];
+}
+
+export interface CrossRefKeyValue {
+	key: string;
+	value: string;
+}
