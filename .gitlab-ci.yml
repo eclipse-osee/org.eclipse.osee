@@ -10,7 +10,6 @@ include:
       - $BUILD_AND_TEST_OSEE_TEMPLATE
       - $BUILD_DEV_ALPHA_OSEE_TEMPLATE
       - $VALIDATE_OSEE_BUILD_TEMPLATE
-      
 
 stages:
   - validate
@@ -28,6 +27,8 @@ Validate Files:
     - git --version
     - python --version
     - git fetch
+    - COMMITS_URL=$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/commits
+    - python plugins/org.eclipse.osee.support.dev/validationScripts/validateCommitMessages.py "$EXCLUDED_KEYWORDS" $COMMITS_URL $GITLAB_API_TOKEN
     - FILES=$(git diff --name-only origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
     - echo "Files to validate:"
     - echo $FILES | tr " " "\n"
@@ -74,7 +75,6 @@ Build_And_Test_Org_Eclipse_OSEE:
 Validate_Org_Eclipse_OSEE_Build:
   stage: validate_OSEE_build
   rules: !reference [.Rules_Merge_Request_Only, rules]
-
 
 Build_Dev_Alpha_Org_Eclipse_OSEE:
   stage: build_OSEE
