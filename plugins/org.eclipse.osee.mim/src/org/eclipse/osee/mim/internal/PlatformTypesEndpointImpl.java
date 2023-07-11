@@ -63,11 +63,10 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
       try {
          List<InterfaceEnumerationSet> enumSets =
             (List<InterfaceEnumerationSet>) enumSetApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfacePlatformTypeEnumeration_Element, typeId, InterfaceEnumerationSet.class);
+               CoreRelationTypes.InterfacePlatformTypeEnumeration_Element, typeId);
          for (InterfaceEnumerationSet set : enumSets) {
             set.setEnumerations((List<InterfaceEnumeration>) this.enumApi.getAccessor().getAllByRelation(branch,
-               CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(set.getId()),
-               InterfaceEnumeration.class));
+               CoreRelationTypes.InterfaceEnumeration_EnumerationSet, ArtifactId.valueOf(set.getId())));
          }
          return enumSets.get(0);
       } catch (Exception ex) {

@@ -37,7 +37,8 @@ public class InterfaceSubMessageEndpointImpl implements InterfaceSubMessageEndpo
    }
 
    @Override
-   public Collection<InterfaceSubMessageToken> getAllSubMessages(long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+   public Collection<InterfaceSubMessageToken> getAllSubMessages(long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeTypeId) {
       try {
          return subMessageApi.getAccessor().getAllByRelation(branch,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, pageNum, pageSize,
@@ -51,7 +52,7 @@ public class InterfaceSubMessageEndpointImpl implements InterfaceSubMessageEndpo
    @Override
    public InterfaceSubMessageToken getSubMessage(ArtifactId subMessageId) {
       try {
-         return subMessageApi.getAccessor().get(branch, subMessageId, InterfaceSubMessageToken.class);
+         return subMessageApi.getAccessor().get(branch, subMessageId);
       } catch (Exception ex) {
          System.out.println(ex);
          return null;

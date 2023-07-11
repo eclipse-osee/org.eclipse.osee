@@ -90,8 +90,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
       String filter) {
       try {
          return this.getAccessor().getAllByRelationAndFilter(branch,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, filter, subMessageAttributes,
-            InterfaceSubMessageToken.class);
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message, messageId, filter, subMessageAttributes);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -102,7 +101,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    @Override
    public InterfaceSubMessageToken get(BranchId branch, ArtifactId subMessageId) {
       try {
-         return this.getAccessor().get(branch, subMessageId, InterfaceSubMessageToken.class);
+         return this.getAccessor().get(branch, subMessageId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -125,7 +124,7 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
             Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
                CoreRelationTypes.InterfaceConnectionMessage_Connection,
                CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
-         return this.getAccessor().get(branch, subMessageId, parentRelations, InterfaceSubMessageToken.class);
+         return this.getAccessor().get(branch, subMessageId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);

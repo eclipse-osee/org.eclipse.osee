@@ -55,49 +55,6 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       this.orcsApi = orcsApi;
    }
 
-   @Override
-   public T get(BranchId branch, ArtifactId artId, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.get(branch, artId, new LinkedList<RelationTypeSide>());
-   }
-
-   @Override
-   public Collection<T> getAll(BranchId branch, Class<T> clazz) throws InstantiationException, IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAll(branch, new LinkedList<RelationTypeSide>(), clazz);
-   }
-
-   @Override
-   public T getByRelation(BranchId branch, ArtifactId artId, RelationTypeSide relation, ArtifactId relatedId,
-      Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getByRelation(branch, artId, relation, relatedId, new LinkedList<RelationTypeSide>(), clazz);
-   }
-
-   @Override
-   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByRelation(branch, relation, relatedId, new LinkedList<RelationTypeSide>(), clazz);
-   }
-
-   @Override
-   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
-      Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByFilter(branch, filter, attributes, new LinkedList<RelationTypeSide>(), clazz);
-   }
-
-   @Override
-   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes,
-         new LinkedList<RelationTypeSide>(), clazz);
-   }
-
    /**
     * @return the artifactType
     */
@@ -110,13 +67,6 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
     */
    public void setArtifactType(ArtifactTypeToken artifactType) {
       this.artifactType = artifactType;
-   }
-
-   @Override
-   public T getByRelationWithoutId(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getByRelationWithoutId(branch, relation, relatedId, new LinkedList<RelationTypeSide>(), clazz);
    }
 
    @SuppressWarnings("unused")
@@ -138,82 +88,6 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
          }
       }
       return null;
-   }
-
-   @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), false, clazz);
-   }
-
-   @Override
-   public T getByRelation(BranchId branch, ArtifactId artId, RelationTypeSide relation, ArtifactId relatedId,
-      Collection<RelationTypeSide> followRelations, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getByRelation(branch, artId, relation, relatedId, followRelations);
-   }
-
-   @Override
-   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      Collection<RelationTypeSide> followRelations, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getAllByRelation(branch, relation, relatedId, followRelations);
-   }
-
-   @Override
-   public T get(BranchId branch, ArtifactId artId, Collection<RelationTypeSide> followRelations, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.get(branch, artId, followRelations);
-   }
-
-   @Override
-   public Collection<T> getAll(BranchId branch, Collection<RelationTypeSide> followRelations, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getAll(branch, followRelations);
-   }
-
-   @Override
-   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
-      Collection<RelationTypeSide> followRelations, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getAllByFilter(branch, filter, attributes, followRelations);
-   }
-
-   @Override
-   public T getByRelationWithoutId(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      Collection<RelationTypeSide> followRelations, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getByRelationWithoutId(branch, relation, relatedId, followRelations);
-   }
-
-   @Override
-   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations,
-      Class<T> clazz) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations);
-   }
-
-   @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query,
-      Collection<RelationTypeSide> followRelations, boolean isExact, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getAllByQuery(branch, query, followRelations, isExact);
-   }
-
-   @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, Class<T> clazz)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
-      return this.getAllByQuery(branch, query, new LinkedList<RelationTypeSide>(), isExact, clazz);
    }
 
    private Collection<T> fetchCollection(QueryBuilder query, BranchId branch)
@@ -334,7 +208,14 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    public Collection<T> getAll(BranchId branch, long pageCount, long pageSize, AttributeTypeId orderByAttribute)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
-      return this.getAll(branch, new LinkedList<RelationTypeSide>(), pageCount, pageSize, orderByAttribute);
+      return this.getAll(branch, pageCount, pageSize, orderByAttribute, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAll(BranchId branch, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAll(branch, new LinkedList<RelationTypeSide>(), pageCount, pageSize, orderByAttribute, viewId);
    }
 
    @Override
@@ -437,8 +318,17 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       long pageCount, long pageSize, AttributeTypeId orderByAttribute)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
+      return this.getAllByFilter(branch, filter, attributes, pageCount, pageSize, orderByAttribute,
+         ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      long pageCount, long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
       return this.getAllByFilter(branch, filter, attributes, new LinkedList<RelationTypeSide>(), pageCount, pageSize,
-         orderByAttribute);
+         orderByAttribute, viewId);
    }
 
    @Override
@@ -446,10 +336,21 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       Collection<RelationTypeSide> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
+      return this.getAllByFilter(branch, filter, attributes, followRelations, pageCount, pageSize, orderByAttribute,
+         ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      Collection<RelationTypeSide> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
-         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).and(
-            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
-            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).and(
+               attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+               filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
       if (orderByAttribute != null && orderByAttribute.isValid()) {
          query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
@@ -533,14 +434,29 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
-      return this.getAllByRelation(branch, relation, relatedId, new LinkedList<RelationTypeSide>());
+      return this.getAllByRelation(branch, relation, relatedId, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, new LinkedList<RelationTypeSide>(), viewId);
    }
 
    @Override
    public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       Collection<RelationTypeSide> followRelations) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByRelation(branch, relation, relatedId, followRelations, 0L, 0L);
+      return this.getAllByRelation(branch, relation, relatedId, followRelations, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      Collection<RelationTypeSide> followRelations, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, followRelations, 0L, 0L, viewId);
    }
 
    @Override
@@ -557,7 +473,16 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
       return this.getAllByRelation(branch, relation, relatedId, followRelations, pageCount, pageSize,
-         AttributeTypeId.SENTINEL);
+         ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      Collection<RelationTypeSide> followRelations, long pageCount, long pageSize, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, followRelations, pageCount, pageSize,
+         AttributeTypeId.SENTINEL, viewId);
    }
 
    @Override
@@ -580,8 +505,17 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
       long pageCount, long pageSize, AttributeTypeId orderByAttribute)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
+      return this.getAllByRelation(branch, relation, relatedId, pageCount, pageSize, orderByAttribute,
+         ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      long pageCount, long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
       return this.getAllByRelation(branch, relation, relatedId, new LinkedList<RelationTypeSide>(), pageCount, pageSize,
-         orderByAttribute);
+         orderByAttribute, viewId);
    }
 
    @Override
@@ -698,12 +632,31 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
 
    @Override
    public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute, ArtifactId viewId) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes,
+         new LinkedList<RelationTypeSide>(), 0L, 0L, orderByAttribute, viewId);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations,
       long pageCount, long pageSize, AttributeTypeId orderByAttribute)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
       return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, pageCount,
          pageSize, orderByAttribute, new LinkedList<AttributeTypeId>());
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations,
+      long pageCount, long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, pageCount,
+         pageSize, orderByAttribute, new LinkedList<AttributeTypeId>(), viewId);
    }
 
    @Override
@@ -861,20 +814,47 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes) throws IllegalArgumentException, SecurityException {
       return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes,
-         new LinkedList<RelationTypeSide>());
+         ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId)
+      throws IllegalArgumentException, SecurityException {
+      return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes,
+         new LinkedList<RelationTypeSide>(), viewId);
    }
 
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations)
       throws IllegalArgumentException, SecurityException {
-      return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes, followRelations);
+      return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes, followRelations,
+         ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations,
+      ArtifactId viewId) throws IllegalArgumentException, SecurityException {
+      return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes, followRelations,
+         new LinkedList<AttributeTypeId>(), viewId);
    }
 
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations,
       Collection<AttributeTypeId> followAttributes) throws IllegalArgumentException, SecurityException {
+      return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes, followRelations,
+         followAttributes, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> followRelations,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws IllegalArgumentException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andRelatedTo(relation,
             relatedId).and(
@@ -894,8 +874,16 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    @Override
    public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId)
       throws IllegalArgumentException, SecurityException {
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(
-         artifactType).andRelatedTo(relation, relatedId);
+      return this.getAllByRelationAndCount(branch, relation, relatedId, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      ArtifactId viewId) throws IllegalArgumentException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).andRelatedTo(relation, relatedId);
       return query.getCount();
    }
 

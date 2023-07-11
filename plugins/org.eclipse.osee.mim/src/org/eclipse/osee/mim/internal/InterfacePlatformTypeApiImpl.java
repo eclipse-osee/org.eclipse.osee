@@ -95,7 +95,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    public PlatformTypeToken getWithElementRelations(BranchId branch, ArtifactId platformTypeId) {
       try {
          return this.getAccessor().get(branch, platformTypeId,
-            Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element), PlatformTypeToken.class);
+            Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -104,9 +104,10 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public PlatformTypeToken getWithRelations(BranchId branch, ArtifactId platformTypeId, List<RelationTypeSide> relationTypes) {
+   public PlatformTypeToken getWithRelations(BranchId branch, ArtifactId platformTypeId,
+      List<RelationTypeSide> relationTypes) {
       try {
-         return this.getAccessor().get(branch, platformTypeId, relationTypes, PlatformTypeToken.class);
+         return this.getAccessor().get(branch, platformTypeId, relationTypes);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -137,7 +138,8 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes) {
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter,
+      List<RelationTypeSide> relationTypes) {
       return this.getFilteredWithRelations(branch, filter, relationTypes, 0L, 0L);
    }
 
@@ -203,12 +205,14 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public Collection<PlatformTypeToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<PlatformTypeToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+      long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize) {
+   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
+      long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query,
             Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
@@ -222,7 +226,8 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize) {
+   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes,
+      long pageNum, long pageSize) {
       return this.getAllWithRelations(branch, relationTypes, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
@@ -232,7 +237,8 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize) {
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter,
+      List<RelationTypeSide> relationTypes, long pageNum, long pageSize) {
       return this.getFilteredWithRelations(branch, filter, relationTypes, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
@@ -242,7 +248,8 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize) {
+   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum,
+      long pageSize) {
       return this.getFilteredWithElementRelations(branch, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
@@ -257,7 +264,8 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       try {
          return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, pageNum, pageSize, orderByAttribute);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -267,12 +275,14 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes,
+      AttributeTypeId orderByAttribute) {
       return this.getAllWithRelations(branch, relationTypes, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return (List<PlatformTypeToken>) this.getAccessor().getAll(branch, relationTypes, pageNum, pageSize,
             orderByAttribute);
@@ -288,19 +298,22 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       return this.getAllWithRelations(branch,
          Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet), pageNum, pageSize,
          orderByAttribute);
    }
 
    @Override
-   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter,
+      List<RelationTypeSide> relationTypes, AttributeTypeId orderByAttribute) {
       return this.getFilteredWithRelations(branch, filter, relationTypes, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter,
+      List<RelationTypeSide> relationTypes, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return (List<PlatformTypeToken>) this.getAccessor().getAllByFilter(branch, filter, attributes, relationTypes,
             pageNum, pageSize, orderByAttribute);
@@ -316,12 +329,14 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter,
+      AttributeTypeId orderByAttribute) {
       return this.getFilteredWithElementRelations(branch, filter, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute) {
       return this.getAllWithRelations(branch, Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
          CoreRelationTypes.InterfaceStructureContent_Structure, CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
          CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
@@ -329,7 +344,8 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute) {
       return this.getFilteredWithRelations(branch, filter,
          Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element,
             CoreRelationTypes.InterfaceStructureContent_Structure,
@@ -340,7 +356,8 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units, String defaultValue, int bytes) {
+   public String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units,
+      String defaultValue, int bytes) {
       if (logicalType.equals("boolean")) {
          return "boolean";
       }
