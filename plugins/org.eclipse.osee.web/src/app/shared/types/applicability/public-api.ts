@@ -10,4 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './applic.d';
+export * from './applic';

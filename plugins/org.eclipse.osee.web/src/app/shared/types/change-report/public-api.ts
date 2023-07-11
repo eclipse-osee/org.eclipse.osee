@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './change-report.d';
-export * from './changes.d';
-export * from './transaction.d';
-export * from './transaction-token.d';
+export * from './change-report';
+export * from './changes';
+export * from './transaction';
+export * from './transaction-token';

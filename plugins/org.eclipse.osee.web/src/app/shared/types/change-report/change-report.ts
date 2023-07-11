@@ -20,7 +20,7 @@ import { transactionToken } from './transaction-token';
 /**
  * Contains information on changes that have occurred on a branch, appears in an array on /orcs/branches/branch1/diff/branch2
  */
-export class changeInstance<
+export interface changeInstance<
 	T = string | number | boolean | null | undefined,
 	U = string | number | boolean | null | undefined,
 	V = string | number | boolean | null | undefined,
@@ -73,7 +73,7 @@ export const enum ModificationType {
 /**
  * Contains information regarding the type of change occurring, i.e. whether it is an attribute change, artifact change, relation change,  etc.
  */
-export class changeType {
+export interface changeType {
 	id: changeTypeNumber; //really a number
 	name: changeTypeEnum; //actual change type
 	typeId: number; //2834799904 data at top of ChangeType.java no idea if any use
@@ -98,7 +98,7 @@ export const enum changeTypeNumber {
 /**
  * Useful info includes the {@link transactionToken transaction}, value, uri,whether or not the state is valid, and the {@link applic applicability token}
  */
-export class version<T = string | number | boolean | null | undefined> {
+export interface version<T = string | number | boolean | null | undefined> {
 	transactionToken: transactionToken;
 	gammaId: string | null;
 	modType: ModificationType;
@@ -116,7 +116,7 @@ export interface difference<
 	currentValue: T;
 	transactionToken: transactionToken;
 }
-export class itemTypeIdRelation {
+export interface itemTypeIdRelation {
 	id: RELATIONTYPEID;
 	name: string;
 	order: string;

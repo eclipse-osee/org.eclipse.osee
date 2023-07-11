@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branch, response } from '../';
+import { branch, response } from '..';
 
 export interface newActionResponse {
 	action: null;

@@ -15,10 +15,7 @@ import type { element } from './element';
 import type { structure } from './structure';
 import type { message } from './messages';
 import type { subMessage } from './sub-messages';
-import type {
-	branchSummary,
-	diffReportSummaryItem,
-} from './DifferenceReport.d';
+import type { branchSummary, diffReportSummaryItem } from './DifferenceReport';
 import type { transportType } from './transportType';
 
 export interface messageHeaderDetail extends headerDetail<message> {}

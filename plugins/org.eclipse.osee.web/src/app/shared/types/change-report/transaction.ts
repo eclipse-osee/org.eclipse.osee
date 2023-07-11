@@ -1,4 +1,4 @@
-import { response } from '../';
+import { response } from '..';
 import { transactionToken } from './transaction-token';
 
 /*********************************************************************

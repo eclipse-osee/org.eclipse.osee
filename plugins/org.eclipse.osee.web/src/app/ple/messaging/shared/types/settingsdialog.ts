@@ -1,3 +1,6 @@
+import type { element } from './element';
+import type { structure } from './structure';
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -10,12 +13,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-/**
- * Wrapper containing transaction id and the branch id
- * @see {@link org.eclipse.osee.framework.core.data.TransactionToken.java}
- */
-export class transactionToken {
-	id: string;
+export interface settingsDialogData {
 	branchId: string;
-	constructor(id?: string, branchId?: string);
+	allowedHeaders1: (keyof structure)[];
+	allHeaders1: (keyof structure)[];
+	allowedHeaders2: (keyof element)[];
+	allHeaders2: (keyof element)[];
+	editable: boolean;
+	headers1Label: string;
+	headers2Label: string;
+	headersTableActive: boolean;
+	wordWrap: boolean;
 }
