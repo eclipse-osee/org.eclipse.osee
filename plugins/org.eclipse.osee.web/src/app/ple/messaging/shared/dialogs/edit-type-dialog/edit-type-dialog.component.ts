@@ -72,7 +72,10 @@ import {
 	PLATFORMTYPEATTRIBUTETYPEID,
 } from '@osee/messaging/shared/attr';
 import { applic } from '@osee/shared/types/applicability';
-import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import {
+	CrossReferenceDropdownComponent,
+	UnitDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-edit-type-dialog',
@@ -97,6 +100,7 @@ import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 		EditEnumSetFieldComponent,
 		ApplicabilitySelectorComponent,
 		UnitDropdownComponent,
+		CrossReferenceDropdownComponent,
 	],
 })
 export class EditTypeDialogComponent implements OnDestroy {

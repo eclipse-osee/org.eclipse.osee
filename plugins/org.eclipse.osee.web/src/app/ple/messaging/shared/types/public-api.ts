@@ -14,7 +14,7 @@ export * from './affectedArtifact.d';
 export * from './branch.applic.d';
 export * from './connection.d';
 export * from './connection-nodes.d';
-export * from './crossReference.d ';
+export * from './crossReference';
 export * from './DifferenceReport.d';
 export * from './editPlatformTypeDialogData.d';
 export * from './EditViewFreeTextDialog.d';

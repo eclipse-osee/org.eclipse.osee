@@ -52,6 +52,7 @@ import {
 import { MockUniquePlatformTypeNameDirective } from 'src/app/ple/messaging/shared/testing/unique-platform-type-name.directive.mock';
 import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
+import { MockCrossReferenceDropdownComponent } from 'src/app/ple/messaging/shared/dropdowns/cross-reference-dropdown/cross-reference-dropdown.component.mock';
 
 let loader: HarnessLoader;
 
@@ -111,6 +112,7 @@ describe('EditTypeDialogComponent', () => {
 					MockUniquePlatformTypeNameDirective,
 					MockApplicabilitySelectorComponent,
 					MockUnitDropdownComponent,
+					MockCrossReferenceDropdownComponent,
 				],
 				providers: [
 					{ provide: QueryService, useValue: QueryServiceMock },

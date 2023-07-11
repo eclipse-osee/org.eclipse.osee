@@ -31,18 +31,20 @@ public class CrossReferenceEndpointImpl implements CrossReferenceEndpoint {
    }
 
    @Override
-   public Collection<CrossReference> getAll(ArtifactId connectionId, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
-      return this.crossReferenceApi.getAll(branch, connectionId, "", pageNum, pageSize, orderByAttributeTypeId);
-   }
-
-   @Override
-   public Collection<CrossReference> getAllAndFilter(ArtifactId connectionId, String filter, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
-      return this.crossReferenceApi.getAll(branch, connectionId, filter, pageNum, pageSize, orderByAttributeTypeId);
+   public Collection<CrossReference> getAll(ArtifactId connectionId, String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeTypeId, ArtifactId viewId) {
+      return this.crossReferenceApi.getAll(branch, connectionId, filter, pageNum, pageSize, orderByAttributeTypeId,
+         viewId);
    }
 
    @Override
    public CrossReference get(ArtifactId crossReferenceId) {
       return this.crossReferenceApi.get(branch, crossReferenceId);
+   }
+
+   @Override
+   public int getCount(ArtifactId connectionId, String filter, ArtifactId viewId) {
+      return this.crossReferenceApi.getCount(branch, connectionId, filter, viewId);
    }
 
 }

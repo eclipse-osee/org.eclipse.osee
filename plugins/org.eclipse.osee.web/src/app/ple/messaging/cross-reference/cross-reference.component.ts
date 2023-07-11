@@ -16,7 +16,7 @@ import { UiService } from '@osee/shared/services';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { CrossReference } from '../shared/types/crossReference.d ';
+import { CrossReference } from '../shared/types/crossReference';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';

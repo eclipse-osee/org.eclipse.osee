@@ -117,133 +117,58 @@
 				</div>
 				<br />
 				<div class="full-width">
-					<mat-form-field>
-						<mat-label for="interfacePlatformTypeMinval"
-							>Minimum Value</mat-label
-						>
-						<input
-							matInput
-							type="text"
-							[(ngModel)]="data.type.interfacePlatformTypeMinval"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'3899709087455064782',
-									$event
-								)
-							"
-							#input
-							[errorStateMatcher]="parentMatcher"
-							[required]="(minValRequired | async) || false"
-							[max]="data.type.interfacePlatformTypeMaxval"
-							id="interfacePlatformTypeMinval"
-							name="interfacePlatformTypeMinval"
-							#interfacePlatformTypeMinval="ngModel" />
-						<mat-hint align="end"
-							>Minimum Value Platform Type can Achieve</mat-hint
-						>
-						<mat-error
-							id="interfacePlatformTypeMinval"
-							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
-							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
-							matches.</mat-error
-						>
-					</mat-form-field>
-					<mat-form-field>
-						<mat-label for="interfacePlatformTypeMaxval"
-							>Maximum Value</mat-label
-						>
-						<input
-							matInput
-							type="text"
-							[(ngModel)]="data.type.interfacePlatformTypeMaxval"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'3899709087455064783',
-									$event
-								)
-							"
-							#input
-							[errorStateMatcher]="parentMatcher"
-							[required]="(maxValRequired | async) || false"
-							[min]="data.type.interfacePlatformTypeMinval"
-							id="interfacePlatformTypeMaxval"
-							name="interfacePlatformTypeMaxval"
-							#interfacePlatformTypeMaxval="ngModel" />
-						<mat-hint align="end"
-							>Maximum Value Platform Type can Achieve</mat-hint
-						>
-						<mat-error
-							id="interfacePlatformTypeMaxval"
-							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
-							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
-							matches.</mat-error
-						>
-					</mat-form-field>
-					<mat-form-field>
-						<mat-label for="interfaceDefaultValue"
-							>Default Value</mat-label
-						>
-						<input
-							matInput
-							type="text"
-							[(ngModel)]="data.type.interfaceDefaultValue"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'2886273464685805413',
-									$event
-								)
-							"
-							#input
-							[errorStateMatcher]="parentMatcher"
-							[required]="(defaultValRequired | async) || false"
-							[max]="data.type.interfacePlatformTypeMaxval"
-							[min]="data.type.interfacePlatformTypeMinval"
-							id="interfaceDefaultValue"
-							name="interfaceDefaultValue"
-							#interfaceDefaultValue="ngModel" />
-						<mat-hint align="end"
-							>Default Value for Platform Type</mat-hint
-						>
-						<mat-error
-							id="interfaceDefaultValue"
-							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
-							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
-							matches.</mat-error
-						>
-					</mat-form-field>
-					<mat-form-field>
-						<mat-label for="interfacePlatformTypeMsbValue"
-							>MSB Value</mat-label
-						>
-						<input
-							matInput
-							type="text"
-							[(ngModel)]="
-								data.type.interfacePlatformTypeMsbValue
-							"
-							[ngModel]="getMSBValue()"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'3899709087455064785',
-									$event
-								)
-							"
-							#input
-							[errorStateMatcher]="parentMatcher"
-							[required]="(msbValRequired | async) || false"
-							[max]="data.type.interfacePlatformTypeMaxval"
-							[min]="data.type.interfacePlatformTypeMinval"
-							id="interfacePlatformTypeMsbValue"
-							name="interfacePlatformTypeMsbValue"
-							#interfacePlatformTypeMsbValue="ngModel" />
-						<mat-hint align="end">Most Significant Byte</mat-hint>
-						<mat-error
-							id="interfacePlatformTypeMsbValue"
-							*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
-							>Attributes not unique.{{platformTypeForm.errors?.['attributesNotUnique'].value}}
-							matches.</mat-error
-						>
-					</mat-form-field>
+					<osee-cross-reference-dropdown
+						id="interfacePlatformTypeMinval"
+						name="interfacePlatformTypeMinval"
+						[errorMatcher]="parentMatcher"
+						[required]="(minValRequired | async) || false"
+						[(crossRef)]="data.type.interfacePlatformTypeMinval"
+						(crossRefChange)="
+							updatePTypeManifest('3899709087455064782', $event)
+						"
+						[allowOutsideValues]="true"
+						alternateObjectType="Minimum Value"></osee-cross-reference-dropdown>
+					<osee-cross-reference-dropdown
+						id="interfacePlatformTypeMaxval"
+						name="interfacePlatformTypeMaxval"
+						[errorMatcher]="parentMatcher"
+						[required]="(maxValRequired | async) || false"
+						[(crossRef)]="data.type.interfacePlatformTypeMaxval"
+						(crossRefChange)="
+							updatePTypeManifest('3899709087455064783', $event)
+						"
+						[allowOutsideValues]="true"
+						alternateObjectType="Maximum Value">
+					</osee-cross-reference-dropdown>
+					<osee-cross-reference-dropdown
+						id="interfaceDefaultValue"
+						name="interfaceDefaultValue"
+						[errorMatcher]="parentMatcher"
+						[required]="(defaultValRequired | async) || false"
+						[(crossRef)]="data.type.interfaceDefaultValue"
+						(crossRefChange)="
+							updatePTypeManifest('2886273464685805413', $event)
+						"
+						[allowOutsideValues]="true"
+						alternateObjectType="Default Value"
+						[minimum]="data.type.interfacePlatformTypeMinval"
+						[maximum]="data.type.interfacePlatformTypeMaxval">
+					</osee-cross-reference-dropdown>
+					<osee-cross-reference-dropdown
+						id="interfacePlatformTypeMsbValue"
+						name="interfacePlatformTypeMsbValue"
+						[errorMatcher]="parentMatcher"
+						[required]="(msbValRequired | async) || false"
+						[(crossRef)]="data.type.interfacePlatformTypeMsbValue"
+						[crossRef]="getMSBValue()"
+						(crossRefChange)="
+							updatePTypeManifest('3899709087455064785', $event)
+						"
+						[allowOutsideValues]="true"
+						alternateObjectType="MSB"
+						[minimum]="data.type.interfacePlatformTypeMinval"
+						[maximum]="data.type.interfacePlatformTypeMaxval">
+					</osee-cross-reference-dropdown>
 				</div>
 				<br />
 				<div class="full-width">

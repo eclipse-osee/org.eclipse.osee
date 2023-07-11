@@ -14,6 +14,7 @@ import { Injectable } from '@angular/core';
 import {
 	ConnectionService,
 	CrossReferenceHttpService,
+	MimRouteService,
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
 import {
@@ -44,30 +45,33 @@ import type { CrossReference, connection } from '@osee/messaging/shared/types';
 export class CrossReferenceService {
 	constructor(
 		private crossRefHttpService: CrossReferenceHttpService,
-		private ui: UiService,
+		private ui: MimRouteService,
 		private connectionService: ConnectionService,
 		private txBuilder: TransactionBuilderService,
 		private txService: TransactionService,
 		private preferencesService: PreferencesUIService
 	) {}
 
-	private _selectedConnectionId = new BehaviorSubject<string>('');
+	private _currentPage$ = new BehaviorSubject<number>(0);
+	private _currentPageSize$ = new BehaviorSubject<number>(10);
+
 	private _filterValue = new BehaviorSubject<string>('');
 
 	private _crossReferences = combineLatest([
 		this.branchId,
-		this._selectedConnectionId,
+		this.selectedConnectionId,
 		this.filterValue,
+		this.ui.viewId,
 	]).pipe(
 		filter(
-			([branchId, connectionId, filterValue]) =>
+			([branchId, connectionId, filterValue, viewId]) =>
 				branchId !== '' && branchId !== '0' && connectionId !== ''
 		),
 		debounceTime(500),
-		switchMap(([branchId, connection, filterValue]) =>
+		switchMap(([branchId, connection, filterValue, viewId]) =>
 			this.crossRefHttpService
-				.getAll(branchId, connection, filterValue)
-				.pipe(repeat({ delay: () => this.ui.update }))
+				.getAll(branchId, connection, filterValue, viewId)
+				.pipe(repeat({ delay: () => this.ui.updated }))
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -125,7 +129,7 @@ export class CrossReferenceService {
 			switchMap((tx) =>
 				this.txService
 					.performMutation(tx)
-					.pipe(tap((_) => (this.ui.updated = true)))
+					.pipe(tap((_) => (this.ui.update = true)))
 			)
 		);
 	}
@@ -152,10 +156,10 @@ export class CrossReferenceService {
 		);
 	}
 
-	updateCrossReferenceAttribute(
+	updateCrossReferenceAttribute<U extends keyof CrossReference>(
 		currentCrossRef: CrossReference,
-		attribute: keyof CrossReference,
-		value: string
+		attribute: U,
+		value: CrossReference[U]
 	) {
 		if (currentCrossRef[attribute] !== value) {
 			let updatedCrossRef = { ...currentCrossRef } as CrossReference;
@@ -229,7 +233,7 @@ export class CrossReferenceService {
 	}
 
 	private _selectedConnection = combineLatest([
-		this._selectedConnectionId,
+		this.selectedConnectionId,
 		this.connections,
 	]).pipe(
 		switchMap(([connectionId, connections]) => {
@@ -245,6 +249,45 @@ export class CrossReferenceService {
 			return of(connection);
 		})
 	);
+
+	getFilteredCount(filter: string) {
+		return combineLatest([
+			this.branchId,
+			this.selectedConnectionId,
+			this.ui.viewId,
+		]).pipe(
+			take(1),
+			switchMap(([id, connectionId, viewId]) =>
+				this.crossRefHttpService.getCount(
+					id,
+					connectionId,
+					filter,
+					viewId
+				)
+			)
+		);
+	}
+	getFilteredPaginatedCrossRefs(pageNum: string | number, filter: string) {
+		return combineLatest([
+			this.branchId,
+			this.selectedConnectionId,
+			this.ui.viewId,
+			this.currentPageSize,
+		]).pipe(
+			take(1),
+			switchMap(([id, connectionId, viewId, pageSize]) =>
+				this.crossRefHttpService.getAll(
+					id,
+					connectionId,
+					filter,
+					viewId,
+					pageNum,
+					pageSize,
+					true
+				)
+			)
+		);
+	}
 
 	private _inEditMode = this.preferences.pipe(
 		map((prefs) => prefs.inEditMode),
@@ -288,10 +331,26 @@ export class CrossReferenceService {
 	}
 
 	get selectedConnectionId() {
-		return this._selectedConnectionId;
+		return this.ui.connectionId;
 	}
 
 	set SelectedConnectionId(connection: string) {
-		this._selectedConnectionId.next(connection);
+		this.ui.connectionIdString = connection;
+	}
+
+	get currentPageSize() {
+		return this._currentPageSize$;
+	}
+
+	get currentPage() {
+		return this._currentPage$;
+	}
+
+	set page(pg: number) {
+		this._currentPage$.next(pg);
+	}
+
+	set pageSize(pg: number) {
+		this._currentPageSize$.next(pg);
 	}
 }

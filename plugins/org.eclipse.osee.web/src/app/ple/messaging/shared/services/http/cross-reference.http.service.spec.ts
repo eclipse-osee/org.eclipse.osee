@@ -34,9 +34,9 @@ describe('CrossReferenceHttpService', () => {
 	});
 
 	it('should get all cross references', () => {
-		service.getAll('10', '123', '').subscribe();
+		service.getAll('10', '123', '', '').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/mim/branch/10/crossReference/connection/123/'
+			apiURL + '/mim/branch/10/crossReference?connectionId=123'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(crossReferencesMock);

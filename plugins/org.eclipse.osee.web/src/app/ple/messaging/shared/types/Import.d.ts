@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { CrossReference } from './crossReference.d ';
+import type { CrossReference } from './crossReference';
 import type { messageToken } from './messages';
 import type { subMessage } from './sub-messages';
 import type { elementImportToken } from './element';
