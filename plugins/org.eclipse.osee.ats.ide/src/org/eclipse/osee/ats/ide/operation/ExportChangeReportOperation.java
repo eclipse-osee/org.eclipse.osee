@@ -150,6 +150,9 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   resultFolder.append(idsFolder.getAbsolutePath());
                }
                Lib.writeStringToFile(artIdsAsString, new File(resultFolder + prefix + "_ids.txt"));
+               File resultDir = new File(resultFolder.toString());
+               File compareDir = resultDir.getParentFile().getParentFile();
+               Lib.writeStringToFile(artIdsAsString, new File(compareDir + "/copy" + prefix + "_ids.txt"));
             } catch (IOException ex) {
                OseeCoreException.wrapAndThrow(ex);
             }
