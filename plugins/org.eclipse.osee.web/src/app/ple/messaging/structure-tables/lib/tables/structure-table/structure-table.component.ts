@@ -62,7 +62,15 @@ import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/
 import { DeleteStructureDialogComponent } from '../../dialogs/delete-structure-dialog/delete-structure-dialog.component';
 import { RemoveStructureDialogComponent } from '../../dialogs/remove-structure-dialog/remove-structure-dialog.component';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
-import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
+import {
+	AsyncPipe,
+	NgClass,
+	NgFor,
+	NgIf,
+	NgStyle,
+	NgSwitch,
+	NgSwitchCase,
+} from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
@@ -118,6 +126,9 @@ import { StructureDataSource } from '@osee/messaging/shared/datasources';
 		NgStyle,
 		AsyncPipe,
 		RouterLink,
+		NgSwitch,
+		NgSwitchCase,
+		NgFor,
 		MatIconModule,
 		TwoLayerAddButtonComponent,
 		MatFormFieldModule,

@@ -214,6 +214,16 @@ export class HeaderService {
 			description: 'Transmission Rate of Message',
 			humanReadable: 'Tx Rate',
 		},
+		{
+			header: 'publisher',
+			description: 'Publisher(s) of structure',
+			humanReadable: 'Publishing Node(s)',
+		},
+		{
+			header: 'messageNumber',
+			description: 'Message Number of structure',
+			humanReadable: 'Message Number',
+		},
 	]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
 	private _allMessages = new BehaviorSubject<messageHeaderDetail[]>([

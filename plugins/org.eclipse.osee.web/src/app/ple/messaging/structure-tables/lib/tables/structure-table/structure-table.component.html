@@ -297,12 +297,39 @@
 											element[header]
 										"></osee-structure-table-long-text-field>
 								</ng-container>
-								<ng-container *ngIf="header === 'txRate'">
+								<ng-container
+									*ngIf="
+										header === 'txRate' ||
+										header === 'publisher' ||
+										header === 'messageNumber'
+									">
 									<ng-container
 										*ngIf="
 											_messageData | async as messageData
 										">
-										{{ messageData.interfaceMessageRate }}
+										<ng-container [ngSwitch]="header">
+											<ng-container
+												*ngSwitchCase="'txRate'">
+												{{
+													messageData.interfaceMessageRate
+												}}
+											</ng-container>
+											<ng-container
+												*ngSwitchCase="'publisher'">
+												<ng-container
+													*ngFor="
+														let node of messageData.publisherNodes
+													">
+													{{ node.name }}
+												</ng-container>
+											</ng-container>
+											<ng-container
+												*ngSwitchCase="'messageNumber'">
+												{{
+													messageData.interfaceMessageNumber
+												}}
+											</ng-container>
+										</ng-container>
 									</ng-container>
 								</ng-container>
 								<div
@@ -312,7 +339,9 @@
 										header !== 'name' &&
 										header !== 'description' &&
 										header !== 'sizeInBytes' &&
-										header !== 'txRate'
+										header !== 'txRate' &&
+										header !== 'publisher' &&
+										header !== 'messageNumber'
 									"
 									oseeHighlightFilteredText
 									[searchTerms]="searchTerms"
