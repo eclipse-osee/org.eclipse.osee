@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 public class TransactionBuilderDataFactory {
    private final OrcsApi orcsApi;
@@ -89,8 +90,15 @@ public class TransactionBuilderDataFactory {
       tbd = handleRelationChanges(tbd);
       tbd = handleTupleChanges(tbd);
       tbd.setBranch(currentBranch.getIdString());
-      tbd.setTxComment(String.format("Set from JSON data that exports a change report from txId %s to txId %s",
+      orcsApi.getTransactionFactory().getTx(txId2);
+      TransactionReadable txReadable = orcsApi.getTransactionFactory().getTx(txId2);
+      if(txReadable.isValid()) {
+         tbd.setTxComment(txReadable.getComment());         
+      }
+      else {
+         tbd.setTxComment(String.format("Set from JSON data that exports a change report from txId %s to txId %s",
          txId1.getIdString(), txId2.getIdString()));
+      }
       return tbd;
    }
 
