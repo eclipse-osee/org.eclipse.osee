@@ -24,7 +24,7 @@ import {
 } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
-import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
+import { ElementDialog } from '../../element-dialog';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
@@ -200,7 +200,7 @@ export class SubElementTableDropdownComponent {
 					(val !== undefined || val !== null) &&
 					val?.element !== undefined
 			),
-			switchMap((value: AddElementDialog) =>
+			switchMap((value: ElementDialog) =>
 				iif(
 					() =>
 						value.element.id !== undefined &&

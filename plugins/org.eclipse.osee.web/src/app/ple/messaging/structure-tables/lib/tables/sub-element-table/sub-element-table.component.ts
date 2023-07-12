@@ -33,7 +33,7 @@ import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { UiService } from '@osee/shared/services';
-import { AddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog';
+import { ElementDialog } from '../../element-dialog';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
 import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
@@ -276,7 +276,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 					(val !== undefined || val !== null) &&
 					val?.element !== undefined
 			),
-			switchMap((value: AddElementDialog) =>
+			switchMap((value: ElementDialog) =>
 				iif(
 					() =>
 						value.element.id !== undefined &&
