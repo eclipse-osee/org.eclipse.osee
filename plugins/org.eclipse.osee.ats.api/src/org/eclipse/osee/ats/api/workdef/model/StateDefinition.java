@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workdef.StateOption;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -43,6 +44,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
    private final List<IAtsTransitionHook> transitionListeners = new ArrayList<>();
    private final List<IAtsWorkItemHook> workItemListeners = new ArrayList<>();
    private List<StateOption> stateOptions = new ArrayList<>();
+   private IUserGroupArtifactToken transitionUserGroup = null;
 
    public StateDefinition(String name) {
       super(Long.valueOf(name.hashCode()), name);
@@ -65,6 +67,14 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
    @Override
    public boolean isCancelled() {
       return getStateType().isCancelled();
+   }
+
+   public IUserGroupArtifactToken getTransitionUserGroup() {
+      return transitionUserGroup;
+   }
+
+   public void setTransitionUserGroup(IUserGroupArtifactToken transitionUserGroup) {
+      this.transitionUserGroup = transitionUserGroup;
    }
 
    @Override

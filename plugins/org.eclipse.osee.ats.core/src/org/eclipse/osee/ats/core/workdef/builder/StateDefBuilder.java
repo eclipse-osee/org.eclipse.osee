@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskCommitHook;
 import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -67,6 +68,12 @@ public class StateDefBuilder {
 
    public StateDefBuilder andColor(StateColor color) {
       state.setColor(color);
+      return this;
+   }
+
+   //It only allows user that is in the group to transition into the state.
+   public StateDefBuilder andTransitionGroup(IUserGroupArtifactToken transitionUserGroup) {
+      state.setTransitionUserGroup(transitionUserGroup);
       return this;
    }
 

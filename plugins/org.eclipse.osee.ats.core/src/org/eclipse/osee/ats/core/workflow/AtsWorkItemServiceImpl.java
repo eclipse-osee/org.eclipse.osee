@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -54,10 +55,12 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
@@ -73,6 +76,9 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.workflow.util.CopyActionDetails;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IUserGroup;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -81,6 +87,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -177,6 +184,37 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, StateDefinition toStateDef) {
       return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef, atsApi);
+   }
+
+   /**
+    * Validate if user is allowed to transition or not based on the user group set to the statedef.
+    */
+   @Override
+   public void validateUserGroupTransition(IAtsWorkItem workItem, StateDefinition toStateDef,
+      TransitionResults results) {
+      IUserGroupArtifactToken userGroupToken = toStateDef.getTransitionUserGroup();
+      if (userGroupToken != null) {
+         IUserGroup userGroup = AtsApiService.get().userService().getUserGroupOrNull(userGroupToken);
+         if (userGroup != null) {
+            ArtifactId userArtId = AtsApiService.get().getUserService().getCurrentUser().getArtifactId();
+            if (!AtsApiService.get().userService().isUserMember(userGroupToken, userArtId)) {
+               StringBuilder sb = new StringBuilder();
+               sb.append("You are not authorized to Transition to " + toStateDef.getName() + ".\n\n");
+               sb.append("\n\nAuthorized Users Are:\n-----------------------------\n");
+               for (UserToken member : userGroup.getMembers()) {
+                  sb.append(member.getName());
+                  sb.append("\n");
+               }
+               results.addResult(workItem, new TransitionResult(sb.toString()));
+            }
+         } else {
+            String errStr = String.format(
+               "User group for the Work Definition [%s] is not configured to transition to \"[%s]\" with user group token \"[%s]\"",
+               toStateDef.getWorkDefinition().getName(), toStateDef.getName(), userGroupToken.getName());
+            OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
+            results.addResult(workItem, new TransitionResult(errStr));
+         }
+      }
    }
 
    @Override

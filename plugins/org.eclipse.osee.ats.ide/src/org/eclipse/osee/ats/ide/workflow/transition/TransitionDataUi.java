@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
@@ -46,31 +47,37 @@ public class TransitionDataUi {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
             if (stateDef != null && stateDef.isCancelled()) {
-               EntryDialog cancelDialog;
-               boolean useEntryCancelWidgetDialog = false;
-               for (LayoutItem layoutItem : stateDef.getLayoutItems()) {
-                  if (layoutItem.getName().contains("Cancel")) {
-                     useEntryCancelWidgetDialog = true;
-                     break;
+               TransitionResults results = new TransitionResults();
+               AtsApiService.get().getWorkItemService().validateUserGroupTransition(workItem, stateDef, results);
+               if (!results.isEmpty()) {
+                  results.getTimeRd().addTimeMapToResultData();
+               } else {
+                  EntryDialog cancelDialog;
+                  boolean useEntryCancelWidgetDialog = false;
+                  for (LayoutItem layoutItem : stateDef.getLayoutItems()) {
+                     if (layoutItem.getName().contains("Cancel")) {
+                        useEntryCancelWidgetDialog = true;
+                        break;
+                     }
                   }
-               }
-               if (useEntryCancelWidgetDialog) {
-                  cancelDialog = new CancelledReasonEnumDialog("Cancellation Reason",
-                     "Select cancellation reason.  If other, please specify with details in the text entry.");
-               } else {
-                  cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-               }
-               if (cancelDialog.open() != 0) {
-                  transData.setDialogCancelled(true);
-               }
-               if (useEntryCancelWidgetDialog) {
-                  transData.setCancellationReason(((CancelledReasonEnumDialog) cancelDialog).getEntry());
-                  transData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReasonEnum);
-                  transData.setCancellationReasonDetails(
-                     ((CancelledReasonEnumDialog) cancelDialog).getCancelledDetails());
-               } else {
-                  transData.setCancellationReason(cancelDialog.getEntry());
-                  transData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
+                  if (useEntryCancelWidgetDialog) {
+                     cancelDialog = new CancelledReasonEnumDialog("Cancellation Reason",
+                        "Select cancellation reason.  If other, please specify with details in the text entry.");
+                  } else {
+                     cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+                  }
+                  if (cancelDialog.open() != 0) {
+                     transData.setDialogCancelled(true);
+                  }
+                  if (useEntryCancelWidgetDialog) {
+                     transData.setCancellationReason(((CancelledReasonEnumDialog) cancelDialog).getEntry());
+                     transData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReasonEnum);
+                     transData.setCancellationReasonDetails(
+                        ((CancelledReasonEnumDialog) cancelDialog).getCancelledDetails());
+                  } else {
+                     transData.setCancellationReason(cancelDialog.getEntry());
+                     transData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
+                  }
                }
             }
          }
