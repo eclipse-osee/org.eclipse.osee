@@ -15,9 +15,11 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -527,7 +529,9 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       ArtifactId messageId) {
       InterfaceMessageToken message = interfaceMessageApi.getWithRelations(branch, messageId,
          Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
-            CoreRelationTypes.InterfaceSubMessageContent_Structure));
+            CoreRelationTypes.InterfaceSubMessageContent_Structure,
+            CoreRelationTypes.InterfaceStructureContent_DataElement,
+            CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
       InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
       boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
       int validationSize = connection.getTransportType().getByteAlignValidationSize();
@@ -572,12 +576,15 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       element.setDescription("Indicates the message number for this message.");
       elements.add(element);
 
+      Map<ArtifactId, List<InterfaceStructureToken>> submessageStructures = new HashMap<>();
+
       // Submessages
       for (InterfaceSubMessageToken subMessage : message.getSubMessages()) {
          String number = subMessage.getInterfaceSubMessageNumber();
          List<InterfaceStructureToken> structures = subMessage.getArtifactReadable().getRelatedList(
             CoreRelationTypes.InterfaceSubMessageContent_Structure).stream().map(
                s -> new InterfaceStructureToken(s)).collect(Collectors.toList());
+         submessageStructures.put(subMessage.getArtifactId(), structures);
          PlatformTypeToken structuresType = new PlatformTypeToken(0L, "UINTEGER", "unsigned integer", "32", "", "", "");
 
          Integer minSimult = null;
@@ -587,8 +594,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             String min = struct.getInterfaceMinSimultaneity();
             String max = struct.getInterfaceMaxSimultaneity();
             if (Strings.isNumeric(min) && Strings.isNumeric(max)) {
-               minSimult = minSimult == null ? Integer.parseInt(min) : Math.min(minSimult, Integer.parseInt(min));
-               maxSimult = maxSimult == null ? Integer.parseInt(max) : Math.min(maxSimult, Integer.parseInt(max));
+               minSimult = minSimult == null ? Integer.parseInt(min) : minSimult + Integer.parseInt(min);
+               maxSimult = maxSimult == null ? Integer.parseInt(max) : maxSimult + Integer.parseInt(max);
             } else {
                structuresType.setInterfacePlatformTypeValidRangeDescription("Calculated");
             }
@@ -636,6 +643,42 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             e.setLogicalType("unsigned integer");
          }
       });
+
+      // Set the elements again so the byte count updates to include spares
+      messageHeader.setElements(messageHeader.getElements());
+
+      // Go back through the elements to set the relative offset valid ranges. This needs to be done
+      // at the end because it depends on the full size of the header including any added spares.
+      int offset = (int) messageHeader.getSizeInBytes().doubleValue();
+      int submessageNumber = 1;
+      int offsetIndex = (submessageNumber * 2) + 1;
+      while (offsetIndex < messageHeader.getElements().size()) {
+         InterfaceStructureElementToken offsetElement = messageHeader.getElements().get(offsetIndex);
+         PlatformTypeToken offsetType = offsetElement.getPlatformType();
+         offsetElement.setInterfacePlatformTypeMinval(offset + "");
+         offsetElement.setInterfacePlatformTypeMaxval(offset + "");
+         offsetType.setInterfacePlatformTypeMinval(offset + "");
+         offsetType.setInterfacePlatformTypeMaxval(offset + "");
+
+         // If the current submessage has a static size, calculate and store the total size of the submessage (sum of struct size * simult)
+         // If not a static size, the rest of the offsets can not be calculated, so break the loop
+         InterfaceStructureElementToken numStructsElement = messageHeader.getElements().get(offsetIndex - 1);
+         String minNumElements = numStructsElement.getInterfacePlatformTypeMinval();
+         String maxNumElements = numStructsElement.getInterfacePlatformTypeMaxval();
+         if (Strings.isNumeric(minNumElements) && Strings.isNumeric(maxNumElements) && minNumElements.equals(
+            maxNumElements)) {
+            InterfaceSubMessageToken submessage =
+               ((List<InterfaceSubMessageToken>) message.getSubMessages()).get(submessageNumber - 1);
+            for (InterfaceStructureToken structure : submessageStructures.get(submessage.getArtifactId())) {
+               offset += structure.getSizeInBytes() * Integer.parseInt(structure.getInterfaceMaxSimultaneity());
+            }
+         } else {
+            break;
+         }
+
+         submessageNumber++;
+         offsetIndex = (submessageNumber * 2) + 1;
+      }
 
       return messageHeader;
    }
