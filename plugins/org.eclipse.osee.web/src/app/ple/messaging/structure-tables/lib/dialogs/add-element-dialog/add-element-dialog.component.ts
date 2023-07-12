@@ -39,7 +39,7 @@ import {
 } from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import { UiService } from '@osee/shared/services';
-import { AddElementDialog } from './add-element-dialog';
+import { ElementDialog } from '../../element-dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -76,6 +76,7 @@ import {
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ElementFormComponent } from '../../forms/element-form/element-form.component';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
@@ -103,9 +104,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 		NgIf,
 		NgFor,
 		ApplicabilitySelectorComponent,
+		ElementFormComponent,
 	],
 })
-export class AddElementDialogComponent implements OnInit, AfterViewInit {
+export class AddElementDialogComponent implements AfterViewInit {
 	@ViewChild(MatStepper) private _internalStepper!: MatStepper;
 
 	private _afterViewInit = new Subject<boolean>();
@@ -131,10 +133,7 @@ export class AddElementDialogComponent implements OnInit, AfterViewInit {
 			}
 		})
 	);
-	loadingTypes = false;
-	types = this.structures.types;
-	typeDialogOpen = false;
-	searchOpen = false;
+	protected resetElementForm = new Subject<number>();
 	private queryMode = new BehaviorSubject<boolean>(false);
 	private query = new BehaviorSubject<MimQuery<PlatformType> | undefined>(
 		undefined
@@ -161,75 +160,12 @@ export class AddElementDialogComponent implements OnInit, AfterViewInit {
 		switchMap((search) => this.structures.getElementsByNameCount(search))
 	);
 
-	availableTypes = combineLatest([this.queryMode, this.query]).pipe(
-		debounceTime(100),
-		switchMap(([mode, query]) =>
-			iif(
-				() => mode === true && query !== undefined,
-				this.structures
-					.query<PlatformType>(query as MimQuery<PlatformType>)
-					.pipe(
-						distinctUntilChanged(),
-						map((result) => {
-							if (result.length === 1) {
-								this.data.type = result[0];
-							}
-							return result;
-						})
-					),
-				of(undefined)
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-	platformTypeState = this.availableTypes.pipe(
-		switchMap((types) =>
-			iif(
-				() => types !== undefined,
-				iif(
-					() => types !== undefined && types.length === 1,
-					of(
-						types !== undefined && types[0].name + ' selected.'
-					).pipe(
-						tap((v) => {
-							this.data.element.enumLiteral =
-								this.data.type.enumSet?.description || '';
-						})
-					),
-					iif(
-						() =>
-							types !== undefined &&
-							types.length !== 1 &&
-							this.data.type.id !== '',
-						of('No exact match found.'),
-						iif(
-							() =>
-								types !== undefined &&
-								types.length !== 1 &&
-								this.data.type.id === '',
-							of(''),
-							of(this.data.type.name + ' selected.').pipe(
-								tap((v) => {
-									this.data.element.enumLiteral =
-										this.data.type.enumSet?.description ||
-										'';
-								})
-							)
-						)
-					)
-				),
-				of('')
-			)
-		)
-	);
 	constructor(
 		public dialog: MatDialog,
 		@Inject(STRUCTURE_SERVICE_TOKEN)
 		private structures: CurrentStructureService,
 		public dialogRef: MatDialogRef<AddElementDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: AddElementDialog,
-		private typeDialogService: TypesUIService,
-		private _ui: UiService
+		@Inject(MAT_DIALOG_DATA) public data: ElementDialog
 	) {
 		if (
 			this.data.element.id !== '' &&
@@ -248,11 +184,6 @@ export class AddElementDialogComponent implements OnInit, AfterViewInit {
 		value: Partial<element> | element | Required<element>
 	): value is element {
 		return value?.id !== undefined;
-	}
-
-	ngOnInit(): void {
-		this.query.next(new PlatformTypeQuery());
-		this.queryMode.next(true);
 	}
 
 	applySearchTerm(searchTerm: Event) {
@@ -286,106 +217,8 @@ export class AddElementDialogComponent implements OnInit, AfterViewInit {
 		}
 		this.moveToStep(3, stepper);
 	}
-	openPlatformTypeDialog(event?: Event) {
-		event?.stopPropagation();
-		this.typeDialogOpen = !this.typeDialogOpen;
-		if (this.typeDialogOpen) {
-			this.searchOpen = false;
-		}
-	}
 	resetDialog() {
-		this.searchOpen = false;
-		this.typeDialogOpen = false;
-	}
-	openSearch(event?: Event) {
-		event?.stopPropagation();
-		this.searchOpen = !this.searchOpen;
-		if (this.searchOpen) {
-			this.typeDialogOpen = false;
-		}
-	}
-	receivePlatformTypeData(value: newPlatformTypeDialogReturnData) {
-		this.typeDialogOpen = !this.typeDialogOpen;
-		const {
-			platformType: fields,
-			createEnum,
-			enumSet,
-			...enumData
-		} = value;
-		this.mapTo(fields, createEnum, enumData)
-			.pipe(
-				concatMap((newElement) =>
-					from(newElement.results.ids).pipe(
-						concatMap((createdElement) =>
-							this.structures.getType(createdElement).pipe(
-								filter(
-									(value) =>
-										value.id !== '-1' && value.id !== ''
-								),
-								tap((v) => {
-									this._ui.updated = true;
-									this.loadingTypes = true;
-									this.data.type =
-										v as Required<PlatformType>;
-									if (
-										(v as Required<PlatformType>) &&
-										v.interfaceLogicalType === 'enumeration'
-									) {
-										this.data.element.enumLiteral =
-											value.enumSetDescription;
-									}
-									const queries: andQuery[] = [];
-									queries.push(new andNameQuery(v.name));
-									const query = new PlatformTypeQuery(
-										undefined,
-										queries
-									);
-									this.queryMode.next(true);
-									this.query.next(query);
-								})
-							)
-						)
-					)
-				)
-			)
-			.subscribe();
-	}
-	/**
-	 *
-	 * @TODO replace enumData with actual enum
-	 */
-	mapTo(
-		results: Partial<PlatformType>,
-		newEnum: boolean,
-		enumData: {
-			enumSetId: string;
-			enumSetName: string;
-			enumSetDescription: string;
-			enumSetApplicability: applic;
-			enums: enumeration[];
-		}
-	) {
-		return this.typeDialogService.createType(
-			results,
-			enumData.enumSetId !== '1' && enumData.enumSetId !== '',
-			enumData
-		);
-	}
-	compareTypes(o1: PlatformType, o2: PlatformType) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
-	}
-
-	updateEnumLiteral() {
-		this.data.element.enumLiteral =
-			this.data.type.enumSet?.description || '';
-	}
-	receiveQuery(query: PlatformTypeQuery) {
-		//close the dialog
-		this.searchOpen = !this.searchOpen;
-		//switch observable to query type
-		this.queryMode.next(true);
-		//set query to query
-		this.query.next(query);
+		this.resetElementForm.next(Math.random());
 	}
 
 	private _cleanElement(_element: element) {

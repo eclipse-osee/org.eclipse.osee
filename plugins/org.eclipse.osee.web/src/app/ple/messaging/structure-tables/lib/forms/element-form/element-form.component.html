@@ -1,0 +1,192 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form #elementForm="ngForm">
+	<mat-form-field class="tw-w-full">
+		<mat-label>Name</mat-label>
+		<input
+			matInput
+			[(ngModel)]="data.element.name"
+			(ngModelChange)="updateData()"
+			required
+			name="name"
+			data-cy="field-name" />
+		<mat-hint>Name of the element being created</mat-hint>
+	</mat-form-field>
+	<br />
+	<mat-form-field class="tw-w-full">
+		<mat-label>Description</mat-label>
+		<textarea
+			cdkTextareaAutosize
+			matInput
+			[(ngModel)]="data.element.description"
+			(ngModelChange)="updateData()"
+			required
+			name="description"
+			data-cy="field-description"></textarea>
+		<mat-hint>Description of the element being created</mat-hint>
+	</mat-form-field>
+	<br />
+	<mat-form-field class="tw-w-full">
+		<mat-label>Notes</mat-label>
+		<textarea
+			cdkTextareaAutosize
+			matInput
+			[(ngModel)]="data.element.notes"
+			(ngModelChange)="updateData()"
+			name="notes"
+			data-cy="field-notes"></textarea>
+		<mat-hint>Notes associated with the element being created</mat-hint>
+	</mat-form-field>
+	<br />
+	<mat-form-field class="tw-w-full">
+		<mat-label>Enum Literals</mat-label>
+		<textarea
+			cdkTextareaAutosize
+			matInput
+			[(ngModel)]="data.element.enumLiteral"
+			(ngModelChange)="updateData()"
+			name="enum_literal"
+			data-cy="field-enum-literal"></textarea>
+		<mat-hint>Enum Literals</mat-hint>
+	</mat-form-field>
+	<br />
+	<mat-form-field
+		class="tw-w-full"
+		subscriptSizing="dynamic">
+		<mat-label>Start Index</mat-label>
+		<input
+			type="number"
+			matInput
+			[(ngModel)]="data.element.interfaceElementIndexStart"
+			(ngModelChange)="updateData()"
+			required
+			name="index_start"
+			data-cy="field-index-start" />
+		<mat-hint
+			>Starting index of the element array being created(if inserting an
+			array of elements)</mat-hint
+		>
+	</mat-form-field>
+	<br />
+	<mat-form-field
+		class="tw-w-full"
+		subscriptSizing="dynamic">
+		<mat-label>End Index</mat-label>
+		<input
+			type="number"
+			matInput
+			[(ngModel)]="data.element.interfaceElementIndexEnd"
+			(ngModelChange)="updateData()"
+			required
+			name="index_end"
+			data-cy="field-index-end" />
+		<mat-hint
+			>Ending index of the element array being created(if inserting an
+			array of elements)</mat-hint
+		>
+	</mat-form-field>
+	<br />
+	<mat-slide-toggle
+		[(ngModel)]="data.element.interfaceElementAlterable"
+		(ngModelChange)="updateData()"
+		labelPosition="before"
+		name="alterable"
+		data-cy="field-alterable">
+		Alterable
+	</mat-slide-toggle>
+	<br />
+	<osee-applicability-selector
+		[applicability]="data.element.applicability"
+		(applicabilityChange)="
+			data.element.applicability = $event; updateData()
+		"
+		[required]="true"></osee-applicability-selector>
+	<br />
+	<ng-container
+		*ngIf="availableTypes | async as _availableTypes; else loading_types">
+		<ng-container *ngIf="_typeState | async as typeState">
+			<mat-form-field
+				class="tw-w-full"
+				subscriptSizing="dynamic">
+				<mat-label>Platform Type</mat-label>
+				<mat-select
+					[(ngModel)]="data.type"
+					(ngModelChange)="updateEnumLiteral()"
+					required
+					name="platform_type"
+					[compareWith]="compareTypes">
+					<mat-option
+						*ngFor="let selectableType of _availableTypes"
+						[value]="selectableType"
+						[matTooltip]="selectableType.description">
+						{{ selectableType.name }}
+					</mat-option>
+				</mat-select>
+				<mat-hint align="start">{{
+					platformTypeState | async
+				}}</mat-hint>
+				<mat-hint align="end"
+					>Find existing element information to create your element or
+					create new type information.</mat-hint
+				>
+				<div matSuffix>
+					<ng-container *ngIf="typeState !== 'QUERY'">
+						<button
+							mat-icon-button
+							(click)="openSearch($event)"
+							class="search-button">
+							<mat-icon
+								color="primary"
+								data-cy="search-type-menu"
+								>search</mat-icon
+							>
+						</button>
+					</ng-container>
+					<button
+						mat-icon-button
+						(click)="openPlatformTypeDialog($event)">
+						<mat-icon color="success">add</mat-icon>
+					</button>
+				</div>
+			</mat-form-field>
+			<ng-container *ngIf="typeState === 'QUERY'">
+				<mat-divider></mat-divider>
+				<osee-messaging-platform-type-query
+					[platformTypes]="(types | async) || []"
+					(query)="
+						receiveQuery($event)
+					"></osee-messaging-platform-type-query>
+				<br />
+			</ng-container>
+			<ng-container *ngIf="typeState === 'CREATE'">
+				<mat-divider></mat-divider>
+				<osee-new-type-form
+					(typeFormState)="receivePlatformTypeData($event)"
+					[preFillData]="
+						(availableTypes | async) || []
+					"></osee-new-type-form>
+				<br />
+			</ng-container>
+		</ng-container>
+	</ng-container>
+	<ng-template #loading_types>
+		<div class="tw-flex tw-items-center">
+			<mat-spinner
+				color="primary"
+				diameter="20"
+				class="tw-pr-4"
+				data-cy="types-loading-spinner"></mat-spinner>
+			<span>Loading Platform Types...</span>
+		</div>
+	</ng-template>
+</form>

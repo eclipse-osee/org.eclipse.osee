@@ -33,7 +33,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { AddElementDialog } from './add-element-dialog';
+import { ElementDialog } from '../../element-dialog';
 
 import { AddElementDialogComponent } from './add-element-dialog.component';
 
@@ -65,7 +65,7 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 describe('AddElementDialogComponent', () => {
 	let component: AddElementDialogComponent;
 	let fixture: ComponentFixture<AddElementDialogComponent>;
-	let dialogData: AddElementDialog = {
+	let dialogData: ElementDialog = {
 		id: '12345',
 		name: 'structure',
 		type: {
@@ -195,41 +195,6 @@ describe('AddElementDialogComponent', () => {
 				MatButtonHarness.with({ text: 'Create new Element' })
 			);
 			await createNewBtn.click();
-		});
-
-		//these two tests are randomly failing because the loader seems to not be responding...
-		xit('should fill out the form', async () => {
-			const spy = spyOn(
-				component,
-				'receivePlatformTypeData'
-			).and.callThrough();
-			const addTypeBtn = await loader.getHarness(
-				MatButtonHarness.with({ text: new RegExp('add') })
-			);
-			await addTypeBtn.click();
-			nestedDialog = fixture.debugElement.query(
-				By.directive(MockNewTypeFormComponent)
-			);
-			fixture.detectChanges();
-			nestedDialog.componentInstance.closeDialog();
-			expect(spy).toHaveBeenCalled();
-		});
-		xit('should open the search form', async () => {
-			const spy = spyOn(component, 'openSearch').and.callThrough();
-			const spy2 = spyOn(component, 'receiveQuery').and.callThrough();
-			const searchbtn = await loader.getHarness(
-				MatButtonHarness.with({ selector: '.search-button' })
-			);
-			await searchbtn.click();
-			expect(spy).toHaveBeenCalled();
-			const nestedSearch = fixture.debugElement.query(
-				By.directive(PlatformTypeQueryMock)
-			);
-			fixture.detectChanges();
-			nestedSearch.componentInstance.returnQuery.next(
-				new PlatformTypeQueryMock()
-			);
-			expect(spy2).toHaveBeenCalled();
 		});
 	});
 });

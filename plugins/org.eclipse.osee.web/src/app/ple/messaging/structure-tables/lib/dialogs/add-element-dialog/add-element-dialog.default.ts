@@ -13,9 +13,9 @@
 
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { element } from '@osee/messaging/shared/types';
-import { AddElementDialog } from './add-element-dialog';
+import { ElementDialog } from '../../element-dialog';
 
-export class DefaultAddElementDialog implements AddElementDialog {
+export class DefaultAddElementDialog implements ElementDialog {
 	id = '';
 	name = '';
 	element: Partial<element> = {

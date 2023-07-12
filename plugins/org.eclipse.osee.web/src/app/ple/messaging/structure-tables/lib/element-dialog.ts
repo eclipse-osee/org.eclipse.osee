@@ -13,7 +13,7 @@
 
 import type { element, PlatformType } from '@osee/messaging/shared/types';
 
-export interface AddElementDialog {
+export interface ElementDialog {
 	id: string;
 	name: string;
 	element: Partial<element>;
