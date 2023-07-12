@@ -105,6 +105,7 @@ import org.eclipse.osee.ats.ide.column.ReviewNumMajorDefectsColumn;
 import org.eclipse.osee.ats.ide.column.ReviewNumMinorDefectsColumn;
 import org.eclipse.osee.ats.ide.column.ReviewReviewerColumn;
 import org.eclipse.osee.ats.ide.column.SiblingAtsIdColumn;
+import org.eclipse.osee.ats.ide.column.SiblingTeamDefColumn;
 import org.eclipse.osee.ats.ide.column.StartDateColumn;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.column.TaskRelatedArtifactTypeColumnUI;
@@ -211,6 +212,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getColumnServiceColumn(AtsColumnTokens.IncorporatedInColumn),
          getColumnServiceColumn(AtsColumnTokens.TaskPointsColumn),
          getColumnServiceColumn(AtsColumnTokens.TaskRiskFactorsColumn),
+         getColumnServiceColumn(AtsColumnTokens.DerivedFromAtsIdColumn),
+         getColumnServiceColumn(AtsColumnTokens.DerivedFromTeamDefColumn),
+
          /**
           * This is the legacy way of providing columns. DO NOT USE THIS METHOD. These should eventually be converted to
           * one of the above
@@ -277,6 +281,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentReworkColumn.getInstance(),
          BranchStatusColumn.getInstance(),
          SiblingAtsIdColumn.getInstance(),
+         SiblingTeamDefColumn.getInstance(),
          NumberOfTasksColumn.getInstance(),
          NumberOfTasksRemainingColumn.getInstance(),
          new LastModifiedByColumn(false),

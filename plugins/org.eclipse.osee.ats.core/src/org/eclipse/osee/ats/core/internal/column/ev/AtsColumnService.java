@@ -43,6 +43,8 @@ import org.eclipse.osee.ats.core.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
+import org.eclipse.osee.ats.core.column.DerivedFromAtsIdColumn;
+import org.eclipse.osee.ats.core.column.DerivedFromTeamDefColumn;
 import org.eclipse.osee.ats.core.column.FeatureImpactReferenceColumn;
 import org.eclipse.osee.ats.core.column.FoundInVersionColumn;
 import org.eclipse.osee.ats.core.column.IdColumn;
@@ -231,6 +233,10 @@ public class AtsColumnService implements IAtsColumnService {
             column = new TaskPointsColumn(atsApi);
          } else if (id.equals(AtsColumnTokens.TaskRiskFactorsColumn.getId())) {
             column = new TaskRiskFactorsColumn(atsApi);
+         } else if (id.equals(AtsColumnTokens.DerivedFromAtsIdColumn.getId())) {
+            column = new DerivedFromAtsIdColumn(atsApi);
+         } else if (id.equals(AtsColumnTokens.DerivedFromTeamDefColumn.getId())) {
+            column = new DerivedFromTeamDefColumn(atsApi);
          }
       }
       // Add columns provided through OSGI services
