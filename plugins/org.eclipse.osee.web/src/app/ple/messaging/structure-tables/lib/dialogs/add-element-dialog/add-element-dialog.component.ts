@@ -37,9 +37,6 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { applic } from '@osee/shared/types/applicability';
-import { UiService } from '@osee/shared/services';
-import { ElementDialog } from '../../element-dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -53,27 +50,18 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-	PlatformTypeQuery,
-	andQuery,
-	andNameQuery,
-	MimQuery,
-} from '@osee/messaging/shared/query';
+import { MimQuery } from '@osee/messaging/shared/query';
 import type {
 	element,
-	newPlatformTypeDialogReturnData,
-	enumeration,
 	PlatformType,
+	ElementDialog,
 } from '@osee/messaging/shared/types';
 import {
 	MatOptionLoadingComponent,
 	ApplicabilitySelectorComponent,
 } from '@osee/shared/components';
 import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
-import {
-	CurrentStructureService,
-	TypesUIService,
-} from '@osee/messaging/shared/services';
+import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ElementFormComponent } from '../../forms/element-form/element-form.component';
@@ -134,11 +122,6 @@ export class AddElementDialogComponent implements AfterViewInit {
 		})
 	);
 	protected resetElementForm = new Subject<number>();
-	private queryMode = new BehaviorSubject<boolean>(false);
-	private query = new BehaviorSubject<MimQuery<PlatformType> | undefined>(
-		undefined
-	);
-
 	paginationSize = 10;
 	elementSearch = new BehaviorSubject<string>('');
 	selectedElement: element | undefined = undefined;

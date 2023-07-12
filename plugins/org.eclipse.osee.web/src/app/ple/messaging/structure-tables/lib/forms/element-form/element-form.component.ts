@@ -22,7 +22,6 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ElementDialog } from '../../element-dialog';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import {
@@ -32,6 +31,7 @@ import {
 	PlatformTypeQuery,
 } from '@osee/messaging/shared/query';
 import {
+	ElementDialog,
 	enumeration,
 	newPlatformTypeDialogReturnData,
 	PlatformType,

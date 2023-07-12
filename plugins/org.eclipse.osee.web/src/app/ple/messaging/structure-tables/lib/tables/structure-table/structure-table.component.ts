@@ -57,7 +57,6 @@ import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { DataSource } from '@angular/cdk/collections';
-import { ElementDialog } from '../../element-dialog';
 import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-structure-dialog';
 import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/add-structure-dialog.component';
 import { DeleteStructureDialogComponent } from '../../dialogs/delete-structure-dialog/delete-structure-dialog.component';
@@ -78,6 +77,7 @@ import type {
 	structureWithChanges,
 	element,
 	EditViewFreeTextDialog,
+	ElementDialog,
 } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {

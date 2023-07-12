@@ -33,7 +33,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementDialog } from '../../element-dialog';
 
 import { AddElementDialogComponent } from './add-element-dialog.component';
 
@@ -61,6 +60,7 @@ import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { ElementDialog } from '@osee/messaging/shared/types';
 
 describe('AddElementDialogComponent', () => {
 	let component: AddElementDialogComponent;

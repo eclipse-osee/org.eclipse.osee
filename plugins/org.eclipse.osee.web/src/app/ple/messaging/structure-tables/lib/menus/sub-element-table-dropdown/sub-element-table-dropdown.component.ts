@@ -24,11 +24,11 @@ import {
 } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
-import { ElementDialog } from '../../element-dialog';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
 import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
+import { EditElementDialogComponent } from '../../dialogs/edit-element-dialog/edit-element-dialog.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { UiService } from '@osee/shared/services';
@@ -44,6 +44,7 @@ import type {
 	PlatformType,
 	EditViewFreeTextDialog,
 	elementWithChanges,
+	ElementDialog,
 } from '@osee/messaging/shared/types';
 import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
 import {
@@ -60,6 +61,7 @@ import {
 	modifyRelation,
 	relation,
 } from '@osee/shared/types';
+import { MatDividerModule } from '@angular/material/divider';
 
 /**
  * Required attributes:
@@ -82,6 +84,7 @@ import {
 		MatIconModule,
 		MatDialogModule,
 		MatFormFieldModule,
+		MatDividerModule,
 	],
 	templateUrl: './sub-element-table-dropdown.component.html',
 	styleUrls: ['./sub-element-table-dropdown.component.sass'],
@@ -267,6 +270,33 @@ export class SubElementTableDropdownComponent {
 			)
 		);
 		createElement.subscribe();
+	}
+	openEditElementDialog(element: element) {
+		const dialogData: ElementDialog = {
+			id: '',
+			name: '',
+			element: element,
+			type: element.platformType,
+		};
+		let dialogRef = this.dialog.open(EditElementDialogComponent, {
+			data: dialogData,
+		});
+		dialogRef
+			.afterClosed()
+			.pipe(
+				take(1),
+				filter(
+					(val) =>
+						(val !== undefined || val !== null) &&
+						val?.element !== undefined &&
+						val.type !== undefined
+				),
+				switchMap((val) =>
+					this.structureService.changeElementFromDialog(val)
+				),
+				tap((v) => console.log(v))
+			)
+			.subscribe();
 	}
 	openEnumDialog(id: string) {
 		/**

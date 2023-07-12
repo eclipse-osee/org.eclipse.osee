@@ -37,6 +37,7 @@ import {
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { MatDividerModule } from '@angular/material/divider';
 
 describe('SubElementTableDropdownComponent', () => {
 	let component: SubElementTableDropdownComponent;
@@ -56,6 +57,7 @@ describe('SubElementTableDropdownComponent', () => {
 					MatIconModule,
 					MatDialogModule,
 					MatFormFieldModule,
+					MatDividerModule,
 				],
 				providers: [
 					{

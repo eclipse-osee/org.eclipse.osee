@@ -19,6 +19,7 @@ export * from './DifferenceReport';
 export * from './editPlatformTypeDialogData';
 export * from './EditViewFreeTextDialog';
 export * from './element';
+export * from './element-dialog';
 export * from './enum';
 export * from './enumeratedPlatformType';
 export * from './EnumSetDialogData';
