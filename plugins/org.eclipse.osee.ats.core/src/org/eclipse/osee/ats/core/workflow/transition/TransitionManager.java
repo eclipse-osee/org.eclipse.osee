@@ -231,6 +231,8 @@ public class TransitionManager implements IExecuteListener {
                         String.format("Transition-To State [%s] does not exist for Work Definition [%s]",
                            transData.getToStateName(), workItem.getWorkDefinition().getName())));
                   continue;
+               } else {
+                  AtsApiService.get().getWorkItemService().validateUserGroupTransition(workItem, toStateDef, results);
                }
                logTimeSpent("05.1 - Validate toState valid");
 

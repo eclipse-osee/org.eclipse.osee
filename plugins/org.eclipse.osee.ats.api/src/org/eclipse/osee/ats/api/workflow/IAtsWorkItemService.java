@@ -142,6 +142,11 @@ public interface IAtsWorkItemService {
    TransitionResults transitionValidate(TransitionData transData);
 
    /**
+    * Validate if user is allowed to transition or not based on the user group set to the statedef.
+    */
+   void validateUserGroupTransition(IAtsWorkItem workItem, StateDefinition toStateDef, TransitionResults results);
+
+   /**
     * @return Ordered list of states able to transition to with default, then return states, then toStates
     */
    List<StateDefinition> getAllToStates(IAtsWorkItem workItem);
