@@ -35,13 +35,23 @@ export const defaultEditElementProfile: (keyof element)[] = [
 
 export const defaultViewElementProfile: (keyof element)[] = [
 	'name',
-	'description',
 	'logicalType',
-	'interfacePlatformTypeDescription',
+	'units',
+	'interfacePlatformTypeMinval',
+	'interfacePlatformTypeMaxval',
+	'interfaceElementAlterable',
+	'description',
+	'enumLiteral',
+	// 'interfacePlatformTypeDescription',
 	'notes',
 ];
 
-export const defaultEditStructureProfile: (keyof structure | 'txRate')[] = [
+export const defaultEditStructureProfile: (
+	| keyof structure
+	| 'txRate'
+	| 'publisher'
+	| 'messageNumber'
+)[] = [
 	'name',
 	'description',
 	'interfaceMinSimultaneity',
@@ -56,13 +66,21 @@ export const defaultEditStructureProfile: (keyof structure | 'txRate')[] = [
 	'txRate',
 ];
 
-export const defaultViewStructureProfile: (keyof structure)[] = [
+export const defaultViewStructureProfile: (
+	| keyof structure
+	| 'txRate'
+	| 'publisher'
+	| 'messageNumber'
+)[] = [
 	'name',
 	'description',
+	'interfaceStructureCategory',
+	'txRate',
 	'interfaceMinSimultaneity',
 	'interfaceMaxSimultaneity',
-	'interfaceTaskFileType',
-	'interfaceStructureCategory',
 	'numElements',
+	'publisher',
+	'messageNumber',
+	'interfaceTaskFileType',
 	'sizeInBytes',
 ];
