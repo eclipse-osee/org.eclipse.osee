@@ -12,8 +12,7 @@
  **********************************************************************/
 
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import { element } from '@osee/messaging/shared/types';
-import { ElementDialog } from '../../element-dialog';
+import { element, ElementDialog } from '@osee/messaging/shared/types';
 
 export class DefaultAddElementDialog implements ElementDialog {
 	id = '';

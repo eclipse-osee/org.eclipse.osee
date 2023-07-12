@@ -49,9 +49,11 @@ import type {
 	element,
 	settingsDialogData,
 	elementWithChanges,
+	ElementDialog,
 } from '@osee/messaging/shared/types';
 import { transaction } from '@osee/shared/types';
 import type { MimQuery } from '@osee/messaging/shared/query';
+
 @Injectable({
 	providedIn: 'root',
 })
@@ -648,7 +650,114 @@ export abstract class CurrentStructureService {
 			)
 		);
 	}
+	changeElementFromDialog(dialog: ElementDialog) {
+		const relatePlatformTypeTx = this.BranchId.pipe(
+			take(1),
+			switchMap((id) =>
+				combineLatest([
+					this.elements.createPlatformTypeRelation(
+						'' + (dialog.element?.platformType?.id || -1),
+						dialog.element.id
+					),
+					this.elements.createPlatformTypeRelation(
+						dialog.type.id || '',
+						dialog.element.id
+					),
+				]).pipe(
+					take(1),
+					switchMap(([deleteRelation, addRelation]) =>
+						this.elements.deleteRelation(id, deleteRelation).pipe(
+							//create delete transaction
+							take(1),
+							switchMap((deleteTransaction) =>
+								this.elements
+									.addRelation(
+										id,
+										addRelation,
+										deleteTransaction
+									)
+									.pipe(
+										//create add transaction and merge with delete transaction
+										take(1),
+										switchMap((addTransaction) =>
+											this.elements
+												.changeElement(
+													{
+														id: dialog.element.id,
+														enumLiteral:
+															dialog.type.enumSet
+																?.description,
+													},
+													id,
+													addTransaction
+												)
+												.pipe(take(1))
+										)
+									)
+							)
+						)
+					)
+				)
+			)
+		);
+		const tx = iif(
+			() =>
+				dialog.element.platformType !== undefined &&
+				dialog.element.platformType.id !== dialog.type.id,
+			this.BranchId.pipe(
+				take(1),
+				switchMap((id) =>
+					relatePlatformTypeTx.pipe(
+						take(1),
+						switchMap((tx) =>
+							this.elements.changeElement(
+								this._removeExtraPropsFromElement(
+									dialog.element,
+									true
+								),
+								id,
+								tx
+							)
+						)
+					)
+				)
+			),
+			this.BranchId.pipe(
+				take(1),
+				switchMap((id) =>
+					this.elements.changeElement(
+						this._removeExtraPropsFromElement(dialog.element),
+						id
+					)
+				)
+			)
+		);
+		return tx.pipe(
+			switchMap((tx) =>
+				this.elements
+					.performMutation(tx)
+					.pipe(tap(() => (this.ui.updateMessages = true)))
+			)
+		);
+	}
 
+	private _removeExtraPropsFromElement(
+		element: Partial<element>,
+		deleteEnumLiteral?: boolean
+	) {
+		delete element.platformType;
+		if (
+			element.interfaceElementIndexEnd === 0 &&
+			element.interfaceElementIndexStart === 0
+		) {
+			delete element.interfaceElementIndexEnd;
+			delete element.interfaceElementIndexStart;
+		}
+		if (deleteEnumLiteral) {
+			delete element.enumLiteral;
+		}
+		return element;
+	}
 	changeElementPlatformType(
 		structureId: string,
 		elementId: string,
