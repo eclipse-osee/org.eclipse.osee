@@ -21,6 +21,7 @@ export const structuresMock: Required<structure>[] = [
 	{
 		id: '1',
 		name: 'name',
+		nameAbbrev: '',
 		elements: [
 			{
 				id: '1',
@@ -59,6 +60,7 @@ export const structuresPreChanges: structure[] = [
 	{
 		id: '201364',
 		name: 'name',
+		nameAbbrev: '',
 		elements: [
 			{
 				id: '201351',
@@ -126,6 +128,7 @@ export const structuresPreChanges: structure[] = [
 	{
 		id: '201365',
 		name: 'name',
+		nameAbbrev: '',
 		elements: [
 			{
 				id: '1',
@@ -159,6 +162,7 @@ export const structuresPreChanges: structure[] = [
 	{
 		id: '201370',
 		name: 'name',
+		nameAbbrev: '',
 		elements: [
 			{
 				id: '1',
@@ -198,6 +202,7 @@ export const structuresMockWithChangesMulti: (
 	{
 		id: '201364',
 		name: 'name',
+		nameAbbrev: '',
 		elements: [
 			{
 				id: '1',
@@ -603,6 +608,7 @@ export const structuresMockWithChangesMulti: (
 	{
 		id: '201365',
 		name: 'name',
+		nameAbbrev: '',
 		elements: [
 			{
 				id: '1',
@@ -709,6 +715,7 @@ export const structuresMockWithChangesMulti: (
 	{
 		id: '201370',
 		name: 'name',
+		nameAbbrev: '',
 		added: true,
 		elements: [
 			{
@@ -824,6 +831,7 @@ export const structuresMockWithChangesMulti: (
 	{
 		id: '201364',
 		name: 'name',
+		nameAbbrev: '',
 		interfaceStructureCategory: 'Category 1',
 		deleted: true,
 		added: true,
@@ -1041,6 +1049,7 @@ export const structuresMockWithChangesMulti: (
 	{
 		id: '201364',
 		name: 'name',
+		nameAbbrev: '',
 		interfaceStructureCategory: 'Category 1',
 		deleted: true,
 		added: false,
@@ -1474,6 +1483,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 export const structuresMockWithChanges: structureWithChanges = {
 	id: '1',
 	name: 'name',
+	nameAbbrev: '',
 	elements: [
 		{
 			id: '1',

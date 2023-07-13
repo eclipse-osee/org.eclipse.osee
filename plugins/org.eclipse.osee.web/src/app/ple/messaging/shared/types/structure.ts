@@ -25,6 +25,7 @@ export interface structure {
 		| structureChanges;
 	id: string;
 	name: string;
+	nameAbbrev: string;
 	elements?: (element | elementWithChanges)[];
 	description: string;
 	interfaceMaxSimultaneity: string;
@@ -41,6 +42,7 @@ export interface structure {
 }
 export interface structureChanges {
 	name?: difference;
+	nameAbbrev?: difference;
 	description?: difference;
 	interfaceMaxSimultaneity?: difference;
 	interfaceMinSimultaneity?: difference;

@@ -244,7 +244,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 	nodeHeaderDetails = nodeHeaderDetails;
 	nodeHeaders: (keyof nodeData)[] = [
 		'name',
-		'interfaceNodeNameAbbrev',
+		'nameAbbrev',
 		'interfaceNodeCodeGenName',
 		'interfaceNodeType',
 		'interfaceNodeNumber',

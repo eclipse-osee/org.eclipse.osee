@@ -40,6 +40,7 @@ export class SubElementTableRowComponentMock {
 	@Input() structure: structure = {
 		id: '',
 		name: '',
+		nameAbbrev: '',
 		description: '',
 		interfaceMaxSimultaneity: '',
 		interfaceMinSimultaneity: '',

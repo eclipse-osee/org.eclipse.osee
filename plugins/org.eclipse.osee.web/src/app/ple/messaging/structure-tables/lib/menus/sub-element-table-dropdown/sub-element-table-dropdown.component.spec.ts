@@ -104,6 +104,7 @@ describe('SubElementTableDropdownComponent', () => {
 		component.structure = {
 			id: '1734890124',
 			name: 'sample structure',
+			nameAbbrev: '',
 			description: '',
 			interfaceMaxSimultaneity: '',
 			interfaceMinSimultaneity: '',

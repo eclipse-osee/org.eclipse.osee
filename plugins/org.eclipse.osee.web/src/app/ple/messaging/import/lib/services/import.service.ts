@@ -252,8 +252,7 @@ export class ImportService {
 												node.interfaceNodeCodeGen,
 											interfaceNodeCodeGenName:
 												node.interfaceNodeCodeGenName,
-											interfaceNodeNameAbbrev:
-												node.interfaceNodeNameAbbrev,
+											nameAbbrev: node.nameAbbrev,
 											interfaceNodeToolUse:
 												node.interfaceNodeToolUse,
 											interfaceNodeType:

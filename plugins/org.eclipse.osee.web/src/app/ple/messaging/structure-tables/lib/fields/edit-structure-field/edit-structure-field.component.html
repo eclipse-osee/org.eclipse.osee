@@ -25,8 +25,7 @@
 	class="wide-form">
 	<ng-container
 		*ngIf="
-			header === 'interfaceStructureCategory' ||
-				header === 'applicability';
+			header === 'interfaceStructureCategory' || header === 'nameAbbrev';
 			else generalEdit
 		">
 		<ng-container *ngIf="header === 'interfaceStructureCategory'">
@@ -39,6 +38,17 @@
 					{{ option }}
 				</mat-option>
 			</mat-select>
+		</ng-container>
+		<ng-container *ngIf="header === 'nameAbbrev'">
+			<input
+				matInput
+				[(ngModel)]="value"
+				(ngModelChange)="updateStructure(value)"
+				#nameAbbrevInput
+				maxlength="31"
+				[matTooltip]="
+					nameAbbrevInput.value.length + '/31 characters'
+				" />
 		</ng-container>
 	</ng-container>
 	<ng-template #generalEdit>

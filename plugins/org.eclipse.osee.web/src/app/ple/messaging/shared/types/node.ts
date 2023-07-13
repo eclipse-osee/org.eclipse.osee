@@ -26,7 +26,7 @@ export interface nodeData {
 	interfaceNodeBuildCodeGen: boolean;
 	interfaceNodeCodeGen: boolean;
 	interfaceNodeCodeGenName: string;
-	interfaceNodeNameAbbrev: string;
+	nameAbbrev: string;
 	interfaceNodeToolUse: boolean;
 	interfaceNodeType: string;
 	notes: string;
@@ -48,7 +48,7 @@ export interface nodeChanges {
 	interfaceNodeBuildCodeGen?: difference;
 	interfaceNodeCodeGen?: difference;
 	interfaceNodeCodeGenName?: difference;
-	interfaceNodeNameAbbrev?: difference;
+	nameAbbrev?: difference;
 	interfaceNodeToolUse?: difference;
 	interfaceNodeType?: difference;
 	notes?: difference;

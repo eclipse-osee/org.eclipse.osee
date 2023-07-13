@@ -20,7 +20,7 @@ export const nodeHeaderDetails: headerDetail<nodeData>[] = [
 		humanReadable: 'Name',
 	},
 	{
-		header: 'interfaceNodeNameAbbrev',
+		header: 'nameAbbrev',
 		description: 'Name abbreviation',
 		humanReadable: 'Name Abbrev.',
 	},

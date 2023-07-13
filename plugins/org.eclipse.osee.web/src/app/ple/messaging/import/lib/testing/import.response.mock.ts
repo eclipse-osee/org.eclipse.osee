@@ -75,6 +75,7 @@ export const importSummaryMock: ImportSummary = {
 		{
 			id: '5',
 			name: 'Structure 1',
+			nameAbbrev: '',
 			description: '',
 			interfaceMinSimultaneity: '0',
 			interfaceMaxSimultaneity: '1',

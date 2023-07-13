@@ -37,6 +37,7 @@ import {
 } from '@osee/messaging/shared/services';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-messaging-edit-structure-field',
@@ -50,6 +51,7 @@ import { applic } from '@osee/shared/types/applicability';
 		MatSelectModule,
 		MatOptionModule,
 		MatInputModule,
+		MatTooltipModule,
 		NgIf,
 		NgFor,
 		AsyncPipe,

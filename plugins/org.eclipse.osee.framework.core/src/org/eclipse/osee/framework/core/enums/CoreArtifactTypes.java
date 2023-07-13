@@ -320,7 +320,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceNodeAddress)
       .exactlyOne(InterfaceNodeNumber)
       .zeroOrOne(InterfaceNodeGroupId)
-      .zeroOrOne(InterfaceNodeNameAbbrev)
+      .zeroOrOne(NameAbbrev)
       .zeroOrOne(InterfaceNodeCodeGenName)
       .zeroOrOne(InterfaceNodeType)
       .zeroOrOne(InterfaceNodeBackgroundColor)
@@ -354,6 +354,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(InterfaceSubMessageNumber));
 
    ArtifactTypeToken InterfaceStructure = osee.add(osee.artifactType(2455059983007225776L, "Interface Structure", false, InterfaceArtifact)
+      .zeroOrOne(NameAbbrev)
       .zeroOrOne(InterfaceStructureCategory)
       .zeroOrOne(InterfaceMinSimultaneity)
       .zeroOrOne(InterfaceMaxSimultaneity)

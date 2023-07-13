@@ -32,7 +32,7 @@ public class InterfaceNode extends PLGenericDBObject {
    private ApplicabilityToken applicability;
    private String interfaceNodeBackgroundColor = generateColor() ? "#81d4fa" : "#c5e1a5";
    private String interfaceNodeAddress;
-   private String interfaceNodeNameAbbrev;
+   private String nameAbbrev;
    private String interfaceNodeCodeGenName;
    private String InterfaceNodeType;
    private String notes;
@@ -55,7 +55,7 @@ public class InterfaceNode extends PLGenericDBObject {
       this.setInterfaceNodeGroupId(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeGroupId, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-      this.setInterfaceNodeNameAbbrev(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeNameAbbrev, ""));
+      this.setNameAbbrev(art.getSoleAttributeValue(CoreAttributeTypes.NameAbbrev, ""));
       this.setInterfaceNodeCodeGenName(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeCodeGenName, ""));
       this.setInterfaceNodeType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeType, ""));
       this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
@@ -153,12 +153,12 @@ public class InterfaceNode extends PLGenericDBObject {
       this.artifactReadable = artifactReadable;
    }
 
-   public String getInterfaceNodeNameAbbrev() {
-      return interfaceNodeNameAbbrev;
+   public String getNameAbbrev() {
+      return nameAbbrev;
    }
 
-   public void setInterfaceNodeNameAbbrev(String interfaceNodeNameAbbrev) {
-      this.interfaceNodeNameAbbrev = interfaceNodeNameAbbrev;
+   public void setNameAbbrev(String nameAbbrev) {
+      this.nameAbbrev = nameAbbrev;
    }
 
    public String getInterfaceNodeCodeGenName() {
