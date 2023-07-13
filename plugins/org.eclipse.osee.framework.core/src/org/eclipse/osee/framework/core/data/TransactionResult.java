@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -19,6 +21,7 @@ public class TransactionResult {
 
    private TransactionToken tx = TransactionToken.SENTINEL;
    private XResultData results = new XResultData();
+   private List<GammaId> failedGammas = new ArrayList<>();
 
    public TransactionResult() {
       // for jax-rs
@@ -46,6 +49,14 @@ public class TransactionResult {
 
    public boolean isSuccess() {
       return !isFailed();
+   }
+
+   public List<GammaId> getFailedGammas() {
+      return this.failedGammas;
+   }
+
+   public void setFailedGammas(List<GammaId> failedGammas) {
+      this.failedGammas = failedGammas;
    }
 
    @Override
