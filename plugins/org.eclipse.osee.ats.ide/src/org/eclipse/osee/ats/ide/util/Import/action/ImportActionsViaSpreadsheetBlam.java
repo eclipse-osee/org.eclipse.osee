@@ -47,6 +47,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
 
+   private static final String OPEN_EXCEL_SPREADSHEET = "Open Excel Import Example Spreadsheet";
    public static final String NAME = "Import Actions Via Spreadsheet";
 
    public static enum ImportOption {
@@ -68,11 +69,11 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
    @Override
    public List<XWidgetRendererItem> getXWidgetItems() {
       XWidgetBuilder wb = new XWidgetBuilder();
+      wb.andXButtonPush(OPEN_EXCEL_SPREADSHEET).andDisplayLabel(false).endWidget();
       wb.andWidget("Excel Spreadsheet saved as xml", "XFileTextWithSelectionDialog").endWidget();
       wb.andXCheckbox("Email POCs");
       wb.andXCheckbox("Persist");
       wb.andWidget("Add to Goal", "XGoalCombo").andHorizLabel().andLabelAfter().endWidget();
-      wb.andXButtonPush("Open Excel Import Example Spreadsheet").andDisplayLabel(false).endWidget();
       return wb.getItems();
    }
 
@@ -120,7 +121,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
       SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-      if (xWidget.getLabel().equals("Open Excel Import Example Spreadsheet")) {
+      if (xWidget.getLabel().equals(OPEN_EXCEL_SPREADSHEET)) {
          XButtonPush button = (XButtonPush) xWidget;
          button.addXModifiedListener(new XModifiedListener() {
 

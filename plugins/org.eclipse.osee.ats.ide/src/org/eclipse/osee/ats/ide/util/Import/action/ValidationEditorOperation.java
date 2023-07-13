@@ -60,29 +60,29 @@ public class ValidationEditorOperation {
          private IResultsEditorTab createDataTab() {
             List<IResultsXViewerRow> rows = new ArrayList<>();
             List<XViewerColumn> columns = new ArrayList<>();
-            columns.add(new XViewerColumn(ActionColumnns.Title.name(), ActionColumnns.Title.name(), 280,
+            columns.add(new XViewerColumn(ActionColumns.Title.name(), ActionColumns.Title.name(), 280,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.Description.name(), ActionColumnns.Description.name(), 80,
+            columns.add(new XViewerColumn(ActionColumns.Description.name(), ActionColumns.Description.name(), 80,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.ActionableItems.name(), ActionColumnns.ActionableItems.name(),
+            columns.add(new XViewerColumn(ActionColumns.ActionableItems.name(), ActionColumns.ActionableItems.name(),
                80, XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.Assignees.name(), ActionColumnns.Assignees.name(), 80,
+            columns.add(new XViewerColumn(ActionColumns.Assignees.name(), ActionColumns.Assignees.name(), 80,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.Originator.name(), ActionColumnns.Originator.name(), 80,
+            columns.add(new XViewerColumn(ActionColumns.Originator.name(), ActionColumns.Originator.name(), 80,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.ChangeType.name(), ActionColumnns.ChangeType.name(), 80,
+            columns.add(new XViewerColumn(ActionColumns.ChangeType.name(), ActionColumns.ChangeType.name(), 80,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.Priority.name(), ActionColumnns.Priority.name(), 30,
+            columns.add(new XViewerColumn(ActionColumns.Priority.name(), ActionColumns.Priority.name(), 30,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.Version.name(), ActionColumnns.Version.name(), 80,
+            columns.add(new XViewerColumn(ActionColumns.Version.name(), ActionColumns.Version.name(), 80,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.EstimatedHours.name(), ActionColumnns.EstimatedHours.name(),
+            columns.add(new XViewerColumn(ActionColumns.EstimatedHours.name(), ActionColumns.EstimatedHours.name(),
                40, XViewerAlign.Left, true, SortDataType.Integer, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.AgilePoints.name(), ActionColumnns.AgilePoints.name(), 40,
+            columns.add(new XViewerColumn(ActionColumns.AgilePoints.name(), ActionColumns.AgilePoints.name(), 40,
                XViewerAlign.Left, true, SortDataType.Integer, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.AgileTeamName.name(), ActionColumnns.AgileTeamName.name(), 80,
+            columns.add(new XViewerColumn(ActionColumns.AgileTeamName.name(), ActionColumns.AgileTeamName.name(), 80,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumnns.AgileSprintName.name(), ActionColumnns.AgileSprintName.name(),
+            columns.add(new XViewerColumn(ActionColumns.AgileSprintName.name(), ActionColumns.AgileSprintName.name(),
                80, XViewerAlign.Left, true, SortDataType.String, false, ""));
 
             for (JaxAttribute attr : actionDatas.iterator().next().attributes) {
