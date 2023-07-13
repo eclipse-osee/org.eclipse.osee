@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -162,7 +163,11 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
             ArtifactId artA = ArtifactId.valueOf(relation.get("aArtId").asLong());
             ArtifactId artB = ArtifactId.valueOf(relation.get("bArtId").asLong());
             if (artA.isValid() && artB.isValid()) {
-               tx.unrelate(artA, relationType, artB);
+               if (relation.has("gamma")) {
+                  tx.unrelate(artA, relationType, artB, GammaId.valueOf(relation.get("gamma").asText()));
+               } else {
+                  tx.unrelate(artA, relationType, artB);
+               }
             }
          }
       }
@@ -200,10 +205,16 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
                artB = ArtifactId.valueOf(relation.get("bArtId").asLong());
             }
 
-            if (relationType.isNewRelationTable()) {
+            boolean hasGamma = relation.has("gamma");
+            if (relationType.isNewRelationTable() && !hasGamma) {
                tx.relate(artA, relationType, artB, relatedArtifact, afterArtifact);
-            } else {
+            } else if (!hasGamma) {
                tx.relate(artA, relationType, artB, rationale);
+            } else if (relationType.isNewRelationTable()) {
+               tx.relate(artA, relationType, artB, relatedArtifact, afterArtifact,
+                  GammaId.valueOf(relation.get("gamma").asText()));
+            } else {
+               tx.relate(artA, relationType, artB, rationale, GammaId.valueOf(relation.get("gamma").asText()));
             }
          }
       }
@@ -228,9 +239,11 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
          for (JsonNode attribute : artifactJson.get(attributesNodeName)) {
             AttributeTypeGeneric<?> attributeType = getAttributeType(attribute);
             JsonNode value = attribute.get("value");
+            boolean hasGamma = attribute.has("gamma");
             if (value.isArray()) {
                ArrayList<String> values = new ArrayList<>();
                ArrayList<InputStream> streams = new ArrayList<>();
+               ArrayList<GammaId> gammas = new ArrayList<>();
                for (JsonNode attrValue : value) {
                   if (attributeType.isInputStream()) {
                      Decoder decoder = Base64.getDecoder();
@@ -240,12 +253,31 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
                      values.add(attrValue.asText());
                   }
                }
-               if (!values.isEmpty()) {
+               if (hasGamma) {
+                  JsonNode gamma = attribute.get("gamma");
+                  if (gamma.isArray()) {
+                     //if it isn't an array we probably don't want to try to process the gammas
+                     for (JsonNode gammaValue : gamma) {
+                        gammas.add(GammaId.valueOf(gammaValue.asText()));
+                     }
+                  }
+
+               }
+               if (!values.isEmpty() && !hasGamma) {
                   tx.setAttributesFromStrings(artifact, attributeType, values);
                }
-               if (!streams.isEmpty()) {
+               if (!streams.isEmpty() && !hasGamma) {
                   tx.setAttributesFromValues(artifact, attributeType, streams);
                }
+               if (!values.isEmpty() && hasGamma && !gammas.isEmpty()) {
+                  tx.setAttributesFromStrings(artifact, attributeType, values, gammas);
+               }
+               if (!streams.isEmpty() && hasGamma && !gammas.isEmpty()) {
+                  tx.setAttributesFromValues(artifact, attributeType, streams, gammas);
+               }
+            } else if (hasGamma) {
+               JsonNode gamma = attribute.get("gamma");
+               tx.setSoleAttributeFromString(artifact, attributeType, value.asText(), GammaId.valueOf(gamma.asText()));
             } else {
                tx.setSoleAttributeFromString(artifact, attributeType, value.asText());
             }
@@ -274,7 +306,12 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
       String attributesNodeName) {
       if (artifactJson.has(attributesNodeName)) {
          for (JsonNode attribute : artifactJson.get(attributesNodeName)) {
-            tx.deleteAttributes(artifact, getAttributeType(attribute));
+            if (attribute.has("gamma")) {
+               tx.deleteAttributes(artifact, getAttributeType(attribute),
+                  GammaId.valueOf(attribute.get("gamma").asText()));
+            } else {
+               tx.deleteAttributes(artifact, getAttributeType(attribute));
+            }
          }
       }
    }

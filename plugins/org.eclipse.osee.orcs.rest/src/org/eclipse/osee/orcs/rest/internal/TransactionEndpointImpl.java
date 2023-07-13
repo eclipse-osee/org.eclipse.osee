@@ -80,6 +80,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       resultData.setIds(
          tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
       result.setResults(resultData);
+      result.setFailedGammas(tx.getGammaIdsFailed());
       return result;
    }
 
