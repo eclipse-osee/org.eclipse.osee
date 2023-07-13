@@ -435,7 +435,6 @@ public class TransitionManagerTest {
       // validate that can transition
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.toString(), results.isEmpty());
-      changes.execute();
 
       changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
@@ -450,6 +449,7 @@ public class TransitionManagerTest {
 
       // set targeted version; transition validation should succeed
       results.clear();
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       AtsApiService.get().getVersionService().setTargetedVersion(teamArt, AtsTestUtil.getVerArt1(), changes);
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
@@ -660,7 +660,7 @@ public class TransitionManagerTest {
       changes.execute();
 
       // transition workflow to cancelled - peer review not cancelled
-      changes.clear();
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       TransitionData transData = new TransitionData("Transition Team Workflow Review", Arrays.asList(teamArt),
          "Cancelled", new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
       transData.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
@@ -671,14 +671,14 @@ public class TransitionManagerTest {
 
       // transition workflow again - peer review cancelled
       results.clear();
-      changes.clear();
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
       transData = new TransitionData("Transition Team Workflow Review", Arrays.asList(peerReview), "Cancelled",
          new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
       transData.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
       mgr = new TransitionManager(transData);
       results = mgr.handleAll();
       changes.execute();
-      Assert.assertTrue(results.isEmpty());
+      Assert.assertTrue(results.toString(), results.isEmpty());
 
    }
 

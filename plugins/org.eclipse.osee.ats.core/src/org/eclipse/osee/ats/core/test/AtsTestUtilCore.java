@@ -500,7 +500,7 @@ public class AtsTestUtilCore {
       changes =
          AtsApiService.get().createChangeSet(AtsTestUtilCore.class.getSimpleName() + " - cleanup config", getUser());
       for (IAtsConfigObject config : Arrays.asList(teamDef, testAi, testAi2, testAi3, testAi4)) {
-         if (config != null) {
+         if (config != null && !AtsApiService.get().getStoreService().isDeleted(config)) {
             changes.deleteArtifact(config.getStoreObject());
          }
       }

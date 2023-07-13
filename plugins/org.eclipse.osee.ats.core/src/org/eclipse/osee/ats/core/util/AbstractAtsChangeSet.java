@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -67,6 +68,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected BranchToken branch;
    protected Set<ArtifactId> ids = new HashSet<>();
    protected Map<String, String> seqNameToStartNum = new HashMap<>();
+   protected boolean executed = false;
 
    public AbstractAtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       this.comment = comment;
@@ -83,8 +85,15 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       return ids;
    }
 
+   protected void checkExecuted() {
+      if (executed) {
+         throw new OseeStateException("Change Set already used.");
+      }
+   }
+
    @Override
    public void add(Object obj) {
+      checkExecuted();
       Conditions.checkNotNull(obj, "object");
       if (obj instanceof Collection) {
          for (Object object : (Collection<?>) obj) {
@@ -122,6 +131,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addAll(Object... objects) {
+      checkExecuted();
       Conditions.checkNotNull(objects, "objects");
       for (Object obj : objects) {
          add(obj);
@@ -129,23 +139,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    public void setComment(String comment) {
-      this.comment = comment;
-   }
-
-   @Override
-   public void clear() {
-      relations.clear();
-      atsObjects.clear();
-      artifacts.clear();
-      deleteArtifacts.clear();
-      deleteAtsObjects.clear();
-      listeners.clear();
-      seqNameToStartNum.clear();
-   }
-
-   @Override
-   public void reset(String comment) {
-      clear();
+      checkExecuted();
       this.comment = comment;
    }
 
@@ -162,6 +156,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addToDelete(Object obj) {
+      checkExecuted();
       Conditions.checkNotNull(obj, "object");
       if (obj instanceof Collection) {
          for (Object object : (Collection<?>) obj) {
@@ -188,6 +183,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
+      checkExecuted();
       ArtifactTypeToken typeToken = token.getArtifactType();
       if (typeToken.isInvalid()) {
          throw new OseeArgumentException("Artifact Type Token %s is invalid for artifact creation",
@@ -198,18 +194,22 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void deleteArtifact(IAtsWorkItem task) {
+      checkExecuted();
       deleteArtifact(task.getStoreObject());
    }
 
    @Override
    public void addWorkflowCreated(IAtsTeamWorkflow teamWf) {
+      checkExecuted();
       workItemsCreated.add(teamWf);
    }
 
    @Override
    public TransactionToken executeIfNeeded() {
       execptionIfEmpty = false;
-      return execute();
+      TransactionToken tx = execute();
+      executed = true;
+      return tx;
    }
 
    @Override
@@ -244,26 +244,31 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addChild(ArtifactId parent, ArtifactId child) {
+      checkExecuted();
       relate(parent, CoreRelationTypes.DefaultHierarchical_Child, child);
    }
 
    @Override
    public void setName(ArtifactToken artifact, String name) {
+      checkExecuted();
       setSoleAttributeValue(artifact, CoreAttributeTypes.Name, name);
    }
 
    @Override
    public void setName(IAtsObject atsObject, String name) {
+      checkExecuted();
       setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, name);
    }
 
    @Override
    public void addWorkItemNotificationEvent(AtsWorkItemNotificationEvent workItemNotificationEvent) {
+      checkExecuted();
       notifications.getWorkItemNotificationEvents().add(workItemNotificationEvent);
    }
 
    @Override
    public void addNotificationEvent(AtsNotificationEvent notifyEvent) {
+      checkExecuted();
       notifications.getNotificationEvents().add(notifyEvent);
    }
 
@@ -274,6 +279,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addChild(IAtsObject parent, IAtsObject child) {
+      checkExecuted();
       add(new AtsRelationChange(parent, CoreRelationTypes.DefaultHierarchical_Child, Collections.singleton(child),
          RelationOperation.Add));
    }
@@ -304,6 +310,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken parent, ArtifactToken artifact) {
+      checkExecuted();
       ArtifactToken art = createArtifact(artifact);
       if (parent != null) {
          addChild(parent, art);
@@ -317,6 +324,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addTag(IAtsObject atsObject, String tag) {
+      checkExecuted();
       if (atsObject.getTags() != null) {
          if (!atsObject.getTags().contains(tag)) {
             addAttribute(atsObject, CoreAttributeTypes.StaticId, tag);
@@ -326,6 +334,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void addAtsIdSequence(String seqName, String seqStart) {
+      checkExecuted();
       seqNameToStartNum.put(seqName, seqStart);
    }
 
@@ -338,6 +347,14 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
             entry.getValue(), entry.getKey());
          atsApi.getQueryService().runUpdate(query);
       }
+   }
+
+   public boolean isExecuted() {
+      return executed;
+   }
+
+   public void setExecuted(boolean executed) {
+      this.executed = executed;
    }
 
 }

@@ -78,7 +78,7 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
 
-      changes.clear();
+      changes = AtsApiService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
       ReviewDefectItem item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None,
          InjectionActivity.Code, "description", "resolution", "location", new Date(), "notes");
       IAtsPeerReviewDefectManager defectManager = peerArt.getDefectManager();

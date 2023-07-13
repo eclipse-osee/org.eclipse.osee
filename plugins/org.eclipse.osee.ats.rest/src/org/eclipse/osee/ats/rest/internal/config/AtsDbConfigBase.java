@@ -104,7 +104,7 @@ public class AtsDbConfigBase {
       changes.setSoleAttributeValue(topAi, AtsAttributeTypes.Actionable, false);
       changes.execute();
 
-      changes.reset("Create ATS CM Artifact");
+      changes = atsApi.createChangeSet("Set Top Team Work Definition");
       ArtifactToken art = changes.createArtifact(AtsArtifactToken.AtsTopFolder, AtsArtifactToken.AtsCmBranch);
       changes.setSoleAttributeValue(art, CoreAttributeTypes.Description,
          "Used to denote Baseline branch as ATS CM branch");

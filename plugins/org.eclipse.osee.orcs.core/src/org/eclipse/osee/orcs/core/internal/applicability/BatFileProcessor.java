@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -57,9 +56,6 @@ public class BatFileProcessor {
       this.fileTypeApplicabilityData = fileTypeApplicabilityData;
       this.isConfig = isConfig;
       this.commentNonApplicableBlocks = commentNonApplicableBlocks;
-      if (!OseeProperties.isInTest()) {
-         this.results.setLogToSysErr(true);
-      }
    }
 
    public boolean processFile(File inFile, File outFile) throws Exception {
@@ -141,7 +137,7 @@ public class BatFileProcessor {
             matcher = fileTypeApplicabilityData.getCommentedTagPattern().matcher(toReturn);
             tagProcessed = true;
          } else {
-            OseeLog.log(getClass(), Level.INFO,
+            OseeLog.log(getClass(), Level.FINEST,
                "BatFileProcessor::applyApplicabilityContent => Did not find a start or end feature tag for: " + inFile.getPath());
             throw new TagNotPlacedCorrectlyException("Tag was not placed correctly in file: " + inFile.getPath());
          }
@@ -150,7 +146,7 @@ public class BatFileProcessor {
       if (!applicBlocks.isEmpty()) {
          throw new TagNotPlacedCorrectlyException("Tag was not placed correctly in file: " + inFile.getPath());
       }
-      OseeLog.log(getClass(), Level.INFO,
+      OseeLog.log(getClass(), Level.FINEST,
          "BatFileProcessor::applyApplicabilityContent => Completed for file: " + inFile.getPath() + "and tagProcessed = " + tagProcessed);
       return CharBuffer.wrap(toReturn.toCharArray());
    }
@@ -170,25 +166,25 @@ public class BatFileProcessor {
       String featureElse, String configureElse, String configureGroupElse) throws TagNotPlacedCorrectlyException {
       if (applicBlocks.isEmpty()) {
          if (featureElse != null) {
-            OseeLog.log(getClass(), Level.INFO,
+            OseeLog.log(getClass(), Level.FINEST,
                "BatFileProcessor::applyApplicabilityContent => Else Feature tag was not placed correctly in file: " + inFile.getPath());
             throw new TagNotPlacedCorrectlyException(
                "Else Feature tag was not placed correctly in file: " + inFile.getPath());
 
          } else if (configureElse != null) {
-            OseeLog.log(getClass(), Level.INFO,
+            OseeLog.log(getClass(), Level.FINEST,
                "BatFileProcessor::applyApplicabilityContent => Else Configure tag was not placed correctly in file: " + inFile.getPath());
             throw new TagNotPlacedCorrectlyException(
                "Else Configure tag was not placed correctly in file: " + inFile.getPath());
 
          } else if (configureGroupElse != null) {
-            OseeLog.log(getClass(), Level.INFO,
+            OseeLog.log(getClass(), Level.FINEST,
                "BatFileProcessor::applyApplicabilityContent => Else Configure Group tag was not placed correctly in file: " + inFile.getPath());
             throw new TagNotPlacedCorrectlyException(
                "Else Configure Group tag was not placed correctly in file: " + inFile.getPath());
 
          } else {
-            OseeLog.log(getClass(), Level.INFO,
+            OseeLog.log(getClass(), Level.FINEST,
                "BatFileProcessor::applyApplicabilityContent => Applicability tag was not placed correctly in file: " + inFile.getPath());
             throw new TagNotPlacedCorrectlyException(
                "Applicability tag was not placed correctly in file: " + inFile.getPath());

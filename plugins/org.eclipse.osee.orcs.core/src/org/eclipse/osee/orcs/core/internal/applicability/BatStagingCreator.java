@@ -80,7 +80,7 @@ public class BatStagingCreator {
     * @return File - The staged file, or null if the file was not included
     */
    public File processDirectory(XResultData results, File inFile, File stageFileParent, Set<String> filesToExclude) {
-      OseeLog.log(getClass(), Level.INFO, "BatStagingCreator::processDirectory => Started file: " + inFile.getPath());
+      OseeLog.log(getClass(), Level.FINEST, "BatStagingCreator::processDirectory => Started file: " + inFile.getPath());
       if (results.isErrors()) {
          return null;
       }
@@ -165,17 +165,17 @@ public class BatStagingCreator {
                         tagProcessed = new BatFileProcessor(orcsApplicability, fileTypeApplicabilityData, false,
                            commentNonApplicableBlocks).processFile(inFile, outFile);
                      } catch (TagNotPlacedCorrectlyException ex) {
-                        OseeLog.log(getClass(), Level.INFO,
+                        OseeLog.log(getClass(), Level.FINEST,
                            "BatStagingCreator::processDirectory => TagNotPlacedCorrectlyException thrown in file: " + inFile.getPath());
-                        OseeLog.log(getClass(), Level.INFO,
+                        OseeLog.log(getClass(), Level.FINEST,
                            "BatStagingCreator::processDirectory => TagNotPlacedCorrectlyException details: " + ex.toString());
                         results.warning(
                            "Tag was not placed correctly in file: " + inFile.getPath() + ". This file will not be processed.");
                         return stageFile;
                      } catch (Exception ex) {
-                        OseeLog.log(getClass(), Level.INFO,
+                        OseeLog.log(getClass(), Level.FINEST,
                            "BatStagingCreator::processDirectory => Exception thrown in file: " + inFile.getPath());
-                        OseeLog.log(getClass(), Level.INFO,
+                        OseeLog.log(getClass(), Level.FINEST,
                            "BatStagingCreator::processDirectory => Exception details: " + ex.toString());
                         results.error(ex.toString());
                         return stageFile;
@@ -189,7 +189,7 @@ public class BatStagingCreator {
                   boolean isNew = isStageFileNew(stageFile, outFile);
                   if (isNew) {
                      if (!tagProcessed) {
-                        OseeLog.log(getClass(), Level.INFO,
+                        OseeLog.log(getClass(), Level.FINEST,
                            "BatStagingCreator::processDirectory: Creating link " + stageFile.toPath() + " with " + inFile.toPath());
                         Files.createLink(stageFile.toPath(), inFile.toPath());
                      } else {
@@ -206,9 +206,9 @@ public class BatStagingCreator {
                      outFile.delete();
                   }
                } catch (Exception ex) {
-                  OseeLog.log(getClass(), Level.INFO,
+                  OseeLog.log(getClass(), Level.FINEST,
                      "BatStagingCreator::processDirectory: Exception in " + inFile.getPath());
-                  OseeLog.log(getClass(), Level.INFO,
+                  OseeLog.log(getClass(), Level.FINEST,
                      "BatStagingCreator::processDirectory: Exception details" + ex.toString());
                   results.warningf("Exception %s in file %s\n", ex.toString(), inFile.getPath());
                }

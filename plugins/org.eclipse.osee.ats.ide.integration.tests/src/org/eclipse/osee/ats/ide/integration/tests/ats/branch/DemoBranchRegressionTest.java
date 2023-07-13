@@ -115,7 +115,7 @@ public class DemoBranchRegressionTest extends BranchRegressionTest {
       Assert.assertEquals(3, teamWfs.size());
       testTeamWorkflows(teamWfs);
 
-      changes.reset(getClass().getSimpleName() + " - transition req wf");
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - transition req wf");
       TeamWorkFlowManager mgr = new TeamWorkFlowManager(reqTeamWf, AtsApiService.get());
       mgr.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       changes.execute();

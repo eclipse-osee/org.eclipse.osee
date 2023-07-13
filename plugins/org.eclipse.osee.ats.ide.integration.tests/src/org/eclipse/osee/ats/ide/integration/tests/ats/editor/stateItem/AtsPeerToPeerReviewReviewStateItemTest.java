@@ -98,7 +98,8 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsPeerToPeerReviewReviewWorkItemHook stateItem = new AtsPeerToPeerReviewReviewWorkItemHook();
-      changes.reset("test transition");
+
+      changes = AtsApiService.get().createChangeSet("test transition");
       stateItem.transitioned(peerRevArt, fromState, toState,
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()),
          AtsApiService.get().getUserService().getCurrentUser(), changes, AtsApiService.get());

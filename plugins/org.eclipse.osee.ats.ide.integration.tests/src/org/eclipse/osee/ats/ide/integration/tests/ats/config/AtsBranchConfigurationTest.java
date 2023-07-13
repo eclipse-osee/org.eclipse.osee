@@ -162,9 +162,11 @@ public class AtsBranchConfigurationTest {
          AtsApiService.get().getActionableItemService().getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - 2");
       ActionResult result = AtsApiService.get().getActionService().createAction(null,
          BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description", ChangeTypes.Problem, "1", false, null,
          selectedActionableItems, new Date(), AtsApiService.get().getUserService().getCurrentUser(), null, changes);
+      Assert.assertTrue(result.toString(), result.getResults().isSuccess());
       IAtsTeamWorkflow teamWf = AtsApiService.get().getWorkItemService().getTeams(result).iterator().next();
       AtsApiService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
       changes.execute();
@@ -178,8 +180,9 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
 
+      changes = AtsApiService.get().createChangeSet(getClass().getSimpleName() + " - 3");
       dtwm.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
-      ((TeamWorkFlowArtifact) teamWf.getStoreObject()).persist("Branch Configuration Test");
+      changes.execute();
 
       WorkflowEditor.edit(teamWf);
 
@@ -267,9 +270,8 @@ public class AtsBranchConfigurationTest {
             appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      changes.reset("Test branch via team definition: create action");
+      changes = AtsApiService.get().createChangeSet("Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
-      changes.clear();
       ActionResult result = AtsApiService.get().getActionService().createAction(null, actionTitle, "description",
          ChangeTypes.Problem, "1", false, null, selectedActionableItems, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), null, changes);
@@ -282,7 +284,8 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
-      changes.reset("Test branch via team definition: create action");
+
+      changes = AtsApiService.get().createChangeSet("Test branch via team definition: create action");
       dtwm.transitionTo(TeamState.Implement, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       changes.execute();
 
