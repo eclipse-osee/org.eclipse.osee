@@ -81,6 +81,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public TransactionToken execute() {
+      checkExecuted();
       Conditions.checkNotNull(comment, "comment");
       if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
@@ -108,53 +109,51 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
 
-      /*
-       * TODO: Commented out on 0.25.0 due to performance issues; No users are using this feature. Will be re-enabled on
-       * 0.26.0 where analysis can be done and all action creation can be moved to the server. Same change in both
-       * AtsChangeSets. See action TW1864.
-       */
-      //      if (!workItemsCreated.isEmpty()) {
-      //         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsApi);
-      //         runner.run();
-      //      }
       if (tx.isValid()) {
          executeAfterSuccess(atsApi);
       }
+      executed = true;
       return tx;
    }
 
    @Override
    public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType) {
+      checkExecuted();
       getTransaction().deleteSoleAttribute(getArtifact(workItem), attributeType);
       add(workItem);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeToken attributeType, String value) {
+      checkExecuted();
       ArtifactReadable artifact = getArtifact(workItem);
       setSoleAttributeValue(artifact, attributeType, value);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
+      checkExecuted();
       getTransaction().setSoleAttributeValue(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 
    @Override
    public void deleteAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
+      checkExecuted();
       getTransaction().deleteAttributesWithValue(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 
    @Override
    public void deleteAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, Object value) {
+      checkExecuted();
       getTransaction().deleteAttributesWithValue(getArtifact(artifact), attributeType, value);
       add(artifact);
    }
 
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value) {
+      checkExecuted();
       ArtifactId artifactId = getArtifact(workItem);
       getTransaction().setAttributeById(artifactId, attr, value);
       add(workItem);
@@ -162,6 +161,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) {
+      checkExecuted();
       getTransaction().deleteByAttributeId(getArtifact(workItem), attr);
       add(workItem);
    }
@@ -174,12 +174,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void addAttribute(IAtsObject atsObject, AttributeTypeToken attributeType, Object value) {
+      checkExecuted();
       getTransaction().createAttribute(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name) {
+      checkExecuted();
       ArtifactToken artifact = getTransaction().createArtifact(artifactType, name);
       add(artifact);
       return artifact;
@@ -187,6 +189,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
+      checkExecuted();
       ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, ArtifactId.valueOf(artifactId));
       add(artifact);
       return artifact;
@@ -194,6 +197,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteAttributes(IAtsObject atsObject, AttributeTypeToken attributeType) {
+      checkExecuted();
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().deleteAttributes(artifact, attributeType);
       add(atsObject);
@@ -201,6 +205,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void relate(Object object1, RelationTypeSide relationSide, Object object2) {
+      checkExecuted();
       ArtifactId artifact = getArtifact(object1);
       ArtifactId artifact2 = getArtifact(object2);
       relate(artifact, relationSide, artifact2);
@@ -208,6 +213,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void relate(ArtifactId artifact1, RelationTypeSide relationSide, ArtifactId artifact2) {
+      checkExecuted();
       if (relationSide.getSide().isSideA()) {
          getTransaction().relate(artifact2, relationSide, artifact1);
       } else {
@@ -238,6 +244,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void unrelateAll(Object object, RelationTypeSide relationType) {
+      checkExecuted();
       ArtifactReadable artifact = getArtifact(object);
       add(artifact);
       for (ArtifactReadable otherArt : artifact.getRelated(relationType)) {
@@ -253,6 +260,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void setRelationsAndOrder(Object object, RelationTypeSide relationSide,
       Collection<? extends Object> objects) {
+      checkExecuted();
       ArtifactReadable artifact = getArtifact(object);
       List<ArtifactReadable> artifacts = new LinkedList<>();
       for (Object obj : objects) {
@@ -268,6 +276,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setRelations(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
+      checkExecuted();
       ArtifactReadable artifact = getArtifact(object);
       List<ArtifactReadable> artifacts = new LinkedList<>();
       for (Object obj : objects) {
@@ -295,12 +304,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    public void unrelate(Object object1, RelationTypeSide relationType, Object object2) {
+      checkExecuted();
       getTransaction().unrelate(getArtifact(object1), relationType, getArtifact(object2));
       add(object1);
    }
 
    @Override
    public <T> void setAttribute(IAtsWorkItem workItem, AttributeId attributeId, T value) {
+      checkExecuted();
       Conditions.checkExpressionFailOnTrue(attributeId.isInvalid(),
          "Can not set attribute by id that has not be persisted.  Attribute Id [%s] Work Item [%s]", attributeId,
          workItem.toStringWithId());
@@ -321,6 +332,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteArtifact(ArtifactId artifact) {
+      checkExecuted();
       if (!atsApi.getStoreService().isDeleted(artifact)) {
          getTransaction().deleteArtifact(artifact);
          add(artifact);
@@ -329,6 +341,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setAttributeValues(IAtsObject atsObject, AttributeTypeToken attrType, List<Object> values) {
+      checkExecuted();
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().setAttributesFromValues(artifact, attrType, values);
       add(artifact);
@@ -336,12 +349,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setAttributeValues(ArtifactId artifact, AttributeTypeToken attrType, List<Object> values) {
+      checkExecuted();
       getTransaction().setAttributesFromValues(artifact, attrType, values);
       add(artifact);
    }
 
    @Override
    public <T> void setAttribute(ArtifactId artifact, AttributeId attrId, T value) {
+      checkExecuted();
       Conditions.checkExpressionFailOnTrue(attrId.isInvalid(),
          "Can not set attribute by id that has not been persisted.  Atrribute Id [%s] ArtifactId [%s]", attrId,
          artifact.toString());
@@ -354,6 +369,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setSoleAttributeValue(ArtifactId artifact, AttributeTypeToken attrType, Object value) {
+      checkExecuted();
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeValue(art, attrType, value);
       add(art);
@@ -361,6 +377,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteAttribute(ArtifactId artifact, IAttribute<?> attr) {
+      checkExecuted();
       AttributeId attribute = ((ArtifactReadable) artifact).getAttributeById(attr);
       getTransaction().deleteByAttributeId(artifact, attribute);
       add(artifact);
@@ -368,6 +385,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void unrelate(ArtifactId artifact, RelationTypeSide relationSide, ArtifactId artifact2) {
+      checkExecuted();
       ArtifactReadable art = getArtifact(artifact);
       ArtifactReadable art2 = getArtifact(artifact2);
       if (relationSide.getSide().isSideA()) {
@@ -381,6 +399,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void addAttribute(ArtifactId artifact, AttributeTypeToken attrType, Object value) {
+      checkExecuted();
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().createAttribute(artifact, attrType, value);
       add(art);
@@ -388,6 +407,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeGeneric<?> attributeType, String value) {
+      checkExecuted();
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeFromString(artifact, attributeType, value);
       add(art);
@@ -396,6 +416,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeGeneric<?> attributeType,
       InputStream inputStream) {
+      checkExecuted();
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeFromStream(art, attributeType, inputStream);
       add(art);
@@ -403,6 +424,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void unrelateFromAll(RelationTypeSide relationSide, ArtifactId artifact) {
+      checkExecuted();
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().unrelateFromAll(relationSide, art);
       add(art);
@@ -410,6 +432,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteAttributes(ArtifactId artifact, AttributeTypeToken attributeType) {
+      checkExecuted();
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().deleteAttributes(art, attributeType);
       add(art);
@@ -418,6 +441,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType,
       List<String> values) {
+      checkExecuted();
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
          if (attributeType.isString()) {
@@ -479,11 +503,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeToken attributeType,
       ArtifactId artifactRef) {
+      checkExecuted();
       addAttribute(artifact, attributeType, artifactRef.getIdString());
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name) {
+      checkExecuted();
       ArtifactToken artifact = getTransaction().createArtifact(artType, name);
       addChild(parent, artifact);
       add(artifact);
@@ -492,17 +518,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteRelation(RelationId relation) {
+      checkExecuted();
       throw new UnsupportedOperationException("Unsupported on Server");
    }
 
    @Override
-   public void clear() {
-      super.clear();
-      transaction = null;
-   }
-
-   @Override
    public void addTag(ArtifactToken artifact, String tag) {
+      checkExecuted();
       if (!((ArtifactReadable) artifact).getTags().contains(tag)) {
          addAttribute(artifact, CoreAttributeTypes.StaticId, tag);
       }

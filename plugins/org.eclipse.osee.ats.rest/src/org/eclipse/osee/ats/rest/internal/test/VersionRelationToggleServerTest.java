@@ -41,6 +41,7 @@ public class VersionRelationToggleServerTest {
    public XResultData run() {
       testSettingSameVersionDoesNotCreateTransaction();
       testToggledTargetVersionLoadsCorrectly();
+
       return rd;
    }
 

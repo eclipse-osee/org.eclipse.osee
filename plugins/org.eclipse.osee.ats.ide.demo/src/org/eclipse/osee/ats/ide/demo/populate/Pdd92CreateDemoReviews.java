@@ -150,6 +150,7 @@ public class Pdd92CreateDemoReviews {
       AtsApiService.get().getReviewService().setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
       changes.execute();
 
+      changes = AtsApiService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 3");
       result = AtsApiService.get().getReviewService().transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles,
          defects, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isTrue()) {

@@ -376,11 +376,13 @@ public class Pdd93CreateDemoAgile {
        * Setup Agile Team Story Names (this maps an assignee name to a story name for Agile Teams using stories instead
        * of assignees in kanban
        */
+      changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type - 2");
       changes.addAttribute(agileTeam, AtsAttributeTypes.KanbanStoryName,
          DemoUsers.Jason_Michael.getName() + ":Jason Rockstar Michael");
       changes.execute();
 
       // Transition First Sprint to completed
+      changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type - 3");
       IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
          DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
       TransitionData transData = new TransitionData("Transition Agile Stprint", Arrays.asList(sprint),
@@ -389,6 +391,7 @@ public class Pdd93CreateDemoAgile {
       if (results.isErrors()) {
          throw new OseeStateException("Exception transitioning sprint: %s", results.toString());
       }
+      changes.execute();
 
       // Create Feature Groups
       for (String name : Arrays.asList("Communications", "UI", "Documentation", "Framework")) {

@@ -48,8 +48,6 @@ public interface IAtsChangeSet {
     */
    TransactionToken execute();
 
-   void clear();
-
    void addExecuteListener(IExecuteListener listener);
 
    void addToDelete(Object obj);
@@ -155,8 +153,6 @@ public interface IAtsChangeSet {
    void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeGeneric<?> attributeType, String value);
 
    void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeGeneric<?> attributeType, InputStream inputStream);
-
-   void reset(String string);
 
    void addChild(ArtifactId parent, ArtifactId child);
 
