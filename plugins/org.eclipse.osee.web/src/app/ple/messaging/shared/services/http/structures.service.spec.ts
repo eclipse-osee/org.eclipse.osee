@@ -66,6 +66,7 @@ describe('StructuresService', () => {
 			{
 				id: '0',
 				name: 'name',
+				nameAbbrev: '',
 				elements: [],
 				description: 'description',
 				interfaceMaxSimultaneity: '1',

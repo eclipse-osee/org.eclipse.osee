@@ -36,7 +36,7 @@ export class MockGraphNodeMenuComponent {
 		interfaceNodeBuildCodeGen: false,
 		interfaceNodeCodeGen: false,
 		interfaceNodeCodeGenName: '',
-		interfaceNodeNameAbbrev: '',
+		nameAbbrev: '',
 		interfaceNodeToolUse: false,
 		interfaceNodeType: '',
 		notes: '',

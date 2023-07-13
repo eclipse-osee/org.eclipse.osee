@@ -44,6 +44,7 @@ describe('AddStructureDialogComponent', () => {
 		structure: {
 			id: '',
 			name: '',
+			nameAbbrev: '',
 			description: '',
 			elements: [],
 			interfaceMaxSimultaneity: '1',
@@ -55,6 +56,7 @@ describe('AddStructureDialogComponent', () => {
 	let dummyStructure: structure = {
 		id: '10',
 		name: '',
+		nameAbbrev: '',
 		description: '',
 		elements: [],
 		interfaceMaxSimultaneity: '1',

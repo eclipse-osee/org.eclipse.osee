@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class InterfaceStructureToken extends PLGenericDBObject {
    public static final InterfaceStructureToken SENTINEL = new InterfaceStructureToken();
 
-   private String Name;
+   private String nameAbbrev;
 
    private String InterfaceStructureCategory;
 
@@ -62,6 +62,7 @@ public class InterfaceStructureToken extends PLGenericDBObject {
       this();
       this.setId(art.getId());
       this.setName(art.getName());
+      this.setNameAbbrev(art.getSoleAttributeValue(CoreAttributeTypes.NameAbbrev, ""));
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setInterfaceMaxSimultaneity(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMaxSimultaneity, ""));
       this.setInterfaceMinSimultaneity(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMinSimultaneity, ""));
@@ -90,6 +91,14 @@ public class InterfaceStructureToken extends PLGenericDBObject {
     */
    public InterfaceStructureToken() {
       super();
+   }
+
+   public String getNameAbbrev() {
+      return nameAbbrev;
+   }
+
+   public void setNameAbbrev(String nameAbbrev) {
+      this.nameAbbrev = nameAbbrev;
    }
 
    /**

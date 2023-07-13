@@ -92,6 +92,20 @@
 						data-cy="field-name" />
 				</mat-form-field>
 				<mat-form-field>
+					<mat-label>Name Abbreviation</mat-label>
+					<input
+						matInput
+						#nameAbbrevInput
+						[(ngModel)]="data.structure.nameAbbrev"
+						[required]="data.structure.name.length > 31"
+						maxlength="31"
+						data-cy="field-name-abbrev" />
+					<mat-hint *ngIf="nameAbbrevInput.value.length > 0"
+						>{{ nameAbbrevInput.value.length || 0 }}/31
+						characters</mat-hint
+					>
+				</mat-form-field>
+				<mat-form-field>
 					<mat-label>Description</mat-label>
 					<textarea
 						cdkTextareaAutosize

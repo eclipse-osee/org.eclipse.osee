@@ -173,7 +173,6 @@ public interface CoreAttributeTypes {
    InterfaceMessageTypeAttributeType InterfaceMessageType = osee.createEnum(new InterfaceMessageTypeAttributeType());
    AttributeTypeString InterfaceMessageVer = osee.createString(2455059983007225804L, "Message Ver", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean InterfaceMessageWriteAccess = osee.createBoolean(2455059983007225754L, "Interface Message Write Access", MediaType.TEXT_PLAIN, "Message has write access");
-   AttributeTypeString InterfaceNodeNameAbbrev= osee.createString(8355308043647703563L,"Interface Node Name Abbrev",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeCodeGenName= osee.createString(5390401355909179776L,"Interface Node Code Gen Name",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeAddress= osee.createString(5726596359647826656L,"Interface Node Address",MediaType.TEXT_PLAIN,"");
    AttributeTypeString InterfaceNodeGroupId= osee.createString(5726596359647826658L,"Interface Node Group Id",MediaType.TEXT_PLAIN,"");
@@ -239,6 +238,7 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean MimSettingWordWrap = osee.createBoolean(1640046550470950506L, "MIM Word Wrap", MediaType.TEXT_PLAIN, "");
    AttributeTypeString MobilePhone = osee.createString(1152921504606847080L, "Mobile Phone", MediaType.TEXT_PLAIN, "");
    AttributeTypeString Name = osee.createString(1152921504606847088L, "Name", MediaType.TEXT_PLAIN, "Descriptive Name");
+   AttributeTypeString NameAbbrev= osee.createString(8355308043647703563L,"Name Abbrev",MediaType.TEXT_PLAIN,"");
    AttributeTypeInputStream NativeContent = osee.createInputStreamNoTag(1152921504606847097L, "Native Content", MediaType.APPLICATION_OCTET_STREAM, "content that will be edited by a native program");
    AttributeTypeString Notes = osee.createString(1152921504606847085L, "Notes", MediaType.TEXT_PLAIN, "");
    AttributeTypeString OseeAppDefinition = osee.createStringNoTag(1152921504606847380L, "Osee App Definition", MediaType.APPLICATION_JSON, "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App");

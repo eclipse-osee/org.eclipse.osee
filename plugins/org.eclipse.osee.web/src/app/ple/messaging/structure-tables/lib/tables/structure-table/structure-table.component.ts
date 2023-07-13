@@ -44,7 +44,6 @@ import {
 	switchMap,
 	take,
 	takeUntil,
-	tap,
 	pairwise,
 	debounceTime,
 	scan,
@@ -88,11 +87,7 @@ import type {
 	ElementDialog,
 } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import {
-	ActionDropDownComponent,
-	TwoLayerAddButtonComponent,
-	UndoButtonBranchComponent,
-} from '@osee/shared/components';
+import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { UiService } from '@osee/shared/services';
@@ -188,6 +183,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 	truncatedSections: string[] = [];
 	editableStructureHeaders: (keyof structure)[] = [
 		'name',
+		'nameAbbrev',
 		'description',
 		'interfaceMaxSimultaneity',
 		'interfaceMinSimultaneity',

@@ -96,6 +96,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 	@Input() structure: structure = {
 		id: '',
 		name: '',
+		nameAbbrev: '',
 		description: '',
 		interfaceMaxSimultaneity: '',
 		interfaceMinSimultaneity: '',

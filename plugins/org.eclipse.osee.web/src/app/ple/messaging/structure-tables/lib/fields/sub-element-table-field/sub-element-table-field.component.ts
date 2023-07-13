@@ -64,6 +64,7 @@ export class SubElementTableFieldComponent {
 	@Input() structure: structure = {
 		id: '',
 		name: '',
+		nameAbbrev: '',
 		description: '',
 		interfaceMaxSimultaneity: '',
 		interfaceMinSimultaneity: '',

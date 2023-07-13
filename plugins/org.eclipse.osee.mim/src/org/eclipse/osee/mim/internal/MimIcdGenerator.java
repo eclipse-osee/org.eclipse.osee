@@ -156,13 +156,10 @@ public class MimIcdGenerator {
             }
          }
 
-         int worksheetIndex = 0;
          for (InterfaceStructureToken structure : structures) {
-            worksheetIndex++;
-            String sheetName = structure.getName().replace("Command Taskfile", "CT").replace("Status Taskfile", "ST");
-            if (sheetName.length() > 30) {
-               sheetName = sheetName.substring(0, 25) + "_" + Integer.toString(worksheetIndex);
-            }
+            String sheetName =
+               structure.getNameAbbrev().isEmpty() ? structure.getName().replace("Command Taskfile", "CT").replace(
+                  "Status Taskfile", "ST") : structure.getNameAbbrev();
             if (structure.getArtifactReadable() != null) {
                String abbrevName = structure.getArtifactReadable().getSoleAttributeAsString(
                   CoreAttributeTypes.GeneralStringData, "null");

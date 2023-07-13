@@ -17,6 +17,7 @@ export const structuresMock3: Required<structure>[] = [
 	{
 		id: '1',
 		name: 'hello',
+		nameAbbrev: '',
 		description: '',
 		interfaceMaxSimultaneity: '1',
 		interfaceMinSimultaneity: '0',
@@ -37,6 +38,7 @@ export const structuresMock2: Required<structure>[] = [
 	{
 		id: '2',
 		name: 'hello',
+		nameAbbrev: '',
 		description: '',
 		interfaceMaxSimultaneity: '1',
 		interfaceMinSimultaneity: '0',

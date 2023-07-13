@@ -46,7 +46,7 @@ export class CreateNewNodeDialogComponent {
 		interfaceNodeBuildCodeGen: false,
 		interfaceNodeCodeGen: false,
 		interfaceNodeCodeGenName: '',
-		interfaceNodeNameAbbrev: '',
+		nameAbbrev: '',
 		interfaceNodeToolUse: false,
 		interfaceNodeType: '',
 		notes: '',

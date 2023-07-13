@@ -108,6 +108,7 @@ export class SubElementTableDropdownComponent {
 	@Input() structure: structure = {
 		id: '-1',
 		name: '',
+		nameAbbrev: '',
 		description: '',
 		interfaceMaxSimultaneity: '',
 		interfaceMinSimultaneity: '',

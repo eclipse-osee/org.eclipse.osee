@@ -158,6 +158,12 @@ export class HeaderService {
 			humanReadable: 'Name',
 		},
 		{
+			header: 'nameAbbrev',
+			description:
+				'Abbreviated name of structure, limited to 31 characters',
+			humanReadable: 'Name Abbreviation',
+		},
+		{
 			header: 'description',
 			description: 'Description of a given structure',
 			humanReadable: 'Description',
