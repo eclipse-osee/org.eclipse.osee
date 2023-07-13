@@ -145,7 +145,7 @@ public class ImportActionsOperation {
          String hCellName = hCell.getName();
 
          // if default column, continue
-         if (ActionColumnns.getColNames().contains(hCellName)) {
+         if (ActionColumns.getColNames().contains(hCellName)) {
             continue;
          }
 
@@ -154,17 +154,15 @@ public class ImportActionsOperation {
          if (Strings.isValid(attrTypeName)) {
             if (!AttributeTypeManager.typeExists(attrTypeName)) {
                rd.errorf("Invalid Column or Attribute Type Name => %s\n", attrTypeName);
+               continue;
             } else {
                AttributeTypeToken attributeType = AttributeTypeManager.getType(attrTypeName);
                if (attributeType == null) {
                   rd.errorf("Invalid Column or Attribute Type Name => %s\n", attrTypeName);
+                  continue;
                } else {
-                  if (!AtsArtifactTypes.TeamWorkflow.isValidAttributeType(attributeType)) {
-                     rd.errorf("Invalid Column or Attribute Type Name for Team Workflow => %s\n", attrTypeName);
-                  } else {
-                     hCell.setStoreType(attributeType);
-                     continue;
-                  }
+                  hCell.setStoreType(attributeType);
+                  continue;
                }
             }
          }
@@ -295,35 +293,37 @@ public class ImportActionsOperation {
       for (ERow row : eFile.getWorkbook().getSheets().iterator().next().getRows()) {
          ActionData actionData = new ActionData();
          for (ECell cell : row.getCells()) {
-            if (cell.getCol().is(ActionColumnns.Title)) {
+            if (cell.getCol().is(ActionColumns.Title)) {
                actionData.title = validateAndGet(cell);
-            } else if (cell.getCol().is(ActionColumnns.Description)) {
+            } else if (cell.getCol().is(ActionColumns.Description)) {
                actionData.desc = validateAndGet(cell);
-            } else if (cell.getCol().is(ActionColumnns.ActionableItems)) {
+            } else if (cell.getCol().is(ActionColumns.ActionableItems)) {
                actionData.actionableItems = validateAndGet(cell, ";");
-            } else if (cell.getCol().is(ActionColumnns.Assignees)) {
+            } else if (cell.getCol().is(ActionColumns.Assignees)) {
                actionData.assigneeStrs = validateAndGet(cell, ";");
-            } else if (cell.getCol().is(ActionColumnns.Originator)) {
+            } else if (cell.getCol().is(ActionColumns.Originator)) {
                String name = cell.getValue();
                if (Strings.isValid(name)) {
                   AtsUser user = atsApi.getUserService().getUserByName(name);
                   if (user != null) {
                      actionData.originator = user;
+                  } else {
+                     rd.errorf("Originator [%s] is invalid", name);
                   }
                }
-            } else if (cell.getCol().is(ActionColumnns.ChangeType)) {
+            } else if (cell.getCol().is(ActionColumns.ChangeType)) {
                actionData.changeType = getOrBlank(cell);
-            } else if (cell.getCol().is(ActionColumnns.Priority)) {
+            } else if (cell.getCol().is(ActionColumns.Priority)) {
                actionData.priorityStr = getOrBlank(cell);
-            } else if (cell.getCol().is(ActionColumnns.Version)) {
+            } else if (cell.getCol().is(ActionColumns.Version)) {
                actionData.version = getOrBlank(cell);
-            } else if (cell.getCol().is(ActionColumnns.AgilePoints)) {
+            } else if (cell.getCol().is(ActionColumns.AgilePoints)) {
                actionData.agilePoints = getOrBlank(cell);
-            } else if (cell.getCol().is(ActionColumnns.EstimatedHours)) {
+            } else if (cell.getCol().is(ActionColumns.EstimatedHours)) {
                actionData.estimatedHours = Strings.isNumeric(cell.getValue()) ? Double.valueOf(cell.getValue()) : 0;
-            } else if (cell.getCol().is(ActionColumnns.AgileSprintName)) {
+            } else if (cell.getCol().is(ActionColumns.AgileSprintName)) {
                actionData.agileSprintName = getOrBlank(cell);
-            } else if (cell.getCol().is(ActionColumnns.AgileTeamName)) {
+            } else if (cell.getCol().is(ActionColumns.AgileTeamName)) {
                actionData.agileTeamName = getOrBlank(cell);
             } else {
                String value = cell.getValue();
