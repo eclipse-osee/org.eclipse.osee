@@ -331,10 +331,11 @@ public class MimIcdGenerator {
                boolean sizeInBytesChanged = numElementsChanged || structureSizeChanged;
                structureChanged = structureChanged || diffItem != null || txRateChanged || msgNumChanged;
 
-               StructureInfo structureInfo = new StructureInfo(struct.getName(), cat, categoryFull, msgRateText, minSim,
-                  maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber,
-                  taskFileType, desc, message, subMessage.getArtifactReadable(), elementArts, structureChanged,
-                  txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex);
+               StructureInfo structureInfo =
+                  new StructureInfo(struct.getName(), struct.getNameAbbrev(), cat, categoryFull, msgRateText, minSim,
+                     maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber,
+                     taskFileType, desc, message, subMessage.getArtifactReadable(), elementArts, structureChanged,
+                     txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex);
                if (struct.getId() == 0) {
                   headersList.put(struct.getName(), structureInfo);
                } else {
@@ -728,8 +729,7 @@ public class MimIcdGenerator {
       Object[] values = new Object[] {
          "Functional",
          info.name,
-         structure.getId() == 0 ? info.name : structReadable.getSoleAttributeAsString(
-            CoreAttributeTypes.GeneralStringData, ""),
+         info.nameAbbrev,
          date,
          info.category,
          info.txRate,
@@ -1250,6 +1250,7 @@ public class MimIcdGenerator {
 
    private class StructureInfo {
       final String name;
+      final String nameAbbrev;
       final String category;
       final String categoryFull;
       final String txRate;
@@ -1272,8 +1273,9 @@ public class MimIcdGenerator {
       final boolean numElementsChanged;
       final boolean structureSizeChanged;
       final int byteChangeIndex;
-      public StructureInfo(String name, String cat, String catFull, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<ArtifactReadable> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
+      public StructureInfo(String name, String nameAbbrev, String cat, String catFull, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<ArtifactReadable> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
          this.name = name;
+         this.nameAbbrev = nameAbbrev;
          this.category = cat;
          this.categoryFull = catFull;
          this.txRate = msgRateText;

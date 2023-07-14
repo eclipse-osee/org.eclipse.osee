@@ -292,6 +292,7 @@ public class IcdImportApiImpl implements MimImportApi {
       Map<String, Long> subMessageIdMap) {
       int structureRow = 1;
       String name = reader.getCellStringValue(structureRow, 1);
+      String nameAbbrev = reader.getCellStringValue(structureRow, 2);
       String category = reader.getCellStringValue(structureRow, 4);
       String txRate = reader.getCellValue(structureRow, 5).toString();
       String minSim = reader.getCellValue(structureRow, 6).toString();
@@ -309,6 +310,10 @@ public class IcdImportApiImpl implements MimImportApi {
       structure.setInterfaceMinSimultaneity(toIntString(minSim));
       structure.setInterfaceMaxSimultaneity(toIntString(maxSim));
       structure.setDescription(description);
+
+      if (!name.equals(nameAbbrev)) {
+         structure.setNameAbbrev(nameAbbrev);
+      }
 
       msgNum = isStringNumeric(msgNum) ? ((int) Double.parseDouble(msgNum)) + "" : msgNum;
       subMsgNum = subMsgNum.equals("n/a") ? "0" : subMsgNum;

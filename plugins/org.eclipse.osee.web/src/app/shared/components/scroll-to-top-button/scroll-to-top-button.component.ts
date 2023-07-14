@@ -10,10 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
+/**
+ * To use, add the following anchor tag to the top of the page this component is scrolling on.
+ *
+ * <a id="page-top" aria-hidden="true"></a>
+ */
 @Component({
 	selector: 'osee-scroll-to-top-button',
 	templateUrl: './scroll-to-top-button.component.html',
@@ -22,10 +27,12 @@ import { MatIconModule } from '@angular/material/icon';
 	imports: [MatButtonModule, MatIconModule],
 })
 export class ScrollToTopButtonComponent {
+	@Input() scrollId: string = 'page-top';
+
 	constructor() {}
 
 	scrollToTop() {
-		document.getElementById('app-top')?.scrollIntoView({
+		document.getElementById(this.scrollId)?.scrollIntoView({
 			behavior: 'smooth',
 			block: 'start',
 		});

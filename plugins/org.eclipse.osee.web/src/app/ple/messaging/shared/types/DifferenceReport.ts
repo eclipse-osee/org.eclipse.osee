@@ -82,6 +82,7 @@ export interface submessageDiffItem {
 export interface structureDiffItem {
 	id: string;
 	name: string;
+	nameAbbrev: string;
 	elements: any[];
 	applicability: applic;
 	description: string;
