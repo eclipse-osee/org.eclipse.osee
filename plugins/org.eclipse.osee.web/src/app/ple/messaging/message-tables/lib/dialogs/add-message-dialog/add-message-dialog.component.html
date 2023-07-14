@@ -33,7 +33,6 @@
 				type="text"
 				[(ngModel)]="data.description"
 				#input
-				required
 				name="description"
 				data-cy="field-description"></textarea>
 		</mat-form-field>
@@ -65,8 +64,7 @@
 				data.interfaceMessageWriteAccess ? 'after' : 'before'
 			"
 			data-cy="field-write-access"
-			class="tw-w-full"
-			required>
+			class="tw-w-full tw-pb-4">
 			<ng-container *ngIf="data.interfaceMessageWriteAccess; else read">
 				Writable
 			</ng-container>

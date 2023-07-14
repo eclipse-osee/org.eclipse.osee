@@ -70,12 +70,7 @@ describe('ConnectionService', () => {
 					let extransaction: transaction = {
 						branch: '10',
 						txComment:
-							'Create Connection and Relate to Node(s): ' +
-							'Hello' +
-							' , ' +
-							'Hello' +
-							' and Relate to Transport Type: ' +
-							'Hello',
+							'Create Connection and Relate to Nodes and Transport Type',
 						createArtifacts: [
 							{
 								typeId: '126164394421696910',

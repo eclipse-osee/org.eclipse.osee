@@ -287,6 +287,7 @@ export class ImportComponent implements OnInit, OnDestroy {
 	structureHeaderDetails = structureHeaderDetails;
 	structureHeaders: string[] = [
 		'name',
+		'nameAbbrev',
 		'description',
 		'interfaceMaxSimultaneity',
 		'interfaceMinSimultaneity',

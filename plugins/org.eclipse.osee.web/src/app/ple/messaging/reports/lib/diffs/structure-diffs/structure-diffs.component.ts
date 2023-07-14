@@ -36,6 +36,7 @@ export class StructureDiffsComponent {
 	structureHeaderDetails = structureDiffHeaderDetails;
 	structureHeaders: (keyof structureDiffItem)[] = [
 		'name',
+		'nameAbbrev',
 		'description',
 		'interfaceMinSimultaneity',
 		'interfaceMaxSimultaneity',

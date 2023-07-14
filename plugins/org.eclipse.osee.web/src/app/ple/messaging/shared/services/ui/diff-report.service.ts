@@ -705,6 +705,11 @@ export class DiffReportService {
 								item.diffInfo!.fieldsChanged['name'] =
 									c.baselineVersion.value;
 							} else if (
+								c.itemTypeId === ATTRIBUTETYPEIDENUM.NAMEABBREV
+							) {
+								item.diffInfo!.fieldsChanged['nameAbbrev'] =
+									c.baselineVersion.value;
+							} else if (
 								c.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION
 							) {
 								item.diffInfo!.fieldsChanged['description'] =

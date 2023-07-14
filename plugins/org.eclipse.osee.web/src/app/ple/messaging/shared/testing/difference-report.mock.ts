@@ -4161,6 +4161,7 @@ export const differenceReportMock: DifferenceReport = {
 			item: {
 				id: '200407',
 				name: 'Structure1 (Edit)',
+				nameAbbrev: '',
 				elements: [],
 				applicability: {
 					id: '1',
@@ -4460,6 +4461,7 @@ export const differenceReportMock: DifferenceReport = {
 			item: {
 				id: '200408',
 				name: 'Structure2',
+				nameAbbrev: '',
 				elements: [],
 				applicability: {
 					id: '1',
@@ -4672,6 +4674,7 @@ export const differenceReportMock: DifferenceReport = {
 			item: {
 				id: '200410',
 				name: 'Structure D',
+				nameAbbrev: '',
 				elements: [],
 				applicability: {
 					id: '1',
@@ -12071,6 +12074,7 @@ export const differenceReportMock: DifferenceReport = {
 			item: {
 				id: '200433',
 				name: 'Structure A',
+				nameAbbrev: '',
 				elements: [],
 				applicability: {
 					id: '1',

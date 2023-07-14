@@ -20,6 +20,11 @@ export const structureDiffHeaderDetails: headerDetail<structureDiffItem>[] = [
 		humanReadable: 'Name',
 	},
 	{
+		header: 'nameAbbrev',
+		description: 'Abbreviated name of structure',
+		humanReadable: 'Name Abbreviation',
+	},
+	{
 		header: 'description',
 		description: 'Description of structure',
 		humanReadable: 'Description',

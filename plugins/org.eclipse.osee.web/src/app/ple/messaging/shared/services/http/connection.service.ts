@@ -77,12 +77,7 @@ export class ConnectionService {
 				relations,
 				transaction,
 				branchId,
-				'Create Connection and Relate to Node(s): ' +
-					relations[1].sideB +
-					' , ' +
-					relations[2].sideB +
-					' and Relate to Transport Type: ' +
-					relations[0].sideB
+				'Create Connection and Relate to Nodes and Transport Type'
 			)
 		);
 	}
