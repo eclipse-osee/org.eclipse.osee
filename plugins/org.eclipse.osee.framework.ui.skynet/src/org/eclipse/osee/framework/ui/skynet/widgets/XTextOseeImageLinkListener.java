@@ -40,16 +40,17 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * PaintListener that will turn any oseelink:... into selectable hyperlink.
+ * PaintListener that will turn any oseeimagelink:... into selectable hyperlink.
  *
- * @author Donald G. Dunne
+ * @author Jaden W. Puckett
  */
-public class XTextOseeLinkListener implements ModifyListener {
+public class XTextOseeImageLinkListener implements ModifyListener {
 
    private final XText xText;
    private final Set<OseeLinkWord> links = new HashSet<>();
    private Integer maxLength = 50000;
-   public static Pattern oseeLinkPattern = Pattern.compile("<oseelink>\\[(.*?)\\]-\\[(.*?)\\]</oseelink>");
+   public static Pattern oseeImageLinkPattern =
+      Pattern.compile("<oseeimagelink>\\[(.*?)\\]-\\[(.*?)\\]</oseeimagelink>");
    private final BranchToken branchToken;
 
    public class OseeLinkWord {
@@ -64,7 +65,7 @@ public class XTextOseeLinkListener implements ModifyListener {
       }
    }
 
-   public XTextOseeLinkListener(final XText xText, BranchToken branchToken) {
+   public XTextOseeImageLinkListener(final XText xText, BranchToken branchToken) {
       this.xText = xText;
       this.branchToken = branchToken;
       refreshStyleRanges();
@@ -82,7 +83,7 @@ public class XTextOseeLinkListener implements ModifyListener {
 
    private void getLinks(String str) {
       links.clear();
-      Matcher m = oseeLinkPattern.matcher(str);
+      Matcher m = oseeImageLinkPattern.matcher(str);
       while (m.find()) {
          String string = m.group();
          long id = Long.valueOf(m.group(1));

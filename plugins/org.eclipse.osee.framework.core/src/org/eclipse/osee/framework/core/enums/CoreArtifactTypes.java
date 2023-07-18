@@ -37,8 +37,9 @@ public interface CoreArtifactTypes {
       .any(StaticId));
 
    ArtifactTypeToken Markdown = osee.add(osee.artifactType(3432564532423888L, "Markdown", true, Artifact)
-      .exactlyOne(MarkdownContent, "## Enter Markdown Here")
-      .exactlyOne(Extension, "md"));
+      .exactlyOne(MarkdownContent, "## Enter Markdown Here\n")
+      .exactlyOne(Extension, "md")
+      .zeroOrOne(ParagraphNumber));
 
    ArtifactTypeToken AbstractAccessControlled = osee.add(osee.artifactType(17L, "Abstract Access Controlled", true, Artifact)
       .any(AccessContextId));
@@ -474,6 +475,8 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken SubsystemFunctionMsWord = osee.add(osee.artifactType(36L, "Subsystem Function - MS Word", false, FunctionMsWord, SubsystemDesignMsWord));
 
+   ArtifactTypeToken SubsystemRequirementMarkdown = osee.add(osee.artifactType(2257709917691903205L, "Subsystem Requirement - Markdown", false, AbstractSubsystemRequirement, Markdown));
+
    ArtifactTypeToken SubsystemRequirementHtml = osee.add(osee.artifactType(795L, "Subsystem Requirement - HTML", false, AbstractSubsystemRequirement, HtmlArtifact));
 
    ArtifactTypeToken SubsystemRequirementMsWord = osee.add(osee.artifactType(31L, "Subsystem Requirement - MS Word", false, MsWordTemplate, AbstractSubsystemRequirement).zeroOrOne(CoreAttributeTypes.Hazard));
@@ -485,6 +488,8 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken SystemDesignMsWord = osee.add(osee.artifactType(44L, "System Design - MS Word", false, DesignMsWord));
 
    ArtifactTypeToken SystemFunctionMsWord = osee.add(osee.artifactType(35L, "System Function - MS Word", false, FunctionMsWord, SystemDesignMsWord).zeroOrOne(FunctionalCategory));
+
+   ArtifactTypeToken SystemRequirementMarkdown = osee.add(osee.artifactType(4135720862433165231L, "System Requirement - Markdown", false, AbstractSystemRequirement, Markdown));
 
    ArtifactTypeToken SystemRequirementHtml = osee.add(osee.artifactType(794L, "System Requirement - HTML", false, AbstractSystemRequirement, HtmlArtifact));
 

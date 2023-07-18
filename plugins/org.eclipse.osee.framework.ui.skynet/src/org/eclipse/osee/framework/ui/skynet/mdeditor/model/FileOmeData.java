@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit.model;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.model;
 
 import java.io.File;
 import java.io.IOException;

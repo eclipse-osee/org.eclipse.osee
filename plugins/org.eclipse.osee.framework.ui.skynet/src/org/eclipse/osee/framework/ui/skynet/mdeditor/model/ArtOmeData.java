@@ -10,12 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit.model;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.model;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -23,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -33,10 +37,12 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.markedit.OseeMarkdownEditorInput;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.OseeMarkdownEditorInput;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -48,9 +54,11 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
 
    OseeMarkdownEditorInput editorInput;
    private XTextDam editXText;
+   private Boolean displayImages;
 
    public ArtOmeData(OseeMarkdownEditorInput editorInput) {
       this.editorInput = editorInput;
+      this.displayImages = false; //Default case - Do not display image artifacts linked in md content
    }
 
    @Override
@@ -107,8 +115,54 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
    public void load() {
       if (editXText != null) {
          editXText.setAttributeType(getArtifact(), CoreAttributeTypes.MarkdownContent);
-         String value = editXText.get();
-         setMdContent(value);
+
+         // Find and replace any artifact links that have outdated/deleted names
+         String mdContent = editXText.get();
+         if (!Strings.isInvalid(mdContent)) {
+            Matcher oseeLinkMatcher = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
+            while (oseeLinkMatcher.find()) {
+               String idStr = oseeLinkMatcher.group(1);
+               String name = oseeLinkMatcher.group(2);
+
+               if (ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(idStr), getArtifact().getBranch(),
+                  DeletionFlag.EXCLUDE_DELETED) != null) {
+                  Artifact currentArtifact =
+                     ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
+                  // Update the artifact name
+                  String updatedLink =
+                     String.format("<oseelink>[%s]-[%s]</oseelink>", idStr, currentArtifact.getName());
+                  mdContent = mdContent.replaceFirst("<oseelink>.*?</oseelink>", updatedLink);
+               } else {
+                  // Show that artifact was deleted
+                  String artNotFound =
+                     String.format("Linked artifact [%s]-[%s] has not been found. Remove this text.", idStr, name);
+                  mdContent = mdContent.replaceFirst("<oseelink>.*?</oseelink>", artNotFound);
+               }
+            }
+            Matcher oseeImageLinkMatcher = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
+            while (oseeImageLinkMatcher.find()) {
+               String idStr = oseeImageLinkMatcher.group(1);
+               String name = oseeImageLinkMatcher.group(2);
+               if (ArtifactQuery.getArtifactOrNull(ArtifactId.valueOf(idStr), getArtifact().getBranch(),
+                  DeletionFlag.EXCLUDE_DELETED) != null) {
+                  Artifact currentArtifact =
+                     ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), getArtifact().getBranch());
+                  // Update the artifact name
+                  String updatedLink =
+                     String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", idStr, currentArtifact.getName());
+                  mdContent = mdContent.replaceFirst("<oseeimagelink>.*?</oseeimagelink>", updatedLink);
+               } else {
+                  // Show that artifact was deleted
+                  String artNotFound =
+                     String.format("Linked artifact [%s]-[%s] has not been found. Remove this text.", idStr, name);
+                  mdContent = mdContent.replaceFirst("<oseeimagelink>.*?</oseeimagelink>", artNotFound);
+               }
+            }
+         }
+
+         // Update the editXText and MdContent for the ArtOmeData after updating the artifact links
+         editXText.set(mdContent);
+         setMdContent(mdContent);
       } else {
          setMdContent(getArtifact().getSoleAttributeValue(CoreAttributeTypes.MarkdownContent, ""));
       }
@@ -165,6 +219,14 @@ public class ArtOmeData extends AbstractOmeData implements IArtifactEventListene
          editable = !ServiceUtil.accessControlService().isReadOnly(getArtifact());
       }
       return editable;
+   }
+
+   public void setDisplayImagesBool() {
+      this.displayImages = !this.displayImages;
+   }
+
+   public Boolean getDisplayImagesBool() {
+      return this.displayImages;
    }
 
 }

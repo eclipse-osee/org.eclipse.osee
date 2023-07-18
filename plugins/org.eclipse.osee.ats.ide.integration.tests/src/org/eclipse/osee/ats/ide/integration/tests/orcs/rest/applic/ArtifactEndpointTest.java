@@ -124,13 +124,13 @@ public class ArtifactEndpointTest {
       options3.setArtTypeIds(artTypes);
       options3.setView(ArtifactId.valueOf(applicEndpoint.getView("Product C").getId()));
       artIds = workingBranchArtifactEndpoint.findArtifactIds(options3);
-      Assert.assertEquals(16, artIds.size());
+      Assert.assertEquals(19, artIds.size());
 
       ArtifactSearchOptions options4 = new ArtifactSearchOptions();
       options4.setArtTypeIds(artTypes);
       options4.setView(ArtifactId.valueOf(applicEndpoint.getView("Product A").getId()));
       artIds = workingBranchArtifactEndpoint.findArtifactIds(options4);
-      Assert.assertEquals(17, artIds.size());
+      Assert.assertEquals(20, artIds.size());
    }
 
    @Test

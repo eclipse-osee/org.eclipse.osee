@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit;
+package org.eclipse.osee.framework.ui.skynet.mdeditor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,11 +26,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.markedit.edit.OmeEditTab;
-import org.eclipse.osee.framework.ui.skynet.markedit.html.OmeHtmlTab;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.AbstractOmeData;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.FileOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.edit.OmeEditTab;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.html.OmeHtmlTab;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.FileOmeData;
 import org.eclipse.osee.framework.ui.skynet.util.SelectionProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IEditorInput;

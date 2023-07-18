@@ -10,13 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit.edit;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.AbstractOmeData;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkErrorListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -69,11 +71,21 @@ public class OmeEditComposite extends Composite {
          textWidget.setEditable(enabled);
          omeData.uponCreate(textWidget);
          omeData.load();
+
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          textWidget.getStyledText().setLayoutData(gd);
-         XTextOseeLinkListener linkListener =
+
+         // Add listeners for osee links
+         XTextOseeImageLinkListener oseeImageLinkListener =
+            new XTextOseeImageLinkListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
+         XTextOseeLinkListener oseeLinkListener =
             new XTextOseeLinkListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
-         textWidget.getStyledText().addModifyListener(linkListener);
+         XTextOseeLinkErrorListener oseeLinkErrorListener =
+            new XTextOseeLinkErrorListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
+         textWidget.getStyledText().addModifyListener(oseeImageLinkListener);
+         textWidget.getStyledText().addModifyListener(oseeLinkListener);
+         textWidget.getStyledText().addModifyListener(oseeLinkErrorListener);
+
          textWidget.addXModifiedListener(new XModifiedListener() {
 
             @Override

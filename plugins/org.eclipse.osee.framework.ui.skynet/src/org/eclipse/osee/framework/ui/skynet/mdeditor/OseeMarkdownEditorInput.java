@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit;
+package org.eclipse.osee.framework.ui.skynet.mdeditor;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
