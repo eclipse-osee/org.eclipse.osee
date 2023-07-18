@@ -89,7 +89,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    private final BranchToken branch;
    private final ArtifactId view;
    private final QueryData parentQueryData;
-   private final List<QueryData> childrenQueryData = new ArrayList<>(2);
+   private final List<QueryData> childrenQueryData = new ArrayList<>();
    private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private final CallableQueryFactory artQueryFactory;
    private final QueryFactory queryFactory;
@@ -656,18 +656,25 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder followFork(RelationTypeSide relationTypeSide) {
+      return this.followFork(relationTypeSide, ArtifactTypeToken.SENTINEL, null);
+   }
+
+   @Override
+   public QueryBuilder followFork(RelationTypeSide relationTypeSide, QueryBuilder queryBuilder) {
+      return this.followFork(relationTypeSide, ArtifactTypeToken.SENTINEL, queryBuilder);
+   }
+
+   @Override
    public QueryBuilder followFork(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
       QueryBuilder queryBuilder) {
       QueryData followQueryData = followQueryData();
-      if (queryBuilder == null) {
-         followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, true));
-      } else {
-         followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, true));
+      followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, true));
+      if (queryBuilder != null) {
          QueryData descendant = (QueryData) queryBuilder;
          while (descendant.getParentQueryData() != null) {
-
             descendant = descendant.getParentQueryData();
-            if (descendant.getParentQueryData().getOnlyCriteriaSet().isEmpty()) {
+            if (descendant.getParentQueryData() == null || descendant.getParentQueryData().getOnlyCriteriaSet().isEmpty()) {
                break;
             }
          }

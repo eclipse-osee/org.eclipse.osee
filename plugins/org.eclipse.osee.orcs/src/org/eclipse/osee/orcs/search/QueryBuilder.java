@@ -332,6 +332,10 @@ public interface QueryBuilder extends Query {
     */
    QueryBuilder follow(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType);
 
+   QueryBuilder followFork(RelationTypeSide relationTypeSide);
+
+   QueryBuilder followFork(RelationTypeSide relationTypeSide, QueryBuilder query);
+
    /**
     * @param relationTypeSide side of of the relation following to (not starting from)
     * @param artifacType of the artifacts following to

@@ -18,9 +18,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface structures
@@ -32,7 +32,7 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    List<InterfaceStructureToken> getAll(BranchId branch);
 
-   List<InterfaceStructureToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> followRelations,
+   List<InterfaceStructureToken> getAllWithRelations(BranchId branch, List<FollowRelation> followRelations,
       String filter, Collection<AttributeTypeId> attributes, AttributeTypeId orderByAttribute);
 
    List<InterfaceStructureToken> getAllWithoutRelations(BranchId branch);

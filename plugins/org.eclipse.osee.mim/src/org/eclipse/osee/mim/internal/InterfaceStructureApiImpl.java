@@ -45,6 +45,7 @@ import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -486,15 +487,15 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       return this.query(branch, query, false);
    }
 
-   public List<RelationTypeSide> getFullFollowRelationDetails() {
-      return Arrays.asList(CoreRelationTypes.InterfaceStructureContent_DataElement,
+   public List<FollowRelation> getFullFollowRelationDetails() {
+      return FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_DataElement,
          CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
          CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
          CoreRelationTypes.InterfaceEnumeration_EnumerationState);
    }
 
-   private List<RelationTypeSide> getFollowRelationDetails() {
-      return Arrays.asList(CoreRelationTypes.InterfaceStructureContent_DataElement,
+   private List<FollowRelation> getFollowRelationDetails() {
+      return FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_DataElement,
          CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
    }
 
@@ -512,10 +513,11 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    @Override
    public InterfaceStructureToken getWithAllParentRelations(BranchId branch, ArtifactId structureId) {
       try {
-         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionMessage_Connection,
-            CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+         List<FollowRelation> parentRelations =
+            FollowRelation.followList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+               CoreRelationTypes.InterfaceConnectionMessage_Connection,
+               CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, structureId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
@@ -528,7 +530,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    public InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId connectionId,
       ArtifactId messageId) {
       InterfaceMessageToken message = interfaceMessageApi.getWithRelations(branch, messageId,
-         Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
+         FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceSubMessageContent_Structure,
             CoreRelationTypes.InterfaceStructureContent_DataElement,
             CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
@@ -842,7 +844,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public List<InterfaceStructureToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> followRelations,
+   public List<InterfaceStructureToken> getAllWithRelations(BranchId branch, List<FollowRelation> followRelations,
       String filter, Collection<AttributeTypeId> attributes, AttributeTypeId orderByAttribute) {
       try {
          return (List<InterfaceStructureToken>) this.getAccessor().getAll(branch, followRelations, filter, attributes,

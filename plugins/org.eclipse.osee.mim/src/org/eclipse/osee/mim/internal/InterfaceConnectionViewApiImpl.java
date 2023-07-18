@@ -30,6 +30,7 @@ import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.TransportType;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -39,7 +40,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    private ArtifactAccessor<InterfaceConnection> accessor;
    private final TransportTypeApi transportTypeApi;
    private final List<RelationTypeSide> affectedRelations;
-   private final List<RelationTypeSide> relations;
+   private final List<FollowRelation> relations;
 
    InterfaceConnectionViewApiImpl(OrcsApi orcsApi, TransportTypeApi transportTypeApi) {
       this.setAccessor(new InterfaceConnectionAccessor(orcsApi));
@@ -48,10 +49,8 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
       this.relations = createRelationTypeSideList();
    }
 
-   private List<RelationTypeSide> createRelationTypeSideList() {
-      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceConnectionNode_Node);
-      return relations;
+   private List<FollowRelation> createRelationTypeSideList() {
+      return FollowRelation.followList(CoreRelationTypes.InterfaceConnectionNode_Node);
    }
 
    @Override

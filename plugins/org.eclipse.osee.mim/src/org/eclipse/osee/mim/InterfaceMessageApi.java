@@ -17,10 +17,10 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface messages
@@ -54,12 +54,11 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
    InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId,
       ArtifactId viewId);
 
-   List<RelationTypeSide> getFollowRelationDetails();
+   List<FollowRelation> getFollowRelationDetails();
 
    List<InterfaceMessageToken> getAllRelatedFromSubMessage(InterfaceSubMessageToken subMessage);
 
-   InterfaceMessageToken getWithRelations(BranchId branch, ArtifactId messageId,
-      List<RelationTypeSide> followRelations);
+   InterfaceMessageToken getWithRelations(BranchId branch, ArtifactId messageId, List<FollowRelation> followRelations);
 
    InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId);
 

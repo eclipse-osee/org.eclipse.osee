@@ -16,10 +16,10 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -38,31 +38,38 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
 
    List<PlatformTypeToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   PlatformTypeToken getWithRelations(BranchId branch, ArtifactId platformTypeId, List<RelationTypeSide> relationTypes);
+   PlatformTypeToken getWithRelations(BranchId branch, ArtifactId platformTypeId, List<FollowRelation> relationTypes);
 
-   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes);
+   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<FollowRelation> relationTypes);
 
    List<PlatformTypeToken> getAllWithEnumSet(BranchId branch);
 
-   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes);
+   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<FollowRelation> relationTypes);
 
-   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<FollowRelation> relationTypes,
+      AttributeTypeId orderByAttribute);
 
-   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize);
+   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<FollowRelation> relationTypes, long pageNum,
+      long pageSize);
 
-   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<RelationTypeSide> relationTypes, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getAllWithRelations(BranchId branch, List<FollowRelation> relationTypes, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute);
 
    List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, AttributeTypeId orderByAttribute);
 
    List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize);
 
-   List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
-   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<FollowRelation> relationTypes,
+      AttributeTypeId orderByAttribute);
 
-   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize);
+   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<FollowRelation> relationTypes,
+      long pageNum, long pageSize);
 
-   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<RelationTypeSide> relationTypes, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<FollowRelation> relationTypes,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    PlatformTypeToken getWithAllParentRelations(BranchId branch, ArtifactId platformTypeId);
 
@@ -74,17 +81,21 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
 
    List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, AttributeTypeId orderByAttribute);
 
-   List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter,
+      AttributeTypeId orderByAttribute);
 
    List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize);
 
    List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize);
 
-   List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getAllWithElementRelations(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
-   List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
    List<PlatformTypeToken> getAllFromEnumerationSet(InterfaceEnumerationSet enumSet);
 
-   String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units, String defaultValue, int bytes);
+   String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units,
+      String defaultValue, int bytes);
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -63,7 +64,7 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
    }
 
    @Override
-   public InterfaceEnumeration get(BranchId branch, ArtifactId enumId, List<RelationTypeSide> relations) {
+   public InterfaceEnumeration get(BranchId branch, ArtifactId enumId, List<FollowRelation> relations) {
       try {
          return this.getAccessor().get(branch, enumId, relations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -89,6 +90,7 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
          return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<ArtifactMatch>();
    }

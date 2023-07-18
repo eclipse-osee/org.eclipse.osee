@@ -26,6 +26,7 @@ import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.ResolvedStructurePath;
 import org.eclipse.osee.mim.types.StructurePath;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -43,7 +44,7 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
    @Override
    public Collection<StructurePath> getAllStructureNames(String filter) {
       List<StructurePath> structures = this.interfaceStructureApi.getAllWithRelations(branch,
-         Arrays.asList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         FollowRelation.followList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
             CoreRelationTypes.InterfaceConnectionMessage_Connection),
          filter, Arrays.asList(CoreAttributeTypes.Name), CoreAttributeTypes.Name).stream().map(
