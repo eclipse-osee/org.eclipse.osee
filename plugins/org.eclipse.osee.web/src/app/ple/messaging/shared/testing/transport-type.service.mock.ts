@@ -13,6 +13,7 @@
 import { Observable, of } from 'rxjs';
 import { TransportTypeService } from '../services/http/transport-type.service';
 import type { transportType } from '@osee/messaging/shared/types';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
 
 export const transportTypes: Required<transportType>[] = [
 	{
@@ -28,6 +29,13 @@ export const transportTypes: Required<transportType>[] = [
 		minimumSubscriberMultiplicity: 0,
 		maximumSubscriberMultiplicity: 0,
 		directConnection: true,
+		dashedPresentation: false,
+		availableMessageHeaders: [],
+		availableSubmessageHeaders: [],
+		availableStructureHeaders: [],
+		availableElementHeaders: [],
+		interfaceLevelsToUse: ['message', 'submessage', 'structure', 'element'],
+		applicability: applicabilitySentinel,
 	},
 ];
 export const transportTypeServiceMock: Partial<TransportTypeService> = {

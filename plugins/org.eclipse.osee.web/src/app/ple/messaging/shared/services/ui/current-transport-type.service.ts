@@ -22,7 +22,11 @@ import {
 } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
-import type { transportType } from '@osee/messaging/shared/types';
+import {
+	createTransportType,
+	serialize,
+	transportType,
+} from '@osee/messaging/shared/types';
 import { TransportTypeService } from '../http/transport-type.service';
 import {
 	TransactionService,
@@ -78,15 +82,17 @@ export class CurrentTransportTypeService {
 			switchMap((id) => this.transportTypeService.get(id, artId))
 		);
 	}
+	private _currentBranchTake1 = this.ui.id.pipe(
+		take(1),
+		filter((val) => val !== '' && val !== '0')
+	);
 
 	createType(type: transportType) {
-		return this.ui.id.pipe(
-			take(1),
-			filter((val) => val !== '' && val !== '0'),
+		return this._currentBranchTake1.pipe(
 			switchMap((id) =>
 				of(
 					this.transactionBuilder.createArtifact(
-						type,
+						serialize(type),
 						ARTIFACTTYPEIDENUM.TRANSPORTTYPE,
 						[],
 						undefined,
@@ -98,6 +104,28 @@ export class CurrentTransportTypeService {
 			),
 			switchMap((transaction) =>
 				this.transactionService.performMutation(transaction).pipe(
+					tap((result) => {
+						this.ui.updated = true;
+					})
+				)
+			)
+		);
+	}
+
+	modifyType(type: transportType) {
+		return this._currentBranchTake1.pipe(
+			switchMap((id) =>
+				of(
+					this.transactionBuilder.modifyArtifact(
+						serialize(type),
+						undefined,
+						id,
+						'Modifying transport type'
+					)
+				)
+			),
+			switchMap((tx) =>
+				this.transactionService.performMutation(tx).pipe(
 					tap((result) => {
 						this.ui.updated = true;
 					})

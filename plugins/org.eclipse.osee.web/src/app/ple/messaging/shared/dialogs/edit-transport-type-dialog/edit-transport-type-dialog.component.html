@@ -1,0 +1,22 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="transportType | async as _t; else default">
+	<h1 mat-dialog-title>Editing Transport Type {{ _t.name }}</h1>
+
+	<osee-transport-type-form
+		[transportType]="_t"
+		(completion)="receiveFormState($event)"></osee-transport-type-form>
+</ng-container>
+<ng-template #default>
+	<h1 mat-dialog-title>Editing Transport Type</h1>
+</ng-template>

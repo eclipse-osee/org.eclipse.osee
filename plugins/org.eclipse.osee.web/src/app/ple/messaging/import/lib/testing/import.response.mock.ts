@@ -13,6 +13,7 @@
 
 import { nodesMock } from '@osee/messaging/shared/testing';
 import type { ImportOption, ImportSummary } from '@osee/messaging/shared/types';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
 
 export const importSummaryMock: ImportSummary = {
 	nodes: nodesMock,
@@ -34,6 +35,18 @@ export const importSummaryMock: ImportSummary = {
 				minimumSubscriberMultiplicity: 0,
 				maximumSubscriberMultiplicity: 0,
 				directConnection: false,
+				dashedPresentation: false,
+				availableMessageHeaders: [],
+				availableSubmessageHeaders: [],
+				availableStructureHeaders: [],
+				availableElementHeaders: [],
+				interfaceLevelsToUse: [
+					'message',
+					'submessage',
+					'structure',
+					'element',
+				],
+				applicability: applicabilitySentinel,
 			},
 			nodes: nodesMock,
 		},

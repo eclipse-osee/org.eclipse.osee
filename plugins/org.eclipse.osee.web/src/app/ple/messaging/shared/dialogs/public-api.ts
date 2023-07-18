@@ -13,3 +13,4 @@
 export * from './edit-enum-set-dialog/edit-enum-set-dialog.component';
 export * from './edit-type-dialog/edit-type-dialog.component';
 export * from './new-transport-type-dialog/new-transport-type-dialog.component';
+export * from './edit-transport-type-dialog/edit-transport-type-dialog.component';

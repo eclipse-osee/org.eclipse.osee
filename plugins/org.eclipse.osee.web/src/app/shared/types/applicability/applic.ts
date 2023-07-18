@@ -14,3 +14,11 @@ export interface applic {
 	id: string;
 	name: string;
 }
+
+export interface hasApplic {
+	applicability: applic;
+}
+export const applicabilitySentinel: applic = {
+	id: '1',
+	name: 'Base',
+};

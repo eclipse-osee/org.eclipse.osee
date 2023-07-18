@@ -20,7 +20,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import type { transportType } from '@osee/messaging/shared/types';
+import { TransportTypeFormComponent } from '@osee/messaging/shared/forms';
+import {
+	TransportType,
+	transportTypeAttributes,
+} from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-new-transport-type-dialog',
@@ -37,22 +41,11 @@ import type { transportType } from '@osee/messaging/shared/types';
 		MatOptionModule,
 		NgFor,
 		MatButtonModule,
+		TransportTypeFormComponent,
 	],
 })
 export class NewTransportTypeDialogComponent {
-	transportType: transportType = {
-		name: '',
-		byteAlignValidation: false,
-		messageGeneration: false,
-		byteAlignValidationSize: 0,
-		messageGenerationType: '',
-		messageGenerationPosition: '',
-		minimumPublisherMultiplicity: 0,
-		maximumPublisherMultiplicity: 0,
-		minimumSubscriberMultiplicity: 0,
-		maximumSubscriberMultiplicity: 0,
-	};
-	generationTypes = ['None', 'Dynamic', 'Relational', 'Static'];
+	transportType = new TransportType();
 	validation = this.transportType.byteAlignValidation
 		? this.transportType.byteAlignValidationSize !== 0
 		: true;
@@ -63,5 +56,15 @@ export class NewTransportTypeDialogComponent {
 
 	onNoClick(): void {
 		this.dialogRef.close();
+	}
+	receiveFormState(
+		state:
+			| { type: 'CANCEL' }
+			| { type: 'SUBMIT'; data: transportTypeAttributes }
+	) {
+		if (state.type === 'CANCEL') {
+			return this.onNoClick();
+		}
+		return this.dialogRef.close(state.data);
 	}
 }

@@ -397,6 +397,73 @@ export class HeaderService {
 				'Type of message information generation to use for MIM artifacts if Message Generation is true. Examples include Relational, Dynamic.',
 			humanReadable: 'Message Generation Type',
 		},
+		{
+			header: 'dashedPresentation',
+			description:
+				'Whether or not the line connecting two nodes is dashed',
+			humanReadable: 'Dashed',
+		},
+		{
+			header: 'directConnection',
+			description:
+				'Whether or not connections of this transport type are direct',
+			humanReadable: 'Direct',
+		},
+		{
+			header: 'minimumPublisherMultiplicity',
+			description:
+				'Minimum Publisher Multiplicify of connections of this type',
+			humanReadable: 'Min Publisher Mult.',
+		},
+		{
+			header: 'maximumPublisherMultiplicity',
+			description:
+				'Maximum Publisher Multiplicify of connections of this type',
+			humanReadable: 'Max Publisher Mult.',
+		},
+		{
+			header: 'minimumSubscriberMultiplicity',
+			description:
+				'Minimum Subscriber Multiplicify of connections of this type',
+			humanReadable: 'Min Subscriber Mult.',
+		},
+		{
+			header: 'maximumSubscriberMultiplicity',
+			description:
+				'Maximum Subscriber Multiplicify of connections of this type',
+			humanReadable: 'Max Subscriber Mult.',
+		},
+		{
+			header: 'availableMessageHeaders',
+			description: 'Headers available in the UI for messages',
+			humanReadable: 'Message Headers',
+		},
+		{
+			header: 'availableSubmessageHeaders',
+			description: 'Headers available in the UI for submessages',
+			humanReadable: 'Submessage Headers',
+		},
+		{
+			header: 'availableStructureHeaders',
+			description: 'Headers available in the UI for structures',
+			humanReadable: 'Structure Headers',
+		},
+		{
+			header: 'availableElementHeaders',
+			description: 'Headers available in the UI for elements',
+			humanReadable: 'Element Headers',
+		},
+		{
+			header: 'interfaceLevelsToUse',
+			description:
+				'UIs in connection views available for users to use with connections of this transport type',
+			humanReadable: 'Levels',
+		},
+		{
+			header: 'applicability',
+			description: 'Applicability of Transport Type',
+			humanReadable: 'Applicability',
+		},
 	]);
 
 	private _allTransportTypeHeaders = this._allTransportTypes.pipe(

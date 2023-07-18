@@ -84,3 +84,4 @@ export * from './view-selector.component.mock';
 export * from './units.service.mock';
 export * from './rates.service.mock';
 export * from './message-types.service.mock';
+export * from './transport-type-form.component.mock';

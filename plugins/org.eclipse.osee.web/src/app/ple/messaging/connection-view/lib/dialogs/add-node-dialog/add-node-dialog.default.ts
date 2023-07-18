@@ -12,6 +12,7 @@
  **********************************************************************/
 
 import { connection } from '@osee/messaging/shared/types';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
 import { AddNodeDialog } from './add-node-dialog';
 
 export class DefaultAddNodeDialog implements AddNodeDialog {
@@ -31,6 +32,14 @@ export class DefaultAddNodeDialog implements AddNodeDialog {
 			maximumPublisherMultiplicity: 0,
 			minimumSubscriberMultiplicity: 0,
 			maximumSubscriberMultiplicity: 0,
+			directConnection: false,
+			applicability: applicabilitySentinel,
+			dashedPresentation: false,
+			availableMessageHeaders: [],
+			availableSubmessageHeaders: [],
+			availableStructureHeaders: [],
+			availableElementHeaders: [],
+			interfaceLevelsToUse: [],
 		},
 		nodes: [],
 	};

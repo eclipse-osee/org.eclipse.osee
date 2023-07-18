@@ -68,7 +68,7 @@ public class ConnectionViewData extends PLGenericDBObject {
     * @return the isDashed
     */
    public boolean isDashed() {
-      return TransportType.isDashed();
+      return TransportType.getDashedPresentation();
    }
 
    /**
