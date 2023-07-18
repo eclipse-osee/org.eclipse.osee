@@ -15,9 +15,9 @@ package org.eclipse.osee.mim;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -26,5 +26,5 @@ public interface InterfaceEnumerationApi extends QueryCapableMIMAPI<InterfaceEnu
 
    ArtifactAccessor<InterfaceEnumeration> getAccessor();
 
-   InterfaceEnumeration get(BranchId branch, ArtifactId enumId, List<RelationTypeSide> relations);
+   InterfaceEnumeration get(BranchId branch, ArtifactId enumId, List<FollowRelation> relations);
 }

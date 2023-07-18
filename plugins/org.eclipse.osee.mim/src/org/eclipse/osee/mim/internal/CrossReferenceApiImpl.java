@@ -26,6 +26,7 @@ import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.CrossReferenceApi;
 import org.eclipse.osee.mim.types.CrossReference;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 public class CrossReferenceApiImpl implements CrossReferenceApi {
 
@@ -51,7 +52,7 @@ public class CrossReferenceApiImpl implements CrossReferenceApi {
    public CrossReference get(BranchId branch, ArtifactId artId) {
       try {
          return this.accessor.get(branch, artId,
-            Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection));
+            FollowRelation.followList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
@@ -104,21 +105,22 @@ public class CrossReferenceApiImpl implements CrossReferenceApi {
          if (filter.isEmpty() && connectionId.isValid()) {
             return this.accessor.getAllByRelation(branch,
                CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId,
-               Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection), pageNum,
-               pageSize, orderByAttribute, viewId);
+               FollowRelation.followList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection),
+               pageNum, pageSize, orderByAttribute, viewId);
          } else if (connectionId.isValid()) {
             return this.accessor.getAllByRelationAndFilter(branch,
                CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, filter,
-               attributes, Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection),
+               attributes,
+               FollowRelation.followList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection),
                pageNum, pageSize, orderByAttribute, viewId);
          } else if (filter.isEmpty()) {
             return this.accessor.getAll(branch,
-               Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection), pageNum,
-               pageSize, orderByAttribute, viewId);
+               FollowRelation.followList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection),
+               pageNum, pageSize, orderByAttribute, viewId);
          } else {
             return this.accessor.getAllByFilter(branch, filter, attributes,
-               Arrays.asList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection), pageNum,
-               pageSize, orderByAttribute, viewId);
+               FollowRelation.followList(CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection),
+               pageNum, pageSize, orderByAttribute, viewId);
          }
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {

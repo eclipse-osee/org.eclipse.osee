@@ -13,7 +13,6 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +30,7 @@ import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -150,7 +150,7 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
       AttributeTypeId orderByAttribute) {
       try {
          List<InterfaceEnumerationSet> enumSet = (List<InterfaceEnumerationSet>) this.getAccessor().getAll(branch,
-            Arrays.asList(CoreRelationTypes.InterfaceEnumeration_EnumerationState), pageNum, pageSize,
+            FollowRelation.followList(CoreRelationTypes.InterfaceEnumeration_EnumerationState), pageNum, pageSize,
             CoreAttributeTypes.Name);
          return enumSet;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

@@ -55,6 +55,7 @@ import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
@@ -278,7 +279,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
 
    private void processEnumeration(ArtifactId enumId) {
       InterfaceEnumeration enumeration = interfaceEnumerationApi.get(getBranchId(enumId), enumId,
-         Arrays.asList(CoreRelationTypes.InterfaceEnumeration_EnumerationSet,
+         FollowRelation.followList(CoreRelationTypes.InterfaceEnumeration_EnumerationSet,
             CoreRelationTypes.InterfacePlatformTypeEnumeration_Element,
             CoreRelationTypes.InterfaceElementPlatformType_Element));
 
@@ -380,7 +381,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    private void addChangeToMap(ChangeItem changeItem) {
       ArtifactId artId = changeItem.getArtId();
       long itemTypeId = changeItem.getItemTypeId().getId();
-      if (itemTypeId == CoreArtifactTypes.InterfaceNode.getId() || itemTypeId == CoreRelationTypes.InterfaceConnectionPrimary_Node.getId() || itemTypeId == CoreRelationTypes.InterfaceConnectionSecondary_Node.getId()) {
+      if (itemTypeId == CoreArtifactTypes.InterfaceNode.getId() || itemTypeId == CoreRelationTypes.InterfaceConnectionNode.getId()) {
          if (!nodeList.contains(artId)) {
             nodeList.add(artId);
          }

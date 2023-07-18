@@ -38,6 +38,7 @@ import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -46,8 +47,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    private ArtifactAccessor<InterfaceMessageToken> accessor;
    private final InterfaceNodeViewApi nodeApi;
    private final InterfaceConnectionViewApi connectionApi;
-   private final List<RelationTypeSide> relations;
-   private final List<RelationTypeSide> fullRelations;
+   private final List<FollowRelation> relations;
+   private final List<FollowRelation> fullRelations;
    private final List<RelationTypeSide> affectedRelations;
 
    InterfaceMessageApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi nodeApi, InterfaceConnectionViewApi connectionApi) {
@@ -65,8 +66,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
     *
     * @return
     */
-   private List<RelationTypeSide> createFullRelationTypeSideList() {
-      return Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
+   private List<FollowRelation> createFullRelationTypeSideList() {
+      return FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
    }
 
    private List<AttributeTypeId> getMessageSearchAttributes() {
@@ -99,10 +100,8 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
       this.accessor = accessor;
    }
 
-   private List<RelationTypeSide> createRelationTypeSideList() {
-      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
-      return relations;
+   private List<FollowRelation> createRelationTypeSideList() {
+      return FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
    }
 
    private List<RelationTypeSide> createAffectedRelations() {
@@ -150,7 +149,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public List<RelationTypeSide> getFollowRelationDetails() {
+   public List<FollowRelation> getFollowRelationDetails() {
       return this.relations;
    }
 
@@ -175,7 +174,7 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public InterfaceMessageToken getWithRelations(BranchId branch, ArtifactId messageId,
-      List<RelationTypeSide> followRelations) {
+      List<FollowRelation> followRelations) {
       try {
          return this.setUpMessage(branch, this.getAccessor().get(branch, messageId, followRelations));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
@@ -188,8 +187,9 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    @Override
    public InterfaceMessageToken getWithAllParentRelations(BranchId branch, ArtifactId messageId) {
       try {
-         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceConnectionMessage_Connection,
-            CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+         List<FollowRelation> parentRelations =
+            FollowRelation.followList(CoreRelationTypes.InterfaceConnectionMessage_Connection,
+               CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, messageId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {

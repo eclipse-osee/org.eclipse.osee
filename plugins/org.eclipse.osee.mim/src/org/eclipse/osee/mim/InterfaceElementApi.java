@@ -16,10 +16,10 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. V
@@ -88,7 +88,7 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId);
 
-   List<RelationTypeSide> getFollowRelationDetails();
+   List<FollowRelation> getFollowRelationDetails();
 
    List<InterfaceStructureElementToken> getAllFromPlatformType(PlatformTypeToken pType);
 }

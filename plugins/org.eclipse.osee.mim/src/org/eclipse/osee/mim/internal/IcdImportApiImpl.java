@@ -40,6 +40,7 @@ import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.PlatformTypeImportToken;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Ryan T. Baldwin
@@ -155,7 +156,7 @@ public class IcdImportApiImpl implements MimImportApi {
       }
 
       List<PlatformTypeToken> existingPlatformTypes = mimApi.getInterfacePlatformTypeApi().getAllWithRelations(branch,
-         Arrays.asList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+         FollowRelation.followList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
             CoreRelationTypes.InterfaceEnumeration_EnumerationState));
       Map<String, InterfaceElementImportToken> elements = new HashMap<>();
       Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();

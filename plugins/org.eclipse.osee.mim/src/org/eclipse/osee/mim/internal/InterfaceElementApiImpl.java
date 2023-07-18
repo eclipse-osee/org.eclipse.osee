@@ -35,6 +35,7 @@ import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -44,7 +45,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    private ArtifactAccessor<InterfaceStructureElementToken> accessor;
    private final InterfacePlatformTypeApi platformApi;
    private final List<AttributeTypeId> elementAttributeList;
-   private final List<RelationTypeSide> relations;
+   private final List<FollowRelation> relations;
    private final List<RelationTypeSide> affectedRelations;
 
    InterfaceElementApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi platformTypeApi) {
@@ -66,22 +67,14 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       return attributes;
    }
 
-   private List<RelationTypeSide> createRelationTypeSideList() {
-      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
-      relations.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
-      return relations;
+   private List<FollowRelation> createRelationTypeSideList() {
+      return FollowRelation.followList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
    }
 
    private List<RelationTypeSide> createAffectedRelationTypeSideList() {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
       relations.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
       return relations;
-   }
-
-   private List<RelationTypeSide> getFullRelationTypeSideList() {
-      return Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
-         CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
-         CoreRelationTypes.InterfaceEnumeration_EnumerationState);
    }
 
    private ArtifactAccessor<InterfaceStructureElementToken> getAccessor() {
@@ -239,7 +232,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       try {
          //pre-cache the platform type so that all elements can re-use
          PlatformTypeToken platformType = this.platformApi.getWithRelations(branch, platformTypeId,
-            Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_Element));
+            FollowRelation.followList(CoreRelationTypes.InterfaceElementPlatformType_Element));
          List<InterfaceStructureElementToken> elements = platformType.getArtifactReadable().getRelatedList(
             CoreRelationTypes.InterfaceElementPlatformType_Element).stream().map(
                a -> new InterfaceStructureElementToken(a)).collect(Collectors.toList());
@@ -256,7 +249,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       long pageSize) {
       try {
          return (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch,
-            Arrays.asList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType), name,
+            FollowRelation.followList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType), name,
             Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize, CoreAttributeTypes.Name);
       } catch (Exception ex) {
          System.out.println(ex);
@@ -299,18 +292,19 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public List<RelationTypeSide> getFollowRelationDetails() {
+   public List<FollowRelation> getFollowRelationDetails() {
       return this.relations;
    }
 
    @Override
    public InterfaceStructureElementToken getWithAllParentRelations(BranchId branch, ArtifactId elementId) {
       try {
-         List<RelationTypeSide> parentRelations = Arrays.asList(CoreRelationTypes.InterfaceStructureContent_Structure,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionMessage_Connection,
-            CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+         List<FollowRelation> parentRelations =
+            FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_Structure,
+               CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+               CoreRelationTypes.InterfaceConnectionMessage_Connection,
+               CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, elementId, parentRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
@@ -343,6 +337,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
          return this.getAccessor().getAffectedArtifacts(branch, relatedId, affectedRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
+         //
       }
       return new LinkedList<ArtifactMatch>();
    }

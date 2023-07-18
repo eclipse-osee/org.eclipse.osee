@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ public class InterfaceConnection extends PLGenericDBObject {
    private TransportType TransportType;
    private List<InterfaceNode> nodes;
    private ApplicabilityToken applicability;
+   private ArtifactReadable artifactReadable;
 
    public InterfaceConnection(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -54,6 +56,7 @@ public class InterfaceConnection extends PLGenericDBObject {
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+      this.artifactReadable = art;
    }
 
    public InterfaceConnection(Long id, String name) {
@@ -112,6 +115,11 @@ public class InterfaceConnection extends PLGenericDBObject {
 
    private void setNodes(List<InterfaceNode> nodes) {
       this.nodes = nodes;
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
    }
 
 }

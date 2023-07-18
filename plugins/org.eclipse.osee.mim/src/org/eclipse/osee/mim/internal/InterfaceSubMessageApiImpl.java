@@ -31,6 +31,7 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface sub messages
@@ -120,8 +121,8 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    @Override
    public InterfaceSubMessageToken getWithAllParentRelations(BranchId branch, ArtifactId subMessageId) {
       try {
-         List<RelationTypeSide> parentRelations =
-            Arrays.asList(CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         List<FollowRelation> parentRelations =
+            FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
                CoreRelationTypes.InterfaceConnectionMessage_Connection,
                CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
          return this.getAccessor().get(branch, subMessageId, parentRelations);
