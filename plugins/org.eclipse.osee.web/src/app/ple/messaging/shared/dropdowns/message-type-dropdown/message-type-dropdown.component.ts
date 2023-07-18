@@ -16,6 +16,7 @@ import {
 	inject,
 	Input,
 	OnChanges,
+	OnInit,
 	Output,
 	SimpleChanges,
 } from '@angular/core';
@@ -28,7 +29,11 @@ import {
 	animate,
 } from '@angular/animations';
 import { FormsModule, ControlContainer, NgForm } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {
+	MatAutocompleteModule,
+	MatAutocompleteTrigger,
+	MatAutocomplete,
+} from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import {
 	MatOptionModule,
@@ -45,13 +50,18 @@ import {
 	BehaviorSubject,
 	ReplaySubject,
 	Subject,
-	skip,
 	debounceTime,
 	distinctUntilChanged,
 	switchMap,
 	of,
+	distinct,
 } from 'rxjs';
-
+const _comparator = (previous: string, current: string) => {
+	if (typeof previous === 'string' && typeof current === 'string') {
+		return previous === current;
+	}
+	return false;
+};
 @Component({
 	selector: 'osee-message-type-dropdown',
 	standalone: true,
@@ -90,7 +100,7 @@ import {
 	],
 	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
-export class MessageTypeDropdownComponent implements OnChanges {
+export class MessageTypeDropdownComponent implements OnChanges, OnInit {
 	private _currentMessageTypesService = inject(CurrentMessageTypesService);
 
 	private _typeAhead = new BehaviorSubject<string>('');
@@ -105,18 +115,32 @@ export class MessageTypeDropdownComponent implements OnChanges {
 	@Input() messageType: string = '';
 
 	private _messageTypeChange = new Subject<string>();
-	@Output() messageTypeChange = this._messageTypeChange.pipe(skip(1));
+	@Output() messageTypeChange = this._messageTypeChange.pipe(
+		//skip(1),
+		distinctUntilChanged(),
+		debounceTime(50)
+		//tap((v) => console.log(v))
+	);
 
 	@Input() errorMatcher: ErrorStateMatcher =
 		new ShowOnDirtyErrorStateMatcher();
 
 	protected _size = this._currentMessageTypesService.currentPageSize;
 
+	get filter() {
+		return this._typeAhead.pipe(
+			//debounceTime(500)
+			//tap((v) => console.log(v))
+			distinct(),
+			distinctUntilChanged(_comparator)
+			//map((v) => v.name)
+		);
+	}
 	protected _messageTypes = this._openAutoComplete.pipe(
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap((_) =>
-			this._typeAhead.pipe(
+			this.filter.pipe(
 				distinctUntilChanged(),
 				debounceTime(500),
 				switchMap((filter) =>
@@ -124,6 +148,7 @@ export class MessageTypeDropdownComponent implements OnChanges {
 						this._currentMessageTypesService.getFilteredPaginatedMessageTypes(
 							pageNum,
 							filter
+							//typeof filter === 'string' ? filter : filter.name
 						)
 					)
 				)
@@ -135,17 +160,18 @@ export class MessageTypeDropdownComponent implements OnChanges {
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap((_) =>
-			this._typeAhead.pipe(
+			this.filter.pipe(
+				distinctUntilChanged(),
+				debounceTime(500),
 				switchMap((filter) =>
-					this._currentMessageTypesService.getFilteredCount(filter)
+					this._currentMessageTypesService.getFilteredCount(
+						filter
+						//typeof filter === 'string' ? filter : filter.name
+					)
 				)
 			)
 		)
 	);
-
-	get filter() {
-		return this._typeAhead;
-	}
 
 	updateTypeAhead(value: string | NamedId) {
 		if (typeof value === 'string') {
@@ -161,9 +187,14 @@ export class MessageTypeDropdownComponent implements OnChanges {
 	close() {
 		this._isOpen.next(false);
 	}
-	updateValue(value: string) {
-		this._messageTypeChange.next(value);
-		this.updateTypeAhead(value);
+	updateValue(value: NamedId | string) {
+		if (typeof value === 'string' && value !== '') {
+			this._messageTypeChange.next(value);
+			this.updateTypeAhead(value);
+		} else if (typeof value === 'object') {
+			this._messageTypeChange.next(value.name);
+			this.updateTypeAhead(value.name);
+		}
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -171,15 +202,26 @@ export class MessageTypeDropdownComponent implements OnChanges {
 			changes.messageType !== undefined &&
 			changes.messageType.previousValue !==
 				changes.messageType.currentValue &&
-			changes.messageType.currentValue !== undefined
+			changes.messageType.currentValue !== undefined &&
+			changes.messageType.currentValue !== null
 		) {
-			this.updateValue(changes.messageType.currentValue);
+			this.updateTypeAhead(changes.messageType.currentValue);
 		}
+	}
+	ngOnInit(): void {
+		this.updateTypeAhead(this.messageType);
 	}
 	get isOpen() {
 		return this._isOpen;
 	}
 	clear() {
+		this.updateValue({ id: '-1', name: '' });
 		this.updateTypeAhead('');
+	}
+
+	displayFn(value: string) {
+		//console.log(value);
+		return value ? value : '';
+		//return messageTypeDisplayFn(value);
 	}
 }

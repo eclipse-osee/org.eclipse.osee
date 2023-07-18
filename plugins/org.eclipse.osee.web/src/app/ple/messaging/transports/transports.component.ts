@@ -10,8 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+	AsyncPipe,
+	NgClass,
+	NgFor,
+	NgSwitch,
+	NgSwitchCase,
+	NgSwitchDefault,
+} from '@angular/common';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,8 +33,12 @@ import {
 	HeaderService,
 } from '@osee/messaging/shared/services';
 import type { transportType } from '@osee/messaging/shared/types';
-import { NewTransportTypeDialogComponent } from '@osee/messaging/shared/dialogs';
+import {
+	EditTransportTypeDialogComponent,
+	NewTransportTypeDialogComponent,
+} from '@osee/messaging/shared/dialogs';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
 	selector: 'osee-transports',
@@ -37,17 +48,27 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 	imports: [
 		AsyncPipe,
 		NgFor,
+		NgSwitch,
+		NgSwitchCase,
+		NgSwitchDefault,
 		NgClass,
 		MatTableModule,
 		MatTooltipModule,
 		MatButtonModule,
 		MatIconModule,
 		MatDialogModule,
+		MatMenuModule,
 		MessagingControlsComponent,
 	],
 })
 export class TransportsComponent implements OnInit, OnDestroy {
 	private _done = new Subject();
+	menuPosition = {
+		x: '0',
+		y: '0',
+	};
+	@ViewChild(MatMenuTrigger, { static: true })
+	matMenuTrigger!: MatMenuTrigger;
 	transports = this.transportTypesService.transportTypes.pipe(
 		takeUntil(this._done)
 	);
@@ -91,6 +112,29 @@ export class TransportsComponent implements OnInit, OnDestroy {
 				take(1),
 				filter((value): value is transportType => value !== undefined),
 				switchMap((type) => this.transportTypesService.createType(type))
+			)
+			.subscribe();
+	}
+	openMenu(event: MouseEvent, type: transportType) {
+		event.preventDefault();
+		this.menuPosition.x = event.clientX + 'px';
+		this.menuPosition.y = event.clientY + 'px';
+		this.matMenuTrigger.menuData = {
+			transport: type,
+		};
+		this.matMenuTrigger.openMenu();
+	}
+
+	openEditDialog(type: transportType) {
+		this.dialog
+			.open(EditTransportTypeDialogComponent, {
+				data: type,
+			})
+			.afterClosed()
+			.pipe(
+				take(1),
+				filter((value): value is transportType => value !== undefined),
+				switchMap((type) => this.transportTypesService.modifyType(type))
 			)
 			.subscribe();
 	}

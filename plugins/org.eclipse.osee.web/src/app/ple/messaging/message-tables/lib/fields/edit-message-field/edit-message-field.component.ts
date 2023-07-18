@@ -12,7 +12,7 @@
  **********************************************************************/
 import { A11yModule } from '@angular/cdk/a11y';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
@@ -47,6 +47,7 @@ import { MessageTypeDropdownComponent } from '../../../../shared/dropdowns/messa
 	templateUrl: './edit-message-field.component.html',
 	styleUrls: ['./edit-message-field.component.sass'],
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		NgIf,
 		NgFor,

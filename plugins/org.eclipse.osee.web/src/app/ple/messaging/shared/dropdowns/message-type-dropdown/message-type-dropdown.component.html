@@ -15,81 +15,87 @@
 		openedState: isOpen | async,
 		filter: filter | async
 	} as autoCompleteState">
-	<mat-form-field
-		subscriptSizing="dynamic"
-		id="messageTypes-selector"
-		class="tw-w-full">
-		<input
-			type="text"
-			matInput
-			#input
-			[ngModel]="autoCompleteState.filter"
-			[required]="required"
-			[disabled]="disabled"
-			placeholder="Message Types"
-			[errorStateMatcher]="errorMatcher"
-			id="messageTypes"
-			name="messageTypes"
-			(focusin)="autoCompleteOpened()"
-			(focusout)="close()"
-			(ngModelChange)="updateTypeAhead($event)"
-			#messageTypes="ngModel"
-			[matAutocomplete]="autoMessageTypes" />
-		<mat-hint
-			*ngIf="!hintHidden"
-			align="end"
-			>Select a Message Type</mat-hint
-		>
-		<mat-icon
-			*ngIf="!autoCompleteState.openedState"
-			[@dropdownOpen]="autoCompleteState.openedState ? 'open' : 'closed'"
-			matIconSuffix
-			>arrow_drop_down</mat-icon
-		>
-		<button
-			mat-icon-button
-			*ngIf="
-				autoCompleteState.openedState && autoCompleteState.filter !== ''
-			"
-			[@dropdownOpen]="!autoCompleteState.openedState ? 'open' : 'closed'"
-			matIconSuffix
-			(mousedown)="clear()">
-			<mat-icon>close</mat-icon>
-		</button>
-		<mat-autocomplete
-			autoActiveFirstOption="true"
-			autoSelectActiveOption="true"
-			#autoMessageTypes="matAutocomplete"
-			(optionSelected)="updateValue($event.option.value)">
-			<ng-container
-				*ngIf="_messageTypes | async as messageTypes; else loading">
-				<ng-container *ngIf="_count | async as count; else loading">
-					<ng-container *ngIf="_size | async as size; else loading">
-						<osee-mat-option-loading
-							[data]="messageTypes"
-							objectName="message types"
-							[paginationSize]="size"
-							paginationMode="AUTO"
-							[count]="count">
-							<ng-template let-option>
-								<mat-option
-									[attr.data-cy]="'option-' + option.name"
-									[value]="option.name"
-									[id]="option.id">
-									{{ option.name }}
-								</mat-option>
-							</ng-template>
-						</osee-mat-option-loading>
+	<ng-container *ngIf="autoCompleteState.filter !== null">
+		<mat-form-field
+			subscriptSizing="dynamic"
+			id="messageTypes-selector"
+			class="tw-w-full">
+			<input
+				type="text"
+				matInput
+				#input
+				[ngModel]="autoCompleteState.filter"
+				[required]="required"
+				[disabled]="disabled"
+				placeholder="Message Types"
+				[errorStateMatcher]="errorMatcher"
+				name="messageTypes"
+				(focusin)="autoCompleteOpened()"
+				(focusout)="close()"
+				(ngModelChange)="updateTypeAhead($event)"
+				#messageTypes="ngModel"
+				[matAutocomplete]="autoMessageTypes" />
+			<mat-hint
+				*ngIf="!hintHidden"
+				align="end"
+				>Select a Message Type</mat-hint
+			>
+			<mat-icon
+				*ngIf="!autoCompleteState.openedState"
+				[@dropdownOpen]="
+					autoCompleteState.openedState ? 'open' : 'closed'
+				"
+				matIconSuffix
+				>arrow_drop_down</mat-icon
+			>
+			<button
+				mat-icon-button
+				*ngIf="
+					autoCompleteState.openedState &&
+					autoCompleteState.filter !== ''
+				"
+				[@dropdownOpen]="
+					!autoCompleteState.openedState ? 'open' : 'closed'
+				"
+				matIconSuffix
+				(mousedown)="clear()">
+				<mat-icon>close</mat-icon>
+			</button>
+			<mat-autocomplete
+				[displayWith]="displayFn"
+				#autoMessageTypes="matAutocomplete"
+				(optionSelected)="updateValue($event.option.value)">
+				<ng-container
+					*ngIf="_messageTypes | async as messageTypes; else loading">
+					<ng-container *ngIf="_count | async as count; else loading">
+						<ng-container
+							*ngIf="_size | async as size; else loading">
+							<osee-mat-option-loading
+								[data]="messageTypes"
+								objectName="message types"
+								[paginationSize]="size"
+								paginationMode="AUTO"
+								[count]="count">
+								<ng-template let-option>
+									<mat-option
+										[attr.data-cy]="'option-' + option.name"
+										[value]="option.name"
+										[id]="option.name">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						</ng-container>
 					</ng-container>
 				</ng-container>
-			</ng-container>
-			<ng-template #loading>
-				<mat-option
-					id="-1"
-					[value]="{ id: '-1', name: 'invalid' }">
-					Loading...
-				</mat-option>
-			</ng-template>
-		</mat-autocomplete>
-	</mat-form-field>
+				<ng-template #loading>
+					<mat-option
+						id="'-1'"
+						[value]="'invalid'">
+						Loading...
+					</mat-option>
+				</ng-template>
+			</mat-autocomplete>
+		</mat-form-field>
+	</ng-container>
 </ng-container>

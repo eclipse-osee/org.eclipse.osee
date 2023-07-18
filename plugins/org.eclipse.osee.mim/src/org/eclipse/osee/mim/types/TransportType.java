@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -41,6 +42,7 @@ public class TransportType extends PLGenericDBObject {
    private List<String> availableSubmessageHeaders = new LinkedList<String>();
    private List<String> availableStructureHeaders = new LinkedList<String>();
    private List<String> availableElementHeaders = new LinkedList<String>();
+   private ApplicabilityToken applicability;
 
    public TransportType(ArtifactToken art) {
       super(art);
@@ -97,7 +99,9 @@ public class TransportType extends PLGenericDBObject {
             this.getJSONContents(art.getSoleAttributeValue(CoreAttributeTypes.AvailableStructureHeaders, "[]")));
          this.setAvailableElementHeaders(
             this.getJSONContents(art.getSoleAttributeValue(CoreAttributeTypes.AvailableElementHeaders, "[]")));
-         this.setDashed(art.getSoleAttributeValue(CoreAttributeTypes.DashedPresentation, false));
+         this.setDashedPresentation(art.getSoleAttributeValue(CoreAttributeTypes.DashedPresentation, false));
+         this.setApplicability(!art.getApplicabilityToken().getId().equals(
+            -1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
       } else {
          this.setByteAlignValidation(false);
          this.setMessageGeneration(false);
@@ -108,7 +112,8 @@ public class TransportType extends PLGenericDBObject {
          this.setMinimumSubscriberMultiplicity(0);
          this.setMaximumPublisherMultiplicity(0);
          this.setMaximumSubscriberMultiplicity(0);
-         this.setDashed(false);
+         this.setDashedPresentation(false);
+         this.setApplicability(ApplicabilityToken.SENTINEL);
       }
    }
 
@@ -269,22 +274,37 @@ public class TransportType extends PLGenericDBObject {
    private List<String> getJSONContents(String jsonToParse) {
       String innerString = jsonToParse.substring(jsonToParse.indexOf("[") + 1, jsonToParse.indexOf("]"));
       List<String> innerStrings = Arrays.asList(innerString.split(","));
-      return innerStrings.stream().map(s -> s.replaceAll("'", "")).collect(Collectors.toList());
+      return innerStrings.stream().filter(s -> !s.isEmpty()).map(s -> s.replaceAll("'", "")).collect(
+         Collectors.toList());
 
    }
 
    /**
     * @return the isDashed
     */
-   public boolean isDashed() {
+   public boolean getDashedPresentation() {
       return isDashed;
    }
 
    /**
     * @param isDashed the isDashed to set
     */
-   public void setDashed(boolean isDashed) {
+   public void setDashedPresentation(boolean isDashed) {
       this.isDashed = isDashed;
+   }
+
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
    }
 
 }

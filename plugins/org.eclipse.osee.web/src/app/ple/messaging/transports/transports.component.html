@@ -38,8 +38,46 @@
 			[ngClass]="
 				i % 2 === 0 ? 'message-table-row-even' : 'message-table-row-odd'
 			"
-			[attr.data-cy]="'table-element-' + element[header]">
-			{{ element[header] }}
+			[attr.data-cy]="'table-element-' + element[header]"
+			class="tw-truncate">
+			<ng-container [ngSwitch]="header">
+				<ng-container *ngSwitchCase="'applicability'">
+					{{ element[header].name }}
+				</ng-container>
+				<ng-container *ngSwitchCase="'availableMessageHeaders'">
+					<ng-container *ngFor="let h of element[header]">
+						{{ h + ' , ' }}
+						<br />
+					</ng-container>
+				</ng-container>
+				<ng-container *ngSwitchCase="'availableSubmessageHeaders'">
+					<ng-container *ngFor="let h of element[header]">
+						{{ h + ' , ' }}
+						<br />
+					</ng-container>
+				</ng-container>
+				<ng-container *ngSwitchCase="'availableStructureHeaders'">
+					<ng-container *ngFor="let h of element[header]">
+						{{ h + ' , ' }}
+						<br />
+					</ng-container>
+				</ng-container>
+				<ng-container *ngSwitchCase="'availableElementHeaders'">
+					<ng-container *ngFor="let h of element[header]">
+						{{ h + ' , ' }}
+						<br />
+					</ng-container>
+				</ng-container>
+				<ng-container *ngSwitchCase="'interfaceLevelsToUse'">
+					<ng-container *ngFor="let level of element[header]">
+						{{ level + ' , ' }}
+						<br />
+					</ng-container>
+				</ng-container>
+				<ng-container *ngSwitchDefault>
+					{{ element[header] }}
+				</ng-container>
+			</ng-container>
 		</td>
 	</ng-container>
 
@@ -50,7 +88,8 @@
 	<tr
 		mat-row
 		*matRowDef="let row; columns: (headers | async) || []"
-		[attr.data-cy]="'transport-type-table-row-' + row.name"></tr>
+		[attr.data-cy]="'transport-type-table-row-' + row.name"
+		(contextmenu)="openMenu($event, row)"></tr>
 </table>
 
 <button
@@ -60,3 +99,21 @@
 	(click)="openAddDialog()">
 	<mat-icon>add</mat-icon>
 </button>
+<mat-menu
+	#contextMenu="matMenu"
+	class="wide-mat-menu">
+	<ng-template
+		matMenuContent
+		let-transport="transport">
+		<button
+			mat-menu-item
+			(click)="openEditDialog(transport)">
+			Edit Transport Type {{ transport.name }}
+		</button>
+	</ng-template>
+</mat-menu>
+<div
+	class="tw-invisible tw-fixed"
+	[style.left]="menuPosition.x"
+	[style.top]="menuPosition.y"
+	[matMenuTriggerFor]="contextMenu"></div>

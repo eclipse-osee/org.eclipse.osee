@@ -1,0 +1,229 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form #transportTypeForm="ngForm">
+	<mat-dialog-content>
+		<mat-form-field class="tw-w-full">
+			<mat-label>Name</mat-label>
+			<input
+				matInput
+				[(ngModel)]="transportType.name"
+				required
+				name="name"
+				data-cy="field-name" />
+		</mat-form-field>
+		<br />
+		<mat-slide-toggle
+			[(ngModel)]="transportType.byteAlignValidation"
+			color="primary"
+			data-cy="field-validation"
+			name="byteAlignValidation"
+			><mat-label>Byte Align Validation</mat-label></mat-slide-toggle
+		>
+		<br />
+		<mat-form-field class="tw-w-full">
+			<mat-label>Byte Align Validation Size</mat-label>
+			<input
+				matInput
+				type="number"
+				[(ngModel)]="transportType.byteAlignValidationSize"
+				[required]="transportType.byteAlignValidation"
+				name="byteAlignValidationSize"
+				data-cy="field-validation-size" />
+		</mat-form-field>
+		<br />
+		<mat-slide-toggle
+			[(ngModel)]="transportType.messageGeneration"
+			color="primary"
+			data-cy="field-generation"
+			name="messageGeneration"
+			><mat-label>Message Generation</mat-label></mat-slide-toggle
+		>
+		<br />
+		<osee-message-type-dropdown
+			[required]="transportType.messageGeneration"
+			[(messageType)]="
+				transportType.messageGenerationType
+			"></osee-message-type-dropdown>
+		<br />
+		<mat-form-field class="tw-w-full">
+			<mat-label>Message Generation Position</mat-label>
+			<input
+				matInput
+				[(ngModel)]="transportType.messageGenerationPosition"
+				[required]="transportType.messageGeneration"
+				name="messageGenerationPosition"
+				data-cy="field-generation-position" />
+			<mat-hint align="end">Can be LAST, or 0..n</mat-hint>
+		</mat-form-field>
+		<br />
+		<mat-form-field class="tw-w-1/2">
+			<mat-label>Minimum Publisher Multiplicity</mat-label>
+			<input
+				matInput
+				type="number"
+				[(ngModel)]="transportType.minimumPublisherMultiplicity"
+				required
+				name="minimumPublisherMultiplicity"
+				data-cy="field-minimum-publisher-multiplicity" />
+		</mat-form-field>
+		<mat-form-field class="tw-w-1/2">
+			<mat-label>Maximum Publisher Multiplicity</mat-label>
+			<input
+				matInput
+				type="number"
+				[(ngModel)]="transportType.maximumPublisherMultiplicity"
+				required
+				name="maximumPublisherMultiplicity"
+				data-cy="field-maximum-publisher-multiplicity" />
+		</mat-form-field>
+		<br />
+		<mat-form-field class="tw-w-1/2">
+			<mat-label>Minimum Subscriber Multiplicity</mat-label>
+			<input
+				matInput
+				type="number"
+				[(ngModel)]="transportType.minimumSubscriberMultiplicity"
+				required
+				name="minimumSubscriberrMultiplicity"
+				data-cy="field-minimum-subscriber-multiplicity" />
+		</mat-form-field>
+		<mat-form-field class="tw-w-1/2">
+			<mat-label>Maximum Subscriber Multiplicity</mat-label>
+			<input
+				matInput
+				type="number"
+				[(ngModel)]="transportType.maximumSubscriberMultiplicity"
+				required
+				name="maximumSubscriberMultiplicity"
+				data-cy="field-maximum-subscriber-multiplicity" />
+		</mat-form-field>
+		<br />
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Available Message Headers</mat-label>
+			<mat-select
+				[(ngModel)]="transportType.availableMessageHeaders"
+				name="availableMessageHeaders"
+				data-cy="field-available-message-headers"
+				required
+				multiple>
+				<ng-container *ngFor="let header of messageHeaders | async">
+					<mat-option
+						[value]="header.header"
+						[id]="header.header">
+						{{ header.humanReadable }}
+					</mat-option>
+				</ng-container>
+			</mat-select>
+		</mat-form-field>
+		<br />
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Available Submessage Headers</mat-label>
+			<mat-select
+				[(ngModel)]="transportType.availableSubmessageHeaders"
+				name="availableSubmessageHeaders"
+				data-cy="field-available-submessage-headers"
+				required
+				multiple>
+				<ng-container *ngFor="let header of subMessageHeaders | async">
+					<mat-option
+						[value]="header.header"
+						[id]="header.header">
+						{{ header.humanReadable }}
+					</mat-option>
+				</ng-container>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Available Structure Headers</mat-label>
+			<mat-select
+				[(ngModel)]="transportType.availableStructureHeaders"
+				name="availableStructureHeaders"
+				data-cy="field-available-structure-headers"
+				required
+				multiple>
+				<ng-container *ngFor="let header of structureHeaders | async">
+					<mat-option
+						[value]="header.header"
+						[id]="header.header">
+						{{ header.humanReadable }}
+					</mat-option>
+				</ng-container>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Available Element Headers</mat-label>
+			<mat-select
+				[(ngModel)]="transportType.availableElementHeaders"
+				name="availableElementHeaders"
+				data-cy="field-available-element-headers"
+				required
+				multiple>
+				<ng-container *ngFor="let header of elementHeaders | async">
+					<mat-option
+						[value]="header.header"
+						[id]="header.header">
+						{{ header.humanReadable }}
+					</mat-option>
+				</ng-container>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Interface Levels To Use</mat-label>
+			<mat-select
+				[(ngModel)]="transportType.interfaceLevelsToUse"
+				name="interfaceLevelsToUse"
+				data-cy="field-interface-levels-to-use"
+				required
+				multiple>
+				<ng-container *ngFor="let level of levels">
+					<mat-option [value]="level">
+						{{ level }}
+					</mat-option>
+				</ng-container>
+			</mat-select>
+		</mat-form-field>
+		<mat-slide-toggle
+			[(ngModel)]="transportType.dashedPresentation"
+			color="primary"
+			data-cy="field-dashed"
+			name="dashedPresentation"
+			><mat-label>Dashed Line</mat-label></mat-slide-toggle
+		>
+		<osee-applicability-selector
+			[required]="true"
+			[(applicability)]="transportType.applicability">
+		</osee-applicability-selector>
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button
+			mat-button
+			(click)="onNoClick()">
+			Cancel
+		</button>
+		<button
+			mat-raised-button
+			color="primary"
+			data-cy="submit-btn"
+			(click)="formComplete()"
+			[disabled]="
+				transportType.name.length === 0 ||
+				!(transportType.byteAlignValidation
+					? transportType.byteAlignValidationSize !== 0
+					: true) ||
+				transportTypeForm.invalid ||
+				transportTypeForm.pending
+			">
+			Ok
+		</button>
+	</mat-dialog-actions>
+</form>

@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { transportType } from '@osee/messaging/shared/types';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
 
 export const ethernetTransportType: Required<transportType> = {
 	id: '1233456',
@@ -25,6 +26,13 @@ export const ethernetTransportType: Required<transportType> = {
 	minimumSubscriberMultiplicity: 1,
 	maximumSubscriberMultiplicity: 1,
 	directConnection: true,
+	dashedPresentation: false,
+	availableMessageHeaders: [],
+	availableSubmessageHeaders: [],
+	availableStructureHeaders: [],
+	availableElementHeaders: [],
+	interfaceLevelsToUse: ['message', 'submessage', 'structure', 'element'],
+	applicability: applicabilitySentinel,
 };
 
 export const nonDirectTransportType: Required<transportType> = {
@@ -40,4 +48,11 @@ export const nonDirectTransportType: Required<transportType> = {
 	minimumSubscriberMultiplicity: 0,
 	maximumSubscriberMultiplicity: 0,
 	directConnection: false,
+	dashedPresentation: false,
+	availableMessageHeaders: [],
+	availableSubmessageHeaders: [],
+	availableStructureHeaders: [],
+	availableElementHeaders: [],
+	interfaceLevelsToUse: ['message', 'submessage', 'structure', 'element'],
+	applicability: applicabilitySentinel,
 };

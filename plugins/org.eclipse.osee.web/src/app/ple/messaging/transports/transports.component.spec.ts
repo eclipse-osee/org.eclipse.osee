@@ -10,11 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgClass } from '@angular/common';
+import {
+	AsyncPipe,
+	NgFor,
+	NgClass,
+	NgSwitch,
+	NgSwitchCase,
+	NgSwitchDefault,
+} from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -39,11 +47,15 @@ describe('TransportsComponent', () => {
 					AsyncPipe,
 					NgFor,
 					NgClass,
+					NgSwitch,
+					NgSwitchCase,
+					NgSwitchDefault,
 					MatTableModule,
 					MatTooltipModule,
 					MatButtonModule,
 					MatIconModule,
 					MessagingControlsMockComponent,
+					MatMenuModule,
 				],
 			},
 		})

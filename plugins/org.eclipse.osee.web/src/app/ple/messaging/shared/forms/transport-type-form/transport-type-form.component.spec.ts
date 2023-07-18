@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,63 +10,49 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor } from '@angular/common';
+import { NgFor, AsyncPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-	dialogRef,
-	MockTransportTypeFormComponent,
-} from '@osee/messaging/shared/testing';
-import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import { MockMessageTypeDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
+import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 
-import { NewTransportTypeDialogComponent } from './new-transport-type-dialog.component';
+import { TransportTypeFormComponent } from './transport-type-form.component';
 
-describe('NewTransportTypeDialogComponent', () => {
-	let component: NewTransportTypeDialogComponent;
-	let fixture: ComponentFixture<NewTransportTypeDialogComponent>;
+describe('TransportTypeFormComponent', () => {
+	let component: TransportTypeFormComponent;
+	let fixture: ComponentFixture<TransportTypeFormComponent>;
 
 	beforeEach(async () => {
-		await TestBed.overrideComponent(NewTransportTypeDialogComponent, {
+		await TestBed.overrideComponent(TransportTypeFormComponent, {
 			set: {
 				imports: [
-					MatDialogModule,
-					MatFormFieldModule,
-					MatInputModule,
 					FormsModule,
-					MatSlideToggleModule,
-					MatSelectModule,
-					MatOptionModule,
 					NgFor,
+					AsyncPipe,
+					MatFormFieldModule,
 					MatButtonModule,
-					MockTransportTypeFormComponent,
+					MatInputModule,
+					MatSelectModule,
+					MatSlideToggleModule,
+					MatDialogModule,
+					MockMessageTypeDropdownComponent,
+					MockApplicabilitySelectorComponent,
 				],
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					MatDialogModule,
-					MatFormFieldModule,
-					MatInputModule,
-					MatSelectModule,
-					MockMatOptionLoadingComponent,
-					MatButtonModule,
-					FormsModule,
-					NoopAnimationsModule,
-					MatSlideToggleModule,
-				],
-				providers: [{ provide: MatDialogRef, useValue: dialogRef }],
+				imports: [NoopAnimationsModule, TransportTypeFormComponent],
 			})
 			.compileComponents();
 
-		fixture = TestBed.createComponent(NewTransportTypeDialogComponent);
+		fixture = TestBed.createComponent(TransportTypeFormComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
