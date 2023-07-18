@@ -212,6 +212,13 @@ public final class DemoArtifactToken {
    public static final IAtsActionableItemArtifactToken CIS_CSCI = AtsActionableItemArtifactToken.valueOf(442342798L, "CIS CSCI");
 
    //////////////////////////////////
+   // Markdown Requirement Images
+   //////////////////////////////////
+
+   public static final ArtifactToken SAWTSR_Image_Markdown = ArtifactToken.valueOf(6829343659904028894L, "SAWTSR", DemoBranches.SAW_Bld_1, CoreArtifactTypes.GeneralDocument);
+   public static final ArtifactToken Robot_Data_Flow_Image_Markdown = ArtifactToken.valueOf(8446203177483923452L, "Robot Data Flow", DemoBranches.SAW_Bld_1, CoreArtifactTypes.GeneralDocument);
+
+   //////////////////////////////////
    // Other
    //////////////////////////////////
 
@@ -221,7 +228,8 @@ public final class DemoArtifactToken {
    //////////////////////////////////
    // Other
    //////////////////////////////////
-  public static final ArtifactToken RobotApiSwMarkdown = ArtifactToken.valueOf(1995841667264415544L, "Robot API - Markdown", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
+
+   public static final ArtifactToken RobotApiSwMarkdown = ArtifactToken.valueOf(1995841667264415544L, "Robot API - Markdown", DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown);
 
    //////////////////////////////////
    // System Safety

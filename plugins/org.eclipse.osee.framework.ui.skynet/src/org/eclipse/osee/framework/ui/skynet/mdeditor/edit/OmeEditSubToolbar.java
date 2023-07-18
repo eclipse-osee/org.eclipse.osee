@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit.edit;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

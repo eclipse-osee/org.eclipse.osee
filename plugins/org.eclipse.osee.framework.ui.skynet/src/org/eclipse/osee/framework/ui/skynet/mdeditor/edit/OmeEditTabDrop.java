@@ -10,11 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit.edit;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -60,9 +61,14 @@ public class OmeEditTabDrop {
          @Override
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             Artifact dropArt = dropArtifacts[0];
-            String oseeLink = String.format("<oseelink>[%s]-[%s]</oseelink>", //
-               dropArt.getIdString(), dropArt.getName());
-            omeEditTab.appendText("\n" + oseeLink);
+            String artifactLink = "";
+            if (dropArt.getAttributeValues(CoreAttributeTypes.Extension).contains("png")) {
+               artifactLink =
+                  String.format("<oseeimagelink>[%s]-[%s]</oseeimagelink>", dropArt.getIdString(), dropArt.getName());
+            } else {
+               artifactLink = String.format("<oseelink>[%s]-[%s]</oseelink>", dropArt.getIdString(), dropArt.getName());
+            }
+            omeEditTab.appendText("\n" + artifactLink);
 
             // TBD - Shouldn't need loopback, but might for external editor
             //            String loopbackUrl =

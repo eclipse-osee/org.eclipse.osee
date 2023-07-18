@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit;
+package org.eclipse.osee.framework.ui.skynet.mdeditor;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.AbstractOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;

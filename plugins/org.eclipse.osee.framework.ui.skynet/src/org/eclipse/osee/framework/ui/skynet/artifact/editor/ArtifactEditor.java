@@ -38,10 +38,10 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.details.ArtEdDet
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.rel.ArtEdRelationsTab;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.markedit.OseeMarkdownEditorInput;
-import org.eclipse.osee.framework.ui.skynet.markedit.edit.OmeEditTab;
-import org.eclipse.osee.framework.ui.skynet.markedit.html.OmeHtmlTab;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.OseeMarkdownEditorInput;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.edit.OmeEditTab;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.html.OmeHtmlTab;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;

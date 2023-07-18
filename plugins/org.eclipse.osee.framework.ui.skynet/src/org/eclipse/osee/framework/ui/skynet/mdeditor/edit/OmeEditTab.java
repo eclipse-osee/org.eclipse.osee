@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.markedit.edit;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.edit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
-import org.eclipse.osee.framework.ui.skynet.markedit.HorizontalAction;
-import org.eclipse.osee.framework.ui.skynet.markedit.OmeAbstractTab;
-import org.eclipse.osee.framework.ui.skynet.markedit.html.OmeHtmlComposite;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.AbstractOmeData;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.HorizontalAction;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.OmeAbstractTab;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.html.OmeHtmlComposite;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;

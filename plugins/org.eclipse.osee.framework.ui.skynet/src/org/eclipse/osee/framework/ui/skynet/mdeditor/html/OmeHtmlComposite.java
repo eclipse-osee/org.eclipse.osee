@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.markedit.html;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.html;
 
-import org.eclipse.osee.framework.ui.skynet.markedit.model.AbstractOmeData;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.ArtOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -51,16 +51,11 @@ public class OmeHtmlComposite extends Composite {
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       try {
-         Button reload = new Button(this, SWT.PUSH);
-         reload.setText("Refresh");
-         reload.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               handleRefreshAction(omeData);
-            }
+         // Toolbar located above browser preview with accessibility options
+         createSubToolbar(omeData);
 
-         });
+         // Browser preview
          browser = new Browser(this, SWT.BORDER);
          if (omeData instanceof ArtOmeData) {
             browser.addLocationListener(new OmeBrowserListener((ArtOmeData) omeData));
@@ -68,6 +63,7 @@ public class OmeHtmlComposite extends Composite {
          browser.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
          OmeBrowserMenu menu = new OmeBrowserMenu(omeData, browser);
          browser.setMenu(menu.getPopup(parent));
+
       } catch (SWTError e) {
          // do nothing
       }
@@ -90,6 +86,44 @@ public class OmeHtmlComposite extends Composite {
 
    public Browser getBrowser() {
       return browser;
+   }
+
+   private void createSubToolbar(AbstractOmeData omeData) {
+      // Create a composite to hold the buttons side by side
+      Composite buttonComposite = new Composite(this, SWT.NONE);
+      GridLayout buttonLayout = new GridLayout();
+      buttonLayout.numColumns = 2; // Set the numColumns to 2 for side-by-side layout
+      buttonLayout.marginWidth = 0;
+      buttonLayout.marginHeight = 0;
+      buttonComposite.setLayout(buttonLayout);
+      buttonComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      // Refresh button
+      Button reload = new Button(buttonComposite, SWT.PUSH);
+      reload.setText("Refresh");
+      reload.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            handleRefreshAction(omeData);
+         }
+
+      });
+
+      // Toggle display images button
+      Button toggleImages = new Button(buttonComposite, SWT.TOGGLE);
+      toggleImages.setText("Display Images");
+      toggleImages.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (omeData instanceof ArtOmeData) {
+               ((ArtOmeData) omeData).setDisplayImagesBool();
+               handleRefreshAction(omeData);
+            }
+         }
+
+      });
    }
 
 }

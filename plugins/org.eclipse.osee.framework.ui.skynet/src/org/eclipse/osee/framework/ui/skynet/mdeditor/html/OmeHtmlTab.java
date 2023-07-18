@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.markedit.html;
+package org.eclipse.osee.framework.ui.skynet.mdeditor.html;
 
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
@@ -22,11 +22,15 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.regex.Matcher;
+import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
-import org.eclipse.osee.framework.ui.skynet.markedit.OmeAbstractTab;
-import org.eclipse.osee.framework.ui.skynet.markedit.model.AbstractOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.OmeAbstractTab;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
+import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -61,12 +65,48 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
          mdContent = omeData.getMdContent();
       }
       if (Strings.isValid(mdContent)) {
-         Matcher m = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
-         while (m.find()) {
-            String idStr = m.group(1);
-            String name = m.group(2);
+         // Converting oseelink tags to html
+         Matcher m1 = XTextOseeLinkListener.oseeLinkPattern.matcher(mdContent);
+         while (m1.find()) {
+            String idStr = m1.group(1);
+            String name = m1.group(2);
             String url = String.format("<a href=\"%s\">%s</a>", idStr, name);
             mdContent = mdContent.replaceFirst("<oseelink>(.*?)</oseelink>", url);
+         }
+
+         // Converting oseeimagelink tags to html
+         Matcher m2 = XTextOseeImageLinkListener.oseeImageLinkPattern.matcher(mdContent);
+         while (m2.find()) {
+            String idStr = m2.group(1);
+            String name = m2.group(2);
+
+            if (omeData instanceof ArtOmeData) {
+               // If "Display Images" option is toggled
+               if (((ArtOmeData) omeData).getDisplayImagesBool()) {
+
+                  // Save the image artifact to the .preview folder in osee.data
+                  BranchToken imageArtifactBranch = ((ArtOmeData) omeData).getArtifact().getBranch();
+
+                  /*
+                   * Build the rest call to place within the image tag. Rest call requires server, branch id, artifact
+                   * id (general document artifact), attribute type id (native content attribute)
+                   */
+                  String imageContentRestCall = String.format("%s/orcs/branch/%s/artifact/%s/attribute/type/%s",
+                     System.getProperty("osee.application.server"), imageArtifactBranch.getId(), idStr,
+                     CoreAttributeTypes.NativeContent.getId());
+
+                  // Create the image tag with the file location specified
+                  String imgTag = String.format("<img src=\"%s\" alt=\"%s\">", imageContentRestCall, name);
+
+                  mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", imgTag);
+
+               } else {
+                  // Create normal href link to the artifact
+                  String hrefImageArt = String.format("<a href=\"%s\">%s</a>", idStr, name);
+
+                  mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", hrefImageArt);
+               }
+            }
          }
 
          MutableDataSet options = new MutableDataSet();
@@ -92,9 +132,11 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
    }
 
    private static String addHTMLStyling(String html) {
-      String tableStyle =
-         "<style> table { width: 100%; } table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; } </style>";
-      return tableStyle + html;
+      String style =
+         "<style> table { width: 100%; } table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }";
+      style += "img { display: block; margin-left: auto; margin-right: auto; }";
+      style += "</style>";
+      return style + html;
    }
 
    private static String execCmd(String cmd) throws java.io.IOException {
