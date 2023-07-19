@@ -88,6 +88,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public interface CoreAttributeTypes {
 
    // @formatter:off
+   
+   AttributeTypeString AbridgedEmail = osee.createString(1867950456941316571L, "Abridged Email", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
 

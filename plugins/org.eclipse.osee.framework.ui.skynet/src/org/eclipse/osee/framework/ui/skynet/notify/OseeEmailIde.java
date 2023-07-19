@@ -38,6 +38,7 @@ public class OseeEmailIde extends OseeEmail {
    }
 
    public static void emailHtml(String fromEmail, Collection<String> emails, String subject, String htmlBody) {
+      // TODO : Ensure that abridged emails are addressed when this method is actually utilized.
       OseeEmail emailMessage = new OseeEmailIde(emails, fromEmail, fromEmail, subject, htmlBody, BodyType.Html);
       emailMessage.send();
    }
@@ -47,12 +48,14 @@ public class OseeEmailIde extends OseeEmail {
       return new OseeEmailIde();
    }
 
-   public static OseeEmailIde create(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
+   public static OseeEmailIde create(Collection<String> toAddresses, String fromAddress, String replyToAddress,
+      String subject, String body, BodyType bodyType) {
       loadDefaultMailServer();
       return new OseeEmailIde(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
    }
 
-   public static OseeEmailIde create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
+   public static OseeEmailIde create(String fromEmail, String toAddress, String subject, String body,
+      BodyType bodyType) {
       loadDefaultMailServer();
       return new OseeEmailIde(fromEmail, toAddress, subject, body, bodyType);
    }

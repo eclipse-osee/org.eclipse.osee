@@ -252,4 +252,10 @@ public class XResultDataUI {
       return false;
    }
 
+   public static void errorf(String title, String formatStr, Object... objs) {
+      XResultData rd = new XResultData();
+      rd.errorf(formatStr, objs);
+      XResultDataUI.report(rd, title);
+   }
+
 }

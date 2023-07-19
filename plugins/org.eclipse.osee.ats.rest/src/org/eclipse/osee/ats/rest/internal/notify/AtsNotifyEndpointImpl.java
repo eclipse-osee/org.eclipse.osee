@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
+import org.eclipse.osee.ats.api.notify.TestEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -45,11 +46,12 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
    }
 
    @Override
-   public XResultData sendEmail(String email) {
+   public XResultData sendTestEmail(TestEmail testEmail) {
       XResultData rd = new XResultData();
       rd.log("Send Test Email - Server");
       try {
-         OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList(email), email, email, "Test Email - Server",
+         OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList(testEmail.getEmail()), testEmail.getEmail(),
+            testEmail.getEmail(), testEmail.getSubject(),
             AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
          emailMessage.send();
       } catch (Exception ex) {

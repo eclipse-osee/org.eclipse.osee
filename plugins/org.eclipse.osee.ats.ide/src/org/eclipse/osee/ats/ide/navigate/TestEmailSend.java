@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.notify.TestEmail;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.OseeEmail;
@@ -39,49 +40,67 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class TestEmailSend extends XNavigateItemAction {
 
+   private static final String TITLE = "Test Email Send";
    AtsApi atsApi;
+   private XResultData rd;
 
    public TestEmailSend() {
-      super("Test Email Send", FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
+      super(TITLE, FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
       atsApi = AtsApiService.get();
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         XResultData rd = new XResultData();
-         rd.log("Send Test Email");
+         rd = new XResultData();
+         rd.logf("%s\n\n", getName());
+         rd.log("1. Two basic \"Hello World\" emails should be sent; one from client and another from server.\n\n" //
+            + "   - If Abridged Email attribute is set on your user artifact, another two " //
+            + "emails should be sent from client and server with only basic information " //
+            + "about the change (eg: No title, description, etc).\n\n");
          User user = UserManager.getUser();
          if (user.isInvalid()) {
-            rd.errorf("User [%s] is invalid", user);
-         } else {
-            String email = user.getEmail();
-            if (!EmailUtil.isEmailValid(email)) {
-               rd.errorf("User email [%s] is invalid", user);
-               XResultDataUI.report(rd, "Test Email");
-               return;
-            } else {
-               rd = new XResultData();
-               rd.log("Send Test Email - Client");
-               try {
-                  OseeEmail emailMessage =
-                     OseeEmailIde.create(Arrays.asList(email), email, email, "Test Email - Client",
-                        AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
-                  emailMessage.send();
-                  rd.log("Completed");
-               } catch (Exception ex) {
-                  rd.error(Lib.exceptionToString(ex));
-               }
-               XResultDataUI.report(rd, "Send Test Email - Client");
-
-               rd = atsApi.getServerEndpoints().getNotifyEndpoint().sendEmail(email);
-               rd.log("Completed");
-               XResultDataUI.report(rd, "Send Test Email - Server");
-            }
+            rd.errorf(TITLE, "User [%s] is invalid", user);
          }
 
+         testBasicEmail(user);
+
+         XResultDataUI.report(rd, getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
+
+   private void testBasicEmail(User user) {
+      String email = user.getEmail();
+      if (!EmailUtil.isEmailValid(email)) {
+         XResultDataUI.errorf(TITLE, "User email [%s] is invalid", user);
+         return;
+      }
+
+      // Test Email Client
+      String title = "Send Test Email - Client";
+      rd.log(title);
+      try {
+         OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(email), email, email, title,
+            AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
+         emailMessage.send();
+         rd.log("Completed");
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+
+      // Test Email Server
+      String title2 = "Send Test Email - Server";
+      rd.log(title2);
+      try {
+         XResultData remoteRd =
+            atsApi.getServerEndpoints().getNotifyEndpoint().sendTestEmail(TestEmail.create(email, title2));
+         rd.merge(remoteRd);
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+      rd.log("Completed");
+   }
+
 }

@@ -180,4 +180,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return sb.toString();
    }
 
+   @Override
+   public String getAbridgedEmail(ArtifactToken user, AtsApi atsApi) {
+      return atsApi.getAttributeResolver().getSoleAttributeValue(user, CoreAttributeTypes.AbridgedEmail, "");
+   }
+
 }
