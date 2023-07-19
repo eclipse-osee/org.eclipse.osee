@@ -707,9 +707,16 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          }
       }
       for (QueryData grandChild : queryData.getChildrenQueryData()) {
-         loadChildQueryData(grandChild, child);
+         if (queryData.getOnlyCriteriaSet().isEmpty()) {
+            loadChildQueryData(grandChild, parent);
+         } else {
+            loadChildQueryData(grandChild, child);
+         }
       }
-      parent.childrenQueryData.add(child);
+      if (!child.getOnlyCriteriaSet().isEmpty()) {
+         parent.childrenQueryData.add(child);
+      }
+
    }
 
    private QueryData followQueryData() {
