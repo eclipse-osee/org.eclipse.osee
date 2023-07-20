@@ -83,7 +83,7 @@ public class DispoSourceFileResource {
       if (!(new File(fullPath).exists())) {
          if (fileName.contains(".2.")) {
             String regex = "\\.2\\.";
-            fullPath = fullPath.replaceAll(regex, String.format(".%s.2.", fileNumber));
+            fullPath = fullPath.replaceAll(regex, String.format(".2.%s.", fileNumber));
          } else {
             String regex = "\\.LIS";
             fullPath = fullPath.replaceAll(regex, String.format(".%s.LIS", fileNumber));

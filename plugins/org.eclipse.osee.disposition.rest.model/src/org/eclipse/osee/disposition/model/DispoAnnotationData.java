@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.disposition.model;
 
+import static org.eclipse.osee.disposition.model.DispoStrings.Exception_Handling_Resolution;
+import static org.eclipse.osee.disposition.model.DispoStrings.Test_Unit_Resolution;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -106,6 +108,11 @@ public class DispoAnnotationData {
    }
 
    public boolean getIsDefault() {
+      if (resolutionType.equals(Test_Unit_Resolution) || resolutionType.equals(Exception_Handling_Resolution)) {
+         isDefault = true;
+      } else {
+         isDefault = false;
+      }
       return isDefault;
    }
 

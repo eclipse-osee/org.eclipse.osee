@@ -395,7 +395,6 @@ public class DispoApiImpl implements DispoApi {
          UserId author = getQuery().findUserByName(userName);
          DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
 
-         modifiedDispoItem.setDiscrepanciesList(discrepanciesList);
          modifiedDispoItem.setAnnotationsList(annotationsList);
          modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
 
@@ -445,6 +444,18 @@ public class DispoApiImpl implements DispoApi {
          }
       }
       return wasUpdated;
+   }
+
+   private String matchingDiscrepancyKey(String location, Map<String, Discrepancy> discrepancies) {
+      String toReturn = "";
+      for (String key : discrepancies.keySet()) {
+         Discrepancy discrepancy = discrepancies.get(key);
+         if (String.valueOf(discrepancy.getLocation()).equals(location)) {
+            toReturn = key;
+            break;
+         }
+      }
+      return toReturn;
    }
 
    @Override
