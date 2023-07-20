@@ -96,7 +96,6 @@ public class ChangeReportPageViewApplicability {
 
    private String getArtifactViewApplicabiltyText() {
       ArtifactId view = editor.getViewId();
-      Objects.requireNonNull(getBranch(), "Branch can not be null");
       String viewText =
          view.isValid() ? ArtifactQuery.getArtifactTokenFromId(getBranch(), view).getName() : Widgets.NOT_SET;
       return "<form><p><b>Branch View:</b> " + viewText + "</p></form>";
