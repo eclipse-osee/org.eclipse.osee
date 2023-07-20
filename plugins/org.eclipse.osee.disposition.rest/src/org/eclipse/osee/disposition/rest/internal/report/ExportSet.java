@@ -60,7 +60,8 @@ public class ExportSet {
    Map<CoverageLevel, WrapInt> levelToCoveredTotalCount = new HashMap<>();
    Map<String, Integer> defaultCases = new HashMap<>();
 
-   private final String LEVEL_A_LOCATION_PATTERN = "\\s*\\d+\\s*\\.\\s*\\d+.*?\\.\\s*(T|F)\\s*";
+   private final String LEVEL_A_LOCATION_PATTERN = "\\s*\\d+\\.\\d+\\s*\\(P[a-z]\\)\\s*$";
+   private final String LEVEL_A_SUB_LOCATION_PATTERN = "\\s*\\d+\\.\\d+\\s*\\(P[a-z]\\)\\.\\d+$";
    private final String LEVEL_B_LOCATION_PATTERN = "(.*?RESULT.*|\\s*\\d+\\s*\\.\\s*(T|F).*)";
 
    //@formatter:off
@@ -803,100 +804,35 @@ public class ExportSet {
       CoverageLevel thisAnnotationsLevel = getLevel(location);
 
       switch (thisAnnotationsLevel) {
-         case A: {
+         case A:
             levelsInSet.add(CoverageLevel.A);
-            // Update total pairs count
-            // MCDC pairs have different rules, T and F combo make up one pair so using bitflags
-            String mcdcName = getNameFromLocation(location);
-            boolean isTruePath = getPathFromLocation(location);
-            int mcdcValue = isTruePath ? TRUE_PRESENT : FALSE_PRESENT;
-
-            MCDCCoverageData coverageData = mcdcToCoverageData.get(mcdcName);
-            if (coverageData == null) {
-               coverageData = new MCDCCoverageData(mcdcValue);
-               mcdcToCoverageData.put(mcdcName, coverageData);
-            } else {
-               coverageData.updateBitFlag(mcdcValue);
-            }
-            if (coverageData.isPairPresent()) {
-               levelToTotalCount.get(thisAnnotationsLevel).inc();
-            }
-
+            levelToTotalCount.get(thisAnnotationsLevel).inc();
             // Update total covered counts
-            uptickA(levelToResolutionToCount.get(thisAnnotationsLevel), levelToUnitsToCovered.get(thisAnnotationsLevel),
-               levelToCoveredTotalCount.get(thisAnnotationsLevel), unit, resolutionType, coverageData, mcdcName,
-               isTruePath);
-         }
+            uptickCoverage(levelToResolutionToCount.get(thisAnnotationsLevel),
+               levelToUnitsToCovered.get(thisAnnotationsLevel), levelToCoveredTotalCount.get(thisAnnotationsLevel),
+               unit, resolutionType);
             break;
          case B:
             levelsInSet.add(CoverageLevel.B);
-            break;
-         case C: {
-            levelsInSet.add(CoverageLevel.C);
             levelToTotalCount.get(thisAnnotationsLevel).inc();
-
-            uptickBorC(levelToResolutionToCount.get(thisAnnotationsLevel),
+            uptickCoverage(levelToResolutionToCount.get(thisAnnotationsLevel),
                levelToUnitsToCovered.get(thisAnnotationsLevel), levelToCoveredTotalCount.get(thisAnnotationsLevel),
                unit, resolutionType);
-         }
             break;
-         default: {
+         case C:
+            levelsInSet.add(CoverageLevel.C);
+            levelToTotalCount.get(thisAnnotationsLevel).inc();
+            uptickCoverage(levelToResolutionToCount.get(thisAnnotationsLevel),
+               levelToUnitsToCovered.get(thisAnnotationsLevel), levelToCoveredTotalCount.get(thisAnnotationsLevel),
+               unit, resolutionType);
+            break;
+         default:
             // do nothing
-         }
+            break;
       }
    }
 
-   private String getNameFromLocation(String location) {
-      return location.replaceAll("\\(.*", "").trim();
-   }
-
-   private boolean getPathFromLocation(String location) {
-      String[] parts = location.split("\\.");
-      String partWithValue = parts[2];
-      return partWithValue.trim().equals("T");
-   }
-
-   private void uptickA(Map<String, WrapInt> resolutionTypeToCount, Map<String, Pair<WrapInt, WrapInt>> unitToCovered,
-      WrapInt currentCoveredTotalCount, String unit, String resolutionType, MCDCCoverageData coverageData,
-      String mcdcName, boolean isTruePath) {
-      int mcdcValue = 0;
-      if (Strings.isValid(resolutionType)) {
-         coverageData.addResolutionType(resolutionType);
-         mcdcValue = isTruePath ? TRUE_COVERED : FALSE_COVERED;
-      }
-      // safe to add mcdcValue to bitflag since if it's 0 (resolutionType wasn't valid) nothing will change
-      coverageData.updateBitFlag(mcdcValue);
-
-      // Uptick Resolution type count
-      if (coverageData.isPairCovered()) {
-         if (!isTypeAnalyze(resolutionType)) {
-            currentCoveredTotalCount.inc();
-         }
-
-         WrapInt count = resolutionTypeToCount.get(coverageData.getCoveringResolutionType());
-         if (count == null) {
-            resolutionTypeToCount.put(resolutionType, new WrapInt(1));
-         } else {
-            count.inc();
-         }
-      }
-
-      // uptick unit count
-      int amtToIncrementTotal = coverageData.isPairPresent() ? 1 : 0;
-      int amtToIncrementCoveredTotal = coverageData.isPairCovered() ? 1 : 0;
-
-      Pair<WrapInt, WrapInt> coveredOverTotal = unitToCovered.get(unit);
-      if (coveredOverTotal == null) {
-         Pair<WrapInt, WrapInt> newCount =
-            new Pair<>(new WrapInt(amtToIncrementCoveredTotal), new WrapInt(amtToIncrementCoveredTotal));
-         unitToCovered.put(unit, newCount);
-      } else {
-         coveredOverTotal.getFirst().inc(amtToIncrementCoveredTotal);
-         coveredOverTotal.getSecond().inc(amtToIncrementTotal);
-      }
-   }
-
-   private void uptickBorC(Map<String, WrapInt> resolutionTypeToCount,
+   private void uptickCoverage(Map<String, WrapInt> resolutionTypeToCount,
       Map<String, Pair<WrapInt, WrapInt>> unitToCovered, WrapInt currentCoveredTotalCount, String unit,
       String resolutionType) {
       WrapInt count = resolutionTypeToCount.get(resolutionType);

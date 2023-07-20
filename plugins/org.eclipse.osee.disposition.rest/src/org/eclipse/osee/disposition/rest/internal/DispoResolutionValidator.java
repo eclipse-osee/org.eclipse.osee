@@ -13,9 +13,7 @@
 
 package org.eclipse.osee.disposition.rest.internal;
 
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_CODE;
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_REQT;
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_TEST;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -60,7 +58,7 @@ public class DispoResolutionValidator {
    private boolean isAnalyze(DispoAnnotationData annotation) {
       String type = annotation.getResolutionType();
       boolean toReturn = false;
-      if (type.equals(ANALYZE_CODE) || type.equals(ANALYZE_TEST) || type.equals(ANALYZE_REQT)) {
+      if (type.startsWith(MODIFY)) {
          toReturn = true;
       }
       return toReturn;

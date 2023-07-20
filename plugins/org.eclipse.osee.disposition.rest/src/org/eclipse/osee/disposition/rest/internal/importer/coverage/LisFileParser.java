@@ -228,6 +228,7 @@ public class LisFileParser implements DispoImporterApi {
       List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
       List<String> uncovered = dispoConnector.getAllUncoveredDiscprepancies(item);
       List<String> discrepanciesToRemove = new ArrayList<>();
+
       if (!uncovered.isEmpty()) {
          Map<String, Discrepancy> discrepanciesList = item.getDiscrepanciesList();
          for (String id : discrepanciesList.keySet()) {
@@ -290,12 +291,13 @@ public class LisFileParser implements DispoImporterApi {
             if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty() && !matchingDiscrepancy.getIsOverloadedCondition()) {
                addAnnotationForCoveredMcdcLine(item, line, Exception_Handling_Resolution, "", text,
                   matchingDiscrepancy.getPairAnnotations());
+               discrepancies.remove(matchingDiscrepancy.getId());
             } else if (matchingDiscrepancy.getIsOverloadedCondition()) {
                addAnnotationForOverloadedMcdcLine(item, line, text, "", matchingDiscrepancy.getDevNotes());
             } else {
                addAnnotationForCoveredLine(item, line, Exception_Handling_Resolution, "", text);
+               discrepancies.remove(matchingDiscrepancy.getId());
             }
-            discrepancies.remove(matchingDiscrepancy.getId());
          }
       }
    }
@@ -489,8 +491,7 @@ public class LisFileParser implements DispoImporterApi {
          String text;
          if (isMCDCPair) {
             location = String.format("%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition());
-            if (!lineData.getFirst().matches(WHEN_FOR_WHILE) && !lineData.getFirst().matches(
-               CASE_STATEMENT) && !lineData.getFirst().matches(WHILE_ONE)) {
+            if (!lineData.getFirst().matches(WHEN_CASE) && !lineData.getFirst().matches(CASE_STATEMENT)) {
                // Only add corresponding 'F' discrepancy if it's not a FOR, WHEN or WHILE (1) condition statement
                text = String.format("%s %s", lineData.getFirst().trim(), statementCoverageItem.getFullCondition());
                int numberOfConditions = statementCoverageItem.getNumConditions();
@@ -538,21 +539,18 @@ public class LisFileParser implements DispoImporterApi {
          } else {
             text = lineData.getFirst().trim();
             if (statementCoverageItem.getNumConditions() == 2) {
-               if (lineData.getFirst().matches(IF_ELSIF)) {
+               if (text.matches(IF_ELSIF) || text.matches(WHEN_FOR_WHILE) || text.matches(WHILE_ONE) || text.matches(
+                  EXIT_WHEN)) {
                   location = String.format("%s.%s", lineNumber, "T");
                   String locationF = String.format("%s.%s", lineNumber, "F");
                   addDiscrepancy(discrepancies, location, text);
                   addDiscrepancy(discrepancies, locationF, text);
-               } else if (lineData.getFirst().matches(WHEN_FOR_WHILE) || lineData.getFirst().matches(
-                  WHILE_ONE) || lineData.getFirst().matches(EXIT_WHEN)) {
-                  location = String.format("%s.%s", lineNumber, "T");
-                  addDiscrepancy(discrepancies, location, text);
                } else {
                   location = String.valueOf(lineNumber);
                   addDiscrepancy(discrepancies, location, text);
                }
             } else if (statementCoverageItem.getNumConditions() == 1 //
-               && lineData.getFirst().matches(WHEN_CASE)) {
+               && (text.matches(WHEN_CASE) || text.matches(CASE_STATEMENT))) {
                location = String.format("%s.%s", lineNumber, "T");
                addDiscrepancy(discrepancies, location, text);
             } else {
@@ -875,7 +873,6 @@ public class LisFileParser implements DispoImporterApi {
             addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, discrepancyText);
          }
       }
-
    }
 
    private void processSingleResultBranch(String resultPath, Matcher m) {
@@ -920,13 +917,14 @@ public class LisFileParser implements DispoImporterApi {
                if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty() && !matchingDiscrepancy.getIsOverloadedCondition()) {
                   addAnnotationForCoveredMcdcLine(item, location, Test_Unit_Resolution, resultPath, text,
                      matchingDiscrepancy.getPairAnnotations());
+                  discrepancies.remove(matchingDiscrepancy.getId());
                } else if (matchingDiscrepancy.getIsOverloadedCondition()) {
                   addAnnotationForOverloadedMcdcLine(item, location, text, resultPath,
                      matchingDiscrepancy.getDevNotes());
                } else {
                   addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+                  discrepancies.remove(matchingDiscrepancy.getId());
                }
-               discrepancies.remove(matchingDiscrepancy.getId());
                datIdsCoveredByException.remove(
                   generateDatId(m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)));
                item.setDiscrepanciesList(discrepancies);
@@ -1099,27 +1097,30 @@ public class LisFileParser implements DispoImporterApi {
       annotationsList.add(newIndex, newAnnotation);
    }
 
-   private void addAnnotationForCoveredMcdcLine(DispoItemData item, String location, String resolutionType,
+   private boolean addAnnotationForCoveredMcdcLine(DispoItemData item, String location, String resolutionType,
       String coveringFile, String text, Map<Integer, DispoAnnotationData> pairAnnotations) {
+      boolean isCovered = false;
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
       String idOfNewAnnotation = dataFactory.getNewId();
+
       newAnnotation.setId(idOfNewAnnotation);
-
-      newAnnotation.setIsDefault(true);
       newAnnotation.setLocationRefs(location);
-
       newAnnotation.setLastResolution("N/A");
       newAnnotation.setCustomerNotes(text);
+
       List<String> satisfiedPairs = getSatisfiedPairs(pairAnnotations, resolutionType, coveringFile);
       String possiblePairs = getPossiblePairs(pairAnnotations, item);
       newAnnotation.setPossiblePairs(possiblePairs);
       if (!satisfiedPairs.isEmpty()) {
+         newAnnotation.setIsDefault(true);
          newAnnotation.setResolutionType(resolutionType);
          newAnnotation.setResolution(coveringFile);
          newAnnotation.setIsResolutionValid(true);
          newAnnotation.setSatisfiedPairs(String.format("Pairs Satisfied By: %s", satisfiedPairs.toString()));
+         isCovered = true;
       } else {
+         newAnnotation.setIsDefault(false);
          newAnnotation.setResolutionType("");
          newAnnotation.setResolution("");
          newAnnotation.setIsResolutionValid(false);
@@ -1130,6 +1131,7 @@ public class LisFileParser implements DispoImporterApi {
       int newIndex = annotationsList.size();
       newAnnotation.setIndex(newIndex);
       annotationsList.add(newIndex, newAnnotation);
+      return isCovered;
    }
 
    private List<String> getSatisfiedPairs(Map<Integer, DispoAnnotationData> pairAnnotations, String resolutionType,
