@@ -23,12 +23,9 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
-import org.eclipse.osee.mim.TransportTypeApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceConnection;
-import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
-import org.eclipse.osee.mim.types.TransportType;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
@@ -38,19 +35,20 @@ import org.eclipse.osee.orcs.core.ds.FollowRelation;
 public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewApi {
 
    private ArtifactAccessor<InterfaceConnection> accessor;
-   private final TransportTypeApi transportTypeApi;
    private final List<RelationTypeSide> affectedRelations;
    private final List<FollowRelation> relations;
 
-   InterfaceConnectionViewApiImpl(OrcsApi orcsApi, TransportTypeApi transportTypeApi) {
+   InterfaceConnectionViewApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceConnectionAccessor(orcsApi));
-      this.transportTypeApi = transportTypeApi;
       this.affectedRelations = this.createAffectedRelationTypeSideList();
       this.relations = createRelationTypeSideList();
    }
 
    private List<FollowRelation> createRelationTypeSideList() {
-      return FollowRelation.followList(CoreRelationTypes.InterfaceConnectionNode_Node);
+      List<FollowRelation> relations = new LinkedList<>();
+      relations.add(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node));
+      relations.add(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType));
+      return relations;
    }
 
    @Override
@@ -77,24 +75,27 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    }
 
    @Override
-   public InterfaceConnection getRelatedFromMessage(InterfaceMessageToken message) {
-      return message.getArtifactReadable().getRelated(
-         CoreRelationTypes.InterfaceConnectionMessage_Connection).getList().stream().filter(
-            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceConnection(a)).findFirst().orElse(
-               InterfaceConnection.SENTINEL);
-   }
-
-   @Override
    public InterfaceConnection get(BranchId branch, ArtifactId connectionId) {
       try {
-         InterfaceConnection connection = this.getAccessor().get(branch, connectionId, relations);
-         setupConnection(branch, connection);
-         return connection;
+         return this.getAccessor().get(branch, connectionId, relations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
       }
       return InterfaceConnection.SENTINEL;
+   }
+
+   @Override
+   public Collection<InterfaceConnection> get(BranchId branch, Collection<ArtifactId> connectionIds) {
+      try {
+         List<InterfaceConnection> connection =
+            (List<InterfaceConnection>) this.getAccessor().get(branch, connectionIds, relations);
+         return connection;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return new LinkedList<>();
    }
 
    @Override
@@ -151,10 +152,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    public Collection<InterfaceConnection> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
       long pageSize) {
       try {
-         Collection<InterfaceConnection> connections =
-            this.getAccessor().getAllByQuery(branch, query, relations, isExact, pageNum, pageSize);
-         connections.stream().forEach(c -> setupConnection(branch, c));
-         return connections;
+         return this.getAccessor().getAllByQuery(branch, query, relations, isExact, pageNum, pageSize);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -177,27 +175,12 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    public Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute, ArtifactId viewId) {
       try {
-         Collection<InterfaceConnection> connections =
-            this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute, viewId);
-         connections.stream().forEach(c -> setupConnection(branch, c));
-         return connections;
+         return this.getAccessor().getAll(branch, relations, pageNum, pageSize, orderByAttribute, viewId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
       }
       return new LinkedList<InterfaceConnection>();
-   }
-
-   /**
-    * Get the transport type for the given connection. This should be removed and replaced by a followFork query once
-    * that is supported in ArtifactAccessor.
-    *
-    * @param branch
-    * @param connection
-    */
-   private void setupConnection(BranchId branch, InterfaceConnection connection) {
-      TransportType tt = this.transportTypeApi.getFromConnection(branch, connection.getArtifactId());
-      connection.setTransportType(tt);
    }
 
 }

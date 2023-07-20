@@ -87,6 +87,18 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
+   public List<PlatformTypeToken> get(BranchId branch, List<ArtifactId> platformTypeIds,
+      List<FollowRelation> followRelations) {
+      try {
+         return (List<PlatformTypeToken>) this.getAccessor().get(branch, platformTypeIds, followRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
    public List<PlatformTypeToken> getAll(BranchId branch) {
       return this.getAll(branch, 0L, 0L);
    }

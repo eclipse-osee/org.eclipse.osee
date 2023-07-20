@@ -37,7 +37,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 64,
 		platformTypeName2: 'Double1',
 		notes: '',
-		platformTypeId: 200424,
+		platformType: { id: '200424' },
 		endByte: 3,
 		endWord: 1,
 		diffInfo: {
@@ -75,7 +75,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 64,
 		platformTypeName2: 'Double1',
 		notes: 'Changed from int to double',
-		platformTypeId: 200424,
+		platformType: { id: '200424' },
 		endByte: 3,
 		endWord: 1,
 		diffInfo: {
@@ -119,7 +119,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 32,
 		platformTypeName2: 'Integer1',
 		notes: 'To be deleted',
-		platformTypeId: 200411,
+		platformType: { id: '200411' },
 		endByte: 3,
 		endWord: 0,
 		diffInfo: {
@@ -157,7 +157,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 32,
 		platformTypeName2: 'Integer1',
 		notes: '',
-		platformTypeId: 200411,
+		platformType: { id: '200411' },
 		endByte: 3,
 		endWord: 0,
 		diffInfo: {
@@ -195,7 +195,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 224,
 		platformTypeName2: 'Integer1',
 		notes: '',
-		platformTypeId: 200411,
+		platformType: { id: '200411' },
 		endByte: 3,
 		endWord: 6,
 		diffInfo: {
@@ -236,7 +236,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 32,
 		platformTypeName2: 'Integer1',
 		notes: 'This is a note',
-		platformTypeId: 200411,
+		platformType: { id: '200411' },
 		endByte: 3,
 		endWord: 0,
 		diffInfo: {
@@ -276,7 +276,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 32,
 		platformTypeName2: 'FLOAT1',
 		notes: '',
-		platformTypeId: 200426,
+		platformType: { id: '200426' },
 		endByte: 3,
 		endWord: 0,
 		diffInfo: {
@@ -316,7 +316,7 @@ export const elementDiffsMock: elementDiffItem[] = [
 		elementSizeInBits: 32,
 		platformTypeName2: 'Enum1',
 		notes: '',
-		platformTypeId: 200417,
+		platformType: { id: '200417' },
 		endByte: 3,
 		endWord: 0,
 		diffInfo: {

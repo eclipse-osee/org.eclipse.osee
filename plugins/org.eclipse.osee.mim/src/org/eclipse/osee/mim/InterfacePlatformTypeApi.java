@@ -30,6 +30,8 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
 
    PlatformTypeToken get(BranchId branch, ArtifactId platformTypeId);
 
+   List<PlatformTypeToken> get(BranchId branch, List<ArtifactId> platformTypeIds, List<FollowRelation> followRelations);
+
    List<PlatformTypeToken> getAll(BranchId branch);
 
    List<PlatformTypeToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);

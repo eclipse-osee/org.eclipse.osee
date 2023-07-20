@@ -41,7 +41,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { CommonModule } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ConnectionNodesCountDirective } from 'src/app/ple/messaging/shared/directives/validators/connection-nodes-count.directive';
+import { ConnectionNodesCountDirective } from '@osee/messaging/shared/directives';
 
 @Component({
 	selector: 'osee-create-connection-dialog',

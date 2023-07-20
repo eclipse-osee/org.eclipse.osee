@@ -165,11 +165,15 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    @Override
-   public List<InterfaceMessageToken> getAllRelatedFromSubMessage(InterfaceSubMessageToken subMessage) {
-      return subMessage.getArtifactReadable().getRelated(
-         CoreRelationTypes.InterfaceMessageSubMessageContent_Message).getList().stream().filter(
-            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceMessageToken(a)).collect(
-               Collectors.toList());
+   public Collection<InterfaceMessageToken> get(BranchId branch, Collection<ArtifactId> messageIds,
+      List<FollowRelation> followRelations) {
+      try {
+         return this.getAccessor().get(branch, messageIds, followRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return new LinkedList<>();
    }
 
    @Override

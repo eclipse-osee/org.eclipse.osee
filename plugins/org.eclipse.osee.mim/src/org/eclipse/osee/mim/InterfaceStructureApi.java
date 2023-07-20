@@ -30,6 +30,9 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    InterfaceStructureToken get(BranchId branch, ArtifactId artId);
 
+   Collection<InterfaceStructureToken> get(BranchId branch, Collection<ArtifactId> artIds,
+      Collection<FollowRelation> followRelations);
+
    List<InterfaceStructureToken> getAll(BranchId branch);
 
    List<InterfaceStructureToken> getAllWithRelations(BranchId branch, List<FollowRelation> followRelations,
@@ -119,10 +122,6 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId,
       ArtifactId structureId, String filter, ArtifactId viewId);
-
-   List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element);
-
-   InterfaceStructureToken getWithAllParentRelations(BranchId branch, ArtifactId structureId);
 
    InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId connectionId, ArtifactId messageId);
 

@@ -398,6 +398,18 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
+   public Collection<InterfaceStructureToken> get(BranchId branch, Collection<ArtifactId> artIds,
+      Collection<FollowRelation> followRelations) {
+      try {
+         return this.getAccessor().get(branch, artIds, followRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
    public InterfaceStructureToken getRelated(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId,
       ArtifactId structureId) {
       return this.getRelated(branch, connectionId, subMessageId, structureId, ArtifactId.SENTINEL);
@@ -497,33 +509,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    private List<FollowRelation> getFollowRelationDetails() {
       return FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_DataElement,
          CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
-   }
-
-   @Override
-   public List<InterfaceStructureToken> getAllRelatedFromElement(InterfaceStructureElementToken element) {
-      ArtifactReadable elementReadable = element.getArtifactReadable();
-      if (elementReadable != null && elementReadable.isValid()) {
-         return elementReadable.getRelated(
-            CoreRelationTypes.InterfaceStructureContent_Structure).getList().stream().map(
-               a -> new InterfaceStructureToken(a)).collect(Collectors.toList());
-      }
-      return new LinkedList<>();
-   }
-
-   @Override
-   public InterfaceStructureToken getWithAllParentRelations(BranchId branch, ArtifactId structureId) {
-      try {
-         List<FollowRelation> parentRelations =
-            FollowRelation.followList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-               CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-               CoreRelationTypes.InterfaceConnectionMessage_Connection,
-               CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
-         return this.getAccessor().get(branch, structureId, parentRelations);
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         System.out.println(ex);
-      }
-      return InterfaceStructureToken.SENTINEL;
    }
 
    @Override

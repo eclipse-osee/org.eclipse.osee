@@ -133,6 +133,22 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       return InterfaceStructureElementToken.SENTINEL;
    }
 
+   @Override
+   public Collection<InterfaceStructureElementToken> get(BranchId branch, Collection<ArtifactId> elementIds,
+      Collection<FollowRelation> followRelations) {
+      try {
+         List<InterfaceStructureElementToken> elements =
+            (List<InterfaceStructureElementToken>) this.getAccessor().get(branch, elementIds, followRelations);
+         elements.stream().forEach(
+            element -> defaultSetUpElement(branch, element, InterfaceStructureElementToken.SENTINEL));
+         return elements;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
    private InterfaceStructureElementToken defaultSetUpElement(BranchId branch, InterfaceStructureElementToken element,
       InterfaceStructureElementToken previousElement) {
       return this.defaultSetUpElement(branch, element, previousElement, PlatformTypeToken.SENTINEL);

@@ -125,7 +125,7 @@ public class MimApiImpl implements MimApi {
       this.transportTypeApi = new TransportTypeApiImpl(orcsApi);
       this.interfaceSubMessageApi = new InterfaceSubMessageApiImpl(orcsApi);
       this.interfaceNodeViewApi = new InterfaceNodeViewApiImpl(orcsApi);
-      this.interfaceConnectionViewApi = new InterfaceConnectionViewApiImpl(orcsApi, this.getTransportTypeApi());
+      this.interfaceConnectionViewApi = new InterfaceConnectionViewApiImpl(orcsApi);
       this.interfaceMessageApi =
          new InterfaceMessageApiImpl(orcsApi, this.getInterfaceNodeViewApi(), this.getInterfaceConnectionViewApi());
       this.interfacePlatformApi = new InterfacePlatformTypeApiImpl(orcsApi);
@@ -140,7 +140,7 @@ public class MimApiImpl implements MimApi {
       this.interfaceMessageTypeApi = new InterfaceMessageTypeApiImpl(orcsApi);
       this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi, interfaceNodeViewApi,
          interfaceConnectionViewApi, interfaceMessageApi, interfaceSubMessageApi, interfaceStructureApi,
-         interfaceElementApi, interfacePlatformApi, interfaceEnumerationSetApi, interfaceEnumerationApi);
+         interfaceElementApi, interfacePlatformApi, interfaceEnumerationApi);
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
       this.mimReportsApi = new MimReportsApiImpl(orcsApi);
       this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);

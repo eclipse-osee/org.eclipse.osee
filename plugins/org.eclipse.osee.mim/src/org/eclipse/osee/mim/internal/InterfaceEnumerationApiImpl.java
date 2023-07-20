@@ -75,6 +75,17 @@ public class InterfaceEnumerationApiImpl implements InterfaceEnumerationApi {
    }
 
    @Override
+   public List<InterfaceEnumeration> get(BranchId branch, List<ArtifactId> enumIds, List<FollowRelation> relations) {
+      try {
+         return (List<InterfaceEnumeration>) this.getAccessor().get(branch, enumIds, relations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
    public Collection<InterfaceEnumeration> queryExact(BranchId branch, MimAttributeQuery query) {
       return this.query(branch, query, true);
    }

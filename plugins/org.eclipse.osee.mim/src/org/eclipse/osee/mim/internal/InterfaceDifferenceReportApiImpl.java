@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -35,7 +37,6 @@ import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
-import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
@@ -74,7 +75,6 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    private final InterfaceStructureApi interfaceStructureApi;
    private final InterfaceElementApi interfaceElementApi;
    private final InterfacePlatformTypeApi interfacePlatformApi;
-   private final InterfaceEnumerationSetApi interfaceEnumerationSetApi;
    private final InterfaceEnumerationApi interfaceEnumerationApi;
 
    private Map<ArtifactId, List<ChangeItem>> changeMap;
@@ -90,7 +90,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
 
    private MimDifferenceReport diffReport;
 
-   InterfaceDifferenceReportApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceStructureApi interfaceStructureApi, InterfaceElementApi interfaceElementApi, InterfacePlatformTypeApi interfacePlatformApi, InterfaceEnumerationSetApi interfaceEnumerationSetApi, InterfaceEnumerationApi interfaceEnumerationApi) {
+   InterfaceDifferenceReportApiImpl(OrcsApi orcsApi, InterfaceNodeViewApi interfaceNodeApi, InterfaceConnectionViewApi interfaceConnectionViewApi, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceStructureApi interfaceStructureApi, InterfaceElementApi interfaceElementApi, InterfacePlatformTypeApi interfacePlatformApi, InterfaceEnumerationApi interfaceEnumerationApi) {
       this.orcsApi = orcsApi;
       this.interfaceNodeApi = interfaceNodeApi;
       this.interfaceConnectionApi = interfaceConnectionViewApi;
@@ -99,7 +99,6 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       this.interfaceStructureApi = interfaceStructureApi;
       this.interfaceElementApi = interfaceElementApi;
       this.interfacePlatformApi = interfacePlatformApi;
-      this.interfaceEnumerationSetApi = interfaceEnumerationSetApi;
       this.interfaceEnumerationApi = interfaceEnumerationApi;
    }
 
@@ -125,6 +124,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          orcsApi.getQueryFactory().transactionQuery().andIsHead(branch1).getResults().getExactlyOne();
       TransactionToken destinationTx =
          orcsApi.getQueryFactory().transactionQuery().andIsHead(branch2).getResults().getExactlyOne();
+
       List<ChangeItem> changes = orcsApi.getBranchOps().compareBranch(sourceTx, destinationTx);
 
       // First, add all of the artifact changes to the correct maps. Every diff should have an artifact change.
@@ -139,108 +139,112 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          changeMap.put(change.getArtId(), list);
       }
 
-      // NODES
-      for (ArtifactId artId : nodeList) {
-         processNode(artId);
-      }
-
-      // CONNECTIONS
-      for (ArtifactId artId : connectionList) {
-         processConnection(artId);
-      }
-
-      // MESSAGES
-      for (ArtifactId artId : messageList) {
-         processMessage(artId);
-      }
-
-      // SUBMESSAGES
-      for (ArtifactId artId : submessageList) {
-         processSubMessage(artId);
-      }
-
-      // STRUCTURES
-      for (ArtifactId artId : structureList) {
-         processStructure(artId);
-      }
-
-      // ELEMENTS
-      for (ArtifactId artId : elementList) {
-         processElement(artId, ArtifactId.SENTINEL);
-      }
-
-      // PLATFORM TYPES
-      for (ArtifactId artId : pTypeList) {
-         processPlatformType(artId);
-      }
-
-      // ENUMS
-      for (ArtifactId artId : enumList) {
-         processEnumeration(artId);
-      }
+      processNodes(nodeList);
+      processConnections(connectionList);
+      processMessages(messageList);
+      processSubMessages(submessageList);
+      processStructures(structureList);
+      processElements(elementList, ArtifactId.SENTINEL);
+      processPlatformTypes(pTypeList);
+      processEnumerations(enumList);
 
       return diffReport;
    }
 
-   private void processNode(ArtifactId nodeId) {
-      List<ChangeItem> changeItems = changeMap.get(nodeId);
-      InterfaceNode node = interfaceNodeApi.get(getBranchId(nodeId), nodeId);
-      if (node.isValid()) {
-         diffReport.addItem(node, changeItems);
-         diffReport.getNodes().add(nodeId);
+   private void processNodes(List<ArtifactId> nodeIds) {
+      List<InterfaceNode> nodes =
+         (List<InterfaceNode>) interfaceNodeApi.get(branch1, getArtIdsForBranch(nodeIds, branch1));
+      nodes.addAll(interfaceNodeApi.get(branch2, getArtIdsForBranch(nodeIds, branch2)));
+      for (InterfaceNode node : nodes) {
+         List<ChangeItem> changeItems = changeMap.get(node.getArtifactId());
+         if (node.isValid()) {
+            diffReport.addItem(node, changeItems);
+            diffReport.getNodes().add(node.getArtifactId());
+         }
       }
    }
 
-   private void processConnection(ArtifactId connectionId) {
-      InterfaceConnection connection = interfaceConnectionApi.get(getBranchId(connectionId), connectionId);
-      if (connection.isValid()) {
-         diffReport.addItem(connection, getChangeList(connectionId));
-         diffReport.getConnections().add(connectionId);
+   private void processConnections(List<ArtifactId> connectionIds) {
+      List<InterfaceConnection> connections =
+         (List<InterfaceConnection>) interfaceConnectionApi.get(branch1, getArtIdsForBranch(connectionIds, branch1));
+      connections.addAll(interfaceConnectionApi.get(branch2, getArtIdsForBranch(connectionIds, branch2)));
+      for (InterfaceConnection connection : connections) {
+         if (connection.isValid()) {
+            diffReport.addItem(connection, getChangeList(connection.getArtifactId()));
+            diffReport.getConnections().add(connection.getArtifactId());
+         }
       }
    }
 
-   private void processMessage(ArtifactId messageId) {
-      InterfaceMessageToken message = interfaceMessageApi.getWithAllParentRelations(getBranchId(messageId), messageId);
-
-      if (message.isValid()) {
-         diffReport.addItem(message, getChangeList(messageId));
-
-         addMessageParent(message);
-
-         diffReport.getMessages().add(messageId);
+   private void processMessages(List<ArtifactId> messageIds) {
+      List<FollowRelation> parentRelations =
+         FollowRelation.followList(CoreRelationTypes.InterfaceConnectionMessage_Connection,
+            CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+      List<InterfaceMessageToken> messages = (List<InterfaceMessageToken>) interfaceMessageApi.get(branch1,
+         getArtIdsForBranch(messageIds, branch1), parentRelations);
+      messages.addAll(interfaceMessageApi.get(branch2, getArtIdsForBranch(messageIds, branch2), parentRelations));
+      for (InterfaceMessageToken message : messages) {
+         if (message.isValid()) {
+            diffReport.addItem(message, getChangeList(message.getArtifactId()));
+            addMessageParent(message);
+            diffReport.getMessages().add(message.getArtifactId());
+         }
       }
    }
 
-   private void processSubMessage(ArtifactId submessageId) {
-      InterfaceSubMessageToken subMessage =
-         interfaceSubMessageApi.getWithAllParentRelations(getBranchId(submessageId), submessageId);
-
-      if (subMessage.isValid()) {
-         diffReport.addItem(subMessage, getChangeList(submessageId));
-
-         addSubMessageParents(subMessage);
-
-         diffReport.getSubMessages().add(submessageId);
+   private void processSubMessages(List<ArtifactId> submessageIds) {
+      List<FollowRelation> parentRelations =
+         FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            CoreRelationTypes.InterfaceConnectionMessage_Connection,
+            CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+      List<InterfaceSubMessageToken> subMessages = (List<InterfaceSubMessageToken>) interfaceSubMessageApi.get(branch1,
+         getArtIdsForBranch(submessageIds, branch1), parentRelations);
+      subMessages.addAll(
+         interfaceSubMessageApi.get(branch2, getArtIdsForBranch(submessageIds, branch2), parentRelations));
+      for (InterfaceSubMessageToken subMessage : subMessages) {
+         if (subMessage.isValid()) {
+            diffReport.addItem(subMessage, getChangeList(subMessage.getArtifactId()));
+            addSubMessageParents(subMessage);
+            diffReport.getSubMessages().add(subMessage.getArtifactId());
+         }
       }
    }
 
-   private void processStructure(ArtifactId structureId) {
-      InterfaceStructureToken structure =
-         interfaceStructureApi.getWithAllParentRelations(getBranchId(structureId), structureId);
-
-      if (structure.isValid()) {
-         diffReport.addItem(structure, getChangeList(structureId));
-
-         addStructureParents(structure);
-
-         diffReport.getStructures().add(structureId);
+   private void processStructures(List<ArtifactId> structureIds) {
+      List<FollowRelation> parentRelations =
+         FollowRelation.followList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+            CoreRelationTypes.InterfaceConnectionMessage_Connection,
+            CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
+      List<InterfaceStructureToken> structures = (List<InterfaceStructureToken>) interfaceStructureApi.get(branch1,
+         getArtIdsForBranch(structureIds, branch1), parentRelations);
+      structures.addAll(interfaceStructureApi.get(branch2, getArtIdsForBranch(structureIds, branch2), parentRelations));
+      for (InterfaceStructureToken structure : structures) {
+         if (structure.isValid()) {
+            diffReport.addItem(structure, getChangeList(structure.getArtifactId()));
+            addStructureParents(structure);
+            diffReport.getStructures().add(structure.getArtifactId());
+         }
       }
    }
 
-   private void processElement(ArtifactId elementId, ArtifactId typeId) {
-      InterfaceStructureElementToken element = interfaceElementApi.get(getBranchId(elementId), elementId);
-      pTypeList.add(ArtifactId.valueOf(element.getPlatformType().getId())); // Add platform type id to list to process later
-      processElement(elementId, typeId, element);
+   private void processElements(List<ArtifactId> elementIds, ArtifactId typeId) {
+      List<FollowRelation> parentRelations = new LinkedList<>();
+      parentRelations.add(FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
+      parentRelations.addAll(FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_Structure,
+         CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         CoreRelationTypes.InterfaceConnectionMessage_Connection,
+         CoreRelationTypes.InterfaceConnectionTransportType_TransportType));
+      List<InterfaceStructureElementToken> elements =
+         (List<InterfaceStructureElementToken>) interfaceElementApi.get(branch1,
+            getArtIdsForBranch(elementIds, branch1), parentRelations);
+      elements.addAll(interfaceElementApi.get(branch2, getArtIdsForBranch(elementIds, branch2), parentRelations));
+      for (InterfaceStructureElementToken element : elements) {
+         //         pTypeList.add(element.getPlatformType().getArtifactId()); // Add platform type id to list to process later
+         addElementParents(element);
+         processElement(element.getArtifactId(), typeId, element);
+      }
    }
 
    private void processElement(ArtifactId elementId, ArtifactId typeId, InterfaceStructureElementToken element) {
@@ -252,9 +256,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          }
 
          if (!diffReport.hasParents(elementId)) {
-            InterfaceStructureElementToken elementWithParentRelations =
-               interfaceElementApi.getWithAllParentRelations(branch1, elementId);
-            addElementParents(elementWithParentRelations);
+            addElementParents(element);
          }
 
          if (!diffReport.getElements().contains(elementId)) {
@@ -263,58 +265,82 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       }
    }
 
-   private void processPlatformType(ArtifactId pTypeId) {
-      PlatformTypeToken pType = interfacePlatformApi.get(getBranchId(pTypeId), pTypeId);
-      if (pType.isValid()) {
-         diffReport.addItem(pType, getChangeList(pTypeId));
+   private void processPlatformTypes(List<ArtifactId> pTypeIds) {
+      List<FollowRelation> relations = new LinkedList<>();
+      relations.add(FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_Element));
+      relations.add(FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
+      relations.addAll(FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_Structure,
+         CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         CoreRelationTypes.InterfaceConnectionMessage_Connection,
+         CoreRelationTypes.InterfaceConnectionTransportType_TransportType));
+      List<PlatformTypeToken> pTypes =
+         interfacePlatformApi.get(branch1, getArtIdsForBranch(pTypeIds, branch1), relations);
+      pTypes.addAll(interfacePlatformApi.get(branch2, getArtIdsForBranch(pTypeIds, branch2), relations));
+      for (PlatformTypeToken pType : pTypes) {
+         if (pType.isValid()) {
+            diffReport.addItem(pType, getChangeList(pType.getArtifactId()));
 
-         // Process Elements
-         List<InterfaceStructureElementToken> elements =
-            interfaceElementApi.getElementsByType(getBranchId(pTypeId), pTypeId);
-         for (InterfaceStructureElementToken element : elements) {
-            processElement(ArtifactId.valueOf(element.getId()), pTypeId, element);
+            // Process Elements
+            @SuppressWarnings("unchecked")
+            List<InterfaceStructureElementToken> elements =
+               (List<InterfaceStructureElementToken>) getFromArtifactReadable(pType.getArtifactReadable(),
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, InterfaceStructureElementToken.class);
+            for (InterfaceStructureElementToken element : elements) {
+               processElement(ArtifactId.valueOf(element.getId()), pType.getArtifactId(), element);
+            }
          }
       }
    }
 
-   private void processEnumeration(ArtifactId enumId) {
-      InterfaceEnumeration enumeration = interfaceEnumerationApi.get(getBranchId(enumId), enumId,
-         FollowRelation.followList(CoreRelationTypes.InterfaceEnumeration_EnumerationSet,
-            CoreRelationTypes.InterfacePlatformTypeEnumeration_Element,
-            CoreRelationTypes.InterfaceElementPlatformType_Element));
+   private void processEnumerations(List<ArtifactId> enumIds) {
+      List<FollowRelation> relations = new LinkedList<>();
+      relations.add(FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationSet));
+      relations.add(FollowRelation.fork(CoreRelationTypes.InterfaceEnumeration_EnumerationState));
+      relations.add(FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_Element));
+      relations.add(FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_Element));
+      relations.add(FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
+      relations.addAll(FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_Structure,
+         CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+         CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+         CoreRelationTypes.InterfaceConnectionMessage_Connection,
+         CoreRelationTypes.InterfaceConnectionTransportType_TransportType));
+      List<InterfaceEnumeration> enumerations =
+         interfaceEnumerationApi.get(branch1, getArtIdsForBranch(enumIds, branch1), relations);
+      enumerations.addAll(interfaceEnumerationApi.get(branch2, getArtIdsForBranch(enumIds, branch2), relations));
 
-      List<InterfaceEnumerationSet> enumSets = enumeration.getArtifactReadable().getRelatedList(
-         CoreRelationTypes.InterfaceEnumeration_EnumerationSet).stream().filter(
-            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceEnumerationSet(a)).collect(
-               Collectors.toList());
+      for (InterfaceEnumeration enumeration : enumerations) {
+         @SuppressWarnings("unchecked")
+         List<InterfaceEnumerationSet> enumSets =
+            (List<InterfaceEnumerationSet>) getFromArtifactReadable(enumeration.getArtifactReadable(),
+               CoreRelationTypes.InterfaceEnumeration_EnumerationSet, InterfaceEnumerationSet.class);
 
-      for (InterfaceEnumerationSet enumSet : enumSets) {
-         // Get enum set with populated enum list
-         ArtifactId enumSetId = ArtifactId.valueOf(enumSet.getId());
-         InterfaceEnumerationSet populatedSet = interfaceEnumerationSetApi.get(getBranchId(enumId), enumSetId);
-         diffReport.addItem(populatedSet, getChangeList(enumId));
-         diffReport.getEnumSets().add(enumSetId);
-         addEnumSetParents(enumSet); // Use the non-populated enum set that has the parent relations here
+         for (InterfaceEnumerationSet enumSet : enumSets) {
+            diffReport.addItem(enumSet, getChangeList(enumeration.getArtifactId()));
+            diffReport.getEnumSets().add(enumSet.getArtifactId());
+            addEnumSetParents(enumSet); // Use the non-populated enum set that has the parent relations here
+         }
       }
    }
 
    private void addMessageParent(InterfaceMessageToken message) {
       ArtifactId messageId = ArtifactId.valueOf(message.getId());
       if (!diffReport.hasParents(messageId)) {
-         InterfaceConnection connection = interfaceConnectionApi.getRelatedFromMessage(message);
-         ArtifactId connectionId = ArtifactId.valueOf(connection.getId());
-         diffReport.addParent(messageId, connectionId);
+         InterfaceConnection connection = (InterfaceConnection) getFromArtifactReadable(message.getArtifactReadable(),
+            CoreRelationTypes.InterfaceConnectionMessage_Connection, InterfaceConnection.class).get(0);
+         diffReport.addParent(messageId, connection.getArtifactId());
          diffReport.addItem(connection);
       }
    }
 
    private void addSubMessageParents(InterfaceSubMessageToken subMessage) {
-      ArtifactId subMessageId = ArtifactId.valueOf(subMessage.getId());
-      if (!diffReport.hasParents(subMessageId)) {
-         List<InterfaceMessageToken> messages = interfaceMessageApi.getAllRelatedFromSubMessage(subMessage);
+      if (!diffReport.hasParents(subMessage.getArtifactId())) {
+         @SuppressWarnings("unchecked")
+         List<InterfaceMessageToken> messages =
+            (List<InterfaceMessageToken>) getFromArtifactReadable(subMessage.getArtifactReadable(),
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message, InterfaceMessageToken.class);
          for (InterfaceMessageToken message : messages) {
-            ArtifactId messageId = ArtifactId.valueOf(message.getId());
-            diffReport.addParent(subMessageId, messageId);
+            diffReport.addParent(subMessage.getArtifactId(), message.getArtifactId());
             diffReport.addItem(message);
             addMessageParent(message);
          }
@@ -322,12 +348,13 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    }
 
    private void addStructureParents(InterfaceStructureToken structure) {
-      ArtifactId structureId = ArtifactId.valueOf(structure.getId());
-      if (!diffReport.hasParents(structureId)) {
-         List<InterfaceSubMessageToken> subMessages = interfaceSubMessageApi.getAllRelatedFromStructure(structure);
+      if (!diffReport.hasParents(structure.getArtifactId())) {
+         @SuppressWarnings("unchecked")
+         List<InterfaceSubMessageToken> subMessages =
+            (List<InterfaceSubMessageToken>) getFromArtifactReadable(structure.getArtifactReadable(),
+               CoreRelationTypes.InterfaceSubMessageContent_SubMessage, InterfaceSubMessageToken.class);
          for (InterfaceSubMessageToken subMessage : subMessages) {
-            ArtifactId subMessageId = ArtifactId.valueOf(subMessage.getId());
-            diffReport.addParent(structureId, subMessageId);
+            diffReport.addParent(structure.getArtifactId(), subMessage.getArtifactId());
             diffReport.addItem(subMessage);
             addSubMessageParents(subMessage);
          }
@@ -335,12 +362,13 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    }
 
    private void addElementParents(InterfaceStructureElementToken element) {
-      ArtifactId elementId = ArtifactId.valueOf(element.getId());
-      if (!diffReport.hasParents(elementId)) {
-         List<InterfaceStructureToken> structures = interfaceStructureApi.getAllRelatedFromElement(element);
+      if (!diffReport.hasParents(element.getArtifactId())) {
+         @SuppressWarnings("unchecked")
+         List<InterfaceStructureToken> structures =
+            (List<InterfaceStructureToken>) getFromArtifactReadable(element.getArtifactReadable(),
+               CoreRelationTypes.InterfaceStructureContent_Structure, InterfaceStructureToken.class);
          for (InterfaceStructureToken structure : structures) {
-            ArtifactId structureId = ArtifactId.valueOf(structure.getId());
-            diffReport.addParent(elementId, structureId);
+            diffReport.addParent(element.getArtifactId(), structure.getArtifactId());
             diffReport.addItem(structure);
             addStructureParents(structure);
          }
@@ -348,16 +376,36 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    }
 
    private void addEnumSetParents(InterfaceEnumerationSet enumSet) {
-      ArtifactId enumSetId = ArtifactId.valueOf(enumSet.getId());
-      if (!diffReport.hasParents(enumSetId)) {
-         for (PlatformTypeToken pType : interfacePlatformApi.getAllFromEnumerationSet(enumSet)) {
-            ArtifactId pTypeId = ArtifactId.valueOf(pType.getId());
-            diffReport.addParent(enumSetId, pTypeId);
-            for (InterfaceStructureElementToken element : interfaceElementApi.getAllFromPlatformType(pType)) {
-               processElement(ArtifactId.valueOf(element.getId()), ArtifactId.SENTINEL);
+      if (!diffReport.hasParents(enumSet.getArtifactId())) {
+         @SuppressWarnings("unchecked")
+         List<PlatformTypeToken> pTypes =
+            (List<PlatformTypeToken>) getFromArtifactReadable(enumSet.getArtifactReadable(),
+               CoreRelationTypes.InterfacePlatformTypeEnumeration_Element, PlatformTypeToken.class);
+         for (PlatformTypeToken pType : pTypes) {
+            diffReport.addParent(enumSet.getArtifactId(), pType.getArtifactId());
+            @SuppressWarnings("unchecked")
+            List<InterfaceStructureElementToken> elements =
+               (List<InterfaceStructureElementToken>) getFromArtifactReadable(pType.getArtifactReadable(),
+                  CoreRelationTypes.InterfaceElementPlatformType_Element, InterfaceStructureElementToken.class);
+            for (InterfaceStructureElementToken element : elements) {
+               processElement(element.getArtifactId(), ArtifactId.SENTINEL, element);
             }
          }
       }
+   }
+
+   private List<?> getFromArtifactReadable(ArtifactReadable art, RelationTypeSide relation, Class<?> clazz) {
+      if (art == null || art.isInvalid()) {
+         return new LinkedList<>();
+      }
+      return art.getRelatedList(relation).stream().map(a -> {
+         try {
+            return clazz.getDeclaredConstructor(ArtifactReadable.class).newInstance(a);
+         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+            | NoSuchMethodException | SecurityException ex) {
+            return new LinkedList<>();
+         }
+      }).collect(Collectors.toList());
    }
 
    private BranchId getBranchId(ArtifactId artId) {
@@ -376,6 +424,10 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
 
    private List<ChangeItem> getChangeList(ArtifactId artId) {
       return changeMap.getOrDefault(artId, new LinkedList<>());
+   }
+
+   private List<ArtifactId> getArtIdsForBranch(List<ArtifactId> artIds, BranchId branch) {
+      return artIds.stream().filter(id -> getBranchId(id).equals(branch)).collect(Collectors.toList());
    }
 
    private void addChangeToMap(ChangeItem changeItem) {

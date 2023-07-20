@@ -160,6 +160,26 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    }
 
    @Override
+   public Collection<T> get(BranchId branch, Collection<ArtifactId> artIds)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.get(branch, artIds, new LinkedList<>());
+   }
+
+   @Override
+   public Collection<T> get(BranchId branch, Collection<ArtifactId> artIds, Collection<FollowRelation> followRelations)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).andIds(
+            artIds);
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      return fetchCollection(query, branch);
+   }
+
+   @Override
    public Collection<T> getAll(BranchId branch) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAll(branch, new LinkedList<FollowRelation>());
