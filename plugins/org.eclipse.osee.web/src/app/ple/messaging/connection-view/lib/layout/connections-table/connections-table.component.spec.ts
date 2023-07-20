@@ -21,7 +21,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { graphServiceMock } from '@osee/messaging/connection-view/testing';
 import { ConnectionService } from '@osee/messaging/shared/services';
 import { connectionServiceMock } from '@osee/messaging/shared/testing';
-import { CurrentGraphService } from 'src/app/ple/messaging/connection-view/lib/public-api';
+import { CurrentGraphService } from '../../services/current-graph.service';
 import { ConnectionsTableComponent } from './connections-table.component';
 
 describe('ConnectionsTableComponent', () => {

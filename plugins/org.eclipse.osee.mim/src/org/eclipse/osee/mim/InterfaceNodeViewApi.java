@@ -27,6 +27,8 @@ public interface InterfaceNodeViewApi extends QueryCapableMIMAPI<InterfaceNode>,
 
    InterfaceNode get(BranchId branch, ArtifactId nodeId);
 
+   Collection<InterfaceNode> get(BranchId branch, Collection<ArtifactId> nodeIds);
+
    Collection<InterfaceNode> getAll(BranchId branch);
 
    Collection<InterfaceNode> getAll(BranchId branch, long pageNum, long pageSize);

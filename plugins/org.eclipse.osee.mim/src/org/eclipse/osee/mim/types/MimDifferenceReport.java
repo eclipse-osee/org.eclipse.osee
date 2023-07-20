@@ -48,11 +48,10 @@ public class MimDifferenceReport {
    }
 
    public void addItem(PLGenericDBObject item, List<ChangeItem> changes) {
-      ArtifactId artId = ArtifactId.valueOf(item.getId());
       MimDifferenceReportItem itemChanges =
-         changeItems.getOrDefault(artId, new MimDifferenceReportItem(item, new LinkedList<>()));
+         changeItems.getOrDefault(item.getArtifactId(), new MimDifferenceReportItem(item, new LinkedList<>()));
       itemChanges.getChanges().addAll(changes);
-      changeItems.put(artId, itemChanges);
+      changeItems.put(item.getArtifactId(), itemChanges);
    }
 
    public boolean containsItem(ArtifactId artId) {

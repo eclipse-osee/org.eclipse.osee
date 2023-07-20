@@ -49,6 +49,7 @@ export * from './platform-type-card.component.mock';
 export * from './platform-types.response.mock';
 export * from './preferences-ui-service.mock';
 export * from './query.service.mock';
+export * from './reports-service.mock';
 export * from './shared-connection.service.mock';
 export * from './structure-names.service.mock';
 export * from './structure.mock';

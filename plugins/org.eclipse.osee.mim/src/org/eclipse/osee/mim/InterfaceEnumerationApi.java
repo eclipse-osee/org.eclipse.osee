@@ -27,4 +27,6 @@ public interface InterfaceEnumerationApi extends QueryCapableMIMAPI<InterfaceEnu
    ArtifactAccessor<InterfaceEnumeration> getAccessor();
 
    InterfaceEnumeration get(BranchId branch, ArtifactId enumId, List<FollowRelation> relations);
+
+   List<InterfaceEnumeration> get(BranchId branch, List<ArtifactId> enumIds, List<FollowRelation> relations);
 }

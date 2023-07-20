@@ -12,6 +12,7 @@
  **********************************************************************/
 import type { applic } from '@osee/shared/types/applicability';
 import type { changeInstance } from '@osee/shared/types/change-report';
+import { PlatformType } from './platformType';
 
 export interface DifferenceReport {
 	changeItems: DifferenceReportItemMap;
@@ -112,7 +113,7 @@ export interface elementDiffItem {
 	interfacePlatformTypeDescription: string;
 	interfaceDefaultValue: string;
 	endByte: number;
-	platformTypeId: number;
+	platformType: Pick<PlatformType, 'id'>;
 	endWord: number;
 	notes: string;
 	elementSizeInBytes: number;

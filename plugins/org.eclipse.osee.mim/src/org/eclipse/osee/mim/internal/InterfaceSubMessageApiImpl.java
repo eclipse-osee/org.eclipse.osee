@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
-import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -111,26 +109,15 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
    }
 
    @Override
-   public List<InterfaceSubMessageToken> getAllRelatedFromStructure(InterfaceStructureToken structure) {
-      return structure.getArtifactReadable().getRelated(
-         CoreRelationTypes.InterfaceSubMessageContent_SubMessage).getList().stream().filter(
-            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceSubMessageToken(a)).collect(
-               Collectors.toList());
-   }
-
-   @Override
-   public InterfaceSubMessageToken getWithAllParentRelations(BranchId branch, ArtifactId subMessageId) {
+   public Collection<InterfaceSubMessageToken> get(BranchId branch, Collection<ArtifactId> subMessageIds,
+      Collection<FollowRelation> followRelations) {
       try {
-         List<FollowRelation> parentRelations =
-            FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-               CoreRelationTypes.InterfaceConnectionMessage_Connection,
-               CoreRelationTypes.InterfaceConnectionTransportType_TransportType);
-         return this.getAccessor().get(branch, subMessageId, parentRelations);
+         return this.getAccessor().get(branch, subMessageIds, followRelations);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
       }
-      return InterfaceSubMessageToken.SENTINEL;
+      return new LinkedList<>();
    }
 
    @Override

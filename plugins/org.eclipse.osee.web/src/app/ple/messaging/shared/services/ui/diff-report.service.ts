@@ -626,7 +626,7 @@ export class DiffReportService {
 								report.changeItems[enumSet.id];
 							if (
 								enumDiffItem.parents.includes(
-									'' + item.platformTypeId
+									'' + item.platformType.id
 								)
 							) {
 								item.enumeration = enumSet.diffInfo?.deleted

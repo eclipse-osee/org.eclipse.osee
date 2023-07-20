@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -85,6 +86,9 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
    List<InterfaceStructureElementTokenWithPath> getElementsByTypeFilter(BranchId branch, String filter);
 
    InterfaceStructureElementToken get(BranchId branch, ArtifactId elementId);
+
+   Collection<InterfaceStructureElementToken> get(BranchId branch, Collection<ArtifactId> elementIds,
+      Collection<FollowRelation> followRelations);
 
    InterfaceStructureElementToken getRelated(BranchId branch, ArtifactId structureId, ArtifactId elementId);
 

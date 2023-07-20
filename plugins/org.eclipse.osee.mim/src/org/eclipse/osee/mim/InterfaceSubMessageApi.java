@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
-import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti Api for accessing interface sub messages
@@ -28,6 +28,9 @@ public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubM
    ArtifactAccessor<InterfaceSubMessageToken> getAccessor();
 
    InterfaceSubMessageToken get(BranchId branch, ArtifactId subMessageId);
+
+   Collection<InterfaceSubMessageToken> get(BranchId branch, Collection<ArtifactId> subMessageIds,
+      Collection<FollowRelation> followRelations);
 
    Collection<InterfaceSubMessageToken> getAll(BranchId branch);
 
@@ -65,7 +68,4 @@ public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubM
 
    int getAllByNameCount(BranchId branch, String name);
 
-   List<InterfaceSubMessageToken> getAllRelatedFromStructure(InterfaceStructureToken structure);
-
-   InterfaceSubMessageToken getWithAllParentRelations(BranchId branch, ArtifactId subMessageId);
 }

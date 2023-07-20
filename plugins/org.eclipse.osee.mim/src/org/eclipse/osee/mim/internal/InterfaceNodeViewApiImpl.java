@@ -68,6 +68,17 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    }
 
    @Override
+   public Collection<InterfaceNode> get(BranchId branch, Collection<ArtifactId> nodeIds) {
+      try {
+         return this.getAccessor().get(branch, nodeIds);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
    public Collection<InterfaceNode> queryExact(BranchId branch, MimAttributeQuery query) {
       return this.query(branch, query, true);
    }

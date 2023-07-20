@@ -66,7 +66,7 @@ export const structureDiffsMock: structureDiffItem[] = [
 				elementSizeInBits: 64,
 				platformTypeName2: 'Double1',
 				notes: 'Changed from int to double',
-				platformTypeId: 200424,
+				platformType: { id: '200424' },
 				endByte: 3,
 				endWord: 1,
 				diffInfo: {
@@ -104,7 +104,7 @@ export const structureDiffsMock: structureDiffItem[] = [
 				elementSizeInBits: 32,
 				platformTypeName2: 'Integer1',
 				notes: 'To be deleted',
-				platformTypeId: 200411,
+				platformType: { id: '200411' },
 				endByte: 3,
 				endWord: 0,
 				diffInfo: {
@@ -173,7 +173,7 @@ export const structureDiffsMock: structureDiffItem[] = [
 				elementSizeInBits: 32,
 				platformTypeName2: 'Integer1',
 				notes: '',
-				platformTypeId: 200411,
+				platformType: { id: '200411' },
 				endByte: 3,
 				endWord: 0,
 				diffInfo: {
@@ -244,7 +244,7 @@ export const structureDiffsMock: structureDiffItem[] = [
 				elementSizeInBits: 64,
 				platformTypeName2: 'Double1',
 				notes: '',
-				platformTypeId: 200424,
+				platformType: { id: '200424' },
 				endByte: 3,
 				endWord: 1,
 				diffInfo: {
