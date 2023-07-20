@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsProductLineEndpointApi;
@@ -52,31 +53,34 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
 
    @Override
    public List<BranchToken> getBranches(String branchQueryType, String workType) {
+      if (!WorkType.valueOfOrNone(workType).equals(WorkType.None)) { //check for valid workType
+         List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs = new ArrayList<>();
+         artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamDefinition,
+            AtsAttributeTypes.WorkType));
+         artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamWorkflow,
+            AtsAttributeTypes.TeamDefinitionReference));
 
-      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs = new ArrayList<>();
-      artAttrPairs.add(
-         new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamDefinition, AtsAttributeTypes.WorkType));
-      artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamWorkflow,
-         AtsAttributeTypes.TeamDefinitionReference));
+         List<BranchToken> pleBranchList = new ArrayList<>();
+         if (branchQueryType.equals("baseline")) {
+            pleBranchList =
+               orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
+                  false).includeDeleted(false).andIsOfType(BranchType.BASELINE).andStateIs(BranchState.MODIFIED,
+                     BranchState.CREATED).getResultsAsId().getList();
+         }
+         if (branchQueryType.equals("working")) {
 
-      List<BranchToken> pleBranchList = new ArrayList<>();
-      if (branchQueryType.equals("baseline")) {
-         pleBranchList =
-            orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
-               false).includeDeleted(false).andIsOfType(BranchType.BASELINE).andStateIs(BranchState.MODIFIED,
-                  BranchState.CREATED).getResultsAsId().getList();
+            pleBranchList =
+               orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
+                  false).includeDeleted(false).andIsOfType(BranchType.WORKING).andStateIs(BranchState.MODIFIED,
+                     BranchState.CREATED).mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON,
+                        artAttrPairs).getResultsAsId().getList();
+         }
+         Collections.sort(pleBranchList);
+
+         return pleBranchList;
+      } else {
+         return Collections.EMPTY_LIST;
       }
-      if (branchQueryType.equals("working")) {
-
-         pleBranchList =
-            orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
-               false).includeDeleted(false).andIsOfType(BranchType.WORKING).andStateIs(BranchState.MODIFIED,
-                  BranchState.CREATED).mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON,
-                     artAttrPairs).getResultsAsId().getList();
-      }
-      Collections.sort(pleBranchList);
-
-      return pleBranchList;
    }
 
    @Override
