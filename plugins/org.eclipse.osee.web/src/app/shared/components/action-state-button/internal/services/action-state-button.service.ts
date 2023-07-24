@@ -165,7 +165,7 @@ export class ActionStateButtonService {
 				this.actionService.approveBranch(actions[0].TeamWfAtsId).pipe(
 					tap((response) => {
 						if (response.results.length > 0) {
-							this.uiService.error = response.results[0];
+							this.uiService.ErrorText = response.results[0];
 						} else {
 							this.uiService.updated = true;
 						}
@@ -204,7 +204,7 @@ export class ActionStateButtonService {
 								.pipe(
 									tap((response) => {
 										if (response.results.length > 0) {
-											this.uiService.error =
+											this.uiService.ErrorText =
 												response.results[0];
 										} else {
 											this.uiService.updated = true;
@@ -266,7 +266,7 @@ export class ActionStateButtonService {
 																	.results
 																	.length > 0
 															) {
-																this.uiService.error =
+																this.uiService.ErrorText =
 																	transitionResponse.results[0];
 															} else {
 																this.uiService.updated =

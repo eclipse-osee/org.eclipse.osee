@@ -61,10 +61,10 @@ export class PlConfigUIStateService {
 		this.editable.next(edit.toString());
 	}
 	public get errors() {
-		return this.ui.errors;
+		return this.ui.errorText;
 	}
 	public set error(errorString: string) {
-		this.ui.error = errorString;
+		this.ui.ErrorText = errorString;
 	}
 	public set groupsString(groups: string[]) {
 		this._groups.next(groups);

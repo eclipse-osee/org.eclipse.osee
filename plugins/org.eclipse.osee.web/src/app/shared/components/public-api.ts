@@ -15,6 +15,7 @@ export * from './branch-picker/branch-picker/branch-picker.component';
 export * from './action-state-button/action-drop-down/action-drop-down.component';
 export * from './branch-undo-button/undo-button-branch/undo-button-branch.component';
 export * from './scroll-to-top-button/scroll-to-top-button.component';
+export * from './snackbar-wrapper/snackbar-wrapper.component';
 export * from './two-layer-add-button/two-layer-add-button.component';
 export * from './applicability-selector/applicability-selector.component';
 export * from './action-state-button/internal/services/action-state-button.service'; /* still need to find a good place for this to live */

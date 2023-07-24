@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div
-	class="light-theme"
-	(keydown.escape)="closeTopLevelNavIcon()">
-	<router-outlet name="toolbar"></router-outlet>
-	<osee-snackbar-wrapper></osee-snackbar-wrapper>
-	<osee-nav-container></osee-nav-container>
-</div>
+<ng-container *ngIf="errors | async"></ng-container>

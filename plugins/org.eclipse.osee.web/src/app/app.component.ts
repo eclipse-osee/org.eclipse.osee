@@ -15,13 +15,14 @@ import { map } from 'rxjs';
 import { SideNavService } from '@osee/shared/services/layout';
 import { NavContainerComponent } from '@osee/layout/container';
 import { RouterOutlet } from '@angular/router';
+import { SnackbarWrapperComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.sass'],
 	standalone: true,
-	imports: [RouterOutlet, NavContainerComponent],
+	imports: [RouterOutlet, NavContainerComponent, SnackbarWrapperComponent],
 })
 export class AppComponent {
 	rightSideNavOpened = this.sideNavService.rightSideNavOpened;
