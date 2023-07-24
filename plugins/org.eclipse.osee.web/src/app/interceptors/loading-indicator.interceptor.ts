@@ -10,10 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpRequest, HttpHandlerFn, HttpResponse } from '@angular/common/http';
+import {
+	HttpRequest,
+	HttpHandlerFn,
+	HttpResponse,
+	HttpErrorResponse,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
 import { finalize, tap } from 'rxjs';
 import { HttpLoadingService } from '@osee/shared/services/network';
+import { UiService } from '@osee/shared/services';
 
 let requests: HttpRequest<any>[] = [];
 export const LoadingIndicatorInterceptor = (
@@ -22,6 +28,7 @@ export const LoadingIndicatorInterceptor = (
 ) => {
 	requests.push(req);
 	const loadingService = inject(HttpLoadingService);
+	const uiService = inject(UiService);
 	loadingService.loading = true;
 	return next(req).pipe(
 		tap(
@@ -30,8 +37,8 @@ export const LoadingIndicatorInterceptor = (
 					removeRequest(req, loadingService);
 				}
 			},
-			(error) => {
-				alert('Request ' + req.url + ' returned an error.');
+			(error: HttpErrorResponse) => {
+				uiService.httpError = error;
 				removeRequest(req, loadingService);
 			}
 		),

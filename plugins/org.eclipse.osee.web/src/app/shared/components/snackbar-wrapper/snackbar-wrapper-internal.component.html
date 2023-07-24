@@ -1,0 +1,46 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container
+	*ngIf="{ text: errorText | async, details: errorDetails | async } as error">
+	<ng-container *ngIf="error.text !== ''">
+		<div class="tw-flex tw-items-center tw-justify-between tw-gap-2">
+			<div class="tw-pr-4">
+				<div>
+					{{ error.text }}
+				</div>
+				<div *ngIf="showDetails">
+					{{ error.details }}
+				</div>
+			</div>
+			<div
+				*ngIf="error.details && error.details !== ''"
+				class="tw-rounded-sm tw-border tw-border-background-background tw-p-1">
+				<button
+					mat-button
+					(click)="toggleDetails()"
+					class="tw-text-background-background">
+					{{ showDetails ? 'Hide Details' : 'Show Details' }}
+				</button>
+			</div>
+			<div
+				class="tw-rounded-sm tw-border tw-border-background-background tw-p-1">
+				<button
+					mat-button
+					(click)="closeSnackbar()"
+					class="tw-text-background-background">
+					Dismiss
+				</button>
+			</div>
+		</div>
+	</ng-container>
+</ng-container>

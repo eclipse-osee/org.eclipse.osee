@@ -93,7 +93,7 @@ export class CurrentBranchInfoService {
 						.pipe(
 							tap((val) => {
 								if (val.results.results.length > 0) {
-									this._uiService.error =
+									this._uiService.ErrorText =
 										val.results.results[0];
 								}
 							})

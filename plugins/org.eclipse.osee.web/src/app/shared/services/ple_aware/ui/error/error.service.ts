@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -17,12 +18,33 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class ErrorService {
-	private _errors = new BehaviorSubject<string>('');
-	public get errors() {
-		return this._errors;
+	private _errorText = new BehaviorSubject<string>('');
+	private _errorDetails = new BehaviorSubject<string>('');
+
+	public get errorText() {
+		return this._errorText;
 	}
-	public set error(errorString: string) {
-		this._errors.next(errorString);
+
+	public get errorDetails() {
+		return this._errorDetails;
 	}
+
+	setHttpError(error: HttpErrorResponse) {
+		this._errorText.next(
+			'Request failed: ' + error.statusText + ' ' + error.status
+		);
+		this._errorDetails.next(error.message);
+	}
+
+	setError(errorText: string, errorDetails: string) {
+		this._errorText.next(errorText);
+		this._errorDetails.next(errorDetails);
+	}
+
+	clearError() {
+		this._errorText.next('');
+		this._errorDetails.next('');
+	}
+
 	constructor() {}
 }

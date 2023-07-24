@@ -17,6 +17,7 @@ import { DiffModeService } from './diff/diff-mode.service';
 import { ErrorService } from './error/error.service';
 import { UpdateService } from './update/update.service';
 import { HttpLoadingService } from '../../network/http-loading.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
 	providedIn: 'root',
@@ -86,10 +87,19 @@ export class UiService {
 		this.viewService.ViewId = id;
 	}
 
-	public get errors() {
-		return this.errorService.errors;
+	public get errorText() {
+		return this.errorService.errorText;
 	}
-	public set error(errorString: string) {
-		this.errorService.error = errorString;
+
+	public get errorDetails() {
+		return this.errorService.errorDetails;
+	}
+
+	public set ErrorText(errorText: string) {
+		this.errorService.setError(errorText, '');
+	}
+
+	public set httpError(error: HttpErrorResponse) {
+		this.errorService.setHttpError(error);
 	}
 }
