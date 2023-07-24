@@ -36,6 +36,8 @@ def main(argv):
                 continue
             if len(line) > 10 and line[0:10] == 'Change-Id:':
                 continue
+            if len(line) > 14 and line [0:14] == 'Signed-off-by:':
+                continue
             searchResults = searchTextIgnoreCase(regexPattern, line)
             if searchResults != None:
                 findings.append("Found keyword \"" + searchResults[0] + "\" in commit message: " + "\n  -->  " + line)
