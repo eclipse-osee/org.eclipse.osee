@@ -66,14 +66,14 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                   Decoder urlDecoder = Base64.getUrlDecoder();
                   String payloadJson = new String(urlDecoder.decode(jwt[1]), StandardCharsets.UTF_8);
 
-                  String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey);
+                  String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase();
                   orcsApi.userService().setUserForCurrentThread(loginId);
                }
             } else if (authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
                orcsApi.userService().setUserForCurrentThread(
-                  authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length()));
+                  authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length()).toLowerCase());
             } else {
-               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader));
+               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader.toLowerCase()));
             }
          }
       } catch (Exception ex) {
