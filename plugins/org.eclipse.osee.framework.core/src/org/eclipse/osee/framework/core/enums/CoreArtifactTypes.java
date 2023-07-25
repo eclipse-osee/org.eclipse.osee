@@ -365,11 +365,11 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceDefaultValue)
       .zeroOrOne(InterfaceElementAlterable)
       .zeroOrOne(Notes)
-      .zeroOrOne(InterfaceElementEnumLiteral));
+      .zeroOrOne(InterfaceElementEnumLiteral)
+      .zeroOrOne(InterfaceElementIndexStart)
+      .zeroOrOne(InterfaceElementIndexEnd));
 
-   ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement)
-      .exactlyOne(InterfaceElementIndexStart)
-      .exactlyOne(InterfaceElementIndexEnd));
+   ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement));
 
    ArtifactTypeToken InterfacePlatformType = osee.add(osee.artifactType(6360154518785980503L, "Interface Platform Type", false, InterfaceArtifact)
       .exactlyOne(InterfaceLogicalType)

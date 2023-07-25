@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
-import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
@@ -42,7 +41,7 @@ public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint 
    private final InterfaceEnumerationApi enumerationApi;
    private final InterfaceEnumerationSetApi enumerationSetApi;
 
-   public QueryMIMResourcesEndpointImpl(BranchId branch, InterfaceConnectionViewApi interfaceConnectionViewApi, InterfaceNodeViewApi interfaceNodeViewApi, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceStructureApi interfaceStructureApi, InterfaceElementApi interfaceElementApi, InterfaceElementArrayApi interfaceElementArrayApi, InterfacePlatformTypeApi interfacePlatformTypeApi, InterfaceEnumerationApi interfaceEnumerationApi, InterfaceEnumerationSetApi interfaceEnumerationSetApi) {
+   public QueryMIMResourcesEndpointImpl(BranchId branch, InterfaceConnectionViewApi interfaceConnectionViewApi, InterfaceNodeViewApi interfaceNodeViewApi, InterfaceMessageApi interfaceMessageApi, InterfaceSubMessageApi interfaceSubMessageApi, InterfaceStructureApi interfaceStructureApi, InterfaceElementApi interfaceElementApi, InterfacePlatformTypeApi interfacePlatformTypeApi, InterfaceEnumerationApi interfaceEnumerationApi, InterfaceEnumerationSetApi interfaceEnumerationSetApi) {
       this.branch = branch;
       this.connectionApi = interfaceConnectionViewApi;
       this.nodeApi = interfaceNodeViewApi;

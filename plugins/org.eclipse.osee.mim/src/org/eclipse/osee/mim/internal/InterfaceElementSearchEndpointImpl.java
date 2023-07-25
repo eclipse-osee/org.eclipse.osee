@@ -17,9 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceElementApi;
-import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
-import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.types.ElementPosition;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
@@ -31,14 +29,10 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
 
    private final BranchId branch;
    private final InterfaceElementApi elementApi;
-   private final InterfaceElementArrayApi elementArrayApi;
-   private final InterfacePlatformTypeApi platformApi;
 
-   public InterfaceElementSearchEndpointImpl(BranchId branch, InterfaceElementApi interfaceElementApi, InterfaceElementArrayApi interfaceElementArrayApi, InterfacePlatformTypeApi interfacePlatformTypeApi) {
+   public InterfaceElementSearchEndpointImpl(BranchId branch, InterfaceElementApi interfaceElementApi) {
       this.branch = branch;
       this.elementApi = interfaceElementApi;
-      this.elementArrayApi = interfaceElementArrayApi;
-      this.platformApi = interfacePlatformTypeApi;
    }
 
    @Override

@@ -18,7 +18,6 @@ import org.eclipse.osee.mim.CrossReferenceApi;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
-import org.eclipse.osee.mim.InterfaceElementArrayApi;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
@@ -64,7 +63,6 @@ public class MimApiImpl implements MimApi {
    private InterfaceSubMessageApi interfaceSubMessageApi;
    private InterfaceStructureApi interfaceStructureApi;
    private InterfaceElementApi interfaceElementApi;
-   private InterfaceElementArrayApi interfaceElementArrayApi;
    private InterfacePlatformTypeApi interfacePlatformApi;
    private InterfaceNodeViewApi interfaceNodeViewApi;
    private InterfaceConnectionViewApi interfaceConnectionViewApi;
@@ -130,7 +128,6 @@ public class MimApiImpl implements MimApi {
          new InterfaceMessageApiImpl(orcsApi, this.getInterfaceNodeViewApi(), this.getInterfaceConnectionViewApi());
       this.interfacePlatformApi = new InterfacePlatformTypeApiImpl(orcsApi);
       this.interfaceElementApi = new InterfaceElementApiImpl(orcsApi, this.interfacePlatformApi);
-      this.interfaceElementArrayApi = new InterfaceElementArrayApiImpl(orcsApi);
       this.interfaceStructureApi = new InterfaceStructureApiImpl(orcsApi, this.getInterfaceConnectionViewApi(),
          this.getInterfacePlatformTypeApi(), this.getInterfaceElementApi(), this.interfaceMessageApi);
       this.interfaceEnumerationApi = new InterfaceEnumerationApiImpl(orcsApi);
@@ -184,11 +181,6 @@ public class MimApiImpl implements MimApi {
    @Override
    public InterfaceElementApi getInterfaceElementApi() {
       return this.interfaceElementApi;
-   }
-
-   @Override
-   public InterfaceElementArrayApi getInterfaceElementArrayApi() {
-      return this.interfaceElementArrayApi;
    }
 
    @Override
