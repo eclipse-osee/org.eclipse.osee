@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -50,11 +49,6 @@ public interface IAtsTask extends IAtsWorkItem {
 
          @Override
          public IAtsTeamWorkflow getParentTeamWorkflow() {
-            return null;
-         }
-
-         @Override
-         public IAtsStateManager getStateMgr() {
             return null;
          }
 
@@ -129,11 +123,6 @@ public interface IAtsTask extends IAtsWorkItem {
          }
 
          @Override
-         public void setStateMgr(IAtsStateManager stateMgr) {
-            // do nothing
-         }
-
-         @Override
          public void clearCaches() {
             // do nothing
          }
@@ -156,11 +145,6 @@ public interface IAtsTask extends IAtsWorkItem {
          @Override
          public AtsApi getAtsApi() {
             return null;
-         }
-
-         @Override
-         public boolean isInState(IStateToken state) {
-            return false;
          }
 
          @Override
@@ -195,6 +179,11 @@ public interface IAtsTask extends IAtsWorkItem {
 
          @Override
          public IStateToken getCurrentState() {
+            return null;
+         }
+
+         @Override
+         public AtsUser getUserByUserId(String userId) {
             return null;
          }
 

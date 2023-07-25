@@ -96,7 +96,7 @@ public class TransitionCompletedCancelledTest {
          String.valueOf(DateUtil.get(createdDate, DateUtil.YYYY_MM_DD_WITH_DASHES)));
       validateAttrValue(AtsAttributeTypes.CreatedBy, joe.getUserId());
       validateAttrValue(AtsAttributeTypes.State, "Completed;;;");
-      validateAttrValue(AtsAttributeTypes.CurrentState, "InWork;<3333><4444>;;");
+      validateAttrValue(AtsAttributeTypes.CurrentState, "InWork;<3333>;;");
       validateAttrValue(AtsAttributeTypes.RelatedToState, TeamState.Analyze.getName());
       validateAttrValue(AtsAttributeTypes.CurrentStateName, TaskStates.InWork.getName());
       validateAttrValue(AtsAttributeTypes.CurrentStateAssignee, joe.getIdString());
@@ -144,7 +144,7 @@ public class TransitionCompletedCancelledTest {
          String.valueOf(DateUtil.get(createdDate, DateUtil.YYYY_MM_DD_WITH_DASHES)));
       validateAttrValue(AtsAttributeTypes.CreatedBy, joe.getUserId());
       validateAttrValue(AtsAttributeTypes.State, "Cancelled;;;");
-      validateAttrValue(AtsAttributeTypes.CurrentState, "InWork;<3333><4444>;;");
+      validateAttrValue(AtsAttributeTypes.CurrentState, "InWork;<3333>;;");
       validateAttrValue(AtsAttributeTypes.RelatedToState, TeamState.Analyze.getName());
       validateAttrValue(AtsAttributeTypes.CurrentStateName, TaskStates.InWork.getName());
       validateAttrValue(AtsAttributeTypes.CurrentStateAssignee, joe.getIdString());

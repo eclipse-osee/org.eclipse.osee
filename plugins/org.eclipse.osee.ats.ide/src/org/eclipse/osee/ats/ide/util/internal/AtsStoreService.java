@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
@@ -249,8 +248,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public void clearCaches(IAtsWorkItem workItem) {
-      ((WorkItem) workItem).clearCaches();
-      ((AbstractWorkflowArtifact) workItem.getStoreObject()).clearCaches();
+      workItem.clearCaches();
    }
 
    @Override

@@ -87,7 +87,7 @@ public class ActionOperations {
          if (!results.isEmpty()) {
             throw new OseeArgumentException("Exception transitioning: " + results.toString());
          }
-         attrTypeId = AtsAttributeTypes.CurrentState;
+         attrTypeId = AtsAttributeTypes.CurrentStateName;
       } else if (attrTypeIdOrKey.equals(AttributeKey.Version.name())) {
          if (!workItem.isTeamWorkflow()) {
             throw new OseeArgumentException("Not valid to set version for [%s]", workItem.getArtifactTypeName());

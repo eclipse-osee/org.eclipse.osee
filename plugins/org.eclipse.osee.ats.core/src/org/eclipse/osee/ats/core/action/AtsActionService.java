@@ -567,13 +567,7 @@ public class AtsActionService implements IAtsActionService {
       atsApi.getWorkDefinitionService().internalSetWorkDefinition(workItem, workDefinition);
 
       StateDefinition startState = workDefinition.getStartState();
-      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, startState.getStateType().name());
-      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, startState.getName());
-      changes.setAssignees(workItem, assignees);
-
-      // Update StateManager for backwards compatibility
-      workItem.getStateMgr().createOrUpdateState(startState.getName(), assignees);
-      workItem.getStateMgr().setCurrentState(startState.getName());
+      changes.initalizeWorkflow(workItem, startState, assignees);
 
       AtsUser user = createdBy;
       setCreatedBy(workItem, user, true, createdDate, changes);

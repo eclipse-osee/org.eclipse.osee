@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -100,27 +99,9 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public List<String> getVisitedStateNames() {
-      ensureLoaded();
-      return Named.getNames(states);
-   }
-
-   @Override
    public Collection<AtsUser> getAssignees(IStateToken state) {
       ensureLoaded();
       return getAssignees(state.getName());
-   }
-
-   @Override
-   public boolean isStateVisited(IStateToken state) {
-      ensureLoaded();
-      return isStateVisited(state.getName());
-   }
-
-   @Override
-   public boolean isStateVisited(String stateName) {
-      ensureLoaded();
-      return getVisitedStateNames().contains(stateName);
    }
 
    public void addState(WorkState workState) {
@@ -129,8 +110,10 @@ public class StateManager implements IAtsStateManager {
    }
 
    protected void addState(WorkState state, boolean logError) {
-      if (getVisitedStateNames().contains(state.getName())) {
-         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", state.getName(), workItem.getAtsId());
+      WorkState state2 = getStateOrNull(state.getName());
+      if (state2 != null) {
+         String errorStr =
+            String.format("Error: State [%s] already exists for [%s]", state.getName(), workItem.getAtsId());
          if (logError) {
             OseeLog.log(StateManager.class, Level.SEVERE, errorStr);
          }
@@ -138,11 +121,6 @@ public class StateManager implements IAtsStateManager {
       } else {
          states.add(state);
       }
-   }
-
-   @Override
-   public String toString() {
-      return String.format("StateManager id[%s] for workitem [%s]", transaction, workItem);
    }
 
    /**
@@ -157,7 +135,6 @@ public class StateManager implements IAtsStateManager {
          }
       }
       if (states == null) {
-         System.err.println("Loading StateManager " + workItem.toStringWithId() + " - " + currTransactionId);
          states = new ArrayList<>();
          for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(workItem,
             AtsAttributeTypes.CurrentState)) {
@@ -186,13 +163,14 @@ public class StateManager implements IAtsStateManager {
    @Override
    public void clearCaches() {
       states = null;
+      transaction = TransactionId.SENTINEL;
    }
 
    @Override
    public void addAssignee(AtsUser user) {
       ensureLoaded();
       WorkState state = getOrCreateState(workItem.getCurrentStateName());
-      state.getAssignees().add(user);
+      state.addAssignee(user);
    }
 
    @Override
@@ -223,7 +201,7 @@ public class StateManager implements IAtsStateManager {
             }
          }
       }
-      states = null;
+      clearCaches();
    }
 
    private WorkState getCurrentState() {
@@ -236,4 +214,20 @@ public class StateManager implements IAtsStateManager {
       return null;
    }
 
+   @Override
+   public String toString() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Transaction: ");
+      sb.append(transaction.toString());
+      sb.append(" - ");
+      for (WorkState state : states) {
+         if (state.isCurrentState()) {
+            sb.append("Curr ");
+         }
+         sb.append("State: ");
+         sb.append(state.toString());
+         sb.append(" - ");
+      }
+      return sb.toString();
+   }
 }

@@ -27,9 +27,9 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsOperationCache;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.rest.internal.AtsApiServerImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
-import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation.TestCurrentState;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -61,7 +61,6 @@ public class ConvertToStateAndAssigneeAttributes implements IAtsDatabaseConversi
       if (true) {
          return;
       }
-      OrcsApi orcsApi = atsApiServer.getOrcsApi();
       ElapsedTime time = new ElapsedTime(TITLE + " - Loading", true);
       List<ArtifactId> artIds =
          atsApiServer.getOrcsApi().getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
@@ -104,6 +103,38 @@ public class ConvertToStateAndAssigneeAttributes implements IAtsDatabaseConversi
       rd.log("Complete");
    }
 
+   /**
+    * Test current state in work def and is set in new ats.Current State Name attr
+    */
+   private class TestCurrentState {
+
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         String currentStatename =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
+         currentStatename = currentStatename.replaceFirst(";.*$", "");
+         WorkDefinition workDef = workItem.getWorkDefinition();
+         if (workDef == null) {
+            results.log(artifact, "TestCurrentStateIsInWorkDef", String.format("Error: Work Definition null for %s", //
+               workItem.toStringWithId()));
+         } else if (workDef.getStateByName(currentStatename) == null) {
+            results.log(artifact, "TestCurrentStateIsInWorkDef",
+               String.format("Error: Current State [%s] not valid for Work Definition [%s] for " + //
+                  artifact.toStringWithId(), currentStatename, workDef.getName()));
+         }
+         String currStateNameAttr =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, "");
+         if (!currentStatename.equals(currStateNameAttr)) {
+            results.log(artifact, "TestCurrentStateIsInWorkDef", String.format(
+               "Info: Updated Current State Name attr to [%s] for %s", currentStatename, workItem.toStringWithId()));
+            if (changes != null) {
+               changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, currentStatename);
+            }
+         }
+         return true;
+      }
+   }
+
    // This must be fixed to extract user ids from currentState before using
    private static class TestAssignees {
 
@@ -112,9 +143,9 @@ public class ConvertToStateAndAssigneeAttributes implements IAtsDatabaseConversi
          String currentStateValue =
             atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "unknown");
          List<Long> userArtIds = new ArrayList<>();
-         for (AtsUser user : workItem.getStateMgr().getAssignees(currentStateValue)) {
-            userArtIds.add(user.getArtifactId().getId());
-         }
+         //         for (AtsUser user : workItem.getAssignees(.currentStateValue)) {
+         //            userArtIds.add(user.getArtifactId().getId());
+         //         }
          List<Long> currUserArtIds = new ArrayList<>();
          for (String id : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
             AtsAttributeTypes.CurrentStateAssignee)) {

@@ -50,7 +50,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());
       } else {
-         for (AtsUser user : workflow.getStateMgr().getAssignees(state.getName())) {
+         for (AtsUser user : workflow.getAssignees(state)) {
             if (!users.contains(user)) {
                users.add(user);
             }

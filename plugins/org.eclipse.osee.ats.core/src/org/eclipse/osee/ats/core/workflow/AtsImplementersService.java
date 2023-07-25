@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Implementers for a WorkItem are<br/>
@@ -86,17 +85,10 @@ public class AtsImplementersService implements IAtsImplementerService {
    }
 
    public void getImplementers_fromCompletedCancelledFrom(IAtsWorkItem workItem, List<AtsUser> implementers) {
-      String fromStateName = null;
-      if (workItem.getCurrentStateType().isCompleted()) {
-         fromStateName = workItem.getCompletedFromState();
-      } else if (workItem.getCurrentStateType().isCancelled()) {
-         fromStateName = workItem.getCancelledFromState();
-      }
-      if (Strings.isValid(fromStateName)) {
-         for (AtsUser user : workItem.getStateMgr().getAssignees(fromStateName)) {
-            if (!implementers.contains(user)) {
-               implementers.add(user);
-            }
+      IStateToken fromState = workItem.getStateDefinition();
+      for (AtsUser user : workItem.getAssignees(fromState)) {
+         if (!implementers.contains(user)) {
+            implementers.add(user);
          }
       }
    }
@@ -151,18 +143,18 @@ public class AtsImplementersService implements IAtsImplementerService {
       return implementers;
    }
 
-   public List<AtsUser> getImplementersByState(IAtsWorkItem workflow, IStateToken state) {
+   public List<AtsUser> getImplementersByState(IAtsWorkItem workItem, IStateToken state) {
       List<AtsUser> users = new ArrayList<>();
-      if (workflow.isCancelled()) {
-         users.add(workflow.getCancelledBy());
+      if (workItem.isCancelled()) {
+         users.add(workItem.getCancelledBy());
       } else {
-         for (AtsUser user : workflow.getStateMgr().getAssignees(state.getName())) {
+         for (AtsUser user : workItem.getAssignees(state)) {
             if (!users.contains(user)) {
                users.add(user);
             }
          }
-         if (workflow.isCompleted()) {
-            AtsUser user = workflow.getCompletedBy();
+         if (workItem.isCompleted()) {
+            AtsUser user = workItem.getCompletedBy();
             if (user != null && !users.contains(user)) {
                users.add(user);
             }

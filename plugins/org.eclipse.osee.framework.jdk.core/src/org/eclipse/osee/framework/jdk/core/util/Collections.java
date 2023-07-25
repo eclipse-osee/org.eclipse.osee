@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -469,6 +470,22 @@ public class Collections {
          return items.iterator().next();
       }
       return sentinel;
+   }
+
+   public static XResultData matches(Collection<? extends Object> expected, Collection<? extends Object> actual) {
+      XResultData rd = new XResultData();
+      if (expected.size() != actual.size()) {
+         rd.errorf("Collection expected %s elements; actual %\n", expected.size(), actual.size());
+      }
+      List<Object> setComplement = Collections.setComplement(expected, actual);
+      for (Object obj : setComplement) {
+         rd.errorf("Expected, not found [%s]\n", obj);
+      }
+      List<Object> setComplement2 = Collections.setComplement(actual, expected);
+      for (Object obj : setComplement2) {
+         rd.errorf("Found, not expected [%s]\n", obj);
+      }
+      return rd;
    }
 
 }

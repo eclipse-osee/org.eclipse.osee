@@ -57,7 +57,7 @@ public class ReviewDeciderColumn extends XViewerAtsColumn implements IXViewerVal
       try {
          if (element instanceof DecisionReviewArtifact) {
             return AtsObjects.toString("; ",
-               ((DecisionReviewArtifact) element).getStateMgr().getAssignees(DecisionReviewState.Decision));
+               ((DecisionReviewArtifact) element).getAssignees(DecisionReviewState.Decision));
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);

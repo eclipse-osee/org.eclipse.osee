@@ -392,19 +392,7 @@ public class TransitionManager implements IExecuteListener {
                      toStateAssigees.addAll(getToAssignees(workItem, toState));
                   }
 
-                  changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, toState.getName());
-                  if (toState.isCompletedOrCancelled()) {
-                     changes.clearAssignees(workItem);
-                     toStateAssigees.clear();
-                  } else {
-                     changes.setAssignees(workItem, toStateAssigees);
-                  }
-                  changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType,
-                     toState.getStateType().name());
-
-                  // Update StateManager for backwards compatibility
-                  workItem.getStateMgr().createOrUpdateState(toState.getName(), toStateAssigees);
-                  workItem.getStateMgr().setCurrentState(toState.getName());
+                  changes.updateForTransition(workItem, toState, toStateAssigees);
 
                   // Create validation review if in correct state and TeamWorkflow
                   if (reviewService.isValidationReviewRequired(workItem) && workItem.isTeamWorkflow()) {
@@ -490,7 +478,7 @@ public class TransitionManager implements IExecuteListener {
     */
    private boolean isOverrideAttributeValidationState(IAtsWorkItem workItem, StateDefinition toStateDef) {
       logTimeStart("05.31 - isWorkingBranchTransitionable");
-      List<String> visitedStateNames = workItem.getStateMgr().getVisitedStateNames();
+      Collection<String> visitedStateNames = workItem.getLog().getVisitedStateNames();
       if (visitedStateNames.contains(toStateDef.getName())) {
          StateDefinition currState = workItem.getStateDefinition();
          for (StateDefinition stateDef : toStateDef.getWorkDefinition().getStates()) {
@@ -665,7 +653,8 @@ public class TransitionManager implements IExecuteListener {
       }
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState, fromState.getName(), changes);
 
-      workItem.getStateMgr().createOrUpdateState(toState.getName(), java.util.Collections.emptyList());
+      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
+         java.util.Collections.emptyList());
 
       // Mirror changes in StateManager WorkStates for legacy features
       validateUpdatePercentComplete(workItem, toState, changes);
@@ -682,7 +671,8 @@ public class TransitionManager implements IExecuteListener {
       attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState, changes);
 
       // Mirror changes in StateManager WorkStates for legacy features
-      workItem.getStateMgr().createOrUpdateState(toState.getName(), Arrays.asList(transitionUser));
+      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
+         Arrays.asList(transitionUser));
 
       validateUpdatePercentComplete(workItem, toState, changes);
    }
@@ -695,7 +685,9 @@ public class TransitionManager implements IExecuteListener {
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedDate, cancelDate, changes);
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedFromState, fromState.getName(), changes);
 
-      workItem.getStateMgr().createOrUpdateState(toState.getName(), java.util.Collections.emptyList());
+      // Mirror changes in StateManager WorkStates for legacy features
+      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
+         java.util.Collections.emptyList());
 
       validateUpdatePercentComplete(workItem, toState, changes);
    }
@@ -709,7 +701,9 @@ public class TransitionManager implements IExecuteListener {
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState, changes);
       }
 
-      workItem.getStateMgr().createOrUpdateState(toState.getName(), java.util.Collections.emptyList());
+      // Mirror changes in StateManager WorkStates for legacy features
+      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
+         java.util.Collections.emptyList());
 
       validateUpdatePercentComplete(workItem, toState, changes);
    }

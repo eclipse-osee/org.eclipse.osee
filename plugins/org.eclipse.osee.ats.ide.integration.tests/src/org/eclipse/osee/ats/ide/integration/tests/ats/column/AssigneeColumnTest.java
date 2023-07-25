@@ -72,7 +72,7 @@ public class AssigneeColumnTest {
       ArtifactToken revButton = AtsApiService.get().getQueryService().getArtifactByName(AtsArtifactTypes.TeamWorkflow,
          "Button S doesn't work on help");
       String revButtonAssignees = AssigneeColumn.getAssigneeStrr((IAtsTeamWorkflow) revButton);
-      Assert.assertEquals("(Jeffery Kay; Joe Smith)", revButtonAssignees);
+      Assert.assertEquals("(Joe Smith)", revButtonAssignees);
    }
 
    @org.junit.Test

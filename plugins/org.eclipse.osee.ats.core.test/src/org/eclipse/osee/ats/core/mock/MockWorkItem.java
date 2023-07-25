@@ -28,8 +28,6 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -41,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 public class MockWorkItem implements IAtsWorkItem {
    private final String name;
    private final String atsId;
-   private IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
    private final WorkDefinition workDefinition;
    private AtsUser completedBy;
@@ -53,7 +50,6 @@ public class MockWorkItem implements IAtsWorkItem {
    public MockWorkItem(String name, String currentStateName, WorkDefinition workDefinition, StateType StateType) {
       this.name = name;
       atsId = name;
-      this.stateMgr = new StateManager(this, null);
       this.workDefinition = workDefinition;
    }
 
@@ -87,11 +83,6 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public IAtsTeamWorkflow getParentTeamWorkflow() {
-      return null;
-   }
-
-   @Override
-   public IAtsStateManager getStateMgr() {
       return null;
    }
 
@@ -252,11 +243,6 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public void setStateMgr(IAtsStateManager stateMgr) {
-      this.stateMgr = stateMgr;
-   }
-
-   @Override
    public void clearCaches() {
       // do nothing
    }
@@ -264,11 +250,6 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public AtsApi getAtsApi() {
       return null;
-   }
-
-   @Override
-   public boolean isInState(IStateToken state) {
-      return false;
    }
 
    @Override
@@ -312,6 +293,11 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public IStateToken getCurrentState() {
       return new SimpleTeamState(getCurrentStateName(), getCurrentStateType());
+   }
+
+   @Override
+   public AtsUser getUserByUserId(String userId) {
+      return null;
    }
 
 }

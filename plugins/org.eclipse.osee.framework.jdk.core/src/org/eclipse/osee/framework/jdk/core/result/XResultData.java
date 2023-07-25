@@ -74,6 +74,12 @@ public class XResultData {
       this(false);
    }
 
+   // New XResultData with single log of String.format(message, data)
+   public XResultData(String message, Object... data) {
+      this(false);
+      logf(message, data);
+   }
+
    public XResultData(boolean enableOseeLog) {
       super();
       this.logToSysErr = enableOseeLog;

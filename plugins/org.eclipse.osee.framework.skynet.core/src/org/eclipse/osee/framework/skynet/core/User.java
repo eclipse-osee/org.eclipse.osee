@@ -231,4 +231,9 @@ public class User extends Artifact implements UserToken {
    public void setArtifact(ArtifactToken artifact) {
       // do nothing
    }
+
+   @Override
+   public String toStringFull() {
+      return toStringWithId();
+   }
 }

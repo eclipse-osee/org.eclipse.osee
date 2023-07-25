@@ -164,7 +164,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    public Collection<AtsUser> getValidateReviewFollowupUsers(IAtsTeamWorkflow teamWf) {
       Collection<AtsUser> users = new HashSet<>();
-      users.addAll(teamWf.getStateMgr().getAssignees(TeamState.Implement));
+      users.addAll(teamWf.getAssignees(TeamState.Implement));
       if (users.size() > 0) {
          return users;
       }

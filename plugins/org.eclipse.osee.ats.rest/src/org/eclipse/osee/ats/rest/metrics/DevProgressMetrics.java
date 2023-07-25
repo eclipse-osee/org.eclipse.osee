@@ -428,7 +428,7 @@ public final class DevProgressMetrics implements StreamingOutput {
       try {
          Date newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName).getDate();
          if (newStateStartDate.after(iterationDate)) {
-            for (String visitedState : teamWf.getStateMgr().getVisitedStateNames()) {
+            for (String visitedState : teamWf.getLog().getVisitedStateNames()) {
                newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, visitedState).getDate();
                if (newStateStartDate.before(iterationDate) && newStateStartDate.after(stateStartDate)) {
                   stateName = visitedState;

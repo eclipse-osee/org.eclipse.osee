@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -23,10 +22,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -41,7 +38,6 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -55,7 +51,6 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
    private TransactionBuilder transaction;
-
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
 
@@ -77,46 +72,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       return transaction;
-   }
-
-   @Override
-   public TransactionToken execute() {
-      checkExecuted();
-      Conditions.checkNotNull(comment, "comment");
-      if (isEmpty() && execptionIfEmpty) {
-         throw new OseeArgumentException("objects/deleteObjects cannot be empty");
-      }
-      // First, create or update any artifacts that changed
-      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
-         if (atsObject instanceof IAtsWorkItem) {
-            IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-
-            // Update StateManager for backwards compatibility
-            IAtsStateManager stateMgr = workItem.getStateMgr();
-            Conditions.assertNotNull(stateMgr, "StateManager");
-            stateMgr.writeToStore(this);
-
-            if (workItem.getLog().isDirty()) {
-               atsApi.getLogFactory().writeToStore(workItem, atsApi.getAttributeResolver(), this);
-            }
-         }
-      }
-      TransactionToken tx = getTransaction().commit();
-      for (IExecuteListener listener : listeners) {
-         listener.changesStored(this);
-      }
-      atsApi.getNotificationService().sendNotifications(getNotifications());
-      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
-         if (atsObject instanceof IAtsWorkItem) {
-            atsApi.getStoreService().clearCaches((IAtsWorkItem) atsObject);
-         }
-      }
-
-      if (tx.isValid()) {
-         executeAfterSuccess(atsApi);
-      }
-      executed = true;
-      return tx;
    }
 
    @Override
@@ -531,6 +486,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (!((ArtifactReadable) artifact).getTags().contains(tag)) {
          addAttribute(artifact, CoreAttributeTypes.StaticId, tag);
       }
+   }
+
+   /////////////////////////////////////////////
+   ////////////// EXECUTE //////////////////////
+   /////////////////////////////////////////////
+
+   @Override
+   protected void internalExecuteTransaction() {
+      transactionTok = getTransaction().commit();
    }
 
 }

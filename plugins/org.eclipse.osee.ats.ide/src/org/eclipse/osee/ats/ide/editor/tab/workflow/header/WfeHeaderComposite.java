@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -315,9 +314,14 @@ public class WfeHeaderComposite extends Composite {
 
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         boolean editable = WorkflowManager.isAssigneeEditable((AbstractWorkflowArtifact) workItem.getStoreObject());
+         boolean editable = isAssigneeEditable((AbstractWorkflowArtifact) workItem.getStoreObject());
          assigneeHeader = new WfeAssigneesHeader(comp, SWT.NONE, workItem, editable, editor);
       }
+   }
+
+   public boolean isAssigneeEditable(AbstractWorkflowArtifact awa) {
+      return !awa.isCompletedOrCancelled() && //
+         !awa.isReadOnly() && awa.isAccessControlWrite();
    }
 
    public boolean isShowTargetedVersion() {

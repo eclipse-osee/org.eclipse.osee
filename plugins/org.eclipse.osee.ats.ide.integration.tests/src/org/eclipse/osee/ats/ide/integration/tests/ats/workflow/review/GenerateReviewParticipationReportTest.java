@@ -34,7 +34,7 @@ public class GenerateReviewParticipationReportTest {
       GenerateReviewParticipationReport report = new GenerateReviewParticipationReport();
       report.setSelectedUser(AtsApiService.get().getUserService().getUserByToken(DemoUsers.Joe_Smith));
       Set<Artifact> results = report.getResults();
-      Assert.assertEquals(4, results.size());
+      Assert.assertEquals(16, results.size());
       int decRevCount = 0, peerRevCount = 0;
       for (Artifact review : results) {
          if (review.isOfType(AtsArtifactTypes.DecisionReview)) {
@@ -44,8 +44,8 @@ public class GenerateReviewParticipationReportTest {
             peerRevCount++;
          }
       }
-      Assert.assertEquals(3, decRevCount);
-      Assert.assertEquals(1, peerRevCount);
+      Assert.assertEquals(8, decRevCount);
+      Assert.assertEquals(8, peerRevCount);
    }
 
 }

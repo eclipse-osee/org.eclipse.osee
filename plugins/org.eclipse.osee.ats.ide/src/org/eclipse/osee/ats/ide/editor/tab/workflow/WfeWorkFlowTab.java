@@ -25,7 +25,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -35,9 +38,10 @@ import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeOperationsSection
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeUndefinedStateSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.WfeWorkflowSection;
 import org.eclipse.osee.ats.ide.internal.Activator;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -215,15 +219,14 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
 
-      StateXWidgetPage page = WorkflowManager.getCurrentAtsWorkPage(awa);
+      StateXWidgetPage page = getCurrentAtsWorkPage(awa);
       if (page == null) {
          OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
             "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
             awa.getWorkDefinition().getName());
       }
 
-      headerComp =
-         new WfeHeaderComposite(atsBody, SWT.NONE, editor, WorkflowManager.getCurrentAtsWorkPage(awa), managedForm);
+      headerComp = new WfeHeaderComposite(atsBody, SWT.NONE, editor, getCurrentAtsWorkPage(awa), managedForm);
       headerComp.create();
 
       createPageSections();
@@ -290,10 +293,10 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          sectionsComp.setLayoutData(gd);
          sectionsComp.setLayout(ALayout.getZeroMarginLayout(1, false));
 
-         for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(awa)) {
+         for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
             try {
                // Only display current or past states
-               if (awa.isInState(statePage) || awa.getStateMgr().isStateVisited(statePage)) {
+               if (awa.isInState(statePage) || awa.getLog().isStateVisited(statePage)) {
                   createStateSection(sectionsComp, statePage);
                }
                // Else make placeholder for state transition
@@ -478,6 +481,35 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
    @Override
    public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer) {
       // no columns in WorkflowTab
+   }
+
+   public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
+      for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
+         if (awa.getCurrentStateName().equals(statePage.getName())) {
+            return statePage;
+         }
+      }
+      return null;
+   }
+
+   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem) {
+      List<StateXWidgetPage> statePages = new ArrayList<>();
+      if (workItem != null) {
+         WorkDefinition workDef = workItem.getWorkDefinition();
+         ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
+         for (StateDefinition stateDefinition : AtsApiService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+            workDef)) {
+            try {
+               StateXWidgetPage statePage = new StateXWidgetPage(workDef, stateDefinition, null, optionResolver,
+                  (AbstractWorkflowArtifact) workItem);
+               statePages.add(statePage);
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
+      return statePages;
+
    }
 
 }

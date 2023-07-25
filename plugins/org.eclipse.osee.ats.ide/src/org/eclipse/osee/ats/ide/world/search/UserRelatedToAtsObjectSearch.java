@@ -61,19 +61,11 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
 
       AtsApi atsApi = AtsApiService.get();
       List<ArtifactToken> arts = new ArrayList<>();
-      if (activeObjectsOnly) {
+      arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
+         atsUser.getArtifactId().getIdString(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentStateAssignee));
+      if (!activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
-            user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
-         arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
-            atsUser.getArtifactId().getIdString(), false, EXCLUDE_DELETED, false,
-            AtsAttributeTypes.CurrentStateAssignee));
-      } else {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsApiService.get().getAtsBranch(),
-            user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
-            AtsAttributeTypes.Log));
-         arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
-            atsUser.getArtifactId().getIdString(), false, EXCLUDE_DELETED, false,
-            AtsAttributeTypes.CurrentStateAssignee));
+            user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.Log));
       }
 
       arts.addAll(

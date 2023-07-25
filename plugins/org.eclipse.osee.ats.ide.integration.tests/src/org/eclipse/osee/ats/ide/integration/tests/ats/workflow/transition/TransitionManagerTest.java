@@ -359,7 +359,6 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // test not check if working state
-      when(teamWf.getStateMgr()).thenReturn(teamWfStateMgr);
       when(teamWf.getCurrentStateType()).thenReturn(StateType.Working);
       TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);
       Assert.assertTrue(results.isEmpty());
@@ -367,12 +366,11 @@ public class TransitionManagerTest {
       // test transition to completed; all tasks are completed
       when(toStateDef.getStateType()).thenReturn(StateType.Completed);
       when(taskService.getTask(teamWf)).thenReturn(Collections.singleton(task));
-      when(task.getStateMgr()).thenReturn(taskStateMgr);
       when(task.getCurrentStateType()).thenReturn(StateType.Completed);
       TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);
       Assert.assertTrue(results.isEmpty());
 
-      // test transtion to completed; task is not completed
+      // test transition to completed; task is not completed
       when(task.getCurrentStateType()).thenReturn(StateType.Working);
       TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);
       Assert.assertTrue(results.contains(TransitionResult.TASKS_NOT_COMPLETED.getDetails()));

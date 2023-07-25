@@ -133,14 +133,16 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
    }
 
    @Override
-   public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {
+   public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body,
+      Collection<? extends AtsNotificationEvent> notificationEvents) {
       SendNotificationEvents job = new SendNotificationEvents(this, atsApi, fromUserEmail, testingUserEmail, subject,
          body, notificationEvents, atsApi.getUserService());
       job.run();
    }
 
    @Override
-   public void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String htmlBody) {
+   public void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject,
+      String htmlBody) {
       if (isNotificationsEnabled()) {
          Thread thread = new Thread("ATS Emailer") {
 

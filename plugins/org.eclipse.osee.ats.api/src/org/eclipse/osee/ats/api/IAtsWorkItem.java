@@ -15,7 +15,9 @@ package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -28,7 +30,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -43,8 +46,6 @@ public interface IAtsWorkItem extends IAtsObject {
    String getAtsId();
 
    IAtsTeamWorkflow getParentTeamWorkflow();
-
-   IAtsStateManager getStateMgr();
 
    IAtsLog getLog();
 
@@ -130,7 +131,18 @@ public interface IAtsWorkItem extends IAtsObject {
 
    void clearCaches();
 
-   boolean isInState(IStateToken state);
+   default boolean isInState(IStateToken... states) {
+      for (IStateToken state : states) {
+         if (getCurrentStateName().equals(state.getName())) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   default boolean isNotInState(IStateToken... states) {
+      return !isInState(states);
+   }
 
    @Override
    default public Collection<String> getTags() {
@@ -182,7 +194,16 @@ public interface IAtsWorkItem extends IAtsObject {
 
    public List<AtsUser> getImplementers();
 
-   void setStateMgr(IAtsStateManager stateMgr);
+   default Collection<AtsUser> getAssignees(IStateToken state) {
+      Set<AtsUser> assignees = new HashSet<>();
+      for (IAtsLogItem item : getLog().getLogItems(LogType.Assign)) {
+         AtsUser user = getUserByUserId(item.getUserId());
+         assignees.add(user);
+      }
+      return assignees;
+   }
+
+   AtsUser getUserByUserId(String userId);
 
    default String getAssigneesStr() {
       return Collections.toString("; ", getAssignees());
@@ -221,11 +242,6 @@ public interface IAtsWorkItem extends IAtsObject {
 
          @Override
          public IAtsTeamWorkflow getParentTeamWorkflow() {
-            return null;
-         }
-
-         @Override
-         public IAtsStateManager getStateMgr() {
             return null;
          }
 
@@ -310,11 +326,6 @@ public interface IAtsWorkItem extends IAtsObject {
          }
 
          @Override
-         public boolean isInState(IStateToken state) {
-            return false;
-         }
-
-         @Override
          public Collection<WorkType> getWorkTypes() {
             return null;
          }
@@ -355,8 +366,8 @@ public interface IAtsWorkItem extends IAtsObject {
          }
 
          @Override
-         public void setStateMgr(IAtsStateManager stateMgr) {
-            // do nothing
+         public AtsUser getUserByUserId(String userId) {
+            return null;
          }
 
       }
