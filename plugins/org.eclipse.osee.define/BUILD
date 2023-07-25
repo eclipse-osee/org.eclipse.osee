@@ -23,6 +23,17 @@ filegroup(
     visibility = ["//visibility:public"]
 )
 
+genrule(
+    name = "bazel_jar_to_osgi_jar",
+    srcs = [
+        ":define",  # a filegroup with multiple files in it ==> $(locations)
+    ],
+    outs = ["org.eclipse.osee.define.jar"],
+    cmd = "cp $(locations :define) .;mkdir amadeus;chmod 777 *; mv *.jar amadeus; cd  amadeus;chmod 777 *; \
+		    jar xf *.jar; rm -rf bin META-INF; chmod 777 *;ls org.eclipse.osee.define; mv org.eclipse.osee.define/* .;chmod 777 *;rm -rf org.eclipse.osee.define; \
+		    jar cfm *.jar META-INF/MANIFEST.MF *;pwd;cp libdefine.jar ..;cd ..; cp libdefine.jar $@"
+)
+
 filegroup(
     name = "html_files",
     srcs =
@@ -30,7 +41,8 @@ filegroup(
             "src/org/eclipse/osee/define/rest/internal/html/dataRightsReport.html",
             "src/org/eclipse/osee/define/rest/internal/html/publishLowHighReport.html",
             "src/org/eclipse/osee/define/rest/internal/html/systemSafetyReport.html",
-	    "src/ApplicabilityGrammar.tokens"
+	    "src/ApplicabilityGrammar.tokens",
+	    "META-INF/MANIFEST.MF"
 	  ]
   ,
 )

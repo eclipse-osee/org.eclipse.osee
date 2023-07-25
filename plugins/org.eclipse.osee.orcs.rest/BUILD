@@ -44,6 +44,7 @@ java_library(
 		"@maven//:io_swagger_core_v3_swagger_models",
 		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:eclipse_osgi_services",
+		"@ext_jars//:eclipse_core"
                 ],
 )
 
