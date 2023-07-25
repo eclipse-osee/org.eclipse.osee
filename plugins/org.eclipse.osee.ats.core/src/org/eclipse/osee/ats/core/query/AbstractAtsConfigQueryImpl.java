@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -324,6 +325,11 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          }
       }
       return defaultValue;
+   }
+
+   @Override
+   public Collection<IAtsWorkItem> getWorkItems() {
+      return atsApi.getWorkItemService().getWorkItems(getArtifacts());
    }
 
 }

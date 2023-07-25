@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.section;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -89,10 +88,9 @@ public class WfeUndefinedStateSection extends SectionPart {
       Collection<String> stateNamesDefined =
          AtsApiService.get().getWorkDefinitionService().getStateNames(awa.getWorkDefinition());
       List<String> stateNamesUndefined = new ArrayList<>();
-      for (String pageName : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
-         String justPage = pageName.replaceFirst(";.*$", "");
-         if (!stateNamesDefined.contains(justPage)) {
-            stateNamesUndefined.add(justPage);
+      for (String pageName : awa.getLog().getVisitedStateNames()) {
+         if (!stateNamesDefined.contains(pageName)) {
+            stateNamesUndefined.add(pageName);
          }
       }
       return stateNamesUndefined;
@@ -103,7 +101,6 @@ public class WfeUndefinedStateSection extends SectionPart {
          return;
       }
 
-      AbstractWorkflowArtifact awa = editor.getWorkItem();
       final FormToolkit toolkit = getManagedForm().getToolkit();
       Composite composite = toolkit.createComposite(getSection(), SWT.WRAP);
       composite.setLayout(new GridLayout(1, true));

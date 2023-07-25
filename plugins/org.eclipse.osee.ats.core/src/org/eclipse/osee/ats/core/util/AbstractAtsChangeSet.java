@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -56,6 +57,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -81,6 +83,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected boolean executed = false;
    protected HashCollection<IAtsWorkItem, AtsUser> initialAssignees = new HashCollection<>();
    protected AtsApi atsApi;
+   protected TransactionToken transactionTok = TransactionToken.SENTINEL;
 
    public AbstractAtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       this.comment = comment;
@@ -218,14 +221,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public TransactionToken executeIfNeeded() {
-      execptionIfEmpty = false;
-      TransactionToken tx = execute();
-      executed = true;
-      return tx;
-   }
-
-   @Override
    public AtsUser getAsUser() {
       return asUser;
    }
@@ -351,18 +346,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       seqNameToStartNum.put(seqName, seqStart);
    }
 
-   /**
-    * Perform any steps upon successful execute of transaction
-    */
-   public void executeAfterSuccess(AtsApi atsApi) {
-      for (Entry<String, String> entry : seqNameToStartNum.entrySet()) {
-         String query = String.format("INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (%s, '%s')",
-            entry.getValue(), entry.getKey());
-         atsApi.getQueryService().runUpdate(query);
-      }
-      addAssigneeNotificationEvents();
-   }
-
    @Override
    public void addAssignee(IAtsWorkItem workItem, AtsUser assignee) {
       assigneesChanging(workItem);
@@ -395,6 +378,9 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       }
 
       setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, newAssigneeIds);
+
+      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(workItem.getCurrentStateName(),
+         newAssignees);
    }
 
    @Override
@@ -402,6 +388,9 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       assigneesChanging(workItem);
 
       setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, Arrays.asList(assignee.getIdString()));
+
+      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(workItem.getCurrentStateName(),
+         Collections.singleton(assignee));
    }
 
    @Override
@@ -415,7 +404,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void clearAssignees(IAtsWorkItem workItem) {
       assigneesChanging(workItem);
+
       deleteAttributes(workItem, AtsAttributeTypes.CurrentStateAssignee);
+
+      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(workItem.getCurrentStateName(),
+         Collections.emptyList());
    }
 
    @Override
@@ -478,6 +471,133 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       } else {
          workItem.getLog().addLog(LogType.Originated, "",
             "Changed by " + atsApi.getUserService().getCurrentUser().getName(), new Date(), user.getUserId());
+      }
+   }
+
+   @Override
+   public void initalizeWorkflow(IAtsWorkItem workItem, IStateToken startState, Collection<AtsUser> assignees) {
+      setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, startState.getStateType().name());
+      setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, startState.getName());
+      setAssignees(workItem, assignees);
+
+      // Update StateManager for backwards compatibility
+      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(startState.getName(), assignees);
+      atsApi.getWorkItemService().getStateMgr(workItem).setCurrentState(startState.getName());
+   }
+
+   @Override
+   public void updateForTransition(IAtsWorkItem workItem, IStateToken toState, Collection<AtsUser> toStateAssigees) {
+      setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, toState.getName());
+      if (toState.isCompletedOrCancelled()) {
+         clearAssignees(workItem);
+         toStateAssigees.clear();
+      } else {
+         setAssignees(workItem, toStateAssigees);
+      }
+      setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, toState.getStateType().name());
+
+      // Update StateManager for backwards compatibility
+      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(), toStateAssigees);
+      atsApi.getWorkItemService().getStateMgr(workItem).setCurrentState(toState.getName());
+   }
+
+   /////////////////////////////////////////////
+   ////////////// EXECUTE //////////////////////
+   /////////////////////////////////////////////
+
+   @Override
+   public TransactionToken execute() {
+      try {
+         executePreCheck();
+         executeAtsObjects();
+
+         internalExecuteTransaction();
+
+         if (transactionTok.isValid()) {
+            executeNotifyListeners();
+            executeSendNotifications();
+            executeClearCaches();
+            executeUpdateAnySequences();
+         }
+
+         executed = true;
+      } catch (Exception ex) {
+         executeHandleException(ex);
+      }
+      return transactionTok;
+   }
+
+   protected void executeHandleException(Exception ex) {
+      throw OseeCoreException.wrap(ex);
+   }
+
+   /**
+    * Execute transaction and set transactionTok
+    */
+   protected abstract void internalExecuteTransaction();
+
+   // First
+   protected void executePreCheck() {
+      checkExecuted();
+      Conditions.checkNotNull(comment, "comment");
+      if (isEmpty() && execptionIfEmpty) {
+         throw new OseeArgumentException("objects/deleteObjects cannot be empty");
+      }
+   }
+
+   // Second
+   protected void executeAtsObjects() {
+      // First, create or update any artifacts that changed
+      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
+         if (atsObject instanceof IAtsWorkItem) {
+            IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
+
+            // Update StateManager for backwards compatibility
+            IAtsStateManager stateMgr = atsApi.getWorkItemService().getStateMgr(workItem);
+            Conditions.assertNotNull(stateMgr, "StateManager");
+            stateMgr.writeToStore(this);
+
+            if (workItem.getLog().isDirty()) {
+               atsApi.getLogFactory().writeToStore(workItem, atsApi.getAttributeResolver(), this);
+            }
+         }
+      }
+   }
+
+   protected void executeNotifyListeners() {
+      for (IExecuteListener listener : listeners) {
+         listener.changesStored(this);
+      }
+   }
+
+   protected void executeSendNotifications() {
+      addAssigneeNotificationEvents();
+      atsApi.getNotificationService().sendNotifications(notifications);
+   }
+
+   protected void executeClearCaches() {
+      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
+         if (atsObject instanceof IAtsWorkItem) {
+            atsApi.getWorkDefinitionService().internalClearWorkDefinition((IAtsWorkItem) atsObject);
+            atsApi.getWorkItemService().internalClearStateManager((IAtsWorkItem) atsObject);
+            atsApi.getStoreService().clearCaches((IAtsWorkItem) atsObject);
+         }
+      }
+   }
+
+   @Override
+   public TransactionToken executeIfNeeded() {
+      execptionIfEmpty = false;
+      TransactionToken tx = execute();
+      executed = true;
+      return tx;
+   }
+
+   public void executeUpdateAnySequences() {
+      for (Entry<String, String> entry : seqNameToStartNum.entrySet()) {
+         String query = String.format("INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (%s, '%s')",
+            entry.getValue(), entry.getKey());
+         atsApi.getQueryService().runUpdate(query);
       }
    }
 

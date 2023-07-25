@@ -296,7 +296,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testGetActionAttributeByType() {
-      testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.State);
+      testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.CurrentStateName);
    }
 
    private TeamWorkFlowArtifact testAttributeTypeMatchesRestAttributes(AttributeTypeToken attributeType) {

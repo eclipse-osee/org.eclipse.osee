@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
    AtsProductLineEndpointTest.class,
    AtsAttributeEndpointImplTest.class,
    AtsActionEndpointImplOptionsTest.class,
+   AtsWorkItemFilterTest.class,
    WorldSearchItemTest.class,
    AtsQueryServiceImplTest.class,
    AtsConfigQueryImplTest.class,

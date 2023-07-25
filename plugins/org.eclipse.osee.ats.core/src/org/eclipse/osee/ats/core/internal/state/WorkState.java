@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -45,13 +46,15 @@ class WorkState extends NamedBase {
    private double hoursSpent = 0;
    private int percentComplete = 0;
    private IAttribute<Object> attr;
-   private final boolean loaded = false;
+   private boolean loaded = false;
    private boolean currentState = false;
 
    private WorkState(IAtsWorkItem workItem, String name, Collection<AtsUser> assignees, double hoursSpent, int percentComplete, boolean currentState) {
+      Conditions.assertNotNull(assignees, "Assignees can't be null");
       this.workItem = workItem;
       this.name = name;
       this.assignees.addAll(assignees);
+      this.assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
       this.hoursSpent = hoursSpent;
       this.percentComplete = percentComplete;
       this.currentState = currentState;
@@ -94,13 +97,17 @@ class WorkState extends NamedBase {
 
    public void addAssignee(AtsUser user) {
       Conditions.checkNotNull(user, "user");
-      assignees.add(user);
+      if (!user.equals(AtsCoreUsers.UNASSIGNED_USER)) {
+         assignees.add(user);
+      }
    }
 
    public void setAssignees(Collection<AtsUser> users) {
       assignees.clear();
       for (AtsUser user : users) {
-         addAssignee(user);
+         if (!user.equals(AtsCoreUsers.UNASSIGNED_USER)) {
+            addAssignee(user);
+         }
       }
    }
 
@@ -145,6 +152,7 @@ class WorkState extends NamedBase {
             } else {
                throw new OseeArgumentException("Can't unpack state data [%s]", storeStr);
             }
+            loaded = true;
          }
       }
    }
@@ -188,7 +196,7 @@ class WorkState extends NamedBase {
 
    @Override
    public String toString() {
-      return name;
+      return getStoreStr() + (loaded ? "" : " (unloaded)");
    }
 
    public static WorkState create(IAtsWorkItem workItem, String name, boolean currentState) {

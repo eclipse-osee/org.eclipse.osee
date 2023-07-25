@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -116,6 +117,8 @@ public class WfeDetailsTab extends WfeAbstractTab {
       if (workItem.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          details.put("Working Branch Access Context Id", getAccessContextId((TeamWorkFlowArtifact) workItem));
       }
+      IAtsStateManager stateMgr = AtsApiService.get().getWorkItemService().getStateMgr(workItem);
+      details.put("State Mgr", stateMgr.toString());
    }
 
    private static String getAccessContextId(TeamWorkFlowArtifact workflow) {

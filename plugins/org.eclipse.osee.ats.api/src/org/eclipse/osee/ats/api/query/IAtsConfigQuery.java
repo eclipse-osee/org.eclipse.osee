@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -74,5 +75,7 @@ public interface IAtsConfigQuery {
    <T extends ArtifactToken> Collection<T> getArtifacts();
 
    IAtsConfigQuery isActive();
+
+   Collection<IAtsWorkItem> getWorkItems();
 
 }

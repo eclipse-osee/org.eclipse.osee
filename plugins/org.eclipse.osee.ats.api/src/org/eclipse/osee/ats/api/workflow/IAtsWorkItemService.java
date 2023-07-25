@@ -237,6 +237,11 @@ public interface IAtsWorkItemService {
       return getTimeInState(workItem, workItem.getCurrentState());
    }
 
-   IAtsStateManager createStateManager(IAtsWorkItem workItem);
+   /**
+    * This method is for backward compatibility and should NOT be used outside core ATS
+    */
+   IAtsStateManager getStateMgr(IAtsWorkItem workItem);
+
+   void internalClearStateManager(IAtsWorkItem workItem);
 
 }

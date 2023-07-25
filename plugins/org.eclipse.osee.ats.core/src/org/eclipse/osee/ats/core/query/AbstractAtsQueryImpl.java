@@ -588,7 +588,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsWorkItemFilter andFilter() {
-      return new AtsWorkItemFilter(getItems(), atsApi);
+      return new AtsWorkItemFilter(getItems());
    }
 
    protected Set<ArtifactTypeToken> getArtifactTypesFromWorkItemTypes() {
@@ -618,11 +618,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andAssignee(AtsUser... assignees) {
-      List<String> userIds = new ArrayList<>();
+      List<String> artIds = new ArrayList<>();
       for (AtsUser user : assignees) {
-         userIds.add("<" + user.getUserId() + ">");
+         artIds.add(user.getIdString());
       }
-      return andAttr(AtsAttributeTypes.CurrentState, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
+      return andAttr(AtsAttributeTypes.CurrentStateAssignee, artIds, QueryOption.EXACT_MATCH_OPTIONS);
    }
 
    @Override
@@ -631,7 +631,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       for (AtsUser user : assignees) {
          userIds.add("<" + user.getUserId() + ">");
       }
-      return andAttr(AtsAttributeTypes.State, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
+      return andAttr(AtsAttributeTypes.Log, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
    }
 
    @SuppressWarnings("unchecked")
@@ -857,7 +857,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private void addStateNameCriteria() {
       if (stateName != null) {
-         queryAnd(AtsAttributeTypes.CurrentState, stateName + ";", QueryOption.CONTAINS_MATCH_OPTIONS);
+         queryAnd(AtsAttributeTypes.CurrentStateName, stateName, QueryOption.EXACT_MATCH_OPTIONS);
       }
    }
 
@@ -963,7 +963,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsWorkItemFilter createFilter() {
-      return new AtsWorkItemFilter(getItems(), atsApi);
+      return new AtsWorkItemFilter(getItems());
    }
 
    @Override

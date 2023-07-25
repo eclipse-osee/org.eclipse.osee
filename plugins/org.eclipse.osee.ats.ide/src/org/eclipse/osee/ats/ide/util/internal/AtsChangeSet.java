@@ -24,8 +24,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IExecuteListener;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
@@ -47,7 +45,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,6 +59,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
+   private SkynetTransaction transaction;
+
    public AtsChangeSet(String comment) {
       this(comment, AtsApiService.get().getAtsBranch(), AtsApiService.get().getUserService().getCurrentUser());
    }
@@ -72,109 +71,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    public AtsChangeSet(String comment, BranchToken branch, AtsUser asUser) {
       super(comment, branch, asUser);
-   }
-
-   @Override
-   public TransactionToken execute() {
-      Conditions.checkNotNull(comment, "comment");
-      if (isEmpty() && execptionIfEmpty) {
-         throw new OseeArgumentException("objects/deleteObjects cannot be empty");
-      }
-      TransactionToken transactionTok = TransactionToken.SENTINEL;
-      if (branch == null) {
-         branch = AtsApiService.get().getAtsBranch();
-      }
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
-      try {
-         // First, create or update any artifacts that changed
-         for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
-            if (atsObject instanceof IAtsWorkItem) {
-               IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-
-               // Update StateManager for backwards compatibility
-               IAtsStateManager stateMgr = workItem.getStateMgr();
-               Conditions.assertNotNull(stateMgr, "StateManager");
-               workItem.getStateMgr().writeToStore(this);
-
-               if (workItem.getLog().isDirty()) {
-                  AtsApiService.get().getLogFactory().writeToStore(workItem, AtsApiService.get().getAttributeResolver(),
-                     this);
-               }
-            }
-            transaction.addArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(atsObject));
-         }
-         for (ArtifactId artifact : artifacts) {
-            if (artifact instanceof Artifact) {
-               transaction.addArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(artifact));
-            }
-         }
-         // Second, add or delete any relations; this has to be done separate so all artifacts are created
-         for (AtsRelationChange rel : relations) {
-            execute(rel, transaction);
-         }
-         // Third, delete any desired objects
-         for (ArtifactId artifact : deleteArtifacts) {
-            if (artifact instanceof Artifact) {
-               if (!AtsApiService.get().getStoreService().isDeleted(artifact)) {
-                  AtsApiService.get().getQueryServiceIde().getArtifact(artifact).deleteAndPersist(transaction);
-               }
-            }
-         }
-         for (IAtsObject atsObject : deleteAtsObjects) {
-            if (!AtsApiService.get().getStoreService().isDeleted(atsObject.getStoreObject())) {
-               AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).deleteAndPersist(transaction);
-            }
-         }
-         transactionTok = transaction.execute();
-      } catch (Exception ex) {
-         transaction.cancel();
-         throw OseeCoreException.wrap(ex);
-      }
-      for (IExecuteListener listener : listeners) {
-         listener.changesStored(this);
-      }
-      if (getNotifications().isValid()) {
-         addAssigneeNotificationEvents();
-         AtsApiService.get().getNotificationService().sendNotifications(getNotifications());
-      }
-      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
-         if (atsObject instanceof IAtsWorkItem) {
-            AtsApiService.get().getWorkDefinitionService().internalClearWorkDefinition((IAtsWorkItem) atsObject);
-         }
-      }
-
-      if (transactionTok != null && transactionTok.isValid()) {
-         executeAfterSuccess(AtsApiService.get());
-         executed = true;
-         return transactionTok;
-      }
-      executed = true;
-      return TransactionToken.SENTINEL;
-   }
-
-   private void execute(AtsRelationChange relChange, SkynetTransaction transaction) {
-      Conditions.checkNotNull(relChange, "relChange");
-      Conditions.checkNotNull(relChange.getRelationSide(), "relationSide");
-      Object obj = relChange.getObject();
-      Artifact art = getArtifact(obj);
-      Conditions.checkNotNull(art, "artifact");
-      Collection<Object> objects = relChange.getObjects();
-      Conditions.checkNotNullOrEmpty(objects, "objects");
-      Set<Artifact> arts = new HashSet<>();
-      for (Object obj2 : objects) {
-         Artifact art2 = getArtifact(obj2);
-         Conditions.checkNotNull(art2, "toArtifact");
-         arts.add(art2);
-      }
-      for (Artifact artifact : arts) {
-         List<Artifact> relatedArtifacts = art.getRelatedArtifacts(relChange.getRelationSide());
-         if (relChange.getOperation() == RelationOperation.Add && !relatedArtifacts.contains(artifact)) {
-            art.addRelation(relChange.getRelationSide(), artifact);
-         } else if (relChange.getOperation() == RelationOperation.Delete && relatedArtifacts.contains(artifact)) {
-            art.deleteRelation(relChange.getRelationSide(), artifact);
-         }
-      }
-      art.persist(transaction);
    }
 
    private Artifact getArtifact(Object obj) {
@@ -292,8 +188,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, Long artifactId) {
       checkExecuted();
-      Artifact artifact =
-         ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), name, artifactId);
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, atsApi.getAtsBranch(), name, artifactId);
       add(artifact);
       return artifact;
    }
@@ -301,7 +196,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name) {
       checkExecuted();
-      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsApiService.get().getAtsBranch(), name);
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, atsApi.getAtsBranch(), name);
       add(artifact);
       return artifact;
    }
@@ -386,7 +281,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       if (!found) {
-         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attributeId, workItem);
+         throw new OseeStateException("Attribute Id %s does not exist on Artifact %s", attributeId, workItem);
       }
       add(artifact);
    }
@@ -565,7 +460,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public ArtifactToken createArtifact(ArtifactToken parent, ArtifactTypeToken artType, String name) {
       checkExecuted();
-      Artifact artifact = ArtifactTypeManager.addArtifact(artType, AtsApiService.get().getAtsBranch(), name);
+      Artifact artifact = ArtifactTypeManager.addArtifact(artType, atsApi.getAtsBranch(), name);
       addChild(parent, artifact);
       add(artifact);
       return artifact;
@@ -589,6 +484,76 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (!((Artifact) artifact).getTags().contains(tag)) {
          addAttribute(artifact, CoreAttributeTypes.StaticId, tag);
       }
+   }
+
+   /////////////////////////////////////////////
+   ////////////// EXECUTE //////////////////////
+   /////////////////////////////////////////////
+
+   @Override
+   protected void internalExecuteTransaction() {
+      transaction = TransactionManager.createTransaction(branch, comment);
+      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
+         transaction.addArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(atsObject));
+      }
+
+      for (ArtifactId artifact : artifacts) {
+         if (artifact instanceof Artifact) {
+            transaction.addArtifact(AtsApiService.get().getQueryServiceIde().getArtifact(artifact));
+         }
+      }
+      // Second, add or delete any relations; this has to be done separate so all artifacts are created
+      for (AtsRelationChange rel : relations) {
+         executeRelChange(rel, transaction);
+      }
+      // Third, delete any desired objects
+      for (ArtifactId artifact : deleteArtifacts) {
+         if (artifact instanceof Artifact) {
+            if (!atsApi.getStoreService().isDeleted(artifact)) {
+               AtsApiService.get().getQueryServiceIde().getArtifact(artifact).deleteAndPersist(transaction);
+            }
+         }
+      }
+      for (IAtsObject atsObject : deleteAtsObjects) {
+         if (!AtsApiService.get().getStoreService().isDeleted(atsObject.getStoreObject())) {
+            AtsApiService.get().getQueryServiceIde().getArtifact(atsObject).deleteAndPersist(transaction);
+         }
+      }
+      TransactionToken transTok = transaction.execute();
+      if (transTok != null) {
+         transactionTok = transTok;
+      }
+   }
+
+   @Override
+   protected void executeHandleException(Exception ex) {
+      transaction.cancel();
+      super.executeHandleException(ex);
+   }
+
+   private void executeRelChange(AtsRelationChange relChange, SkynetTransaction transaction) {
+      Conditions.checkNotNull(relChange, "relChange");
+      Conditions.checkNotNull(relChange.getRelationSide(), "relationSide");
+      Object obj = relChange.getObject();
+      Artifact art = getArtifact(obj);
+      Conditions.checkNotNull(art, "artifact");
+      Collection<Object> objects = relChange.getObjects();
+      Conditions.checkNotNullOrEmpty(objects, "objects");
+      Set<Artifact> arts = new HashSet<>();
+      for (Object obj2 : objects) {
+         Artifact art2 = getArtifact(obj2);
+         Conditions.checkNotNull(art2, "toArtifact");
+         arts.add(art2);
+      }
+      for (Artifact artifact : arts) {
+         List<Artifact> relatedArtifacts = art.getRelatedArtifacts(relChange.getRelationSide());
+         if (relChange.getOperation() == RelationOperation.Add && !relatedArtifacts.contains(artifact)) {
+            art.addRelation(relChange.getRelationSide(), artifact);
+         } else if (relChange.getOperation() == RelationOperation.Delete && relatedArtifacts.contains(artifact)) {
+            art.deleteRelation(relChange.getRelationSide(), artifact);
+         }
+      }
+      art.persist(transaction);
    }
 
 }

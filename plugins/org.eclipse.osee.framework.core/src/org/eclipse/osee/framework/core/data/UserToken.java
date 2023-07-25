@@ -37,23 +37,29 @@ public interface UserToken extends ArtifactToken, UserId {
    public static final UserToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL, "", "", false);
 
    @JsonCreator
-   public static UserToken create(@JsonProperty("name") String name, @JsonProperty("email") String email, @JsonProperty("userId") String userId) {
+   public static UserToken create(@JsonProperty("name") String name, @JsonProperty("email") String email,
+      @JsonProperty("userId") String userId) {
       return create(Id.SENTINEL, name, email, userId, true);
    }
+
+   String toStringFull();
 
    public static UserToken create(long id, String name, String email, String userId, boolean active) {
       return create(id, name, email, userId, active, Collections.emptyList());
    }
 
-   public static UserToken create(long id, String name, String email, String userId, boolean active, List<IUserGroupArtifactToken> roles) {
+   public static UserToken create(long id, String name, String email, String userId, boolean active,
+      List<IUserGroupArtifactToken> roles) {
       return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles, "");
    }
 
-   public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active, List<String> loginIds, List<IUserGroupArtifactToken> roles) {
+   public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active,
+      List<String> loginIds, List<IUserGroupArtifactToken> roles) {
       return new UserTokenImpl(id, name, userId, active, email, loginIds, roles, "");
    }
 
-   public static UserToken create(long id, String name, String email, String userId, boolean active, List<String> loginIds, List<IUserGroupArtifactToken> roles, String phone) {
+   public static UserToken create(long id, String name, String email, String userId, boolean active,
+      List<String> loginIds, List<IUserGroupArtifactToken> roles, String phone) {
       return new UserTokenImpl(id, name, userId, active, email, loginIds, roles, phone);
    }
 
@@ -133,6 +139,11 @@ public interface UserToken extends ArtifactToken, UserId {
 
       @Override
       public String toString() {
+         return toStringWithId();
+      }
+
+      @Override
+      public String toStringFull() {
          return String.format("UserToken [name [%s], userId=[%s], active=[%s], email=[%s], loginIds=[%s], roles=[%s]",
             getName(), userId, active, email, getLoginIds(), getRoles());
       }

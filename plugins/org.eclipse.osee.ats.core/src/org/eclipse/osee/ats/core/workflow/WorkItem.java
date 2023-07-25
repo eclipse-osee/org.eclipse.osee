@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -55,7 +55,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    IAtsAction parentAction;
    private final ArtifactTypeToken artifactType;
    private WorkDefinition workDef;
-   private IAtsStateManager stateMgr;
 
    public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact, ArtifactTypeToken artifactType) {
       super(artifact.getName(), artifact.getId());
@@ -290,14 +289,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public void clearCaches() {
       parentAction = null;
-      getStateMgr().clearCaches();
       atsLog = null;
       atsApi.getWorkDefinitionService().internalClearWorkDefinition(this);
-   }
-
-   @Override
-   public boolean isInState(IStateToken state) {
-      return getCurrentStateName().equals(state.getName());
+      atsApi.getWorkItemService().internalClearStateManager(this);
    }
 
    @Override
@@ -317,16 +311,8 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public void setStateMgr(IAtsStateManager stateMgr) {
-      this.stateMgr = stateMgr;
-   }
-
-   @Override
-   public IAtsStateManager getStateMgr() {
-      if (stateMgr == null) {
-         stateMgr = atsApi.getWorkItemService().createStateManager(this);
-      }
-      return stateMgr;
+   public AtsUser getUserByUserId(String userId) {
+      return AtsApiService.get().getUserService().getUserByUserId(userId);
    }
 
 }

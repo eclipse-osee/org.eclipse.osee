@@ -100,7 +100,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems, atsApi);
+      return new AtsWorkItemFilter(workItems);
    }
 
    @Override

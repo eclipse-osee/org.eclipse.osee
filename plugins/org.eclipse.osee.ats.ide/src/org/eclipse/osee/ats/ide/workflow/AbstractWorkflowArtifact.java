@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -71,7 +70,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected IAtsAction parentAction;
    private IAtsLog atsLog;
    private TransactionId atsLogTx;
-   private IAtsStateManager stateMgr;
 
    public AbstractWorkflowArtifact(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType) {
       super(id, guid, branch, artifactType);
@@ -110,9 +108,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       parentAction = null;
       parentAwa = null;
       parentTeamArt = null;
-      getStateMgr().clearCaches();
       atsLog = null;
       AtsApiService.get().getWorkDefinitionService().internalClearWorkDefinition(this);
+      AtsApiService.get().getWorkItemService().internalClearStateManager(this);
    }
 
    @Override
@@ -123,11 +121,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public String getCurrentStateName() {
       return AtsApiService.get().getWorkItemService().getCurrentStateName(this);
-   }
-
-   @Override
-   public boolean isInState(IStateToken state) {
-      return getCurrentStateName().equals(state.getName());
    }
 
    public String implementersStr = null;
@@ -148,7 +141,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               if (awa.getStateMgr() == null) {
+               if (AtsApiService.get().getWorkItemService().getStateMgr((IAtsWorkItem) artifact) == null) {
                   rd.errorf("StateManager can not be null for %s", artifact.toStringWithId());
                }
 
@@ -198,7 +191,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          for (Artifact artifact : artifacts) {
             artifact.reloadAttributesAndRelations();
             if (artifact instanceof IAtsWorkItem) {
-               getStateMgr().clearCaches();
+               AtsApiService.get().getWorkItemService().internalClearStateManager(this);
             }
          }
       } catch (Exception ex) {
@@ -416,19 +409,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return AtsObjects.toString(";  ", getTransitionAssignees());
    }
 
-   @Override
-   public void setStateMgr(IAtsStateManager stateMgr) {
-      this.stateMgr = stateMgr;
-   }
-
-   @Override
-   public IAtsStateManager getStateMgr() {
-      if (stateMgr == null) {
-         stateMgr = AtsApiService.get().getWorkItemService().createStateManager(this);
-      }
-      return stateMgr;
-   }
-
    public void clearImplementersCache() {
       implementersStr = null;
    }
@@ -502,5 +482,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * @return UnSet if not applicable
     */
    public abstract BooleanState isParentAtsArtifactLoaded();
+
+   @Override
+   public AtsUser getUserByUserId(String userId) {
+      return AtsApiService.get().getUserService().getUserByUserId(userId);
+   }
 
 }

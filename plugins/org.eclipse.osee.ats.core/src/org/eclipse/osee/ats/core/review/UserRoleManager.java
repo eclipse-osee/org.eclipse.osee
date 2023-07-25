@@ -200,7 +200,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          }
          for (UserRole uRole : roleItems) {
             AtsUser user = atsApi.getUserService().getUserByUserId(uRole.getUserId());
-            peerRev.getStateMgr().addAssignee(user);
+            changes.addAssignee(peerRev, user);
          }
       }
    }

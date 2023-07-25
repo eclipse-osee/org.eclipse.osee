@@ -41,11 +41,11 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workdef.editor.WorkDefinitionViewer;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.ide.workflow.WorkflowManager;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -108,7 +108,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
                try {
                   AbstractWorkflowArtifact awa = workflowEditor.getWorkItem();
                   if (awa != null) {
-                     StateDefinition stateDef = WorkflowManager.getCurrentAtsWorkPage(awa).getStateDefinition();
+                     StateDefinition stateDef = WfeWorkFlowTab.getCurrentAtsWorkPage(awa).getStateDefinition();
                      StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
                      getTreeViewer().expandToLevel(awa, 2);
                      getTreeViewer().expandToLevel(stateDef, 1);
@@ -396,7 +396,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          items.add("Show State Metrics: " + workDef.isShowStateMetrics());
-         items.add(new WrappedPercentWeight(workDef));
+         items.add(new WrappedPercentWeight());
       }
 
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
@@ -550,12 +550,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
    private class WrappedPercentWeight {
 
-      private final WorkDefinition workDef;
-
-      public WrappedPercentWeight(WorkDefinition workDef) {
-         this.workDef = workDef;
-      }
-
       @Override
       public String toString() {
          try {
@@ -564,10 +558,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return "Total Percent Weighting: exception (see error log)";
-      }
-
-      public WorkDefinition getWorkDef() {
-         return workDef;
       }
 
    }

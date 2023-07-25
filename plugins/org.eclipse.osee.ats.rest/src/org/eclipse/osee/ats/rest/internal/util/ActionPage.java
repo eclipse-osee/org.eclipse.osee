@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
@@ -231,8 +230,7 @@ public class ActionPage {
    private void addStates(ViewModel page, IAtsWorkItem workItem, ArtifactReadable action) throws Exception {
       StringBuilder statesSb = new StringBuilder();
       WorkDefinition workDefinition = workItem.getWorkDefinition();
-      IAtsStateManager stateMgr = workItem.getStateMgr();
-      Collection<String> visitedStates = stateMgr.getVisitedStateNames();
+      Collection<String> visitedStates = workItem.getLog().getVisitedStateNames();
       List<StateDefinition> statesOrderedByOrdinal =
          atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workDefinition);
       for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {

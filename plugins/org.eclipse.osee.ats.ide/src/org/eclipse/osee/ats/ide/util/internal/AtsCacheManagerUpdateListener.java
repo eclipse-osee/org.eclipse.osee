@@ -19,6 +19,7 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -76,6 +78,8 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener, IA
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      processStateManagerCache(artifactEvent, sender);
+
       if (!DbUtil.isDbInit() && !AtsUtil.isInTest() && isSingleServerDeployment()) {
          boolean handledConfigReload = processArtifacts(artifactEvent, sender);
          if (!handledConfigReload) {
@@ -86,6 +90,8 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener, IA
 
    @Override
    public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      processStateManagerCache(artifactTopicEvent, sender);
+
       if (!DbUtil.isDbInit() && !AtsUtil.isInTest() && isSingleServerDeployment()) {
          boolean handledConfigReload = processArtifacts(artifactTopicEvent, sender);
          if (!handledConfigReload) {
@@ -127,6 +133,44 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener, IA
                if (configReloadRelationTypeGuids.contains(typeByGuid.getId())) {
                   AtsApiService.get().reloadServerAndClientCaches();
                   break;
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
+   }
+
+   private void processStateManagerCache(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      if (!sender.isLocal()) {
+         return;
+      }
+      for (EventTopicArtifactTransfer guidArt : artifactTopicEvent.getTransferArtifacts()) {
+         if (guidArt.getEventModType() == EventModType.Reloaded && //
+            AtsArtifactTypes.AbstractWorkflowArtifact.inheritsFrom(guidArt.getArtifactTypeId())) {
+            try {
+               Artifact art = ArtifactCache.getActive(guidArt.getArtifactId(), CoreBranches.COMMON);
+               if (art != null) {
+                  AtsApiService.get().getWorkItemService().getStateMgr((AbstractWorkflowArtifact) art).clearCaches();
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
+   }
+
+   private void processStateManagerCache(ArtifactEvent artifactEvent, Sender sender) {
+      if (!sender.isLocal()) {
+         return;
+      }
+      for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+         if (guidArt.getModType() == EventModType.Reloaded && guidArt.getArtifactType().inheritsFrom(
+            AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            try {
+               Artifact art = ArtifactCache.getActive(guidArt);
+               if (art != null) {
+                  AtsApiService.get().getWorkItemService().getStateMgr((AbstractWorkflowArtifact) art).clearCaches();
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -210,4 +210,8 @@ public interface IAtsChangeSet {
 
    void setCreatedBy(IAtsWorkItem workItem, AtsUser user, boolean logChange, Date date);
 
+   void initalizeWorkflow(IAtsWorkItem workItem, IStateToken state, Collection<AtsUser> assignees);
+
+   void updateForTransition(IAtsWorkItem workItem, IStateToken toState, Collection<AtsUser> toStateAssigees);
+
 }

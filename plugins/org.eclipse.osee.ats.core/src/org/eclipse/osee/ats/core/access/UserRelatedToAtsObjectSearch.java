@@ -43,13 +43,11 @@ public class UserRelatedToAtsObjectSearch {
    public Collection<ArtifactToken> getResults() {
       List<ArtifactToken> arts = new ArrayList<>();
 
-      if (activeObjectsOnly) {
+      arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
+         atsUser.getIdString(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentStateAssignee));
+      if (!activeObjectsOnly) {
          arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
-            atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
-      } else {
-         arts.addAll(atsApi.getQueryService().getArtifactsFromAttributeKeywords(atsApi.getAtsBranch(),
-            atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
-            AtsAttributeTypes.Log));
+            atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.Log));
       }
 
       arts.addAll(atsApi.getRelationResolver().getRelatedArtifacts(atsUser, AtsRelationTypes.TeamLead_Team));

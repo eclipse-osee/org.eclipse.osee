@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
@@ -38,9 +39,9 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    private Collection<? extends IAtsWorkItem> items;
    private final AtsApi atsApi;
 
-   public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, AtsApi atsApi) {
+   public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems) {
       this.items = new ArrayList<>(workItems);
-      this.atsApi = atsApi;
+      this.atsApi = AtsApiService.get();
    }
 
    @Override
@@ -48,7 +49,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          boolean found = false;
          for (ArtifactTypeToken matchType : artifactType) {
-            if (item.isOfType(matchType)) {
+            if (item.getArtifactType().inheritsFrom(matchType)) {
                found = true;
                break;
             }

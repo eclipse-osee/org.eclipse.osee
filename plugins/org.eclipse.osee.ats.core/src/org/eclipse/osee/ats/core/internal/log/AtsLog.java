@@ -14,10 +14,12 @@
 package org.eclipse.osee.ats.core.internal.log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -56,6 +58,17 @@ public class AtsLog implements IAtsLog {
       List<IAtsLogItem> logItems = new ArrayList<>(getLogItems());
       Collections.reverse(logItems);
       return logItems;
+   }
+
+   @Override
+   public Collection<IAtsLogItem> getLogItems(LogType logType) {
+      List<IAtsLogItem> items = new ArrayList<>();
+      for (IAtsLogItem logItem : logItems) {
+         if (logItem.getType().equals(logType)) {
+            items.add(logItem);
+         }
+      }
+      return items;
    }
 
    @Override
@@ -116,13 +129,13 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem addLog(LogType type, String state, String msg, String userId) {
-      return addLog(type, state, msg, new Date(), userId);
+   public IAtsLogItem addLog(LogType logType, String state, String msg, String userId) {
+      return addLog(logType, state, msg, new Date(), userId);
    }
 
    @Override
-   public IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId) {
-      LogItem logItem = new LogItem(type, date, userId, state, msg);
+   public IAtsLogItem addLog(LogType logType, String state, String msg, Date date, String userId) {
+      LogItem logItem = new LogItem(logType, date, userId, state, msg);
       List<IAtsLogItem> logItems = getLogItems();
       logItems.add(logItem);
       dirty = true;
@@ -136,9 +149,9 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem getLastEvent(LogType type) {
+   public IAtsLogItem getLastEvent(LogType logType) {
       for (IAtsLogItem item : getLogItemsReversed()) {
-         if (item.getType() == type) {
+         if (item.getType() == logType) {
             return item;
          }
       }
@@ -146,9 +159,9 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem getStateEvent(LogType type, String stateName) {
+   public IAtsLogItem getStateEvent(LogType logType, String stateName) {
       for (IAtsLogItem item : getLogItemsReversed()) {
-         if (item.getType() == type && item.getState().equals(stateName)) {
+         if (item.getType() == logType && item.getState().equals(stateName)) {
             return item;
          }
       }
@@ -156,9 +169,9 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem getStateEvent(LogType type) {
+   public IAtsLogItem getStateEvent(LogType logType) {
       for (IAtsLogItem item : getLogItemsReversed()) {
-         if (item.getType() == type) {
+         if (item.getType() == logType) {
             return item;
          }
       }
@@ -187,5 +200,31 @@ public class AtsLog implements IAtsLog {
 
    public String getLogId() {
       return logId;
+   }
+
+   @Override
+   public List<String> getVisitedStateNames() {
+      List<String> names = new ArrayList<>();
+      for (IAtsLogItem item : getLogItems(LogType.StateEntered)) {
+         if (!names.contains(item.getState())) {
+            names.add(item.getState());
+         }
+      }
+      return names;
+   }
+
+   @Override
+   public boolean isStateVisited(IStateToken state) {
+      return isStateVisited(state.getName());
+   }
+
+   @Override
+   public boolean isStateVisited(String stateName) {
+      for (IAtsLogItem item : getLogItems(LogType.StateEntered)) {
+         if (item.getState().equals(stateName)) {
+            return true;
+         }
+      }
+      return false;
    }
 }

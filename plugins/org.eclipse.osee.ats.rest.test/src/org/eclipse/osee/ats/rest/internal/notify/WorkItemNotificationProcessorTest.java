@@ -124,7 +124,6 @@ public class WorkItemNotificationProcessorTest {
       when(workItemService.getHtmlUrl(any(IAtsWorkItem.class), any(AtsApi.class))).thenReturn("http://ats/action/ID");
       when(teamWf.getId()).thenReturn(98L);
       when(teamWf.getArtifactTypeName()).thenReturn("Team Workflow");
-      when(teamWf.getStateMgr()).thenReturn(stateMgr);
       when(teamWf.getCurrentStateName()).thenReturn("Analyze");
       when(teamWf.getCurrentStateName()).thenReturn("Analyze");
       when(teamWf.getAssignees()).thenReturn(assignees);

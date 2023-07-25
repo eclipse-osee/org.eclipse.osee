@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.api.workflow.state;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -28,13 +27,7 @@ public interface IAtsStateManager {
 
    Collection<AtsUser> getAssignees(String stateName);
 
-   List<String> getVisitedStateNames();
-
    Collection<AtsUser> getAssignees(IStateToken state);
-
-   boolean isStateVisited(IStateToken state);
-
-   boolean isStateVisited(String stateName);
 
    void writeToStore(IAtsChangeSet changes);
 
