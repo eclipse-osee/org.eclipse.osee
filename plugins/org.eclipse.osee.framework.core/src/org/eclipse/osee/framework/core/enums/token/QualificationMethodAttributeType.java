@@ -33,7 +33,10 @@ public class QualificationMethodAttributeType extends AttributeTypeEnum<Qualific
    public final QualificationMethodEnum PassThru = new QualificationMethodEnum(5, "Pass Thru");
    public final QualificationMethodEnum SpecialQualification = new QualificationMethodEnum(6, "Special Qualification");
    public final QualificationMethodEnum Legacy = new QualificationMethodEnum(7, "Legacy");
-   public final QualificationMethodEnum Unspecified = new QualificationMethodEnum(8, "Unspecified");
+   public final QualificationMethodEnum DesignConstraint = new QualificationMethodEnum(8, "Design Constraint");
+   public final QualificationMethodEnum Info = new QualificationMethodEnum(9, "Info");
+   public final QualificationMethodEnum Exception = new QualificationMethodEnum(10, "Exception");
+   public final QualificationMethodEnum Unspecified = new QualificationMethodEnum(11, "Unspecified");
 
    public QualificationMethodAttributeType(NamespaceToken namespace, int enumCount) {
       super(1152921504606847113L, namespace, "Qualification Method", MediaType.TEXT_PLAIN,
@@ -42,7 +45,7 @@ public class QualificationMethodAttributeType extends AttributeTypeEnum<Qualific
    }
 
    public QualificationMethodAttributeType() {
-      this(NamespaceToken.OSEE, 9);
+      this(NamespaceToken.OSEE, 12);
    }
 
    public class QualificationMethodEnum extends EnumToken {
