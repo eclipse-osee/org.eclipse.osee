@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Stephen J. Molaro
@@ -132,6 +133,7 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             if (!isReqWf && workDef != null) {
                isReqWf = workDef.getName().contains("Requirements");
             }
+
             if (isReqWf && workflow.isCompleted()) {
                if (allTime || (workflow.getCompletedDate().after(startDate) && workflow.getCompletedDate().before(
                   endDate))) {
@@ -144,15 +146,36 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       }
       programVersion = atsApi.getRelationResolver().getRelatedOrSentinel(version,
          AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).getName();
+
       for (IAtsTeamWorkflow teamWf : reqWorkflows) {
          BranchToken branch = atsApi.getBranchService().getBranch(teamWf);
          if (branch == null || branch.isInvalid()) {
             continue;
          }
-         String changeReportData =
-            atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, CoreAttributeTypes.BranchDiffData, "");
+         String changeReportData = "";
          List<ChangeItem> changeItems = new ArrayList<>();
-         if (!changeReportData.isEmpty()) {
+
+         try {
+            if (atsApi.getAttributeResolver().getAttributeCount(teamWf, CoreAttributeTypes.BranchDiffData) == 1) {
+               changeReportData =
+                  atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, CoreAttributeTypes.BranchDiffData, "");
+            } else {
+               changeItems = orcsApi.getBranchOps().compareBranch(branch);
+               if (changeItems.isEmpty()) {
+                  continue;
+               }
+               changeReportData = JsonUtil.toJson(changeItems);
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(),
+                  "Add missing Branch Diff Data attribute");
+               tx.createAttribute(atsApi.getArtifactResolver().get(teamWf), CoreAttributeTypes.BranchDiffData,
+                  changeReportData);
+               tx.commit();
+            }
+         } catch (Exception ex) {
+            continue;
+         }
+
+         if (changeItems.isEmpty() && !changeReportData.isEmpty()) {
             changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
          } else {
             try {
@@ -163,6 +186,7 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          }
          wfToJsonMap.put(teamWf, changeItems);
       }
+
       return reqWorkflows;
    }
 
@@ -176,7 +200,6 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       for (Map.Entry<IAtsTeamWorkflow, List<ChangeItem>> entry : wfToJsonMap.entrySet()) {
          IAtsTeamWorkflow reqWorkflow = entry.getKey();
          List<ChangeItem> changeItems = entry.getValue();
-
          Date completedDate = new Date();
          try {
             completedDate = reqWorkflow.getCompletedDate();
@@ -308,33 +331,18 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
             }
          }
 
-         if (!attrChangeItems.isEmpty()) {
-            buffer[7] = swAdded;
-            buffer[8] = swModified;
-            buffer[9] = swDeleted;
-            buffer[10] = subAdded;
-            buffer[11] = subModified;
-            buffer[12] = subDeleted;
-            buffer[13] = headAdded;
-            buffer[14] = headModified;
-            buffer[15] = headDeleted;
-            buffer[16] = implAdded;
-            buffer[17] = implModified;
-            buffer[18] = implDeleted;
-         } else {
-            buffer[7] = "";
-            buffer[8] = "";
-            buffer[9] = "";
-            buffer[10] = "";
-            buffer[11] = "";
-            buffer[12] = "";
-            buffer[13] = "";
-            buffer[14] = "";
-            buffer[15] = "";
-            buffer[16] = "";
-            buffer[17] = "";
-            buffer[18] = "";
-         }
+         buffer[7] = swAdded;
+         buffer[8] = swModified;
+         buffer[9] = swDeleted;
+         buffer[10] = subAdded;
+         buffer[11] = subModified;
+         buffer[12] = subDeleted;
+         buffer[13] = headAdded;
+         buffer[14] = headModified;
+         buffer[15] = headDeleted;
+         buffer[16] = implAdded;
+         buffer[17] = implModified;
+         buffer[18] = implDeleted;
 
          try {
             writer.writeRow(buffer);
