@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +34,6 @@ import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.program.Program;
@@ -180,16 +178,25 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
        */
 
       //@formatter:off
-      var artifacts = Objects.nonNull(artifact)
+      var artifacts = Objects.nonNull( artifact )
                          ? Collections.<Artifact> singletonList( artifact )
                          : Collections.<Artifact> emptyList();
       //@formatter:on
 
       /*
-       * Get the branch token
+       * Get the branch name
        */
 
-      var branchToken = Objects.nonNull(artifact) ? artifact.getBranchToken() : BranchToken.SENTINEL;
+      //@formatter:off
+      var branchToken =
+         Objects.nonNull( artifact ) && artifact.isValid()
+            ? artifact.getBranchToken()
+            : null;
+
+      var branchName =
+         Objects.nonNull( branchToken ) && branchToken.isValid()
+            ? branchToken.getName()
+            : null;
 
       /*
        * Copy the file contents
@@ -198,13 +205,14 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       try (var inputStream = file.getContents()) {
          //@formatter:off
          return
-            this.renderToFileInternal
+            this.renderToFileInternal   /* <presentation-folder> "/" <branch-name> "/" <artifact-name> "-" <artifact-id> [ "-" <transaction-id> ] */
                (
-                  artifacts,
-                  branchToken,
-                  presentationType,
-                  null,
-                  inputStream
+                  artifacts,            /* List<Artifact>   artifacts        */
+                  branchToken,          /* BranchId         branchId         */
+                  branchName,           /* String           branchName       */
+                  presentationType,     /* PresentationType presentationType */
+                  null,                 /* String           pathPrefix       */
+                  inputStream           /* InputStream      inputStream      */
                );
          //@formatter:on
       } catch (Exception e) {
@@ -306,7 +314,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          "FileSystemRender::open, parameter \"presentationType\" cannot be null.");
 
       if (presentationType.matches(PresentationType.DEFAULT_OPEN)) {
-         presentationType = PREVIEW;
+         presentationType = PresentationType.PREVIEW;
       }
 
       /*
@@ -373,6 +381,28 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * When the renderer option {@link RendererOption#CLIENT_RENDERER_CAN_STREAM} is set to <code>true</code>, the call
     * back to the abstract method {@link #getRenderInputStream} is run in a sub-thread connected with a
     * {@link PipedOutputStream} and {@link PipedInputStream} pair.
+    * <p>
+    * Filenames are generated as follows:
+    * <dl>
+    * <dt>pathPrefix is null && artifact list length > 1:</dt>
+    * <dd>&lt;presentation-folder&gt; "/" &lt;branch-name&gt; "/" ( "artifacts", &lt;artifacts-length&gt; )</dd>
+    * <dt>pathPrefix is non-null && artifact list length > 1:</dt>
+    * <dd>&lt;presentation-folder&gt; "/" &lt;path-prefix&gt; "/" ( &lt;branch-name&gt;, "artifacts",
+    * &lt;artifacts-length&gt; )</dd>
+    * <dt>pathPrefix is null && artifact list length == 1 && artifact is non-null:</dt>
+    * <dd>&lt;presentation-folder&gt; "/" &lt;branch-name&gt; "/" ( &lt;artifact-name&gt;, &lt;artifact-id&gt; [,
+    * &lt;transaction-id&gt;] )</dd>
+    * <dt>pathPrefix is non-null && pathPrefix != branchName && artifact list length == 1 && artifact is non-null:</dt>
+    * <dd>&lt;presentation-folder&gt; "/" &lt;path-prefix&gt; "/" ( &lt;branch-name&gt;, &lt;artifact-name&gt;,
+    * &lt;artifact-id&gt; [, &lt;transaction-id&gt;] )</dd>
+    * <dt>pathPrefix is non-null && pathPrefix == branchName && artifact list length == 1 && artifact is non-null:</dt>
+    * <dd>&lt;presentation-folder&gt; "/" &lt;path-prefix&gt; "/" ( &lt;artifact-name&gt;, &lt;artifact-id&gt; [,
+    * &lt;transaction-id&gt;] )</dd>
+    * <dt>pathPrefix is null && ( artifact list length == 0 || artifact list contains one null artifact):</dt>
+    * <dd>&lt;presentation-folder&gt; "/" ( "artifacts", "0" )</dt>
+    * <dt>pathPrefix is non-null && ( artifact list length == 0 || artifact list contains one null artifact):</dt>
+    * <dd>&lt;presentation-folder&gt; "/" &lt;path-prefix&gt; "/" ( "artifacts", "0" )</dd>
+    * </dl>
     *
     * @implNode This is a provided utility method to classes extending this class. It is generally called from overrides
     * of the {@link #open} method.
@@ -410,12 +440,19 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                              .toString()
                    );
       }
-      //@formatter:on
 
       var branchTokenIterator = branchTokens.iterator();
-      var branchToken = branchTokenIterator.hasNext() ? branchTokenIterator.next() : BranchToken.SENTINEL;
 
-      var subdirectoryPath = Strings.isValidAndNonBlank(pathPrefix) ? pathPrefix : branchToken.getShortName();
+      var branchToken =
+         branchTokenIterator.hasNext()
+            ? branchTokenIterator.next()
+            : null;
+
+      var branchName =
+         Objects.nonNull( branchToken )
+            ? branchToken.getName()
+            : null;
+      //@formatter:on
 
       /*
        * Get the Renderer's output
@@ -478,9 +515,18 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
              * Save renderer output to the content file and setup file monitoring
              */
 
-            return renderToFileInternal(artifactsNoNulls, branchToken, presentationType, subdirectoryPath,
-               pipedInputStream);
-
+            //@formatter:off
+            return
+               renderToFileInternal
+                  (
+                     artifactsNoNulls,  /* List<Artifact>   artifacts        */
+                     branchToken,       /* BranchId         branchId         */
+                     branchName,        /* String           branchName       */
+                     presentationType,  /* PresentationType presentationType */
+                     pathPrefix,        /* String           pathPrefix       */
+                     pipedInputStream   /* InputStream      inputStream      */
+                  );
+            //@formatter:on
          } catch (Exception e) {
             //@formatter:off
             throw
@@ -506,11 +552,19 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
          try (var inputStream = this.getRenderInputStream(presentationType, artifacts); /* abstract */) {
 
-            /*
-             * Save renderer output to the content file and setup file monitoring
-             */
+            //@formatter:off
 
-            return renderToFileInternal(artifactsNoNulls, branchToken, presentationType, subdirectoryPath, inputStream);
+            return
+               renderToFileInternal
+                  (
+                     artifactsNoNulls,     /* List<Artifact>   artifacts        */
+                     branchToken,          /* BranchId         branchId         */
+                     branchName,           /* String           branchName       */
+                     presentationType,     /* PresentationType presentationType */
+                     pathPrefix,           /* String           pathPrefix       */
+                     inputStream           /* InputStream      inputStream      */
+                  );
+            //@formatter:on
 
          } catch (Exception e) {
             //@formatter:off
@@ -547,12 +601,12 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * @throws OseeCoreException when unable to create the {@link IFile} handle or an error occurs writing the file.
     */
 
-   private IFile renderToFileInternal(List<Artifact> artifacts, BranchToken branchToken,
+   private IFile renderToFileInternal(List<Artifact> artifacts, BranchId branchId, String branchName,
       PresentationType presentationType, String pathPrefix, InputStream renderInputStream) {
 
       /*
        * Get a handle to the content file. This creates all the sub-directories in the user workspace to where the
-       * content file is to be. It does not create or check for the existance of the content file.
+       * content file is to be. It does not create or check for the existence of the content file.
        */
 
       //@formatter:off
@@ -562,12 +616,19 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                (
                   this,                                             /* For call back to set output file path              */
                   presentationType,                                 /* Locates workspace presentation folder              */
-                  RendererUtil.makeRenderPath(pathPrefix),          /* Sub-folder under the workspace presentation folder */
+                  RendererUtil.makeRenderPath                       /* Sub-folder under the workspace presentation folder */
+                     (
+                        Objects.nonNull( pathPrefix )
+                           ? pathPrefix
+                           : branchName
+                     ),
                   this.getAssociatedExtension(artifacts),           /* File extension for content file                    */
                   RenderingUtil.getFileNameSegmentsFromArtifacts    /* Generates content filename segments                */
                      (
                         presentationType,
-                        branchToken.getShortName(),
+                        Objects.nonNull( pathPrefix ) && !pathPrefix.equals( branchName )
+                           ? branchName
+                           : null,
                         artifacts
                      )
                )
@@ -580,7 +641,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                                         .indentInc()
                                         .segment( "Renderer",             this.getName()                       )
                                         .segment( "Presentation Type",    presentationType.name( )             )
-                                        .segment( "Branch Token",         branchToken                          )
+                                        .segment( "Branch Name",          branchName                           )
+                                        .segment( "Branch Id",            branchId                             )
                                         .segmentIndexedList( "Artifacts", artifacts, Artifact::getIdString, 20 )
                                         .toString()
                                )
@@ -622,7 +684,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                monitor.addFile
                   (
                      file,
-                     this.getUpdateOperation( file, artifacts, branchToken, presentationType ) /* abstract */
+                     this.getUpdateOperation( file, artifacts, branchId, presentationType ) /* abstract */
                   );
                //@formatter:on
             }

@@ -59,6 +59,12 @@ public class FilenameFactory {
    private static String FILENAME_SAFE_CHAR_REPLACEMENT = "-";
 
    /**
+    * The maximum number of characters to be included in a safe name.
+    */
+
+   private static final int FILENAME_SAFE_LENGTH = 20;
+
+   /**
     * The character used to separate segments of the filename.
     */
 
@@ -204,6 +210,8 @@ public class FilenameFactory {
     * <p>
     * The remaining white space sequences are consolidated and replaced with a "-".
     * <p>
+    * The string is truncated to 20 characters in length.
+    * <p>
     * The returned {@link String} will always be non-<code>null</code> but might be empty.
     *
     * @param filename the file name to clean and URL encode.
@@ -234,9 +242,14 @@ public class FilenameFactory {
                   FilenameFactory.WHITESPACE_CLEANER_PATTERN,
                   FilenameFactory.FILENAME_SAFE_CHAR_REPLACEMENT
                );
-      //@formatter:on
 
-      return whiteSpaceCleanTrimCharacterCleanName;
+      var shortWhiteSpaceCleanTrimCharacterCleanName =
+         (whiteSpaceCleanTrimCharacterCleanName.length() > FilenameFactory.FILENAME_SAFE_LENGTH )
+            ? whiteSpaceCleanTrimCharacterCleanName.substring(0, FilenameFactory.FILENAME_SAFE_LENGTH )
+            : whiteSpaceCleanTrimCharacterCleanName;
+         //@formatter:on
+
+      return shortWhiteSpaceCleanTrimCharacterCleanName;
    }
 
    /**

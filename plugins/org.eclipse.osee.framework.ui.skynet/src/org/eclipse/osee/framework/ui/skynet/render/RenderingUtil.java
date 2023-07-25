@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionDeltaSupplier;
@@ -43,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -183,7 +184,8 @@ public final class RenderingUtil {
     * @return the generated message.
     */
 
-   public static String displayErrorDocument(IRenderer renderer, PresentationType presentationType, BranchToken branchToken, List<Artifact> artifacts, String errorMessage) {
+   public static String displayErrorDocument(IRenderer renderer, PresentationType presentationType,
+      BranchToken branchToken, List<Artifact> artifacts, String errorMessage) {
 
       var rendererClass = Objects.nonNull(renderer) ? renderer.getClass() : RenderingUtil.UNKNOWN_CLASS;
       var rendererName = Objects.nonNull(renderer) ? renderer.getName() : RenderingUtil.UNKNOWN_RENDERER;
@@ -322,7 +324,9 @@ public final class RenderingUtil {
 
    /**
     * Gets the {@link BranchToken} from each {@link Artifact} on the list, consolidates duplicates, and saves the unique
-    * {@link BranchToken}s into a {@link Set}. When the parameter <code>outputArtifactsNoNulls</code> is
+    * {@link BranchToken}s into a {@link Set}. The {@link BranchToken#SENTINEL} will be used for
+    * {@link Artifact#SENTINEL} artifacts instead of the {@link CoreBranches#Common} {@link BranchToken} that is the
+    * default for {@link Artifact#SENTINEL} artifacts. When the parameter <code>outputArtifactsNoNulls</code> is
     * non-<code>null</code> the non-<code>null</code> {@link Artifact} elements from the <code>artifacts</code>
     * {@link List} are added to the <code>outputArtifactsNoNulls</code> list. {@link Artifact#SENTINEL} objects will
     * also be copied into the <code>outputArtifactsNoNulls</code> {@link List}. When the <code>artifact</code>
@@ -347,7 +351,17 @@ public final class RenderingUtil {
          stream = stream.peek(outputArtifactsNoNulls::add);
       }
 
-      return stream.map(Artifact::getBranchToken).collect(Collectors.toSet());
+      //@formatter:off
+      return
+         stream
+            .map
+               (
+                  ( artifact ) -> artifact.isValid()
+                                     ? artifact.getBranchToken()
+                                     : BranchToken.SENTINEL
+               )
+            .collect( Collectors.toSet() );
+      //@formatter:on
    }
 
    /**
@@ -410,7 +424,8 @@ public final class RenderingUtil {
     * with the first 15 characters of the associated artifact's URL safe name; otherwise, and empty {@link Optional}.
     */
 
-   private static Optional<String> getFileNameSegmentFromTransactionDeltaAssociatedArtifactName(TransactionDelta txDelta) {
+   private static Optional<String> getFileNameSegmentFromTransactionDeltaAssociatedArtifactName(
+      TransactionDelta txDelta) {
 
       if (Objects.isNull(txDelta)) {
          return Optional.empty();
@@ -449,122 +464,97 @@ public final class RenderingUtil {
       }
    }
 
-   //@formatter:off
    /**
-    * The generated filename is determined as follows:
+    * When <code>artifacts</code> contains more than one element, creates an array with the following filename segments:
     * <dl>
-    * <dt><code>artifacts</code> is <code>null</code> or an empty list:</dt>
-    * <dd>[ &lt;prefix&gt; "-" ] &lt;date-time&gt; "-" &lt;random&gt; [ &lt;suffix&gt; ]</dd>
-    * <dt><code>artifacts</code> has more than one artifact on the list:</dt>
-    * <dd>[ &lt;prefix&gt; "-" ] "artifacts" "-" &lt;artifacts-length&gt; "-" &lt;date-time&gt; "-" &lt;random&gt; [ &lt;suffix&gt; ]</dd>
-    * <dt><code>artifacts</code> list has one <code>null</code> entry:</dt>
-    * <dd>[ &lt;prefix&gt; "-" ] &lt;date-time&gt; "-" &lt;random&gt; [ &lt;suffix&gt; ]</dd>
-    * <dt><code>artifacts</code> list has one element but the name is <code>null</code> or blank:</dt>
-    * <dd>[ &lt;prefix&gt; "-" ] &lt;date-time&gt; "-" &lt;random&gt; [ &lt;suffix&gt; ]</dd>
-    * <dt><code>artifacts</code> list has one element but the safe name degenerates to blank:</dt>
-    * <dd>[ &lt;prefix&gt; "-" ] &lt;date-time&gt; "-" &lt;random&gt; [ &lt;suffix&gt; ]</dd>
-    * <dt><code>artifacts</code> list has one element, it is a historical artifact or the parameter <code>presentationType</code> is {@link PresentationType#DIFF};
-    * and a valid {@link Transaction} is not obtained from the artifact:</dt>
-    * <dd>[ &lt;prefix&gt; "-" ] &lt;artifact-name&gt; "-" &lt;artifact-id&gt; "-" &lt;date-time&gt; "-" &lt;random&gt; [ &lt;suffix&gt; ]</dd>
-    * <dt><code>artifacts</code> list has one element, it is a historical artifact or the parameter <code>presentationType</code> is {@link PresentationType#DIFF};
-    * and a valid {@link Transaction} is obtained from the artifact:</dt>
-    * <dd>[ &lt;prefix&gt; "-" ] &lt;artifact-name&gt; "-" &lt;artifact-id&gt; "-" &lt;transaction-id&gt; "-" &lt;date-time&gt; "-" &lt;random&gt; [ &lt;suffix&gt; ]</dd>
+    * <dt>&lt;branch-name&gt;</dt>
+    * <dd>When, the safe <code>branchName</code> is non-<code>null</code> and non-blank.</dd>
+    * <dt>"artifacts"</dt>
+    * <dt>&lt;artifacts-length&gt;</dt>
+    * </dl>
+    * When <code>artifacts</code> contains one non-<code>null</code> artifact, creates an array with the following
+    * filename segments:
+    * <dl>
+    * <dt>&lt;branch-name&gt;</dt>
+    * <dd>When, the safe <code>branchName</code> is non-<code>null</code> and non-blank.</dd>
+    * <dt>&lt;artifact-name&gt;
+    * <dd>When the artifact safe name is non-<code>null</code> and non-blank.</dd>
+    * <dt>&lt;artifact-id&gt;</dt>
+    * <dt>&lt;transaction-id&gt;</dt>
+    * <dd>When the artifact is valid; the artifact is historical or the presentation type is
+    * {@link PresentationType#DIFF}; and the artifact has a valid transaction.</dd>
+    * </dl>
+    * When <code>artifacts</code> is empty or contains one <code>null</code> artifact, creates an array with the
+    * following filename segments:
+    * <dl>
+    * <dt>"artifacts"</dt>
+    * <dt>"0"</dt>
     * </dl>
     *
     * @param presentationType the {@link PresentationType}.
-    * @param artifacts a @{link List} of {@link Artifact}s.
-    * @param prefix an optional first segment of the filename.
-    * @param suffix an optional trailing segment for the filename.
-    * @return
+    * @param branchName the name of the branch the artifacts are on.
+    * @param artifacts a {@link List} of {@link Artifact}s.
+    * @return a {@link String} array of filename segments.
     */
-   //@formatter:on
 
-   public static String[] getFileNameSegmentsFromArtifacts(PresentationType presentationType, String branchName, List<Artifact> artifacts) {
+   public static String[] getFileNameSegmentsFromArtifacts(PresentationType presentationType, String branchName,
+      List<Artifact> artifacts) {
 
-      try {
+      var segments = new LinkedList<String>();
 
-         if (Objects.isNull(artifacts) || artifacts.isEmpty()) {
-            //@formatter:off
-            return
-                Strings.isValidAndNonBlank(branchName)
-                   ? new String[] {branchName}
-                   : null;
-            //@formatter:on
-         }
+      //@formatter:off
+      var safeBranchName =
+         Strings.isValidAndNonBlank( branchName )
+            ? FilenameFactory.makeNameSafer( branchName )
+            : null;
+      //@formatter:on
 
-         if (artifacts.size() > 1) {
-            //@formatter:off
-            return
-                Strings.isValidAndNonBlank(branchName)
-                   ? new String[] { branchName, "artifacts", Integer.toString( artifacts.size() ), null }
-                   : new String[] {             "artifacts", Integer.toString( artifacts.size() ), null };
-            //@formatter:on
-         }
+      if (Strings.isValidAndNonBlank(safeBranchName)) {
+         segments.add(safeBranchName);
+      }
+
+      if (Objects.nonNull(artifacts) && artifacts.size() > 1) {
+         segments.add("artifacts");
+         segments.add(Integer.toString(artifacts.size()));
+         return segments.toArray(String[]::new);
+      }
+
+      if (Objects.nonNull(artifacts) && artifacts.size() == 1) {
 
          var artifact = artifacts.get(0);
 
-         if (Objects.isNull(artifact) || artifact.isInvalid()) {
+         if (Objects.nonNull(artifact)) {
+
+            var safeArtifactName = FilenameFactory.makeNameSafer(artifact.getName());
+
+            if (Strings.isValidAndNonBlank(safeArtifactName)) {
+               segments.add(safeArtifactName);
+            }
+
+            var artifactIdString = artifact.getIdString();
+
+            segments.add(artifactIdString);
+
             //@formatter:off
-            return
-                Strings.isValidAndNonBlank(branchName)
-                   ? new String[] {branchName}
-                   : null;
+            var transaction =
+                  artifact.isValid()
+               && ( artifact.isHistorical() || ( presentationType == PresentationType.DIFF ) )
+                     ? artifact.getTransaction()
+                     : null;
             //@formatter:on
+
+            if (Objects.nonNull(transaction) && transaction.isValid()) {
+               var transactionIdString = transaction.getIdString();
+               segments.add(transactionIdString);
+            }
+
+            return segments.toArray(String[]::new);
          }
-
-         var artifactName = artifact.getName();
-
-         if (Strings.isInvalidOrBlank(artifactName)) {
-            //@formatter:off
-            return
-                Strings.isValidAndNonBlank(branchName)
-                   ? new String[] {branchName}
-                   : null;
-            //@formatter:on
-         }
-
-         var safeArtifactName = FilenameFactory.makeNameSafer(artifactName);
-
-         if (Strings.isInvalidOrBlank(safeArtifactName)) {
-            //@formatter:off
-            return
-                Strings.isValidAndNonBlank(branchName)
-                   ? new String[] {branchName}
-                   : null;
-            //@formatter:on
-         }
-
-         var artifactId = artifact.getIdString();
-
-         //@formatter:off
-         var transaction =
-               ( artifact.isHistorical() || ( presentationType == PresentationType.DIFF ) )
-                  ? artifact.getTransaction()
-                  : null;
-         //@formatter:on
-
-         if (Objects.isNull(transaction) || transaction.isInvalid()) {
-            //@formatter:off
-            return
-                Strings.isValidAndNonBlank(branchName)
-                   ? new String[] { branchName, safeArtifactName, artifactId }
-                   : new String[] {             safeArtifactName, artifactId };
-            //@formatter:on
-         }
-
-         var transactionId = transaction.getIdString();
-
-         //@formatter:off
-         return
-             Strings.isValidAndNonBlank(branchName)
-                ? new String[] { branchName, safeArtifactName, artifactId, transactionId }
-                : new String[] {             safeArtifactName, artifactId, transactionId };
-         //@formatter:on
-
-      } catch (Exception e) {
-
-         return null;
       }
+
+      segments.add("artifacts");
+      segments.add("0");
+      return segments.toArray(String[]::new);
 
    }
 
@@ -637,7 +627,8 @@ public final class RenderingUtil {
     * @return an {@link IFile} handle for the specified filename.
     */
 
-   public static Optional<IFile> getRenderFile(IRenderer renderer, PresentationType presentationType, IPath subFolder, CharSequence extension, CharSequence... segments) {
+   public static Optional<IFile> getRenderFile(IRenderer renderer, PresentationType presentationType, IPath subFolder,
+      CharSequence extension, CharSequence... segments) {
 
       //@formatter:off
       var safeFileName = FilenameFactory.create( extension, segments );
