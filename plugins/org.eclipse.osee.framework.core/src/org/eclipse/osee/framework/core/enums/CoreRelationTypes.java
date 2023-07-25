@@ -124,15 +124,6 @@ public interface CoreRelationTypes {
    RelationTypeSide ImplementationInfo_SoftwareRequirement = RelationTypeSide.create(ImplementationInfo, SIDE_A);
    RelationTypeSide ImplementationInfo_ImplementationDetails = RelationTypeSide.create(ImplementationInfo, SIDE_B);
 
-   // @Deprecated - Will be replaced by InterfaceConnectionNode
-   @Deprecated RelationTypeToken InterfaceConnectionPrimary = osee.addNewRelationType(6039606571486514296L, "Interface Connection Primary Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceNode, "Interface Node");
-   @Deprecated RelationTypeSide InterfaceConnectionPrimary_Connection = RelationTypeSide.create(InterfaceConnectionPrimary, SIDE_A);
-   @Deprecated RelationTypeSide InterfaceConnectionPrimary_Node = RelationTypeSide.create(InterfaceConnectionPrimary, SIDE_B);
-
-   @Deprecated RelationTypeToken InterfaceConnectionSecondary = osee.addNewRelationType(6039606571486514297L, "Interface Connection Secondary Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceNode, "Interface Node");
-   @Deprecated RelationTypeSide InterfaceConnectionSecondary_Connection = RelationTypeSide.create(InterfaceConnectionSecondary, SIDE_A);
-   @Deprecated RelationTypeSide InterfaceConnectionSecondary_Node = RelationTypeSide.create(InterfaceConnectionSecondary, SIDE_B);
-
    RelationTypeToken InterfaceConnectionNode = osee.addNewRelationType(6039606571486514300L, "Interface Connection Node", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceNode, "Interface Node");
    RelationTypeSide InterfaceConnectionNode_Connection = RelationTypeSide.create(InterfaceConnectionNode, SIDE_A);
    RelationTypeSide InterfaceConnectionNode_Node = RelationTypeSide.create(InterfaceConnectionNode, SIDE_B);
@@ -140,11 +131,6 @@ public interface CoreRelationTypes {
    RelationTypeToken InterfaceConnectionMessage = osee.addNewRelationType(6039606571486514298L, "Interface Connection Message", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceConnection, "Interface Connection", InterfaceMessage, "Interface Message");
    RelationTypeSide InterfaceConnectionMessage_Connection = RelationTypeSide.create(InterfaceConnectionMessage, SIDE_A);
    RelationTypeSide InterfaceConnectionMessage_Message = RelationTypeSide.create(InterfaceConnectionMessage, SIDE_B);
-
-   // @Deprecated - Will be replaced by InterfaceMessagePubNode and InterfaceMessageSubNode
-   @Deprecated RelationTypeToken InterfaceMessageSendingNode = osee.addNewRelationType(6039606571486514299L, "Interface Message Sending Node", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceMessage, "Interface Message", InterfaceNode, "Interface Node");
-   @Deprecated RelationTypeSide InterfaceMessageSendingNode_Message = RelationTypeSide.create(InterfaceMessageSendingNode, SIDE_A);
-   @Deprecated RelationTypeSide InterfaceMessageSendingNode_Node = RelationTypeSide.create(InterfaceMessageSendingNode, SIDE_B);
 
    RelationTypeToken InterfaceMessagePubNode = osee.addNewRelationType(6039606571486514301L, "Interface Message Publisher Node", MANY_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceMessage, "Interface Message", InterfaceNode, "Interface Node");
    RelationTypeSide InterfaceMessagePubNode_Message = RelationTypeSide.create(InterfaceMessagePubNode, SIDE_A);
