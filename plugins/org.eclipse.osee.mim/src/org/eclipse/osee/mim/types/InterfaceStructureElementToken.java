@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 public class InterfaceStructureElementToken extends PLGenericDBObject {
    public static final InterfaceStructureElementToken SENTINEL = new InterfaceStructureElementToken();
 
-   private String Name;
-
    private String enumLiteral;
 
    private Boolean InterfaceElementAlterable;

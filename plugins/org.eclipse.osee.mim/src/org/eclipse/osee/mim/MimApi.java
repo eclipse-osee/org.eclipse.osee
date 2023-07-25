@@ -34,8 +34,6 @@ public interface MimApi {
 
    InterfaceElementApi getInterfaceElementApi();
 
-   InterfaceElementArrayApi getInterfaceElementArrayApi();
-
    InterfacePlatformTypeApi getInterfacePlatformTypeApi();
 
    InterfaceNodeViewApi getInterfaceNodeViewApi();

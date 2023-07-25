@@ -119,8 +119,7 @@ public class BranchAccessor {
    @Path("{branch}/elements")
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceElementSearchEndpoint getElementSearchEndpoint(@PathParam("branch") BranchId branch) {
-      return new InterfaceElementSearchEndpointImpl(branch, mimApi.getInterfaceElementApi(),
-         mimApi.getInterfaceElementArrayApi(), mimApi.getInterfacePlatformTypeApi());
+      return new InterfaceElementSearchEndpointImpl(branch, mimApi.getInterfaceElementApi());
    }
 
    @Path("{branch}/structures")
@@ -167,9 +166,8 @@ public class BranchAccessor {
    public QueryMIMResourcesEndpoint getQueryEndpoint(@PathParam("branch") BranchId branch) {
       return new QueryMIMResourcesEndpointImpl(branch, mimApi.getInterfaceConnectionViewApi(),
          mimApi.getInterfaceNodeViewApi(), mimApi.getInterfaceMessageApi(), mimApi.getInterfaceSubMessageApi(),
-         mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfaceElementArrayApi(),
-         mimApi.getInterfacePlatformTypeApi(), mimApi.getInterfaceEnumerationApi(),
-         mimApi.getInterfaceEnumerationSetApi());
+         mimApi.getInterfaceStructureApi(), mimApi.getInterfaceElementApi(), mimApi.getInterfacePlatformTypeApi(),
+         mimApi.getInterfaceEnumerationApi(), mimApi.getInterfaceEnumerationSetApi());
    }
 
    @Path("{branch}/diff")
