@@ -42,14 +42,12 @@ public class RenderingUtilTest {
 
       //branch.getShortName truncates after the '.'. Trailing unsafe character will be trimmed.
       branch = BranchToken.create("0123455789012345578901234557890123.5");
-      branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
-      Assert.assertEquals("Not safe character found at end of branch name.", "0123455789012345578901234557890123",
-         branchShortName);
+      branchShortName = FilenameFactory.makeNameSafer(branch.getName());
+      Assert.assertEquals("Not safe character found at end of branch name.", "01234557890123455789", branchShortName);
 
-      branch = BranchToken.create("123455789012345578901234557890123.5");
-      branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
-      Assert.assertEquals("Not safe character found at in of branch name.", "123455789012345578901234557890123-5",
-         branchShortName);
+      branch = BranchToken.create("123455789012345578.5");
+      branchShortName = FilenameFactory.makeNameSafer(branch.getName());
+      Assert.assertEquals("Not safe character found at in of branch name.", "123455789012345578-5", branchShortName);
 
       branch = BranchToken.create("Dev>>>>>Branch");
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
@@ -63,23 +61,21 @@ public class RenderingUtilTest {
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
       Assert.assertEquals("Not safe character found at end of branch name.", "DevBranch", branchShortName);
 
-      branch = BranchToken.create("1234-changes:software");
+      branch = BranchToken.create("123-changes:software");
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
-      Assert.assertEquals("Not safe character found at end of branch name.", "1234-changes-software", branchShortName);
+      Assert.assertEquals("Not safe character found at end of branch name.", "123-changes-software", branchShortName);
 
-      branch = BranchToken.create("1234-changes:software*");
+      branch = BranchToken.create("12-changes:software*");
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
-      Assert.assertEquals("Not safe character found at end of branch name.", "1234-changes-software", branchShortName);
+      Assert.assertEquals("Not safe character found at end of branch name.", "12-changes-software", branchShortName);
 
-      branch = BranchToken.create("newchanges|software<<<<hardware");
+      branch = BranchToken.create("new|soft<<<<ware");
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
-      Assert.assertEquals("Not safe character found at end of branch name.", "newchanges-software-hardware",
-         branchShortName);
+      Assert.assertEquals("Not safe character found at end of branch name.", "new-soft-ware", branchShortName);
 
-      branch = BranchToken.create("someRequirementChangeCalled\"My\"Changes");
+      branch = BranchToken.create("some\"My\"Changes");
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
-      Assert.assertEquals("Not safe character found at end of branch name.", "someRequirementChangeCalled-My-Chan",
-         branchShortName);
+      Assert.assertEquals("Not safe character found at end of branch name.", "some-My-Changes", branchShortName);
 
       branch = BranchToken.create("aBranchName\\here");
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
@@ -89,12 +85,10 @@ public class RenderingUtilTest {
       branchShortName = FilenameFactory.makeNameSafer(branch.getShortName());
       Assert.assertEquals("Not safe character found at end of branch name.", "aDifferent-Name-here", branchShortName);
 
-      var testString = "  All the dirty characters /<>(){}[].:;\"\'\\|?*+ are here.  ";
-      var cleanString = FilenameFactory.makeNameSafer( testString );
-      Assert.assertEquals("Not safe character found in test string.", "All-the-dirty-characters-are-here",
-         cleanString);
+      var testString = "  All the /<>(){}[].:;\"\'\\|?*+ dirty chars.  ";
+      var cleanString = FilenameFactory.makeNameSafer(testString);
+      Assert.assertEquals("Not safe character found in test string.", "All-the-dirty-chars", cleanString);
 
    }
-
 
 }

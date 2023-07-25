@@ -304,7 +304,7 @@ public class RendererUtil {
 
    /**
     * Splits the provided <code>pathString</code> using both the UNIX and Windows path delimiters. Each segment of the
-    * path is converted into a save name using {@link FilenameFactory#makeNameSafer}. Any segments with names that
+    * path is converted into a safe name using {@link FilenameFactory#makeNameSafer}. Any segments with names that
     * degenerate into an empty string are ignored. Any path segments matching {@link RendererUtil#BAD_PATH_SEGMENTS} are
     * also ignored. The remaining segments are built into an {@link IPath} object representing the path.
     *
