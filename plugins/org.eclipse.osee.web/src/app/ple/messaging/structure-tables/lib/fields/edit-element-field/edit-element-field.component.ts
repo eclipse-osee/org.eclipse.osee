@@ -74,9 +74,6 @@ import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 		FormsModule,
 		NgIf,
 		NgFor,
-		CdkDrag,
-		CdkDragHandle,
-		MatIconModule,
 		MatSelectModule,
 		MatOptionModule,
 		MatInputModule,
@@ -152,9 +149,7 @@ export class EditElementFieldComponent<U extends keyof element>
 			this._element.id = this.elementId;
 		}),
 		switchMap(() => this.warningService.openElementDialog(this._element)),
-		switchMap((value) =>
-			this.structureService.partialUpdateElement(value, this.structureId)
-		)
+		switchMap((value) => this.structureService.partialUpdateElement(value))
 	);
 	private _focus = new Subject<string | null>();
 	private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
@@ -183,10 +178,7 @@ export class EditElementFieldComponent<U extends keyof element>
 						this.warningService.openElementDialog(this._element)
 					),
 					switchMap((value) =>
-						this.structureService.partialUpdateElement(
-							value,
-							this.structureId
-						)
+						this.structureService.partialUpdateElement(value)
 					)
 				),
 				of(false)

@@ -356,6 +356,7 @@ export class ImportService {
 										({
 											id: s.id,
 											name: s.name,
+											nameAbbrev: s.nameAbbrev,
 											description: s.description,
 											interfaceMaxSimultaneity:
 												s.interfaceMaxSimultaneity,
@@ -481,6 +482,9 @@ export class ImportService {
 						iif(
 							() => summary.crossReferences.length > 0,
 							from(summary.crossReferences).pipe(
+								tap((cr) => {
+									delete cr.connections;
+								}),
 								concatMap((crossRef) =>
 									this.crossRefService.createCrossReferenceTx(
 										crossRef,

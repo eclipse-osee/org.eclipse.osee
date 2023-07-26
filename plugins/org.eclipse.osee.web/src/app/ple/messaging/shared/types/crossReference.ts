@@ -18,7 +18,7 @@ export interface CrossReference {
 	crossReferenceValue: string;
 	crossReferenceArrayValues: string;
 	crossReferenceAdditionalContent: string;
-	connections: connection[];
+	connections?: connection[];
 	applicability: applic;
 }
 

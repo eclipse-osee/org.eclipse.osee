@@ -48,6 +48,7 @@ import {
 	debounceTime,
 	scan,
 	startWith,
+	tap,
 } from 'rxjs/operators';
 import { LayoutNotifierService } from '@osee/layout/notification';
 import { applic } from '@osee/shared/types/applicability';
@@ -201,7 +202,17 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 		share(),
 		shareReplay(1)
 	);
-	structures = this.structureService.structures;
+	structures = this.structureService.structures.pipe(
+		tap((structs) => {
+			if (this.filter !== '') {
+				structs.forEach((s) => {
+					if (s.elements && s.elements.length > 0) {
+						this.rowChange(s, true);
+					}
+				});
+			}
+		})
+	);
 	structuresCount = this.structureService.structuresCount;
 	currentPage = this.structureService.currentPage;
 
@@ -218,6 +229,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 			}
 		}, 10)
 	);
+
 	minPageSize = combineLatest([
 		this.currentOffset,
 		this.structuresCount,
@@ -226,6 +238,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 		switchMap(([offset, messages]) => of([offset, messages])),
 		map(([offset, length]) => Math.max(offset + 1, length + 1))
 	);
+
 	private _currentElementHeaders = combineLatest([
 		this.headerService.AllElementHeaders,
 		this.preferences,
@@ -272,6 +285,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 				)
 			)
 		),
+		switchMap((finalHeaders) => of(['rowControls', ...finalHeaders])),
 		share(),
 		shareReplay(1)
 	);
@@ -282,7 +296,9 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 	]).pipe(
 		map(([headers, allheaders]) =>
 			headers.sort(
-				(a, b) => allheaders.indexOf(a) - allheaders.indexOf(b)
+				(a, b) =>
+					allheaders.indexOf(a as keyof element) -
+					allheaders.indexOf(b as keyof element)
 			)
 		)
 	);
@@ -291,13 +307,13 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 		this.headerService.AllStructureHeaders,
 		this.preferences,
 	]).pipe(
-		switchMap(([structureHeaders, response]) =>
+		switchMap(([allHeaders, response]) =>
 			of(response.columnPreferences).pipe(
 				mergeMap((r) =>
 					from(r).pipe(
 						filter(
 							(column) =>
-								structureHeaders.includes(
+								allHeaders.includes(
 									column.name as Extract<
 										keyof structure,
 										string
@@ -336,6 +352,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 		share(),
 		shareReplay(1)
 	);
+
 	currentStructureHeaders = combineLatest([
 		this._currentStructureHeaders,
 		this.headerService.AllStructureHeaders,
@@ -346,6 +363,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 			)
 		)
 	);
+
 	_connectionsRoute = this.structureService.connectionsRoute;
 	_messageData = this.structureService.message.pipe(
 		takeUntil(this.structureService.done)

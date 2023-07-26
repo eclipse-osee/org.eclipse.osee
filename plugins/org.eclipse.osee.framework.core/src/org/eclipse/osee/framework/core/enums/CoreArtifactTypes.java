@@ -365,6 +365,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken InterfaceDataElement = osee.add(osee.artifactType(2455059983007225765L, "Interface DataElement", false, InterfaceArtifact)
       .zeroOrOne(InterfaceDefaultValue)
       .zeroOrOne(InterfaceElementAlterable)
+      .zeroOrOne(InterfaceElementArrayHeader)
       .zeroOrOne(Notes)
       .zeroOrOne(InterfaceElementEnumLiteral)
       .zeroOrOne(InterfaceElementIndexStart)

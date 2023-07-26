@@ -105,9 +105,9 @@
 					data.element.name !== undefined &&
 					data.element.description !== undefined &&
 					data.element.name.length > 0 &&
-					data.element.description.length > 0 &&
-					data.type.name.length > 0 &&
-					+(data.type.id !== undefined && data.type.id) > 0
+					(data.element.interfaceElementArrayHeader ||
+						(data.type.name.length > 0 &&
+							+(data.type.id !== undefined && data.type.id) > 0))
 				"
 				matStepperNext
 				data-cy="stepper-next">

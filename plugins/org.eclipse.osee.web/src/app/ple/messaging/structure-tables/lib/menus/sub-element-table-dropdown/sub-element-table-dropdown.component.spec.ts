@@ -25,25 +25,24 @@ import { SubElementTableDropdownComponent } from './sub-element-table-dropdown.c
 
 import {
 	CurrentStateServiceMock,
-	enumerationUiServiceMock,
 	preferencesUiServiceMock,
 	elementsMock,
-	warningDialogServiceMock,
+	elementTableDropdownServiceMock,
 } from '@osee/messaging/shared/testing';
 import {
 	CurrentStructureService,
-	EnumerationUIService,
 	PreferencesUIService,
-	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { MatDividerModule } from '@angular/material/divider';
+import { ElementTableDropdownService } from '../../services/element-table-dropdown.service';
 
 describe('SubElementTableDropdownComponent', () => {
 	let component: SubElementTableDropdownComponent;
 	let fixture: ComponentFixture<SubElementTableDropdownComponent>;
 	let loader: HarnessLoader;
 	let service: CurrentStructureService;
+	let mEvent: MouseEvent;
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(SubElementTableDropdownComponent, {
@@ -69,12 +68,8 @@ describe('SubElementTableDropdownComponent', () => {
 						useValue: CurrentStateServiceMock,
 					},
 					{
-						provide: EnumerationUIService,
-						useValue: enumerationUiServiceMock,
-					},
-					{
-						provide: WarningDialogService,
-						useValue: warningDialogServiceMock,
+						provide: ElementTableDropdownService,
+						useValue: elementTableDropdownServiceMock,
 					},
 				],
 			},
@@ -91,8 +86,8 @@ describe('SubElementTableDropdownComponent', () => {
 						useValue: CurrentStateServiceMock,
 					},
 					{
-						provide: PreferencesUIService,
-						useValue: preferencesUiServiceMock,
+						provide: ElementTableDropdownService,
+						useValue: elementTableDropdownServiceMock,
 					},
 				],
 			})
@@ -114,6 +109,10 @@ describe('SubElementTableDropdownComponent', () => {
 		component.element = elementsMock[0];
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
+	});
+
+	beforeEach(() => {
+		mEvent = document.createEvent('MouseEvent');
 	});
 
 	it('should create', () => {

@@ -12,7 +12,11 @@
  **********************************************************************/
 
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import { element, ElementDialog } from '@osee/messaging/shared/types';
+import {
+	element,
+	ElementDialog,
+	ElementDialogMode,
+} from '@osee/messaging/shared/types';
 
 export class DefaultAddElementDialog implements ElementDialog {
 	id = '';
@@ -31,43 +35,26 @@ export class DefaultAddElementDialog implements ElementDialog {
 			name: 'Base',
 		},
 		platformType: new PlatformTypeSentinel(),
+		arrayElements: [],
 		units: '',
 		enumLiteral: '',
 	};
-	type = {
-		id: '',
-		name: '',
-		description: '',
-		interfaceLogicalType: '',
-		interfacePlatformType2sComplement: false,
-		interfacePlatformTypeAnalogAccuracy: '',
-		interfacePlatformTypeBitSize: '',
-		interfacePlatformTypeBitsResolution: '',
-		interfacePlatformTypeCompRate: '',
-		interfaceDefaultValue: '',
-		interfacePlatformTypeMaxval: '',
-		interfacePlatformTypeMinval: '',
-		interfacePlatformTypeMsbValue: '',
-		interfacePlatformTypeUnits: '',
-		interfacePlatformTypeValidRangeDescription: '',
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-		enumSet: {
-			id: '-1',
-			name: '',
-			description: '',
-			applicability: {
-				id: '1',
-				name: 'Base',
-			},
-		},
-	};
+	type = new PlatformTypeSentinel();
+	mode: ElementDialogMode = 'add';
+	allowArray = true;
 
-	constructor(id?: string, name?: string, element?: Partial<element>) {
+	constructor(
+		id?: string,
+		name?: string,
+		element?: Partial<element>,
+		mode?: ElementDialogMode,
+		allowArray?: boolean
+	) {
 		this.id = id ? id : this.id;
 		this.name = name ? name : this.name;
+		this.mode = mode ? mode : this.mode;
+		this.allowArray =
+			allowArray !== undefined ? allowArray : this.allowArray;
 		if (element) {
 			this.element = element;
 		}

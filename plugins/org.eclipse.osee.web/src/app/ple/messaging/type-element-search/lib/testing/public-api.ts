@@ -12,3 +12,4 @@
  **********************************************************************/
 export * from './element-table-search.component.mock';
 export * from './element-table.component.mock';
+export * from './element-search.response.mock';

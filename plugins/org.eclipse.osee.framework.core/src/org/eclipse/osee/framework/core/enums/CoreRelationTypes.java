@@ -172,6 +172,10 @@ public interface CoreRelationTypes {
    RelationTypeSide InterfaceEnumeration_EnumerationSet = RelationTypeSide.create(InterfaceEnumeration, SIDE_A);
    RelationTypeSide InterfaceEnumeration_EnumerationState = RelationTypeSide.create(InterfaceEnumeration, SIDE_B);
 
+   RelationTypeToken InterfaceElementArrayElement = osee.addNewRelationType(5540416179400488807L, "Interface Element Array Element", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceDataElement, "Interface Data Element", InterfaceDataElement, "Interface Data Element");
+   RelationTypeSide InterfaceElementArrayElement_Element = RelationTypeSide.create(InterfaceElementArrayElement, SIDE_A);
+   RelationTypeSide InterfaceElementArrayElement_ArrayElement = RelationTypeSide.create(InterfaceElementArrayElement, SIDE_B);
+
    RelationTypeToken TransportTypeHeader = osee.addNewRelationType(8734224778892840579L, "Transport Type Header", ONE_TO_MANY, RelationSorter.LEXICOGRAPHICAL_ASC, TransportType, "Transport Type", InterfaceArtifact, "Interface Artifact");
    RelationTypeSide InterfaceTransportTypeHeader_TransportType = RelationTypeSide.create(TransportTypeHeader, SIDE_A);
    RelationTypeSide InterfaceTransportTypeHeader_Artifact = RelationTypeSide.create(TransportTypeHeader, SIDE_B);

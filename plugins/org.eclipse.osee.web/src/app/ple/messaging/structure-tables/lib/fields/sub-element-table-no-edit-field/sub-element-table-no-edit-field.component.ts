@@ -47,12 +47,14 @@ export class SubElementTableNoEditFieldComponent implements OnInit {
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
 		platformType: new PlatformTypeSentinel(),
+		arrayElements: [],
 		applicability: {
 			id: '1',
 			name: 'Base',
 		},
 		units: '',
 		interfaceElementAlterable: false,
+		interfaceElementArrayHeader: false,
 		enumLiteral: '',
 	};
 	@Input() header!: keyof element;

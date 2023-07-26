@@ -32,6 +32,7 @@ import {
 } from '@osee/messaging/shared/services';
 import {
 	CurrentStateServiceMock,
+	dialogRef,
 	enumerationSetServiceMock,
 	enumsServiceMock,
 	MockNewTypeFormComponent,
@@ -42,9 +43,9 @@ import {
 	MockApplicabilitySelectorComponent,
 	MockMatOptionLoadingComponent,
 } from '@osee/shared/components/testing';
-import { PlatformTypeQueryComponent } from 'src/app/ple/messaging/structure-tables/lib/dialogs/platform-type-query/platform-type-query.component';
-
 import { ElementFormComponent } from './element-form.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PlatformTypeQueryComponent } from '../../dialogs/platform-type-query/platform-type-query.component';
 
 describe('ElementFormComponent', () => {
 	let component: ElementFormComponent;
@@ -65,6 +66,7 @@ describe('ElementFormComponent', () => {
 					MatDividerModule,
 					MatSelectModule,
 					MatIconModule,
+					MatDialogModule,
 					MatProgressSpinnerModule,
 					MockApplicabilitySelectorComponent,
 					PlatformTypeQueryComponent,
@@ -77,6 +79,7 @@ describe('ElementFormComponent', () => {
 						provide: STRUCTURE_SERVICE_TOKEN,
 						useValue: CurrentStateServiceMock,
 					},
+					{ provide: MatDialog, useValue: dialogRef },
 				],
 			},
 		})

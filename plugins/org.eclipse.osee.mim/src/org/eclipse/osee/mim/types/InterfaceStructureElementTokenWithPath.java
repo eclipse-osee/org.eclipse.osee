@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -49,40 +50,42 @@ public class InterfaceStructureElementTokenWithPath extends InterfaceStructureEl
    }
 
    public List<String> getPaths() {
-      return this.getArtifactReadable().getRelatedList(
-         CoreRelationTypes.InterfaceStructureContent_Structure).stream().map(
-            structureArtifact -> new InterfaceStructureToken(structureArtifact)).map(
-               structure -> structure.getArtifactReadable().getRelatedList(
-                  CoreRelationTypes.InterfaceSubMessageContent_SubMessage).stream().map(
-                     submessageArtifact -> new InterfaceSubMessageToken(submessageArtifact)).map(
-                        submessage -> submessage.getArtifactReadable().getRelatedList(
-                           CoreRelationTypes.InterfaceMessageSubMessageContent_Message).stream().map(
-                              messageArtifact -> new InterfaceMessageToken(messageArtifact)).map(
-                                 message -> message.getArtifactReadable().getRelatedList(
-                                    CoreRelationTypes.InterfaceConnectionMessage_Connection).stream().map(
-                                       connection -> new ConnectionView(connection)).map(
-                                          connection -> "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString())).flatMap(
-                                             result -> result)).flatMap(result -> result)).flatMap(
-                                                result -> result).distinct().collect(Collectors.toList());
+      List<ArtifactReadable> structures = new LinkedList<>();
+      this.getArtifactReadable().getRelatedList(
+         CoreRelationTypes.InterfaceElementArrayElement_Element).stream().forEach(
+            element -> structures.addAll(
+               element.getRelatedList(CoreRelationTypes.InterfaceStructureContent_Structure)));
+      structures.addAll(
+         this.getArtifactReadable().getRelatedList(CoreRelationTypes.InterfaceStructureContent_Structure));
+      return structures.stream().map(
+         structure -> structure.getRelatedList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage).stream().map(
+            submessage -> submessage.getRelatedList(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).stream().map(
+                  message -> message.getRelatedList(
+                     CoreRelationTypes.InterfaceConnectionMessage_Connection).stream().map(
+                        connection -> "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString())).flatMap(
+                           result -> result)).flatMap(result -> result)).flatMap(result -> result).distinct().collect(
+                              Collectors.toList());
 
    }
 
    public List<String> getButtonNames() {
-      return this.getArtifactReadable().getRelatedList(
-         CoreRelationTypes.InterfaceStructureContent_Structure).stream().map(
-            structureArtifact -> new InterfaceStructureToken(structureArtifact)).map(
-               structure -> structure.getArtifactReadable().getRelatedList(
-                  CoreRelationTypes.InterfaceSubMessageContent_SubMessage).stream().map(
-                     submessageArtifact -> new InterfaceSubMessageToken(submessageArtifact)).map(
-                        submessage -> submessage.getArtifactReadable().getRelatedList(
-                           CoreRelationTypes.InterfaceMessageSubMessageContent_Message).stream().map(
-                              messageArtifact -> new InterfaceMessageToken(messageArtifact)).map(
-                                 message -> message.getArtifactReadable().getRelatedList(
-                                    CoreRelationTypes.InterfaceConnectionMessage_Connection).stream().map(
-                                       connection -> new ConnectionView(connection)).map(
-                                          connection -> "Connection: " + connection.getName() + " " + message.getName() + " > " + submessage.getName() + " > " + structure.getName())).flatMap(
-                                             result -> result)).flatMap(result -> result)).flatMap(
-                                                result -> result).distinct().collect(Collectors.toList());
+      List<ArtifactReadable> structures = new LinkedList<>();
+      this.getArtifactReadable().getRelatedList(
+         CoreRelationTypes.InterfaceElementArrayElement_Element).stream().forEach(
+            element -> structures.addAll(
+               element.getRelatedList(CoreRelationTypes.InterfaceStructureContent_Structure)));
+      structures.addAll(
+         this.getArtifactReadable().getRelatedList(CoreRelationTypes.InterfaceStructureContent_Structure));
+      return structures.stream().map(
+         structure -> structure.getRelatedList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage).stream().map(
+            submessage -> submessage.getRelatedList(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).stream().map(
+                  message -> message.getRelatedList(
+                     CoreRelationTypes.InterfaceConnectionMessage_Connection).stream().map(
+                        connection -> "Connection: " + connection.getName() + " " + message.getName() + " > " + submessage.getName() + " > " + structure.getName())).flatMap(
+                           result -> result)).flatMap(result -> result)).flatMap(result -> result).distinct().collect(
+                              Collectors.toList());
    }
 
 }

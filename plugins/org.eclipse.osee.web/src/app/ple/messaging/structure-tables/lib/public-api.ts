@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './tables/structure-table/structure-table.component';
+export * from '../lib/dialogs/edit-element-dialog/edit-element-dialog.component';

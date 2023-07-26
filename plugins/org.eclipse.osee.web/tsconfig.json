@@ -67,6 +67,9 @@
 			"@osee/messaging/structure-tables": [
 				"src/app/ple/messaging/structure-tables/lib"
 			],
+			"@osee/messaging/structure-tables/services": [
+				"src/app/ple/messaging/structure-tables/lib/services"
+			],
 			"@osee/messaging/structure-tables/menus": [
 				"src/app/ple/messaging/structure-tables/lib/menus"
 			],

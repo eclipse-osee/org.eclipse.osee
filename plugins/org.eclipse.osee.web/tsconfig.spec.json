@@ -81,6 +81,9 @@
 			"@osee/messaging/structure-tables/testing": [
 				"src/app/ple/messaging/structure-tables/lib/testing"
 			],
+			"@osee/messaging/structure-tables/services": [
+				"src/app/ple/messaging/structure-tables/lib/services"
+			],
 			"@osee/messaging/type-detail": [
 				"src/app/ple/messaging/type-detail/lib"
 			],

@@ -170,7 +170,7 @@ servicesUnderTest.forEach((testCase) => {
 				let expectedObservable = { a: transactionResultMock };
 				let expectedMarble = '(a|)';
 				scheduler
-					.expectObservable(service.partialUpdateElement({}, '10'))
+					.expectObservable(service.partialUpdateElement({}))
 					.toBe(expectedMarble, expectedObservable);
 			});
 		});
@@ -268,7 +268,7 @@ servicesUnderTest.forEach((testCase) => {
 		it('should perform a mutation for deleting a submessage relation', () => {
 			scheduler.run(({ expectObservable }) => {
 				let expectedObservable = { a: transactionResultMock };
-				let expectedMarble = 'a';
+				let expectedMarble = '(a|)';
 				expectObservable(
 					service.removeStructureFromSubmessage('10', '20')
 				).toBe(expectedMarble, expectedObservable);
@@ -278,7 +278,7 @@ servicesUnderTest.forEach((testCase) => {
 		it('should perform a mutation for deleting a submessage relation', () => {
 			scheduler.run(({ expectObservable }) => {
 				let expectedObservable = { a: transactionResultMock };
-				let expectedMarble = 'a';
+				let expectedMarble = '(a|)';
 				expectObservable(
 					service.removeElementFromStructure(
 						elementsMock[0],
@@ -291,7 +291,7 @@ servicesUnderTest.forEach((testCase) => {
 		it('should perform a mutation for deleting a submessage relation', () => {
 			scheduler.run(({ expectObservable }) => {
 				let expectedObservable = { a: transactionResultMock };
-				let expectedMarble = 'a';
+				let expectedMarble = '(a|)';
 				expectObservable(service.deleteElement(elementsMock[0])).toBe(
 					expectedMarble,
 					expectedObservable
@@ -302,7 +302,7 @@ servicesUnderTest.forEach((testCase) => {
 		it('should perform a mutation for deleting a structure', () => {
 			scheduler.run(({ expectObservable }) => {
 				let expectedObservable = { a: transactionResultMock };
-				let expectedMarble = 'a';
+				let expectedMarble = '(a|)';
 				expectObservable(
 					service.deleteStructure(structuresMock3[0].id)
 				).toBe(expectedMarble, expectedObservable);

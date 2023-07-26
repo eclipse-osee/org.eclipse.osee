@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute.InterfaceStructureCategoryEnum;
@@ -44,7 +44,9 @@ import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.MimApi;
+import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
+import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
@@ -53,6 +55,7 @@ import org.eclipse.osee.mim.types.MimChangeSummaryItem;
 import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
@@ -91,22 +94,24 @@ public class MimIcdGenerator {
 
    public void runOperation(OutputStream outputStream, BranchId branch, ArtifactId view, ArtifactId connectionId,
       boolean diff) {
-      ArtifactReadable conn =
-         orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(CoreArtifactTypes.InterfaceConnection).andId(
-            connectionId) //
-            .followFork(CoreRelationTypes.InterfaceConnectionNode_Node, CoreArtifactTypes.InterfaceNode, null) //
-            .follow(CoreRelationTypes.InterfaceConnectionMessage_Message) //
-            .follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage) //
-            .follow(CoreRelationTypes.InterfaceSubMessageContent_Structure) //
-            .follow(CoreRelationTypes.InterfaceStructureContent_DataElement) //
-            .follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType) //
-            .follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet) //
-            .follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState).asArtifact();
+      InterfaceConnection conn = mimApi.getInterfaceConnectionViewApi().get(branch, view, connectionId,
+         Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
+            FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
+            FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
+            FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
+            FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
+            FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
+               FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+               FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+               FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+            FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+            FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+            FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
 
-      ArtifactReadable primaryNode = ArtifactReadable.SENTINEL;
-      ArtifactReadable secondaryNode = ArtifactReadable.SENTINEL;
+      InterfaceNode primaryNode = InterfaceNode.SENTINEL;
+      InterfaceNode secondaryNode = InterfaceNode.SENTINEL;
 
-      List<ArtifactReadable> nodes = conn.getRelatedList(CoreRelationTypes.InterfaceConnectionNode_Node);
+      List<InterfaceNode> nodes = conn.getNodes();
       if (nodes.size() == 2) {
          primaryNode = nodes.get(0);
          secondaryNode = nodes.get(1);
@@ -119,7 +124,8 @@ public class MimIcdGenerator {
       SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
 
       if (conn.isValid() && primaryNode.isValid() && secondaryNode.isValid()) {
-         messages = conn.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList();
+         messages =
+            conn.getArtifactReadable().getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList();
 
          for (ArtifactReadable message : messages) {
             InterfaceMessageToken msg = new InterfaceMessageToken(message);
@@ -179,7 +185,7 @@ public class MimIcdGenerator {
             diffs = interfaceDifferenceReportApi.getDifferences(branch, view, parentBranch);
          }
 
-         createStructureInfo(branch, view, primaryNode, secondaryNode, messages);
+         createStructureInfo(branch, view, messages);
       }
 
       // Write sheets
@@ -193,17 +199,17 @@ public class MimIcdGenerator {
          createChangeSummary(writer, summary);
       }
 
-      createMessageSubMessageSummary(writer, conn, primaryNode, secondaryNode, messages, subMessages);
+      createMessageSubMessageSummary(writer, conn.getArtifactReadable(), primaryNode.getArtifactReadable(),
+         secondaryNode.getArtifactReadable(), messages, subMessages);
       createStructureNamesSheet(writer, structureLinks);
-      createStructureSummarySheet(writer, branch, primaryNode, secondaryNode, messages, structureLinks);
+      createStructureSummarySheet(writer, branch, messages, structureLinks);
       createStructureSheets(writer, subMessagesWithHeaders, structureLinks);
 
       writer.writeWorkbook();
       writer.closeWorkbook();
    }
 
-   private void createStructureInfo(BranchId branch, ArtifactId view, ArtifactReadable primaryNode,
-      ArtifactReadable secondaryNode, List<ArtifactReadable> messages) {
+   private void createStructureInfo(BranchId branch, ArtifactId view, List<ArtifactReadable> messages) {
       for (ArtifactReadable message : messages) {
          ArtifactReadable sendingNode =
             message.getRelated(CoreRelationTypes.InterfaceMessagePubNode_Node).getOneOrDefault(
@@ -255,15 +261,22 @@ public class MimIcdGenerator {
             }
 
             for (InterfaceStructureToken struct : structures) {
-               List<InterfaceStructureElementToken> elements;
-               List<ArtifactReadable> elementArts = new LinkedList<>();
-               if (struct.getId() == 0) {
-                  elements = struct.getElements();
-               } else {
-                  elementArts = struct.getArtifactReadable().getRelated(
-                     CoreRelationTypes.InterfaceStructureContent_DataElement).getList();
-                  elements = elementArts.stream().map(art -> new InterfaceStructureElementToken(art)).collect(
-                     Collectors.toList());
+               List<InterfaceStructureElementToken> flatElements = new LinkedList<>();
+               for (InterfaceStructureElementToken element : struct.getElements()) {
+                  if (element.getInterfaceElementArrayHeader()) {
+                     int startIndex = element.getInterfaceElementIndexStart();
+                     int endIndex = element.getInterfaceElementIndexEnd();
+                     for (int i = startIndex; i <= endIndex; i++) {
+                        for (InterfaceStructureElementToken arrayElement : element.getArrayElements()) {
+                           InterfaceStructureElementToken arrayElementCopy =
+                              new InterfaceStructureElementToken(arrayElement.getArtifactReadable());
+                           arrayElementCopy.setName(arrayElement.getName() + " " + i);
+                           flatElements.add(arrayElementCopy);
+                        }
+                     }
+                  } else {
+                     flatElements.add(element);
+                  }
                }
 
                MimDifferenceItem msgDiffItem = diffs.get(ArtifactId.valueOf(message.getId()));
@@ -272,10 +285,10 @@ public class MimIcdGenerator {
                int elementCount = 0;
                boolean structureSizeChanged = false;
                boolean structureChanged = false;
-               int byteChangeIndex = elements.size(); // Used to track which element first changes the structure size in order to display diff coloring for every element after.
+               int byteChangeIndex = flatElements.size(); // Used to track which element first changes the structure size in order to display diff coloring for every element after.
 
-               for (int i = 0; i < elements.size(); i++) {
-                  InterfaceStructureElementToken element = elements.get(i);
+               for (int i = 0; i < flatElements.size(); i++) {
+                  InterfaceStructureElementToken element = flatElements.get(i);
                   elementCount = struct.isAutogenerated() ? elementCount + 1 : elementCount + element.getArrayLength();
                   sizeInBytes = sizeInBytes + (int) element.getElementSizeInBytes();
 
@@ -334,7 +347,7 @@ public class MimIcdGenerator {
                StructureInfo structureInfo =
                   new StructureInfo(struct.getName(), struct.getNameAbbrev(), cat, categoryFull, msgRateText, minSim,
                      maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber,
-                     taskFileType, desc, message, subMessage.getArtifactReadable(), elementArts, structureChanged,
+                     taskFileType, desc, message, subMessage.getArtifactReadable(), flatElements, structureChanged,
                      txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex);
                if (struct.getId() == 0) {
                   headersList.put(struct.getName(), structureInfo);
@@ -559,9 +572,8 @@ public class MimIcdGenerator {
       }
    }
 
-   private void createStructureSummarySheet(ExcelWorkbookWriter writer, BranchId branch, ArtifactReadable primaryNode,
-      ArtifactReadable secondaryNode, List<ArtifactReadable> messages,
-      SortedMap<InterfaceStructureToken, String> structureLinks) {
+   private void createStructureSummarySheet(ExcelWorkbookWriter writer, BranchId branch,
+      List<ArtifactReadable> messages, SortedMap<InterfaceStructureToken, String> structureLinks) {
       int totalMinSim = 0;
       int totalMaxSim = 0;
       int totalNumAttrs = 0;
@@ -843,18 +855,16 @@ public class MimIcdGenerator {
                }
             } else {
                for (int i = 0; i < info.elements.size(); i++) {
-                  ArtifactReadable element = info.elements.get(i);
-                  InterfaceStructureElementToken elementToken = new InterfaceStructureElementToken(element);
+                  InterfaceStructureElementToken element = info.elements.get(i);
 
-                  Integer byteSize = (int) elementToken.getInterfacePlatformTypeByteSize();
+                  Integer byteSize = (int) element.getInterfacePlatformTypeByteSize();
 
-                  resultWidths = printDataElementRow(writer, rowIndex, struct.getArtifactReadable(), elementToken,
+                  resultWidths = printDataElementRow(writer, rowIndex, struct.getArtifactReadable(), element,
                      byteLocation, byteSize, i >= info.byteChangeIndex);
                   columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
-                  if (element.isOfType(CoreArtifactTypes.InterfaceDataElementArray)) {
-                     int startIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0);
-                     int endIndex = element.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0);
-
+                  int startIndex = element.getInterfaceElementIndexStart();
+                  int endIndex = element.getInterfaceElementIndexEnd();
+                  if (startIndex < endIndex) {
                      byteSize = byteSize * (endIndex - startIndex + 1);
                   }
                   byteLocation = byteLocation + byteSize;
@@ -950,24 +960,23 @@ public class MimIcdGenerator {
       boolean enumChanged = false;
 
       if (platformType != null && dataType.equals("enumeration")) {
-         ArtifactReadable enumDef = platformType.getArtifactReadable().getRelated(
+         ArtifactReadable enumSet = platformType.getArtifactReadable().getRelated(
             CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
-         enumLiterals = enumDef.getName() + ":\n";
-         enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumDef.getId()));
-         for (ArtifactReadable enumState : enumDef.getRelated(
+         enumLiterals = enumSet.getName() + ":\n";
+         enumChanged = enumChanged || diffs.containsKey(enumSet.getArtifactId());
+         for (ArtifactReadable enumState : enumSet.getRelated(
             CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "\n";
-            enumChanged = enumChanged || diffs.containsKey(ArtifactId.valueOf(enumState.getId()));
+            enumChanged = enumChanged || diffs.containsKey(enumState.getArtifactId());
          }
       }
 
-      MimDifferenceItem structDiff = diffs.get(ArtifactId.valueOf(structure.getId()));
-      MimDifferenceItem elementDiff = diffs.get(ArtifactId.valueOf(elementToken.getId()));
+      MimDifferenceItem structDiff = diffs.get(structure.getArtifactId());
+      MimDifferenceItem elementDiff = diffs.get(elementToken.getArtifactId());
       boolean elementAdded = structDiff != null && structDiff.getRelationChanges().containsKey(
-         ArtifactId.valueOf(elementToken.getId())) && structDiff.getRelationChanges().get(
-            ArtifactId.valueOf(elementToken.getId())).isAdded();
+         elementToken.getArtifactId()) && structDiff.getRelationChanges().get(elementToken.getArtifactId()).isAdded();
       boolean platformTypeChanged = elementDiff != null && !elementDiff.getRelationChanges().isEmpty();
       CELLSTYLE pTypeStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : platformTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
@@ -994,8 +1003,7 @@ public class MimIcdGenerator {
          notes,
          defaultValue};
 
-      if (!startIndex.equals(endIndex)) {
-
+      if (startIndex < endIndex) {
          for (int i = startIndex; i < endIndex + 1; i++) {
             values[0] = beginWord;
             values[1] = beginByte;
@@ -1027,7 +1035,6 @@ public class MimIcdGenerator {
 
             rowIndex.getAndAdd(1);
          }
-
       } else {
          //@formatter:off
          writer.writeCell(rowIndex.get(), 0, values[0], byteStyle);
@@ -1267,13 +1274,13 @@ public class MimIcdGenerator {
       final String description;
       final ArtifactReadable message;
       final ArtifactReadable submessage;
-      final List<ArtifactReadable> elements;
+      final List<InterfaceStructureElementToken> elements;
       final boolean structureChanged;
       final boolean txRateChanged;
       final boolean numElementsChanged;
       final boolean structureSizeChanged;
       final int byteChangeIndex;
-      public StructureInfo(String name, String nameAbbrev, String cat, String catFull, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<ArtifactReadable> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
+      public StructureInfo(String name, String nameAbbrev, String cat, String catFull, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
          this.name = name;
          this.nameAbbrev = nameAbbrev;
          this.category = cat;

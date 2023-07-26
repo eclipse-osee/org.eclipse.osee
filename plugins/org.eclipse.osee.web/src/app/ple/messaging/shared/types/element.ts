@@ -13,8 +13,10 @@ import type { applic } from '@osee/shared/types/applicability';
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { hasChanges } from '@osee/shared/types/change-report';
-import { PlatformType } from './platformType';
-export interface element {
+import { ArrayHeaderPlatformType, PlatformType } from './platformType';
+export type element = interfaceElement | arrayHeaderElement;
+
+interface _element {
 	id: string;
 	name: string;
 	description: string;
@@ -30,7 +32,7 @@ export interface element {
 	interfaceDefaultValue: string;
 	units?: string;
 	enumLiteral: string;
-	platformType: PlatformType;
+	arrayElements: element[];
 	beginWord?: number;
 	beginByte?: number;
 	endWord?: number;
@@ -39,27 +41,37 @@ export interface element {
 	logicalType?: string;
 	applicability?: applic;
 }
-export interface elementWithPathsAndButtons extends element {
-	paths: string[];
-	buttonNames: string[];
+
+interface arrayHeaderElement extends _element {
+	interfaceElementArrayHeader: true;
+	platformType: ArrayHeaderPlatformType;
 }
 
-export interface elementWithChanges extends element {
+interface interfaceElement extends _element {
+	interfaceElementArrayHeader: false;
+	platformType: PlatformType;
+}
+
+export type elementWithPathsAndButtons = element & {
+	paths: string[];
+	buttonNames: string[];
+};
+
+export type elementWithChanges = element & {
 	added: boolean;
 	deleted: boolean;
 	changes: hasChanges<element>;
-}
+};
 
-export interface elementImportToken
-	extends Pick<
-		element,
-		| 'id'
-		| 'name'
-		| 'description'
-		| 'notes'
-		| 'enumLiteral'
-		| 'interfaceDefaultValue'
-		| 'interfaceElementAlterable'
-		| 'interfaceElementIndexEnd'
-		| 'interfaceElementIndexStart'
-	> {}
+export type elementImportToken = Pick<
+	_element,
+	| 'id'
+	| 'name'
+	| 'description'
+	| 'notes'
+	| 'enumLiteral'
+	| 'interfaceDefaultValue'
+	| 'interfaceElementAlterable'
+	| 'interfaceElementIndexEnd'
+	| 'interfaceElementIndexStart'
+>;

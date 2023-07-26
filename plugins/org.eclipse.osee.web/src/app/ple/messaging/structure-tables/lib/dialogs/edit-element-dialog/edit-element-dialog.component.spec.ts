@@ -74,6 +74,8 @@ describe('EditElementDialogComponent', () => {
 			units: '',
 			platformType: new PlatformTypeSentinel(),
 		},
+		mode: 'edit',
+		allowArray: false,
 	};
 	beforeEach(async () => {
 		await TestBed.overrideComponent(EditElementDialogComponent, {

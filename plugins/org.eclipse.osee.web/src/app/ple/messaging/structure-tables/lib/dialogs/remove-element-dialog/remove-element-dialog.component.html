@@ -10,9 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 mat-dialog-title>Removing Element from Structure</h1>
+<h1 mat-dialog-title>Removing Element from {{ data.removeType }}</h1>
 <mat-dialog-content>
-	Are you sure you want to remove {{ data.elementName }} from this structure?
+	Are you sure you want to remove {{ data.elementName }} from this
+	{{ data.removeType }}?
 </mat-dialog-content>
 <mat-dialog-actions>
 	<button

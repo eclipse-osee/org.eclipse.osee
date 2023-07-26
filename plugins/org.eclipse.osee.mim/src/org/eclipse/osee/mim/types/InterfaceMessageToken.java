@@ -85,6 +85,10 @@ public class InterfaceMessageToken extends PLGenericDBObject {
          art.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceSubMessageToken(a)).collect(
                Collectors.toList()));
+      this.setPublisherNodes(art.getRelated(CoreRelationTypes.InterfaceMessagePubNode_Node).getList().stream().filter(
+         a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceNode(a)).collect(Collectors.toList()));
+      this.setSubscriberNodes(art.getRelated(CoreRelationTypes.InterfaceMessageSubNode_Node).getList().stream().filter(
+         a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceNode(a)).collect(Collectors.toList()));
       this.artifactReadable = art;
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);

@@ -1,6 +1,6 @@
 {
 	"root": true,
-	"ignorePatterns": ["projects/**/*"],
+	"ignorePatterns": ["projects/**/*", "tailwind.config.js"],
 	"overrides": [
 		{
 			"files": ["*.ts"],

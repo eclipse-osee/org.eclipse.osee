@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface RemoveElementDialogData {
-	elementId: string;
-	structureId: string;
+	removeType: string;
 	elementName: string;
 }

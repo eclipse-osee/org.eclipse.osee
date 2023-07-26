@@ -31,6 +31,7 @@ export const structuresMock: Required<structure>[] = [
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -38,6 +39,7 @@ export const structuresMock: Required<structure>[] = [
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 		],
@@ -70,6 +72,7 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -77,6 +80,7 @@ export const structuresPreChanges: structure[] = [
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 			{
@@ -87,6 +91,7 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -94,6 +99,7 @@ export const structuresPreChanges: structure[] = [
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 			{
@@ -104,6 +110,7 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -111,6 +118,7 @@ export const structuresPreChanges: structure[] = [
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 		],
@@ -138,6 +146,7 @@ export const structuresPreChanges: structure[] = [
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -145,6 +154,7 @@ export const structuresPreChanges: structure[] = [
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 		],
@@ -174,11 +184,13 @@ export const structuresPreChanges: structure[] = [
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				platformType: {
 					...new PlatformTypeSentinel(),
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 		],
@@ -211,6 +223,7 @@ export const structuresMockWithChangesMulti: (
 				notes: '',
 				deleted: true,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				logicalType: 'enumeration',
@@ -218,6 +231,7 @@ export const structuresMockWithChangesMulti: (
 				enumLiteral: '',
 				units: '',
 				platformType: new PlatformTypeSentinel(),
+				arrayElements: [],
 				changes: {
 					name: {
 						previousValue: 'hello',
@@ -301,6 +315,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -308,6 +323,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 				added: true,
 				changes: {
@@ -408,6 +424,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -415,6 +432,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 				changes: {
 					units: {
@@ -463,6 +481,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -470,6 +489,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 				changes: {
 					units: {
@@ -618,6 +638,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -625,6 +646,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 				changes: {
 					platformType: {
@@ -726,6 +748,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -733,6 +756,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 				changes: {
 					platformType: {
@@ -842,6 +866,7 @@ export const structuresMockWithChangesMulti: (
 				description: '',
 				notes: '',
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				logicalType: 'enumeration',
@@ -850,6 +875,7 @@ export const structuresMockWithChangesMulti: (
 				deleted: true,
 				units: '',
 				platformType: new PlatformTypeSentinel(),
+				arrayElements: [],
 				changes: {
 					name: {
 						previousValue: 'hello',
@@ -933,6 +959,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -940,6 +967,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 			{
@@ -950,6 +978,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -957,6 +986,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 			{
@@ -967,6 +997,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -974,6 +1005,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 		],
@@ -1062,6 +1094,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -1069,6 +1102,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 			{
@@ -1079,6 +1113,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -1086,6 +1121,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 			{
@@ -1096,6 +1132,7 @@ export const structuresMockWithChangesMulti: (
 				interfaceElementIndexEnd: 1,
 				interfaceElementIndexStart: 0,
 				interfaceElementAlterable: true,
+				interfaceElementArrayHeader: false,
 				interfaceDefaultValue: '',
 				enumLiteral: '',
 				platformType: {
@@ -1103,6 +1140,7 @@ export const structuresMockWithChangesMulti: (
 					name: 'boolean',
 					id: '9',
 				},
+				arrayElements: [],
 				units: '',
 			},
 		],
@@ -1186,6 +1224,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			description: '',
 			notes: '',
 			interfaceElementAlterable: true,
+			interfaceElementArrayHeader: false,
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			logicalType: 'enumeration',
@@ -1194,6 +1233,7 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			deleted: true,
 			units: '',
 			platformType: new PlatformTypeSentinel(),
+			arrayElements: [],
 			changes: {
 				name: {
 					previousValue: 'hello',
@@ -1277,11 +1317,13 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
+			interfaceElementArrayHeader: false,
 			platformType: {
 				...new PlatformTypeSentinel(),
 				name: 'boolean',
 				id: '9',
 			},
+			arrayElements: [],
 			interfaceDefaultValue: '',
 			enumLiteral: '',
 			units: '',
@@ -1345,11 +1387,13 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
+			interfaceElementArrayHeader: false,
 			platformType: {
 				...new PlatformTypeSentinel(),
 				name: 'boolean',
 				id: '9',
 			},
+			arrayElements: [],
 			interfaceDefaultValue: '',
 			enumLiteral: '',
 			units: '',
@@ -1372,11 +1416,13 @@ export const structureRepeatingWithChanges: Partial<structureWithChanges> = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
+			interfaceElementArrayHeader: false,
 			platformType: {
 				...new PlatformTypeSentinel(),
 				name: 'boolean',
 				id: '9',
 			},
+			arrayElements: [],
 			interfaceDefaultValue: '',
 			enumLiteral: '',
 			units: '',
@@ -1493,11 +1539,13 @@ export const structuresMockWithChanges: structureWithChanges = {
 			interfaceElementIndexEnd: 1,
 			interfaceElementIndexStart: 0,
 			interfaceElementAlterable: true,
+			interfaceElementArrayHeader: false,
 			platformType: {
 				...new PlatformTypeSentinel(),
 				name: 'boolean',
 				id: '9',
 			},
+			arrayElements: [],
 			interfaceDefaultValue: '',
 			enumLiteral: '',
 			units: '',

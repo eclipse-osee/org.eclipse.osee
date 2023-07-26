@@ -37,12 +37,12 @@ export const elementDiffHeaderDetails: headerDetail<elementDiffItem>[] = [
 	{
 		header: 'interfaceElementIndexStart',
 		description: 'Minimum value of element',
-		humanReadable: 'Min. Val',
+		humanReadable: 'Start Index',
 	},
 	{
 		header: 'interfaceElementIndexEnd',
 		description: 'Minimum value of element',
-		humanReadable: 'Min. Val',
+		humanReadable: 'End Index',
 	},
 	{
 		header: 'interfacePlatformTypeMinval',

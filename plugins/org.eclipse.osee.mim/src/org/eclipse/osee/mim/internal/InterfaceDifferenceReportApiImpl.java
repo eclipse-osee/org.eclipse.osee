@@ -496,14 +496,13 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          }
       }
 
-      for (ArtifactId id : changeItems.keySet()) {
-         ArtifactReadable art =
-            orcsApi.getQueryFactory().fromBranch(compareBranch, view).andId(id).asArtifactOrSentinel();
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(compareBranch, view).andIds(
+         changeItems.keySet()).asArtifacts()) {
          if (art.isValid()) {
-            List<ChangeItem> artChanges = changeItems.get(id);
+            List<ChangeItem> artChanges = changeItems.get(art.getArtifactId());
             String artTypeName = orcsApi.tokenService().getArtifactType(art.getArtifactType().getId()).getName();
             MimDifferenceItem item =
-               new MimDifferenceItem(id, art.getName(), art.getArtifactType().getId(), artTypeName);
+               new MimDifferenceItem(art.getArtifactId(), art.getName(), art.getArtifactType().getId(), artTypeName);
             boolean added = true;
             boolean deleted = false;
             for (ChangeItem change : artChanges) {
@@ -534,7 +533,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             }
             item.setAdded(added);
             item.setDeleted(deleted);
-            diffs.put(id, item);
+            diffs.put(art.getArtifactId(), item);
          }
       }
 
@@ -563,7 +562,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       Map<ArtifactId, MimChangeSummaryItem> changeMap = new HashMap<>(); // Collection of all change items
 
       for (ChangeReportRowDto change : changes) {
-         ArtifactId artId = ArtifactId.valueOf(change.getArtA().getId());
+         ArtifactId artId = change.getArtA().getArtifactId();
 
          MimChangeSummaryItem item = changeMap.get(artId);
          if (item == null) {
@@ -692,15 +691,14 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                      element.getApplicabilityToken())) {
                   continue;
                }
-               ArtifactId elementId = ArtifactId.valueOf(element.getId());
-               MimChangeSummaryItem elementItem = changeMap.get(elementId);
+               MimChangeSummaryItem elementItem = changeMap.get(element.getArtifactId());
                if (elementItem == null) {
                   if (CoreArtifactTypes.InterfaceDataElement.equals(
                      artType) || CoreArtifactTypes.InterfaceDataElement.equals(artType)) {
                      elementItem = item;
                   } else {
                      elementItem = new MimChangeSummaryItem(element);
-                     changeMap.put(elementId, elementItem);
+                     changeMap.put(element.getArtifactId(), elementItem);
                   }
                }
 
@@ -710,11 +708,10 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                   if (!applicTokens.contains(structure.getApplicabilityToken())) {
                      continue;
                   }
-                  ArtifactId structureId = ArtifactId.valueOf(structure.getId());
-                  MimChangeSummaryItem structureItem = changeMap.get(structureId);
+                  MimChangeSummaryItem structureItem = changeMap.get(structure.getArtifactId());
                   if (structureItem == null) {
                      structureItem = new MimChangeSummaryItem(structure);
-                     changeMap.put(structureId, structureItem);
+                     changeMap.put(structure.getArtifactId(), structureItem);
                   }
                   if (!structureItem.getChildren().contains(elementItem)) {
                      structureItem.getChildren().add(elementItem);
@@ -735,8 +732,8 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                i -> i != null).collect(Collectors.toList());
 
          // For elements, check relations for platform type changes. If a platform type was replaced, convert those relations to attribute changes
-         if (CoreArtifactTypes.InterfaceDataElement.equals(artType) || CoreArtifactTypes.InterfaceDataElement.equals(
-            artType)) {
+         if (CoreArtifactTypes.InterfaceDataElement.equals(
+            artType) || CoreArtifactTypes.InterfaceDataElementArray.equals(artType)) {
             ChangeReportRowDto deletedPType = null;
             ChangeReportRowDto addedPType = null;
             for (ChangeReportRowDto relationChange : item.getRelationChanges()) {
