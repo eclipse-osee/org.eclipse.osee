@@ -159,7 +159,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch, String productType) {
       List<ApplicabilityToken> result = new ArrayList<>();
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
+      //get all viewApp pairs that are valid for given viewId (aka configuration)
       tupleQuery.getTuple2KeyValuePair(ViewApplicability, artId, branch, consumer);
+      //if productType is specified filter out the applicabilities associated with features that are not of the specified type
       if (!productType.isEmpty()) {
          List<ApplicabilityToken> productTypeApps = new ArrayList<>();
          BiConsumer<Long, String> consumer2 = (id, name) -> productTypeApps.add(new ApplicabilityToken(id, name));
@@ -167,8 +169,14 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
             tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ApplicabilityDefinition,
                ArtifactId.valueOf(featureDefinition.getId()), branch, consumer2);
          }
+         //filter out appTokens for features that aren't included in Product Type; this also gets rid of the config/configuration group/base app tokens also; there might be a better way
          List<ApplicabilityToken> intersect =
             result.stream().filter(productTypeApps::contains).collect(Collectors.toList());
+
+         //add config/configurationgroup/base back into list from the original result list
+         intersect.addAll(result.stream().filter(a -> a.getName().startsWith("Config =") || a.getName().equals(
+            "Base") || a.getName().startsWith("ConfigurationGroup =")).collect(Collectors.toList()));
+
          return intersect;
       }
 
