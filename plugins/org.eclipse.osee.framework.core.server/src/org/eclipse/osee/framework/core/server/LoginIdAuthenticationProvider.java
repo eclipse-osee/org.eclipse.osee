@@ -31,7 +31,7 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
       "select art_id, attr_type_id, value from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = 570 and txs.TX_CURRENT = 1 AND " + //
          "txs.gamma_id = attr.gamma_id and attr.art_id " + //
          "IN (select attr.art_id from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = 570 and txs.TX_CURRENT = 1 AND " + //
-         "txs.gamma_id = attr.gamma_id and attr.attr_type_id = 239475839435799 AND lower(attr.value) = ?) AND attr.attr_type_id " + //
+         "txs.gamma_id = attr.gamma_id and attr.attr_type_id = 239475839435799 AND lower(attr.value) = lower(?)) AND attr.attr_type_id " + //
          "IN (1152921504606847088, 1152921504606847073, 1152921504606847082)";
 
    private JdbcService jdbcService;
