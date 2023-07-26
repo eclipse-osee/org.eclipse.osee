@@ -1141,7 +1141,7 @@ public class SynchronizationEndpointTest {
                     "MULTI_VALUE_ENUM_TESTER",
                     CoreArtifactTypes.SoftwareRequirementHtml,
                     CoreAttributeTypes.QualificationMethod,
-                    List.of( "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy" ),
+                    List.of( "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy", "Design Constraint", "Info", "Exception", "Unspecified"),
                     null,
                     "OSEE Software Requirement - HTML Spec Object Type",
                     "SOT-",
@@ -1160,7 +1160,7 @@ public class SynchronizationEndpointTest {
                        var enumMemberMap = reqifDatatypeDefinitionEnumeration.getSpecifiedValues().stream().collect( Collectors.toMap( EnumValue::getLongName, Function.identity() ) );
                        var ordinalAtomicInteger = new AtomicInteger( 0 );
                        // Enumeration members must be listed in ordinal order
-                       Arrays.stream( new String[] { "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy", "Unspecified" } ).forEach
+                       Arrays.stream( new String[] { "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy", "Design Constraint", "Info", "Exception", "Unspecified" } ).forEach
                           (
                              ( enumMemberName ) ->
                              {
