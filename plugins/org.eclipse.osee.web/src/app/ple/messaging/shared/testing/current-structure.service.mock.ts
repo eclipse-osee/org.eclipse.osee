@@ -16,7 +16,6 @@ import { applic } from '@osee/shared/types/applicability';
 import { CurrentStructureService } from '../services/ui/current-structure.service';
 import { platformTypesMock } from './platform-types.response.mock';
 import { structuresMock } from './Structures.mock';
-import { unitsMock } from './unit.response.mock';
 import { messagesMock } from './messages.response.mock';
 import {
 	changeInstance,
@@ -50,7 +49,7 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	changeElementPlatformType(structureId, elementId, typeId) {
 		return of(transactionResultMock);
 	},
-	partialUpdateElement(body, structureId) {
+	partialUpdateElement(body) {
 		return of(transactionResultMock);
 	},
 	partialUpdateStructure(body) {

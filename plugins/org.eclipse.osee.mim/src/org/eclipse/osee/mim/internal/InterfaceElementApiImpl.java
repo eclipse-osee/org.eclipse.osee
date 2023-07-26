@@ -68,7 +68,11 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    private List<FollowRelation> createRelationTypeSideList() {
-      return FollowRelation.followList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      List<FollowRelation> followRelations = new LinkedList<>();
+      followRelations.add(FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
+         FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)));
+      followRelations.add(FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
+      return followRelations;
    }
 
    private List<RelationTypeSide> createAffectedRelationTypeSideList() {
@@ -158,7 +162,9 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       InterfaceStructureElementToken previousElement, PlatformTypeToken defaultPlatformType) {
       try {
          PlatformTypeToken platformType;
-         if (defaultPlatformType.isInvalid()) {
+         if (element.getInterfaceElementArrayHeader()) {
+            platformType = element.getPlatformType();
+         } else if (defaultPlatformType.isInvalid()) {
             ArtifactReadable platformTypeReadable = element.getArtifactReadable().getRelated(
                CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(ArtifactReadable.SENTINEL);
             platformType = new PlatformTypeToken(platformTypeReadable);

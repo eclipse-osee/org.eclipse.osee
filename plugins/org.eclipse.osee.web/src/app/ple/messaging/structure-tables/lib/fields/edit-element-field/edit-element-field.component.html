@@ -11,15 +11,6 @@
  *     Boeing - initial API and implementation
  -->
 <div class="tw-flex tw-items-center tw-gap-2">
-	<ng-container *ngIf="header === 'name'">
-		<mat-icon
-			cdkDrag
-			cdkDragHandle
-			cdkDragLockAxis="y"
-			cdkDragRootElement=".sub-element-drag-row"
-			>reorder</mat-icon
-		>
-	</ng-container>
 	<ng-container *ngIf="header === 'applicability' && isApplic(value)">
 		<osee-applicability-selector
 			[applicability]="value"
@@ -38,13 +29,7 @@
 			[(ngModel)]="value"
 			(ngModelChange)="updateElement(header, value)"
 			*ngIf="header !== 'platformType' && header !== 'units'"
-			[disabled]="
-				editingDisabled ||
-				((header === 'interfaceElementIndexStart' ||
-					header === 'interfaceElementIndexEnd') &&
-					elementEnd === 0 &&
-					elementStart === 0)
-			" />
+			[disabled]="editingDisabled" />
 		<ng-container *ngIf="header === 'name'">
 			<ng-container *ngIf="elementEnd - elementStart > 0">
 				<p matSuffix>

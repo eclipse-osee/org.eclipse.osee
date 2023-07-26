@@ -85,3 +85,4 @@ export * from './units.service.mock';
 export * from './rates.service.mock';
 export * from './message-types.service.mock';
 export * from './transport-type-form.component.mock';
+export * from './element-table-dropdown.service.mock';

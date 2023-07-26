@@ -36,7 +36,6 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { UiService } from '@osee/shared/services';
 import type { CrossReference, connection } from '@osee/messaging/shared/types';
 
 @Injectable({

@@ -24,6 +24,7 @@ import type {
 	structure,
 } from '@osee/messaging/shared/types';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-field',
@@ -36,11 +37,12 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 		NgIf,
 		NgFor,
 		AsyncPipe,
+		MatIconModule,
 		EnumLiteralsFieldComponent,
 	],
 })
 export class SubElementTableFieldComponent {
-	@Input() header!: keyof element;
+	@Input() header!: keyof element | 'rowControls';
 	@Input() editMode: boolean = false;
 
 	@Input() element: element | elementWithChanges = {
@@ -52,12 +54,14 @@ export class SubElementTableFieldComponent {
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
 		platformType: new PlatformTypeSentinel(),
+		arrayElements: [],
 		applicability: {
 			id: '1',
 			name: 'Base',
 		},
 		units: '',
 		interfaceElementAlterable: false,
+		interfaceElementArrayHeader: false,
 		enumLiteral: '',
 	};
 
@@ -92,7 +96,9 @@ export class SubElementTableFieldComponent {
 		element: element;
 		field?: string | number | boolean | applic | PlatformType;
 	}>();
+
 	constructor(private layoutNotifier: LayoutNotifierService) {}
+
 	getEnumLiterals() {
 		return this.element.enumLiteral.split('\n');
 	}

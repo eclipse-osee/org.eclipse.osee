@@ -42,6 +42,14 @@ public class FollowRelation {
       return rel;
    }
 
+   public static FollowRelation fork(RelationTypeSide followRelation, List<FollowRelation> followRelations) {
+      FollowRelation rel = new FollowRelation(followRelation, true);
+      for (FollowRelation follow : followRelations) {
+         rel.getChildren().add(follow);
+      }
+      return rel;
+   }
+
    public static List<FollowRelation> followList(RelationTypeSide... followRelations) {
       List<FollowRelation> rels = new LinkedList<>();
       for (RelationTypeSide rel : followRelations) {

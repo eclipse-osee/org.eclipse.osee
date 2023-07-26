@@ -31,12 +31,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
-import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AddElementDialogComponent } from './add-element-dialog.component';
 
-import { PlatformTypeQueryMock } from '../testing/platform-type-query.component.mock';
 import { UserDataAccountService } from '@osee/auth';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions';
@@ -112,6 +110,8 @@ describe('AddElementDialogComponent', () => {
 			units: '',
 			platformType: new PlatformTypeSentinel(),
 		},
+		mode: 'add',
+		allowArray: true,
 	};
 	let loader: HarnessLoader;
 	let nestedDialog: DebugElement;

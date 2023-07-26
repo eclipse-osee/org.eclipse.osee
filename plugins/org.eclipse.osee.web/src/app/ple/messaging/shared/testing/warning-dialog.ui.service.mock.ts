@@ -1,11 +1,3 @@
-import { of } from 'rxjs';
-import { WarningDialogService } from '../services/ui/warning-dialog.service';
-import type {
-	element,
-	structure,
-	subMessage,
-} from '@osee/messaging/shared/types';
-
 /*********************************************************************
  * Copyright (c) 2022 Boeing
  *
@@ -18,6 +10,14 @@ import type {
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { of } from 'rxjs';
+import { WarningDialogService } from '../services/ui/warning-dialog.service';
+import type {
+	element,
+	structure,
+	subMessage,
+} from '@osee/messaging/shared/types';
+
 export const warningDialogServiceMock: Partial<WarningDialogService> = {
 	openSubMessageDialog(body: Partial<subMessage>) {
 		return of(body);

@@ -1,0 +1,32 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Toggling Array Element Header</h1>
+<mat-dialog-content>
+	All elements that have been added to this header will be cleared. Is this
+	ok?
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button
+		mat-button
+		mat-dialog-close="cancel"
+		data-cy="cancel-btn">
+		No
+	</button>
+	<button
+		mat-raised-button
+		color="primary"
+		mat-dialog-close="ok"
+		data-cy="submit-btn">
+		Yes
+	</button>
+</mat-dialog-actions>

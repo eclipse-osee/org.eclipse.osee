@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 public class InterfaceSubMessageToken extends PLGenericDBObject {
    public static final InterfaceSubMessageToken SENTINEL = new InterfaceSubMessageToken();
 
-   private String Name;
-
    private String InterfaceSubMessageNumber; //required
 
    private String Description;

@@ -33,6 +33,7 @@ describe('RemoveElementDialogComponent', () => {
 				{
 					provide: MAT_DIALOG_DATA,
 					useValue: {
+						removeType: 'test',
 						elementName: 'abcdef',
 					},
 				},

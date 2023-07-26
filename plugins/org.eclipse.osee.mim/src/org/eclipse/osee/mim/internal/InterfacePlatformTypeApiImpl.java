@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -361,13 +362,18 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    @Override
    public List<PlatformTypeToken> getFilteredWithElementRelations(BranchId branch, String filter, long pageNum,
       long pageSize, AttributeTypeId orderByAttribute) {
-      return this.getFilteredWithRelations(branch, filter,
-         FollowRelation.followList(CoreRelationTypes.InterfaceElementPlatformType_Element,
-            CoreRelationTypes.InterfaceStructureContent_Structure,
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
-            CoreRelationTypes.InterfaceConnectionMessage_Connection),
-         pageNum, pageSize, orderByAttribute);
+      List<FollowRelation> followRelations =
+         Arrays.asList(FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_Element),
+            FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_Element,
+               FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_Structure,
+                  CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
+                  CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
+                  CoreRelationTypes.InterfaceConnectionMessage_Connection)),
+            FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_Structure),
+            FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_SubMessage),
+            FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_Message),
+            FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Connection));
+      return this.getFilteredWithRelations(branch, filter, followRelations, pageNum, pageSize, orderByAttribute);
    }
 
    @Override

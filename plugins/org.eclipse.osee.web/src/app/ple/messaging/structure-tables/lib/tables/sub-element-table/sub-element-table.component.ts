@@ -12,30 +12,28 @@
  **********************************************************************/
 import {
 	Component,
-	EventEmitter,
 	Inject,
 	Input,
 	OnChanges,
 	OnInit,
-	Output,
 	SimpleChanges,
 	ViewChild,
+	computed,
+	signal,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
-import { filter, map, switchMap, take } from 'rxjs/operators';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+	CdkDrag,
+	CdkDragDrop,
+	CdkDragHandle,
+	CdkDropList,
+} from '@angular/cdk/drag-drop';
 import { LayoutNotifierService } from '@osee/layout/notification';
-import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
-import { UiService } from '@osee/shared/services';
-import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
-import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
-import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -44,26 +42,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import type {
-	structure,
-	element,
-	EditViewFreeTextDialog,
-	ElementDialog,
-} from '@osee/messaging/shared/types';
-import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
+import type { structure, element } from '@osee/messaging/shared/types';
 import {
 	CurrentStructureService,
-	EnumerationUIService,
 	HeaderService,
-	WarningDialogService,
 } from '@osee/messaging/shared/services';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
+import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-element-array-table.component';
 import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-	relation,
-} from '@osee/shared/types';
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',
@@ -78,15 +70,37 @@ import {
 		NgClass,
 		AsyncPipe,
 		RouterLink,
+		CdkDrag,
+		CdkDragHandle,
 		CdkDropList,
 		MatTableModule,
 		MatIconModule,
+		MatButtonModule,
 		MatMenuModule,
 		MatTooltipModule,
 		MatFormFieldModule,
 		FormsModule,
 		SubElementTableFieldComponent,
 		SubElementTableDropdownComponent,
+		SubElementArrayTableComponent,
+	],
+	animations: [
+		trigger('detailExpand', [
+			state('collapsed', style({ maxHeight: '0vh' })),
+			state('expanded', style({ maxHeight: '60vh' })),
+			transition(
+				'expanded <=> collapsed',
+				animate('225ms cubic-bezier(0.42, 0.0, 0.58, 1)')
+			),
+		]),
+		trigger('expandButton', [
+			state('closed', style({ transform: 'rotate(0)' })),
+			state('open', style({ transform: 'rotate(-180deg)' })),
+			transition(
+				'open <=> closed',
+				animate('225ms cubic-bezier(0.42, 0.0, 0.58, 1)')
+			),
+		]),
 	],
 })
 export class SubElementTableComponent implements OnInit, OnChanges {
@@ -94,7 +108,6 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 	@Input() dataSource: MatTableDataSource<any> =
 		new MatTableDataSource<any>();
 	@Input() filter: string = '';
-
 	@Input() structure: structure = {
 		id: '',
 		name: '',
@@ -105,11 +118,11 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		interfaceTaskFileType: 0,
 		interfaceStructureCategory: '',
 	};
-	@Output() expandRow = new EventEmitter();
-	@Input() subMessageHeaders: any;
+	@Input() elementHeaders: any;
+	@Input() editMode: boolean = false;
+
 	_branchId: string = '';
 	_branchType: string = '';
-	@Input() editMode: boolean = false;
 	layout = this.layoutNotifier.layout;
 	menuPosition = {
 		x: '0',
@@ -120,17 +133,13 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 	generalMenuTrigger!: MatMenuTrigger;
 	constructor(
 		private route: ActivatedRoute,
-		private _ui: UiService,
-		private router: Router,
 		public dialog: MatDialog,
 		@Inject(STRUCTURE_SERVICE_TOKEN)
 		private structureService: CurrentStructureService,
 		private layoutNotifier: LayoutNotifierService,
-		private headerService: HeaderService,
-		private enumSetService: EnumerationUIService,
-		private warningDialogService: WarningDialogService
+		private headerService: HeaderService
 	) {
-		this.subMessageHeaders = [
+		this.elementHeaders = [
 			'name',
 			'beginWord',
 			'endWord',
@@ -143,16 +152,18 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		this.dataSource.data = this.data;
 	}
 
+	expandedRows = signal<element[]>([]);
+
 	ngOnChanges(changes: SimpleChanges): void {
 		if (Array.isArray(this.data)) {
 			this.dataSource.data = this.data;
 		}
 		if (this.filter !== '') {
-			this.dataSource.filter = this.filter.replace('element: ', '');
-			this.filter = this.filter.replace('element: ', '');
-			if (this.dataSource.filteredData.length > 0) {
-				this.expandRow.emit(this.structure);
-			}
+			this.dataSource.data.forEach((e) => {
+				if (e.arrayElements.length > 0) {
+					this.rowChange(e, true);
+				}
+			});
 		}
 	}
 
@@ -160,18 +171,28 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		if (Array.isArray(this.data)) {
 			this.dataSource.data = this.data;
 		}
-		if (this.filter !== '') {
-			this.dataSource.filter = this.filter.replace('element: ', '');
-		}
-
 		this.route.paramMap.subscribe((values) => {
 			this._branchId = values.get('branchId') || '';
 			this._branchType = values.get('branchType') || '';
 		});
 	}
 
-	valueTracker(index: any, item: any) {
-		return index;
+	rowIsExpanded(elementId: string) {
+		return computed(() =>
+			this.expandedRows()
+				.map((e) => e.id)
+				.includes(elementId)
+		);
+	}
+
+	rowChange(element: element, expand: boolean) {
+		if (expand && !this.rowIsExpanded(element.id)()) {
+			this.expandedRows.update((rows) => [...rows, element]);
+		} else if (!expand && this.rowIsExpanded(element.id)()) {
+			this.expandedRows.update((rows) =>
+				rows.filter((e) => e.id !== element.id)
+			);
+		}
 	}
 
 	handleDragDrop(event: CdkDragDrop<unknown[]>) {
@@ -196,6 +217,10 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 			.subscribe();
 	}
 
+	containsAutogenSpare(element: element) {
+		return element.arrayElements.filter((e) => e.autogenerated).length > 0;
+	}
+
 	openGeneralMenu(
 		event: MouseEvent,
 		element: element,
@@ -212,282 +237,6 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 			header: header,
 		};
 		this.generalMenuTrigger.openMenu();
-	}
-
-	removeElement(element: element, structure: structure) {
-		const dialogData: RemoveElementDialogData = {
-			elementId: element.id,
-			structureId: structure.id,
-			elementName: element.name,
-		};
-		this.dialog
-			.open(RemoveElementDialogComponent, {
-				data: dialogData,
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((dialogResult: string) =>
-					iif(
-						() => dialogResult === 'ok',
-						this.structureService.removeElementFromStructure(
-							element,
-							structure
-						),
-						of()
-					)
-				)
-			)
-			.subscribe();
-	}
-	deleteElement(element: element) {
-		//open dialog, yes/no if yes -> this.structures.deleteElement()
-		const dialogData: RemoveElementDialogData = {
-			elementId: element.id,
-			structureId: '',
-			elementName: element.name,
-		};
-		this.dialog
-			.open(RemoveElementDialogComponent, {
-				data: dialogData,
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((dialogResult: string) =>
-					iif(
-						() => dialogResult === 'ok',
-						this.structureService.deleteElement(element),
-						of()
-					)
-				)
-			)
-			.subscribe();
-	}
-	openAddElementDialog(structure: structure, afterElement?: string) {
-		const dialogData = new DefaultAddElementDialog(
-			structure?.id || '',
-			structure?.name || ''
-		);
-		let dialogRef = this.dialog.open(AddElementDialogComponent, {
-			data: dialogData,
-		});
-		let createElement = dialogRef.afterClosed().pipe(
-			take(1),
-			filter(
-				(val) =>
-					(val !== undefined || val !== null) &&
-					val?.element !== undefined
-			),
-			switchMap((value: ElementDialog) =>
-				iif(
-					() =>
-						value.element.id !== undefined &&
-						value.element.id !== '-1' &&
-						value.element.id.length > 0,
-					this.structureService
-						.relateElement(
-							structure.id,
-							value.element.id !== undefined
-								? value.element.id
-								: '-1',
-							afterElement || 'end'
-						)
-						.pipe(
-							switchMap((transaction) =>
-								combineLatest([
-									this._ui.isLoading,
-									of(transaction),
-								]).pipe(
-									filter(
-										([loading, transaction]) =>
-											loading !== 'false'
-									),
-									take(1),
-									map(([loading, transaction]) => {
-										this.router.navigate([], {
-											fragment: 'a' + value.element.id,
-										});
-									})
-								)
-							)
-						),
-					this.structureService
-						.createNewElement(
-							value.element,
-							structure.id,
-							value.type.id as string,
-							afterElement || 'end'
-						)
-						.pipe(
-							switchMap((transaction) =>
-								combineLatest([
-									this._ui.isLoading,
-									of(transaction),
-								]).pipe(
-									filter(
-										([loading, transaction]) =>
-											loading !== 'false'
-									),
-									take(1),
-									map(([loading, transaction]) => {
-										this.router.navigate([], {
-											fragment:
-												'a' +
-												(transaction.results.ids[0] ||
-													afterElement ||
-													''),
-										});
-									})
-								)
-							)
-						)
-				)
-			)
-		);
-		createElement.subscribe();
-	}
-	openEnumDialog(id: string) {
-		this.dialog
-			.open(EditEnumSetDialogComponent, {
-				data: {
-					id: id,
-					isOnEditablePage: this.editMode,
-				},
-			})
-			.afterClosed()
-			.pipe(
-				filter((x) => x !== undefined) as OperatorFunction<
-					| {
-							createArtifacts: createArtifact[];
-							modifyArtifacts: modifyArtifact[];
-							deleteRelations: modifyRelation[];
-					  }
-					| undefined,
-					{
-						createArtifacts: createArtifact[];
-						modifyArtifacts: modifyArtifact[];
-						deleteRelations: modifyRelation[];
-					}
-				>,
-				take(1),
-				switchMap((tx) =>
-					iif(
-						() => this.editMode,
-						this.warningDialogService
-							.openEnumsDialogs(
-								tx.modifyArtifacts
-									.slice(0, -1)
-									.map((v) => v.id),
-								[
-									...tx.createArtifacts
-										.flatMap((v) => v.relations)
-										.filter(
-											(v): v is relation =>
-												v !== undefined
-										)
-										.map((v) => v.sideA)
-										.filter(
-											(v): v is string | string[] =>
-												v !== undefined
-										)
-										.flatMap((v) => v),
-									...tx.deleteRelations
-										.flatMap((v) => v.aArtId)
-										.filter(
-											(v): v is string => v !== undefined
-										),
-								]
-							)
-							.pipe(
-								switchMap((_) =>
-									this.enumSetService.changeEnumSet(tx)
-								)
-							),
-						of()
-					)
-				)
-			)
-			.subscribe();
-	}
-
-	openDescriptionDialog(
-		description: string,
-		elementId: string,
-		structureId: string
-	) {
-		this.dialog
-			.open(EditViewFreeTextFieldDialogComponent, {
-				data: {
-					original: JSON.parse(JSON.stringify(description)) as string,
-					type: 'Description',
-					return: description,
-				},
-				minHeight: '60%',
-				minWidth: '60%',
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((response: EditViewFreeTextDialog | string) =>
-					iif(
-						() =>
-							response === 'ok' ||
-							response === 'cancel' ||
-							response === undefined,
-						//do nothing
-						of(),
-						//change description
-						this.structureService.partialUpdateElement(
-							{
-								id: elementId,
-								description: (
-									response as EditViewFreeTextDialog
-								).return,
-							},
-							this.structure.id
-						)
-					)
-				)
-			)
-			.subscribe();
-	}
-
-	openNotesDialog(notes: string, elementId: string, structureId: string) {
-		this.dialog
-			.open(EditViewFreeTextFieldDialogComponent, {
-				data: {
-					original: JSON.parse(JSON.stringify(notes)) as string,
-					type: 'Notes',
-					return: notes,
-				},
-				minHeight: '60%',
-				minWidth: '60%',
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((response: EditViewFreeTextDialog | string) =>
-					iif(
-						() =>
-							response === 'ok' ||
-							response === 'cancel' ||
-							response === undefined,
-						//do nothing
-						of(),
-						//change notes
-						this.structureService.partialUpdateElement(
-							{
-								id: elementId,
-								notes: (response as EditViewFreeTextDialog)
-									.return,
-							},
-							this.structure.id
-						)
-					)
-				)
-			)
-			.subscribe();
 	}
 
 	getHeaderByName(value: string) {

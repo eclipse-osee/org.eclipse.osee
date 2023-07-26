@@ -16,7 +16,7 @@ import { of } from 'rxjs';
 
 import { SubElementTableFieldComponent } from './sub-element-table-field.component';
 
-describe('SubElementTableRowComponent', () => {
+describe('SubElementTableFieldComponent', () => {
 	let component: SubElementTableFieldComponent;
 	let fixture: ComponentFixture<SubElementTableFieldComponent>;
 	let router: any;

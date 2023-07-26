@@ -13,6 +13,9 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -26,16 +29,13 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
    public static final InterfaceStructureElementToken SENTINEL = new InterfaceStructureElementToken();
 
    private String enumLiteral;
-
    private Boolean InterfaceElementAlterable;
-
+   private Boolean interfaceElementArrayHeader;
    private String Notes;
-
    private String Description;
-
    private Integer InterfaceElementIndexStart;
-
    private Integer InterfaceElementIndexEnd;
+   private List<InterfaceStructureElementToken> arrayElements = new LinkedList<>();
 
    private String Units;
 
@@ -71,6 +71,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
       this.setId(art.getId());
       this.setName(art.getSoleAttributeValue(CoreAttributeTypes.Name));
       this.setInterfaceElementAlterable(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementAlterable, false));
+      this.setInterfaceElementArrayHeader(
+         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementArrayHeader, false));
       this.setInterfaceElementIndexStart(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0));
       this.setInterfaceElementIndexEnd(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0));
       this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
@@ -80,7 +82,9 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
       ArtifactReadable pTypeArt =
          art.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(
             ArtifactReadable.SENTINEL);
-      if (pTypeArt.isValid() && !pTypeArt.getExistingAttributeTypes().isEmpty()) {
+      this.setApplicability(
+         !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
+      if (pTypeArt.isValid() && !pTypeArt.getExistingAttributeTypes().isEmpty() && !getInterfaceElementArrayHeader()) {
          PlatformTypeToken pType = new PlatformTypeToken(pTypeArt);
          this.setPlatformType(pType);
          this.setInterfacePlatformTypeBitSize(pType.getInterfacePlatformTypeBitSize());
@@ -90,8 +94,6 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
          this.setInterfacePlatformTypeMaxval(
             pType.getInterfacePlatformTypeMaxval() != null ? pType.getInterfacePlatformTypeMaxval() : "");
          this.setUnits(pType.getInterfacePlatformTypeUnits() != null ? pType.getInterfacePlatformTypeUnits() : "");
-         this.setApplicability(!art.getApplicabilityToken().getId().equals(
-            -1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
          if (pType.getEnumSet().isValid()) {
             this.setEnumLiteral(pType.getEnumSet().getDescription());
          }
@@ -99,6 +101,22 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
             this.setInterfaceDefaultValue(
                pType.getInterfaceDefaultValue() != null ? pType.getInterfaceDefaultValue() : "");
          }
+      } else if (getInterfaceElementArrayHeader()) {
+         PlatformTypeToken arrayHeaderType = new PlatformTypeToken(0L, "Element Array Header", "", "0", "", "", "");
+         arrayHeaderType.setDescription("");
+         arrayHeaderType.setInterfaceDefaultValue("");
+         arrayHeaderType.setInterfacePlatformType2sComplement(false);
+         arrayHeaderType.setInterfacePlatformTypeAnalogAccuracy("");
+         arrayHeaderType.setInterfacePlatformTypeBitsResolution("");
+         arrayHeaderType.setInterfacePlatformTypeCompRate("");
+         arrayHeaderType.setInterfacePlatformTypeMsbValue("");
+         this.setPlatformType(arrayHeaderType);
+         this.setInterfacePlatformTypeBitSize(arrayHeaderType.getInterfacePlatformTypeBitSize());
+         this.setLogicalType(arrayHeaderType.getInterfaceLogicalType());
+         this.setInterfacePlatformTypeMinval(arrayHeaderType.getInterfacePlatformTypeMinval());
+         this.setInterfacePlatformTypeMaxval(arrayHeaderType.getInterfacePlatformTypeMaxval());
+         this.setInterfaceDefaultValue(arrayHeaderType.getInterfaceDefaultValue());
+         this.setUnits(arrayHeaderType.getInterfacePlatformTypeUnits());
       } else {
          this.setPlatformType(PlatformTypeToken.SENTINEL);
          this.setInterfacePlatformTypeBitSize("0");
@@ -109,6 +127,10 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
          this.setUnits("");
          this.getPlatformType().setDescription("");
       }
+      this.setArrayElements(
+         art.getRelated(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceStructureElementToken(a)).collect(
+               Collectors.toList()));
       this.artifactReadable = art;
    }
 
@@ -139,6 +161,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
       this.setHasNegativeEndByteOffset(offset);
       this.getPlatformType().setDescription("Autogenerated upon page load");
       this.setEnumLiteral("");
+      this.setInterfaceElementArrayHeader(false);
    }
 
    public InterfaceStructureElementToken(Long id, String name, ApplicabilityToken applicability, PlatformTypeToken pType) {
@@ -159,6 +182,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
       this.setAutogenerated(true);
       this.getPlatformType().setDescription("Autogenerated upon page load");
       this.setEnumLiteral("");
+      this.setInterfaceElementArrayHeader(false);
    }
 
    /**
@@ -218,6 +242,14 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
       InterfaceElementAlterable = interfaceElementAlterable;
    }
 
+   public Boolean getInterfaceElementArrayHeader() {
+      return interfaceElementArrayHeader;
+   }
+
+   public void setInterfaceElementArrayHeader(Boolean interfaceElementArrayHeader) {
+      this.interfaceElementArrayHeader = interfaceElementArrayHeader;
+   }
+
    /**
     * @return the interfaceElementIndexStart
     */
@@ -264,8 +296,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     * @return the endByte
     */
    public Double getEndByte() {
-      return (this.beginByte + (this.getInterfacePlatformTypeByteSize() * Math.max(1,
-         this.getArrayLength())) - 1) % (this.getValidationSize() / 2);
+      return (this.beginByte + this.getElementSizeInBytes() - 1) % (this.getValidationSize() / 2);
    }
 
    /**
@@ -287,8 +318,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    public Double getEndWord() {
       return Math.ceil(
-         ((this.getBeginWord() * (this.getValidationSize() / 2)) + this.getBeginByte() + (this.getInterfacePlatformTypeByteSize() * Math.max(
-            1, this.getArrayLength()))) / (this.getValidationSize() / 2)) - 1;
+         ((this.getBeginWord() * (this.getValidationSize() / 2)) + this.getBeginByte() + this.getElementSizeInBytes()) / (this.getValidationSize() / 2)) - 1;
    }
 
    /**
@@ -458,6 +488,10 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     * return size of element using array and type size
     */
    public double getElementSizeInBits() {
+      if (this.getInterfaceElementArrayHeader()) {
+         return getArrayLength() * getArrayElements().stream().filter(e -> e.isIncludedInCounts()).collect(
+            Collectors.summingDouble(InterfaceStructureElementToken::getElementSizeInBits));
+      }
       return (this.getArrayLength() * this.getInterfacePlatformTypeBitSize());
    }
 
@@ -465,6 +499,10 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     * return size of element using array and type size
     */
    public double getElementSizeInBytes() {
+      if (this.getInterfaceElementArrayHeader()) {
+         return getArrayLength() * getArrayElements().stream().filter(e -> e.isIncludedInCounts()).collect(
+            Collectors.summingDouble(InterfaceStructureElementToken::getElementSizeInBytes));
+      }
       return this.getArrayLength() * this.getInterfacePlatformTypeBitSize() / 8;
    }
 
@@ -503,6 +541,14 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     */
    public void setPlatformType(PlatformTypeToken platformType) {
       this.platformType = platformType;
+   }
+
+   public List<InterfaceStructureElementToken> getArrayElements() {
+      return arrayElements;
+   }
+
+   public void setArrayElements(List<InterfaceStructureElementToken> arrayElements) {
+      this.arrayElements = arrayElements;
    }
 
    @JsonIgnore

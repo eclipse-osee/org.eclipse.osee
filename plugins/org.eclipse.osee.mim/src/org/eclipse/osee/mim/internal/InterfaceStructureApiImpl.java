@@ -34,7 +34,6 @@ import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
-import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceConnection;
@@ -53,7 +52,6 @@ import org.eclipse.osee.orcs.core.ds.FollowRelation;
 public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    private ArtifactAccessor<InterfaceStructureToken> accessor;
-   private final InterfacePlatformTypeApi interfacePlatformTypeApi;
    private final InterfaceElementApi interfaceElementApi;
    private final InterfaceMessageApi interfaceMessageApi;
    private final InterfaceConnectionViewApi interfaceConnectionApi;
@@ -61,10 +59,9 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    private final List<AttributeTypeId> elementAttributeList;
    private final List<RelationTypeSide> affectedRelations;
 
-   InterfaceStructureApiImpl(OrcsApi orcsApi, InterfaceConnectionViewApi connectionApi, InterfacePlatformTypeApi interfacePlatformTypeApi, InterfaceElementApi interfaceElementApi, InterfaceMessageApi interfaceMessageApi) {
+   InterfaceStructureApiImpl(OrcsApi orcsApi, InterfaceConnectionViewApi connectionApi, InterfaceElementApi interfaceElementApi, InterfaceMessageApi interfaceMessageApi) {
       this.setAccessor(new InterfaceStructureAccessor(orcsApi));
       this.interfaceConnectionApi = connectionApi;
-      this.interfacePlatformTypeApi = interfacePlatformTypeApi;
       this.interfaceElementApi = interfaceElementApi;
       this.interfaceMessageApi = interfaceMessageApi;
       this.structureAttributeList = this.createStructureAttributeList();
@@ -154,38 +151,42 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    private InterfaceStructureToken parseStructure(BranchId branch, ArtifactId connectionId,
       InterfaceStructureToken structure, ArtifactId viewId, List<InterfaceStructureElementToken> defaultElements) {
-      try {
-         InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
-         boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
-         int validationSize = connection.getTransportType().getByteAlignValidationSize();
-         Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
-         elements.addAll(defaultElements.size() > 0 ? defaultElements : interfaceElementApi.getAllRelated(branch,
-            ArtifactId.valueOf(structure.getId()), viewId));
-         Collection<InterfaceStructureElementToken> tempElements = new LinkedList<>();
-         if (elements.size() >= 2) {
-            Iterator<InterfaceStructureElementToken> elementIterator = elements.iterator();
-            InterfaceStructureElementToken previousElement = elementIterator.next();
+      InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
+      boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
+      int validationSize = connection.getTransportType().getByteAlignValidationSize();
+      Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
+      elements.addAll(defaultElements.size() > 0 ? defaultElements : interfaceElementApi.getAllRelated(branch,
+         structure.getArtifactId(), viewId));
+      structure.setElements(
+         parseElements(elements, InterfaceStructureElementToken.SENTINEL, validationSize, shouldValidate, false));
+      return structure;
+   }
 
-            InterfaceStructureElementToken currentElement = elementIterator.next();
-            previousElement.setBeginByte((double) 0);
-            previousElement.setBeginWord((double) 0);
-            previousElement.setShouldValidate(shouldValidate);
-            previousElement.setValidationSize(validationSize);
-            tempElements.add(previousElement);
-            if (!elementIterator.hasNext()) {
-               /**
-                * If currentElement = last, set it up so that it may be added/serialized
-                */
+   private List<InterfaceStructureElementToken> parseElements(Collection<InterfaceStructureElementToken> elements,
+      InterfaceStructureElementToken parentPrevious, int validationSize, boolean shouldValidate, boolean isArray) {
+      List<InterfaceStructureElementToken> tempElements = new LinkedList<>();
+      if (elements.size() >= 2) {
+         Iterator<InterfaceStructureElementToken> elementIterator = elements.iterator();
+         InterfaceStructureElementToken previousElement = elementIterator.next();
+         InterfaceStructureElementToken currentElement = elementIterator.next();
+
+         if (previousElement.getArrayElements().isEmpty()) {
+            previousElement = this.defaultSetUpElement(previousElement, parentPrevious, shouldValidate, validationSize);
+         } else {
+            List<InterfaceStructureElementToken> arrayElements = parseElements(previousElement.getArrayElements(),
+               InterfaceStructureElementToken.SENTINEL, validationSize, shouldValidate, true);
+            previousElement.setArrayElements(arrayElements);
+            previousElement.setBeginByte(arrayElements.get(0).getBeginByte());
+            previousElement.setBeginWord(arrayElements.get(0).getBeginWord());
+         }
+         tempElements.add(previousElement);
+
+         while (true) {
+            if (currentElement.getArrayElements().isEmpty()) {
                currentElement =
                   this.defaultSetUpElement(currentElement, previousElement, shouldValidate, validationSize);
-            }
-            while (elementIterator.hasNext()) {
-
-               InterfaceStructureElementToken nextElement = elementIterator.next();
-               currentElement =
-                  this.defaultSetUpElement(currentElement, previousElement, shouldValidate, validationSize);
-               if (currentElement.getInterfacePlatformTypeByteSize() >= (validationSize / 2) && shouldValidate) {
-                  if (previousElement.getEndByte() != ((validationSize / 2) - 1)) {
+               if (!isArray && currentElement.getInterfacePlatformTypeByteSize() >= (validationSize / 2) && shouldValidate) {
+                  if (previousElement.getEndByte() != ((validationSize / 2) - 1) && !isArray) {
                      /**
                       * Make sure elements of size word or greater start on 0
                       */
@@ -221,141 +222,135 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                }
                tempElements.add(currentElement);
                previousElement = currentElement;
-               currentElement = nextElement;
-            }
-            /**
-             * Handle last element outside of while loop
-             */
-            currentElement = this.defaultSetUpElement(currentElement, previousElement, shouldValidate, validationSize);
-            if (currentElement.getInterfacePlatformTypeByteSize() >= (validationSize / 2) && shouldValidate) {
-               if (previousElement.getEndByte() != ((validationSize / 2) - 1)) {
-                  /**
-                   * Make sure elements of size word or greater start on 0
-                   */
-                  previousElement = new InterfaceStructureElementToken("Insert Spare",
-                     "byte align spare for aligning to word start",
-                     (previousElement.getEndByte() + 1) % (validationSize / 2),
-                     Math.floor(
-                        ((previousElement.getEndWord() * (validationSize / 2)) + previousElement.getEndByte() + 1) / (validationSize / 2)),
-                     (int) Math.floor(((validationSize / 2) - 1) - (previousElement.getEndByte())), true);
-                  previousElement.setShouldValidate(shouldValidate);
-                  previousElement.setValidationSize(validationSize);
-                  tempElements.add(previousElement);
+
+               if (!elementIterator.hasNext()) {
+                  if (!isArray && currentElement.getEndByte() != ((validationSize / 2) - 1)) {
+                     /**
+                      * Rule for making sure last element ends on last byte of word(no partials)
+                      */
+                     InterfaceStructureElementToken tempElement = new InterfaceStructureElementToken("Insert Spare",
+                        "byte align spare for aligning to word start",
+                        ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) % (validationSize / 2),
+                        Math.floor(
+                           ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
+                        (int) Math.floor(((validationSize / 2) - 1) - (currentElement.getEndByte())), true);
+                     tempElement.setShouldValidate(shouldValidate);
+                     tempElement.setValidationSize(validationSize);
+                     tempElements.add(tempElement);
+                  }
+                  if (!isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
+                     /**
+                      * Rule for making sure next element on next structure sent is on boundary of 2n
+                      */
+                     currentElement = new InterfaceStructureElementToken("Insert Spare",
+                        "byte align spare for byte alignment",
+                        ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) % (validationSize / 2),
+                        Math.floor(
+                           ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
+                        validationSize / 2);
+                     currentElement.setShouldValidate(shouldValidate);
+                     currentElement.setValidationSize(validationSize);
+                     tempElements.add(currentElement);
+                  }
+                  break;
+               } else {
+                  currentElement = elementIterator.next();
                }
-               if (currentElement.getInterfacePlatformTypeWordSize() > 1 && (previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize() != 0) {
-                  /**
-                   * Make sure elements of size larger than 2 words start on m*n indexed words
-                   */
-                  previousElement = new InterfaceStructureElementToken("Insert Spare",
-                     "byte align spare for byte alignment", (previousElement.getEndByte() + 1) % (validationSize / 2),
-                     Math.floor(
-                        ((previousElement.getEndWord() * (validationSize / 2)) + previousElement.getEndByte() + 1) / (validationSize / 2)),
-                     (int) (Math.floor(
-                        (currentElement.getInterfacePlatformTypeWordSize() - ((previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize()))) * (validationSize / 2)) - 1);
-                  previousElement.setShouldValidate(shouldValidate);
-                  previousElement.setValidationSize(validationSize);
-                  tempElements.add(previousElement);
-                  //make a spare to fill remaining area until beginWord % WordSize=1
-               }
-               //re-set up current Element based on spare
-               currentElement =
-                  this.defaultSetUpElement(currentElement, previousElement, shouldValidate, validationSize);
-            }
-            tempElements.add(currentElement);
-            if (currentElement.getEndByte() != ((validationSize / 2) - 1)) {
-               /**
-                * Rule for making sure last element ends on last byte of word(no partials)
-                */
-               InterfaceStructureElementToken tempElement = new InterfaceStructureElementToken("Insert Spare",
-                  "byte align spare for aligning to word start",
-                  ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) % (validationSize / 2),
-                  Math.floor(
-                     ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
-                  (int) Math.floor(((validationSize / 2) - 1) - (currentElement.getEndByte())), true);
-               tempElement.setShouldValidate(shouldValidate);
-               tempElement.setValidationSize(validationSize);
-               tempElements.add(tempElement);
-            }
-            if (currentElement.getEndWord() % 2 != 1 && shouldValidate) {
-               /**
-                * Rule for making sure next element on next structure sent is on boundary of 2n
-                */
-               currentElement = new InterfaceStructureElementToken("Insert Spare",
-                  "byte align spare for byte alignment",
-                  ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) % (validationSize / 2),
-                  Math.floor(
-                     ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
-                  validationSize / 2);
-               currentElement.setShouldValidate(shouldValidate);
-               currentElement.setValidationSize(validationSize);
+            } else {
+               List<InterfaceStructureElementToken> arrayElements = parseElements(currentElement.getArrayElements(),
+                  previousElement, validationSize, shouldValidate, true);
+               currentElement.setArrayElements(arrayElements);
+               currentElement.setBeginByte(arrayElements.get(0).getBeginByte());
+               currentElement.setBeginWord(arrayElements.get(0).getBeginWord());
+
                tempElements.add(currentElement);
+               previousElement = currentElement;
+
+               if (!elementIterator.hasNext()) {
+                  if (!isArray && currentElement.getEndByte() != ((validationSize / 2) - 1)) {
+                     /**
+                      * Rule for making sure last element ends on last byte of word(no partials)
+                      */
+                     InterfaceStructureElementToken tempElement = new InterfaceStructureElementToken("Insert Spare",
+                        "byte align spare for aligning to word start",
+                        ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) % (validationSize / 2),
+                        Math.floor(
+                           ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
+                        (int) Math.floor(((validationSize / 2) - 1) - (currentElement.getEndByte())), true);
+                     tempElement.setShouldValidate(shouldValidate);
+                     tempElement.setValidationSize(validationSize);
+                     tempElements.add(tempElement);
+                  }
+                  if (!isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
+                     /**
+                      * Rule for making sure next element on next structure sent is on boundary of 2n
+                      */
+                     currentElement = new InterfaceStructureElementToken("Insert Spare",
+                        "byte align spare for byte alignment",
+                        ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) % (validationSize / 2),
+                        Math.floor(
+                           ((currentElement.getEndWord() * (validationSize / 2)) + currentElement.getEndByte() + 1) / (validationSize / 2)),
+                        validationSize / 2);
+                     currentElement.setShouldValidate(shouldValidate);
+                     currentElement.setValidationSize(validationSize);
+                     tempElements.add(currentElement);
+                  }
+                  break;
+               } else {
+                  currentElement = elementIterator.next();
+               }
             }
-            structure.setElements(tempElements);
-         } else {
+         }
+      } else {
+         /**
+          * Condition for when less than 2 elements
+          */
+         InterfaceStructureElementToken lastElement = new InterfaceStructureElementToken("Insert Spare",
+            "byte align spare for aligning to word start", 0.0, 0.0, 0);
+         lastElement.setShouldValidate(shouldValidate);
+         lastElement.setValidationSize(validationSize);
+         for (InterfaceStructureElementToken element : elements) {
+            if (element.getArrayElements().isEmpty()) {
+               element = this.defaultSetUpElement(element, parentPrevious, shouldValidate, validationSize);
+            } else {
+               List<InterfaceStructureElementToken> arrayElements =
+                  parseElements(element.getArrayElements(), parentPrevious, validationSize, shouldValidate, true);
+               element.setArrayElements(arrayElements);
+               element.setBeginByte(arrayElements.get(0).getBeginByte());
+               element.setBeginWord(arrayElements.get(0).getBeginWord());
+            }
+            lastElement = element;
+         }
+         tempElements.addAll(elements);
+         if (!isArray && lastElement.getEndByte() != ((validationSize / 2) - 1) && shouldValidate) {
             /**
-             * Condition for when less than 2 elements
+             * Rule for making sure last element ends on last byte of word(no partials)
              */
-            InterfaceStructureElementToken lastElement = new InterfaceStructureElementToken("Insert Spare",
-               "byte align spare for aligning to word start", 0.0, 0.0, 0);
+            InterfaceStructureElementToken tempElement = new InterfaceStructureElementToken("Insert Spare",
+               "byte align spare for aligning to word start",
+               ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) % (validationSize / 2),
+               Math.floor(
+                  ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) / (validationSize / 2)),
+               (int) Math.floor(((validationSize / 2) - 1) - (lastElement.getEndByte())), true);
+            tempElement.setShouldValidate(shouldValidate);
+            tempElement.setValidationSize(validationSize);
+            tempElements.add(tempElement);
+         }
+         if (!isArray && lastElement.getEndWord() % 2 != 1 && shouldValidate) {
+            /**
+             * Rule for making sure next element on next structure sent is on boundary of 2n
+             */
+            lastElement = new InterfaceStructureElementToken("Insert Spare", "byte align spare for byte alignment",
+               ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) % (validationSize / 2),
+               Math.floor(
+                  ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) / (validationSize / 2)),
+               validationSize / 2);
             lastElement.setShouldValidate(shouldValidate);
             lastElement.setValidationSize(validationSize);
-            for (InterfaceStructureElementToken element : elements) {
-               element.setShouldValidate(shouldValidate);
-               element.setValidationSize(validationSize);
-               element.setBeginByte(0.0);
-               element.setBeginWord(0.0);
-               PlatformTypeToken currentPlatformType;
-               currentPlatformType = this.interfacePlatformTypeApi.getAccessor().getByRelationWithoutId(branch,
-                  CoreRelationTypes.InterfaceElementPlatformType_Element, ArtifactId.valueOf(element.getId()));
-               element.setPlatformType(currentPlatformType);
-               element.setInterfacePlatformTypeBitSize(currentPlatformType.getInterfacePlatformTypeBitSize());
-               element.setLogicalType(
-                  currentPlatformType.getInterfaceLogicalType() != null ? currentPlatformType.getInterfaceLogicalType() : "");
-               element.setInterfacePlatformTypeMinval(
-                  currentPlatformType.getInterfacePlatformTypeMinval() != null ? currentPlatformType.getInterfacePlatformTypeMinval() : "");
-               element.setInterfacePlatformTypeMaxval(
-                  currentPlatformType.getInterfacePlatformTypeMaxval() != null ? currentPlatformType.getInterfacePlatformTypeMaxval() : "");
-               element.setInterfaceDefaultValue(
-                  currentPlatformType.getInterfaceDefaultValue() != null ? currentPlatformType.getInterfaceDefaultValue() : "");
-               element.setUnits(
-                  currentPlatformType.getInterfacePlatformTypeUnits() != null ? currentPlatformType.getInterfacePlatformTypeUnits() : "");
-               lastElement = element;
-            }
-            tempElements.addAll(elements);
-            if (lastElement.getEndByte() != ((validationSize / 2) - 1) && shouldValidate) {
-               /**
-                * Rule for making sure last element ends on last byte of word(no partials)
-                */
-               InterfaceStructureElementToken tempElement = new InterfaceStructureElementToken("Insert Spare",
-                  "byte align spare for aligning to word start",
-                  ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) % (validationSize / 2),
-                  Math.floor(
-                     ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) / (validationSize / 2)),
-                  (int) Math.floor(((validationSize / 2) - 1) - (lastElement.getEndByte())), true);
-               tempElement.setShouldValidate(shouldValidate);
-               tempElement.setValidationSize(validationSize);
-               tempElements.add(tempElement);
-            }
-            if (lastElement.getEndWord() % 2 != 1 && shouldValidate) {
-               /**
-                * Rule for making sure next element on next structure sent is on boundary of 2n
-                */
-               lastElement = new InterfaceStructureElementToken("Insert Spare", "byte align spare for byte alignment",
-                  ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) % (validationSize / 2),
-                  Math.floor(
-                     ((lastElement.getEndWord() * (validationSize / 2)) + lastElement.getEndByte() + 1) / (validationSize / 2)),
-                  validationSize / 2);
-               lastElement.setShouldValidate(shouldValidate);
-               lastElement.setValidationSize(validationSize);
-               tempElements.add(lastElement);
-            }
-            structure.setElements(tempElements);
-
+            tempElements.add(lastElement);
          }
-      } catch (Exception ex) {
-         //do nothing
       }
-      return structure;
+      return tempElements;
    }
 
    @Override
@@ -423,13 +418,10 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          structure = this.getAccessor().getByRelation(branch, structureId,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFullFollowRelationDetails(),
             viewId);
-         structure = this.parseStructure(branch, connectionId, structure, viewId);
-
-         return structure;
+         return this.parseStructure(branch, connectionId, structure, viewId);
       } catch (Exception ex) {
          System.out.println(ex);
-         structure = new InterfaceStructureToken();
-         return structure;
+         return InterfaceStructureToken.SENTINEL;
       }
    }
 
@@ -485,12 +477,10 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          structure = this.getAccessor().getByRelation(branch, structureId,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFullFollowRelationDetails(),
             viewId);
-         structure = this.parseStructure(branch, connectionId, structure, filter);
-         return structure;
+         return this.parseStructure(branch, connectionId, structure, filter);
       } catch (Exception ex) {
          System.out.println(ex);
-         structure = new InterfaceStructureToken();
-         return structure;
+         return InterfaceStructureToken.SENTINEL;
       }
    }
 
@@ -500,15 +490,25 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    public List<FollowRelation> getFullFollowRelationDetails() {
-      return FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_DataElement,
-         CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+      List<FollowRelation> followRelations = new LinkedList<>();
+      followRelations.add(FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement));
+      followRelations.add(FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
+         FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+         FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+         FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
+      followRelations.addAll(FollowRelation.followList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
          CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
-         CoreRelationTypes.InterfaceEnumeration_EnumerationState);
+         CoreRelationTypes.InterfaceEnumeration_EnumerationState));
+      return followRelations;
    }
 
    private List<FollowRelation> getFollowRelationDetails() {
-      return FollowRelation.followList(CoreRelationTypes.InterfaceStructureContent_DataElement,
-         CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      List<FollowRelation> followRelations = new LinkedList<>();
+      followRelations.add(FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement));
+      followRelations.add(FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
+         FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)));
+      followRelations.add(FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
+      return followRelations;
    }
 
    @Override
@@ -936,7 +936,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          for (InterfaceStructureToken structure : structureList) {
             structure = this.parseStructure(branch, connectionId, structure, viewId, structure.getElements());
          }
-
          return structureList;
       } catch (Exception ex) {
          System.out.println(ex);

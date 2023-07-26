@@ -18,4 +18,8 @@ export interface ElementDialog {
 	name: string;
 	element: Partial<element>;
 	type: PlatformType;
+	mode: ElementDialogMode;
+	allowArray: boolean;
 }
+
+export type ElementDialogMode = 'add' | 'edit';

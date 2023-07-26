@@ -86,6 +86,18 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    }
 
    @Override
+   public InterfaceConnection get(BranchId branch, ArtifactId viewId, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations) {
+      try {
+         return this.getAccessor().get(branch, connectionId, followRelations);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return InterfaceConnection.SENTINEL;
+   }
+
+   @Override
    public Collection<InterfaceConnection> get(BranchId branch, Collection<ArtifactId> connectionIds) {
       try {
          List<InterfaceConnection> connection =

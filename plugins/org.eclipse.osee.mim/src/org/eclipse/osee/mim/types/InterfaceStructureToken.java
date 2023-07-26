@@ -183,9 +183,9 @@ public class InterfaceStructureToken extends PLGenericDBObject {
     */
    public void setElements(Collection<InterfaceStructureElementToken> elements) {
       this.elements = elements;
-      setNumElements(elements.size());
-      setSizeInBytes(elements.stream().filter(f -> f.isIncludedInCounts()).mapToDouble(
-         InterfaceStructureElementToken::getElementSizeInBytes).sum());
+      setNumElements(elements.stream().filter(e -> e.isIncludedInCounts()).collect(Collectors.toList()).size());
+      setSizeInBytes(elements.stream().filter(e -> e.isIncludedInCounts()).collect(
+         Collectors.summingDouble(InterfaceStructureElementToken::getElementSizeInBytes)));
    }
 
    /**

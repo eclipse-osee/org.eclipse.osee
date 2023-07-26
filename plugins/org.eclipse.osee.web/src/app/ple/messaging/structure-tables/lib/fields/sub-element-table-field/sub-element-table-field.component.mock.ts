@@ -32,10 +32,12 @@ export class SubElementTableRowComponentMock {
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
 		interfaceElementAlterable: false,
+		interfaceElementArrayHeader: false,
 		interfaceDefaultValue: '',
 		enumLiteral: '',
 		units: 'Hertz',
 		platformType: new PlatformTypeSentinel(),
+		arrayElements: [],
 	};
 	@Input() structure: structure = {
 		id: '',

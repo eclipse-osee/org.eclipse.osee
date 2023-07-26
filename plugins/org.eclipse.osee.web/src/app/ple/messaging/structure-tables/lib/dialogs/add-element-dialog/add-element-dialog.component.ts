@@ -33,12 +33,7 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MimQuery } from '@osee/messaging/shared/query';
-import type {
-	element,
-	PlatformType,
-	ElementDialog,
-} from '@osee/messaging/shared/types';
+import type { element, ElementDialog } from '@osee/messaging/shared/types';
 import {
 	MatOptionLoadingComponent,
 	ApplicabilitySelectorComponent,

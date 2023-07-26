@@ -10,3 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export * from './element-table-dropdown.service';

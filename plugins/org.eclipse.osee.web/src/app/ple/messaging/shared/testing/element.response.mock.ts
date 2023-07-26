@@ -21,6 +21,7 @@ export const elementsMock: element[] = [
 		description: '',
 		notes: '',
 		interfaceElementAlterable: true,
+		interfaceElementArrayHeader: false,
 		interfaceElementIndexEnd: 1,
 		interfaceElementIndexStart: 0,
 		interfaceDefaultValue: '',
@@ -28,5 +29,6 @@ export const elementsMock: element[] = [
 		logicalType: 'enumeration',
 		units: '',
 		platformType: new PlatformTypeSentinel(),
+		arrayElements: [],
 	},
 ];

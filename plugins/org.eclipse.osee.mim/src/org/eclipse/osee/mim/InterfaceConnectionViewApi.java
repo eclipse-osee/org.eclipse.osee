@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
  * @author Luciano T. Vaglienti
@@ -41,6 +42,9 @@ public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<Interface
       AttributeTypeId orderByAttribute, ArtifactId viewId);
 
    InterfaceConnection get(BranchId branch, ArtifactId connectionId);
+
+   InterfaceConnection get(BranchId branch, ArtifactId viewId, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations);
 
    Collection<InterfaceConnection> get(BranchId branch, Collection<ArtifactId> connectionIds);
 

@@ -30,8 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class PlatformTypeToken extends PLGenericDBObject {
    public static final PlatformTypeToken SENTINEL = new PlatformTypeToken();
 
-   private String Name; //required
-
    private String InterfacePlatformTypeUnits;
 
    private String InterfacePlatformTypeValidRangeDescription;
@@ -55,7 +53,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
 
    private String InterfaceLogicalType; //required
 
-   private String InterfacePlatformType2sComplement; //required
+   private Boolean InterfacePlatformType2sComplement; //required
 
    private ArtifactReadable artifactReadable;
    private InterfaceEnumerationSet enumSet = InterfaceEnumerationSet.SENTINEL;
@@ -72,7 +70,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
       this.setName(art.getName());
       this.setInterfaceLogicalType(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceLogicalType, ""));
       this.setInterfacePlatformType2sComplement(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfacePlatformType2sComplement, ""));
+         art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformType2sComplement, false));
       this.setInterfacePlatformTypeAnalogAccuracy(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfacePlatformTypeAnalogAccuracy, ""));
       this.setinterfacePlatformTypeBitSize(
@@ -271,14 +269,14 @@ public class PlatformTypeToken extends PLGenericDBObject {
    /**
     * @return the interfacePlatformType2sComplement
     */
-   public String getInterfacePlatformType2sComplement() {
+   public Boolean getInterfacePlatformType2sComplement() {
       return InterfacePlatformType2sComplement;
    }
 
    /**
     * @param interfacePlatformType2sComplement the interfacePlatformType2sComplement to set
     */
-   public void setInterfacePlatformType2sComplement(String interfacePlatformType2sComplement) {
+   public void setInterfacePlatformType2sComplement(Boolean interfacePlatformType2sComplement) {
       InterfacePlatformType2sComplement = interfacePlatformType2sComplement;
    }
 

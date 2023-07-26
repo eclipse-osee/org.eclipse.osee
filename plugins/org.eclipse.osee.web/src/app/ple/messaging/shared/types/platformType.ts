@@ -52,3 +52,24 @@ export interface platformTypeImportToken
 		| 'interfaceLogicalType'
 		| 'interfacePlatformTypeValidRangeDescription'
 	> {}
+
+export interface ArrayHeaderPlatformType {
+	[index: string]: string | boolean | enumerationSet | applic;
+	id: '0';
+	description: '';
+	interfaceLogicalType: '';
+	interfacePlatformType2sComplement: false;
+	interfacePlatformTypeAnalogAccuracy: '';
+	interfacePlatformTypeBitsResolution: '';
+	interfacePlatformTypeBitSize: '0';
+	interfacePlatformTypeCompRate: '';
+	interfaceDefaultValue: '';
+	enumSet: enumerationSet; //typically unavailable, only present on query
+	interfacePlatformTypeMaxval: '';
+	interfacePlatformTypeMinval: '';
+	interfacePlatformTypeMsbValue: '';
+	interfacePlatformTypeUnits: '';
+	interfacePlatformTypeValidRangeDescription: '';
+	name: 'Element Array Header';
+	applicability: applic;
+}
