@@ -151,7 +151,8 @@ public class CreateSiblingOffTaskEstOperation {
       changes.executeIfNeeded();
    }
 
-   public static IAtsTeamWorkflow createTaskEstSiblingWorkflow(XResultData rd, IAtsChangeSet changes, Date createdDate, IAtsTask task, //
+   public static IAtsTeamWorkflow createTaskEstSiblingWorkflow(XResultData rd, IAtsChangeSet changes, Date createdDate,
+      IAtsTask task, //
       IAtsActionableItem ai, IAtsTeamDefinition teamDef, List<AtsUser> assignees, IAtsAction action, AtsApi atsApi) {
 
       IAtsTeamWorkflow newTeamWf = AtsApiService.get().getActionService().createTeamWorkflow(action, teamDef,
@@ -172,6 +173,7 @@ public class CreateSiblingOffTaskEstOperation {
       changes.relate(task, AtsRelationTypes.Derive_To, newTeamWf);
 
       changes.addAttribute(task, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
+      changes.addAttribute(newTeamWf, CoreAttributeTypes.StaticId, TaskEstUtil.TASK_EST_STATIC_ID);
       return newTeamWf;
    }
 
