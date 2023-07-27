@@ -60,7 +60,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class EditStructureFieldComponent<
 	R extends keyof structure = any,
-	T extends Pick<structure, keyof structure> = any
+	T extends Pick<structure, keyof structure> = any,
 > {
 	@Input() structureId!: string;
 	@Input() header: R = {} as R;

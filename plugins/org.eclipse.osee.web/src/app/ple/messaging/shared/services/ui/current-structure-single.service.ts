@@ -910,8 +910,9 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 												iif(
 													() =>
 														structure.elements
-															?.map((a) =>
-																a.platformType.id?.toString()
+															?.map(
+																(a) =>
+																	a.platformType.id?.toString()
 															)
 															.includes(
 																change.artId

@@ -22,7 +22,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 	imports: [MatButtonModule],
 })
 export class PleComponent {
-	constructor(private route: ActivatedRoute, private router: Router) {}
+	constructor(
+		private route: ActivatedRoute,
+		private router: Router
+	) {}
 
 	navigateTo(location: string) {
 		this.router.navigate([location], {

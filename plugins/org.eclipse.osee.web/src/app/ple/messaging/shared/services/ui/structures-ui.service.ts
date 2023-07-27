@@ -34,7 +34,10 @@ export class StructuresUiService {
 		undefined
 	);
 	private _done = new Subject();
-	constructor(private ui: UiService, private _mimRoute: MimRouteService) {}
+	constructor(
+		private ui: UiService,
+		private _mimRoute: MimRouteService
+	) {}
 
 	get filter() {
 		return this._filter;

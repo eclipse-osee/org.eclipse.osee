@@ -35,7 +35,7 @@ import {
 })
 export class TwoLayerAddButtonComponent<
 	T extends string = any,
-	R extends { id: string; name: string } = any
+	R extends { id: string; name: string } = any,
 > {
 	@Input() baseLevel: T = {} as T;
 	@Input() nestedLevel: R[] = [] as R[];

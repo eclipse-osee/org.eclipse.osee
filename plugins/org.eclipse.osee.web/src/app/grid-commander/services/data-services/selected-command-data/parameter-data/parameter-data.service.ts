@@ -77,8 +77,9 @@ export class ParameterDataService {
 				iif(
 					() => attributes['default value'] !== undefined,
 					of(attributes).pipe(
-						map((attributes) =>
-							attributes['default value']?.split(', ')
+						map(
+							(attributes) =>
+								attributes['default value']?.split(', ')
 						)
 					),
 					of(null)

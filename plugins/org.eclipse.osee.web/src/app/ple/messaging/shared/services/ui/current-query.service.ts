@@ -20,7 +20,10 @@ import { QueryService } from '../http/query.service';
 	providedIn: 'root',
 })
 export class CurrentQueryService {
-	constructor(private ui: UiService, private queryService: QueryService) {}
+	constructor(
+		private ui: UiService,
+		private queryService: QueryService
+	) {}
 
 	query<T = unknown>(query: MimQuery<T>) {
 		return this.ui.id.pipe(

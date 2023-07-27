@@ -13,7 +13,6 @@
 				"plugin:@angular-eslint/template/process-inline-templates",
 				"prettier",
 				"plugin:tailwindcss/recommended"
-				// "plugin:prettier/recommended"
 			],
 			"rules": {
 				"@angular-eslint/directive-selector": [
@@ -42,11 +41,10 @@
 				"plugin:@angular-eslint/template/recommended",
 				"prettier",
 				"plugin:tailwindcss/recommended"
-				// "plugin:prettier/recommended"
 			],
 			"rules": {
-				"tailwindcss/no-custom-classname": ["off"], //remove when all custom css classes are removed
-				"tailwindcss/migration-from-tailwind-2": ["off"] //not using tw 2 so not an issue :)
+				"tailwindcss/no-custom-classname": ["off"],
+				"tailwindcss/migration-from-tailwind-2": ["off"]
 			}
 		}
 	]

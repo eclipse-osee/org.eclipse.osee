@@ -59,7 +59,7 @@ import { applic } from '@osee/shared/types/applicability';
 })
 export class EditSubMessageFieldComponent<
 	R extends keyof subMessage = any,
-	T extends Pick<subMessage, keyof subMessage> = any
+	T extends Pick<subMessage, keyof subMessage> = any,
 > {
 	@Input() messageId!: string;
 	@Input() subMessageId!: string;
