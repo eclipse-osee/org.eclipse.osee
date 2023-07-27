@@ -252,9 +252,12 @@ export class PlConfigCurrentBranchService {
 				)
 			)
 		),
-		scan((acc, curr) => {
-			return [...acc, curr];
-		}, [] as { group: configGroup; views: view[] }[]),
+		scan(
+			(acc, curr) => {
+				return [...acc, curr];
+			},
+			[] as { group: configGroup; views: view[] }[]
+		),
 		switchMap((cumulative) =>
 			iif(
 				() => cumulative.length > 1,
@@ -1099,12 +1102,15 @@ export class PlConfigCurrentBranchService {
 					)
 				)
 			),
-			scan((acc, curr) => {
-				if (curr !== undefined) {
-					acc = curr;
-				}
-				return acc;
-			}, undefined as view | viewWithChanges | undefined)
+			scan(
+				(acc, curr) => {
+					if (curr !== undefined) {
+						acc = curr;
+					}
+					return acc;
+				},
+				undefined as view | viewWithChanges | undefined
+			)
 		);
 	}
 	findViewById(viewId: string) {
@@ -1130,12 +1136,15 @@ export class PlConfigCurrentBranchService {
 					)
 				)
 			),
-			scan((acc, curr) => {
-				if (curr !== undefined) {
-					acc = curr;
-				}
-				return acc;
-			}, undefined as view | viewWithChanges | undefined)
+			scan(
+				(acc, curr) => {
+					if (curr !== undefined) {
+						acc = curr;
+					}
+					return acc;
+				},
+				undefined as view | viewWithChanges | undefined
+			)
 		);
 	}
 
@@ -1156,12 +1165,15 @@ export class PlConfigCurrentBranchService {
 					)
 				)
 			),
-			scan((acc, curr) => {
-				if (curr !== undefined) {
-					acc = curr;
-				}
-				return acc;
-			}, undefined as configGroup | configGroupWithChanges | undefined)
+			scan(
+				(acc, curr) => {
+					if (curr !== undefined) {
+						acc = curr;
+					}
+					return acc;
+				},
+				undefined as configGroup | configGroupWithChanges | undefined
+			)
 		);
 	}
 

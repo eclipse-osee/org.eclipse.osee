@@ -5,3 +5,4 @@ cypress/videos
 node_modules
 dist
 src/sass-utils/mdc-migration/_form-field.sass
+*.md

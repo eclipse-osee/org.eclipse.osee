@@ -76,7 +76,7 @@ export class SearchCriteriaComponent {
 					program: programSelection!.guid,
 					build: selectedBuild!.guid,
 					displaySearch: false,
-				} as SearchOptions)
+				}) as SearchOptions
 		),
 		tap((searchOptions) => {
 			if (searchOptions.program && searchOptions.build) {

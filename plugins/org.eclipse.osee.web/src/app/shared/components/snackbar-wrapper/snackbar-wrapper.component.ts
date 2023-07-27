@@ -28,7 +28,10 @@ import { UiService } from '@osee/shared/services';
 	templateUrl: './snackbar-wrapper.component.html',
 })
 export class SnackbarWrapperComponent {
-	constructor(private snackBar: MatSnackBar, private uiService: UiService) {}
+	constructor(
+		private snackBar: MatSnackBar,
+		private uiService: UiService
+	) {}
 
 	errors = this.uiService.errorText.pipe(
 		filter((text) => text !== ''),

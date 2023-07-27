@@ -50,7 +50,7 @@ export class TransactionBuilderService {
 		(
 			Object.entries(value) as [
 				string,
-				string | number | boolean | string[]
+				string | number | boolean | string[],
 			][]
 		).forEach((entry) => {
 			if (
@@ -101,7 +101,7 @@ export class TransactionBuilderService {
 		(
 			Object.entries(value) as [
 				string,
-				string | number | boolean | string[]
+				string | number | boolean | string[],
 			][]
 		).forEach((entry) => {
 			if (

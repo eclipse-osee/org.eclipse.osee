@@ -18,7 +18,10 @@ import { UiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class BranchRoutedUIService {
-	constructor(private branchService: UiService, private router: Router) {}
+	constructor(
+		private branchService: UiService,
+		private router: Router
+	) {}
 
 	set branchType(value: string) {
 		let baseUrl;

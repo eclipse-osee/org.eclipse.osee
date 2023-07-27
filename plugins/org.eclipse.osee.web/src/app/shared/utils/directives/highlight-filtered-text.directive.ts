@@ -27,7 +27,10 @@ export class HighlightFilteredTextDirective implements OnChanges {
 	@Input() searchTerms: string = '';
 	@Input() text: string = '';
 	@Input() classToApply: string = '';
-	constructor(private el: ElementRef, private renderer: Renderer2) {}
+	constructor(
+		private el: ElementRef,
+		private renderer: Renderer2
+	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (

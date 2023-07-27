@@ -229,7 +229,7 @@ export class LayoutNotifierService {
 			boolean,
 			boolean,
 			number,
-			tableRecommendations
+			tableRecommendations,
 		]
 	>([
 		this.isXSmall,

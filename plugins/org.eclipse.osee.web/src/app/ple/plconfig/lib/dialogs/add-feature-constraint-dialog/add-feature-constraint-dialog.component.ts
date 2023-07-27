@@ -22,7 +22,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { MatInputModule } from '@angular/material/input';
@@ -51,7 +51,7 @@ import { ApplicabilityListUIService } from '@osee/shared/services';
 	templateUrl: './add-feature-constraint-dialog.component.html',
 	styleUrls: ['./add-feature-constraint-dialog.component.sass'],
 })
-export class AddFeatureConstraintDialogComponent {
+export class AddFeatureConstraintDialogComponent implements OnDestroy {
 	constraintIsCompApplic = false;
 	preview = '';
 	hidePreview = true;

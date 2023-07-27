@@ -39,7 +39,7 @@
 					class="diff-table-cell"
 					[ngClass]="'diff-report-row-even'">
 					<ng-container *ngIf="header === 'reportDate'; else other">
-						{{ date | date : 'medium' }}
+						{{ date | date: 'medium' }}
 					</ng-container>
 					<ng-template #other>
 						{{ item[header] }}

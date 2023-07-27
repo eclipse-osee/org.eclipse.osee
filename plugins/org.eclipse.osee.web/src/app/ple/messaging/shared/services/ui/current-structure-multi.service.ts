@@ -368,16 +368,20 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 												)[]
 											).includes(undefined) &&
 											(structures
-												.map((a) =>
-													a.elements?.map((b) => b.id)
+												.map(
+													(a) =>
+														a.elements?.map(
+															(b) => b.id
+														)
 												)
 												.flat()
 												.includes(val.artId) ||
 												structures
-													.map((a) =>
-														a.elements?.map(
-															(b) => b.id
-														)
+													.map(
+														(a) =>
+															a.elements?.map(
+																(b) => b.id
+															)
 													)
 													.flat()
 													.includes(val.artIdB))
@@ -477,10 +481,12 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 												iif(
 													() =>
 														structures
-															.map((a) =>
-																a.elements?.map(
-																	(b) => b.id
-																)
+															.map(
+																(a) =>
+																	a.elements?.map(
+																		(b) =>
+																			b.id
+																	)
 															)
 															.flat()
 															.includes(
@@ -602,11 +608,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 													iif(
 														() =>
 															structures
-																.map((a) =>
-																	a.elements?.map(
-																		(b) =>
-																			b.id
-																	)
+																.map(
+																	(a) =>
+																		a.elements?.map(
+																			(
+																				b
+																			) =>
+																				b.id
+																		)
 																)
 																.flat()
 																.includes(
@@ -1131,10 +1140,12 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 												iif(
 													() =>
 														structures
-															.map((a) =>
-																a.elements?.map(
-																	(b) => b.id
-																)
+															.map(
+																(a) =>
+																	a.elements?.map(
+																		(b) =>
+																			b.id
+																	)
 															)
 															.flat()
 															.includes(
@@ -1939,13 +1950,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	.modType ===
 																	ModificationType.NONE &&
 																structures
-																	.map((a) =>
-																		a.elements?.map(
-																			(
-																				b
-																			) =>
-																				b.id
-																		)
+																	.map(
+																		(a) =>
+																			a.elements?.map(
+																				(
+																					b
+																				) =>
+																					b.id
+																			)
 																	)
 																	.flat()
 																	.includes(
@@ -2424,13 +2436,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	.id ===
 																	RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE &&
 																structures
-																	.map((a) =>
-																		a.elements?.map(
-																			(
-																				b
-																			) =>
-																				b.id
-																		)
+																	.map(
+																		(a) =>
+																			a.elements?.map(
+																				(
+																					b
+																				) =>
+																					b.id
+																			)
 																	)
 																	.flat()
 																	.includes(

@@ -18,7 +18,10 @@ import { ViewsUiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class ViewsRoutedUiService {
-	constructor(private viewsService: ViewsUiService, private router: Router) {}
+	constructor(
+		private viewsService: ViewsUiService,
+		private router: Router
+	) {}
 
 	get viewId() {
 		return this.viewsService.viewId;

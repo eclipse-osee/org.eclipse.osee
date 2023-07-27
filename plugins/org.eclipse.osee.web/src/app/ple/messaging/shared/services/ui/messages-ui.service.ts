@@ -20,7 +20,10 @@ import { MimRouteService } from './mim-route.service';
 })
 export class MessageUiService {
 	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
-	constructor(private _mimRoute: MimRouteService, private ui: UiService) {}
+	constructor(
+		private _mimRoute: MimRouteService,
+		private ui: UiService
+	) {}
 
 	get filter() {
 		return this._filter;

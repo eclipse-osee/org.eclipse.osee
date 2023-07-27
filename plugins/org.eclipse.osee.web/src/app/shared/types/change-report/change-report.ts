@@ -25,7 +25,7 @@ export interface changeInstance<
 	U = string | number | boolean | null | undefined,
 	V = string | number | boolean | null | undefined,
 	W = string | number | boolean | null | undefined,
-	X = string | number | boolean | null | undefined
+	X = string | number | boolean | null | undefined,
 > {
 	ignoreType: ignoreType;
 	changeType: changeType;
@@ -108,7 +108,7 @@ export interface version<T = string | number | boolean | null | undefined> {
 	applicabilityToken: applic | null;
 }
 export interface difference<
-	T = string | number | boolean | applic | null | undefined
+	T = string | number | boolean | applic | null | undefined,
 > {
 	user?: string;
 	timeOfChange?: string;

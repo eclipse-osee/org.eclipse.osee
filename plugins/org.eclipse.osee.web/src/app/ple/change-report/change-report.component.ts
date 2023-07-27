@@ -30,7 +30,10 @@ import { ChangeReportTableComponent } from './components/change-report-table/cha
 	],
 })
 export class ChangeReportComponent implements OnInit {
-	constructor(private route: ActivatedRoute, private uiService: UiService) {}
+	constructor(
+		private route: ActivatedRoute,
+		private uiService: UiService
+	) {}
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {

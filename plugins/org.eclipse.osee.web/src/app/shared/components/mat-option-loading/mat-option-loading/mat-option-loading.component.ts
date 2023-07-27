@@ -130,7 +130,7 @@ export class MatOptionLoadingComponent<T>
 	private _done = new Subject<void>();
 
 	@ViewChildren(MatOption) protected options!: QueryList<MatOption>;
-	@ContentChild(TemplateRef) template!: TemplateRef<T>;
+	@ContentChild(TemplateRef) template!: TemplateRef<{ $implicit: T; opt: T }>;
 	_paginationComplete = new BehaviorSubject<boolean>(false);
 	_options!: Observable<T[]>;
 	error!: Observable<string>;

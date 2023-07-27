@@ -24,7 +24,10 @@ export class GetArtifactDataTableService {
 	defaultArtifactType = new BehaviorSubject<string>('784');
 	defaultBranchId = this.uiService.id;
 
-	constructor(private http: HttpClient, private uiService: UiService) {}
+	constructor(
+		private http: HttpClient,
+		private uiService: UiService
+	) {}
 
 	getArtifactTableData(
 		artifactType: string = this.defaultArtifactType.value,

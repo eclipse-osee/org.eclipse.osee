@@ -183,7 +183,7 @@ export class ImportService {
 											description: connection.description,
 											transportType:
 												connection.transportType,
-										} as connection)
+										}) as connection
 								),
 								// Create connection
 								concatMap((connection) =>
@@ -258,7 +258,7 @@ export class ImportService {
 											interfaceNodeType:
 												node.interfaceNodeType,
 											notes: node.notes,
-										} as nodeData)
+										}) as nodeData
 								),
 								concatMap((node) =>
 									this.nodeService.createNode(
@@ -297,7 +297,7 @@ export class ImportService {
 												m.interfaceMessageType,
 											interfaceMessageNumber:
 												m.interfaceMessageNumber,
-										} as message)
+										}) as message
 								),
 								concatMap((msg) =>
 									this.messagesService.createMessage(
@@ -328,7 +328,7 @@ export class ImportService {
 											description: s.description,
 											interfaceSubMessageNumber:
 												s.interfaceSubMessageNumber,
-										} as subMessage)
+										}) as subMessage
 								),
 								concatMap((subMessage) =>
 									this.subMessageService.createSubMessage(
@@ -365,7 +365,7 @@ export class ImportService {
 												s.interfaceTaskFileType,
 											interfaceStructureCategory:
 												s.interfaceStructureCategory,
-										} as structure)
+										}) as structure
 								),
 								concatMap((structure) =>
 									this.structureService.createStructure(
@@ -437,7 +437,7 @@ export class ImportService {
 											name: e.name,
 											applicability: e.applicability,
 											description: e.description,
-										} as enumSet)
+										}) as enumSet
 								),
 								concatMap((enumSet) =>
 									this.enumSetService.createEnumSet(
