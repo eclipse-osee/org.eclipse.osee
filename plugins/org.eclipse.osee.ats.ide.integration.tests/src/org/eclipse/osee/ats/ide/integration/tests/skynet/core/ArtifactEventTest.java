@@ -167,6 +167,7 @@ public class ArtifactEventTest {
       OseeEventManager.removeAllListeners();
       Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
+      listener = new ArtifactEventListener();
       OseeEventManager.addListener(listener);
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
