@@ -257,15 +257,18 @@ public final class ArtifactImageManager {
       return ImageManager.setupImageWithOverlay(image, overlay, location).getImageKey();
    }
 
-   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactTypeToken artifactType) {
+   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider,
+      ArtifactTypeToken artifactType) {
       providersOverrideImageMap.put(artifactType, imageProvider);
    }
 
-   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, OseeImage oseeImage, ArtifactImageProvider provider) {
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, OseeImage oseeImage,
+      ArtifactImageProvider provider) {
       registerBaseImage(artifactType, ImageManager.create(oseeImage), provider);
    }
 
-   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) {
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage,
+      ArtifactImageProvider provider) {
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactType);
 
       String providerId = artifactTypeImageProviderMap.get(artifactType);
@@ -359,10 +362,24 @@ public final class ArtifactImageManager {
          for (Entry<ArtifactTypeToken, KeyedImage> entry : artifactTypeImageMap.entrySet()) {
             if (artifactType.inheritsFrom(entry.getKey())) {
                image = entry.getValue();
+               break;
             }
          }
       }
+      if (image == null) {
+         image = getArtifactTypeImageRecurse(artifactType);
+      }
       return image;
+   }
+
+   private static KeyedImage getArtifactTypeImageRecurse(ArtifactTypeToken artifactType) {
+      if (artifactType.getImage() != null) {
+         return ImageManager.create(artifactType.getImage());
+      }
+      for (ArtifactTypeToken artType : artifactType.getSuperTypes()) {
+         return getArtifactTypeImageRecurse(artType);
+      }
+      return null;
    }
 
    /**
