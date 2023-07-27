@@ -26,7 +26,7 @@ import org.junit.rules.TestName;
 
 /**
  * Test Case for {@link JdbcClient, JdbcServer}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class JdbcRunFunctionTest {
@@ -58,7 +58,6 @@ public class JdbcRunFunctionTest {
       server.start();
 
       client = JdbcClientBuilder.hsql(dbName, dbPort).build();
-      System.out.println("AAAAAAAAAAAAHHHHHHHHHHHHH");
    }
 
    @After
@@ -68,17 +67,12 @@ public class JdbcRunFunctionTest {
 
    @Test
    public void testRandom() {
-	      System.out.println("RAAAAAANDOOOOOOM");
-
       double actual = client.runFunction(0.0d, "rand()");
       Assert.assertTrue(actual > 0.0d);
    }
 
    @Test
    public void testRound() {
-	   
-	      System.out.println("IN ROUNNNND");
-
       int actual = client.runFunction(-1, "round(?)", 123.9);
       Assert.assertEquals(124, actual);
    }
