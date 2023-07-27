@@ -389,6 +389,10 @@ public class ArtifactEventTest {
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, COMMON);
       newArt.persist(getClass().getSimpleName());
 
+      for (EventBasicGuidArtifact guidArt : listener.getArtifacts()) {
+         System.err.println("GuidArt: " + guidArt);
+      }
+
       Assert.assertEquals(2, listener.getArtifacts().size());
       Assert.assertTrue("No relations events should be sent", listener.getRelations().isEmpty());
       if (isRemoteTest()) {
