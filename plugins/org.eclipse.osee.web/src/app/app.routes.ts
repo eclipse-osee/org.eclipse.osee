@@ -14,15 +14,9 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
 	{
-		path: '',
-		loadChildren: () => import('@osee/toolbar'),
-		outlet: 'toolbar',
-		pathMatch: 'full',
-	},
-	{
-		path: '',
-		loadChildren: () => import('@osee/layout'),
-		outlet: 'TopLevelNav',
+		path: '', //todo remove when main app page is made
+		redirectTo: 'ple',
+		pathMatch: 'prefix',
 	},
 	{
 		path: 'diff-report',
@@ -37,11 +31,6 @@ export const routes: Routes = [
 		loadChildren: () => import('./training/training.routes'),
 	},
 	{
-		path: '', //todo remove when main app page is made
-		redirectTo: 'ple',
-		pathMatch: 'full',
-	},
-	{
 		path: '404',
 		loadChildren: () => import('@osee/page-not-found'),
 	},
@@ -52,6 +41,17 @@ export const routes: Routes = [
 	{
 		path: 'gc',
 		loadChildren: () => import('./grid-commander/grid-commander.routes'),
+	},
+	// {
+	// 	path: '',
+	// 	loadChildren: () => import('@osee/toolbar'),
+	// 	outlet: 'toolbar',
+	// 	pathMatch: 'full', //not working in angular 16
+	// },
+	{
+		path: '',
+		loadChildren: () => import('@osee/layout'),
+		outlet: 'TopLevelNav',
 	},
 	{
 		path: '**',
