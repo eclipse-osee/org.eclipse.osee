@@ -1,27 +1,24 @@
 {
-	"/orcs/*": {
+	"/orcs": {
 		"target": "http://localhost:8089",
 		"secure": true,
-		"changeOrigin": true,
 		"timeout": 900000,
 		"logLevel": "debug",
 		"pathReWrite": {
 			"^/orcs": ""
 		}
 	},
-	"/ats/*": {
+	"/ats": {
 		"target": "http://localhost:8089",
 		"secure": true,
-		"changeOrigin": true,
 		"logLevel": "debug",
 		"pathReWrite": {
 			"^/ats": ""
 		}
 	},
-	"/mim/*": {
+	"/mim": {
 		"target": "http://localhost:8089",
 		"secure": true,
-		"changeOrigin": true,
 		"logLevel": "debug",
 		"pathReWrite": {
 			"^/mim": ""
