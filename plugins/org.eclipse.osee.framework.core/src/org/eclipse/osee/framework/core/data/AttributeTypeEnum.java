@@ -98,7 +98,23 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       enumTokens.add(enumeration);
    }
 
-   <E extends T> void replaceEnumValues(AttributeTypeEnum<E> attributeType) {
-      enumTokens = org.eclipse.osee.framework.jdk.core.util.Collections.cast(attributeType.enumTokens);
+   <E extends T> void appendEnumValues(AttributeTypeEnum<E> attributeType) {
+      List<E> newEnumTokens = attributeType.enumTokens;
+
+      for (E enumValue : newEnumTokens) {
+         // Add only unique enums
+         if (!containsEnumWithName(enumValue.getName())) {
+            enumTokens.add(enumValue);
+         }
+      }
+   }
+
+   private boolean containsEnumWithName(String name) {
+      for (T enumValue : enumTokens) {
+         if (enumValue.getName().equals(name)) {
+            return true;
+         }
+      }
+      return false;
    }
 }
