@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsOperationCache;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
@@ -44,6 +46,8 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.rest.AtsApiServer;
+import org.eclipse.osee.ats.rest.internal.config.ConvertCompCancelStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.notify.OseeEmailServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
 import org.eclipse.osee.ats.rest.internal.util.health.check.AtsHealthQueries;
@@ -109,6 +113,8 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestTeamDefinitionsLoad());
       healthChecks.add(new TestActionableItemsLoad());
 
+      healthChecks.add(new TestDuplicateAssignees());
+      healthChecks.add(new ConvertCompCancelStateAndAssigneeAttributesCheck());
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
@@ -336,6 +342,20 @@ public class AtsHealthCheckOperation {
                }
             }
          }
+         return true;
+      }
+
+   }
+
+   private class ConvertCompCancelStateAndAssigneeAttributesCheck implements IAtsHealthCheck {
+
+      @Override
+      public boolean checkBefore(HealthCheckResults results, AtsApi atsApi, IAtsOperationCache cache) {
+         ConvertCompCancelStateAndAssigneeAttributes convert =
+            new ConvertCompCancelStateAndAssigneeAttributes((AtsApiServer) atsApi);
+         XResultData rd = new XResultData();
+         convert.run(rd, false, atsApi);
+         results.addResultsMapToResultData(rd);
          return true;
       }
 
@@ -637,6 +657,24 @@ public class AtsHealthCheckOperation {
                results.log(ArtifactId.valueOf(entry.getKey()), "TestWorkflowDefinition",
                   String.format("Error: Invalid Work Def Ref for workflow %s", entry.getKey()));
             }
+         }
+         return true;
+      }
+
+   }
+
+   private class TestDuplicateAssignees implements IAtsHealthCheck {
+
+      @Override
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         Set<AtsUser> assignees = new HashSet<>();
+         List<AtsUser> workItemAssignees = workItem.getAssignees();
+         assignees.addAll(workItemAssignees);
+         if (assignees.size() != workItemAssignees.size()) {
+            results.log(ArtifactId.valueOf(artifact.getId()), "TestDuplicateAssignees",
+               String.format("Error: Duplicate assignees for workflow %s: %s", workItem.getAtsId(), workItemAssignees));
+            changes.setAssignees(workItem, workItemAssignees);
          }
          return true;
       }
