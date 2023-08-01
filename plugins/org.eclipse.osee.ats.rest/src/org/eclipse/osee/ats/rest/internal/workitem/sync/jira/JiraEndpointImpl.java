@@ -17,7 +17,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -35,6 +38,11 @@ public class JiraEndpointImpl implements JiraEndpoint {
    static final String JIRA_SEARCH = "/rest/api/2/search";
    static final String JIRA_ISSUE = "/rest/api/2/issue";
 
+   Pattern TOTAL_RESULTS = Pattern.compile("\"total\":\\s*([0-9]+)");
+   Pattern MAX_RESULTS = Pattern.compile("\"maxResults\":\\s*([0-9]+)");
+   Pattern ISSUE_KEY = Pattern.compile("\"key\":\\s*\"(.+-[0-9]+)\"");
+   Pattern ISSUE_NAME = Pattern.compile("\"summary\":\\s*\"(.*)\"");
+
    public JiraEndpointImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
    }
@@ -50,12 +58,19 @@ public class JiraEndpointImpl implements JiraEndpoint {
    }
 
    @Override
+   public String transitionJiraIssue(String jsonPayload, String issueId) {
+      String urlPath = JIRA_ISSUE + "/" + issueId + "/transitions";
+      return sendJiraRequest(jsonPayload, urlPath, "POST");
+   }
+
+   @Override
    public String editJira(String jsonPayload, String issueId) {
       String urlExtension = JIRA_ISSUE + "/" + issueId;
       return sendJiraRequest(jsonPayload, urlExtension, "PUT");
    }
 
    private String sendJiraRequest(String jsonPayload, String urlExtension, String requestMethod) {
+
       StringBuilder response = new StringBuilder();
       String personalAccessToken = getPersonalAccessToken();
       String jiraUrl = getJiraUrl();
@@ -111,7 +126,54 @@ public class JiraEndpointImpl implements JiraEndpoint {
    }
 
    public int getNumberOfResults(String searchResults) {
-      searchResults = searchResults.replaceAll("[^0-9]+", " ");
-      return Integer.parseInt(Arrays.asList(searchResults.trim().split(" ")).get(2));
+      Matcher m = TOTAL_RESULTS.matcher(searchResults);
+      if (m.find()) {
+         return Integer.parseInt(m.group(1));
+      } else {
+         throw new OseeCoreException("Failed to parse number of JIRA results");
+      }
+   }
+
+   public int getMaxResults(String searchResults) {
+      Matcher m = MAX_RESULTS.matcher(searchResults);
+      if (m.find()) {
+         return Integer.parseInt(m.group(1));
+      } else {
+         throw new OseeCoreException("Failed to parse max possible number of JIRA results");
+      }
+   }
+
+   public String getSoleIssueKey(String searchResults) {
+      int numResults = getNumberOfResults(searchResults);
+      if (numResults != 1) {
+         throw new OseeCoreException("More than one results for issue");
+      }
+      Matcher m = ISSUE_KEY.matcher(searchResults);
+      if (m.find()) {
+         return m.group(1);
+      } else {
+         throw new OseeCoreException("Could not find the issue key");
+      }
+   }
+
+   public Map<String, String> getIssueNameToKey(String searchResults) {
+      HashMap<String, String> nameToKey = new HashMap<String, String>();
+      int numResults = Math.min(getNumberOfResults(searchResults), getMaxResults(searchResults));
+
+      String issueName = "";
+      String issueKey = "";
+      Matcher nameMatcher = ISSUE_NAME.matcher(searchResults);
+      Matcher keyMatcher = ISSUE_KEY.matcher(searchResults);
+
+      for (int i = 1; i <= numResults; i++) {
+         if (nameMatcher.find()) {
+            issueName = nameMatcher.group(1);
+         }
+         if (keyMatcher.find()) {
+            issueKey = keyMatcher.group(1);
+         }
+         nameToKey.put(issueName, issueKey);
+      }
+      return nameToKey;
    }
 }

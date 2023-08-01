@@ -52,6 +52,18 @@ public interface JiraEndpoint {
    public String createJiraIssue(@Encoded String jsonPayload);
 
    /**
+    * Takes a Json query and uses it to transition states of an issue in Jira.
+    *
+    * @author Stephen J. Molaro
+    * @param @Encoded String jsonPayload - Json query to transition an issue in Jira. Format can be found at
+    * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
+    */
+   @POST
+   @Path("{issueId}/transition")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String transitionJiraIssue(@Encoded String jsonPayload, @PathParam("issueId") String issueId);
+
+   /**
     * Takes a Json query and uses it to query Jira for all results.
     *
     * @author Stephen J. Molaro
@@ -59,7 +71,7 @@ public interface JiraEndpoint {
     * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
     */
    @PUT
-   @Path("edit/{issueId}")
+   @Path("{issueId}/edit")
    @Consumes(MediaType.APPLICATION_JSON)
    public String editJira(@Encoded String jsonPayload, @PathParam("issueId") String issueId);
 }
