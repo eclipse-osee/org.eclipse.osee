@@ -202,15 +202,18 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
 
    @Override
    public void registerAttributeType(AttributeTypeGeneric<?> attributeType) {
-      AttributeTypeGeneric<?> existingType = attributeTypes.putIfAbsent(attributeType.getId(), attributeType);
-      if (existingType != null) {
-         if (existingType instanceof AttributeTypeEnum && existingType.getClass().isAssignableFrom(
-            attributeType.getClass())) {
-            existingType.toEnum().replaceEnumValues(attributeType.toEnum());
-            attributeTypes.put(attributeType.getId(), attributeType);
+      AttributeTypeGeneric<?> existingType = attributeTypes.get(attributeType.getId());
+      if (existingType == null) {
+         attributeTypes.put(attributeType.getId(), attributeType);
+      } else {
+         if (existingType instanceof AttributeTypeEnum && attributeType instanceof AttributeTypeEnum && existingType.getId().equals(
+            attributeType.getId())) {
+            // Update the existing attribute type's enum values with the child attribute type's enum values
+            existingType.toEnum().appendEnumValues(attributeType.toEnum());
          } else {
-            throw new OseeArgumentException("The attribute type %s with the same id as %s has already been registered.",
-               existingType, attributeType);
+            throw new OseeArgumentException(
+               "Cannot register the attribute type %s with ID %s. Existing attribute type %s with ID %s already exists",
+               attributeType, attributeType.getId(), existingType, existingType.getId());
          }
       }
    }
