@@ -220,13 +220,17 @@ public class StateManager implements IAtsStateManager {
       sb.append("Transaction: ");
       sb.append(transaction.toString());
       sb.append(" - ");
-      for (WorkState state : states) {
-         if (state.isCurrentState()) {
-            sb.append("Curr ");
+      if (states == null) {
+         sb.append(" (not loaded)");
+      } else {
+         for (WorkState state : states) {
+            if (state.isCurrentState()) {
+               sb.append("Curr ");
+            }
+            sb.append("State: ");
+            sb.append(state.toString());
+            sb.append(" - ");
          }
-         sb.append("State: ");
-         sb.append(state.toString());
-         sb.append(" - ");
       }
       return sb.toString();
    }
