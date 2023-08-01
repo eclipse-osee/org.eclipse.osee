@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.rest.internal.agile.operations.SprintSummaryOperatio
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
+import org.eclipse.osee.ats.rest.internal.config.ConvertCompCancelStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
@@ -106,6 +107,7 @@ public class AtsApplication extends Application {
       atsApiServer.addAtsDatabaseConversion(atsConfgConversion);
       atsApiServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
+      atsApiServer.addAtsDatabaseConversion(new ConvertCompCancelStateAndAssigneeAttributes(atsApiServer));
 
       // Register agile html report operations
       atsApiServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsApiServer, registry));
