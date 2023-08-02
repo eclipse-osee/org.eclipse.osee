@@ -10,13 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	AfterViewInit,
-	Component,
-	Inject,
-	OnInit,
-	ViewChild,
-} from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import {
 	MatDialog,
 	MatDialogModule,
@@ -24,19 +18,8 @@ import {
 	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
-import {
-	concatMap,
-	debounceTime,
-	delay,
-	distinctUntilChanged,
-	filter,
-	map,
-	shareReplay,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -95,14 +78,14 @@ import { ElementFormComponent } from '../../forms/element-form/element-form.comp
 		ElementFormComponent,
 	],
 })
-export class AddElementDialogComponent implements AfterViewInit {
-	@ViewChild(MatStepper) private _internalStepper!: MatStepper;
+export class AddElementDialogComponent {
+	@ViewChild(MatStepper) set _internalStepper(stepper: MatStepper) {
+		this.__internalStepper.next(stepper);
+	}
+	__internalStepper = new Subject<MatStepper>();
 
-	private _afterViewInit = new Subject<boolean>();
-
-	private _moveToNextStep = this._afterViewInit.pipe(
-		take(1),
-		filter((_) => this._internalStepper !== undefined),
+	private _moveToNextStep = this.__internalStepper.pipe(
+		debounceTime(1),
 		delay(1),
 		tap((v) => {
 			if (
@@ -117,7 +100,7 @@ export class AddElementDialogComponent implements AfterViewInit {
 				}
 				this._cleanElement(this.data.element);
 				this.data.type = this.data.element.platformType;
-				this._internalStepper.next();
+				v.next();
 			}
 		})
 	);
@@ -158,9 +141,6 @@ export class AddElementDialogComponent implements AfterViewInit {
 			this.selectExistingElement(this.data.element);
 		}
 		this._moveToNextStep.subscribe();
-	}
-	ngAfterViewInit(): void {
-		this._afterViewInit.next(true);
 	}
 
 	private _isFullElement(
