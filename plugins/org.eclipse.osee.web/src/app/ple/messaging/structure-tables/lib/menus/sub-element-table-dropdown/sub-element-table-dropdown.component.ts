@@ -189,19 +189,12 @@ export class SubElementTableDropdownComponent {
 		afterElement?: string,
 		element?: element
 	) {
-		const dialogData =
-			element !== undefined
-				? new DefaultAddElementDialog(
-						structure?.id || '',
-						structure?.name || '',
-						JSON.parse(JSON.stringify(element))
-						//make a copy
-				  )
-				: new DefaultAddElementDialog(
-						structure?.id || '',
-						structure?.name || '',
-						element
-				  );
+		const dialogData = new DefaultAddElementDialog(
+			structure?.id || '',
+			structure?.name || '',
+			structuredClone(element)
+			//make a copy
+		);
 		let dialogRef = this.dialog.open(AddElementDialogComponent, {
 			data: dialogData,
 		});
