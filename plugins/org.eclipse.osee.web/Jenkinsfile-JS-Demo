@@ -52,43 +52,11 @@ spec:
       }
     }
 
-    stage('Linting') {
+    stage('Build Demo') {
       steps {
         container('node') {
           dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng lint'
-            sh 'npx stylelint "**/*.scss"'
-            sh 'npx prettier --check .'
-          }
-        }
-      }
-    }
-  
-    stage('Run tests') {
-      steps {
-        container('node') {
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng test --browsers=ChromeHeadless --watch=false'
-          }
-        }
-      }
-    }
-
-    stage ('Run Icon Script'){
-      steps{
-        container('node'){
-          dir('plugins/org.eclipse.osee.web'){
-            sh 'npm run prebuild'
-          }
-        }
-      }
-    }
-
-    stage('Build Production') {
-      steps {
-        container('node') {
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng build -c production'
+            sh 'npx -p @angular/cli ng build -c demo'
           }
         }
       }
