@@ -192,7 +192,9 @@ export class SubElementTableDropdownComponent {
 		const dialogData = new DefaultAddElementDialog(
 			structure?.id || '',
 			structure?.name || '',
-			JSON.parse(JSON.stringify(element)) //make a copy
+			element !== undefined
+				? JSON.parse(JSON.stringify(element))
+				: element //make a copy
 		);
 		let dialogRef = this.dialog.open(AddElementDialogComponent, {
 			data: dialogData,
