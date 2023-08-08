@@ -149,7 +149,8 @@ public class MergeXViewer extends XViewer {
       }
    }
 
-   private void handleResolvableConflictClick(TreeColumn treeColumn, Conflict conflict, Shell shell) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   private void handleResolvableConflictClick(TreeColumn treeColumn, Conflict conflict, Shell shell)
+      throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (isXViewerColumn(treeColumn, MergeXViewerFactory.Source)) {
          MergeUtility.setToSource(conflict, shell, true);
       } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Destination)) {
@@ -176,7 +177,7 @@ public class MergeXViewer extends XViewer {
       mergeView.getMergeXWidget().loadTable();
    }
 
-   private CompareHandler getCompareHandler(AttributeConflict attributeConflict) {
+   public CompareHandler getCompareHandler(AttributeConflict attributeConflict) {
 
       Artifact mergeArtifact = attributeConflict.getArtifact();
       String leftName = mergeArtifact.getName() + " on Branch: " + attributeConflict.getSourceBranch().getName();
@@ -206,7 +207,8 @@ public class MergeXViewer extends XViewer {
 
    }
 
-   private CompareHandler getRelationOrderCompareHandler(AttributeConflict attributeConflict, String leftName, String rightName, String leftContents, String rightContents, Image image) {
+   private CompareHandler getRelationOrderCompareHandler(AttributeConflict attributeConflict, String leftName,
+      String rightName, String leftContents, String rightContents, Image image) {
       RelationOrderCompareItem leftCompareItem =
          getRelationOrderCompareItem(attributeConflict, attributeConflict.getSourceArtifact(), leftName, leftContents,
             true, image, CompareItem.generateDiffFile("source"));
@@ -222,7 +224,8 @@ public class MergeXViewer extends XViewer {
     * has edit tags and instructions, while the destination artifact has compare tags to signify the comparable area,
     * and no instructions.
     */
-   private RelationOrderCompareItem getRelationOrderCompareItem(AttributeConflict attributeConflict, Artifact artifact, String name, String contents, boolean isEditable, Image image, String diffFile) {
+   private RelationOrderCompareItem getRelationOrderCompareItem(AttributeConflict attributeConflict, Artifact artifact,
+      String name, String contents, boolean isEditable, Image image, String diffFile) {
       BranchId branch = artifact.getBranch();
       StringBuilder content = new StringBuilder();
 
