@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -287,7 +288,8 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          "Show Destination/Merge Differences");
    }
 
-   private void createDiffItems(MenuManager subMenuManager, IHandlerService handlerService, DiffHandler handler, String command) {
+   private void createDiffItems(MenuManager subMenuManager, IHandlerService handlerService, DiffHandler handler,
+      String command) {
       handlerService.activateHandler(addDiffItems(subMenuManager, command, handler), handler);
    }
 
@@ -300,7 +302,8 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       createPreviewItems(subMenuManager, handlerService, new PreviewHandler(menuManager, 3), "Preview Merge Artifact");
    }
 
-   private void createPreviewItems(MenuManager subMenuManager, IHandlerService handlerService, PreviewHandler handler, String command) {
+   private void createPreviewItems(MenuManager subMenuManager, IHandlerService handlerService, PreviewHandler handler,
+      String command) {
       handlerService.activateHandler(addPreviewItems(subMenuManager, command, handler), handler);
    }
 
@@ -310,8 +313,11 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          public void executeWithException(AttributeConflict attributeConflict) {
 
             if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(), false)) {
-               RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
-
+               if (attributeConflict.getAttributeType().equals(CoreAttributeTypes.RelationOrder)) {
+                  ((MergeXViewer) MergeCustomMenu.this.xViewer).getCompareHandler(attributeConflict).compare();
+               } else {
+                  RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
+               }
                attributeConflict.markStatusToReflectEdit();
                mergeView.getMergeXWidget().loadTable();
             }
@@ -411,7 +417,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          @Override
          public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             if (getConflictFromSelection(structuredSelection) == null) {
-                 throw new RuntimeException("getConflictFromSelection(structuredSelection) returns null");
+               throw new RuntimeException("getConflictFromSelection(structuredSelection) returns null");
             }
             return super.isEnabledWithException(
                structuredSelection) && getConflictFromSelection(structuredSelection).isWordAttribute();
