@@ -150,9 +150,17 @@ public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements Artifa
    public T get(BranchId branch, ArtifactId artId, Collection<FollowRelation> followRelations)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
+      return get(branch, artId, followRelations, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public T get(BranchId branch, ArtifactId artId, Collection<FollowRelation> followRelations, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
-         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).andId(
-            artId);
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
+            artifactType).andId(artId);
       for (FollowRelation rel : followRelations) {
          query = buildFollowRelationQuery(query, rel);
       }

@@ -123,6 +123,7 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    InterfaceStructureToken getRelatedAndFilter(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId,
       ArtifactId structureId, String filter, ArtifactId viewId);
 
-   InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId connectionId, ArtifactId messageId);
+   InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId connectionId, ArtifactId messageId,
+      ArtifactId viewId);
 
 }

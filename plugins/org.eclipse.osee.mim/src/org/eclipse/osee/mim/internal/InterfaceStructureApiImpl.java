@@ -513,12 +513,13 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId connectionId,
-      ArtifactId messageId) {
+      ArtifactId messageId, ArtifactId viewId) {
       InterfaceMessageToken message = interfaceMessageApi.getWithRelations(branch, messageId,
          FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceSubMessageContent_Structure,
             CoreRelationTypes.InterfaceStructureContent_DataElement,
-            CoreRelationTypes.InterfaceElementPlatformType_PlatformType));
+            CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+         viewId);
       InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
       boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
       int validationSize = connection.getTransportType().getByteAlignValidationSize();
