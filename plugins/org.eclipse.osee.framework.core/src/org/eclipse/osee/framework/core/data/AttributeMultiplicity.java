@@ -64,7 +64,8 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       return any(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
    }
 
-   public <T> AttributeMultiplicity exactlyOne(AttributeTypeGeneric<T> attributeType, T defaultValue, String description) {
+   public <T> AttributeMultiplicity exactlyOne(AttributeTypeGeneric<T> attributeType, T defaultValue,
+      String description) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.EXACTLY_ONE, defaultValue));
       return this;
    }
@@ -81,7 +82,8 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       return zeroOrOne(attributeType, defaultValue, "");
    }
 
-   public <T> AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<T> attributeType, T defaultValue, String description) {
+   public <T> AttributeMultiplicity zeroOrOne(AttributeTypeGeneric<T> attributeType, T defaultValue,
+      String description) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ZERO_OR_ONE, defaultValue));
       return this;
    }
@@ -90,7 +92,8 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       return zeroOrOne(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
    }
 
-   public <T> AttributeMultiplicity atLeastOne(AttributeTypeGeneric<T> attributeType, T defaultValue, String description) {
+   public <T> AttributeMultiplicity atLeastOne(AttributeTypeGeneric<T> attributeType, T defaultValue,
+      String description) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.AT_LEAST_ONE, defaultValue));
       return this;
    }
@@ -106,24 +109,28 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    /**
     * 0..n values
     */
-   public <T extends EnumToken> AttributeMultiplicity any(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
+   public <T extends EnumToken> AttributeMultiplicity any(AttributeTypeEnum<T> attributeType, T defaultValue,
+      String[] enumeratedValues) {
       put(attributeType, new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ANY, defaultValue, enumeratedValues));
       return this;
    }
 
-   public <T extends EnumToken> AttributeMultiplicity exactlyOne(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
+   public <T extends EnumToken> AttributeMultiplicity exactlyOne(AttributeTypeEnum<T> attributeType, T defaultValue,
+      String[] enumeratedValues) {
       put(attributeType,
          new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.EXACTLY_ONE, defaultValue, enumeratedValues));
       return this;
    }
 
-   public <T extends EnumToken> AttributeMultiplicity zeroOrOne(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
+   public <T extends EnumToken> AttributeMultiplicity zeroOrOne(AttributeTypeEnum<T> attributeType, T defaultValue,
+      String[] enumeratedValues) {
       put(attributeType,
          new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.ZERO_OR_ONE, defaultValue, enumeratedValues));
       return this;
    }
 
-   public <T extends EnumToken> AttributeMultiplicity atLeastOne(AttributeTypeEnum<T> attributeType, T defaultValue, String[] enumeratedValues) {
+   public <T extends EnumToken> AttributeMultiplicity atLeastOne(AttributeTypeEnum<T> attributeType, T defaultValue,
+      String[] enumeratedValues) {
       put(attributeType,
          new ArtifactTypeAttributeTypeMetaData<T>(Multiplicity.AT_LEAST_ONE, defaultValue, enumeratedValues));
       return this;
@@ -171,7 +178,7 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    public <T extends EnumToken> List<T> getValidEnumValues(AttributeTypeEnum<T> attributeType) {
       List<T> validEnumTokens = new ArrayList<T>();
       try {
-         for (T enumToken : attributeType.getEnumValues()) {
+         for (T enumToken : attributeType.getEnumValuesByNamespace(artifactType.getNamespace())) {
             //get(attributeType) will fail on some attributes for overridden artifact types. Hence the try/catch.
             for (String enumeratedValue : get(attributeType).getValidEnumValues()) {
                if (enumToken.getName().equals(enumeratedValue)) {
@@ -181,10 +188,10 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
          }
       } catch (Exception e) {
          //TODO: Catch should be removed/replaced with error when overridden type handling is updated
-         validEnumTokens.addAll(attributeType.getEnumValues());
+         validEnumTokens.addAll(attributeType.getEnumValuesByNamespace(artifactType.getNamespace()));
       }
       if (validEnumTokens.isEmpty()) {
-         validEnumTokens.addAll(attributeType.getEnumValues());
+         validEnumTokens.addAll(attributeType.getEnumValuesByNamespace(artifactType.getNamespace()));
       }
       return validEnumTokens;
    }

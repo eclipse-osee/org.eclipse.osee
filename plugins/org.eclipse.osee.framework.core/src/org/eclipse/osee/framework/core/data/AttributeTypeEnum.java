@@ -54,6 +54,21 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       return enumStringValues;
    }
 
+   public Collection<T> getEnumValuesByNamespace(NamespaceToken namespace) {
+      ArrayList<T> enumValues = new ArrayList<T>();
+      // do NOT include enums that have specified that they are NOT in the same namespace as the artifact
+      for (T enumToken : enumTokens) {
+         for (NamespaceToken currentEnumNamespace : enumToken.getNamespaces()) {
+            // if the namespace is specified (and matching the artifact namespace), sentinel, or osee, then add to list of valid enum values
+            if (currentEnumNamespace.equals(namespace) || currentEnumNamespace.equals(
+               NamespaceToken.SENTINEL) || currentEnumNamespace.equals(NamespaceToken.OSEE)) {
+               enumValues.add(enumToken);
+            }
+         }
+      }
+      return Collections.unmodifiableCollection(enumValues);
+   }
+
    public boolean isValidEnum(String enumName) {
       for (T enumToken : enumTokens) {
          if (enumToken.getName().equals(enumName)) {
