@@ -246,4 +246,8 @@ public class TransitionData {
       this.debug = debug;
    }
 
+   public boolean getHasTransitionOptions(TransitionOption transitionOption) {
+      return getTransitionOptions().contains(transitionOption);
+   }
+
 }
