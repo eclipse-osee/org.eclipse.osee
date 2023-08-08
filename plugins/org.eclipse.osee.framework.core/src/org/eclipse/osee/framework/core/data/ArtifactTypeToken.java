@@ -118,6 +118,8 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public OseeImage getImage();
 
+   public NamespaceToken getNamespace();
+
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
       AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
       return create(id, namespace, name, isAbstract, attributeTypes, null, superTypes);
@@ -259,6 +261,11 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          @Override
          public OseeImage getImage() {
             return image;
+         }
+
+         @Override
+         public NamespaceToken getNamespace() {
+            return namespace;
          }
       }
       return new ArtifactTypeTokenImpl(id, namespace, name, isAbstract, attributeTypes, image, superTypes);
