@@ -137,7 +137,7 @@ public class MimIcdGenerator {
                smsgTokens.add(0, header);
 
                InterfaceStructureToken headerStruct = interfaceStructureApi.getMessageHeaderStructure(branch,
-                  ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId()));
+                  ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId()), view);
                messageHeaderStructures.put(header.getName(), headerStruct);
             }
             subMessages.addAll(messageSubMessages);
@@ -146,7 +146,7 @@ public class MimIcdGenerator {
                List<InterfaceStructureToken> structs = new LinkedList<>();
                if (smsg.getId() == 0) {
                   structs.add(0, interfaceStructureApi.getMessageHeaderStructure(branch,
-                     ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId())));
+                     ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId()), view));
                } else {
                   structs.addAll(smsg.getArtifactReadable().getRelated(
                      CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(

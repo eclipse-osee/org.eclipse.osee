@@ -47,7 +47,7 @@ public class InterfaceStructureEndpointImpl implements InterfaceStructureEndpoin
       long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (subMessageId.getId() == 0) {
-         return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, connectionId, messageId));
+         return Arrays.asList(interfaceStructureApi.getMessageHeaderStructure(branch, connectionId, messageId, viewId));
       }
       if (Strings.isValid(filter)) {
          return this.interfaceStructureApi.getAllRelatedAndFilter(branch, connectionId, subMessageId, viewId, filter,

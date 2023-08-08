@@ -178,9 +178,9 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public InterfaceMessageToken getWithRelations(BranchId branch, ArtifactId messageId,
-      List<FollowRelation> followRelations) {
+      List<FollowRelation> followRelations, ArtifactId viewId) {
       try {
-         return this.setUpMessage(branch, this.getAccessor().get(branch, messageId, followRelations));
+         return this.setUpMessage(branch, this.getAccessor().get(branch, messageId, followRelations, viewId));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
