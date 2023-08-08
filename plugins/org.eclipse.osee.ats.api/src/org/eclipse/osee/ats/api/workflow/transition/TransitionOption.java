@@ -29,6 +29,7 @@ public class TransitionOption extends OseeEnum {
    public static final TransitionOption OverrideAssigneeCheck = new TransitionOption("OverrideAssigneeCheck");
    public static final TransitionOption OverrideReload = new TransitionOption("OverrideReload");
    public static final TransitionOption OverrideWorkingBranchCheck = new TransitionOption("OverrideWorkingBranchCheck");
+   public static final TransitionOption OverrideIdeTransitionCheck = new TransitionOption("OverrideIdeTransitionCheck");
    // @formatter:on
 
    public TransitionOption() {

@@ -51,7 +51,7 @@ public class TransitionListenersTest {
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // validate that can transition

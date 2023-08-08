@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.workflow.transition;
 
+import static org.eclipse.osee.ats.api.workflow.transition.TransitionOption.OverrideIdeTransitionCheck;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,16 +101,8 @@ public class TransitionManager implements IExecuteListener {
    private final TransitionResults results = new TransitionResults();
 
    public TransitionManager(TransitionData transData) {
-      this(transData, AtsApiService.get());
-   }
-
-   public TransitionManager(TransitionData transData, AtsApi atsApi) {
-      this(transData, false, atsApi);
-   }
-
-   public TransitionManager(TransitionData transData, boolean overrideClientCheck, AtsApi atsApi) {
       this.transData = transData;
-      this.atsApi = atsApi;
+      this.atsApi = AtsApiService.get();
       this.userService = atsApi.getUserService();
       this.reviewService = atsApi.getReviewService();
       this.workItemService = atsApi.getWorkItemService();
@@ -118,7 +111,7 @@ public class TransitionManager implements IExecuteListener {
       this.taskService = atsApi.getTaskService();
       this.workItemFromStateMap = new HashMap<>();
       results.setDebug(transData.isDebug());
-      if (atsApi.isIde() && !overrideClientCheck && !AtsUtil.isInTest()) {
+      if (atsApi.isIde() && !transData.getHasTransitionOptions(OverrideIdeTransitionCheck) && !AtsUtil.isInTest()) {
          // Capture stack trace so it's easy to determine where this is being called from
          try {
             throw new OseeArgumentException(
@@ -392,13 +385,15 @@ public class TransitionManager implements IExecuteListener {
                      toStateAssigees.addAll(getToAssignees(workItem, toState));
                   }
 
-                  changes.updateForTransition(workItem, toState, toStateAssigees);
+                  if (changes != null) {
+                     changes.updateForTransition(workItem, toState, toStateAssigees);
+                  }
 
                   // Create validation review if in correct state and TeamWorkflow
                   if (reviewService.isValidationReviewRequired(workItem) && workItem.isTeamWorkflow()) {
                      IAtsDecisionReview review = reviewService.createValidateReview((IAtsTeamWorkflow) workItem, false,
                         transitionDate, transitionUser, changes);
-                     if (review != null) {
+                     if (review != null && changes != null) {
                         changes.add(review);
                      }
                   }

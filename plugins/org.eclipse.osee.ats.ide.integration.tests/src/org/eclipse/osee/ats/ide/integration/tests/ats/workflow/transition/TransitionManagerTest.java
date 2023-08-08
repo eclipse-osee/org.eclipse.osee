@@ -99,7 +99,7 @@ public class TransitionManagerTest {
          new TransitionData(getClass().getSimpleName(), EMPTY_AWAS, AtsTestUtil.getImplementStateDef().getName(),
             Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
             AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(TransitionResult.NO_WORKFLOWS_PROVIDED_FOR_TRANSITION));
@@ -110,7 +110,7 @@ public class TransitionManagerTest {
       TransitionData transData = new TransitionData(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          null, Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(TransitionResult.TO_STATE_CANT_BE_NULL));
@@ -121,7 +121,7 @@ public class TransitionManagerTest {
       TransitionData transData = new TransitionData(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          "InvalidStateName", Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(
@@ -140,7 +140,7 @@ public class TransitionManagerTest {
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       transData.setExecuteChanges(true);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // First transition should be valid cause Joe Smith is assigned cause he created
@@ -229,7 +229,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // First transition should be valid cause Joe Smith is assigned cause he created
@@ -257,7 +257,7 @@ public class TransitionManagerTest {
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // test that normal transition works
@@ -292,7 +292,7 @@ public class TransitionManagerTest {
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       StateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // test that normal transition works
@@ -387,7 +387,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
 
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // validate that can transition
@@ -420,7 +420,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
 
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // validate that can transition
@@ -455,7 +455,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
 
       // validate that can transition
@@ -515,7 +515,7 @@ public class TransitionManagerTest {
          Arrays.asList(teamArt01, teamArt02), AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
@@ -535,7 +535,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getCompletedStateDef().getName(),
          Arrays.asList(AtsApiService.get().getUserService().getCurrentUser()), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr02 = new TransitionManager(transData02, AtsApiService.get());
+      TransitionManager transMgr02 = new TransitionManager(transData02);
       TransitionResults results02 = new TransitionResults();
       transMgr02.handleTransitionValidation(results02);
       Assert.assertTrue(results02.isEmpty());
@@ -560,7 +560,7 @@ public class TransitionManagerTest {
       TestTransitionData transData = new TestTransitionData(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(), teamArt.getAssignees(), null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
       TransitionResults results01 = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -582,7 +582,7 @@ public class TransitionManagerTest {
          AtsTestUtil.getImplementStateDef().getName(), null, null,
          AtsApiService.get().createChangeSet(getClass().getSimpleName()), TransitionOption.None);
       transData.setExecuteChanges(true);
-      TransitionManager transMgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager transMgr = new TransitionManager(transData);
       TransitionResults results = new TransitionResults();
       TransitionResults results01 = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -655,7 +655,7 @@ public class TransitionManagerTest {
       TransitionData transData = new TransitionData("Transition Team Workflow Review", Arrays.asList(teamArt),
          "Cancelled", new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
       transData.setTransitionUser(AtsApiService.get().getUserService().getCurrentUser());
-      TransitionManager mgr = new TransitionManager(transData, AtsApiService.get());
+      TransitionManager mgr = new TransitionManager(transData);
       results = mgr.handleAll();
       changes.execute();
       Assert.assertTrue(results.contains(teamArt, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL));

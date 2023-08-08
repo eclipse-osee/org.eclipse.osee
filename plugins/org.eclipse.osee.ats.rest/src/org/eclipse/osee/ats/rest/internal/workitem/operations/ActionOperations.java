@@ -77,7 +77,7 @@ public class ActionOperations {
          TransitionData transData = new TransitionData("Transition Workflow", Arrays.asList(workItem), state,
             new ArrayList<AtsUser>(), "", changes, TransitionOption.OverrideAssigneeCheck);
          transData.setTransitionUser(atsApi.getUserService().getCurrentUser());
-         TransitionManager mgr = new TransitionManager(transData, atsApi);
+         TransitionManager mgr = new TransitionManager(transData);
          TransitionResults results = new TransitionResults();
          mgr.handleTransitionValidation(results);
          if (!results.isEmpty()) {
