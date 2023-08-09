@@ -167,8 +167,7 @@ public class DispoSetCopierTest {
 
       DispoItem resultItem = copyResults.get(0);
 
-      List<DispoAnnotationData> resultAnnotations = resultItem.getAnnotationsList();
-      Assert.assertTrue(resultAnnotations.size() == 5);
+      Assert.assertTrue(resultItem.getAnnotationsList() == destItem.getAnnotationsList());
    }
 
    private Map<String, Set<DispoItemData>> getNameToDestItemsMap(List<DispoItemData> items) {

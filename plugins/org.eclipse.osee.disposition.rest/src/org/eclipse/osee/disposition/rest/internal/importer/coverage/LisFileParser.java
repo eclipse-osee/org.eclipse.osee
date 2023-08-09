@@ -80,11 +80,10 @@ public class LisFileParser implements DispoImporterApi {
    private static final String RESULTS = "results";
    private static final String IMPORTED_RESULTS = "IMPORTED_RESULTS";
    private static final String LOG = "\\s*(log).*";
-   private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN|exit when).*";
-   private static final String IF_ELSIF = "(.*\\b(IF|if|ELSIF|elsif)\\b\\s*[^:]*$)";
-   private static final String WHEN_FOR_WHILE = "\\s*(\\( \\))+\\s*(WHEN|when|FOR|for|WHILE|while).*";
-   private static final String WHEN_CASE = "(.*\\b(WHEN|when)\\b\\s*[^:]*$)";
-   private static final String CASE_STATEMENT = "(.*(\\bCASE|case|default|\\s+.+[:].*))";
+   private static final String EXIT_WHEN = "^(?i)(.*\\bEXIT WHEN\\b\\s*[^:]*$)";
+   private static final String MCDC_BRANCH_TF_CONDITIONS = "^(?i)(.*\\b(IF|ELSIF|WHILE|EXIT.*WHEN)\\b\\s*[^:]*$)";
+   private static final String BRANCH_TF_CONDITIONS = "^(?i)(.*\\bFOR\\b.*)";
+   private static final String BRANCH_T_CONDITION = "^(?i)(?!.*\\bEXIT\\b).*\\b(WHEN|BEGIN)\\b.*";
    private static final String WHILE_ONE = "(.*\\b(WHILE|while)\\b\\s*\\(1\\).*)";
    private static final String LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -191,9 +190,7 @@ public class LisFileParser implements DispoImporterApi {
       }
 
       for (DispoItem item : toReturn) {
-         if (item.getStatus().equalsIgnoreCase("incomplete")) {
-            createPlaceHolderAnnotations((DispoItemData) item, exisitingItems, report);
-         }
+         createPlaceHolderAnnotations((DispoItemData) item, exisitingItems, report);
       }
       return toReturn;
    }
@@ -225,10 +222,10 @@ public class LisFileParser implements DispoImporterApi {
 
    private void createPlaceHolderAnnotations(DispoItemData item, Map<String, DispoItem> exisitingItems,
       OperationReport report) {
-      List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
-      List<String> uncovered = dispoConnector.getAllUncoveredDiscprepancies(item);
-      List<String> discrepanciesToRemove = new ArrayList<>();
 
+      List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
+      List<String> uncovered = dispoConnector.getAllUncoveredDiscrepancies(item);
+      List<String> discrepanciesToRemove = new ArrayList<>();
       if (!uncovered.isEmpty()) {
          Map<String, Discrepancy> discrepanciesList = item.getDiscrepanciesList();
          for (String id : discrepanciesList.keySet()) {
@@ -434,6 +431,7 @@ public class LisFileParser implements DispoImporterApi {
       }
 
       String datId = generateDatId(fileNum, functionNum);
+
       datIdToItem.put(datId, newItem);
 
       checkForMultiEnvRename(fileNum, instrumentedFile, newItem);
@@ -491,8 +489,8 @@ public class LisFileParser implements DispoImporterApi {
          String text;
          if (isMCDCPair) {
             location = String.format("%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition());
-            if (!lineData.getFirst().matches(WHEN_CASE) && !lineData.getFirst().matches(CASE_STATEMENT)) {
-               // Only add corresponding 'F' discrepancy if it's not a FOR, WHEN or WHILE (1) condition statement
+            if (lineData.getFirst().matches(MCDC_BRANCH_TF_CONDITIONS)) {
+
                text = String.format("%s %s", lineData.getFirst().trim(), statementCoverageItem.getFullCondition());
                int numberOfConditions = statementCoverageItem.getNumConditions();
                int conditionIndex = statementCoverageItem.getCondIndex();
@@ -532,25 +530,24 @@ public class LisFileParser implements DispoImporterApi {
                      addMcdcDiscrepancy(discrepancies, location, text, pairAnnotations, overloadedText, true);
                   }
                }
-            } else { // May be a case or WHILE (1) statement, which should only test for True
+            } else if (lineData.getFirst().matches(BRANCH_TF_CONDITIONS)) {
+               text = String.format("%s %s", lineData.getFirst().trim(), statementCoverageItem.getFullCondition());
+               addDiscrepancy(discrepancies, location + ".T", text);
+               addDiscrepancy(discrepancies, location + ".F", text);
+            } else {
                text = String.format("%s %s", lineData.getFirst().trim(), statementCoverageItem.getFullCondition());
                addDiscrepancy(discrepancies, location + ".T", text);
             }
          } else {
             text = lineData.getFirst().trim();
-            if (statementCoverageItem.getNumConditions() == 2) {
-               if (text.matches(IF_ELSIF) || text.matches(WHEN_FOR_WHILE) || text.matches(WHILE_ONE) || text.matches(
-                  EXIT_WHEN)) {
-                  location = String.format("%s.%s", lineNumber, "T");
-                  String locationF = String.format("%s.%s", lineNumber, "F");
-                  addDiscrepancy(discrepancies, location, text);
-                  addDiscrepancy(discrepancies, locationF, text);
-               } else {
-                  location = String.valueOf(lineNumber);
-                  addDiscrepancy(discrepancies, location, text);
-               }
-            } else if (statementCoverageItem.getNumConditions() == 1 //
-               && (text.matches(WHEN_CASE) || text.matches(CASE_STATEMENT))) {
+            if (statementCoverageItem.getNumConditions() == 2 && (lineData.getFirst().matches(
+               MCDC_BRANCH_TF_CONDITIONS) || lineData.getFirst().matches(BRANCH_TF_CONDITIONS))) {
+               location = String.format("%s.%s", lineNumber, "T");
+               String locationF = String.format("%s.%s", lineNumber, "F");
+               addDiscrepancy(discrepancies, location, text);
+               addDiscrepancy(discrepancies, locationF, text);
+            } else if (statementCoverageItem.getNumConditions() == 1 && (lineData.getFirst().matches(
+               BRANCH_T_CONDITION))) {
                location = String.format("%s.%s", lineNumber, "T");
                addDiscrepancy(discrepancies, location, text);
             } else {
@@ -1014,6 +1011,18 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void keepExistingAnnotation(DispoItemData item, DispoAnnotationData existingAnnotation) {
+
+      String location = existingAnnotation.getLocationRefs();
+      if (location.contains("(P")) {
+         Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+         if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty() && !matchingDiscrepancy.getIsOverloadedCondition()) {
+            Map<Integer, DispoAnnotationData> pairAnnotations = new HashMap<>();
+            pairAnnotations.putAll(matchingDiscrepancy.getPairAnnotations());
+            existingAnnotation.setPossiblePairs(getPossiblePairs(pairAnnotations, item));
+            existingAnnotation.setSatisfiedPairs("");
+         }
+      }
+
       List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
       int newIndex = annotationsList.size();
       existingAnnotation.setIndex(newIndex);

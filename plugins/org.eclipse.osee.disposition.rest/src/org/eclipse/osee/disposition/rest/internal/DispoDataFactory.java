@@ -127,11 +127,7 @@ public class DispoDataFactory {
       if (itemToInit.getDiscrepanciesList() == null) {
          itemToInit.setDiscrepanciesList(new HashMap<String, Discrepancy>());
       }
-      if (itemToInit.getDiscrepanciesList().size() == 0) {
-         itemToInit.setStatus(DispoStrings.Item_Pass);
-      } else {
-         itemToInit.setStatus(dispoConnector.getItemStatus(itemToInit));
-      }
+      itemToInit.setStatus(DispoStrings.Item_Incomplete);
       if (!Strings.isValid(itemToInit.getAssignee())) {
          itemToInit.setAssignee("UnAssigned");
       }

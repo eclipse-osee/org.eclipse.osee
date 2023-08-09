@@ -52,11 +52,11 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
  */
 @Path("program")
 @Swagger
-public class DispoProgramResource {
+public class DispoProgramEndpoint {
 
    private final DispoApi dispoApi;
 
-   public DispoProgramResource(DispoApi dispoApi) {
+   public DispoProgramEndpoint(DispoApi dispoApi) {
       this.dispoApi = dispoApi;
    }
 
@@ -250,9 +250,9 @@ public class DispoProgramResource {
    @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "OK. Annotation found"),
       @ApiResponse(responseCode = "404", description = "Not Found. Can't find annotation")})
-   public DispoSetResource getAnnotation(
+   public DispoSetEndpoint getAnnotation(
       @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
-      return new DispoSetResource(dispoApi, branch);
+      return new DispoSetEndpoint(dispoApi, branch);
    }
 
    @Path("{branchId}/admin")
@@ -261,9 +261,9 @@ public class DispoProgramResource {
    @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "OK. Retrieved Dispo Set report"),
       @ApiResponse(responseCode = "404", description = "Not Found. Can't find Dispo Set report")})
-   public DispoAdminResource getDispoSetReport(
+   public DispoAdminEndpoint getDispoSetReport(
       @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
-      return new DispoAdminResource(dispoApi, branch);
+      return new DispoAdminEndpoint(dispoApi, branch);
    }
 
    @Path("{branchId}/config")
@@ -272,8 +272,8 @@ public class DispoProgramResource {
    @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "OK. Retrieved the Dispo Datastore"),
       @ApiResponse(responseCode = "404", description = "Not Found. Can't find the Dispo Datastore")})
-   public DispoConfigResource getDispoDataStore(
+   public DispoConfigEndpoint getDispoDataStore(
       @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
-      return new DispoConfigResource(dispoApi, branch);
+      return new DispoConfigEndpoint(dispoApi, branch);
    }
 }

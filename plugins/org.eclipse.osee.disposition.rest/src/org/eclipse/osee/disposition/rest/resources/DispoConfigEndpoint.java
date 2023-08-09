@@ -31,12 +31,12 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
  * @author Angel Avila
  */
 @Swagger
-public class DispoConfigResource {
+public class DispoConfigEndpoint {
 
    private final DispoApi dispoApi;
    private final BranchId branch;
 
-   public DispoConfigResource(DispoApi dispoApi, BranchId branch) {
+   public DispoConfigEndpoint(DispoApi dispoApi, BranchId branch) {
       this.dispoApi = dispoApi;
       this.branch = branch;
    }

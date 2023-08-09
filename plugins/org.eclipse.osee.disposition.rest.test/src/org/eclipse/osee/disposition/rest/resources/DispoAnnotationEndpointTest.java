@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author Angel Avila
  */
-public class AnnotationResourceTest {
+public class DispoAnnotationEndpointTest {
 
    @Mock
    private DispoApi dispositionApi;
@@ -47,12 +47,12 @@ public class AnnotationResourceTest {
    private BranchId branch;
    String mockId = "annotationID";
 
-   private AnnotationResource resource;
+   private DispoAnnotationEndpoint resource;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new AnnotationResource(dispositionApi, branch, "setId", "itemId");
+      resource = new DispoAnnotationEndpoint(dispositionApi, branch, "setId", "itemId");
       when(id1.getGuid()).thenReturn("abcdef");
       when(id2.getGuid()).thenReturn("fedcba");
    }
@@ -151,7 +151,7 @@ public class AnnotationResourceTest {
          dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getGuid(), "name", false)).thenReturn(
             true);
       when(dispositionApi.getDispoItemById(branch, "itemId")).thenReturn(dispoItem);
-      when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_InComplete);
+      when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_Incomplete);
       Response response = resource.deleteDispoAnnotation(annotationToEdit.getGuid(), "name");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 

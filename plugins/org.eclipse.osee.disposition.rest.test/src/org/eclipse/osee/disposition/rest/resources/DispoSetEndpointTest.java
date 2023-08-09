@@ -35,14 +35,14 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author Angel Avila
  */
-public class DispoSetResourceTest {
+public class DispoSetEndpointTest {
 
    @Mock
    private DispoApi dispositionApi;
    @Mock
    private BranchId branch;
 
-   private DispoSetResource resource;
+   private DispoSetEndpoint resource;
    private final ArtifactId id1 = ArtifactId.valueOf(21351L);
    private final ArtifactId id2 = ArtifactId.valueOf(222325L);
 
@@ -52,7 +52,7 @@ public class DispoSetResourceTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoSetResource(dispositionApi, branch);
+      resource = new DispoSetEndpoint(dispositionApi, branch);
    }
 
    @Test

@@ -15,7 +15,6 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,7 +53,7 @@ public class DispoConnector {
       logger.trace("Stopping DispoConnector...");
    }
 
-   public List<String> getAllUncoveredDiscprepancies(DispoItem item) {
+   public List<String> getAllUncoveredDiscrepancies(DispoItem item) {
       Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
       List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
       HashSet<String> allCoveredDiscrepancies =
@@ -68,58 +67,45 @@ public class DispoConnector {
    public String getItemStatus(DispoItem item) {
       String toReturn;
       List<DispoAnnotationData> annotations = item.getAnnotationsList();
-      List<String> allUncoveredDiscprepancies = getAllUncoveredDiscprepancies(item);
-      if (item.getDiscrepanciesList().size() == 0) {
-         toReturn = DispoStrings.Item_Pass;
-      } else {
-         Collection<DispoAnnotationData> defaultAnnotations = new HashSet<>();
-         Collection<DispoAnnotationData> invalidAnotations = new HashSet<>();
-         Collection<DispoAnnotationData> analyzeAnnotations = new HashSet<>();
-         parseThroughAnnotations(annotations, defaultAnnotations, invalidAnotations, analyzeAnnotations);
+      boolean isPass = true;
+      boolean isAnalysis = false;
+      boolean needsModify = false;
+      boolean isIncomplete = false;
 
-         if (invalidAnotations.isEmpty() && allUncoveredDiscprepancies.isEmpty()) {
-            if (analyzeAnnotations.isEmpty()) {
-               toReturn = DispoStrings.Item_Complete;
-               if (anyAnnotationsModifyType(annotations)) {
-                  toReturn = DispoStrings.Item_Complete_Analyzed;
-               }
-            } else {
-               toReturn = DispoStrings.Item_Analyzed;
-            }
-         } else {
-            toReturn = DispoStrings.Item_InComplete;
-         }
-      }
-      return toReturn;
-   }
-
-   private void parseThroughAnnotations(Collection<DispoAnnotationData> annotations,
-      Collection<DispoAnnotationData> defaultAnnotations, Collection<DispoAnnotationData> invalidAnnotations,
-      Collection<DispoAnnotationData> analyzeAnnotations) {
       if (annotations != null) {
          for (DispoAnnotationData annotation : annotations) {
-            if (annotation.getIsDefault()) {
-               defaultAnnotations.add(annotation);
+            if (annotation.getIsPairAnnotation()) {
+               continue;
             }
-            if (!annotation.isValid() && !annotation.getLocationRefs().contains(").")) {
-               invalidAnnotations.add(annotation);
+            if (!annotation.getIsResolutionValid()) {
+               isIncomplete = true;
+               isPass = false;
             }
             if (annotation.getIsAnalyze()) {
-               analyzeAnnotations.add(annotation);
+               isAnalysis = true;
+               isPass = false;
+            }
+            if (annotation.getNeedsModify()) {
+               needsModify = true;
+               isPass = false;
+            }
+            if (!annotation.getIsDefault()) {
+               isPass = false;
             }
          }
       }
-   }
-
-   private boolean anyAnnotationsModifyType(List<DispoAnnotationData> annotations) {
-      for (DispoAnnotationData annotation : annotations) {
-         if (annotation.getResolutionMethodType() != null) {
-            if (annotation.getResolutionMethodType().startsWith(DispoStrings.MODIFY)) {
-               return true;
-            }
-         }
+      if (isPass) {
+         toReturn = DispoStrings.Item_Pass;
+      } else if (isIncomplete) {
+         toReturn = DispoStrings.Item_Incomplete;
+      } else if (needsModify) {
+         toReturn = DispoStrings.Item_Modify;
+      } else if (isAnalysis) {
+         toReturn = DispoStrings.Item_Analysis;
+      } else {
+         toReturn = DispoStrings.Item_Complete;
       }
-      return false;
+      return toReturn;
    }
 
    private ArrayList<String> createDiscrepanciesList(Map<String, Discrepancy> discrepancies) {

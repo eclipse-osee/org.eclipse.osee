@@ -93,6 +93,8 @@ public interface DispoApi {
    boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName,
       boolean assignUser);
 
+   boolean updateAllDispoItems(BranchId branch, String dispoSetId);
+
    boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType,
       String resolution, String userName);
 

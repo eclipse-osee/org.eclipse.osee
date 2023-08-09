@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.disposition.model;
 
+import static org.eclipse.osee.disposition.model.DispoStrings.ANALYSIS;
 import static org.eclipse.osee.disposition.model.DispoStrings.Exception_Handling_Resolution;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY;
 import static org.eclipse.osee.disposition.model.DispoStrings.Test_Unit_Resolution;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -42,6 +44,7 @@ public class DispoAnnotationData {
    private String resolutionType;
    private boolean isDefault;
    private boolean isAnalyze;
+   private boolean needsModify;
    private String resolutionMethodType;
    private boolean isPairAnnotation = false; //For MCDC to determine if it is a pair annotation
 
@@ -117,7 +120,21 @@ public class DispoAnnotationData {
    }
 
    public boolean getIsAnalyze() {
+      if (resolutionType.contains(ANALYSIS)) {
+         isAnalyze = true;
+      } else {
+         isAnalyze = false;
+      }
       return isAnalyze;
+   }
+
+   public boolean getNeedsModify() {
+      if (resolutionType.contains(MODIFY)) {
+         needsModify = true;
+      } else {
+         needsModify = false;
+      }
+      return needsModify;
    }
 
    public String getResolutionMethodType() {
@@ -133,6 +150,11 @@ public class DispoAnnotationData {
    }
 
    public boolean getIsPairAnnotation() {
+      if (locationRefs.contains(").")) {
+         isPairAnnotation = true;
+      } else {
+         isPairAnnotation = false;
+      }
       return isPairAnnotation;
    }
 
@@ -198,6 +220,10 @@ public class DispoAnnotationData {
 
    public void setIsAnalyze(boolean isAnalyzed) {
       this.isAnalyze = isAnalyzed;
+   }
+
+   public void setNeedsModify(boolean isAnalyzed) {
+      this.needsModify = needsModify;
    }
 
    public void setResolutionMethodType(String resolutionMethodType) {

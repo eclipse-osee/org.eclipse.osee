@@ -41,12 +41,12 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
  * @author Angel Avila
  */
 @Swagger
-public class AnnotationResource {
+public class DispoAnnotationEndpoint {
    private final DispoApi dispoApi;
    private final BranchId branch;
    private final String itemId;
 
-   public AnnotationResource(DispoApi dispoApi, BranchId branch, String setUuid, String dispResourceId) {
+   public DispoAnnotationEndpoint(DispoApi dispoApi, BranchId branch, String setUuid, String dispResourceId) {
       this.dispoApi = dispoApi;
       this.branch = branch;
       this.itemId = dispResourceId;

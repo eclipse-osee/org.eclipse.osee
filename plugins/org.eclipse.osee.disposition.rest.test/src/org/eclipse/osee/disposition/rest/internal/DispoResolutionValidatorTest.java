@@ -13,7 +13,8 @@
 
 package org.eclipse.osee.disposition.rest.internal;
 
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_CODE;
+import static org.eclipse.osee.disposition.model.DispoStrings.ANALYSIS;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_CODE;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,26 +32,29 @@ public class DispoResolutionValidatorTest {
    @Test
    public void testValidate() {
       DispoAnnotationData annotation = new DispoAnnotationData();
-      annotation.setResolutionType(ANALYZE_CODE);
+      annotation.setResolutionType(MODIFY_CODE);
       annotation.setResolution("");
 
       DispoResolutionValidator validator = new DispoResolutionValidator();
 
       validator.validate(annotation);
 
-      Assert.assertTrue(annotation.getIsAnalyze());
-      Assert.assertTrue(!annotation.getIsResolutionValid());
+      Assert.assertFalse(annotation.getIsAnalyze());
+      Assert.assertTrue(annotation.getNeedsModify());
+      Assert.assertFalse(annotation.getIsResolutionValid());
 
       annotation.setResolution("something");
       validator.validate(annotation);
 
-      Assert.assertTrue(annotation.getIsAnalyze());
+      Assert.assertFalse(annotation.getIsAnalyze());
+      Assert.assertTrue(annotation.getNeedsModify());
       Assert.assertTrue(annotation.getIsResolutionValid());
 
-      annotation.setResolutionType("non-essense");
+      annotation.setResolutionType(ANALYSIS);
       validator.validate(annotation);
 
-      Assert.assertTrue(!annotation.getIsAnalyze());
+      Assert.assertTrue(annotation.getIsAnalyze());
+      Assert.assertFalse(annotation.getNeedsModify());
       Assert.assertTrue(annotation.getIsResolutionValid());
 
    }
