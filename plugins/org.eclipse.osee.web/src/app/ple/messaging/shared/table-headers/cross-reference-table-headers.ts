@@ -35,4 +35,9 @@ export const crossReferenceHeaderDetails: headerDetail<CrossReference>[] = [
 		description: 'Additional content related to the cross reference',
 		humanReadable: 'Additional Content',
 	},
+	{
+		header: 'applicability',
+		description: 'Applicability of Cross Reference',
+		humanReadable: 'Applicability',
+	},
 ];

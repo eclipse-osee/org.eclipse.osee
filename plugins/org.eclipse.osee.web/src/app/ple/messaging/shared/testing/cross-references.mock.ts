@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { CrossReference } from '@osee/messaging/shared/types';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
 
 export const crossReferencesMock: CrossReference[] = [
 	{
@@ -20,6 +21,7 @@ export const crossReferencesMock: CrossReference[] = [
 		crossReferenceArrayValues: '0=ABC;1=DEF',
 		crossReferenceAdditionalContent: 'Additional Content',
 		connections: [],
+		applicability: applicabilitySentinel,
 	},
 	{
 		id: '2',
@@ -28,5 +30,6 @@ export const crossReferencesMock: CrossReference[] = [
 		crossReferenceArrayValues: '0=GHI;1=JKL',
 		crossReferenceAdditionalContent: 'More Additional Content',
 		connections: [],
+		applicability: applicabilitySentinel,
 	},
 ];

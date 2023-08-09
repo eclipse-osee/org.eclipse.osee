@@ -21,33 +21,47 @@ import { dialogRef } from '@osee/messaging/shared/testing';
 import type { CrossReference } from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
 import { NewCrossReferenceDialogComponent } from './new-cross-reference-dialog.component';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 
 describe('NewCrossReferenceDialogComponent', () => {
 	let component: NewCrossReferenceDialogComponent;
 	let fixture: ComponentFixture<NewCrossReferenceDialogComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				MatDialogModule,
-				NewCrossReferenceDialogComponent,
-				NoopAnimationsModule,
-			],
-			providers: [
-				{ provide: MatDialogRef, useValue: dialogRef },
-				{
-					provide: MAT_DIALOG_DATA,
-					useValue: of<CrossReference>({
-						id: '1234567890',
-						name: 'CR',
-						crossReferenceValue: 'Val',
-						crossReferenceArrayValues: '0=test;1=testing',
-						crossReferenceAdditionalContent: 'Additional Content',
-						connections: [],
-					}),
-				},
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(NewCrossReferenceDialogComponent, {
+			remove: {
+				imports: [ApplicabilitySelectorComponent],
+			},
+			add: {
+				imports: [MockApplicabilitySelectorComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					MatDialogModule,
+					NewCrossReferenceDialogComponent,
+					NoopAnimationsModule,
+				],
+				providers: [
+					{ provide: MatDialogRef, useValue: dialogRef },
+					{
+						provide: MAT_DIALOG_DATA,
+						useValue: of<CrossReference>({
+							id: '1234567890',
+							name: 'CR',
+							crossReferenceValue: 'Val',
+							crossReferenceArrayValues: '0=test;1=testing',
+							crossReferenceAdditionalContent:
+								'Additional Content',
+							connections: [],
+							applicability: applicabilitySentinel,
+						}),
+					},
+				],
+			})
+			.compileComponents();
 
 		fixture = TestBed.createComponent(NewCrossReferenceDialogComponent);
 		component = fixture.componentInstance;

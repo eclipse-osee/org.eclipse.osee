@@ -162,8 +162,10 @@ export class CrossReferenceService {
 		value: CrossReference[U]
 	) {
 		if (currentCrossRef[attribute] !== value) {
-			let updatedCrossRef = { ...currentCrossRef } as CrossReference;
-			updatedCrossRef[attribute] = value;
+			const updatedCrossRef = {
+				id: currentCrossRef.id,
+				[attribute]: value,
+			};
 			const update = this.branchId.pipe(
 				filter((v) => v !== ''),
 				switchMap((branchId) =>

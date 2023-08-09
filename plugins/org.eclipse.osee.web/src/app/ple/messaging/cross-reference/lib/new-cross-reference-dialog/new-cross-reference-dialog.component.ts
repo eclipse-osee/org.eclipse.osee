@@ -26,6 +26,7 @@ import type {
 	CrossReference,
 	CrossRefKeyValue,
 } from '@osee/messaging/shared/types';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-new-cross-reference-dialog',
@@ -38,6 +39,7 @@ import type {
 		MatFormFieldModule,
 		MatIconModule,
 		MatInputModule,
+		ApplicabilitySelectorComponent,
 	],
 	templateUrl: './new-cross-reference-dialog.component.html',
 	styleUrls: ['./new-cross-reference-dialog.component.scss'],
@@ -71,6 +73,10 @@ export class NewCrossReferenceDialogComponent {
 		crossReferenceValue: '',
 		crossReferenceArrayValues: '',
 		crossReferenceAdditionalContent: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
 	};
 
 	arrayValues: CrossRefKeyValue[] = [];
