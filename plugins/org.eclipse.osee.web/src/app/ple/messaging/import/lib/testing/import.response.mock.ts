@@ -162,6 +162,7 @@ export const importSummaryMock: ImportSummary = {
 			crossReferenceArrayValues: '0=Test;1=Testing',
 			crossReferenceAdditionalContent: 'Additional Content',
 			connections: [],
+			applicability: applicabilitySentinel,
 		},
 	],
 	connectionNodeRelations: {

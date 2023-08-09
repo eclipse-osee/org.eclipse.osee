@@ -43,7 +43,10 @@
 				(contextmenu)="openMenu($event, ref)">
 				<ng-container *ngIf="(inEditMode | async) === true">
 					<ng-container
-						*ngIf="header !== 'crossReferenceArrayValues'">
+						*ngIf="
+							header !== 'crossReferenceArrayValues' &&
+							header !== 'applicability'
+						">
 						<osee-table-edit-text-field
 							[value]="ref[header]"
 							(enterPressed)="
@@ -68,6 +71,13 @@
 								</ng-container>
 							</button>
 						</ng-container>
+					</ng-container>
+					<ng-container *ngIf="header === 'applicability'">
+						<osee-applicability-selector
+							[applicability]="ref[header]"
+							(applicabilityChange)="
+								updateCrossReference(ref, header, $event)
+							"></osee-applicability-selector>
 					</ng-container>
 				</ng-container>
 				<ng-container *ngIf="(inEditMode | async) === false">

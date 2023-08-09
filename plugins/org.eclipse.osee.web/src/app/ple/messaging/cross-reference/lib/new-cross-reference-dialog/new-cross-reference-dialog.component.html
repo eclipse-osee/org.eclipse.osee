@@ -71,6 +71,9 @@
 			class="add-button">
 			<mat-icon>add</mat-icon>
 		</button>
+		<osee-applicability-selector
+			[(applicability)]="crossReference.applicability">
+		</osee-applicability-selector>
 	</mat-dialog-content>
 </form>
 <mat-dialog-actions align="end">

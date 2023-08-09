@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.applicability.NameValuePair;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -33,6 +34,7 @@ public class CrossReference extends PLGenericDBObject {
    private String crossReferenceArrayValues;
    private String crossReferenceAdditionalContent;
    private Collection<InterfaceConnection> connections = new LinkedList<InterfaceConnection>();
+   private ApplicabilityToken applicability;
 
    public CrossReference(ArtifactToken art) {
       super(art);
@@ -50,10 +52,13 @@ public class CrossReference extends PLGenericDBObject {
             CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection).getList().stream().filter(
                a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceConnection(a)).collect(
                   Collectors.toList()));
+         this.setApplicability(!art.getApplicabilityToken().getId().equals(
+            -1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
       } else {
          this.setCrossReferenceValue("");
          this.setCrossReferenceArrayValues("");
          this.setCrossReferenceAdditionalContent("");
+         this.setApplicability(ApplicabilityToken.SENTINEL);
       }
    }
 
@@ -109,4 +114,17 @@ public class CrossReference extends PLGenericDBObject {
       return this.connections;
    }
 
+   /**
+    * @return the applicability
+    */
+   public ApplicabilityToken getApplicability() {
+      return applicability;
+   }
+
+   /**
+    * @param applicability the applicability to set
+    */
+   public void setApplicability(ApplicabilityToken applicability) {
+      this.applicability = applicability;
+   }
 }

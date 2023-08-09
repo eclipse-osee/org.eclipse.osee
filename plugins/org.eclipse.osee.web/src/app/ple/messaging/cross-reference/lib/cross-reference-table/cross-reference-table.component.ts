@@ -29,10 +29,13 @@ import { SplitStringPipe } from '@osee/shared/utils';
 import type { CrossReference } from '@osee/messaging/shared/types';
 import { TableEditTextFieldComponent } from '@osee/messaging/shared/forms';
 import { CrossReferenceService } from '@osee/messaging/shared/services';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-cross-reference-table',
 	standalone: true,
+	templateUrl: './cross-reference-table.component.html',
+	styleUrls: ['./cross-reference-table.component.scss'],
 	imports: [
 		CommonModule,
 		FormsModule,
@@ -47,9 +50,8 @@ import { CrossReferenceService } from '@osee/messaging/shared/services';
 		NewCrossReferenceDialogComponent,
 		TableEditTextFieldComponent,
 		SplitStringPipe,
+		ApplicabilitySelectorComponent,
 	],
-	templateUrl: './cross-reference-table.component.html',
-	styleUrls: ['./cross-reference-table.component.scss'],
 })
 export class CrossReferenceTableComponent implements OnDestroy {
 	@ViewChild(MatMenuTrigger, { static: true })
@@ -78,10 +80,10 @@ export class CrossReferenceTableComponent implements OnDestroy {
 		this.FilterValue = filterValue;
 	}
 
-	updateCrossReference(
+	updateCrossReference<U extends keyof CrossReference>(
 		crossRef: CrossReference,
 		header: keyof CrossReference,
-		newValue: string
+		newValue: CrossReference[U]
 	) {
 		this.crossRefService.updateCrossReferenceAttribute(
 			crossRef,
@@ -137,6 +139,7 @@ export class CrossReferenceTableComponent implements OnDestroy {
 		'crossReferenceValue',
 		'crossReferenceAdditionalContent',
 		'crossReferenceArrayValues',
+		'applicability',
 	];
 
 	ngOnDestroy(): void {
