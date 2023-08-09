@@ -17,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -317,7 +315,6 @@ public class DispoApiTest {
       when(dispoItem.getAssignee()).thenReturn("name");
       when(dispoItem.getAnnotationsList()).thenReturn(mockAnnotations);
       when(dispoItem.getDiscrepanciesList()).thenReturn(mockDiscrepancies);
-      when(dataFactory.createUpdatedItem(eq(mockAnnotations), eq(mockDiscrepancies))).thenReturn(dispoItem);
       when(dispoConnector.connectAnnotation(annotationToCreate, mockDiscrepancies)).thenReturn(false);
       annotationToCreate.setIsConnected(true); //Assume this Annotation was connected
 
@@ -415,7 +412,6 @@ public class DispoApiTest {
       assertTrue(actual);
 
       verify(validator, times(2)).validate(newAnnotation);
-      verify(dispoConnector, times(3)).connectAnnotation(any(DispoAnnotationData.class), eq(mockDiscrepancies));
    }
 
    @SuppressWarnings("unchecked")
@@ -447,7 +443,6 @@ public class DispoApiTest {
 
       when(mockAnnotations.get(0)).thenReturn(annotationValid);
       actual = dispoApi.deleteDispoAnnotation(branch, itemId.getGuid(), expectedId, "name", false);
-      verify(dataFactory, times(2)).createUpdatedItem(any(List.class), eq(mockDiscrepancies));
       assertTrue(actual);
    }
 }

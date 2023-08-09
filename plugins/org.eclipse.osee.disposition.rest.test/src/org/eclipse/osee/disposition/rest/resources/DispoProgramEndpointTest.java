@@ -29,16 +29,16 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author Angel Avila
  */
-public class DispoProgramResourceTest {
+public class DispoProgramEndpointTest {
 
    @Mock
    private DispoApi dispoApi;
-   private DispoProgramResource resource;
+   private DispoProgramEndpoint resource;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoProgramResource(dispoApi);
+      resource = new DispoProgramEndpoint(dispoApi);
    }
 
    @Test

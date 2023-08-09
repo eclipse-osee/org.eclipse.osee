@@ -21,10 +21,10 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AnnotationResourceTest.class,
-   DispoItemResourceTest.class,
-   DispoProgramResourceTest.class,
-   DispoSetResourceTest.class})
+   DispoAnnotationEndpointTest.class,
+   DispoItemEndpointTest.class,
+   DispoProgramEndpointTest.class,
+   DispoSetEndpointTest.class})
 public class ResourcesTestSuite {
    // Test Suite
 }

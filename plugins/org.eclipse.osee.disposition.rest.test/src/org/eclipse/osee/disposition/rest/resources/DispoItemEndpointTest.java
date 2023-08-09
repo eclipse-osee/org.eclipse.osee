@@ -35,7 +35,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author Angel Avila
  */
-public class DispoItemResourceTest {
+public class DispoItemEndpointTest {
 
    @Mock
    private DispoApi dispositionApi;
@@ -48,12 +48,12 @@ public class DispoItemResourceTest {
    @Mock
    private BranchId branch;
 
-   private DispoItemResource resource;
+   private DispoItemEndpoint resource;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoItemResource(dispositionApi, branch, "setId");
+      resource = new DispoItemEndpoint(dispositionApi, branch, "setId");
       when(id1.getGuid()).thenReturn("abcdef");
       when(id2.getGuid()).thenReturn("fedcba");
       when(setArt.getGuid()).thenReturn("setId");

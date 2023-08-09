@@ -51,12 +51,12 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
  * @author Angel Avila
  */
 @Swagger
-public class DispoSetResource {
+public class DispoSetEndpoint {
 
    private final DispoApi dispoApi;
    private final BranchId branch;
 
-   public DispoSetResource(DispoApi dispoApi, BranchId branch) {
+   public DispoSetEndpoint(DispoApi dispoApi, BranchId branch) {
       this.dispoApi = dispoApi;
       this.branch = branch;
    }
@@ -355,9 +355,9 @@ public class DispoSetResource {
    @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "OK. Retrieved Dispo Items"),
       @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Disposition Sets")})
-   public DispoItemResource getDispositionableItems(
+   public DispoItemEndpoint getDispositionableItems(
       @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId) {
-      return new DispoItemResource(dispoApi, branch, setId);
+      return new DispoItemEndpoint(dispoApi, branch, setId);
    }
 
    /**

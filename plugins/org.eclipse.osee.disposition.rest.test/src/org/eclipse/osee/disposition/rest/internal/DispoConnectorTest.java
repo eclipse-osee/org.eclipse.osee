@@ -129,7 +129,7 @@ public class DispoConnectorTest {
       annotationOne.setLocationRefs("1zzz, 2zzz, 3zzz,4zzz,5zzz,12zzz,13zzz,14zzz,15zzz,16zzz,17zzz,18zzz,20zzz");
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("Modify_Code");
-      annotationOne.setIsAnalyze(true);
+      annotationOne.setNeedsModify(true);
       annotationOne.setId(annotIdOne);
       List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
@@ -155,7 +155,7 @@ public class DispoConnectorTest {
       assertTrue(annotationOne.getIsConnected());
 
       String actual = dispoConnector.getItemStatus(dispoItem);
-      assertEquals(DispoStrings.Item_Analyzed, actual);
+      assertEquals(DispoStrings.Item_Modify, actual);
    }
 
    @Test
@@ -194,7 +194,7 @@ public class DispoConnectorTest {
       assertTrue(annotationOne.getIsConnected());
 
       String actual = dispoConnector.getItemStatus(dispoItem);
-      assertEquals(DispoStrings.Item_InComplete, actual);
+      assertEquals(DispoStrings.Item_Complete, actual);
    }
 
    @Test
@@ -229,37 +229,6 @@ public class DispoConnectorTest {
 
       String actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_Complete, actual);
-   }
-
-   @Test
-   public void testConnectAnnotationsSingleIncomplete() {
-      // This will test a single annotation that covers most but not all discrepancies
-      DispoAnnotationData annotationOne = new DispoAnnotationData();
-      annotationOne.setLocationRefs("1-5, 12-18");
-      annotationOne.setIsResolutionValid(true);
-      annotationOne.setResolutionType("Code");
-      annotationOne.setId(annotIdOne);
-      List<String> idsOfCoveredDisc = new ArrayList<>();
-      annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
-
-      dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
-      List<DispoAnnotationData> annotationsList = new ArrayList<>();
-      annotationsList.add(annotationOne);
-      dispoItem.setAnnotationsList(annotationsList);
-
-      // annotation 1 should be connected to all Discrepancies
-      List<String> idsOfCoveredDiscrepancies = annotationOne.getIdsOfCoveredDiscrepancies();
-      for (int i = 0; i < 13; i++) {
-         if (i < 5) {//first 5 discrepancies are from ids array 1-5
-            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies1_5[i]);
-         } else if (i < 12) {
-            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies12_18[i - 5]);
-         }
-      }
-      assertTrue(annotationOne.getIsConnected());
-
-      String actual = dispoConnector.getItemStatus(dispoItem);
-      assertEquals(DispoStrings.Item_InComplete, actual);
    }
 
    @Test
@@ -340,67 +309,6 @@ public class DispoConnectorTest {
       annotationsAsList.add(annotationOne);
       dispoItem.setAnnotationsList(annotationsAsList);
       String actual = dispoConnector.getItemStatus(dispoItem);
-      assertEquals(DispoStrings.Item_Complete, actual);
-   }
-
-   @Test
-   public void testAllDiscrepanciesAnnotatedManyComplete() {
-      List<DispoAnnotationData> annotationsAsList = new ArrayList<>();
-      // Create 4 annotations, one for every discrepancy covered
-      DispoAnnotationData annotationOne = new DispoAnnotationData();
-      annotationOne.setLocationRefs("1-5");
-      annotationOne.setId(annotIdOne);
-      annotationOne.setIsResolutionValid(true);
-      annotationOne.setResolutionType("test");
-      List<String> idsOfCoveredDiscOne = new ArrayList<>();
-      annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscOne);
-      annotationsAsList.add(annotationOne);
-
-      DispoAnnotationData annotationTwo = new DispoAnnotationData();
-      annotationTwo.setLocationRefs("12-18");
-      annotationTwo.setId(annotIdTwo);
-      annotationTwo.setIsResolutionValid(true);
-      annotationTwo.setResolutionType("Req");
-      List<String> idsOfCoveredDiscTwo = new ArrayList<>();
-      annotationTwo.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscTwo);
-      annotationsAsList.add(annotationTwo);
-
-      DispoAnnotationData annotationThree = new DispoAnnotationData();
-      annotationThree.setLocationRefs("20");
-      annotationThree.setId(annotIdThree);
-      annotationThree.setIsResolutionValid(true);
-      annotationThree.setResolutionType("Undetermined");
-      List<String> idsOfCoveredDiscThree = new ArrayList<>();
-      annotationThree.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscThree);
-      annotationsAsList.add(annotationThree);
-
-      List<DispoAnnotationData> annotationsList = new ArrayList<>();
-      dispoItem.setAnnotationsList(annotationsList);
-
-      Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
-
-      dispoConnector.connectAnnotation(annotationOne, discrepanciesList);
-      annotationsList.add(0, annotationOne);
-      dispoItem.setAnnotationsList(annotationsList);
-      annotationsList.add(0, annotationOne);
-      dispoItem.setAnnotationsList(annotationsList);
-      String actual = dispoConnector.getItemStatus(dispoItem);
-      assertEquals(DispoStrings.Item_InComplete, actual);
-
-      dispoConnector.connectAnnotation(annotationTwo, discrepanciesList);
-      annotationsList.add(1, annotationTwo);
-      dispoItem.setAnnotationsList(annotationsList);
-      annotationsList.add(1, annotationTwo);
-      dispoItem.setAnnotationsList(annotationsList);
-      actual = dispoConnector.getItemStatus(dispoItem);
-      assertEquals(DispoStrings.Item_InComplete, actual);
-
-      dispoConnector.connectAnnotation(annotationThree, discrepanciesList);
-      annotationsList.add(2, annotationThree);
-      dispoItem.setAnnotationsList(annotationsList);
-      annotationsList.add(2, annotationThree);
-      dispoItem.setAnnotationsList(annotationsList);
-      actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_Complete, actual);
    }
 

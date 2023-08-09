@@ -60,11 +60,11 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Angel Avila
  */
 @Swagger
-public class DispoAdminResource {
+public class DispoAdminEndpoint {
    private final DispoApi dispoApi;
    private final BranchId branch;
 
-   public DispoAdminResource(DispoApi dispoApi, BranchId branch) {
+   public DispoAdminEndpoint(DispoApi dispoApi, BranchId branch) {
       this.dispoApi = dispoApi;
       this.branch = branch;
    }

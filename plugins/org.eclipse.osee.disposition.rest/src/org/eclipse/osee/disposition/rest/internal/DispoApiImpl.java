@@ -52,12 +52,14 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Angel Avila
@@ -270,6 +272,74 @@ public class DispoApiImpl implements DispoApi {
          UserId author = getQuery().findUserByName(userName);
          getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
+      }
+      return wasUpdated;
+   }
+
+   @Override
+   public boolean updateAllDispoItems(BranchId branch, String dispoSetId) {
+      boolean wasUpdated = false;
+
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Update All Dispo Item Status");
+
+      for (DispoItem dispoItem : getDispoItems(branch, dispoSetId, true)) {
+         if (dispoItem != null) {
+            boolean isPass = true;
+            boolean isAnalysis = false;
+            boolean needsModify = false;
+            boolean isIncomplete = false;
+
+            ArtifactReadable dispoItemArt = orcsApi.getQueryFactory().fromBranch(branch).andUuid(
+               Long.valueOf(dispoItem.getGuid())).getResults().getExactlyOne();
+
+            String itemStatus = dispoItem.getStatus();
+            boolean needsEdit = false;
+            String newStatus;
+            for (DispoAnnotationData annotation : dispoItem.getAnnotationsList()) {
+               if (annotation.getIsPairAnnotation()) {
+                  continue;
+               }
+               if (!annotation.getIsResolutionValid()) {
+                  isIncomplete = true;
+                  isPass = false;
+               }
+               if (annotation.getIsAnalyze()) {
+                  isAnalysis = true;
+                  isPass = false;
+               }
+               if (annotation.getNeedsModify()) {
+                  needsModify = true;
+                  isPass = false;
+               }
+               if (!annotation.getIsDefault()) {
+                  isPass = false;
+               }
+            }
+
+            if (isPass) {
+               newStatus = DispoStrings.Item_Pass;
+            } else if (isIncomplete) {
+               newStatus = DispoStrings.Item_Incomplete;
+            } else if (needsModify) {
+               newStatus = DispoStrings.Item_Modify;
+            } else if (isAnalysis) {
+               newStatus = DispoStrings.Item_Analysis;
+            } else {
+               newStatus = DispoStrings.Item_Complete;
+            }
+
+            if (!newStatus.equals(itemStatus)) {
+               needsEdit = true;
+            }
+
+            if (needsEdit) {
+               wasUpdated = true;
+               tx.setSoleAttributeFromString(dispoItemArt, DispoOseeTypes.DispoItemStatus, newStatus);
+            }
+         }
+      }
+      if (wasUpdated) {
+         tx.commit();
       }
       return wasUpdated;
    }
@@ -651,6 +721,8 @@ public class DispoApiImpl implements DispoApi {
                   editDispoItems(branch, setToEdit.getGuid(), itemsToEdit, true, "Import", userName);
                }
             }
+
+            updateAllDispoItems(branch, setToEdit.getGuid());
 
          } catch (Exception ex) {
             if (isIterative) {

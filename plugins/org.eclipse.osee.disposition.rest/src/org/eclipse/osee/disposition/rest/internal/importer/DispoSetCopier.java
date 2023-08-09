@@ -144,7 +144,7 @@ public class DispoSetCopier {
       DispoItemData newItem = initNewItem(destItem, sourceItem);
       List<DispoAnnotationData> newAnnotations = newItem.getAnnotationsList();
       List<DispoAnnotationData> sourceAnnotations = sourceItem.getAnnotationsList();
-      Set<String> destDefaultAnntationLocations = getDefaultAnnotations(newItem);
+      Set<String> destDefaultAnnotationLocations = getDefaultAnnotations(newItem);
       Map<String, Integer> nonDefaultAnnotationLocations = getNonDefaultAnnotations(newItem);
       List<String> destDiscrepanciesTextOnly = discrepanciesTextOnly(destItem.getDiscrepanciesList());
 
@@ -161,7 +161,7 @@ public class DispoSetCopier {
              * only log if the destination item doesn't have this annotation as a Default i.e means something changed
              * user should be aware.Currently only for Coverage
              */
-            if (!destDefaultAnntationLocations.contains(sourceLocation)) {
+            if (!destDefaultAnnotationLocations.contains(sourceLocation)) {
                if (!nonDefaultAnnotationLocations.containsKey(sourceLocation)) {
                   newItem.setNeedsRerun(true);
                   needsRerun.add(sourceAnnotation);
@@ -171,7 +171,7 @@ public class DispoSetCopier {
                      sourceAnnotation.getLocationRefs()),
                   IGNORE);
             }
-         } else if (destDefaultAnntationLocations.contains(sourceLocation)) {
+         } else if (destDefaultAnnotationLocations.contains(sourceLocation)) {
             /**
              * isCoverageCopy is true when annotation copier is called by a coverage import, this means we need to also
              * check that the matching dest annotation isn't a DEFAULT resolution before copying over.
@@ -194,7 +194,7 @@ public class DispoSetCopier {
             // Try to copy but check if Discrepancy is the same and present in the destination set
             if (isCoveredDiscrepanciesExistInDest(destDiscrepanciesTextOnly, sourceItem, sourceAnnotation, report)) {
                DispoAnnotationData newAnnotation = sourceAnnotation;
-               if (destDefaultAnntationLocations.contains(sourceLocation)) {
+               if (destDefaultAnnotationLocations.contains(sourceLocation)) {
                   /**
                    * The discrepancy of this manual disposition is now covered by a Default Annotation so this Manual
                    * Annotation is invalid, mark as such by making the location Ref negative, don't bother connecting

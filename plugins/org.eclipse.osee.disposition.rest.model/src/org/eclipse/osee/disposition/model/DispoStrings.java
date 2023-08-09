@@ -44,9 +44,9 @@ public class DispoStrings {
 
    public static final String Item_Pass = "PASS";
    public static final String Item_Complete = "COMPLETE";
-   public static final String Item_Complete_Analyzed = "COMPLETE-ANALYZED";
-   public static final String Item_InComplete = "INCOMPLETE";
-   public static final String Item_Analyzed = "COMPLETE-ANALYZED";
+   public static final String Item_Modify = "MODIFY";
+   public static final String Item_Incomplete = "INCOMPLETE";
+   public static final String Item_Analysis = "ANALYSIS-COMPLETE";
 
    public static final String Operation_Import = "Import";
 
@@ -59,6 +59,8 @@ public class DispoStrings {
    public static final String Test_Unit_Resolution = "Test_Script";
    public static final String Exception_Handling_Resolution = "Exception_Handling";
 
+   public static final String ANALYSIS = "Analysis";
+
    public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
    public static final String BATCH_RERUN_LIST =
       XML_HEADER + "<TestManagerConfig>\n" + "\t<ScriptPageConfig>\n" + "\t\t<ServicesSettings/>\n";
@@ -70,11 +72,11 @@ public class DispoStrings {
    public static final String SCRIPT_PATH = "\t\t\t<Path>%s</Path>\n";
    public static final String MODIFY = "Modify_";
 
-   public static final String ANALYZE_CODE = "Modify_Code";
-   public static final String ANALYZE_TEST = "Modify_Test";
-   public static final String ANALYZE_REQT = "Modify_Reqt";
-   public static final String ANALYZE_TOOL = "Modify_Tooling";
-   public static final String ANALYZE_WORK_PRODUCT = "Modify_Work_Product";
+   public static final String MODIFY_CODE = "Modify_Code";
+   public static final String MODIFY_TEST = "Modify_Test";
+   public static final String MODIFY_REQT = "Modify_Reqt";
+   public static final String MODIFY_TOOL = "Modify_Tooling";
+   public static final String MODIFY_WORK_PRODUCT = "Modify_Work_Product";
 
    public static final String CODE_COVERAGE = "codeCoverage";
 

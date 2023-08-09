@@ -13,17 +13,18 @@
 
 package org.eclipse.osee.disposition.rest.internal.report;
 
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_CODE;
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_REQT;
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_TEST;
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_TOOL;
-import static org.eclipse.osee.disposition.model.DispoStrings.ANALYZE_WORK_PRODUCT;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_CODE;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_REQT;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_TEST;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_TOOL;
+import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_WORK_PRODUCT;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -212,7 +212,7 @@ public class ExportSet {
 
          for (DispoItem item : items) {
             DispoConnector connector = new DispoConnector();
-            List<String> allUncoveredDiscprepancies = connector.getAllUncoveredDiscprepancies(item);
+            List<String> allUncoveredDiscprepancies = connector.getAllUncoveredDiscrepancies(item);
             List<Integer> allUncoveredDiscrepanciesAsInts = getDiscrepanciesAsInts(allUncoveredDiscprepancies);
             String[] row = new String[columns];
             int index = 0;
@@ -232,6 +232,15 @@ public class ExportSet {
             } else {
                uncoveredDiscrepancies = LocationRangesCompressor.compress(allUncoveredDiscrepanciesAsInts);
             }
+
+            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            Collections.sort(annotations, new Comparator<DispoAnnotationData>() {
+               @Override
+               public int compare(DispoAnnotationData o1, DispoAnnotationData o2) {
+                  return o1.getLocationRefs().compareTo(o2.getLocationRefs());
+               }
+            });
+
             row[index++] = String.valueOf(uncoveredDiscrepancies);
             row[index++] = String.valueOf(item.getAssignee());
             row[index++] = String.valueOf(item.getTeam());
@@ -243,7 +252,7 @@ public class ExportSet {
             row[index++] = String.valueOf(item.getCreationDate());
             row[index++] = String.valueOf(item.getLastUpdate());
             row[index++] = String.valueOf(item.getVersion());
-            row[index++] = String.valueOf(prettifyAnnotations(sortAnnotations(item.getAnnotationsList())));
+            row[index++] = String.valueOf(prettifyAnnotations(annotations));
 
             sheetWriter.writeRow((Object[]) row);
          }
@@ -310,15 +319,97 @@ public class ExportSet {
 
          for (DispoItem item : items) {
             Map<String, MCDCCoverageData> mcdcToCoverageData = new HashMap<>();
-            List<DispoAnnotationData> annotations = sortAnnotations(item.getAnnotationsList());
+            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            Collections.sort(annotations, new Comparator<DispoAnnotationData>() {
+               @Override
+               public int compare(DispoAnnotationData o1, DispoAnnotationData o2) {
+                  return o1.getLocationRefs().compareTo(o2.getLocationRefs());
+               }
+            });
+
+            Map<String, List<Integer>> itemWithPairs = new HashMap<>();
+            Map<String, Map<Boolean, String>> hitForLevelC = new HashMap<>();
+
             for (DispoAnnotationData annotation : annotations) {
+               String annotationLocRef = annotation.getLocationRefs();
+
+               //The following increments level C coverage when hit on A or B
+               if (annotationLocRef.contains(".")) {
+                  Map<Boolean, String> coverageAndResolutionLevelC = new HashMap<>();
+                  int dotIndex = annotationLocRef.indexOf(".");
+                  String baseLocRef = annotationLocRef.substring(0, dotIndex);
+                  if (annotation.isValid()) {
+                     coverageAndResolutionLevelC.put(true, annotation.getResolutionType());
+                     hitForLevelC.put(baseLocRef, coverageAndResolutionLevelC);
+                  } else if (!annotation.isValid() && !hitForLevelC.containsKey(baseLocRef)) {
+                     coverageAndResolutionLevelC.put(false, annotation.getResolutionType());
+                     hitForLevelC.put(baseLocRef, coverageAndResolutionLevelC);
+                  }
+
+               }
+
+               //The following if statements are exclusively for MCDC pairs.
+               try {
+
+                  //You need to do T/F for the level B if its level A
+
+                  if (annotationLocRef.contains("(P") && !annotation.getIsPairAnnotation()) {
+                     Pattern pairsPattern = Pattern.compile(".*\\[\\s*(\\d+)\\s*/\\s*(\\d+)\\s*.*\\]");
+                     Matcher matcher = pairsPattern.matcher(annotation.getSatisfiedPairs());
+                     List<Integer> pairRows = new ArrayList<>();
+                     if (matcher.find()) {
+                        pairRows.add(Integer.parseInt(matcher.group(1)));
+                        pairRows.add(Integer.parseInt(matcher.group(2)));
+                     } else {
+                        matcher = pairsPattern.matcher(annotation.getPossiblePairs());
+                        if (matcher.find()) {
+                           pairRows.add(Integer.parseInt(matcher.group(1)));
+                           pairRows.add(Integer.parseInt(matcher.group(2)));
+                        }
+                     }
+                     itemWithPairs.put(annotationLocRef, pairRows);
+
+                  } else if (annotation.getIsPairAnnotation()) {
+                     int dotIndex = annotationLocRef.lastIndexOf(".");
+                     if (dotIndex != -1) {
+                        String parentLocRef = annotationLocRef.substring(0, dotIndex);
+                        if (!itemWithPairs.get(parentLocRef).contains(annotation.getRow())) {
+                           continue;
+                        }
+                     }
+                  }
+               } catch (Exception ex) {
+                  //DO NOTHING
+               }
+
                writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
                   levelToResolutionTypesToCount, leveltoUnitToCovered, mcdcToCoverageData, levelsInSet);
+            }
+
+            for (Map.Entry<String, Map<Boolean, String>> LevelCCoverageData : hitForLevelC.entrySet()) {
+               for (Map.Entry<Boolean, String> LevelCAdditionalCoverage : LevelCCoverageData.getValue().entrySet()) {
+                  levelToTotalCount.get(CoverageLevel.C).inc();
+                  if (LevelCAdditionalCoverage.getKey()) {
+                     uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.C),
+                        leveltoUnitToCovered.get(CoverageLevel.C), levelToCoveredTotalCount.get(CoverageLevel.C),
+                        getNormalizedName(item.getName()), LevelCAdditionalCoverage.getValue());
+                  }
+               }
             }
          }
 
          levelsInList.addAll(levelsInSet);
          Collections.sort(levelsInList);
+
+         if (levelsInList.contains(CoverageLevel.B)) {
+            for (DispoItem item : items) {
+               levelToTotalCount.get(CoverageLevel.B).inc();
+               uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                  leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                  getNormalizedName(item.getName()), "Test_Script");
+            }
+         }
+
          sheetWriter.endSheet();
 
          // START COVER SHEET
@@ -482,7 +573,13 @@ public class ExportSet {
          sheetWriter.startSheet("Test Script Sheet", testScriptSheetHeaders.length);
          sheetWriter.writeRow(testScriptSheetHeaders);
          for (DispoItem item : items) {
-            List<DispoAnnotationData> annotations = sortAnnotations(item.getAnnotationsList());
+            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            Collections.sort(annotations, new Comparator<DispoAnnotationData>() {
+               @Override
+               public int compare(DispoAnnotationData o1, DispoAnnotationData o2) {
+                  return o1.getLocationRefs().compareTo(o2.getLocationRefs());
+               }
+            });
             for (DispoAnnotationData annotation : annotations) {
                if (annotation.getResolutionType().equals(DispoStrings.Test_Unit_Resolution)) {
                   HashMap<String, String> testNameToPath =
@@ -540,7 +637,13 @@ public class ExportSet {
       try {
          for (DispoItem item : items) {
             Map<String, MCDCCoverageData> mcdcToCoverageData = new HashMap<>();
-            List<DispoAnnotationData> annotations = sortAnnotations(item.getAnnotationsList());
+            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            Collections.sort(annotations, new Comparator<DispoAnnotationData>() {
+               @Override
+               public int compare(DispoAnnotationData o1, DispoAnnotationData o2) {
+                  return o1.getLocationRefs().compareTo(o2.getLocationRefs());
+               }
+            });
             for (DispoAnnotationData annotation : annotations) {
                writeRowAnnotationSummary(item, annotation, setPrimary.getName(), levelToResolutionTypesToCount,
                   leveltoUnitToCovered, mcdcToCoverageData, levelsInSet);
@@ -694,29 +797,6 @@ public class ExportSet {
       return jsonObject;
    }
 
-   private List<DispoAnnotationData> sortAnnotations(List<DispoAnnotationData> annotationData) {
-      TreeMap<Double, DispoAnnotationData> annotationMap = new TreeMap<>();
-      for (DispoAnnotationData annotation : annotationData) {
-         String codeLineStr = annotation.getName();
-         double codeLine = 0;
-         try {
-            if (codeLineStr.contains(".")) {
-               String[] parts = codeLineStr.split("\\.");
-               codeLine = Double.valueOf(parts[0]);
-               if (parts[2].contains("F")) {
-                  codeLine += 0.5;
-               }
-            } else {
-               codeLine = Double.valueOf(codeLineStr);
-            }
-         } catch (Exception ex) {
-            //Do Nothing
-         }
-         annotationMap.put(codeLine, annotation);
-      }
-      return new ArrayList<DispoAnnotationData>(annotationMap.values());
-   }
-
    private List<Integer> getDiscrepanciesAsInts(List<String> discrepancyLocations) {
       List<Integer> toReturn = new ArrayList<>();
       for (String location : discrepancyLocations) {
@@ -806,6 +886,8 @@ public class ExportSet {
       switch (thisAnnotationsLevel) {
          case A:
             levelsInSet.add(CoverageLevel.A);
+            levelsInSet.add(CoverageLevel.B);
+            levelsInSet.add(CoverageLevel.C);
             levelToTotalCount.get(thisAnnotationsLevel).inc();
             // Update total covered counts
             uptickCoverage(levelToResolutionToCount.get(thisAnnotationsLevel),
@@ -814,6 +896,7 @@ public class ExportSet {
             break;
          case B:
             levelsInSet.add(CoverageLevel.B);
+            levelsInSet.add(CoverageLevel.C);
             levelToTotalCount.get(thisAnnotationsLevel).inc();
             uptickCoverage(levelToResolutionToCount.get(thisAnnotationsLevel),
                levelToUnitsToCovered.get(thisAnnotationsLevel), levelToCoveredTotalCount.get(thisAnnotationsLevel),
@@ -860,9 +943,37 @@ public class ExportSet {
       }
    }
 
+   private void uptickCoverageFunctionHit(Map<String, WrapInt> resolutionTypeToCount,
+      Map<String, Pair<WrapInt, WrapInt>> unitToCovered, WrapInt currentCoveredTotalCount, String unit,
+      String resolutionType) {
+      WrapInt count = resolutionTypeToCount.get(resolutionType);
+      if (Strings.isValid(resolutionType)) {
+         if (count == null) {
+            resolutionTypeToCount.put(resolutionType, new WrapInt(1));
+         } else {
+            count.inc();
+         }
+      }
+
+      Pair<WrapInt, WrapInt> coveredOverTotal = unitToCovered.get(unit);
+
+      int thisUnitsCoveredCount = 0;
+      if (Strings.isValid(resolutionType) && !isTypeAnalyze(resolutionType)) {
+         thisUnitsCoveredCount = 1;
+         currentCoveredTotalCount.inc();
+      }
+      if (coveredOverTotal == null) {
+         Pair<WrapInt, WrapInt> newCount = new Pair<>(new WrapInt(thisUnitsCoveredCount), new WrapInt(1));
+         unitToCovered.put(unit, newCount);
+      } else {
+         coveredOverTotal.getFirst().inc(thisUnitsCoveredCount);
+         coveredOverTotal.getSecond().inc();
+      }
+   }
+
    private boolean isTypeAnalyze(String resolutionType) {
-      if (resolutionType.equals(ANALYZE_CODE) || resolutionType.equals(ANALYZE_TEST) || resolutionType.equals(
-         ANALYZE_REQT) || resolutionType.equals(ANALYZE_TOOL) || resolutionType.equals(ANALYZE_WORK_PRODUCT)) {
+      if (resolutionType.equals(MODIFY_CODE) || resolutionType.equals(MODIFY_TEST) || resolutionType.equals(
+         MODIFY_REQT) || resolutionType.equals(MODIFY_TOOL) || resolutionType.equals(MODIFY_WORK_PRODUCT)) {
          return true;
       }
       return false;
@@ -871,7 +982,7 @@ public class ExportSet {
    private CoverageLevel getLevel(String location) {
       if (location.matches(LEVEL_A_LOCATION_PATTERN)) {
          return CoverageLevel.A;
-      } else if (location.matches(LEVEL_B_LOCATION_PATTERN)) {
+      } else if (location.matches(LEVEL_B_LOCATION_PATTERN) || location.matches(LEVEL_A_SUB_LOCATION_PATTERN)) {
          return CoverageLevel.B;
       } else {
          return CoverageLevel.C;

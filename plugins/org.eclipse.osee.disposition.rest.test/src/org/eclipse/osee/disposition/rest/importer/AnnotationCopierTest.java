@@ -145,7 +145,7 @@ public class AnnotationCopierTest {
    @Test
    public void testCopyEntireSetNoAnnotationsOnDestItem() throws Exception {
       DispoItemData destItem = new DispoItemData();
-      destItem.setStatus(DispoStrings.Item_InComplete);
+      destItem.setStatus(DispoStrings.Item_Incomplete);
       destItem.setGuid(mockId5);
       destItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       destItem.setDiscrepanciesList(new HashMap<String, Discrepancy>());
@@ -184,7 +184,7 @@ public class AnnotationCopierTest {
    @Test
    public void testCopyEntireSetSomeAnnotationsOnDest() {
       DispoItemData destItem = new DispoItemData();
-      destItem.setStatus(DispoStrings.Item_InComplete);
+      destItem.setStatus(DispoStrings.Item_Incomplete);
       destItem.setGuid(mockId5);
       destItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       destItem.setDiscrepanciesList(new HashMap<String, Discrepancy>());

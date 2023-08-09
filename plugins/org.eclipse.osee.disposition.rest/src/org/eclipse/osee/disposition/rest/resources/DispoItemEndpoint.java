@@ -41,12 +41,12 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
  * @author Angel Avila
  */
 @Swagger
-public class DispoItemResource {
+public class DispoItemEndpoint {
    private final DispoApi dispoApi;
    private final BranchId branch;
    private final String setId;
 
-   public DispoItemResource(DispoApi dispoApi, BranchId branch, String setId) {
+   public DispoItemEndpoint(DispoApi dispoApi, BranchId branch, String setId) {
       this.dispoApi = dispoApi;
       this.branch = branch;
       this.setId = setId;
@@ -103,6 +103,32 @@ public class DispoItemResource {
    public String getDispoItemId(
       @Parameter(description = "The Item name", required = true) @FormParam("name") String itemName) {
       return dispoApi.getDispoItemIdByName(branch, setId, itemName);
+   }
+
+   /**
+    * Update all items in a given set
+    *
+    * @return response
+    * @response.representation.200.doc OK, Found Dispositionable Item
+    * @response.representation.404.doc Not Found, Could not find any Dispositionable Items
+    */
+   @Path("updateAllItems")
+   @PUT
+   @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Update all Dispo Items")
+   @Tag(name = "items")
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
+   public Response updateAllDispoItems() {
+      Response response;
+      boolean wasEdited = dispoApi.updateAllDispoItems(branch, setId);
+      if (wasEdited) {
+         response = Response.status(Response.Status.OK).build();
+      } else {
+         response = Response.status(Response.Status.NOT_MODIFIED).entity(DispoMessages.Item_NotFound).build();
+      }
+      return response;
    }
 
    /**
@@ -170,8 +196,8 @@ public class DispoItemResource {
    @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "OK"),
       @ApiResponse(responseCode = "400", description = "Bad Request")})
-   public AnnotationResource getAnnotation(
+   public DispoAnnotationEndpoint getAnnotation(
       @Parameter(description = "The Id of the Dispositionable Item", required = true) @PathParam("itemId") String itemId) {
-      return new AnnotationResource(dispoApi, branch, setId, itemId);
+      return new DispoAnnotationEndpoint(dispoApi, branch, setId, itemId);
    }
 }
