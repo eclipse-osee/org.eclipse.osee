@@ -39,12 +39,11 @@ public class FollowSearchSqlHandler extends SqlHandler<CriteriaFollowSearch> {
 
    @Override
    public void writeSelectFields(AbstractSqlWriter writer) {
-      String lastArtWithAlias = writer.getAliasManager().getPreviousAlias("artWith");
       String mainArtAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
-      if (lastArtWithAlias.isBlank()) {
+      if (writer.getAliasManager().getPreviousAlias("artWith").isBlank()) {
          writer.write(",','||" + mainArtAlias + ".art_id" + "||',' art_path");
       } else {
-         writer.write("," + lastArtWithAlias + ".art_path|| " + mainArtAlias + ".art_id||',' art_path");
+         writer.write("," + writer.getTableEntries().get(0) + ".art_path|| " + mainArtAlias + ".art_id||',' art_path");
       }
    }
 
