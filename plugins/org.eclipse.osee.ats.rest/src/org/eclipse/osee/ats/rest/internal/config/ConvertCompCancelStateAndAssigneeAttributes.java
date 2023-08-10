@@ -13,9 +13,12 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -50,13 +53,23 @@ public class ConvertCompCancelStateAndAssigneeAttributes implements IAtsDatabase
    @Override
    public void run(XResultData rd, boolean reportOnly, AtsApi atsApi) {
       ElapsedTime time = new ElapsedTime(TITLE + " - Loading", true);
-      List<ArtifactId> artIds = atsApiServer.getOrcsApi() //
+      Set<ArtifactId> uniqueArtIds = new HashSet<>();
+      uniqueArtIds.addAll(atsApiServer.getOrcsApi() //
          .getQueryFactory() //
          .fromBranch(atsApi.getAtsBranch()) //
          .andIsOfType(AtsArtifactTypes.AbstractWorkflowArtifact) //
          .and(AtsAttributeTypes.CurrentStateType, Arrays.asList(StateType.Completed.name(), StateType.Cancelled.name())) //
          .andExists(AtsAttributeTypes.CurrentStateAssignee) //
-         .asArtifactIds();
+         .asArtifactIds());
+      uniqueArtIds.addAll(atsApiServer.getOrcsApi() //
+         .getQueryFactory() //
+         .fromBranch(atsApi.getAtsBranch()) //
+         .andIsOfType(AtsArtifactTypes.AbstractWorkflowArtifact) //
+         .and(AtsAttributeTypes.CurrentStateType, Arrays.asList(StateType.Completed.name(), StateType.Cancelled.name())) //
+         .andNotExists(AtsAttributeTypes.CurrentStateName) //
+         .asArtifactIds());
+      List<ArtifactId> artIds = new ArrayList<>();
+      artIds.addAll(uniqueArtIds);
       List<Collection<ArtifactId>> artIdLists = Collections.subDivide(artIds, 200);
       time.end();
 
