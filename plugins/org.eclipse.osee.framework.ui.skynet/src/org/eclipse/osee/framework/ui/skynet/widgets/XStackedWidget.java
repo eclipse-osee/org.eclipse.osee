@@ -25,12 +25,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -221,6 +224,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       ToolBar toolbar = new ToolBar(composite, SWT.FLAT | SWT.HORIZONTAL);
       toolbar.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
       ToolBarManager manager = new ToolBarManager(toolbar);
+      manager.add(new Open());
       manager.add(new Separator());
       manager.add(new Back());
       manager.add(new Forward());
@@ -317,6 +321,29 @@ public abstract class XStackedWidget<T> extends XLabel {
     * updated.
     */
    protected abstract void updatePageText(XStackedWidgetPage page);
+
+   private final class Open extends Action {
+      public Open() {
+         super();
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
+         setToolTipText("Open in Full Viewer");
+      }
+
+      @Override
+      public void run() {
+         XStackedWidgetPage page = getCurrentPage();
+         if (page != null && page instanceof XStackedWidgetAttrPage) {
+            XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
+            attrPage.setLoaded(true);
+            Attribute<?> attr = attrPage.getAttribute();
+            String title = String.format("%s - Attr Type: %s - Attr Id: %s", attr.getArtifact().toStringWithId(),
+               attr.getAttributeType(), attr.getId());
+            String displayableString = attr.getDisplayableString();
+            String html = AHTML.heading(3, title) + "\n\n" + AHTML.pre(displayableString);
+            ResultsEditor.open("Results", title, html);
+         }
+      }
+   }
 
    private final class Back extends Action {
       public Back() {
