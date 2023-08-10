@@ -670,6 +670,15 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       QueryBuilder queryBuilder) {
       QueryData followQueryData = followQueryData();
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, true));
+      if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
+         //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+         followQueryData.addCriteria(this.getAllCriteria().stream().filter(
+            a -> a.getClass().equals(CriteriaFollowSearch.class)).findFirst().get());
+      }
+      if (this.hasCriteriaType(CriteriaAttributeSort.class)) {
+         //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+         followQueryData.addCriteria(new CriteriaAttributeSort(-1L));
+      }
       if (queryBuilder != null) {
          QueryData descendant = (QueryData) queryBuilder;
          while (descendant.getParentQueryData() != null) {
@@ -680,15 +689,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          }
          loadChildQueryData(descendant, followQueryData);
       }
-      if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
-         //this is strictly to create an invalid condition so child artWith queries have '' as order_value
-         followQueryData.addCriteria(this.getAllCriteria().stream().filter(
-            a -> a.getClass().equals(CriteriaFollowSearch.class)).findFirst().get());
-      }
-      if (this.hasCriteriaType(CriteriaAttributeSort.class)) {
-         //this is strictly to create an invalid condition so child artWith queries have '' as order_value
-         followQueryData.addCriteria(new CriteriaAttributeSort(-1L));
-      }
+
       return this;
    }
 
