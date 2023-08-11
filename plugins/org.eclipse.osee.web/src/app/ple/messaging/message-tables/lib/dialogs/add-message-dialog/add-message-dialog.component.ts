@@ -42,7 +42,6 @@ import {
 @Component({
 	selector: 'osee-messaging-add-message-dialog',
 	templateUrl: './add-message-dialog.component.html',
-	styleUrls: ['./add-message-dialog.component.sass'],
 	standalone: true,
 	imports: [
 		MatDialogModule,

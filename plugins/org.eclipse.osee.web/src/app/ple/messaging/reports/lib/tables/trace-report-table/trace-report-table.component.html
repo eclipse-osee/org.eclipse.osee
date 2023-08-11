@@ -10,8 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="node-trace-req-table-container">
-	<mat-form-field class="table-filter">
+<div class="tw-px-0 tw-py-4">
+	<mat-form-field
+		class="tw-w-full"
+		subscriptSizing="dynamic">
 		<mat-label>Filter Table</mat-label>
 		<input
 			matInput
@@ -32,7 +34,7 @@
 					mat-header-cell
 					*matHeaderCellDef
 					mat-sort-header
-					class="table-header-cell">
+					class="tw-text-primary-600">
 					{{
 						(getTableHeaderByName(header) | async)?.humanReadable ||
 							''
@@ -43,42 +45,34 @@
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="table-header-cell">
-					<div class="related-items-header">
+					class="tw-text-primary-600">
+					<div class="tw-pb-2 tw-pl-2 tw-pr-0 tw-pt-3">
 						{{
 							(getTableHeaderByName(header) | async)
 								?.humanReadable || ''
 						}}
 					</div>
-					<div class="sub-table">
-						<div class="sub-table-cell">Name</div>
-						<div class="sub-table-cell">Artifact Type</div>
+					<div class="tw-grid tw-grid-cols-[1fr_1fr]">
+						<div class="tw-px-2 tw-py-[0.3rem]">Name</div>
+						<div class="tw-px-2 tw-py-[0.3rem]">Artifact Type</div>
 					</div>
 				</th>
 			</ng-container>
 			<td
 				mat-cell
-				*matCellDef="let item; let row = index"
-				[ngClass]="
-					header === 'relatedItems'
-						? row % 2 === 0
-							? 'sub-table-row-even'
-							: 'sub-table-row-odd'
-						: ''
-				">
+				*matCellDef="let item">
 				<ng-container *ngIf="header !== 'relatedItems'">
 					<div
 						oseeHighlightFilteredText
 						[searchTerms]="dataSource.filter"
 						[text]="item[header]"
-						classToApply="table-highlighted-text">
+						classToApply="tw-text-accent-900">
 						{{ item[header] }}
 					</div>
 				</ng-container>
 				<ng-container *ngIf="header === 'relatedItems'">
-					<ng-container
-						*ngFor="let rel of item.relatedItems; let i = index">
-						<div class="sub-table">
+					<ng-container *ngFor="let rel of item.relatedItems">
+						<div class="tw-grid tw-grid-cols-[1fr_1fr]">
 							<ng-container
 								*ngFor="
 									let text of [rel.name, rel.artifactType]
@@ -87,9 +81,7 @@
 									[ngTemplateOutlet]="subTableCell"
 									[ngTemplateOutletContext]="{
 										item: item,
-										text: text,
-										index: i,
-										row: row
+										text: text
 									}"></ng-container>
 							</ng-container>
 						</div>
@@ -102,33 +94,20 @@
 			*matHeaderRowDef="headers"></tr>
 		<tr
 			mat-row
-			*matRowDef="let row; let i = index; columns: headers"
-			[ngClass]="i % 2 === 0 ? 'table-row-even' : 'table-row-odd'"></tr>
+			*matRowDef="let row; columns: headers"
+			class="odd:tw-bg-background-background even:tw-bg-background-selected-button hover:tw-opacity-80"></tr>
 	</table>
 </div>
 <ng-template
 	#subTableCell
 	let-item="item"
-	let-text="text"
-	let-index="index"
-	let-row="row">
+	let-text="text">
 	<div
 		oseeHighlightFilteredText
 		[searchTerms]="dataSource.filter"
 		[text]="text"
-		classToApply="table-highlighted-text"
-		class="sub-table-cell"
-		[ngClass]="
-			item.relatedItems.length > 1
-				? row % 2 === 0
-					? index % 2 === 0
-						? 'table-row-even'
-						: 'sub-table-row-even'
-					: index % 2 === 0
-					? 'table-row-even'
-					: 'sub-table-row-odd'
-				: ''
-		">
+		classToApply="tw-text-accent-900"
+		class="tw-my-1 tw-px-2 tw-py-[0.3rem]">
 		{{ text }}
 	</div>
 </ng-template>

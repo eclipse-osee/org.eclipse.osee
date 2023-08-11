@@ -42,7 +42,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
 	selector: 'osee-messaging-edit-structure-field',
 	templateUrl: './edit-structure-field.component.html',
-	styleUrls: ['./edit-structure-field.component.sass'],
+	styles: [':host{ display: block; width: 100%;}'],
 	standalone: true,
 	imports: [
 		MatFormFieldModule,

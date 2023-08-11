@@ -83,7 +83,7 @@ import {
 @Component({
 	selector: 'osee-messaging-message-table',
 	templateUrl: './message-table.component.html',
-	styleUrls: ['./message-table.component.sass'],
+	styles: [],
 	animations: [
 		trigger('detailExpand', [
 			state('collapsed', style({ maxHeight: '0vh' })),

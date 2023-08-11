@@ -69,7 +69,7 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 		MatOptionLoadingComponent,
 	],
 	templateUrl: './rate-dropdown.component.html',
-	styleUrls: ['./rate-dropdown.component.sass'],
+	styles: [],
 	animations: [
 		trigger('dropdownOpen', [
 			state(

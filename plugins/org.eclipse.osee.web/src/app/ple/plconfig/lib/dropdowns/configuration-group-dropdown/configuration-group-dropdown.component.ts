@@ -35,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
 	selector: 'osee-plconfig-configuration-group-dropdown',
 	templateUrl: './configuration-group-dropdown.component.html',
-	styleUrls: ['./configuration-group-dropdown.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatIconModule,

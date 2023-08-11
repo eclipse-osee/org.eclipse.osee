@@ -29,7 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
 	selector: 'osee-messaging-sub-element-table-field',
 	templateUrl: './sub-element-table-field.component.html',
-	styleUrls: ['./sub-element-table-field.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		EditElementFieldComponent,

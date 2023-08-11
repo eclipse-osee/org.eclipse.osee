@@ -28,7 +28,7 @@ import { FirstLetterLowerPipe } from '@osee/shared/utils';
 @Component({
 	selector: 'osee-new-attribute-form-field',
 	templateUrl: './new-attribute-form-field.component.html',
-	styleUrls: ['./new-attribute-form-field.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		FormsModule,

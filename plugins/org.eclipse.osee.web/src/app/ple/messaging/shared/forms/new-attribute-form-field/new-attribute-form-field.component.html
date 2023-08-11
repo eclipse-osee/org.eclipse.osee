@@ -12,7 +12,7 @@
  -->
 <ng-container *ngIf="form.editable">
 	<ng-container *ngIf="form.name === 'Units'; else genericInput">
-		<mat-form-field class="wide-form">
+		<mat-form-field class="tw-w-full">
 			<mat-label>{{ form.name }}</mat-label>
 			<mat-select
 				[(ngModel)]="form.value"
@@ -36,7 +36,7 @@
 		</mat-form-field>
 	</ng-container>
 	<ng-template #genericInput>
-		<mat-form-field class="wide-form">
+		<mat-form-field class="tw-w-full">
 			<mat-label>{{ form.name }}</mat-label>
 			<ng-container *ngIf="form.attributeType === 'Name'">
 				<input

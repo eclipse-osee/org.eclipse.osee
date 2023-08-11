@@ -32,7 +32,7 @@ import { SeparatedFeatureSelectorComponent } from '../../dropdowns/separated-fea
 @Component({
 	selector: 'osee-add-compound-applicability-dialog',
 	templateUrl: './add-compound-applicability-dialog.component.html',
-	styleUrls: ['./add-compound-applicability-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgFor,

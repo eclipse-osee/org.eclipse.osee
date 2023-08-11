@@ -61,7 +61,7 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 	selector: 'osee-new-platform-type-form-page2',
 	standalone: true,
 	templateUrl: './new-platform-type-form-page2.component.html',
-	styleUrls: ['./new-platform-type-form-page2.component.sass'],
+	styles: [],
 	imports: [
 		NewPlatformTypeFormComponent,
 		MatOptionLoadingComponent,

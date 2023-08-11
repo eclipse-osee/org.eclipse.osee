@@ -31,7 +31,7 @@ import { TransportTypeFormComponent } from '@osee/messaging/shared/forms';
 	standalone: true,
 	imports: [MatDialogModule, NgIf, AsyncPipe, TransportTypeFormComponent],
 	templateUrl: './edit-transport-type-dialog.component.html',
-	styleUrls: ['./edit-transport-type-dialog.component.sass'],
+	styles: [],
 })
 export class EditTransportTypeDialogComponent {
 	protected transportType = new BehaviorSubject<TransportTypeForm>(

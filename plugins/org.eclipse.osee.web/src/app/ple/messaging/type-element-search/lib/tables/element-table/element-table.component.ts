@@ -31,7 +31,7 @@ import { DisplayTruncatedStringWithFieldOverflowPipe } from '@osee/shared/utils'
 @Component({
 	selector: 'osee-typesearch-element-table',
 	templateUrl: './element-table.component.html',
-	styleUrls: ['./element-table.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		ElementTableSearchComponent,

@@ -18,7 +18,8 @@
 		classToApply="tw-text-accent-900"
 		class="tw-cursor-pointer"
 		[ngClass]="{
-			nowrap: !wordWrap
+			'tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap':
+				!wordWrap
 		}"
 		[ngStyle]="{
 			width: width

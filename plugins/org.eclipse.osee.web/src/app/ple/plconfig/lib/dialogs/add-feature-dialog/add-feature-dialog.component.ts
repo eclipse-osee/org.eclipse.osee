@@ -34,7 +34,7 @@ import { PLAddFeatureData, writeFeature } from '../../types/pl-config-features';
 @Component({
 	selector: 'osee-plconfig-add-feature-dialog',
 	templateUrl: './add-feature-dialog.component.html',
-	styleUrls: ['./add-feature-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgFor,

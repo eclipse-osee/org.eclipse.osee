@@ -29,7 +29,7 @@ import {
 @Component({
 	selector: 'osee-new-transport-type-dialog',
 	templateUrl: './new-transport-type-dialog.component.html',
-	styleUrls: ['./new-transport-type-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatDialogModule,

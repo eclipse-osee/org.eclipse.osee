@@ -42,9 +42,12 @@
 					mat-list-item
 					*ngIf="element.isDropdown"
 					(click)="element.isDropdownOpen = !element.isDropdownOpen"
-					class="top-navigation"
-					[class.onpage]="currentPath === element.routerLink"
-					[class.highlight]="element.isDropdownOpen">
+					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
+					[ngClass]="{
+						'tw-bg-primary-50 dark:tw-bg-primary-800':
+							currentPath === element.routerLink &&
+							!element.isDropdownOpen
+					}">
 					<mat-icon
 						matListItemIcon
 						*ngIf="element.icon !== ''"
@@ -66,8 +69,11 @@
 					mat-list-item
 					*ngIf="!element.isDropdown"
 					[routerLink]="routePrefix + element.routerLink"
-					class="top-navigation"
-					[class.onpage]="currentPath === element.routerLink">
+					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
+					[ngClass]="{
+						'tw-bg-primary-50 dark:tw-bg-primary-800':
+							currentPath === element.routerLink
+					}">
 					<mat-icon
 						matListItemIcon
 						*ngIf="element.icon !== ''"

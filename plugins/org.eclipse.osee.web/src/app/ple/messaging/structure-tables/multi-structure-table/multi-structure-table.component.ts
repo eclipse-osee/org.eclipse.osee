@@ -22,7 +22,9 @@ import { CurrentStructureService } from '@osee/messaging/shared/services';
 @Component({
 	selector: 'osee-messaging-multi-structure-table-page',
 	templateUrl: './multi-structure-table.component.html',
-	styleUrls: ['./multi-structure-table.component.sass'],
+	styles: [
+		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
+	],
 	standalone: true,
 	imports: [StructureTableComponent, AsyncPipe],
 })

@@ -36,7 +36,6 @@ import { headerDetail } from '@osee/shared/types';
 		MatTableModule,
 	],
 	templateUrl: './import-table.component.html',
-	styleUrls: ['./import-table.component.scss'],
 })
 export class ImportTableComponent<T extends { [key: string]: any }>
 	implements OnChanges

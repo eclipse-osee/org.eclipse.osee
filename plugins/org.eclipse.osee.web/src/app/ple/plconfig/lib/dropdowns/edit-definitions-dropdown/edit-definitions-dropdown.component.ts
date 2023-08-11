@@ -24,7 +24,7 @@ import { CurrentActionService } from '@osee/shared/services';
 @Component({
 	selector: 'osee-edit-definitions-dropdown',
 	templateUrl: './edit-definitions-dropdown.component.html',
-	styleUrls: ['./edit-definitions-dropdown.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatMenuModule,

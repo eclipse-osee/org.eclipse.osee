@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
 -->
-<mat-toolbar>OSEE Navigator</mat-toolbar>
+<mat-toolbar class="tw-h-12 tw-py-1 tw-text-xl tw-font-bold"
+	>OSEE Navigator</mat-toolbar
+>
 
 <mat-nav-list>
 	<ng-template
@@ -33,13 +35,16 @@
 					mat-list-item
 					*ngIf="element.isDropdown"
 					(click)="element.isDropdownOpen = !element.isDropdownOpen"
-					class="top-navigation top-navigation-dropdown"
-					[class.onpage]="router.url.includes(element.routerLink)"
-					[class.highlight]="element.isDropdownOpen">
+					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
+					[ngClass]="{
+						'tw-bg-primary-50 dark:tw-bg-primary-800':
+							router.url.includes(element.routerLink) &&
+							!element.isDropdownOpen
+					}">
 					<mat-icon
 						matListItemIcon
 						*ngIf="element.icon !== ''"
-						class="nav-icon"
+						class="tw-mr-2"
 						>{{ element.icon }}</mat-icon
 					>
 					{{ element.label }}
@@ -58,19 +63,22 @@
 					*ngIf="!element.isDropdown"
 					(click)="closeTopLevelNav()"
 					routerLink="{{ element.routerLink }}"
-					class="top-navigation top-navigation-link"
-					[class.onpage]="router.url === element.routerLink">
+					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
+					[ngClass]="{
+						'tw-bg-primary-50 dark:tw-bg-primary-800':
+							router.url === element.routerLink
+					}">
 					<mat-icon
 						matListItemIcon
 						*ngIf="element.icon !== ''"
-						class="nav-icon"
+						class="tw-mr-2"
 						>{{ element.icon }}</mat-icon
 					>
 					{{ element.label }}
 				</a>
 				<!-- If the element has children and dropdown is open -->
 				<mat-nav-list
-					class="expanded-list"
+					class="tw-pb-2"
 					*ngIf="element.children && element.isDropdownOpen">
 					<mat-divider></mat-divider>
 					<ng-container

@@ -25,7 +25,6 @@ import { HttpLoadingService } from '@osee/shared/services/network';
 @Component({
 	selector: 'osee-branch-selector',
 	templateUrl: './branch-selector.component.html',
-	styleUrls: ['./branch-selector.component.scss'],
 	standalone: true,
 	imports: [
 		MatFormFieldModule,

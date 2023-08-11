@@ -61,6 +61,7 @@ import { ElementTableDropdownService } from '../../services/element-table-dropdo
 		MatDividerModule,
 	],
 	templateUrl: './sub-element-table-dropdown.component.html',
+	styles: [],
 })
 export class SubElementTableDropdownComponent {
 	@Input() element: element = {

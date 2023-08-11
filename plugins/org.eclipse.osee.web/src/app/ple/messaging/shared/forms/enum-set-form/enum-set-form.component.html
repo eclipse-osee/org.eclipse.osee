@@ -14,7 +14,7 @@
 	ngModelGroup="enumSetForm"
 	#enumSetCtrl="ngModelGroup"
 	[oseeEnumSetUniqueDescription]="enumSet">
-	<mat-form-field class="wide-form">
+	<mat-form-field class="tw-w-full">
 		<mat-label>Enter Enum Set Name</mat-label>
 		<input
 			matInput
@@ -33,7 +33,7 @@
 		</ng-container>
 	</mat-form-field>
 	<br />
-	<mat-form-field class="wide-form">
+	<mat-form-field class="tw-w-full">
 		<mat-label>Enter Enum Set Description</mat-label>
 		<textarea
 			cdkTextareaAutosize
@@ -48,7 +48,7 @@
 	<osee-applicability-selector
 		[applicability]="enumSet.applicability"
 		(applicabilityChange)="enumSet.applicability = $event; updateEnumSet()"
-		class="wide-form">
+		class="tw-w-full">
 	</osee-applicability-selector>
 	<osee-enum-form
 		[bitSize]="bitSize"

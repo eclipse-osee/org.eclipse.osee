@@ -29,7 +29,7 @@ import type { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
 @Component({
 	selector: 'osee-messaging-edit-view-free-text-field-dialog',
 	templateUrl: './edit-view-free-text-field-dialog.component.html',
-	styleUrls: ['./edit-view-free-text-field-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatDialogModule,

@@ -29,7 +29,7 @@ import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 @Component({
 	selector: 'osee-plconfig-config-group-dialog',
 	templateUrl: './config-group-dialog.component.html',
-	styleUrls: ['./config-group-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

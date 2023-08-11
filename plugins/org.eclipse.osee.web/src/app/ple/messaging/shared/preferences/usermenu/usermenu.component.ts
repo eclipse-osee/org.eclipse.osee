@@ -26,7 +26,7 @@ import { UiService } from '@osee/shared/services';
 @Component({
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
-	styleUrls: ['./usermenu.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

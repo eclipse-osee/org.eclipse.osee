@@ -27,7 +27,7 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 @Component({
 	selector: 'osee-plconfig-feature-menu',
 	templateUrl: './feature-menu.component.html',
-	styleUrls: ['./feature-menu.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatMenuModule, MatIconModule, NgIf, ArrayDiffMenuComponent],
 })

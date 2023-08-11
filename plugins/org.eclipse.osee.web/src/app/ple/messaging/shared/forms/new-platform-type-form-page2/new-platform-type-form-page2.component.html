@@ -22,7 +22,7 @@
 					"></osee-new-platform-type-form>
 				<ng-container *ngIf="__logicalType.name === 'enumeration'">
 					<ng-container *ngIf="(createNewEnum | async) !== true">
-						<mat-form-field class="wide-form">
+						<mat-form-field class="tw-w-full">
 							<mat-label>Select an Enumeration Set</mat-label>
 							<mat-select
 								[ngModel]="enumSetState | async"

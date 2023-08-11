@@ -16,18 +16,18 @@
 		<table
 			mat-table
 			[dataSource]="applicsToDisplay"
-			class="mat-elevation-z8 constraints-table">
+			class="mat-elevation-z8 tw-w-full">
 			<ng-container matColumnDef="childApplic">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="header-text">
+					class="tw-font-bold tw-text-primary">
 					Allowed Applicability
 				</th>
 				<td
 					mat-cell
 					*matCellDef="let applic"
-					class="border-right">
+					class="tw-border-r-[1px] tw-border-solid">
 					{{ applic.name }}
 				</td>
 			</ng-container>
@@ -36,13 +36,13 @@
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="header-text">
+					class="tw-font-bold tw-text-primary">
 					Is Only Applicable If
 				</th>
 				<td
 					mat-cell
 					*matCellDef="let applic"
-					class="border-right">
+					class="tw-border-r-[1px] tw-border-solid">
 					Is Only Applicable If
 				</td>
 			</ng-container>
@@ -51,13 +51,13 @@
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="header-text">
+					class="tw-font-bold tw-text-primary">
 					Required Applicability
 				</th>
 				<td
 					mat-cell
 					*matCellDef="let applic"
-					class="border-right">
+					class="tw-border-r-[1px] tw-border-solid">
 					{{ applic.constraints[0].name }}
 				</td>
 			</ng-container>
@@ -66,7 +66,7 @@
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="header-text"></th>
+					class="tw-font-bold tw-text-primary"></th>
 				<td
 					mat-cell
 					*matCellDef="let applic">

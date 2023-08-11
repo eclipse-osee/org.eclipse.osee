@@ -12,7 +12,8 @@
  -->
 <table
 	mat-table
-	[dataSource]="dataSource">
+	[dataSource]="dataSource"
+	class="tw-w-full">
 	<ng-container matColumnDef="name">
 		<th
 			mat-header-cell
@@ -23,7 +24,7 @@
 			mat-cell
 			*matCellDef="let element; index as i">
 			<mat-form-field
-				class="wide-form"
+				class="tw-w-full"
 				subscriptSizing="dynamic">
 				<mat-label>Enter a name</mat-label>
 				<input
@@ -53,7 +54,7 @@
 			mat-cell
 			*matCellDef="let element; index as i">
 			<mat-form-field
-				class="wide-form"
+				class="tw-w-full"
 				subscriptSizing="dynamic">
 				<mat-label>Enter an ordinal</mat-label>
 				<input
@@ -96,7 +97,7 @@
 						i
 					)
 				"
-				class="wide-form"></osee-applicability-selector>
+				class="tw-w-full"></osee-applicability-selector>
 		</td>
 	</ng-container>
 	<ng-container matColumnDef="delete-button">

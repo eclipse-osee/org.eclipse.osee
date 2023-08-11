@@ -15,19 +15,21 @@
 	aria-hidden="true"></a>
 <osee-scroll-to-top-button></osee-scroll-to-top-button>
 <ng-container>
-	<h1 class="mat-headline-5 diff-report-header">Difference Report</h1>
+	<h1 class="mat-headline-5 tw-pb-0 tw-pl-4 tw-pr-0 tw-pt-4">
+		Difference Report
+	</h1>
 	<ng-container *ngIf="branchSummary | async as _branchSummary">
 		<table
 			mat-table
 			[dataSource]="_branchSummary || []"
-			class="mat-elevation-z1">
+			class="mat-elevation-z1 tw-mb-8 tw-w-full">
 			<ng-container
 				[matColumnDef]="header"
 				*ngFor="let header of branchSummaryHeaders">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="diff-table-cell table-header">
+					class="tw-px-4 tw-py-2 tw-text-primary-600">
 					{{
 						(getHeaderByName(header, branchSummaryKey) | async)
 							?.humanReadable || ''
@@ -36,8 +38,7 @@
 				<td
 					mat-cell
 					*matCellDef="let item"
-					class="diff-table-cell"
-					[ngClass]="'diff-report-row-even'">
+					class="tw-bg-background-background tw-px-4 tw-py-2">
 					<ng-container *ngIf="header === 'reportDate'; else other">
 						{{ date | date: 'medium' }}
 					</ng-container>
@@ -52,22 +53,22 @@
 			<tr
 				mat-row
 				*matRowDef="let row; columns: branchSummaryHeaders"
-				class="message-detail-row"></tr>
+				class="hover:tw-bg-background-app-bar active:tw-bg-background-unselected-chip"></tr>
 		</table>
 	</ng-container>
 	<ng-container *ngIf="diffReportSummary | async as _diffReportSummary">
-		<h2 class="mat-headline-6 diff-report-section-header">Summary</h2>
+		<h2 class="mat-headline-6 tw-pl-4">Summary</h2>
 		<table
 			mat-table
 			[dataSource]="_diffReportSummary || []"
-			class="mat-elevation-z1">
+			class="mat-elevation-z1 tw-mb-8 tw-w-full">
 			<ng-container
 				[matColumnDef]="header"
 				*ngFor="let header of reportSummaryHeaders">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="diff-table-cell table-header">
+					class="tw-px-4 tw-py-2 tw-text-primary-600">
 					{{
 						(getHeaderByName(header, reportSummaryKey) | async)
 							?.humanReadable || ''
@@ -76,8 +77,7 @@
 				<td
 					mat-cell
 					*matCellDef="let item"
-					class="diff-table-cell"
-					[ngClass]="'diff-report-row-even'">
+					class="tw-bg-background-background tw-px-4 tw-py-2">
 					<ng-container *ngIf="header === 'details'; else other">
 						<ng-container *ngFor="let detail of item[header]">
 							<span>{{ detail }}; </span>
@@ -95,7 +95,7 @@
 				mat-row
 				*matRowDef="let row; columns: reportSummaryHeaders"
 				(click)="scrollTo(row.id)"
-				class="message-detail-row diff-report-summary-row"></tr>
+				class="hover:tw-cursor-pointer hover:tw-bg-background-app-bar hover:tw-opacity-75 active:tw-bg-background-unselected-chip"></tr>
 		</table>
 	</ng-container>
 </ng-container>
@@ -109,11 +109,11 @@
 		<osee-messaging-structure-diffs></osee-messaging-structure-diffs>
 	</ng-container>
 	<ng-template #no_diffs>
-		<h3 class="mat-h3 diff-report-message">No differences</h3>
+		<h3 class="mat-h3 tw-pb-0 tw-pl-6 tw-pr-0 tw-pt-4">No differences</h3>
 	</ng-template>
 </ng-container>
 <ng-template #diffReportLoading>
-	<h3 class="mat-h3 diff-report-message">Loading report...</h3>
+	<h3 class="mat-h3 tw-pb-0 tw-pl-6 tw-pr-0 tw-pt-4">Loading report...</h3>
 </ng-template>
 <!--This div is here so the scroll button doesn't cover content when scrolled all the way down-->
 <div style="height: 5em"></div>

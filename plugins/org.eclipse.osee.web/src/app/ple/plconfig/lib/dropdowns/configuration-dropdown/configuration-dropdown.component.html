@@ -16,12 +16,11 @@
 	(mousedown)="toggleMenu(menuTrigger1)"
 	[matMenuTriggerFor]="mainMenu"
 	*ngIf="(editable | async) === true"
-	class="pl-config-configuration-dropdown-dd-button"
 	data-cy="change-config-dropdown-btn">
 	Change Configurations
 </button>
 <mat-menu
-	class="menu"
+	class="tw-max-w-none"
 	#mainMenu="matMenu">
 	<ng-template matMenuContent>
 		<button
@@ -57,7 +56,7 @@
 	</ng-template>
 </mat-menu>
 <mat-menu
-	class="menu"
+	class="tw-max-w-none"
 	#deleteConfigMenu="matMenu">
 	<button
 		*ngFor="let configuration of configs | async"
@@ -68,7 +67,7 @@
 	</button>
 </mat-menu>
 <mat-menu
-	class="menu"
+	class="tw-max-w-none"
 	#editConfigMenu="matMenu">
 	<button
 		*ngFor="let configuration of configs | async"
@@ -86,6 +85,6 @@
 </mat-menu>
 <mat-label
 	*ngIf="(editable | async) === false"
-	style="align-items: center; text-align: center"
+	class="tw-items-center tw-text-center"
 	>Branch is not editable</mat-label
 >

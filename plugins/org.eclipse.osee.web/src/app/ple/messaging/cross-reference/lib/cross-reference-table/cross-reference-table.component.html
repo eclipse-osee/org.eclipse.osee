@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field class="table-filter">
+<mat-form-field class="tw-w-full">
 	<mat-label>Filter Table</mat-label>
 	<input
 		matInput
@@ -19,7 +19,7 @@
 		#input />
 	<mat-icon matPrefix>filter_list</mat-icon>
 </mat-form-field>
-<div class="table-container mat-elevation-z8">
+<div class="mat-elevation-z8 tw-max-h-[65vh] tw-overflow-scroll">
 	<table
 		mat-table
 		[dataSource]="(data | async) || []">
@@ -29,7 +29,7 @@
 			<th
 				mat-header-cell
 				*matHeaderCellDef
-				class="cross-reference-table-header"
+				class="tw-text-primary-600"
 				[matTooltip]="
 					(getTableHeaderByName(header) | async)?.description || ''
 				">
@@ -60,7 +60,7 @@
 						*ngIf="header === 'crossReferenceArrayValues'">
 						<ng-container *ngIf="ref[header] !== ''">
 							<button
-								class="edit-array-button"
+								class="tw-m-2 tw-w-full tw-cursor-pointer tw-rounded-md tw-border tw-border-solid tw-p-1 tw-text-left"
 								(click)="openEditDialog(ref)">
 								<ng-container
 									*ngFor="
@@ -82,7 +82,10 @@
 				</ng-container>
 				<ng-container *ngIf="(inEditMode | async) === false">
 					<ng-container
-						*ngIf="header !== 'crossReferenceArrayValues'">
+						*ngIf="
+							header !== 'crossReferenceArrayValues' &&
+							header !== 'applicability'
+						">
 						{{ ref[header] }}
 					</ng-container>
 					<ng-container
@@ -93,6 +96,9 @@
 							<br />
 						</ng-container>
 					</ng-container>
+					<ng-container *ngIf="header === 'applicability'">
+						{{ ref[header].value }}
+					</ng-container>
 				</ng-container>
 			</td>
 		</ng-container>
@@ -102,7 +108,7 @@
 		<tr
 			mat-row
 			*matRowDef="let row; columns: headers; let i = index"
-			[ngClass]="i % 2 === 0 ? 'table-row-even' : 'table-row-odd'"
+			class="odd:tw-bg-selected-button even:tw-bg-background-background"
 			[attr.data-cy]="'cross-reference-table-row-' + row.name"></tr>
 	</table>
 </div>

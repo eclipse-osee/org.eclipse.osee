@@ -22,7 +22,6 @@ import { HelpService } from '@osee/shared/services/help';
 	standalone: true,
 	imports: [CommonModule, MarkdownModule],
 	templateUrl: './messaging-help-content.component.html',
-	styleUrls: ['./messaging-help-content.component.scss'],
 })
 export class MessagingHelpContentComponent {
 	constructor(

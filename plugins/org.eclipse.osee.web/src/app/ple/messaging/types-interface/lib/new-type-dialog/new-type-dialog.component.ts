@@ -16,7 +16,7 @@ import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 @Component({
 	selector: 'osee-new-type-dialog',
 	templateUrl: './new-type-dialog.component.html',
-	styleUrls: ['./new-type-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [NewTypeFormComponent],
 })

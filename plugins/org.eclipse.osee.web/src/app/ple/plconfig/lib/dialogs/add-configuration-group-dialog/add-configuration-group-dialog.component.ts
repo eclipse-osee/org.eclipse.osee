@@ -25,7 +25,7 @@ import { addCfgGroup } from '../../types/pl-config-cfggroups';
 @Component({
 	selector: 'osee-plconfig-add-configuration-group-dialog',
 	templateUrl: './add-configuration-group-dialog.component.html',
-	styleUrls: ['./add-configuration-group-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		FormsModule,

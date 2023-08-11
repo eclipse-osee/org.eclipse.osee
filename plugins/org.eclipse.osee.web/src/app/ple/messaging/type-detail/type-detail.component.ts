@@ -21,7 +21,7 @@ import { filter, map, switchMap } from 'rxjs/operators';
 @Component({
 	selector: 'osee-messaging-type-detail',
 	templateUrl: './type-detail.component.html',
-	styleUrls: ['./type-detail.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, AsyncPipe, PlatformTypeCardComponent],
 })

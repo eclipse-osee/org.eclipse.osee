@@ -22,6 +22,7 @@ import { RemoveElementDialogData } from './remove-element-dialog';
 @Component({
 	selector: 'osee-messaging-remove-element-dialog',
 	templateUrl: './remove-element-dialog.component.html',
+	styles: [],
 	standalone: true,
 	imports: [MatDialogModule, MatButtonModule],
 })

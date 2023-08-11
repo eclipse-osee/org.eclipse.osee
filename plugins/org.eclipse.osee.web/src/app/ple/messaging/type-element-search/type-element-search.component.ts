@@ -20,7 +20,9 @@ import { ElementTableComponent } from './lib/tables/element-table/element-table.
 @Component({
 	selector: 'osee-typesearch-type-element-search',
 	templateUrl: './type-element-search.component.html',
-	styleUrls: ['./type-element-search.component.sass'],
+	styles: [
+		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
+	],
 	standalone: true,
 	imports: [MessagingControlsComponent, ElementTableComponent],
 })

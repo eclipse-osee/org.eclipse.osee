@@ -64,7 +64,7 @@ import {
 @Component({
 	selector: 'osee-edit-enum-set-field',
 	templateUrl: './edit-enum-set-field.component.html',
-	styleUrls: ['./edit-enum-set-field.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

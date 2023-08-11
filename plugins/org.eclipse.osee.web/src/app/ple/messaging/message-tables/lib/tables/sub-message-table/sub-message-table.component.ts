@@ -59,7 +59,7 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dia
 @Component({
 	selector: 'osee-messaging-sub-message-table',
 	templateUrl: './sub-message-table.component.html',
-	styleUrls: ['./sub-message-table.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatTableModule,

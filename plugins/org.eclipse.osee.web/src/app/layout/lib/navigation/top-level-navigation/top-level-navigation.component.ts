@@ -17,7 +17,13 @@ import { Router } from '@angular/router';
 import { from, iif, of, reduce, switchMap } from 'rxjs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import {
+	AsyncPipe,
+	NgClass,
+	NgFor,
+	NgIf,
+	NgTemplateOutlet,
+} from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
@@ -29,11 +35,11 @@ import { navigationStructure } from '@osee/layout/routing';
 @Component({
 	selector: 'osee-top-level-navigation',
 	templateUrl: './top-level-navigation.component.html',
-	styleUrls: ['./top-level-navigation.component.sass'],
 	standalone: true,
 	imports: [
 		NgIf,
 		NgFor,
+		NgClass,
 		AsyncPipe,
 		RouterLink,
 		NgTemplateOutlet,

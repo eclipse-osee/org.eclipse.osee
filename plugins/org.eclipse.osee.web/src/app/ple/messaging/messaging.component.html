@@ -10,18 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="landing-page-container">
+<div
+	class="tw-flex tw-h-full tw-min-w-[560px] tw-flex-col tw-items-center tw-justify-center tw-text-center">
 	<div class="mat-headline-1">OSEE Messaging</div>
-	<div class="landing-page-links-container">
+	<div
+		class="tw-grid tw-max-w-[822px] tw-grid-cols-landing tw-justify-center tw-gap-7">
 		<ng-container *ngFor="let item of navItems | async">
 			<a
 				mat-raised-button
 				color="primary"
 				[routerLink]="item.routerLink"
-				class="landing-page-link-button"
+				class="tw-w-landing-button tw-px-4 tw-py-7"
 				[attr.data-cy]="item.cypressLabel"
 				><mat-icon>{{ item.icon }}</mat-icon
-				><span>{{ item.label }}</span></a
+				><span class="tw-ml-2">{{ item.label }}</span></a
 			>
 		</ng-container>
 	</div>

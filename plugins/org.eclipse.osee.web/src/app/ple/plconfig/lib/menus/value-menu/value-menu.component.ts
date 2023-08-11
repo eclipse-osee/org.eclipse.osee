@@ -25,7 +25,7 @@ import {
 @Component({
 	selector: 'osee-plconfig-value-menu',
 	templateUrl: './value-menu.component.html',
-	styleUrls: ['./value-menu.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, MatMenuModule, MatIconModule],
 })

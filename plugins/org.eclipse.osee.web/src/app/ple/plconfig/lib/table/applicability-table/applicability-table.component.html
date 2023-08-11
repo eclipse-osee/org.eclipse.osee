@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <div class="mat-elevation-z8">
-	<mat-form-field class="filter-form-field">
+	<mat-form-field class="tw-w-full">
 		<mat-label>Filter Configuration Information</mat-label>
 		<input
 			matInput
@@ -21,27 +21,28 @@
 		<mat-icon matPrefix>filter_list</mat-icon>
 		<mat-hint>Enter text to filter Configuration Table</mat-hint>
 	</mat-form-field>
-	<div class="table-container">
+	<div
+		class="tw-min-h-[72vh] tw-w-full tw-overflow-auto [&::-webkit-scrollbar-corner]:tw-bg-background-app-bar [&::-webkit-scrollbar-thumb]:tw-bg-primary [&::-webkit-scrollbar-track]:tw-border-r-[10px] [&::-webkit-scrollbar-track]:tw-bg-background-app-bar [&::-webkit-scrollbar]:tw-bg-background-app-bar">
 		<table
 			mat-table
 			[dataSource]="(dataSource | async) || []"
 			matSort
 			matSortActive="feature"
 			matSortDirection="asc"
-			class="mat-elevation-z8">
+			class="mat-elevation-z8 tw-w-full">
 			<ng-container matColumnDef=" ">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
 					colspan="1"
-					class="applic-table-header"></th>
+					class="tw-text-center tw-text-sm tw-font-bold tw-tracking-tighter tw-text-primary-600"></th>
 			</ng-container>
 			<ng-container matColumnDef="Configurations">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
 					[attr.colspan]="viewCount | async"
-					class="applic-table-header">
+					class="tw-text-center tw-text-sm tw-font-bold tw-tracking-tighter tw-text-primary-600">
 					Configurations
 				</th>
 			</ng-container>
@@ -50,7 +51,7 @@
 					mat-header-cell
 					*matHeaderCellDef
 					[attr.colspan]="(groupCount | async) || 0"
-					class="applic-table-header">
+					class="tw-text-center tw-text-sm tw-font-bold tw-tracking-tighter tw-text-primary-600">
 					Configuration Groups
 				</th>
 			</ng-container>

@@ -61,7 +61,7 @@ import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdo
 	selector: 'osee-new-platform-type-form',
 	standalone: true,
 	templateUrl: './new-platform-type-form.component.html',
-	styleUrls: ['./new-platform-type-form.component.sass'],
+	styles: [],
 	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 	imports: [
 		NgIf,

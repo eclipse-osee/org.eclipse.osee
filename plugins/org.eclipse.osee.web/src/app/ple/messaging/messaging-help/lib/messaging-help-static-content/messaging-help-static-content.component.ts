@@ -20,7 +20,6 @@ import { ActivatedRoute } from '@angular/router';
 	standalone: true,
 	imports: [CommonModule, MarkdownModule],
 	templateUrl: './messaging-help-static-content.component.html',
-	styleUrls: ['./messaging-help-static-content.component.scss'],
 })
 export class MessagingHelpStaticContentComponent implements OnInit {
 	constructor(private route: ActivatedRoute) {}

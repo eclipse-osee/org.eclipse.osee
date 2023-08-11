@@ -33,19 +33,16 @@ export class HighlightFilteredTextDirective implements OnChanges {
 	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (
-			(!this.searchTerms ||
-				!this.searchTerms.length ||
-				!this.classToApply) &&
-			this.text
-		) {
+		if (!this.classToApply && this.text) {
 			//we are now assuming users of this directive are string interpolating their value when searchTerms is not present.
 			return;
 		} else if (this.text) {
 			this.renderer.setProperty(
 				this.el.nativeElement,
 				'innerHTML',
-				this.getFormattedText()
+				!this.searchTerms || !this.searchTerms.length
+					? this.text
+					: this.getFormattedText()
 			);
 		}
 	}

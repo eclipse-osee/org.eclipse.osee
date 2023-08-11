@@ -80,7 +80,7 @@ import {
 @Component({
 	selector: 'osee-edit-type-dialog',
 	templateUrl: './edit-type-dialog.component.html',
-	styleUrls: ['./edit-type-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

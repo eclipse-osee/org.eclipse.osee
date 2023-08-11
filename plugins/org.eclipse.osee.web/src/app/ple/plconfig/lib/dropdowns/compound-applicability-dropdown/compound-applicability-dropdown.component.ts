@@ -31,7 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
 	selector: 'osee-compound-applicability-dropdown',
 	templateUrl: './compound-applicability-dropdown.component.html',
-	styleUrls: ['./compound-applicability-dropdown.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatIconModule,

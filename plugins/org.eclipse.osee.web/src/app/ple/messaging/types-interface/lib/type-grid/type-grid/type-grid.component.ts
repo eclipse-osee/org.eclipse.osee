@@ -55,7 +55,7 @@ import { NewTypeDialogComponent } from '../../new-type-dialog/new-type-dialog.co
 @Component({
 	selector: 'osee-messaging-types-type-grid',
 	templateUrl: './type-grid.component.html',
-	styleUrls: ['./type-grid.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

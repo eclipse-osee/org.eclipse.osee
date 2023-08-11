@@ -28,7 +28,7 @@ import {
 @Component({
 	selector: 'osee-plconfig-product-type-dropdown',
 	templateUrl: './product-type-drop-down.component.html',
-	styleUrls: ['./product-type-drop-down.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatIconModule,

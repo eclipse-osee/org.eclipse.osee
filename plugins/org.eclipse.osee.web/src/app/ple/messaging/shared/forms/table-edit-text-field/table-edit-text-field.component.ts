@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
 	standalone: true,
 	imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule],
 	templateUrl: './table-edit-text-field.component.html',
-	styleUrls: ['./table-edit-text-field.component.scss'],
+	styles: [],
 })
 export class TableEditTextFieldComponent {
 	@Input() value: string = '';

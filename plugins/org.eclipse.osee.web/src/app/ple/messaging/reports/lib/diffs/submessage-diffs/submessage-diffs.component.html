@@ -12,7 +12,7 @@
  -->
 <ng-container *ngIf="allSubMessages | async as allItems">
 	<ng-container *ngIf="allItems.length !== 0">
-		<h2 class="diff-report-section-header">SubMessage Changes</h2>
+		<h2 class="tw-pl-4">SubMessage Changes</h2>
 		<ng-container *ngIf="subMessagesAdded | async as submessages">
 			<osee-messaging-diff-report-table
 				[items]="submessages"

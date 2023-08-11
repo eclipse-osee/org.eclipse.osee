@@ -11,9 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <ng-content select="[label]"></ng-content>
-<mat-form-field
-	class="dialog-font-size"
-	class="dialog-full-width">
+<mat-form-field class="tw-w-full tw-text-lg">
 	<mat-label>Select a Feature</mat-label>
 	<mat-select
 		[(ngModel)]="selectedFeature"
@@ -26,9 +24,7 @@
 		</ng-container>
 	</mat-select>
 </mat-form-field>
-<mat-form-field
-	class="dialog-font-size"
-	class="dialog-full-width">
+<mat-form-field class="tw-w-full tw-text-lg">
 	<mat-label>Select a Value</mat-label>
 	<mat-select
 		(selectionChange)="selectedValue.next($event.value)"

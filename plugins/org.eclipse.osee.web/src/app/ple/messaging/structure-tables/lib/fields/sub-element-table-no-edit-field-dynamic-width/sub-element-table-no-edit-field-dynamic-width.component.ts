@@ -20,9 +20,7 @@ import { tap } from 'rxjs';
 	selector: 'osee-messaging-sub-element-table-no-edit-field-dynamic-width',
 	templateUrl:
 		'./sub-element-table-no-edit-field-dynamic-width.component.html',
-	styleUrls: [
-		'./sub-element-table-no-edit-field-dynamic-width.component.sass',
-	],
+	styles: [],
 	standalone: true,
 	imports: [
 		HighlightFilteredTextDirective,

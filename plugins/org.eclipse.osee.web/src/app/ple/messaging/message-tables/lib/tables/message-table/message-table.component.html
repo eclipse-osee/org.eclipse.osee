@@ -30,7 +30,7 @@
 </osee-messaging-controls>
 <osee-two-layer-add-button
 	*ngIf="(inEditMode | async) === true"
-	class="new-message-button"
+	class="tw-fixed tw-bottom-[3%] tw-left-[2%] tw-z-10"
 	[nestedLevel]="(expandedElement | async) || []"
 	baseLevel="Add message"
 	nestedLevelPrefix="Add submessage to "
@@ -67,7 +67,19 @@
 				mat-header-cell
 				*matHeaderCellDef
 				[attr.colspan]="((headers | async) || [])[i]"
-				class="tw-px-0.5 tw-font-bold tw-text-primary-600"
+				class="tw-px-0.5 tw-text-sm tw-font-bold tw-text-primary-600"
+				[ngClass]="{
+					'tw-pr-4':
+						header === 'interfaceMessageNumber' ||
+						header === 'interfaceMessageRate',
+					'tw-max-w-[200px]': header === 'name',
+					'tw-max-w-[50px]': header === 'interfaceMessageNumber',
+					'tw-max-w-[120px]':
+						header === 'interfaceMessagePeriodicity' ||
+						header === 'interfaceMessageType',
+					'tw-max-w-[95px]': header === 'interfaceMessageRate',
+					'tw-max-w-[90px]': header === 'interfaceMessageWriteAccess'
+				}"
 				[matTooltip]="
 					(getHeaderByName(header) | async)?.description || ''
 				">
@@ -78,31 +90,30 @@
 			<td
 				mat-cell
 				*matCellDef="let element; let i = dataIndex"
-				[ngClass]="
-					i % 2 === 0
-						? element.added
-							? 'message-table-row-even-added'
-							: element.deleted
-							? 'message-table-row-even-deleted'
-							: 'message-table-row-even'
-						: element.added
-						? 'message-table-row-odd-added'
-						: element.deleted
-						? 'message-table-row-even-deleted'
-						: 'message-table-row-odd'
-				"
+				[ngClass]="{
+					'tw-pr-4':
+						header === 'interfaceMessageNumber' ||
+						header === 'interfaceMessageRate',
+					'tw-max-w-[200px]': header === 'name',
+					'tw-max-w-[50px]': header === 'interfaceMessageNumber',
+					'tw-max-w-[120px]':
+						header === 'interfaceMessagePeriodicity' ||
+						header === 'interfaceMessageType',
+					'tw-max-w-[95px]': header === 'interfaceMessageRate',
+					'tw-max-w-[90px]': header === 'interfaceMessageWriteAccess'
+				}"
 				(contextmenu)="
 					openMenu($event, element, element[header], header)
 				"
-				class="message-attribute-cell">
+				class="message-attribute-cell tw-px-[2px] tw-py-0">
 				<div
-					class="flex-cell"
+					class="tw-flex tw-w-[95%] tw-items-center"
 					[ngClass]="
 						!element.added &&
 						element.changes &&
 						element.changes[header] !== undefined
-							? 'message-table-attribute-changed'
-							: 'message-table-attribute-not-changed'
+							? 'tw-bg-accent-100 dark:tw-text-background-app-bar'
+							: ''
 					">
 					<ng-container *ngIf="header === 'name'">
 						<ng-container
@@ -181,7 +192,7 @@
 									oseeHighlightFilteredText
 									[searchTerms]="searchTerms"
 									[text]="element[header].name"
-									classToApply="message-interface-table-highlighted-text"
+									classToApply="tw-text-accent-900"
 									[attr.data-cy]="
 										'message-table-' +
 										header +
@@ -204,7 +215,7 @@
 								oseeHighlightFilteredText
 								[searchTerms]="searchTerms"
 								[text]="element[header]"
-								classToApply="message-interface-table-highlighted-text"
+								classToApply="tw-text-accent-900"
 								[attr.data-cy]="
 									'message-table-' +
 									header +
@@ -229,7 +240,7 @@
 									oseeHighlightFilteredText
 									[searchTerms]="searchTerms"
 									[text]="nodeNames"
-									classToApply="message-interface-table-highlighted-text"
+									classToApply="tw-text-accent-900"
 									[attr.data-cy]="
 										'message-table-' +
 										header +
@@ -279,18 +290,20 @@
 		<tr
 			mat-row
 			*matRowDef="let row; columns: (headers | async) || []"
-			class="message-detail-row"
-			[class.message-expanded-row]="
-				(rowIsExpanded(row.id) | async) || false
-			"
+			class="active:tw-bg-background-unselected-chip even-multi:tw-bg-background-background even-multi:hover:tw-bg-background-disabled-list-option odd-multi:tw-bg-background-selected-button odd-multi:hover:tw-bg-background-hover [&>td]:tw-border-b-0"
+			[ngClass]="{
+				'odd-multi:tw-bg-sucess-300 even-multi:tw-bg-success-100 even-multi:dark:tw-bg-success-600 odd-multi:dark:tw-bg-success-900':
+					row.added,
+				'even-multi:tw-bg-warning-100 odd-multi:tw-bg-warning-200':
+					row.deleted
+			}"
 			[attr.data-cy]="'message-table-row-' + row.name"></tr>
 		<tr
 			mat-row
 			*matRowDef="let row; columns: ['expandedMessage']"
-			class="message-sub-detail-row"
-			[class.message-sub-detail-row-expanded]="
-				(rowIsExpanded(row.id) | async) || false
-			"></tr>
+			[ngClass]="{
+				'tw-hidden': !((rowIsExpanded(row.id) | async) || false)
+			}"></tr>
 	</table>
 	<ng-container *ngIf="messages | async as _messages">
 		<mat-paginator

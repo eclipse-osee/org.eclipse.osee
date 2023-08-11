@@ -40,7 +40,7 @@ import { ApplicabilityListUIService } from '@osee/shared/services';
 		MatInputModule,
 	],
 	templateUrl: './view-selector.component.html',
-	styleUrls: ['./view-selector.component.scss'],
+	styles: [],
 })
 export class ViewSelectorComponent {
 	constructor(

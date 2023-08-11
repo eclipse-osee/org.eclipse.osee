@@ -12,9 +12,7 @@
  -->
 <ng-container *ngIf="allConnections | async as allItems">
 	<ng-container *ngIf="allItems.length !== 0">
-		<h2 class="mat-headline-6 diff-report-section-header">
-			Connection Changes
-		</h2>
+		<h2 class="mat-headline-6 tw-pl-4">Connection Changes</h2>
 		<ng-container *ngIf="connectionsAdded | async as connections">
 			<osee-messaging-diff-report-table
 				[items]="connections"

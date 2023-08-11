@@ -17,7 +17,7 @@ import { applic } from '@osee/shared/types/applicability';
 @Component({
 	selector: 'osee-messaging-sub-element-table-no-edit-field-filtered',
 	templateUrl: './sub-element-table-no-edit-field-filtered.component.html',
-	styleUrls: ['./sub-element-table-no-edit-field-filtered.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [HighlightFilteredTextDirective],
 })

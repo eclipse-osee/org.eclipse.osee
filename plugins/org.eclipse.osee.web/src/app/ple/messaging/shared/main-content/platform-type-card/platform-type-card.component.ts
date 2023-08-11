@@ -44,7 +44,7 @@ import {
 @Component({
 	selector: 'osee-messaging-types-platform-type-card',
 	templateUrl: './platform-type-card.component.html',
-	styleUrls: ['./platform-type-card.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatCardModule,

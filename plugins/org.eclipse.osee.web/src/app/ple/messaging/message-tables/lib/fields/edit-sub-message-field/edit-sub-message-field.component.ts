@@ -41,7 +41,6 @@ import { applic } from '@osee/shared/types/applicability';
 @Component({
 	selector: 'osee-messaging-edit-sub-message-field',
 	templateUrl: './edit-sub-message-field.component.html',
-	styleUrls: ['./edit-sub-message-field.component.sass'],
 	standalone: true,
 	imports: [
 		NgIf,

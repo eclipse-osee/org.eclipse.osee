@@ -22,9 +22,7 @@
 </h1>
 <div mat-dialog-content>
 	<div *ngIf="data.editable === true">
-		<mat-form-field
-			class="dialog-font-size"
-			class="dialog-full-width">
+		<mat-form-field class="tw-w-full tw-text-lg">
 			<mat-label>Configuration Name</mat-label>
 			<input
 				matInput
@@ -38,9 +36,7 @@
 				" />
 		</mat-form-field>
 		<br />
-		<mat-form-field
-			class="dialog-font-size"
-			class="dialog-full-width">
+		<mat-form-field class="tw-w-full tw-text-lg">
 			<mat-label>Configuration Description</mat-label>
 			<input
 				matInput
@@ -54,11 +50,9 @@
 				" />
 		</mat-form-field>
 		<br />
-		<mat-label class="dialog-font-size">Copy From:</mat-label>
+		<mat-label class="tw-text-lg">Copy From:</mat-label>
 		<br />
-		<mat-form-field
-			class="dialog-font-size"
-			class="dialog-full-width">
+		<mat-form-field class="tw-w-full tw-text-lg">
 			<mat-label>Select a Configuration</mat-label>
 			<mat-select [(ngModel)]="data.copyFrom">
 				<mat-option
@@ -69,13 +63,9 @@
 			</mat-select>
 		</mat-form-field>
 		<br />
-		<mat-label class="dialog-font-size"
-			>Change Configuration Group:</mat-label
-		>
+		<mat-label class="tw-text-lg">Change Configuration Group:</mat-label>
 		<br />
-		<mat-form-field
-			class="dialog-font-size"
-			class="dialog-full-width">
+		<mat-form-field class="tw-w-full tw-text-lg">
 			<mat-label> Select a Configuration Group </mat-label>
 			<mat-select
 				[(ngModel)]="data.group"
@@ -97,14 +87,14 @@
 		</mat-form-field>
 		<div>
 			<mat-label
-				class="dialog-font-size"
+				class="tw-text-lg"
 				data-cy="product-types-selection"
 				>Select Product Types</mat-label
 			>
 			<mat-selection-list
 				[(ngModel)]="data.productApplicabilities"
 				color="primary"
-				class="dialog-font-size">
+				class="tw-text-lg">
 				<mat-list-option
 					*ngFor="let type of productApplicabilities | async"
 					[value]="type.name"
@@ -121,15 +111,17 @@
 	</div>
 	<div *ngIf="data.editable === false">
 		<div>
-			<mat-label class="label">Configuration Name:</mat-label>
+			<mat-label class="tw-font-bold">Configuration Name:</mat-label>
 			{{ data.currentConfig.name }}
 		</div>
 		<div>
-			<mat-label class="label">Configuration Description:</mat-label>
+			<mat-label class="tw-font-bold"
+				>Configuration Description:</mat-label
+			>
 			{{ data.currentConfig.description }}
 		</div>
 		<div *ngIf="data.productApplicabilities.length > 0">
-			<mat-label class="label">Product Types:</mat-label>
+			<mat-label class="tw-font-bold">Product Types:</mat-label>
 			<div *ngFor="let app of data.productApplicabilities">
 				{{ app }}
 			</div>

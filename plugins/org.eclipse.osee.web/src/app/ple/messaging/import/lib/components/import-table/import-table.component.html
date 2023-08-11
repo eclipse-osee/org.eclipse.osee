@@ -11,30 +11,31 @@
  *     Boeing - initial API and implementation
  -->
 <div
-	[ngClass]="
-		showTableContents ? 'table-container' : 'table-container--hidden'
-	">
+	class="tw-max-h-[40vh] tw-w-full tw-overflow-scroll"
+	[ngClass]="showTableContents ? '' : 'tw-overflow-hidden tw-p-1'">
 	<table
 		mat-table
 		[dataSource]="filteredData"
-		class="mat-elevation-z1">
+		class="mat-elevation-z1 tw-w-full">
 		<ng-container [matColumnDef]="'TableHeader'">
 			<th
 				mat-header-cell
 				*matHeaderCellDef
 				[attr.colspan]="headers.length"
-				class="import-base-color">
-				<div class="header-container">
+				class="tw-text-foreground-base">
+				<div class="tw-grid tw-h-12 tw-grid-cols-3">
 					<div
-						class="table-label"
+						class="tw-flex tw-items-center hover:tw-cursor-pointer"
 						(click)="toggleTableContents()">
 						<span>{{ tableTitle }}: {{ data.length }}</span>
 					</div>
-					<div class="import-table-filter">
+					<div class="tw-relative">
 						<mat-form-field
-							class="import-table-filter-field"
+							class="tw-absolute tw-left-0 tw-top-0 tw-w-full"
 							[ngClass]="
-								showTableContents ? 'show-filter' : 'hide-table'
+								showTableContents
+									? 'tw-block'
+									: 'tw-hidden tw-overflow-hidden'
 							">
 							<mat-label
 								>Filter
@@ -56,7 +57,7 @@
 			<th
 				mat-header-cell
 				*matHeaderCellDef
-				class="import-table-header">
+				class="tw-text-primary-600">
 				{{
 					(getTableHeaderByName(header) | async)?.humanReadable || ''
 				}}
@@ -69,7 +70,7 @@
 						oseeHighlightFilteredText
 						[searchTerms]="filterText"
 						[text]="item[header]"
-						classToApply="import-table-highlighted-text">
+						classToApply="tw-text-accent-900">
 						{{ item[header] }}
 					</div>
 				</ng-container>
@@ -78,7 +79,7 @@
 						oseeHighlightFilteredText
 						[searchTerms]="filterText"
 						[text]="item[header].name"
-						classToApply="import-table-highlighted-text">
+						classToApply="tw-text-accent-900">
 						{{ item[header].name }}
 					</div>
 				</ng-container>
@@ -86,16 +87,22 @@
 		</ng-container>
 		<tr
 			mat-header-row
-			*matHeaderRowDef="['TableHeader']; sticky: true"
-			class="table-title-row"></tr>
+			*matHeaderRowDef="['TableHeader']; sticky: true"></tr>
 		<tr
 			mat-header-row
 			*matHeaderRowDef="headers; sticky: true"
-			[ngClass]="showTableContents ? 'show-table' : 'hide-table'"></tr>
+			[ngClass]="
+				showTableContents
+					? 'tw-table-row'
+					: 'tw-hidden tw-overflow-hidden'
+			"></tr>
 		<tr
 			mat-row
 			*matRowDef="let row; columns: headers"
-			[ngClass]="showTableContents ? 'show-table' : 'hide-table'"
-			class="message-detail-row"></tr>
+			[ngClass]="
+				showTableContents
+					? 'tw-table-row'
+					: 'tw-hidden tw-overflow-hidden'
+			"></tr>
 	</table>
 </div>

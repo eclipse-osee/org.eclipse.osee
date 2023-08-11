@@ -27,7 +27,7 @@ import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs
 @Component({
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
-	styleUrls: ['./usermenu.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatButtonModule,

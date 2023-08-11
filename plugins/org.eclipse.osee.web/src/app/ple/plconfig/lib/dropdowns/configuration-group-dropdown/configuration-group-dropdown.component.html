@@ -16,12 +16,11 @@
 	(mousedown)="toggleMenu(menuTrigger1)"
 	[matMenuTriggerFor]="mainMenu"
 	*ngIf="(editable | async) === true"
-	class="pl-config-configuration-group-dropdown-dd-button"
 	data-cy="change-config-group-dropdown-btn">
 	Change Configuration Groups
 </button>
 <mat-menu
-	class="menu"
+	class="tw-max-w-none"
 	#mainMenu="matMenu">
 	<ng-template matMenuContent>
 		<button
@@ -49,7 +48,7 @@
 	</ng-template>
 </mat-menu>
 <mat-menu
-	class="menu"
+	class="tw-max-w-none"
 	#deleteConfigGroupMenu="matMenu">
 	<button
 		*ngFor="let group of cfgGroups | async"

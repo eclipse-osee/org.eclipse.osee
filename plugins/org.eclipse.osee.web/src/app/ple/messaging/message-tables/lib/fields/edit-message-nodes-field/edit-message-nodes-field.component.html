@@ -14,7 +14,7 @@
 	<ng-container *ngIf="nodes | async as _nodes">
 		<ng-container *ngIf="{ val: _value | async } as displayValue">
 			<mat-form-field
-				class="form-field tw-w-full"
+				class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit"
 				subscriptSizing="dynamic">
 				<mat-select
 					required

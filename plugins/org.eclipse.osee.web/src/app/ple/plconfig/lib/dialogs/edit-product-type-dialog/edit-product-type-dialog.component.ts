@@ -27,7 +27,7 @@ import { productType } from '../../types/pl-config-product-types';
 @Component({
 	selector: 'osee-edit-product-type-dialog',
 	templateUrl: './edit-product-type-dialog.component.html',
-	styleUrls: ['./edit-product-type-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		FormsModule,

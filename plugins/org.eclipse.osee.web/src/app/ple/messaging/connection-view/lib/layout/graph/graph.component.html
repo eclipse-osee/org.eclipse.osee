@@ -212,12 +212,13 @@
 						</ng-container>
 						<svg:text
 							text-anchor="middle"
+							class="tw-fill-foreground-text tw-stroke-none tw-text-xs"
 							[ngClass]="
 								link.data.deleted
-									? 'link-label path-deleted'
+									? 'tw-fill-warn-400'
 									: link.data.added
-									? 'link-label path-added'
-									: 'link-label'
+									? 'tw-fill-success-400'
+									: ''
 							">
 							<textPath
 								class="text-path"
@@ -240,7 +241,7 @@
                     Labels to denote what transport type is in use
                   -->
 						<svg:text
-							class="link-label"
+							class="tw-fill-foreground-text tw-stroke-none tw-text-xs"
 							text-anchor="middle">
 							<textPath
 								class="text-path"

@@ -72,7 +72,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 		MatTooltipModule,
 	],
 	templateUrl: './cross-reference-dropdown.component.html',
-	styleUrls: ['./cross-reference-dropdown.component.sass'],
+	styles: [],
 	animations: [
 		trigger('dropdownOpen', [
 			state(

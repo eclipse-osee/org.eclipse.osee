@@ -13,7 +13,7 @@
 <osee-messaging-controls [actionControls]="true">
 	<ng-container *ngIf="connections | async as _connections">
 		<mat-form-field
-			class="form-field"
+			class="form-field [&>.mat-mdc-form-field-subscript-wrapper]:tw-hidden"
 			appearance="fill">
 			<mat-label>{{ connectionSelectionText | async }}</mat-label>
 			<mat-select
@@ -43,7 +43,7 @@
 					<ng-container *ngIf="(inEditMode | async) === true">
 						<button
 							mat-fab
-							class="add-button"
+							class="tw-absolute tw-bottom-2 tw-right-2"
 							color="primary"
 							(click)="openAddDialog()">
 							<mat-icon>add</mat-icon>

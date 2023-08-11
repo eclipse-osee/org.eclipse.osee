@@ -43,7 +43,7 @@ import { HasValidIdDirective } from '@osee/shared/validators';
 		HasValidIdDirective,
 	],
 	templateUrl: './logical-type-selector.component.html',
-	styleUrls: ['./logical-type-selector.component.sass'],
+	styles: [],
 })
 export class LogicalTypeSelectorComponent {
 	@ViewChild('logicalTypeSelector')
