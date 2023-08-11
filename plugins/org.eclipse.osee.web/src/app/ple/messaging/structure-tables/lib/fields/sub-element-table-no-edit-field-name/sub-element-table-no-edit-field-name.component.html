@@ -15,12 +15,16 @@
 		oseeHighlightFilteredText
 		[searchTerms]="filter"
 		[text]="name + '[' + start + '...' + end + ']'"
-		classToApply="message-element-interface-table-highlighted-text"></div>
+		classToApply="tw-text-accent-900">
+		{{ name }}
+	</div>
 </ng-container>
 <ng-container *ngIf="end - start <= 0">
 	<div
 		oseeHighlightFilteredText
 		[searchTerms]="filter"
 		[text]="name"
-		classToApply="message-element-interface-table-highlighted-text"></div>
+		classToApply="tw-text-accent-900">
+		{{ name }}
+	</div>
 </ng-container>

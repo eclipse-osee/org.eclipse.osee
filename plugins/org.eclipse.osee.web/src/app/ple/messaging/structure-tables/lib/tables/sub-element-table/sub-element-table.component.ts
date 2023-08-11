@@ -68,7 +68,9 @@ import {
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',
 	templateUrl: './sub-element-table.component.html',
-	styleUrls: ['./sub-element-table.component.sass'],
+	styles: [
+		':host {display: block;width: 100%;max-width: 100vw;overflow-x: auto;max-height: 10%;}',
+	],
 	standalone: true,
 	imports: [
 		NgFor,

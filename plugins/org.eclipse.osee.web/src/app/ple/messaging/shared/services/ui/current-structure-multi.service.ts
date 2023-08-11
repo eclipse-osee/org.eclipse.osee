@@ -36,6 +36,7 @@ import {
 	take,
 	BehaviorSubject,
 	Observable,
+	tap,
 } from 'rxjs';
 import { applic } from '@osee/shared/types/applicability';
 import {
@@ -1618,24 +1619,26 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																		{
 																																			previousValue:
 																																				{
-																																					...(
+																																					...((
 																																						el as elementWithChanges
 																																					)
 																																						.changes
-																																						.platformType!
-																																						.previousValue,
+																																						.platformType
+																																						?.previousValue ||
+																																						new PlatformTypeSentinel()),
 																																					name: change
 																																						.baselineVersion
 																																						.value as string,
 																																				},
 																																			currentValue:
 																																				{
-																																					...(
+																																					...((
 																																						el as elementWithChanges
 																																					)
 																																						.changes
-																																						.platformType!
-																																						.currentValue,
+																																						.platformType
+																																						?.currentValue ||
+																																						new PlatformTypeSentinel()),
 																																					name: change
 																																						.currentVersion
 																																						.value as string,
@@ -2541,12 +2544,13 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																									new PlatformTypeSentinel(),
 																																								currentValue:
 																																									{
-																																										...(
+																																										...((
 																																											element as elementWithChanges
 																																										)
 																																											.changes
-																																											.platformType!
-																																											.currentValue,
+																																											.platformType
+																																											?.currentValue ||
+																																											new PlatformTypeSentinel()),
 																																										name: type.name,
 																																									},
 																																								transactionToken:
