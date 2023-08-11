@@ -34,7 +34,6 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
 	selector: 'osee-messaging-reports',
 	templateUrl: './reports.component.html',
-	styleUrls: ['./reports.component.scss'],
 	standalone: true,
 	imports: [
 		NgIf,

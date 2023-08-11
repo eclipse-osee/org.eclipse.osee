@@ -45,7 +45,6 @@ import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 		MessageNodesCountDirective,
 	],
 	templateUrl: './edit-message-nodes-field.component.html',
-	styleUrls: ['./edit-message-nodes-field.component.sass'],
 })
 export class EditMessageNodesFieldComponent {
 	@Input() message!: message;

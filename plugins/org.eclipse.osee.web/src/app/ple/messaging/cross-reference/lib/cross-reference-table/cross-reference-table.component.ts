@@ -35,7 +35,6 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 	selector: 'osee-cross-reference-table',
 	standalone: true,
 	templateUrl: './cross-reference-table.component.html',
-	styleUrls: ['./cross-reference-table.component.scss'],
 	imports: [
 		CommonModule,
 		FormsModule,

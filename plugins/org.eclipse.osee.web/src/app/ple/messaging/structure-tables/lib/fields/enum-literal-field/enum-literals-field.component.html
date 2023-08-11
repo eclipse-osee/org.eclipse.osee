@@ -12,7 +12,7 @@
  -->
 <ng-container *ngIf="globalPrefs | async">
 	<div
-		class="text-align-start cursor-pointer"
+		class="tw-cursor-pointer tw-px-1 tw-py-0 tw-text-start"
 		(click)="toggleExpanded()">
 		<ng-container *ngIf="getEnumLiteralsArray() as enumLiterals">
 			<ng-container *ngIf="wordWrap === false">

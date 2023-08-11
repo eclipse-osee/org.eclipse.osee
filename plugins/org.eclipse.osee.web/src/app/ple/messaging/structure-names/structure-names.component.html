@@ -12,7 +12,7 @@
  -->
 <osee-messaging-controls></osee-messaging-controls>
 <mat-form-field
-	class="width-100 filter"
+	class="tw-w-full tw-pb-4"
 	*ngIf="(loading | async) !== 'true'">
 	<mat-label>Filter Structures</mat-label>
 	<input
@@ -28,7 +28,7 @@
 	displayMode="flat">
 	<mat-expansion-panel *ngFor="let name of names | async">
 		<mat-expansion-panel-header>
-			<mat-panel-title class="single-line">
+			<mat-panel-title class="tw-line-clamp-1 tw-whitespace-nowrap">
 				{{ name.name }}
 			</mat-panel-title>
 		</mat-expansion-panel-header>

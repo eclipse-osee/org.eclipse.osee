@@ -41,7 +41,7 @@ import { ViewFeatureConstraintsDialogComponent } from '../../dialogs/view-featur
 @Component({
 	selector: 'osee-plconfig-feature-dropdown',
 	templateUrl: './feature-dropdown.component.html',
-	styleUrls: ['./feature-dropdown.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatIconModule,

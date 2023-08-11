@@ -42,7 +42,7 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 @Component({
 	selector: 'osee-plconfig-copy-configuration-dialog',
 	templateUrl: './copy-configuration-dialog.component.html',
-	styleUrls: ['./copy-configuration-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		FormsModule,

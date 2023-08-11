@@ -17,7 +17,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
 	selector: 'osee-ple-main',
 	templateUrl: './ple.component.html',
-	styleUrls: ['./ple.component.sass'],
 	standalone: true,
 	imports: [MatButtonModule],
 })

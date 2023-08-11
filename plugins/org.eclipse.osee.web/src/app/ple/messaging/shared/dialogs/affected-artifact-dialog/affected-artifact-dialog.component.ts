@@ -24,7 +24,7 @@ import type { affectedArtifactWarning } from '@osee/messaging/shared/types';
 @Component({
 	selector: 'osee-affected-artifact-dialog',
 	templateUrl: './affected-artifact-dialog.component.html',
-	styleUrls: ['./affected-artifact-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatDialogModule, MatFormFieldModule, MatButtonModule, NgFor],
 })

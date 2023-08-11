@@ -12,9 +12,7 @@
  -->
 <h1 mat-dialog-title>Add Configuration</h1>
 <div mat-dialog-content>
-	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width">
+	<mat-form-field class="tw-w-full tw-text-lg">
 		<mat-label>Title</mat-label>
 		<input
 			matInput
@@ -26,9 +24,7 @@
 			[attr.data-cy-value]="'field-name-' + data.title" />
 	</mat-form-field>
 	<br />
-	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width">
+	<mat-form-field class="tw-w-full tw-text-lg">
 		<mat-label>Description</mat-label>
 		<input
 			matInput
@@ -43,8 +39,7 @@
 	<mat-label class="dialog-font-size">Copy From:</mat-label>
 	<br />
 	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width"
+		class="tw-w-full tw-text-lg"
 		data-cy="field-copyFrom">
 		<mat-label>Select a Configuration</mat-label>
 		<mat-select
@@ -59,11 +54,9 @@
 		</mat-select>
 	</mat-form-field>
 	<br />
-	<mat-label class="dialog-font-size">Add a Configuration Group:</mat-label>
+	<mat-label class="tw-text-lg">Add a Configuration Group:</mat-label>
 	<br />
-	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width">
+	<mat-form-field class="tw-w-full tw-text-lg">
 		<mat-label> Select a Configuration Group </mat-label>
 		<mat-select
 			[(ngModel)]="data.group"
@@ -79,14 +72,14 @@
 	</mat-form-field>
 	<div>
 		<mat-label
-			class="dialog-font-size"
+			class="tw-text-lg"
 			data-cy="product-types-selection"
 			>Select Product Types</mat-label
 		>
 		<mat-selection-list
 			[(ngModel)]="data.productApplicabilities"
 			color="primary"
-			class="dialog-font-size">
+			class="tw-text-lg">
 			<mat-list-option
 				*ngFor="let type of productApplicabilities | async"
 				[value]="type.name"

@@ -71,7 +71,7 @@ import { CurrentUnitsService } from '@osee/messaging/shared/services';
 		MatOptionLoadingComponent,
 	],
 	templateUrl: './unit-dropdown.component.html',
-	styleUrls: ['./unit-dropdown.component.sass'],
+	styles: [],
 	animations: [
 		trigger('dropdownOpen', [
 			state(

@@ -20,7 +20,6 @@ import { SnackbarWrapperComponent } from '@osee/shared/components';
 @Component({
 	selector: 'osee-root',
 	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.sass'],
 	standalone: true,
 	imports: [RouterOutlet, NavContainerComponent, SnackbarWrapperComponent],
 })

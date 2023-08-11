@@ -20,7 +20,7 @@ import type { headerDetail } from '@osee/shared/types';
 @Component({
 	selector: 'osee-messaging-diff-report-table',
 	templateUrl: './diff-report-table.component.html',
-	styleUrls: ['./diff-report-table.component.scss'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, NgFor, AsyncPipe, NgClass, MatTableModule, MatIconModule],
 })

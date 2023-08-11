@@ -107,7 +107,7 @@ type platformTypeStates =
 		NewTypeFormComponent,
 	],
 	templateUrl: './element-form.component.html',
-	styleUrls: ['./element-form.component.sass'],
+	styles: [],
 })
 export class ElementFormComponent implements OnInit, OnChanges {
 	@Input() data: ElementDialog = {

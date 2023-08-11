@@ -22,7 +22,6 @@ import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-re
 @Component({
 	selector: 'osee-messaging-submessage-diffs',
 	templateUrl: './submessage-diffs.component.html',
-	styleUrls: ['./submessage-diffs.component.sass'],
 	standalone: true,
 	imports: [NgIf, AsyncPipe, DiffReportTableComponent],
 })

@@ -42,7 +42,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
 	selector: 'osee-messaging-add-structure-dialog',
 	templateUrl: './add-structure-dialog.component.html',
-	styleUrls: ['./add-structure-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatStepperModule,

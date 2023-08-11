@@ -12,7 +12,7 @@
  -->
 <ng-container *ngIf="allNodes | async as allItems">
 	<ng-container *ngIf="allItems.length !== 0">
-		<h2 class="mat-headline-6 diff-report-section-header">Node Changes</h2>
+		<h2 class="mat-headline-6 tw-pl-4">Node Changes</h2>
 		<ng-container *ngIf="nodesAdded | async as nodes">
 			<osee-messaging-diff-report-table
 				[items]="nodes"

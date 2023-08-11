@@ -32,9 +32,7 @@
 			<!-- Relationship options -->
 			<div class="tw-mb-4">
 				<mat-label>Relationship</mat-label>
-				<mat-form-field
-					class="dialog-font-size"
-					class="dialog-full-width">
+				<mat-form-field class="tw-w-full tw-text-lg">
 					<mat-label>Select a Relationship</mat-label>
 					<mat-select
 						[name]="'relationship' + x"
@@ -67,9 +65,8 @@
 		<button
 			mat-stroked-button
 			(click)="addApplicabilitySection()"
-			class="dialog-font-size"
-			data-cy="add-value-btn"
-			class="dialog-full-width">
+			class="tw-w-full tw-text-lg"
+			data-cy="add-value-btn">
 			Add Additional Applicability
 		</button>
 	</div>
@@ -88,7 +85,7 @@
 			Confirm
 		</button>
 
-		<div class="name-check">
+		<div class="tw-me-4 tw-ms-4">
 			<!-- Constructed name -->
 			<mat-label [hidden]="compApplicForm.invalid"
 				>Name: {{ constructName() }}</mat-label

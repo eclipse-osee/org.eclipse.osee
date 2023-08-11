@@ -12,9 +12,7 @@
  -->
 <ng-container *ngIf="allStructures | async as allItems">
 	<ng-container *ngIf="allItems.length !== 0">
-		<h2 class="mat-headline-6 diff-report-section-header">
-			Structure Changes
-		</h2>
+		<h2 class="mat-headline-6 tw-pl-4">Structure Changes</h2>
 		<ng-container *ngIf="structuresAdded | async as structures">
 			<ng-container *ngFor="let i of getArrayLength(structures)">
 				<osee-messaging-diff-report-table
@@ -24,7 +22,8 @@
 					[title]="
 						i === 0 ? 'Structures Added' : ''
 					"></osee-messaging-diff-report-table>
-				<div class="diff-report-structure-elements-table">
+				<div
+					class="-tw-mt-4 tw-mb-0 tw-ml-2 tw-mr-0 tw-border-l-4 tw-border-solid tw-border-background-app-bar tw-pl-2">
 					<osee-messaging-diff-report-table
 						[items]="structures[i].elementChanges!"
 						[headers]="elementHeaders"
@@ -43,7 +42,8 @@
 					[title]="
 						i === 0 ? 'Structures Deleted' : ''
 					"></osee-messaging-diff-report-table>
-				<div class="diff-report-structure-elements-table">
+				<div
+					class="-tw-mt-4 tw-mb-0 tw-ml-2 tw-mr-0 tw-border-l-4 tw-border-solid tw-border-background-app-bar tw-pl-2">
 					<osee-messaging-diff-report-table
 						[items]="structures[i].elementChanges!"
 						[headers]="elementHeaders"
@@ -62,7 +62,8 @@
 					[title]="
 						i === 0 ? 'Structures Changed' : ''
 					"></osee-messaging-diff-report-table>
-				<div class="diff-report-structure-elements-table">
+				<div
+					class="-tw-mt-4 tw-mb-0 tw-ml-2 tw-mr-0 tw-border-l-4 tw-border-solid tw-border-background-app-bar tw-pl-2">
 					<osee-messaging-diff-report-table
 						[items]="structures[i].elementChanges!"
 						[headers]="elementHeaders"

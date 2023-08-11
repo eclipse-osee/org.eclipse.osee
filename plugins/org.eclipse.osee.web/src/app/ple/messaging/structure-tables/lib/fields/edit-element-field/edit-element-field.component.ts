@@ -67,7 +67,7 @@ import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 @Component({
 	selector: 'osee-messaging-edit-element-field',
 	templateUrl: './edit-element-field.component.html',
-	styleUrls: ['./edit-element-field.component.sass'],
+	styles: [':host{display: block;width: 100%;}'],
 	standalone: true,
 	imports: [
 		MatFormFieldModule,

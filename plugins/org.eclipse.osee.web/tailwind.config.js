@@ -370,6 +370,12 @@ module.exports = {
 					DEFAULT: 'var(--mat-background-background)',
 				},
 			},
+			gridTemplateColumns: {
+				landing: 'repeat(auto-fit, minmax(255px, 1fr))',
+			},
+			spacing: {
+				'landing-button': '255px',
+			},
 		},
 	},
 	plugins: [

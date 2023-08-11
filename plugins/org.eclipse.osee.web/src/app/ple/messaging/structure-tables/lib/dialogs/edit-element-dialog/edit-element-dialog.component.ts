@@ -27,7 +27,7 @@ import { element, ElementDialog } from '@osee/messaging/shared/types';
 	standalone: true,
 	imports: [MatDialogModule, MatButtonModule, ElementFormComponent],
 	templateUrl: './edit-element-dialog.component.html',
-	styleUrls: ['./edit-element-dialog.component.sass'],
+	styles: [],
 })
 export class EditElementDialogComponent {
 	constructor(

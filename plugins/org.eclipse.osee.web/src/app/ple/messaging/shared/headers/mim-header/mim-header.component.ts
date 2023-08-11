@@ -26,7 +26,7 @@ import { CurrentBranchInfoService } from '@osee/shared/services';
 @Component({
 	selector: 'osee-messaging-header',
 	templateUrl: './mim-header.component.html',
-	styleUrls: ['./mim-header.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatButtonModule, RouterLink, NgIf, NgFor, AsyncPipe],
 })

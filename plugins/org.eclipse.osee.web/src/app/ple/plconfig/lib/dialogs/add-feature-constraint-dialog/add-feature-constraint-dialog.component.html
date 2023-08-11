@@ -108,17 +108,15 @@
 		</div>
 
 		<!-- Preview the text in real words AND any conflicts that may exist once added -->
-		<div
-			class="preview-in-words"
-			[hidden]="hidePreview">
-			<div class="preview-title">Preview:</div>
+		<div [hidden]="hidePreview">
+			<div class="tw-text-foreground">Preview:</div>
 			<!-- Constructed feature constraint -->
 			<mat-label>
-				<a class="preview-text">
+				<a class="tw-text-primary">
 					{{ data.featureConstraint.applicability1.name }}
 				</a>
 				is only applicable if
-				<a class="preview-text">
+				<a class="tw-text-primary">
 					{{ data.featureConstraint.applicability2.name }}
 				</a>
 			</mat-label>
@@ -126,10 +124,10 @@
 			<br />
 			<br />
 			<mat-label>
-				<div class="preview-title">
+				<div class="tw-text-foreground">
 					Conflicts that MUST be resolved before adding:
 				</div>
-				<div class="conflict-message">
+				<div class="tw-text-warning">
 					<ng-container *ngIf="conflict$ | async as conflicts">
 						<ng-container
 							*ngIf="conflicts.length > 0; else noConflicts">

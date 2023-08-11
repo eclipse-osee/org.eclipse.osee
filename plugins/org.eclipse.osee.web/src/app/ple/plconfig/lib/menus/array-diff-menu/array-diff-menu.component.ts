@@ -20,7 +20,7 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 @Component({
 	selector: 'osee-plconfig-array-diff-menu',
 	templateUrl: './array-diff-menu.component.html',
-	styleUrls: ['./array-diff-menu.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, NgFor, MatMenuModule],
 })

@@ -13,12 +13,11 @@
 <button
 	mat-stroked-button
 	[matMenuTriggerFor]="mainMenu"
-	class="pl-config-feature-dropdown-dd-button"
 	data-cy="change-feature-dropdown-btn">
 	Edit Definitions
 </button>
 <mat-menu
-	class="edit-def-menu"
+	class="tw-max-w-none"
 	#mainMenu="matMenu">
 	<!-- config dropdown -->
 	<osee-plconfig-configuration-dropdown></osee-plconfig-configuration-dropdown>

@@ -19,7 +19,7 @@ import { tap } from 'rxjs';
 	standalone: true,
 	selector: 'osee-enum-literals-field',
 	templateUrl: './enum-literals-field.component.html',
-	styleUrls: ['./enum-literals-field.component.sass'],
+	styles: [],
 	imports: [NgIf, NgFor, AsyncPipe],
 })
 export class EnumLiteralsFieldComponent {

@@ -57,7 +57,7 @@ import { createArtifact } from '@osee/shared/types';
 @Component({
 	selector: 'osee-enum-form',
 	templateUrl: './enum-form.component.html',
-	styleUrls: ['./enum-form.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatTableModule,

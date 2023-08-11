@@ -19,7 +19,7 @@
 <mat-stepper #stepper>
 	<mat-step label="Platform Type">
 		<mat-dialog-content>
-			<mat-form-field class="width-100">
+			<mat-form-field class="tw-w-full">
 				<mat-label for="platformTypeName">Platform Type</mat-label>
 				<input
 					matInput
@@ -54,7 +54,7 @@
 				[oseeUniquePlatformTypeAttributes]="undefined"
 				[referencePlatform]="reference"
 				#platformTypeForm="ngForm">
-				<mat-form-field class="width-100">
+				<mat-form-field class="tw-w-full">
 					<mat-label for="interfaceLogicalType"
 						>Logical Type</mat-label
 					>
@@ -91,7 +91,8 @@
 					>
 				</mat-form-field>
 				<br />
-				<div class="full-width">
+				<div
+					class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-4 [&>*]:tw-flex">
 					<mat-form-field appearance="fill">
 						<mat-label>Description</mat-label>
 						<textarea
@@ -124,7 +125,8 @@
 					</mat-form-field>
 				</div>
 				<br />
-				<div class="full-width">
+				<div
+					class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-4 [&>*]:tw-flex">
 					<osee-cross-reference-dropdown
 						id="interfacePlatformTypeMinval"
 						name="interfacePlatformTypeMinval"
@@ -179,7 +181,8 @@
 					</osee-cross-reference-dropdown>
 				</div>
 				<br />
-				<div class="full-width">
+				<div
+					class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-4 [&>*]:tw-flex">
 					<mat-form-field>
 						<mat-label for="byte_size1">Byte Size</mat-label>
 						<input
@@ -245,7 +248,8 @@
 					</mat-form-field>
 				</div>
 				<br />
-				<div class="full-width">
+				<div
+					class="tw-flex tw-flex-row tw-flex-wrap tw-items-center tw-gap-4 [&>*]:tw-flex">
 					<mat-form-field>
 						<mat-label for="interfacePlatformTypeBitsResolution"
 							>Resolution</mat-label

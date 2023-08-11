@@ -39,7 +39,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
 	selector: 'osee-plconfig-edit-configuration-dialog',
 	templateUrl: './edit-config-dialog.component.html',
-	styleUrls: ['./edit-config-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		FormsModule,

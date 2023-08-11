@@ -85,7 +85,7 @@ import { applic } from '@osee/shared/types/applicability';
 		NewPlatformTypeFormPage2Component,
 	],
 	templateUrl: './new-type-form.component.html',
-	styleUrls: ['./new-type-form.component.sass'],
+	styles: [':host{width: 100%;height: 100%;}'],
 })
 export class NewTypeFormComponent implements OnInit {
 	@ContentChild('platformTypeForm') platformTypeForm!: NgForm;

@@ -33,7 +33,6 @@ import { HelpService } from '@osee/shared/services/help';
 		MatDividerModule,
 	],
 	templateUrl: './messaging-help-navigation.component.html',
-	styleUrls: ['./messaging-help-navigation.component.sass'],
 })
 export class MessagingHelpNavigationComponent {
 	constructor(

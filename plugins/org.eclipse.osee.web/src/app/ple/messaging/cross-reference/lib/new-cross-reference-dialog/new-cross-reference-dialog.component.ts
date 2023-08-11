@@ -42,7 +42,6 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 		ApplicabilitySelectorComponent,
 	],
 	templateUrl: './new-cross-reference-dialog.component.html',
-	styleUrls: ['./new-cross-reference-dialog.component.scss'],
 })
 export class NewCrossReferenceDialogComponent {
 	constructor(

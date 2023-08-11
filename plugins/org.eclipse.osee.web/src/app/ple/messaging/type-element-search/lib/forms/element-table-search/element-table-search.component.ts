@@ -20,7 +20,7 @@ import { SearchService } from '../../services/search.service';
 @Component({
 	selector: 'osee-typesearch-element-table-search',
 	templateUrl: './element-table-search.component.html',
-	styleUrls: ['./element-table-search.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatFormFieldModule, FormsModule, MatInputModule, MatIconModule],
 })

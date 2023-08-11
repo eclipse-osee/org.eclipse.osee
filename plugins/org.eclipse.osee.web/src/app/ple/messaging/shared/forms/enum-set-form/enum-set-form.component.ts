@@ -28,7 +28,7 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 @Component({
 	selector: 'osee-enum-set-form',
 	templateUrl: './enum-set-form.component.html',
-	styleUrls: ['./enum-set-form.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatFormFieldModule,

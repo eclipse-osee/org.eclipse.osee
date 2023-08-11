@@ -39,13 +39,15 @@ import {
 } from 'rxjs/operators';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
-import { RateDropdownComponent } from '@osee/messaging/shared/dropdowns';
-import { MessageTypeDropdownComponent } from '../../../../shared/dropdowns/message-type-dropdown/message-type-dropdown.component';
+import {
+	MessageTypeDropdownComponent,
+	RateDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-messaging-edit-message-field',
 	templateUrl: './edit-message-field.component.html',
-	styleUrls: ['./edit-message-field.component.sass'],
+	styles: [':host{display:block; width:100%;}'],
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [

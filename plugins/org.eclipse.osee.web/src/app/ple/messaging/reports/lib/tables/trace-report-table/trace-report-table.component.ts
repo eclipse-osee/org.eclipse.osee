@@ -37,7 +37,6 @@ import { nodeTraceReportHeaderDetails } from '../../table-headers/trace-report-t
 		MatTableModule,
 	],
 	templateUrl: './trace-report-table.component.html',
-	styleUrls: ['./trace-report-table.component.scss'],
 })
 export class TraceReportTableComponent implements AfterViewInit {
 	@Input() data: NodeTraceReportItem[] = [];

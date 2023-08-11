@@ -36,7 +36,7 @@ import { combineLatest, concatMap, filter, from, map, scan } from 'rxjs';
 		MatOptionModule,
 	],
 	templateUrl: './separated-feature-selector.component.html',
-	styleUrls: ['./separated-feature-selector.component.sass'],
+	styles: [],
 })
 export class SeparatedFeatureSelectorComponent {
 	features = this.currentBranchService.branchApplicFeatures.pipe(

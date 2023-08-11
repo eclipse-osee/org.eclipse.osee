@@ -35,7 +35,7 @@ import { PLEditFeatureData } from '../../types/pl-config-features';
 @Component({
 	selector: 'osee-plconfig-edit-feature-dialog',
 	templateUrl: './edit-feature-dialog.component.html',
-	styleUrls: ['./edit-feature-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

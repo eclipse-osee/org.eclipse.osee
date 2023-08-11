@@ -33,7 +33,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'osee-plconfig-configuration-dropdown',
 	templateUrl: './configuration-dropdown.component.html',
-	styleUrls: ['./configuration-dropdown.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatIconModule,

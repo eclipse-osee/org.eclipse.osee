@@ -49,7 +49,7 @@ import { ApplicabilityListUIService } from '@osee/shared/services';
 		MatAutocompleteModule,
 	],
 	templateUrl: './add-feature-constraint-dialog.component.html',
-	styleUrls: ['./add-feature-constraint-dialog.component.sass'],
+	styles: [],
 })
 export class AddFeatureConstraintDialogComponent implements OnDestroy {
 	constraintIsCompApplic = false;

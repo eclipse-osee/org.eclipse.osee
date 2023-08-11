@@ -14,12 +14,12 @@
 	mat-fab
 	*ngIf="(inEditMode | async) === true"
 	(click)="openNewTypeDialog()"
-	class="new-platform-type-button"
+	class="tw-fixed tw-bottom-[3%] tw-left-[2%] tw-z-10"
 	color="primary"
 	data-cy="add-type-bottom-button">
 	<mat-icon>add</mat-icon>
 </button>
-<mat-form-field class="ple-messaging-type-grid-filter">
+<mat-form-field class="tw-w-full tw-pb-4">
 	<mat-label>Filter Types</mat-label>
 	<input
 		matInput
@@ -30,14 +30,15 @@
 	<mat-icon matPrefix>filter_list</mat-icon>
 	<mat-hint>Enter text to filter Types</mat-hint>
 </mat-form-field>
-<div class="ple-messaging-type-grid">
+<div
+	class="tw-flex tw-h-full tw-flex-wrap tw-items-baseline tw-justify-between tw-bg-background-background max-sm:tw-block">
 	<ng-container *ngIf="filteredData | async as _filteredData">
 		<ng-container *ngFor="let card of _filteredData; let i = index">
 			<osee-messaging-types-platform-type-card
 				[typeData]="card"
 				[attr.width]="getWidthString()"
 				[style.margin]="getMarginString()"
-				class="typeElement">
+				class="tw-flex-1">
 			</osee-messaging-types-platform-type-card>
 		</ng-container>
 		<mat-paginator

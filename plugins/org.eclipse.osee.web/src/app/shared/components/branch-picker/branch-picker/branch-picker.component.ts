@@ -24,7 +24,6 @@ import { BranchTypeSelectorComponent } from '../internal/components/branch-type-
 @Component({
 	selector: 'osee-branch-picker',
 	templateUrl: './branch-picker.component.html',
-	styleUrls: ['./branch-picker.component.sass'],
 	standalone: true,
 	imports: [BranchTypeSelectorComponent, BranchSelectorComponent],
 })

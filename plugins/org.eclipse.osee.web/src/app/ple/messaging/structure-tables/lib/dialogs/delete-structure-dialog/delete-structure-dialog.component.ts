@@ -22,7 +22,7 @@ import { DeleteStructureDialogData } from './delete-structure-dialog';
 @Component({
 	selector: 'osee-messaging-delete-structure-dialog',
 	templateUrl: './delete-structure-dialog.component.html',
-	styleUrls: ['./delete-structure-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatDialogModule, MatButtonModule],
 })

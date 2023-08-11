@@ -28,7 +28,7 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 @Component({
 	selector: 'osee-plconfig-config-menu',
 	templateUrl: './config-menu.component.html',
-	styleUrls: ['./config-menu.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatMenuModule,

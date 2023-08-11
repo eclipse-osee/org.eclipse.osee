@@ -16,13 +16,12 @@ import { UiService } from '@osee/shared/services';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { CrossReference } from '../shared/types/crossReference';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import { connection } from '@osee/messaging/shared/types';
+import { CrossReference, connection } from '@osee/messaging/shared/types';
 import {
 	CrossReferenceTableComponent,
 	NewCrossReferenceDialogComponent,
@@ -45,7 +44,6 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 		MessagingControlsComponent,
 	],
 	templateUrl: './cross-reference.component.html',
-	styleUrls: ['./cross-reference.component.scss'],
 })
 export class CrossReferenceComponent implements OnInit, OnDestroy {
 	constructor(

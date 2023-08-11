@@ -17,9 +17,9 @@
 			<ng-container
 				*ngIf="_branchType === 'working'; else branchTypeMessage">
 				<ng-container *ngIf="importOptions | async as _importOptions">
-					<div class="import-form-container">
+					<div class="tw-pl-8">
 						<h2>Import</h2>
-						<div class="form-fields-container">
+						<div class="tw-flex tw-w-60 tw-flex-col tw-gap-2">
 							<mat-form-field appearance="fill">
 								<mat-label>{{
 									importOptionSelectionText | async
@@ -77,11 +77,11 @@
 								<div class="tw-flex tw-items-center">
 									<label
 										for="file-upload"
-										class="input-label">
+										class="tw-block tw-w-48 hover:tw-cursor-pointer">
 										<button
 											mat-raised-button
 											color="primary"
-											class="tw-m-auto">
+											class="-tw-z-50 tw-m-auto">
 											Select File
 										</button>
 									</label>
@@ -110,7 +110,8 @@
 								<button
 									mat-raised-button
 									color="primary"
-									(click)="startImportSummary()">
+									(click)="startImportSummary()"
+									class="tw-mt-4">
 									Get Import Summary
 								</button>
 							</ng-container>
@@ -119,7 +120,7 @@
 									importSuccess | async as _importSuccess;
 									else summary
 								">
-								<div class="import-summary">
+								<div class="tw-mt-4 tw-pr-4">
 									<ng-container *ngIf="_importSuccess">
 										<p>Import successful</p>
 									</ng-container>
@@ -134,7 +135,7 @@
 										importSummary | async as _importSummary
 									">
 									<ng-container *ngIf="showSummary">
-										<div class="import-summary">
+										<div class="tw-mt-4 tw-pr-4">
 											<h3>
 												The following will be imported
 												from

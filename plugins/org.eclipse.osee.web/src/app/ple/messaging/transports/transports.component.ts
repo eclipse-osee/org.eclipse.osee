@@ -43,7 +43,9 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 @Component({
 	selector: 'osee-transports',
 	templateUrl: './transports.component.html',
-	styleUrls: ['./transports.component.sass'],
+	styles: [
+		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
+	],
 	standalone: true,
 	imports: [
 		AsyncPipe,

@@ -22,7 +22,6 @@ import { DeleteMessageDialogData } from '../../types/DeleteMessageDialog';
 @Component({
 	selector: 'osee-messaging-delete-message-dialog',
 	templateUrl: './delete-message-dialog.component.html',
-	styleUrls: ['./delete-message-dialog.component.sass'],
 	standalone: true,
 	imports: [MatDialogModule, MatButtonModule],
 })

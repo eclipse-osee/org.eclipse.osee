@@ -113,7 +113,7 @@ import { StructureDataSource } from '@osee/messaging/shared/datasources';
 @Component({
 	selector: 'osee-structure-table',
 	templateUrl: './structure-table.component.html',
-	styleUrls: ['./structure-table.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

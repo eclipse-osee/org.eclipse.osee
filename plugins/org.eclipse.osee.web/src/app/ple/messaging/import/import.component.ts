@@ -49,7 +49,9 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 @Component({
 	selector: 'osee-import',
 	templateUrl: './import.component.html',
-	styleUrls: ['./import.component.sass'],
+	styles: [
+		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block; overflow: hidden; margin-bottom: -1em;}',
+	],
 	standalone: true,
 	imports: [
 		NgIf,

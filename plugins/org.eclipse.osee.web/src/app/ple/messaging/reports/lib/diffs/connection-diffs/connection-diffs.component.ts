@@ -22,7 +22,6 @@ import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-re
 @Component({
 	selector: 'osee-messaging-connection-diffs',
 	templateUrl: './connection-diffs.component.html',
-	styleUrls: ['./connection-diffs.component.sass'],
 	standalone: true,
 	imports: [NgIf, AsyncPipe, DiffReportTableComponent],
 })

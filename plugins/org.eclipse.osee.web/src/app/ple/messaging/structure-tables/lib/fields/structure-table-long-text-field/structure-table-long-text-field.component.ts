@@ -19,7 +19,7 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 @Component({
 	selector: 'osee-structure-table-long-text-field',
 	templateUrl: './structure-table-long-text-field.component.html',
-	styleUrls: ['./structure-table-long-text-field.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgClass,

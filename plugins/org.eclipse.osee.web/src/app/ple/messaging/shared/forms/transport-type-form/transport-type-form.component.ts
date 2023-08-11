@@ -48,7 +48,7 @@ import { HeaderService } from '@osee/messaging/shared/services';
 		ApplicabilitySelectorComponent,
 	],
 	templateUrl: './transport-type-form.component.html',
-	styleUrls: ['./transport-type-form.component.sass'],
+	styles: [],
 	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class TransportTypeFormComponent {

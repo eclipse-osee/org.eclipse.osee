@@ -79,7 +79,7 @@ const _comparator = (previous: string, current: string) => {
 		MatOptionLoadingComponent,
 	],
 	templateUrl: './message-type-dropdown.component.html',
-	styleUrls: ['./message-type-dropdown.component.sass'],
+	styles: [],
 	animations: [
 		trigger('dropdownOpen', [
 			state(

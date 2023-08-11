@@ -41,7 +41,7 @@ import { MatIconModule } from '@angular/material/icon';
 		MatIconModule,
 	],
 	templateUrl: './named-id-list-editor.component.html',
-	styleUrls: ['./named-id-list-editor.component.sass'],
+	styles: [],
 })
 export class NamedIdListEditorComponent {
 	@Input() name: string = '';

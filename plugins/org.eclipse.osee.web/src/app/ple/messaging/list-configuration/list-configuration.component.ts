@@ -39,7 +39,6 @@ import { NamedId } from '@osee/shared/types';
 		NgIf,
 	],
 	templateUrl: './list-configuration.component.html',
-	styleUrls: ['./list-configuration.component.sass'],
 })
 export class ListConfigurationComponent implements OnDestroy {
 	private _uiService = inject(UiService);

@@ -10,14 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="landing-page-container">
+<div
+	class="tw-flex tw-h-full tw-min-w-[560px] tw-flex-col tw-items-center tw-justify-center tw-text-center">
 	<div class="mat-headline-1">Product Line Engineering</div>
-	<div class="landing-page-links-container">
+	<div
+		class="tw-grid tw-max-w-[822px] tw-grid-cols-landing tw-justify-center tw-gap-7">
 		<a
 			mat-raised-button
 			color="primary"
 			(click)="navigateTo('plconfig')"
-			class="landing-page-link-button"
+			class="tw-w-landing-button tw-px-4 tw-py-7"
 			data-cy="plconfig-nav-button">
 			Product Line Configuration
 		</a>
@@ -25,7 +27,7 @@
 			mat-raised-button
 			color="primary"
 			(click)="navigateTo('messaging')"
-			class="landing-page-link-button"
+			class="tw-w-landing-button tw-px-4 tw-py-7"
 			data-cy="messaging-nav-button">
 			Message Configuration
 		</a>

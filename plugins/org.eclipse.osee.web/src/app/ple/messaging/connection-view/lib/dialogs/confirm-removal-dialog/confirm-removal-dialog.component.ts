@@ -24,7 +24,6 @@ import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 @Component({
 	selector: 'osee-confirm-removal-dialog',
 	templateUrl: './confirm-removal-dialog.component.html',
-	styleUrls: ['./confirm-removal-dialog.component.sass'],
 	standalone: true,
 	imports: [
 		MatDialogModule,

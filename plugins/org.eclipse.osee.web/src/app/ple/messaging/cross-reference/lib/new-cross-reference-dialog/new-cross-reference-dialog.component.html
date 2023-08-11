@@ -13,8 +13,8 @@
 <h1 mat-dialog-title>Create New Cross Reference</h1>
 <form #crossRefForm="ngForm">
 	<mat-dialog-content>
-		<div class="top-fields">
-			<mat-form-field class="full-width">
+		<div class="tw-grid tw-gap-2">
+			<mat-form-field class="tw-w-full">
 				<mat-label>Name</mat-label>
 				<input
 					matInput
@@ -23,7 +23,7 @@
 					name="field-name"
 					data-cy="field-name" />
 			</mat-form-field>
-			<mat-form-field class="full-width">
+			<mat-form-field class="tw-w-full">
 				<mat-label>Value</mat-label>
 				<input
 					matInput
@@ -32,7 +32,7 @@
 					name="field-value"
 					data-cy="field-value" />
 			</mat-form-field>
-			<mat-form-field class="full-width">
+			<mat-form-field class="tw-w-full">
 				<mat-label>Additional Content</mat-label>
 				<input
 					matInput
@@ -41,10 +41,10 @@
 					data-cy="field-additional" />
 			</mat-form-field>
 		</div>
-		<div class="array-fields">
-			<h4 class="array-fields-header">Array Values</h4>
+		<div class="tw-grid tw-gap-2 tw-py-2">
+			<h4 class="tw-m-0">Array Values</h4>
 			<ng-container *ngFor="let item of arrayValues; let i = index">
-				<div class="array-row">
+				<div class="tw-flex tw-gap-2">
 					<mat-form-field>
 						<mat-label>Key</mat-label>
 						<input
@@ -68,7 +68,7 @@
 			mat-mini-fab
 			color="primary"
 			(click)="addArrayValue()"
-			class="add-button">
+			class="tw-float-right tw-mb-2">
 			<mat-icon>add</mat-icon>
 		</button>
 		<osee-applicability-selector

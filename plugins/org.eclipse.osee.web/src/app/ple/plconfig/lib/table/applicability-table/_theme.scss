@@ -35,33 +35,12 @@
 		color: mat.get-color-from-palette($primary);
 	}
 
-	.applic-table-header {
-		color: mat.get-color-from-palette($primary, 600);
-	}
-
 	.applic-table-row-even {
 		background-color: mat.get-color-from-palette($background, card);
 	}
 
 	.applic-table-row-odd {
 		background-color: mat.get-color-from-palette($background, background);
-	}
-
-	.table-container::-webkit-scrollbar {
-		background-color: mat.get-color-from-palette($background, app-bar);
-	}
-
-	.table-container::-webkit-scrollbar-track {
-		background-color: mat.get-color-from-palette($background, app-bar);
-		border-radius: 10px;
-	}
-
-	.table-container::-webkit-scrollbar-thumb {
-		background-color: mat.get-color-from-palette($primary);
-	}
-
-	.table-container::-webkit-scrollbar-corner {
-		background-color: mat.get-color-from-palette($background, app-bar);
 	}
 
 	.applic-table-row-even-added {

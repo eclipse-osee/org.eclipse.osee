@@ -40,7 +40,7 @@ import type {
 @Component({
 	selector: 'osee-connection-view-graph',
 	templateUrl: './graph.component.html',
-	styleUrls: ['./graph.component.sass'],
+	styles: [':host{ width: 100%; height: 100%;}'],
 	standalone: true,
 	imports: [
 		NgIf,

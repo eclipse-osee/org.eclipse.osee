@@ -38,7 +38,7 @@ import {
 @Component({
 	selector: 'osee-messaging-edit-enum-set-dialog',
 	templateUrl: './edit-enum-set-dialog.component.html',
-	styleUrls: ['./edit-enum-set-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

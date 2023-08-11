@@ -35,7 +35,7 @@ import { PLAddConfigData } from '../../types/pl-edit-config-data';
 @Component({
 	selector: 'osee-plconfig-add-configuration-dialog',
 	templateUrl: './add-configuration-dialog.component.html',
-	styleUrls: ['./add-configuration-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgFor,

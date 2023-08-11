@@ -44,7 +44,7 @@ import { map } from 'rxjs/operators';
 @Component({
 	selector: 'osee-messaging-column-preferences-dialog',
 	templateUrl: './column-preferences-dialog.component.html',
-	styleUrls: ['./column-preferences-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatDialogModule,

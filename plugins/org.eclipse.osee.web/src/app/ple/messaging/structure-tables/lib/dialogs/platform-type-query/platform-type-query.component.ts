@@ -39,7 +39,7 @@ import type { PlatformType } from '@osee/messaging/shared/types';
 @Component({
 	selector: 'osee-messaging-platform-type-query',
 	templateUrl: './platform-type-query.component.html',
-	styleUrls: ['./platform-type-query.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatFormFieldModule,

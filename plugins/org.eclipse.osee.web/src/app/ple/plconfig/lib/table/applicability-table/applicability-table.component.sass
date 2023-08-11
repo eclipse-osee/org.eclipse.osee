@@ -19,13 +19,6 @@
 @media (prefers-color-scheme:dark)
     @include form-field.legacy($theme:modern-ple-theme.$modern-ple-dark-theme,$class:'full-width')
     @include t.material-theme($theme:modern-ple-theme.$modern-ple-dark-theme,$typography:modern-ple-theme.$modern-ple-typography)
-table
-    width: 100%
-.table-container
-    width: 100%
-    min-height: 72vh
-    overflow-x: auto
-    overflow-y: auto
 
 .mat-form-field
     width: 100%
@@ -76,8 +69,6 @@ td.mat-cell:last-of-type
 .feature-cell
     @extend .cursor-pointer
 
-.filter-form-field
-    @extend .full-width
 .full-width
     width: 100%
 .text-align-center
@@ -85,8 +76,6 @@ td.mat-cell:last-of-type
 .clickable-table-header
     @extend .text-align-center
     @extend .cursor-pointer
-.applic-table-header
-    @extend .text-align-center
 .border-right
     border-right: 1px solid
 .config-group-header

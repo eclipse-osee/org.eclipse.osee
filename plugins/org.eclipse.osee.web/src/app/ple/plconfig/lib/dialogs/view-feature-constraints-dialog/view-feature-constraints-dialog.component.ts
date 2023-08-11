@@ -30,7 +30,7 @@ import { response } from '@osee/shared/types';
 	standalone: true,
 	imports: [CommonModule, MatDialogModule, MatTableModule, MatButtonModule],
 	templateUrl: './view-feature-constraints-dialog.component.html',
-	styleUrls: ['./view-feature-constraints-dialog.component.sass'],
+	styles: [],
 })
 export class ViewFeatureConstraintsDialogComponent {
 	constructor(
