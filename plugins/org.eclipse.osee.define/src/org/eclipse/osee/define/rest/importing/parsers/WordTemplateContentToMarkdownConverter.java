@@ -49,6 +49,7 @@ public class WordTemplateContentToMarkdownConverter {
       "(?s)<w:r.*?>(?:(<w:br/>)|(.*?)<w:(?:pict|t)>(.*?)</w:(?:pict|t)>)</w:r>";
    private static final String NORMALWEB_REGEX = "NormalWeb";
    private static final String BOLD_INDICATOR = "<w:rPr><w:b/></w:rPr>";
+   private static final String BOLD_COMPLEX_INDICATOR = "<w:rPr><w:b/><w:b-cs/></w:rPr>";
    private static final String ITALICS_INDICATOR = "<w:rPr><w:i/></w:rPr>";
    private static final String V_SHAPE_REGEX = "(?s)<v:shape.*?>(.*?)</v:shape.*?>";
    private static final String BULLET_INDICATOR = "Bullet point";
@@ -73,7 +74,7 @@ public class WordTemplateContentToMarkdownConverter {
             if (matcher.group(2).equals(BREAK_INDICATOR)) {
                markdownContent += "\n";
                markdownContent += content;
-            } else if (matcher.group(2).equals(BOLD_INDICATOR)) {
+            } else if (matcher.group(2).equals(BOLD_INDICATOR) || matcher.group(2).equals(BOLD_COMPLEX_INDICATOR)) {
                if (((String) content).startsWith(" ")) {
                   markdownContent += " **" + ((String) content).substring(1) + "**";
                } else {
