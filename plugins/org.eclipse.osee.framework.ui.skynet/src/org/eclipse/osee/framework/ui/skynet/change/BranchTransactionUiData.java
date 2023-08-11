@@ -24,6 +24,7 @@ public class BranchTransactionUiData {
    Object[] transactions;
    private final BranchId branch;
    private final XBranchContentProvider branchContentProvider;
+   private Integer numTransactions;
 
    public BranchTransactionUiData(BranchId branch, XBranchContentProvider branchContentProvider) {
       this.branch = branch;
@@ -48,6 +49,14 @@ public class BranchTransactionUiData {
 
    public void reset() {
       transactions = null;
+   }
+
+   public void setNumTransactions(Integer numTransactions) {
+      this.numTransactions = numTransactions;
+   }
+
+   public Integer getNumTransactions() {
+      return numTransactions;
    }
 
 }

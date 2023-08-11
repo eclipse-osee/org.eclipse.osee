@@ -45,6 +45,10 @@ public final class ChangeUiUtil {
    }
 
    public static void open(BranchId branch, boolean showTransactionTab) {
+      open(branch, showTransactionTab, 0);
+   }
+
+   public static void open(BranchId branch, boolean showTransactionTab, Integer numTransactions) {
       Conditions.checkNotNull(branch, "Branch");
       Branch brch = BranchManager.getBranch(branch);
       if (permissionsDeniedWithDialog(brch)) {
@@ -52,6 +56,7 @@ public final class ChangeUiUtil {
       }
 
       ChangeReportEditorInput editorInput = createInput(branch, true);
+      editorInput.setNumTransactions(numTransactions);
       editorInput.setTransactionTabActive(showTransactionTab);
       open(editorInput);
    }
@@ -62,9 +67,8 @@ public final class ChangeUiUtil {
     * @return true if permissions denied
     */
    public static boolean permissionsDeniedWithDialog(BranchToken branch) {
-      XResultData rd =
-         ServiceUtil.accessControlService().hasBranchPermission(BranchManager.getBranch(branch),
-            PermissionEnum.READ, AccessControlArtifactUtil.getXResultAccessHeader("Branch Access Denied", branch));
+      XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(BranchManager.getBranch(branch),
+         PermissionEnum.READ, AccessControlArtifactUtil.getXResultAccessHeader("Branch Access Denied", branch));
       if (rd.isErrors()) {
          XResultDataDialog.open(rd, "Branch Access Denied", "Access denied to branch:\n\n%s",
             BranchManager.toStringWithId(branch));
@@ -122,7 +126,8 @@ public final class ChangeUiUtil {
       }
    }
 
-   public static ChangeReportEditorInput createInput(CompareType compareType, TransactionDelta txDelta, boolean loadOnOpen) {
+   public static ChangeReportEditorInput createInput(CompareType compareType, TransactionDelta txDelta,
+      boolean loadOnOpen) {
       ChangeUiData uiData = new ChangeUiData(compareType, txDelta);
       uiData.setLoadOnOpen(loadOnOpen);
       return new ChangeReportEditorInput(uiData);
@@ -157,4 +162,5 @@ public final class ChangeUiUtil {
       ChangeReportEditorInput input = createInput(workingBranch, loadOnOpen);
       open(input);
    }
+
 }

@@ -152,6 +152,7 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
       OperationBuilder builder = Operations.createBuilder("Load Branch Transactions");
       branchTransactionData = new BranchTransactionUiData(getEditorInput().getBranch(),
          (XBranchContentProvider) xBranchWidget.getXViewer().getContentProvider());
+      branchTransactionData.setNumTransactions(getEditorInput().getNumTransactions());
       builder.addOp(new LoadBranchTransactionsOperation(branchTransactionData));
       builder.addOp(new LoadAssociatedArtifactOperation(getEditor().getChanges()));
       Operations.executeAsJob(builder.build(), true, Job.LONG, new ReloadJobChangeAdapter());
