@@ -34,6 +34,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
    private BranchId branch;
    private boolean transactionTabActive = false;
    private boolean notLoaded = false;
+   private Integer numTransactions;
 
    public ChangeReportEditorInput(ChangeUiData changeData) {
       this(changeData, null);
@@ -145,6 +146,14 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
 
    public Image getBranchTransactionImage() {
       return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
+   }
+
+   public void setNumTransactions(Integer numTransactions) {
+      this.numTransactions = numTransactions;
+   }
+
+   public Integer getNumTransactions() {
+      return numTransactions;
    }
 
 }

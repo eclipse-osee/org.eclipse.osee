@@ -137,8 +137,9 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    }
 
    @Override
-   public void recomputeBranchTransactions() {
+   public void recomputeBranchTransactions(Integer numTransactions) {
       if (branchTransactionPage != null && branchTransactionPage.isActive()) {
+         branchTransactionPage.getEditorInput().setNumTransactions(numTransactions);
          branchTransactionPage.recomputeBranchTransactions(true);
       }
    }

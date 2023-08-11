@@ -39,17 +39,40 @@ public class LoadBranchTransactionsOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       List<TransactionRecord> transactions =
          TransactionManager.getTransactionsForBranch(branchTransactionData.getBranch());
-      Collections.sort(transactions, new Comparator<TransactionRecord>() {
+      List<TransactionRecord> subsetTxs = null;
+      Integer numTransactions = branchTransactionData.getNumTransactions();
+      if (numTransactions > 0) {
+         Collections.sort(transactions, new Comparator<TransactionRecord>() {
+            @Override
+            public int compare(TransactionRecord o1, TransactionRecord o2) {
+               return (int) (o2.getId().longValue() - o1.getId().longValue());
+            }
+
+         });
+         subsetTxs = new ArrayList<TransactionRecord>();
+         int x = 1;
+         for (TransactionRecord tx : transactions) {
+            subsetTxs.add(tx);
+            if (x++ == numTransactions) {
+               break;
+            }
+         }
+      } else {
+         subsetTxs = transactions;
+      }
+
+      Collections.sort(subsetTxs, new Comparator<TransactionRecord>() {
          @Override
          public int compare(TransactionRecord o1, TransactionRecord o2) {
             return (int) (o1.getId().longValue() - o2.getId().longValue());
          }
+
       });
 
       List<Object> items = null;
       if (transactions != null) {
-         items = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(
-            new ArrayList<Object>(transactions), 500);
+         items = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(new ArrayList<Object>(subsetTxs),
+            500);
       } else {
          items = Collections.emptyList();
       }

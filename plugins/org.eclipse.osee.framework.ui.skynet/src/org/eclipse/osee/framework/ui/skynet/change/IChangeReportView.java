@@ -17,5 +17,5 @@ public interface IChangeReportView {
 
    public void recomputeChangeReport();
 
-   public void recomputeBranchTransactions();
+   public void recomputeBranchTransactions(Integer numTransactions);
 }
