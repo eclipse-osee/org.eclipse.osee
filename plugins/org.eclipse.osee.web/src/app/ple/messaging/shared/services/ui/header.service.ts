@@ -230,6 +230,11 @@ export class HeaderService {
 			description: 'Message Number of structure',
 			humanReadable: 'Message Number',
 		},
+		{
+			header: 'messagePeriodicity',
+			description: 'Periodicity of message',
+			humanReadable: 'Message Periodicity',
+		},
 	]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
 	private _allMessages = new BehaviorSubject<messageHeaderDetail[]>([
