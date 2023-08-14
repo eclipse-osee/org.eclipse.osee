@@ -1,0 +1,76 @@
+.Build_Base:
+  variables: 
+    MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+    MAVEN_CLI_OPTS: >-
+      --batch-mode
+      --errors
+      --no-transfer-progress
+      -Dhttps.protocols=TLSv1.2
+      -Djavax.net.ssl.trustStore=$CI_PROJECT_DIR/keystore.jks 
+      -Djavax.net.ssl.trustStorePassword=secret
+      -Dorg.slf4j.simpleLogger.showDateTime=true
+      -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS
+    _JAVA_OPTIONS: >-
+      -Xms8G 
+      -Xmx8G 
+      -XX:MaxMetaspaceSize=3G
+    JAVA_TOOL_OPTIONS: >-
+      -Dfile.encoding=UTF-8
+      -Djava.awt.headless=true
+  cache:
+    - key: $DOCKER_IMAGE_MAVEN_JDK11_ANT
+    - paths:
+      - .m2
+  script:
+    - echo "==== Download IP Zip ===="
+    - mkdir -p Latest_Zip_And_Dep
+    - cd Latest_Zip_And_Dep
+    - curl -kLJO https://raw.githubusercontent.com/Louie-Maven/ip/main/org.eclipse.ip.p2-1.0.0.zip
+    - cd $CI_PROJECT_DIR
+
+
+    - echo "==== Creating Folders ===="
+    - mkdir -p Latest_Zip_And_Dep/org.eclipse.osee
+    - mkdir -p Latest_Zip_And_Dep/org.eclipse.osee/plugins
+    - mkdir -p Latest_Zip_And_Dep/org.eclipse.osee/features
+    - ls -a Latest_Zip_And_Dep
+    - ls -a Latest_Zip_And_Dep/org.eclipse.osee
+
+
+    - echo "==== Copying Directories ===="
+    - cp -R plugins/org.eclipse.osee.parent plugins/org.eclipse.osee.dep.parent plugins/org.eclipse.osee.dep.p2 plugins/org.eclipse.osee.dep.target Latest_Zip_And_Dep/org.eclipse.osee/plugins
+    - cp -R features/org.eclipse.osee.dep.feature Latest_Zip_And_Dep/org.eclipse.osee/features
+    - ls -aR Latest_Zip_And_Dep/org.eclipse.osee
+
+
+    - echo "==== Show Local Repo And Configuration ===="
+    - mvn $MAVEN_CLI_OPTS help:evaluate -s $MAVEN_SETTINGS_XML -Dexpression=settings.localRepository -T 1C
+
+
+    - echo "==== parent/extras Build ===="
+    - cd ./plugins/org.eclipse.osee.parent/extras
+    - mvn $MAVEN_CLI_OPTS verify -s $MAVEN_SETTINGS_XML -Dnot_ci_eclipse=true -Dexternal-eclipse-ip-site=$CI_PROJECT_DIR/Latest_Zip_And_Dep/org.eclipse.ip.p2-1.0.0.zip -T 1C
+    - cd $CI_PROJECT_DIR
+    - ls -a
+    - ls -a Latest_Zip_And_Dep
+    - ls -a $CI_PROJECT_DIR/..
+
+
+    - echo "==== dep.parent Build ===="
+    - cd ./plugins/org.eclipse.osee.dep.parent
+    - mvn $MAVEN_CLI_OPTS verify -s $MAVEN_SETTINGS_XML -Declipse-ip-site=file:$CI_PROJECT_DIR/../org.eclipse.ip/org.eclipse.ip.p2/target/repository -Dskip-help-tests=true -Dtycho.disableP2Mirrors=true -T 1C
+    - cd $CI_PROJECT_DIR
+    - ls -a
+    - ls -a Latest_Zip_And_Dep
+
+
+    - echo "==== osee.parent Build ===="
+    - cd ./plugins/org.eclipse.osee.parent 
+  artifacts:
+    name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
+    paths:
+      - plugins/org.eclipse.osee.client.all.p2/target/repository/ # osee-ide-site
+      - plugins/org.eclipse.osee.server.p2/target/repository/ # osee-xserver-site
+      - plugins/org.eclipse.osee.client.test.framework.p2/target/repository/ # osee-tests-site
+      - Latest_Zip_And_Dep # dep-site-replacement 
+    expire_in: 1 hour

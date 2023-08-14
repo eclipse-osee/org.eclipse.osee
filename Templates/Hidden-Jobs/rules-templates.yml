@@ -1,0 +1,28 @@
+.Rules_Default:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $SVC_PIPELINE == "yes"
+      when: never
+    - when: manual
+      allow_failure: true
+
+.Rules_Disabled:
+  rules:
+    - when: never
+
+.Rules_Dev_Alpha_Build:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "dev" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "dev_alpha"
+
+.Rules_Merge_Request_Only:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+.Rules_SVC_Only:
+  rules:
+    - if: $SVC_PIPELINE == "yes"
+      when: manual
+      allow_failure: true

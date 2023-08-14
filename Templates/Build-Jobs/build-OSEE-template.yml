@@ -1,0 +1,11 @@
+Build_Org_Eclipse_OSEE:
+  extends:
+    - .Build_Base
+  cache:
+    - !reference [.Build_Base, cache]
+  image: $DOCKER_IMAGE_MAVEN_JDK11_ANT
+  script:
+    - !reference [.Build_Base, script]
+    - mvn $MAVEN_CLI_OPTS verify -s $MAVEN_SETTINGS_XML -DskipTests -Dskip-help-tests -T 1C
+  artifacts:
+    !reference [.Build_Base, artifacts]
