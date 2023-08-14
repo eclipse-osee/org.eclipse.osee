@@ -1,0 +1,84 @@
+include: 
+  - local: 'Templates/**/*.yml'
+
+
+stages:
+  - validate
+  - build_OSEE
+  - build_and_test_OSEE
+  - validate_OSEE_build
+
+
+##############
+#### JOBS ####
+##############
+
+# IP
+Validate Files:
+  stage: validate
+  image: $DOCKER_IMAGE_PYTHON_GIT
+  script:
+    - git --version
+    - python --version
+    - git fetch
+    - COMMITS_URL=$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/commits
+    - python plugins/org.eclipse.osee.support.dev/validationScripts/validateCommitMessages.py "$EXCLUDED_KEYWORDS" $COMMITS_URL $GITLAB_API_TOKEN
+    - FILES=$(git diff --name-only origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME)
+    - echo "Files to validate:"
+    - echo $FILES | tr " " "\n"
+    - python plugins/org.eclipse.osee.support.dev/validationScripts/validateFiles.py "$EXCLUDED_KEYWORDS" $FILES
+  only:
+    - merge_requests
+  allow_failure: true
+
+# Angular
+
+Angular Tests:
+  stage: validate
+  image: $DOCKER_IMAGE_NODE_CHROME
+  before_script:
+    - cd plugins/org.eclipse.osee.web
+    - npm -v
+    - node -v
+    - npm config set strict-ssl false
+    - npm config list
+    - npm ci --cache $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/.npm/ --prefer-offline --force
+  script:
+    - npx -p @angular/cli ng lint
+    - npx prettier --check .
+    - npx stylelint '**/*.scss'
+    - npx -p @angular/cli ng test --browsers=ChromeHeadless --watch=false
+  cache:
+    key:
+      files:
+        - $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/package-lock.json
+    paths:
+      - $CI_PROJECT_DIR/plugins/org.eclipse.osee.web/.npm/
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      changes:
+        paths:
+          - plugins/org.eclipse.osee.web/**/*
+
+# Build
+
+Build_Org_Eclipse_OSEE:
+  stage: build_OSEE
+  rules: !reference [.Rules_Default, rules]
+
+Build_And_Test_Org_Eclipse_OSEE:
+  stage: build_and_test_OSEE
+  rules: !reference [.Rules_Default, rules]
+
+Validate_Org_Eclipse_OSEE_Build:
+  stage: validate_OSEE_build
+  rules: !reference [.Rules_Merge_Request_Only, rules]
+
+
+##########################
+#### GLOBAL VARIABLES ####
+##########################
+
+
+variables:
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"

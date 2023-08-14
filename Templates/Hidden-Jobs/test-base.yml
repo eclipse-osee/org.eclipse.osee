@@ -1,0 +1,6 @@
+.Test_Base:
+  before_script: 
+    - echo "==== Check User And Export Displays ===="
+    - whoami
+    - Xvfb :99 &
+    - export DISPLAY=:99
