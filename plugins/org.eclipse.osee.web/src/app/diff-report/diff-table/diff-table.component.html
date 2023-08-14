@@ -75,13 +75,15 @@
 					{{ artifact.workflowID }}
 					<ng-container *ngIf="link | async as _link">
 						<ng-container *ngIf="artifact.changeReport">
-							<br />
-							<a href="{{ _link + '/' + artifact.changeReport }}"
+							<br /><a
+								class="tw-font-bold tw-text-blue-900 tw-underline"
+								href="{{ _link + '/' + artifact.changeReport }}"
 								>REQ</a
 							>
 						</ng-container>
 						<ng-container *ngIf="artifact.icdDiff">
 							<br /><a
+								class="tw-font-bold tw-text-blue-900 tw-underline"
 								target="_blank"
 								href="{{ _link + '/' + artifact.icdDiff }}"
 								>ICD</a
@@ -139,19 +141,19 @@
 				</td>
 			</ng-container>
 
-			<ng-container matColumnDef="description">
+			<ng-container matColumnDef="title">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
 					mat-sort-header
 					class="header-cell">
-					Description
+					Title
 				</th>
 				<td
 					mat-cell
 					class="row-cell"
 					*matCellDef="let artifact">
-					{{ artifact.description }}
+					{{ artifact.title }}
 				</td>
 			</ng-container>
 
@@ -244,7 +246,7 @@
 			[length]="queryCount | async"
 			[pageIndex]="page"
 			[pageSize]="pageSize"
-			[pageSizeOptions]="[10, 25, 50, 100, 200]"
+			[pageSizeOptions]="[10, 25, 50, 200, (queryCount | async) || 0]"
 			(page)="setPaginatorState($event)"
 			showFirstLastButtons
 			[disabled]="false"></mat-paginator

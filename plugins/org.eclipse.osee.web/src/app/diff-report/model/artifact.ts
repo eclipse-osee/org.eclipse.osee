@@ -23,7 +23,7 @@ export interface workflow {
 	type: string;
 	state: string;
 	enhancement: string;
-	description: string;
+	title: string;
 	changeType: string;
 	changeReport: string;
 	icdDiff: string;

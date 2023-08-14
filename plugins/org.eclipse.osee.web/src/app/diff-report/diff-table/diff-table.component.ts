@@ -81,7 +81,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 			changeType: workflow.changeType,
 			state: workflow.state,
 			enhancement: workflow.enhancement,
-			description: workflow.description,
+			title: workflow.title,
 			requirement: '',
 			test: '',
 		};
@@ -113,7 +113,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		'program',
 		'build',
 		'state',
-		'description',
+		'title',
 		'actions',
 	];
 
@@ -222,7 +222,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 			'State',
 			'Type',
 			'Enhancement',
-			'Description',
+			'Title',
 			'Requirement',
 			'Test',
 		];
@@ -281,7 +281,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 			'state',
 			'changeType',
 			'enhancement',
-			'description',
+			'title',
 			'requirement',
 			'test',
 		];

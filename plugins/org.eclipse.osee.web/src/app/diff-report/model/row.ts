@@ -18,7 +18,7 @@ export interface NewRow {
 	changeType: string;
 	state: string;
 	enhancement: string;
-	description: string;
+	title: string;
 	requirement: string;
 	test: string;
 }
