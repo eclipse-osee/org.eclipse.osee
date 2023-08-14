@@ -299,7 +299,8 @@
 									*ngIf="
 										header === 'txRate' ||
 										header === 'publisher' ||
-										header === 'messageNumber'
+										header === 'messageNumber' ||
+										header === 'messagePeriodicity'
 									">
 									<ng-container
 										*ngIf="
@@ -310,6 +311,14 @@
 												*ngSwitchCase="'txRate'">
 												{{
 													messageData.interfaceMessageRate
+												}}
+											</ng-container>
+											<ng-container
+												*ngSwitchCase="
+													'messagePeriodicity'
+												">
+												{{
+													messageData.interfaceMessagePeriodicity
 												}}
 											</ng-container>
 											<ng-container

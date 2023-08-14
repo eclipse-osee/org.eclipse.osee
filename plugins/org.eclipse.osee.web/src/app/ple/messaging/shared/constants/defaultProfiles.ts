@@ -51,6 +51,7 @@ export const defaultEditStructureProfile: (
 	| 'txRate'
 	| 'publisher'
 	| 'messageNumber'
+	| 'messagePeriodicity'
 )[] = [
 	'name',
 	'description',
@@ -71,6 +72,7 @@ export const defaultViewStructureProfile: (
 	| 'txRate'
 	| 'publisher'
 	| 'messageNumber'
+	| 'messagePeriodicity'
 )[] = [
 	'name',
 	'description',
