@@ -39,11 +39,7 @@ export class HighlightFilteredTextDirective implements OnChanges {
 				!this.classToApply) &&
 			this.text
 		) {
-			this.renderer.setProperty(
-				this.el.nativeElement,
-				'innerHTML',
-				this.text
-			);
+			//we are now assuming users of this directive are string interpolating their value when searchTerms is not present.
 			return;
 		} else if (this.text) {
 			this.renderer.setProperty(
@@ -57,6 +53,8 @@ export class HighlightFilteredTextDirective implements OnChanges {
 		const re = new RegExp(`(${this.searchTerms})`, 'i');
 		let returnValue = this.text
 			?.toString()
+			.replace('<', '&lt;')
+			.replace('>', '&gt;')
 			.replace(re, `<span class="${this.classToApply}">$1</span>`);
 		return returnValue;
 	}
