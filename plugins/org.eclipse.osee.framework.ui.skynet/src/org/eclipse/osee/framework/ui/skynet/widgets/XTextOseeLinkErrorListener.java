@@ -37,7 +37,7 @@ public class XTextOseeLinkErrorListener implements ModifyListener {
    private final Set<OseeLinkErrorWord> linkErrors = new HashSet<>();
    private Integer maxLength = 50000;
    public static Pattern oseeLinkErrorPattern =
-      Pattern.compile("Linked artifact \\[(.*?)\\]-\\[(.*?)\\] has not been found\\. Remove this text\\.");
+      Pattern.compile("Linked artifact \\[(.*?)\\] has not been found\\. Remove this text\\.");
    private final BranchToken branchToken;
 
    public class OseeLinkErrorWord {
