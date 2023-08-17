@@ -11,11 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import {
-	MatPaginator,
-	MatPaginatorModule,
-	PageEvent,
-} from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ReportService } from '../services/report.service';
 import { Artifact, workflow, test } from '../model/artifact';
@@ -23,7 +19,7 @@ import { NewRow } from '../model/row';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
 import { state, style, trigger } from '@angular/animations';
 import { MatSortModule } from '@angular/material/sort';
@@ -46,7 +42,6 @@ import { MatIconModule } from '@angular/material/icon';
 		ReactiveFormsModule,
 		MatButtonModule,
 		MatInputModule,
-		MatTableModule,
 		MatSelectModule,
 		MatIconModule,
 	],
@@ -88,12 +83,13 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	}
 
 	workflowFilter = new FormControl('');
-	endPointUrl = this.reportService.diffEndpoint;
+	endPointUrl = this.reportService.diffEndpoint.pipe(
+		take(1),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
 	link = this.endPointUrl.pipe(map((endUrl) => apiURL + endUrl));
 
 	constructor(private reportService: ReportService) {
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sort = this.sort;
 		this.dataSource.filterPredicate = this.filterFunction;
 	}
 
@@ -138,22 +134,10 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	artifact = this.reportService.artifact;
 
 	artifactData = this.artifact.pipe(
+		take(1),
 		switchMap((artifact) => of(artifact.workflows)),
 		tap((data) => (this.dataSource.data = data))
 	);
-
-	setPaginatorState(event: PageEvent) {
-		this.page = event.pageIndex;
-		this.pageSize = event.pageSize;
-	}
-
-	set page(page: number) {
-		this.reportService.page = page;
-	}
-
-	set pageSize(pageSize: number) {
-		this.reportService.pageSize = pageSize;
-	}
 
 	getTestTd(test: test) {
 		var max = 50;
