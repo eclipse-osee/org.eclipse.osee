@@ -44,8 +44,6 @@ export class ReportService {
 			displaySearch: false,
 		});
 
-	private _currentPage$ = new BehaviorSubject<number>(0);
-	private _currentPageSize$ = new BehaviorSubject<number>(10);
 	private _displayTable$ = new BehaviorSubject<boolean>(false);
 
 	constructor(private http: HttpClient) {}
@@ -80,22 +78,6 @@ export class ReportService {
 
 	get getSearchOptions() {
 		return this._searchOptions$.asObservable();
-	}
-
-	get currentPage() {
-		return this._currentPage$;
-	}
-
-	set page(page: number) {
-		this._currentPage$.next(page);
-	}
-
-	get currentPageSize() {
-		return this._currentPageSize$;
-	}
-
-	set pageSize(pageSize: number) {
-		this._currentPageSize$.next(pageSize);
 	}
 
 	get displayTable() {
@@ -145,23 +127,16 @@ export class ReportService {
 		} else return of();
 	}
 
-	artifact = combineLatest([
-		this.diffEndpoint,
-		this.currentPage,
-		this.currentPageSize,
-		this._searchOptions$,
-	]).pipe(
+	artifact = combineLatest([this.diffEndpoint, this._searchOptions$]).pipe(
 		share(),
 		debounceTime(500),
 		distinctUntilChanged(),
-		switchMap(([url, page, pageSize, options]) =>
+		switchMap(([url, options]) =>
 			this.findArtifacts(
 				options.workflowNum,
 				options.workflowDesc,
 				options.program,
 				options.build,
-				page + 1,
-				pageSize,
 				url
 			)
 		),
@@ -173,8 +148,6 @@ export class ReportService {
 		workflowDesc: string,
 		program: string,
 		build: string,
-		pageNum: number,
-		pageSize: number,
 		endPointUrl: string
 	): Observable<Artifact> {
 		if (program && build) {
@@ -182,8 +155,6 @@ export class ReportService {
 				apiURL + endPointUrl + '/searchTrace?',
 				{
 					params: {
-						pageNumber: pageNum.toString(),
-						pageCount: pageSize.toString(),
 						workflowNum: workflowNum,
 						workflowDesc: workflowDesc,
 						build: build,
