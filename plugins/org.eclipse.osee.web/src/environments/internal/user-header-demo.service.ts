@@ -28,6 +28,7 @@ export class UserHeaderDemoService extends UserHeaderService {
 		super();
 		const accountId = localStorage.getItem('osee.account.id') || '';
 		this._headers = new HttpHeaders({
+			Authorization: 'Basic ' + accountId,
 			'osee.account.id': accountId,
 			'osee.user.id': accountId,
 		});
