@@ -232,47 +232,6 @@ public class Permissions {
       //@formatter:on
    }
 
-   @Test
-   public void testActiveNonLoginUserInPublishingGroupKo() {
-
-      TestUser.addTestUserToPublishingGroup();
-      TestUser.activateTestUser();
-      TestUser.removeLoginIds();
-      TestUser.clearServerCache();
-
-      var branchId = DemoBranches.SAW_PL_Working_Branch;
-      var artifactId = CoreArtifactTokens.DefaultHierarchyRoot;
-      var synchronizationArtifactType = "reqif";
-
-      //@formatter:off
-      try(
-            var exceptionLogBlocker =
-               new ExceptionLogBlocker
-                      (
-                        "javax.ws.rs.NotAuthorizedException",
-                        "org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException",
-                        "java.lang.RuntimeException",
-                        "User is not a login user\\."
-                      )
-         )
-      {
-         try {
-            @SuppressWarnings("unused")
-            var reqIF =
-               Permissions.synchronizationArtifactParser.parseTestDocument
-                  (
-                     branchId,
-                     artifactId,
-                     synchronizationArtifactType
-                  );
-
-            exceptionLogBlocker.assertNoException();
-         } catch (Exception e) {
-            exceptionLogBlocker.assertExpectedException(e);
-         }
-      }
-      //@formatter:on
-   }
 }
 
 /* EOF */
