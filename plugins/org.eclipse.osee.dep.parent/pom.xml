@@ -97,7 +97,7 @@
  	<repository>
 			<id>orbit_new</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/tools/orbit/downloads/drops/R20220302172233/repository</url>
+			<url>https://download.eclipse.org/tools/orbit/downloads/drops/R20230531010532/repository</url>
 	  </repository>
 
  	 <repository>
@@ -153,13 +153,6 @@
 			<layout>p2</layout>
 			<url>https://download.eclipse.org/rt/ecf/3.14.18/site.p2/3.14.9.v20200713-0653</url>
 	    </repository>
-	    
-	    <repository>
-			<id>egit</id>
-			<layout>p2</layout>
-			<url>https://archive.eclipse.org/egit/updates-5.12/</url>
-	    </repository>
-	    
 	    
 </repositories>
 	

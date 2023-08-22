@@ -723,7 +723,7 @@
          id="com.google.guava"
          download-size="0"
          install-size="0"
-         version="30.1.0.v20210127-2300"
+         version="30.1.0.v20221112-0806"
          unpack="false"/>
 
    <plugin
@@ -968,14 +968,14 @@
          id="org.apache.sshd.osgi"
          download-size="0"
          install-size="0"
-         version="2.6.0.v20210201-2003"
+         version="2.8.0.v20211227-1750"
          unpack="false"/>
 
  <plugin
          id="org.apache.sshd.sftp"
          download-size="0"
          install-size="0"
-         version="2.6.0.v20210201-2003"
+         version="2.8.0.v20211227-1750"
          unpack="false"/>
 
    <plugin
@@ -2370,36 +2370,29 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+ <plugin
          id="flexmark-util-data"
          download-size="0"
          install-size="0"
          version="0.0.0"
-	      unpack="false"/>
+	 unpack="false"/>
 
-    <plugin
+   <plugin
          id="flexmark-util-misc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-    <plugin
+<plugin
          id="flexmark-util-visitor"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.bouncycastle.bcprov"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
- 
-    <plugin
-         id="org.bouncycastle.bcpg"
+<plugin
+         id="annotations"
          download-size="0"
          install-size="0"
          version="0.0.0"
