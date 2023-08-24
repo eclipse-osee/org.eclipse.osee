@@ -175,7 +175,11 @@ export class PlConfigCurrentBranchService {
 		switchMap(([applic, groupedViews]) =>
 			of(applic.views).pipe(
 				map((views) =>
-					views.filter((v) => !groupedViews.includes(v.id))
+					views.filter(
+						(v) =>
+							!groupedViews.includes(v.id) &&
+							v.hasFeatureApplicabilities == true
+					)
 				)
 			)
 		)
