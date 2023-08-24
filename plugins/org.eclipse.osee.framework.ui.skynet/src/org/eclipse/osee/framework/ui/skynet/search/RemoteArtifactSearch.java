@@ -178,7 +178,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          if (attrContent.containsKey(attrId)) {
             content = attrContent.get(attrId);
          } else {
-            if (artifact.getAttributeById(attrId, false) != null) {
+            if (artifact.hasAttribute(attrId)) {
                content = getContentFromAttribute(artifact.getAttributeById(attrId, false));
                attrContent.put(attrId, content);
             }

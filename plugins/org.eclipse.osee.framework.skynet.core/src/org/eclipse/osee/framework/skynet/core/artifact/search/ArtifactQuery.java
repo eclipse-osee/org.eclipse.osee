@@ -932,7 +932,7 @@ public class ArtifactQuery {
          jdbcClient.fetch(-1, "select count(*) from OSEE_ATTRIBUTE attr, osee_txs txs where attr.art_id = ? and " //
             + "txs.GAMMA_ID = ATTR.GAMMA_ID and txs.BRANCH_ID = ? and txs.TX_CURRENT = 1", artifact,
             artifact.getBranch());
-      if (artifact.getAttributes().size() != attrCount) {
+      if (artifact.getAttributeCount() != attrCount) {
          return true;
       }
       int relCount = jdbcClient.fetch(-1,

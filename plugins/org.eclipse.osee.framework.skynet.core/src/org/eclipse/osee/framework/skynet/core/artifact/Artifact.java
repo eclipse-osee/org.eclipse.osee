@@ -342,6 +342,18 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       }
       return null;
    }
+   
+   /**
+    * @return return true if an with the given id exists on this artifact and is not deleted
+    */
+   public final boolean hasAttribute(Id id) {
+      for (Attribute<?> attribute : attributes.getValues()) {
+         if(id.equals(attribute) && !attribute.getModificationType().isHardDeleted()) {
+            return true;
+         }
+      }
+      return false;
+   }
 
    public final List<AttributeId> getAttributeIds(AttributeTypeId attributeType) {
       List<AttributeId> items = new ArrayList<>();
@@ -1774,8 +1786,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final int getAttributeCount(AttributeTypeId attributeType) {
-      ensureAttributesLoaded();
       return getAttributes(attributeType).size();
+   }
+   
+   public final int getAttributeCount() {
+      return getAttributes().size();
    }
 
    /**

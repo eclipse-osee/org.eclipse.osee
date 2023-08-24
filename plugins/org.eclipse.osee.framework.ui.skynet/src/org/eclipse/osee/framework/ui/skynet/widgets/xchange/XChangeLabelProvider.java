@@ -128,14 +128,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
       if (change.getModificationType().equals(ModificationType.APPLICABILITY)) {
          return false;
       }
-      boolean found = false;
-      for (Attribute<?> attr : change.getChangeArtifact().getAttributes()) {
-         if (change.getItemId().equals(attr.getId())) {
-            found = true;
-            break;
-         }
-      }
-      return !found;
+      return !change.getChangeArtifact().hasAttribute(change.getItemId());
    }
 
    private final Map<Id, Boolean> attrTypeIdToIsBinaryMap = new HashMap<>(20);

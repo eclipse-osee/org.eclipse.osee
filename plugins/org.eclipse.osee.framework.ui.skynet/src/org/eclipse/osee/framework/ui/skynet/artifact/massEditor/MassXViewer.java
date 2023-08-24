@@ -251,9 +251,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
       for (Artifact art : artifacts) {
          // include attribute types that are used even if invalid
-         for (Attribute<?> attr : art.getAttributes()) {
-            attrTypesUsed.add(attr.getAttributeType());
-         }
+         attrTypesUsed.addAll(art.getAttributeTypesUsed());
       }
 
       // popup dialog
