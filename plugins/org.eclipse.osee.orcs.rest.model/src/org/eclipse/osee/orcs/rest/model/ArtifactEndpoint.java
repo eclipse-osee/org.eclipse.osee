@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectPojo;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
@@ -74,22 +75,35 @@ public interface ArtifactEndpoint {
    @GET
    @Path("attType/{attributeType}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("attributeType") AttributeTypeToken attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType);
+   List<ArtifactToken> getArtifactTokensByAttribute(@PathParam("attributeType") AttributeTypeToken attributeType,
+      @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists,
+      @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType);
 
    @GET
    @Path("attType/{attributeType}/id")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactId> getArtifactIdsByAttribute(@PathParam("attributeType") AttributeTypeToken attributeType, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType);
+   List<ArtifactId> getArtifactIdsByAttribute(@PathParam("attributeType") AttributeTypeToken attributeType,
+      @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists,
+      @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType);
 
    @GET
    @Path("map")
    @Produces(MediaType.APPLICATION_JSON)
-   List<Map<String, Object>> getArtifactMaps(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeToken attributeType, @QueryParam("representation") String representation, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+   List<Map<String, Object>> getArtifactMaps(
+      @DefaultValue("-1") @QueryParam("attributeType") AttributeTypeToken attributeType,
+      @QueryParam("representation") String representation, @QueryParam("value") String value,
+      @DefaultValue("true") @QueryParam("exists") boolean exists,
+      @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    @GET
    @Path("table")
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactTable getArtifactTable(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeToken attributeType, @QueryParam("attributeColumns") List<AttributeTypeToken> attributeColumns, @QueryParam("value") String value, @DefaultValue("true") @QueryParam("exists") boolean exists, @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+   ArtifactTable getArtifactTable(@DefaultValue("-1") @QueryParam("attributeType") AttributeTypeToken attributeType,
+      @QueryParam("attributeColumns") List<AttributeTypeToken> attributeColumns, @QueryParam("value") String value,
+      @DefaultValue("true") @QueryParam("exists") boolean exists,
+      @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    @GET
    @Path("type/{artifactType}/token")
@@ -99,12 +113,16 @@ public interface ArtifactEndpoint {
    @GET
    @Path("exp")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> expGetArtifactTokens(@DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @QueryParam("parent") ArtifactId parent, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+   List<ArtifactToken> expGetArtifactTokens(
+      @DefaultValue("-1") @QueryParam("artifactType") ArtifactTypeToken artifactType,
+      @DefaultValue("-1") @QueryParam("parent") ArtifactId parent,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    @GET
    @Path("changed_artifacts/{attributeTypeJoin}/{commentPattern}")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getChangedArtifactTokens(@DefaultValue("-1") @QueryParam("view") ArtifactId view, @PathParam("attributeTypeJoin") AttributeTypeJoin typeJoin, @PathParam("commentPattern") String commentPattern);
+   List<ArtifactToken> getChangedArtifactTokens(@DefaultValue("-1") @QueryParam("view") ArtifactId view,
+      @PathParam("attributeTypeJoin") AttributeTypeJoin typeJoin, @PathParam("commentPattern") String commentPattern);
 
    @GET
    @Path("applicability/{id}")
@@ -123,19 +141,25 @@ public interface ArtifactEndpoint {
    @Path("type/{artifactType}/parent/{parent}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> createArtifacts(@PathParam("branch") BranchId branch, @PathParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @PathParam("parent") ArtifactId parent, List<String> names);
+   List<ArtifactToken> createArtifacts(@PathParam("branch") BranchId branch,
+      @PathParam("artifactType") ArtifactTypeToken artifactType,
+      @DefaultValue("-1") @PathParam("parent") ArtifactId parent, List<String> names);
 
    @POST
    @Path("type/{artifactType}/parent/{parent}/create")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   ArtifactToken createArtifact(@PathParam("branch") BranchId branch, @PathParam("artifactType") ArtifactTypeToken artifactType, @DefaultValue("-1") @PathParam("parent") ArtifactId parent, String name);
+   ArtifactToken createArtifact(@PathParam("branch") BranchId branch,
+      @PathParam("artifactType") ArtifactTypeToken artifactType,
+      @DefaultValue("-1") @PathParam("parent") ArtifactId parent, String name);
 
    @POST
    @Path("old-type/{oldType}/new-type/{newType}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> changeArtifactType(@PathParam("branch") BranchId branch, @PathParam("oldType") ArtifactTypeToken oldType, @PathParam("newType") ArtifactTypeToken newType, List<String> names);
+   List<ArtifactToken> changeArtifactType(@PathParam("branch") BranchId branch,
+      @PathParam("oldType") ArtifactTypeToken oldType, @PathParam("newType") ArtifactTypeToken newType,
+      List<String> names);
 
    @DELETE
    @Path("{artifact}")
@@ -146,7 +170,9 @@ public interface ArtifactEndpoint {
    @Path("{artifact}/attribute/type/{attributeType}")
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
-   TransactionToken setSoleAttributeValue(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact, @PathParam("attributeType") AttributeTypeToken attributeType, String value);
+   TransactionToken setSoleAttributeValue(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact, @PathParam("attributeType") AttributeTypeToken attributeType,
+      String value);
 
    @POST
    @Path("search")
@@ -166,5 +192,15 @@ public interface ArtifactEndpoint {
    @SwaggerCommonOrcsAnnotations
    @Operation(summary = "Gets a hierarchy tree of Artifacts")
    @Tag(name = "hierarchy")
-   List<ArtifactReadable> getRelatedArtifactsTree(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
+   List<ArtifactReadable> getRelatedArtifactsTree(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact);
+
+   @GET
+   @Path("{artifact}/related/direct")
+   @Produces(MediaType.APPLICATION_JSON)
+   @SwaggerCommonOrcsAnnotations
+   @Operation(summary = "Gets only the first layer of related Artifacts")
+   @Tag(name = "hierarchy")
+   ArtifactRelatedDirectPojo getRelatedDirect(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact);
 }

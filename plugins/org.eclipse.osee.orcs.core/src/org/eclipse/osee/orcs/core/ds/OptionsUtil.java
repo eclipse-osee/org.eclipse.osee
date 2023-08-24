@@ -38,6 +38,7 @@ public final class OptionsUtil {
    private static final String ORDER_BY_MECHANISM = "order.by.mechanism";
    private static final String ORDER_BY_ATTRIBUTE = "order.by.attribute";
    private static final String FOLLOW_SEARCH_IN_PROGRESS = "follow.search.in.progress";
+   private static final String SINGLE_LEVEL_RELATIONS_SEARCH = "single.level.relations.search";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -67,6 +68,7 @@ public final class OptionsUtil {
       setLoadLevel(options, LoadLevel.ALL);
       setFromBranchView(options, ArtifactId.SENTINEL);
       setIncludeApplicabilityTokens(options, false);
+      setSingleLevelRelationsSearch(options, false);
    }
 
    public static boolean isCacheIncluded(Options options) {
@@ -218,5 +220,13 @@ public final class OptionsUtil {
 
    public static boolean getFollowSearchInProgress(Options options) {
       return options.getBoolean(FOLLOW_SEARCH_IN_PROGRESS);
+   }
+
+   public static void setSingleLevelRelationsSearch(Options options, boolean singleLevel) {
+      options.put(SINGLE_LEVEL_RELATIONS_SEARCH, singleLevel);
+   }
+
+   public static boolean getSingleLevelRelationsSearch(Options options) {
+      return options.getBoolean(SINGLE_LEVEL_RELATIONS_SEARCH);
    }
 }

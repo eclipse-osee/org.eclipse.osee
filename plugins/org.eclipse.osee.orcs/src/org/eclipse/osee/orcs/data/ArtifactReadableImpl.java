@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -301,7 +302,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
@@ -350,7 +352,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    public Collection<RelationTypeToken> getExistingRelationTypes() {
       Set<RelationTypeToken> relATypes = this.relationsSideA.keySet();
       Set<RelationTypeToken> relBTypes = this.relationsSideB.keySet();
-      List<RelationTypeToken> rels = new ArrayList<RelationTypeToken>();
+      Set<RelationTypeToken> rels = new HashSet<RelationTypeToken>();
       if (!relATypes.isEmpty()) {
          rels.addAll(relATypes);
       }
@@ -409,7 +411,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    }
 
    @Override
-   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag) {
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
+      DeletionFlag deletionFlag) {
 
       List<ArtifactReadable> related =
          (relationTypeSide.getSide().isSideA() ? relationsSideA : relationsSideB).getValues(

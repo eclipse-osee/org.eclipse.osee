@@ -573,7 +573,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public QueryBuilder followRelation(RelationTypeSide relationTypeSide) {
-      addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, ArtifactTypeToken.SENTINEL, true));
+      addAndCheck(new CriteriaRelationTypeFollow(relationTypeSide, ArtifactTypeToken.SENTINEL, true, true));
       newCriteriaSet();
       return this;
    }
@@ -603,6 +603,12 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder followNoSelect(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType) {
       return follow(relationTypeSide, artifactType, false);
+   }
+
+   @Override
+   public QueryBuilder followAll(Boolean singleLevel) {
+      OptionsUtil.setSingleLevelRelationsSearch(getOptions(), singleLevel);
+      return followAll();
    }
 
    @Override
@@ -642,7 +648,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       boolean terminalFollow) {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
-      followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow));
+      followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, true));
       if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
          //this is strictly to create an invalid condition so child artWith queries have '' as order_value
          followQueryData.addCriteria(this.getAllCriteria().stream().filter(
@@ -651,6 +657,11 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       if (this.hasCriteriaType(CriteriaAttributeSort.class)) {
          //this is strictly to create an invalid condition so child artWith queries have '' as order_value
          followQueryData.addCriteria(new CriteriaAttributeSort(-1L));
+      }
+      if (relationTypeSide.isInvalid()) {
+         followQueryData = followQueryData();
+         followQueryData.addCriteria(
+            new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, false));
       }
       return followQueryData;
    }
@@ -669,7 +680,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder followFork(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
       QueryBuilder queryBuilder) {
       QueryData followQueryData = followQueryData();
-      followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, true));
+      followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, true, true));
       if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
          //this is strictly to create an invalid condition so child artWith queries have '' as order_value
          followQueryData.addCriteria(this.getAllCriteria().stream().filter(

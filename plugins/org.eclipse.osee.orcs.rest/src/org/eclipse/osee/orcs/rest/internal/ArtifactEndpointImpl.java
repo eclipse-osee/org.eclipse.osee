@@ -10,18 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectPojo;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
@@ -368,5 +369,17 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public List<ArtifactReadable> getRelatedArtifactsTree(BranchId branch, ArtifactId artifact) {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
       return query.andId(artifact).followAll().asArtifacts();
+   }
+
+   @Override
+   public ArtifactRelatedDirectPojo getRelatedDirect(BranchId branch, ArtifactId artifact) {
+      // query for artifact and its direct relations
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
+      List<ArtifactReadable> arts = query.andId(artifact).followAll(true).asArtifacts();
+      // query for artifact type token using input artifact id
+      Optional<ArtifactTypeToken> token =
+         arts.stream().filter(a -> a.getId().equals(artifact.getId())).map(a -> a.getArtifactType()).findFirst();
+      // pojo to store artifact's direct relations and all valid relation types
+      return new ArtifactRelatedDirectPojo(token.get(), arts);
    }
 }

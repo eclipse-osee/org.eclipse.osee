@@ -24,15 +24,17 @@ public final class CriteriaRelationTypeFollow extends RelationTypeCriteria<Relat
    private final RelationTypeSide typeSide;
    private final ArtifactTypeToken artifacType;
    private final boolean terminalFollow;
+   private final boolean useAnotherTable;
 
    /**
     * @param terminalFollow true if this is the last (terminal) follow in this chain of follows for this (sub) query
     */
-   public CriteriaRelationTypeFollow(RelationTypeSide typeSide, ArtifactTypeToken artifacType, boolean terminalFollow) {
+   public CriteriaRelationTypeFollow(RelationTypeSide typeSide, ArtifactTypeToken artifacType, boolean terminalFollow, boolean useAnotherTable) {
       super(typeSide);
       this.typeSide = typeSide;
       this.artifacType = artifacType;
       this.terminalFollow = terminalFollow;
+      this.useAnotherTable = useAnotherTable;
    }
 
    public ArtifactTypeToken getArtifacType() {
@@ -41,5 +43,9 @@ public final class CriteriaRelationTypeFollow extends RelationTypeCriteria<Relat
 
    public boolean isTerminalFollow() {
       return terminalFollow;
+   }
+
+   public boolean useAnotherTable() {
+      return this.useAnotherTable;
    }
 }

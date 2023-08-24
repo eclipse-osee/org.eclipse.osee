@@ -215,8 +215,15 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          if (rootQueryData.isAttributesOnlyQueryType() || rootQueryData.isTokenQueryType()) {
             fieldAlias = attsAlias;
          } else {
-            writeRelsCommonTableExpression(artWithAlias);
-            writeRelsCommonTableExpression2(artWithAlias);
+            if (OptionsUtil.getSingleLevelRelationsSearch(getOptions())) {
+               String artWith1 = artWithAliases.get(0);
+               writeRelsCommonTableExpression(artWith1);
+               writeRelsCommonTableExpression2(artWith1);
+            } else {
+               writeRelsCommonTableExpression(artWithAlias);
+               writeRelsCommonTableExpression2(artWithAlias);
+            }
+
             if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
                writeFollowSearchCommonTableExpression(handlerFactory, attsAlias);
             }

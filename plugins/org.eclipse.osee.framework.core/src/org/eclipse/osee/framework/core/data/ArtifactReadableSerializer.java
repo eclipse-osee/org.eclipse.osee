@@ -45,7 +45,8 @@ public class ArtifactReadableSerializer extends StdScalarSerializer<@NonNull Art
    }
 
    @Override
-   public void serialize(ArtifactReadable artifactReadable, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+   public void serialize(ArtifactReadable artifactReadable, JsonGenerator jgen, SerializerProvider provider)
+      throws IOException, JsonGenerationException {
       HashSet<ArtifactId> visitedArtifacts;
       JsonStreamContext outputContext = jgen.getOutputContext();
       Integer hashedValue = System.identityHashCode(artifactReadable);
@@ -63,7 +64,8 @@ public class ArtifactReadableSerializer extends StdScalarSerializer<@NonNull Art
       }
    }
 
-   private void writeArtifact(ArtifactReadable artifactReadable, JsonGenerator jgen, HashSet<ArtifactId> visitedArtifacts) throws IOException {
+   private void writeArtifact(ArtifactReadable artifactReadable, JsonGenerator jgen,
+      HashSet<ArtifactId> visitedArtifacts) throws IOException {
       jgen.writeStartObject();
       jgen.writeStringField("id", artifactReadable.getIdString());
       jgen.writeStringField("name", artifactReadable.getName());
@@ -95,7 +97,8 @@ public class ArtifactReadableSerializer extends StdScalarSerializer<@NonNull Art
       jgen.writeEndArray();
    }
 
-   private void writeRelationsFields(ArtifactReadable artifactReadable, JsonGenerator jgen, HashSet<ArtifactId> visitedArtifacts) throws IOException {
+   private void writeRelationsFields(ArtifactReadable artifactReadable, JsonGenerator jgen,
+      HashSet<ArtifactId> visitedArtifacts) throws IOException {
       Collection<RelationTypeToken> relationTypes = artifactReadable.getExistingRelationTypes();
       if (relationTypes.size() < 1) {
          return;
@@ -109,7 +112,8 @@ public class ArtifactReadableSerializer extends StdScalarSerializer<@NonNull Art
       jgen.writeEndArray();
    }
 
-   private void writeRelationSideFields(ArtifactReadable artifactReadable, RelationTypeToken relationType, RelationSide relationSide, JsonGenerator jgen, HashSet<ArtifactId> visitedArtifacts) throws IOException {
+   private void writeRelationSideFields(ArtifactReadable artifactReadable, RelationTypeToken relationType,
+      RelationSide relationSide, JsonGenerator jgen, HashSet<ArtifactId> visitedArtifacts) throws IOException {
       List<ArtifactReadable> related =
          artifactReadable.getRelated(new RelationTypeSide(relationType, relationSide), ArtifactTypeToken.SENTINEL);
 
