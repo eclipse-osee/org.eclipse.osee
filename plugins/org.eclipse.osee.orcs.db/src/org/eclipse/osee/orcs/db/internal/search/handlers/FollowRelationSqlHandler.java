@@ -52,7 +52,11 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
       if (sourceArtTable != null) {
          writer.addTable(sourceArtTable);
       }
-      relAlias = writer.addTable(criteria.getType());
+      if (criteria.useAnotherTable() || criteria.getType().isValid()) {
+         relAlias = writer.addTable(criteria.getType());
+      } else {
+         relAlias = writer.addTable(OseeDb.RELATION_TABLE2);
+      }
       relTxsAlias = writer.addTable(OseeDb.TXS_TABLE, ObjectType.RELATION);
    }
 
@@ -78,7 +82,9 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
          sourceArtColumn = previousFollow.toArtField;
       }
 
-      writer.writeEqualsAnd(sourceArtTable, sourceArtColumn, relAlias, fromArtField);
+      if (typeSide.getRelationType().isValid()) {
+         writer.writeEqualsAnd(sourceArtTable, sourceArtColumn, relAlias, fromArtField);
+      }
 
       if (typeSide.getRelationType().isValid()) {
          if (criteria.getType().isNewRelationTable()) {
@@ -90,9 +96,14 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
 
       writer.writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
       writer.writeTxBranchFilter(relTxsAlias, includeDeletedRelations);
-      if (criteria.isTerminalFollow()) {
+      String artAlias = writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE);
+      if (criteria.isTerminalFollow() && typeSide.getRelationType().isValid()) {
          writer.writeAnd();
-         writer.writeEquals(relAlias, toArtField, writer.getMainTableAlias(OseeDb.ARTIFACT_TABLE), "art_id");
+         writer.writeEquals(relAlias, toArtField, artAlias, "art_id");
+      } else {
+         writer.writeAnd();
+         writer.write(
+            sourceArtTable + ".art_id in (" + relAlias + ".a_art_id, " + relAlias + ".b_art_id) and case when " + sourceArtTable + ".art_id = " + relAlias + ".a_art_id then " + artAlias + ".art_id = " + relAlias + ".b_art_id else " + artAlias + ".art_id = " + relAlias + ".a_art_id end");
       }
    }
 

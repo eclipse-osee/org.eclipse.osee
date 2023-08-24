@@ -325,6 +325,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder followAll();
 
+   QueryBuilder followAll(Boolean singleLevel);
+
    /**
     * @param relationTypeSide side of of the relation following to (not starting from)
     * @param artifacType of the artifacts following to

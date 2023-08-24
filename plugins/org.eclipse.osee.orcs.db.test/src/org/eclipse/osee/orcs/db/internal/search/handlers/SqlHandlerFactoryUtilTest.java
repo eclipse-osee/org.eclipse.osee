@@ -67,7 +67,7 @@ public class SqlHandlerFactoryUtilTest {
       QueryData queryData = QueryData.mock();
       queryData.addCriteria(new CriteriaArtifactGuids(null));
       queryData.addCriteria(new CriteriaArtifactIds(Collections.emptyList()));
-      queryData.addCriteria(new CriteriaRelationTypeFollow(null, ArtifactTypeToken.SENTINEL, false));
+      queryData.addCriteria(new CriteriaRelationTypeFollow(null, ArtifactTypeToken.SENTINEL, false, false));
       queryData.addCriteria(new CriteriaArtifactType(null, true));
       queryData.addCriteria(new CriteriaRelationTypeExists(null));
       queryData.addCriteria(new CriteriaAttributeTypeExists(null));
