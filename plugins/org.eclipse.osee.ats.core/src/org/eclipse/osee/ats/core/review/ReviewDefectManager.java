@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.review;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -286,7 +285,7 @@ public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(ReviewDefectManager.class, Level.SEVERE, ex);
          return ReviewDefectError.ExceptionValidatingRoles;
       }
       return ReviewDefectError.None;
@@ -300,7 +299,7 @@ public class ReviewDefectManager implements IAtsPeerReviewDefectManager {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(ReviewDefectManager.class, OseeLevel.SEVERE_POPUP, ex);
          return ReviewDefectError.ExceptionValidatingRoles;
       }
       return ReviewDefectError.None;
