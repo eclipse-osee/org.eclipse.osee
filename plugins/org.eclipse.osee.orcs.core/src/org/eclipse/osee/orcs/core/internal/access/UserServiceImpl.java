@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
          requireRole(CoreUserGroups.AccountAdmin);
       }
 
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, getUser(), comment);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, comment);
 
       ArtifactToken userGroupHeader = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.UserGroups).asArtifactToken();
