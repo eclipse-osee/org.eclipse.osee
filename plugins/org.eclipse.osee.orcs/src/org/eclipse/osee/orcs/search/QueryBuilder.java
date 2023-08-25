@@ -321,6 +321,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder andAttributeIs(AttributeTypeToken attributeType, String value);
 
+   QueryBuilder andAttributeValueRange(AttributeTypeToken attributeType, String fromValue, String toValue);
+
    QueryBuilder follow(RelationTypeSide relationTypeSide);
 
    QueryBuilder followAll();

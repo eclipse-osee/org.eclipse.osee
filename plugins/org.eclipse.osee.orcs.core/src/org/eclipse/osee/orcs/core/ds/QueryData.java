@@ -61,6 +61,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeValueRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
@@ -526,6 +527,11 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder andAttributeIs(AttributeTypeToken attributeType, String value) {
       return addAndCheck(new CriteriaAttributeRaw(Collections.singleton(attributeType), Collections.singleton(value)));
+   }
+
+   @Override
+   public QueryBuilder andAttributeValueRange(AttributeTypeToken attributeType, String fromValue, String toValue) {
+      return addAndCheck(new CriteriaAttributeValueRange(attributeType, fromValue, toValue));
    }
 
    @Override

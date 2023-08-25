@@ -29,6 +29,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeRaw;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeValueRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
@@ -106,6 +107,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttributeTypeExists.class, AttributeTypeExistsSqlHandler.class);
       handleMap.put(CriteriaAttributeTypeNotExists.class, AttributeTypeNotExistsSqlHandler.class);
       handleMap.put(CriteriaAttributeRaw.class, AttributeRawSqlHandler.class);
+      handleMap.put(CriteriaAttributeValueRange.class, AttributeValueRangeSqlHandler.class);
       handleMap.put(CriteriaAttributeKeywords.class, AttributeTokenSqlHandler.class);
       handleMap.put(CriteriaRelationTypeFollow.class, RelationTypeFollowSqlHandler.class);
       handleMap.put(CriteriaAttributeSort.class, AttributeSortSqlHandler.class);
