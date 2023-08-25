@@ -38,12 +38,10 @@ public class TupleEndpointImpl implements TupleEndpoint {
    @Context
    private UriInfo uriInfo;
    private final BranchId branch;
-   private final UserId account;
 
    public TupleEndpointImpl(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
       this.branch = branch;
-      this.account = orcsApi.userService().getUser();
    }
 
    @Override
@@ -57,7 +55,7 @@ public class TupleEndpointImpl implements TupleEndpoint {
 
    @Override
    public <E1, E2> GammaId addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Add Tuple 2");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Add Tuple 2");
       GammaId gammaId = tx.addTuple2(tupleType, e1, e2);
       tx.commit();
       return gammaId;
@@ -65,7 +63,7 @@ public class TupleEndpointImpl implements TupleEndpoint {
 
    @Override
    public <E1, E2, E3> GammaId addTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 e1, E2 e2, E3 e3) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Add Tuple 3");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Add Tuple 3");
       GammaId gammaId = tx.addTuple3(tupleType, e1, e2, e3);
       tx.commit();
       return gammaId;
@@ -73,7 +71,7 @@ public class TupleEndpointImpl implements TupleEndpoint {
 
    @Override
    public <E1, E2, E3, E4> GammaId addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2, E3 e3, E4 e4) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Add Tuple 4");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Add Tuple 4");
       GammaId gammaId = tx.addTuple4(tupleType, e1, e2, e3, e4);
       tx.commit();
       return gammaId;
@@ -81,7 +79,7 @@ public class TupleEndpointImpl implements TupleEndpoint {
 
    @Override
    public TransactionId deleteTuple(int tupleTable, GammaId gammaId) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Delete tuple");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Delete tuple");
       if (tupleTable == 2) {
          tx.deleteTuple2(gammaId);
       } else if (tupleTable == 3) {

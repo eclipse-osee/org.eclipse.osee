@@ -150,15 +150,15 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public boolean replaceWithBaselineTxVersion(UserId userId, BranchId branchId, TransactionId txId, ArtifactId artId,
+   public boolean replaceWithBaselineTxVersion(BranchId branchId, TransactionId txId, ArtifactId artId,
       String comment) {
       boolean introduced = false;
       ArtifactReadable baselineArtifact =
          queryFactory.fromBranch(branchId).fromTransaction(txId).andId(artId).getResults().getOneOrDefault(
             ArtifactReadable.SENTINEL);
 
-      if (userId.isValid() && baselineArtifact.isValid()) {
-         TransactionBuilder tx = createTransaction(branchId, userId, comment);
+      if (baselineArtifact.isValid()) {
+         TransactionBuilder tx = createTransaction(branchId, comment);
          ArtifactReadable destination =
             queryFactory.fromBranch(branchId).includeDeletedArtifacts().andId(artId).getResults().getOneOrDefault(
                ArtifactReadable.SENTINEL);
@@ -166,7 +166,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
          tx.commit();
          introduced = true;
       } else {
-         throw new OseeCoreException("%s Error - The user and/or baseline artifact were not found.", comment);
+         throw new OseeCoreException("%s Error - The baseline artifact was not found.", comment);
       }
 
       return introduced;

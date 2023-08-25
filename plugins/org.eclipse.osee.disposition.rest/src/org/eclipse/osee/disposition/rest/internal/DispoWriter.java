@@ -27,27 +27,26 @@ import org.eclipse.osee.framework.core.data.UserId;
  */
 public interface DispoWriter {
 
-   Long createDispoProgram(UserId author, String name);
+   Long createDispoProgram(String name);
 
-   ArtifactId createDispoSet(UserId author, BranchId branch, DispoSet descriptor);
+   ArtifactId createDispoSet(BranchId branch, DispoSet descriptor);
 
-   void updateDispoSet(UserId author, BranchId branch, String dispoSetId, DispoSet data);
+   void updateDispoSet(BranchId branch, String dispoSetId, DispoSet data);
 
-   boolean deleteDispoSet(UserId author, BranchId branch, String setId);
+   boolean deleteDispoSet(BranchId branch, String setId);
 
-   void createDispoItem(UserId author, BranchId branch, DispoSet parentSet, DispoItem data);
+   void createDispoItem(BranchId branch, DispoSet parentSet, DispoItem data);
 
-   void createDispoItems(UserId author, BranchId branch, DispoSet parentSet, List<DispoItem> data);
+   void createDispoItems(BranchId branch, DispoSet parentSet, List<DispoItem> data);
 
-   boolean deleteDispoItem(UserId author, BranchId branch, String itemId);
+   boolean deleteDispoItem(BranchId branch, String itemId);
 
-   void updateDispoItem(UserId author, BranchId branch, String dispoItemId, DispoItem data);
+   void updateDispoItem(BranchId branch, String dispoItemId, DispoItem data);
 
-   void updateDispoItems(UserId author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag,
-      String operation);
+   void updateDispoItems(BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation);
 
-   void updateOperationSummary(UserId author, BranchId branch, String setId, OperationReport summary);
+   void updateOperationSummary(BranchId branch, String setId, OperationReport summary);
 
-   String createDispoReport(BranchId branch, UserId author, String contens, String operationTitle);
+   String createDispoReport(BranchId branch, String contens, String operationTitle);
 
 }

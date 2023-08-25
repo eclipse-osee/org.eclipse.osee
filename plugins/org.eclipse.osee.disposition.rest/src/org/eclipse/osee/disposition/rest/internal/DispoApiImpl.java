@@ -150,21 +150,21 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public Long createDispoProgram(String name, String userName) {
       UserId author = getQuery().findUserByName(userName);
-      return getWriter().createDispoProgram(author, name);
+      return getWriter().createDispoProgram(name);
    }
 
    @Override
    public ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName) {
       DispoSetData newSet = dataFactory.creteSetDataFromDescriptor(descriptor);
       UserId author = getQuery().findUserByName(userName);
-      return getWriter().createDispoSet(author, branch, newSet);
+      return getWriter().createDispoSet(branch, newSet);
    }
 
    private void createDispoItems(BranchId branch, String setId, List<DispoItem> dispoItems, String userName) {
       DispoSet parentSet = getQuery().findDispoSetsById(branch, setId);
       if (parentSet != null) {
          UserId author = getQuery().findUserByName(userName);
-         getWriter().createDispoItems(author, branch, parentSet, dispoItems);
+         getWriter().createDispoItems(branch, parentSet, dispoItems);
       }
    }
 
@@ -188,7 +188,7 @@ public class DispoApiImpl implements DispoApi {
          DispoItem updatedItem;
          updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList);
          UserId author = getQuery().findUserByName(userName);
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), updatedItem);
       }
       return idOfNewAnnotation;
    }
@@ -202,7 +202,7 @@ public class DispoApiImpl implements DispoApi {
             runOperation(branch, dispSetToEdit, newSet, userName, false);
          } else {
             UserId author = getQuery().findUserByName(userName);
-            getWriter().updateDispoSet(author, branch, dispSetToEdit.getGuid(), newSet);
+            getWriter().updateDispoSet(branch, dispSetToEdit.getGuid(), newSet);
          }
       }
    }
@@ -226,7 +226,7 @@ public class DispoApiImpl implements DispoApi {
             runOperation(branch, set, newSet, userName, true);
          } else {
             UserId author = getQuery().findUserByName(userName);
-            getWriter().updateDispoSet(author, branch, set.getGuid(), newSet);
+            getWriter().updateDispoSet(branch, set.getGuid(), newSet);
          }
       }
 
@@ -246,7 +246,7 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public boolean deleteDispoSet(BranchId branch, String setId, String userName) {
       UserId author = getQuery().findUserByName(userName);
-      return getWriter().deleteDispoSet(author, branch, setId);
+      return getWriter().deleteDispoSet(branch, setId);
    }
 
    @Override
@@ -270,7 +270,7 @@ public class DispoApiImpl implements DispoApi {
       // We will not allow the user to do mass edit of Annotations or discrepancies
       if (assignUser || dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null) {
          UserId author = getQuery().findUserByName(userName);
-         getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem);
+         getWriter().updateDispoItem(branch, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
       }
       return wasUpdated;
@@ -412,20 +412,20 @@ public class DispoApiImpl implements DispoApi {
 
       // Generate report
       UserId author = getQuery().findUserByName(userName);
-      getWriter().updateOperationSummary(author, branch, setId, report);
+      getWriter().updateOperationSummary(branch, setId, report);
       return wasUpdated;
    }
 
    private void editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag,
       String operation, String userName) {
       UserId author = getQuery().findUserByName(userName);
-      getWriter().updateDispoItems(author, branch, dispoItems, resetRerunFlag, operation);
+      getWriter().updateDispoItems(branch, dispoItems, resetRerunFlag, operation);
    }
 
    @Override
    public boolean deleteDispoItem(BranchId branch, String itemId, String userName) {
       UserId author = getQuery().findUserByName(userName);
-      return getWriter().deleteDispoItem(author, branch, itemId);
+      return getWriter().deleteDispoItem(branch, itemId);
    }
 
    @Override
@@ -468,7 +468,7 @@ public class DispoApiImpl implements DispoApi {
          modifiedDispoItem.setAnnotationsList(annotationsList);
          modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
 
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), modifiedDispoItem);
 
          wasUpdated = true;
 
@@ -548,7 +548,7 @@ public class DispoApiImpl implements DispoApi {
          DispoItem updatedItem = dataFactory.createUpdatedItem(newAnnotationsList, discrepanciesList);
 
          UserId author = getQuery().findUserByName(userName);
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), updatedItem);
          wasUpdated = true;
       }
       return wasUpdated;
@@ -567,7 +567,7 @@ public class DispoApiImpl implements DispoApi {
          DispoItem updatedItem = dataFactory.createUpdatedItem(new ArrayList<>(), discrepanciesList);
 
          UserId author = getQuery().findUserByName(userName);
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), updatedItem);
          wasUpdated = true;
       }
       return wasUpdated;
@@ -742,10 +742,10 @@ public class DispoApiImpl implements DispoApi {
       newSet.setTime(newDate);
 
       // Generate report
-      getWriter().updateOperationSummary(author, branch, setToEdit.getGuid(), report);
+      getWriter().updateOperationSummary(branch, setToEdit.getGuid(), report);
 
       //Update Disposition Set
-      getWriter().updateDispoSet(author, branch, setToEdit.getGuid(), newSet);
+      getWriter().updateDispoSet(branch, setToEdit.getGuid(), newSet);
    }
 
    private boolean checkIfPathExists(File file, OperationReport report) {
@@ -865,7 +865,7 @@ public class DispoApiImpl implements DispoApi {
          String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageUuid);
       if (!copyData.isEmpty()) {
          editDispoItems(destBranch, destSetId, copyData, false, operation, userName);
-         storage.updateOperationSummary(getQuery().findUser(), destBranch, destSetId, report);
+         storage.updateOperationSummary(destBranch, destSetId, report);
       }
    }
 
@@ -915,7 +915,7 @@ public class DispoApiImpl implements DispoApi {
       String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
       if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
          editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation, userName);
-         storage.updateOperationSummary(getQuery().findUser(), branch, destSetId, report);
+         storage.updateOperationSummary(branch, destSetId, report);
       }
       storeRerunData(branch, destSetId, reruns);
    }
@@ -935,7 +935,7 @@ public class DispoApiImpl implements DispoApi {
       dispoSetData.setTime(newDate);
       dispoSetData.setRerunList(DispoStrings.BATCH_RERUN_LIST + sb.toString() + DispoStrings.BATCH_RERUN_LIST_END);
       UserId author = getQuery().findUser();
-      storage.updateDispoSet(author, branch, destSetId, dispoSetData);
+      storage.updateDispoSet(branch, destSetId, dispoSetData);
    }
 
    @Override
@@ -987,7 +987,7 @@ public class DispoApiImpl implements DispoApi {
          newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
          UserId author = getQuery().findUser();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), newItem);
       }
       return idOfNewDiscrepancy;
    }
@@ -1024,7 +1024,7 @@ public class DispoApiImpl implements DispoApi {
 
          String operation = String.format("Create Dispo Discrepancies in Program [%s], Item [%s]", branch, itemId);
 
-         getWriter().updateDispoItems(author, branch, dispoItems, false, operation);
+         getWriter().updateDispoItems(branch, dispoItems, false, operation);
       }
    }
 
@@ -1049,7 +1049,7 @@ public class DispoApiImpl implements DispoApi {
          }
 
          UserId author = getQuery().findUser();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), modifiedDispoItem);
 
          wasUpdated = true;
       }
@@ -1079,7 +1079,7 @@ public class DispoApiImpl implements DispoApi {
          }
 
          UserId author = getQuery().findUser();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), modifiedDispoItem);
       }
    }
 
@@ -1095,8 +1095,7 @@ public class DispoApiImpl implements DispoApi {
          newItem.setDiscrepanciesList(discrepanciesList);
          newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
-         UserId author = getQuery().findUser();
-         getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), newItem);
+         getWriter().updateDispoItem(branch, dispoItem.getGuid(), newItem);
          wasUpdated = true;
       }
       return wasUpdated;
@@ -1114,7 +1113,7 @@ public class DispoApiImpl implements DispoApi {
       UserId author = getQuery().findUser();
       DispoSet parentSet = getQuery().findDispoSetsById(branch, data.getSetData().getDispoSetId());
       if (parentSet != null) {
-         getWriter().createDispoItem(author, branch, parentSet, dispoItemData);
+         getWriter().createDispoItem(branch, parentSet, dispoItemData);
       }
       return dispoItemData.getGuid();
    }
