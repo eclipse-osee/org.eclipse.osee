@@ -311,10 +311,7 @@ public class IcdImportApiImpl implements MimImportApi {
       structure.setInterfaceMinSimultaneity(toIntString(minSim));
       structure.setInterfaceMaxSimultaneity(toIntString(maxSim));
       structure.setDescription(description);
-
-      if (!name.equals(nameAbbrev)) {
-         structure.setNameAbbrev(nameAbbrev);
-      }
+      structure.setNameAbbrev(!name.equals(nameAbbrev) ? nameAbbrev : "");
 
       msgNum = isStringNumeric(msgNum) ? ((int) Double.parseDouble(msgNum)) + "" : msgNum;
       subMsgNum = subMsgNum.equals("n/a") ? "0" : subMsgNum;
