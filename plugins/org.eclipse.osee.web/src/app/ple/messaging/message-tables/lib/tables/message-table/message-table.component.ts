@@ -220,6 +220,7 @@ export class MessageTableComponent implements AfterViewChecked {
 	messages = this.messageService.messages;
 	messagesCount = this.messageService.messagesCount;
 	currentPage = this.messageService.currentPage;
+	currentPageSize = this.messageService.currentPageSize;
 
 	currentOffset = combineLatest([
 		this.messageService.currentPage.pipe(startWith(0), pairwise()),

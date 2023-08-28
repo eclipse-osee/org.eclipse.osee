@@ -63,7 +63,7 @@ import { SideNavService } from '@osee/shared/services/layout';
 })
 export class CurrentMessagesService {
 	private _currentPage$ = new BehaviorSubject<number>(0);
-	private _currentPageSize$ = new BehaviorSubject<number>(10);
+	private _currentPageSize$ = new BehaviorSubject<number>(50);
 	private _messagesList = combineLatest([
 		this.ui.filter,
 		this.BranchId,

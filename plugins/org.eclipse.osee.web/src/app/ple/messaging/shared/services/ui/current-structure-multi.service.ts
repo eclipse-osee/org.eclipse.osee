@@ -72,7 +72,7 @@ function _isStructureRel(rel2: RELATIONTYPEID): rel2 is StructureRels {
 })
 export class CurrentStructureMultiService extends CurrentStructureService {
 	private _currentPage$ = new BehaviorSubject<number>(0);
-	private _currentPageSize$ = new BehaviorSubject<number>(10);
+	private _currentPageSize$ = new BehaviorSubject<number>(25);
 	private _structuresNoDiff = combineLatest([
 		this.ui.filter,
 		this.ui.BranchId,

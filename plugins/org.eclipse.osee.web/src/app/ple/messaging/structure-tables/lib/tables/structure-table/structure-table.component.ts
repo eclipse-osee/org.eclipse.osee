@@ -215,6 +215,7 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 	);
 	structuresCount = this.structureService.structuresCount;
 	currentPage = this.structureService.currentPage;
+	currentPageSize = this.structureService.currentPageSize;
 
 	currentOffset = combineLatest([
 		this.structureService.currentPage.pipe(startWith(0), pairwise()),
