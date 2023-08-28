@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -49,6 +51,7 @@ public class ExcelWorkbookWriter {
    private final Map<String, CellStyle> cellStyles;
 
    private Sheet activeSheet;
+   private int defaultZoom = 100;
 
    public ExcelWorkbookWriter(OutputStream outputStream, WorkbookFormat format) {
       this.outputStream = outputStream;
@@ -75,6 +78,7 @@ public class ExcelWorkbookWriter {
 
    public void createSheet(String sheetName) {
       Sheet sheet = workbook.createSheet(sheetName);
+      sheet.setZoom(defaultZoom);
       sheets.put(sheetName, sheet);
       activeSheet = sheet;
    }
@@ -85,6 +89,12 @@ public class ExcelWorkbookWriter {
       } else {
          throw new OseeArgumentException("No sheet found with name " + sheetName);
       }
+   }
+
+   public List<String> getSheetNames() {
+      List<String> sheetNames = new LinkedList<>();
+      sheetNames.addAll(sheets.keySet());
+      return sheetNames;
    }
 
    public void setColumnWidth(int index, int width) {
@@ -137,6 +147,15 @@ public class ExcelWorkbookWriter {
       for (int i = 0; i < numColumns; i++) {
          activeSheet.autoSizeColumn(i);
       }
+   }
+
+   public void setDefaultZoom(int scale) {
+      this.defaultZoom = scale;
+   }
+
+   public void setZoom(int scale) {
+      checkActiveSheet();
+      activeSheet.setZoom(scale);
    }
 
    public void writeRow(int rowIndex, Object[] values, CELLSTYLE... styles) {

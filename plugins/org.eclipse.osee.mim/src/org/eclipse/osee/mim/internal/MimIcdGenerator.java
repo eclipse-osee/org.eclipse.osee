@@ -190,6 +190,7 @@ public class MimIcdGenerator {
 
       // Write sheets
       ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
+      writer.setDefaultZoom(80);
       createChangeHistory(writer, branch);
 
       if (diff) {
