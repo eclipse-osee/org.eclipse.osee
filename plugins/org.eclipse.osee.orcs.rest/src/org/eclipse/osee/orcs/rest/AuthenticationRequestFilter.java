@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.data.CoreActivityTypes.JAXRS_METHO
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
@@ -56,11 +57,13 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
     */
    @Override
    public void filter(ContainerRequestContext requestContext) {
-      boolean loadingData = requestContext.getUriInfo().getRequestUri().toString().contains(
-         "/ide/session") || requestContext.getUriInfo().getRequestUri().toString().contains(
-            "orcs/datastore/initialize") || requestContext.getUriInfo().getRequestUri().toString().contains(
-               "/osee/") || requestContext.getUriInfo().getRequestUri().toString().contains(
-                  "/dispo/") || requestContext.getUriInfo().getRequestUri().toString().contains("/coverage/");
+      boolean loadingData = requestContext.getUriInfo().getRequestUri().toString().contains("/ide/session") //
+         || requestContext.getUriInfo().getRequestUri().toString().contains("orcs/datastore/initialize") //
+         || requestContext.getRequest().getMethod().equals(
+            HttpMethod.GET) && requestContext.getUriInfo().getRequestUri().toString().contains("orcs/datastore/user") //
+         || requestContext.getUriInfo().getRequestUri().toString().contains("/osee/") //
+         || requestContext.getUriInfo().getRequestUri().toString().contains("/dispo/") //
+         || requestContext.getUriInfo().getRequestUri().toString().contains("/coverage/");
       try {
          String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
