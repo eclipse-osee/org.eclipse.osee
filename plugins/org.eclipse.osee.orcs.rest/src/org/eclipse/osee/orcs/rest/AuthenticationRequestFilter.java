@@ -59,8 +59,8 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
       boolean loadingData = requestContext.getUriInfo().getRequestUri().toString().contains(
          "/ide/session") || requestContext.getUriInfo().getRequestUri().toString().contains(
             "orcs/datastore/initialize") || requestContext.getUriInfo().getRequestUri().toString().contains(
-               "osee/*") || requestContext.getUriInfo().getRequestUri().toString().contains(
-                  "dispo/*") || requestContext.getUriInfo().getRequestUri().toString().contains("coverage/*");
+               "/osee/") || requestContext.getUriInfo().getRequestUri().toString().contains(
+                  "/dispo/") || requestContext.getUriInfo().getRequestUri().toString().contains("/coverage/");
       try {
          String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
