@@ -58,7 +58,9 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
    public void filter(ContainerRequestContext requestContext) {
       boolean loadingData = requestContext.getUriInfo().getRequestUri().toString().contains(
          "/ide/session") || requestContext.getUriInfo().getRequestUri().toString().contains(
-            "orcs/datastore/initialize");
+            "orcs/datastore/initialize") || requestContext.getUriInfo().getRequestUri().toString().contains(
+               "osee/*") || requestContext.getUriInfo().getRequestUri().toString().contains(
+                  "dispo/*") || requestContext.getUriInfo().getRequestUri().toString().contains("coverage/*");
       try {
          String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -83,6 +85,14 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                //TODO: ensure web clients to use Basic scheme then remove
                if (Strings.isNumeric(authHeader)) {
                   orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader.toLowerCase()));
+               }
+            } else {
+               //This is here because current auth isn't passing in windows login id at first layer
+               String accountId = requestContext.getHeaderString("osee.account.id");
+               String userId = requestContext.getHeaderString("osee.user.id");
+               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(userId.toLowerCase()));
+               if (orcsApi.userService().getUser().isInvalid()) {
+                  orcsApi.userService().setUserForCurrentThread(UserId.valueOf(accountId.toLowerCase()));
                }
             }
 
