@@ -23,7 +23,6 @@ import static org.eclipse.osee.ats.api.workdef.WidgetOption.HORIZONTAL_LABEL;
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
@@ -62,8 +61,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
          .andReviewRole(Moderator)//
          .andReviewRole(ModeratorReviewer)//
          .andReviewRole(Quality)//
-         .andReviewRole(Reviewer);//
-      bld.andReviewRoleTypeMinimum(ReviewRoleType.Reviewer, 1);
+         .andReviewRole(Reviewer, 1);//
 
       bld.andState(1, "Prepare", StateType.Working).isStartState() //
          .andToStates(StateToken.Review, StateToken.Meeting, StateToken.Cancelled) //

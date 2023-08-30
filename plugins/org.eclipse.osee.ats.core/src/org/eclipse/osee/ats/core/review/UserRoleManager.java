@@ -176,11 +176,13 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    }
 
    @Override
-   public boolean validateMinimumForRoleType(ReviewRoleType reviewType) {
-      if (actualTypeCountMap.get(reviewType) < expectedRoleTypeMap.get(reviewType)) {
-         return false;
+   public boolean isMinimumForRoleCountValid(ReviewRoleType reviewType) {
+      int expectedRoleTypeMapCount =
+         expectedRoleTypeMap.get(reviewType) == null ? 0 : expectedRoleTypeMap.get(reviewType);
+      if (actualTypeCountMap.get(reviewType) >= expectedRoleTypeMapCount) {
+         return true;
       }
-      return true;
+      return false;
    }
 
    @Override

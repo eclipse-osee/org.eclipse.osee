@@ -31,7 +31,7 @@ public interface IAtsPeerReviewRoleManager {
 
    void saveToArtifact(IAtsChangeSet changes);
 
-   boolean validateMinimumForRoleType(ReviewRoleType reviewType);
+   boolean isMinimumForRoleCountValid(ReviewRoleType reviewType);
 
    List<UserRole> getUserRoles();
 

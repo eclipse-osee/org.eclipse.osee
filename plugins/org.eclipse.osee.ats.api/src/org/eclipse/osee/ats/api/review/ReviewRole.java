@@ -23,7 +23,7 @@ public class ReviewRole extends NamedIdBase {
    public static final ReviewRole Author = new ReviewRole(1L, "Author", ReviewRoleType.Author);
    public static final ReviewRole Moderator = new ReviewRole(2L, "Moderator", ReviewRoleType.Moderator);
    public static final ReviewRole ModeratorReviewer =
-      new ReviewRole(3L, "Moderator/Reviewer", ReviewRoleType.Reviewer);;
+      new ReviewRole(3L, "Moderator/Reviewer", ReviewRoleType.ModeratorReviewer);
    public static final ReviewRole Quality = new ReviewRole(4L, "Quality", ReviewRoleType.Quality);
    public static final ReviewRole Reviewer = new ReviewRole(5L, "Reviewer", ReviewRoleType.Reviewer);
    private final ReviewRoleType reviewRoleType;
