@@ -89,7 +89,7 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    public InterfaceConnection get(BranchId branch, ArtifactId viewId, ArtifactId connectionId,
       Collection<FollowRelation> followRelations) {
       try {
-         return this.getAccessor().get(branch, connectionId, followRelations);
+         return this.getAccessor().get(branch, connectionId, followRelations, viewId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          //
