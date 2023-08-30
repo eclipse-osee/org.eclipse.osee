@@ -80,9 +80,21 @@ public class ArtifactRelatedDirectPojo {
    public class PojoRelationSide {
       private String name = "";
       private List<PojoArtifact> artifacts = new ArrayList<>();
+      private Boolean isSideA = false;
+      private Boolean isSideB = false;
 
-      public PojoRelationSide(String name) {
+      public PojoRelationSide(String name, Boolean isSideA, Boolean isSideB) {
          this.name = name;
+         this.isSideA = isSideA;
+         this.isSideB = isSideB;
+      }
+
+      public Boolean getIsSideA() {
+         return isSideA;
+      }
+
+      public Boolean getIsSideB() {
+         return isSideB;
       }
 
       public String getName() {
@@ -99,15 +111,21 @@ public class ArtifactRelatedDirectPojo {
    }
 
    public class PojoRelation {
-
       private RelationTypeToken relationTypeToken = null;
-      private PojoRelationSide sideA;
-      private PojoRelationSide sideB;
+      private PojoRelationSide sideA = null;
+      private PojoRelationSide sideB = null;
+      private List<PojoRelationSide> relationSides = new ArrayList<>();
 
       public PojoRelation(RelationTypeToken rel) {
          this.relationTypeToken = rel;
-         this.sideA = new PojoRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_A));
-         this.sideB = new PojoRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_B));
+         this.sideA = new PojoRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_A), true, false);
+         this.sideB = new PojoRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_B), false, true);
+      }
+
+      public List<PojoRelationSide> getRelationSides() {
+         this.relationSides.add(this.sideA);
+         this.relationSides.add(this.sideB);
+         return this.relationSides;
       }
 
       public void addArtifactSideA(PojoArtifact art) {
@@ -121,19 +139,9 @@ public class ArtifactRelatedDirectPojo {
       public RelationTypeToken getRelationTypeToken() {
          return this.relationTypeToken;
       }
-
-      public PojoRelationSide getSideA() {
-         return this.sideA;
-      }
-
-      public PojoRelationSide getSideB() {
-         return this.sideB;
-      }
-
    }
 
    public class PojoArtifact {
-
       private String id = "";
       private String name = "";
       private String type = "";
@@ -167,7 +175,5 @@ public class ArtifactRelatedDirectPojo {
       public void setType(String type) {
          this.type = type;
       }
-
    }
-
 }
