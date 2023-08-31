@@ -97,7 +97,7 @@ public final class ConnectionHandler {
       return getJdbcClient().runPreparedUpdate(connection, query, data);
    }
 
-   public static long getNextSequence(String sequenceName, boolean aggressiveFetch) {
+   public static Long getNextSequence(String sequenceName, boolean aggressiveFetch) {
       return getJdbcClient().getNextSequence(sequenceName, aggressiveFetch);
    }
 }
