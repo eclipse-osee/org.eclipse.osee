@@ -110,6 +110,9 @@ public interface Id {
       return clone(getId() + 1);
    }
 
+   /**
+    * this method must be overridden in subclasses, i.e. BaseId
+    */
    default <T extends Id> T clone(Long id) {
       throw new UnsupportedOperationException();
    }

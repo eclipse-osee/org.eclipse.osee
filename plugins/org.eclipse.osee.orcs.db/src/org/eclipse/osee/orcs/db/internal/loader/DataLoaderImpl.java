@@ -41,7 +41,6 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation2;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
-import org.eclipse.osee.orcs.db.internal.loader.executors.UuidsLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 public class DataLoaderImpl implements DataLoader {
@@ -69,11 +68,6 @@ public class DataLoaderImpl implements DataLoader {
    public DataLoaderImpl(Log logger, Collection<ArtifactId> artifactIds, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
       this(logger, options, session, branch, sqlLoader, joinFactory);
       withArtifactIds(artifactIds);
-   }
-
-   public DataLoaderImpl(Log logger, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, Collection<String> artifactIds, SqlJoinFactory joinFactory) {
-      this(logger, options, session, branch, sqlLoader, joinFactory);
-      withArtifactGuids(artifactIds);
    }
 
    private DataLoaderImpl(Log logger, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
@@ -192,12 +186,6 @@ public class DataLoaderImpl implements DataLoader {
    private DataLoader withArtifactIds(Collection<ArtifactId> artifactIds) {
       loadExecutor =
          new LoadExecutor(sqlLoader, sqlLoader.getJdbcClient(), joinFactory, session, branchId, artifactIds);
-      return this;
-   }
-
-   private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
-      loadExecutor =
-         new UuidsLoadExecutor(sqlLoader, sqlLoader.getJdbcClient(), joinFactory, session, branchId, artifactGuids);
       return this;
    }
 
