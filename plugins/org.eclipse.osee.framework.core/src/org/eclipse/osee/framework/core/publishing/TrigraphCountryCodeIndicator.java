@@ -13,12 +13,19 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.core.enums.token.TrigraphCountryCodeIndicatorAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
- * Trigaph Country Codes for Use with REL_TO and DISPLAY_ONLY Limited Dissemination Control for CUI. <a href=
+ * Trigaph Country Codes for use with REL_TO and DISPLAY_ONLY Limited Dissemination Control for CUI. <a href=
  * "https://www.archives.gov/files/cui/registry/policy-guidance/registry-documents/20161214-country-trigraph-codes.pdf">CUI
  * Registry Country Codes</a>
  *
@@ -1707,18 +1714,138 @@ public enum TrigraphCountryCodeIndicator implements ToMessage {
 
    ZWE("ZIMBABWE");
 
-   private String countryName;
+   /**
+    * Class for the enumeration members of the {@link TrigraphCountryCodeIndicatorAttributeType}.
+    */
+
+   public class TrigraphCountryCodeIndicatorEnum extends EnumToken {
+
+      /**
+       * Creates a new {@link TrigraphCountryCodeIndicatorEnum} with the specified <code>ordinal</code> and
+       * <code>name</code>.
+       *
+       * @param ordinal the ordinal value for the enumeration member.
+       * @param name the name for the enumeration member.
+       */
+
+      public TrigraphCountryCodeIndicatorEnum(int ordinal, String name) {
+         super(ordinal, name);
+      }
+
+   }
+
+   /**
+    * Maps the {@link TrigraphCountryCodeIndicatorAttributeType} {@link TrigraphCountryCodeIndicatorEnum} members to
+    * {@link TrigraphCountryCodeIndicator} enumeration members.
+    */
+
+   private static final Map<TrigraphCountryCodeIndicatorEnum, TrigraphCountryCodeIndicator> trigraphCountryCodeIndicatorEnumMap;
+
+   /**
+    * Maps the display name strings to {@link TrigraphCountryCodeIndicator} enumeration members.
+    */
+
+   private static final Map<String, TrigraphCountryCodeIndicator> trigraphCountryCodeIndicatorMap;
+
+   /*
+    * Initializes the enumeration maps.
+    */
+
+   static {
+      //@formatter:off
+      trigraphCountryCodeIndicatorMap =
+         Arrays.stream( TrigraphCountryCodeIndicator.values() )
+            .collect( Collectors.toUnmodifiableMap( TrigraphCountryCodeIndicator::getDisplayName, Function.identity() ) );
+
+      trigraphCountryCodeIndicatorEnumMap =
+         Arrays.stream( TrigraphCountryCodeIndicator.values() )
+            .collect( Collectors.toUnmodifiableMap( TrigraphCountryCodeIndicator::getEnumToken, Function.identity() ));
+      //@formatter:on
+   }
+
+   /**
+    * Gets the {@link TrigraphCountryCodeIndicator} enumeration member from the country code display name.
+    *
+    * @param attributeValueString the file extension string.
+    * @return when the <code>attributeValueString</code> maps to an enumeration member an {@link Optional} containing
+    * the associated {@link TrigraphCountryCodeIndicator} enumeration member; otherwise, an empty {@link Optional}.
+    */
+
+   public static Optional<TrigraphCountryCodeIndicator> valueOfAttribute(String attributeValueString) {
+      return Optional.ofNullable(
+         TrigraphCountryCodeIndicator.trigraphCountryCodeIndicatorMap.get(attributeValueString));
+   }
+
+   /**
+    * Gets the {@link TrigraphCountryCodeIndicator} enumeration member from the {@link TrigraphCountryCodeIndicatorEnum}
+    * {@link EnumToken} of the {@link TrigraphCountryCodeIndicatorAttributeType}.
+    *
+    * @param enumToken the {@link TrigraphCountryCodeIndicatorEnum}.
+    * @return when the <code>enumToken</code> maps to an enumeration member an {@link Optional} containing the
+    * associated {@link TrigraphCountryCodeIndicator} enumeration member; otherwise, an empty {@link Optional}.
+    */
+
+   public static Optional<TrigraphCountryCodeIndicator> valueOfEnumToken(TrigraphCountryCodeIndicatorEnum enumToken) {
+      return Optional.ofNullable(TrigraphCountryCodeIndicator.trigraphCountryCodeIndicatorEnumMap.get(enumToken));
+   }
+
+   /**
+    * The {@link TrigraphCountryCodeIndicatorEnumEnum} for the {@link TrigraphCountryCodeIndicatorEnumAttributeType}
+    * that is associated with the {@link TrigraphCountryCodeIndicatorEnum} enumeration member.
+    */
+
+   private TrigraphCountryCodeIndicatorEnum enumToken;
+
+   /**
+    * Creates a new enumeration member and the associated {@link TrigraphCountryCodeIndicator}.
+    *
+    * @param countryName the name to use for the associated {@link TrigraphCountryCodeIndicatorEnum}.
+    * @implNote Due to the large number of country codes the {@link TrigraphCountryCodeIndicatorEnum} ordinal values are
+    * assigned from the {@link TrigraphCountryCodeIndicator} enumeration member ordinal values. If/When the list of
+    * country codes changes the {@link TrigraphCountryCodeIndicatorEnum} ordinal values will change. Interfacing code
+    * should not assume a {@link TrigraphCountryCodeIndicatorEnum} ordinal values (identifiers) will remain constant
+    * from build to build.
+    */
 
    private TrigraphCountryCodeIndicator(String countryName) {
-      this.countryName = countryName;
+      this.enumToken = new TrigraphCountryCodeIndicatorEnum(this.ordinal(), countryName);
    }
+
+   /**
+    * Gets the Trigraph Country Code Indicator display name.
+    *
+    * @return the display string.
+    */
+
+   public String getDisplayName() {
+      return this.enumToken.getName();
+   }
+
+   /**
+    * Gets the {@link TrigraphCountryCodeIndicatorEnum} associated with the enumeration member.
+    *
+    * @return the associated {@link TrigraphCountryCodeIndicatorEnum}.
+    */
+
+   public TrigraphCountryCodeIndicatorEnum getEnumToken() {
+      return this.enumToken;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
 
    @Override
    public Message toMessage(int indent, Message message) {
       var outMessage = Objects.isNull(message) ? new Message() : message;
-      outMessage.segment(this.name(), this.countryName);
+      outMessage.segment(this.name(), this.enumToken.getName());
       return outMessage;
    }
+
+   /**
+    * Returns a string representation of the enumeration member for debugging. Use the method {@link #getDisplayName} to
+    * obtain the display string.
+    */
 
    @Override
    public String toString() {

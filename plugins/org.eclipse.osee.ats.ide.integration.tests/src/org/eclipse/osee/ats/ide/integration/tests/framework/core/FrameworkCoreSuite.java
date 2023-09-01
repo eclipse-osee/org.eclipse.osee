@@ -11,12 +11,28 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+package org.eclipse.osee.ats.ide.integration.tests.framework.core;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 /**
- * This package contains a factory and class for obtaining the value of configuration toggles stored in the database.
- * The factory loads either an OSEE Server or an OSEE Client implementation for the {@link ToggleAccessor} interface. This
- * allows for an interface that can be used in the shared client and server code.
+ * Test Suite for functionality under Framework Core.
+ *
+ * @author Loren K. Ashley
  */
 
-package org.eclipse.osee.framework.core.util.toggles;
+//@formatter:off
+@RunWith(Suite.class)
+@Suite.SuiteClasses
+   (
+      {
+         FrameworkCoreAttributeTest.class
+      }
+   )
+public class FrameworkCoreSuite {
+   //no action
+}
+//@formatter:on
 
 /* EOF */

@@ -52,161 +52,11 @@ import org.junit.Assert;
 public class TestDocumentBuilder {
 
    /**
-    * Class to verify or create a relationships between artifacts.
-    */
-
-   private class RelationshipSourceTargetTypeRecord {
-
-      /**
-       * Saves the source {@link Artifact} for the relationship.
-       */
-
-      private final Artifact sourceArtifact;
-
-      /**
-       * Saves the target {@link Artifact} for the relationship.
-       */
-
-      private final Artifact targetArtifact;
-
-      /**
-       * Saves the {@link RelationTypeToken} for the relationship type.
-       */
-
-      private final RelationTypeToken relationTypeToken;
-
-      /**
-       * Creates a new {@link RelationshipSourceTargetTypeRecord}.
-       *
-       * @param sourceArtifact the source {@link Artifact}.
-       * @param targetArtifact the target {@link Artifact}.
-       * @param relationTypeToken the {@link RelationTypeToken} for the relationship type.
-       */
-
-      RelationshipSourceTargetTypeRecord(Artifact sourceArtifact, Artifact targetArtifact, RelationTypeToken relationTypeToken) {
-         this.sourceArtifact = Objects.requireNonNull(sourceArtifact);
-         this.targetArtifact = Objects.requireNonNull(targetArtifact);
-         this.relationTypeToken = Objects.requireNonNull(relationTypeToken);
-      }
-
-      /**
-       * Verifies a relationship of the correct type exists between the source and target artifacts.
-       *
-       * @return <code>true</code>, when the represented relationship is present between the artifacts; otherwise,
-       * <code>false</code>.
-       */
-
-      boolean isNotRelated() {
-         return !RelationManager.getRelatedArtifacts(this.sourceArtifact, this.relationTypeToken,
-            RelationSide.SIDE_A).contains(this.targetArtifact);
-      }
-
-      /**
-       * Creates the represented relationship between the source and target artifacts.
-       *
-       * @param relationEndpoint the ORCS REST API end point for managing relationships.
-       * @return the server HTTP {@link Response}.
-       */
-
-      Response create(RelationEndpoint relationEndpoint) {
-         return relationEndpoint.createRelationByType(this.targetArtifact, this.sourceArtifact, this.relationTypeToken);
-      }
-   }
-
-   /**
-    * Internal implementation of the {@link BuidlerRelationshipRecord} interface that wraps an unknown implementation of
-    * the {@link BuilderRelationshipRecord} interface with some additional members used in the test document building
-    * process.
-    */
-
-   private class BuilderRelationshipRecordWrapper implements BuilderRelationshipRecord {
-
-      /**
-       * Saves the {@link Artifact} that will be used as the source of the relationship.
-       */
-
-      private final Artifact sourceArtifact;
-
-      /**
-       * The wrapped {@link BuilderRelationshipRecord}.
-       */
-
-      private final BuilderRelationshipRecord builderRelationshipRecord;
-
-      /**
-       * Wraps a {@link BuilderRelationshipRecord} with the relationship source {@link Artifact} for the test document
-       * building process.
-       *
-       * @param sourceArtifact the relationship source {@link Artifact}.
-       * @param builderRelationshipRecord {@link BuilderRelationshipRecord} to be wrapped.
-       */
-
-      BuilderRelationshipRecordWrapper(Artifact sourceArtifact, BuilderRelationshipRecord builderRelationshipRecord) {
-         this.sourceArtifact = Objects.requireNonNull(sourceArtifact);
-         this.builderRelationshipRecord = Objects.requireNonNull(builderRelationshipRecord);
-      }
-
-      /**
-       * Builds a {@link Stream} of {@link RelationshipSourceTargetTypeRecord}s. The source artifact is from the
-       * constructor. The relationship type is from the wrapped {@link BuilderRelationshipRecord}. The target artifact
-       * is found from a map in the containing {@link TestDocumentBuilder} class using the {@link BuilderRecord}
-       * identifier for the relationship target.
-       *
-       * @return a {@link Stream} of {@link RelationshipSourceTargetTypeRecord}s for
-       */
-
-      Stream<RelationshipSourceTargetTypeRecord> stream() {
-         //@formatter:off
-         return
-            this.getTargetBuilderRecords().stream()
-               .map( TestDocumentBuilder.this.builderRecordWrapperByIdMap::get )
-               .map( BuilderRecordWrapper::getArtifact )
-               .map( (targetArtifact) -> new RelationshipSourceTargetTypeRecord
-                                                (
-                                                   this.sourceArtifact,
-                                                   targetArtifact,
-                                                   this.getRelationTypeToken()
-                                                 )
-                   );
-         //@formatter:on
-      }
-
-      /*
-       * BuilderRelationshipRecord Methods
-       */
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public RelationTypeToken getRelationTypeToken() {
-         return this.builderRelationshipRecord.getRelationTypeToken();
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public List<Integer> getTargetBuilderRecords() {
-         return this.builderRelationshipRecord.getTargetBuilderRecords();
-      }
-
-   }
-
-   /**
     * Internal implementation of the {@link BuidlerRecord} interface that wraps an unknown implementation of the
     * {@link BuilderRecord} interface with some additional members used in the test document building process.
     */
 
    private class BuilderRecordWrapper implements BuilderRecord {
-
-      /**
-       * The wrapped {@link BuilderRecord}.
-       */
-
-      private final BuilderRecord builderRecord;
 
       /**
        * Saves the test {@link Artifact} read from or created for the database.
@@ -226,6 +76,12 @@ public class TestDocumentBuilder {
        */
 
       private final Map<AttributeTypeGeneric<?>, List<Attribute<?>>> attributeValueListByAttributeTypeMap;
+
+      /**
+       * The wrapped {@link BuilderRecord}.
+       */
+
+      private final BuilderRecord builderRecord;
 
       /**
        * Wraps a {@link BuilderRecord} with additional members for the test document building process.
@@ -259,6 +115,15 @@ public class TestDocumentBuilder {
       }
 
       /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public ArtifactId getArtifactId() {
+         return this.builderRecord.getArtifactId();
+      }
+
+      /**
        * Gets the identifier for the test artifact.
        *
        * @return the test artifact identifier.
@@ -275,6 +140,24 @@ public class TestDocumentBuilder {
          //@formatter:on
 
          return this.artifactToken;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public ArtifactTypeToken getArtifactTypeToken() {
+         return this.builderRecord.getArtifactTypeToken();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public List<AttributeSpecificationRecord> getAttributeSpecifications() {
+         return this.builderRecord.getAttributeSpecifications();
       }
 
       /**
@@ -296,6 +179,46 @@ public class TestDocumentBuilder {
                     )
                );
          //@formatter:on
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public List<BuilderRelationshipRecord> getBuilderRelationshipRecords() {
+         return this.builderRecord.getBuilderRelationshipRecords();
+      }
+
+      /*
+       * BuilderRecord methods
+       */
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Integer getHierarchicalParentIdentifier() {
+         return this.builderRecord.getHierarchicalParentIdentifier();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Integer getIdentifier() {
+         return this.builderRecord.getIdentifier();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public String getName() {
+         return this.builderRecord.getName();
       }
 
       /**
@@ -366,9 +289,52 @@ public class TestDocumentBuilder {
          }
          return null;
       }
+   }
+
+   /**
+    * Internal implementation of the {@link BuidlerRelationshipRecord} interface that wraps an unknown implementation of
+    * the {@link BuilderRelationshipRecord} interface with some additional members used in the test document building
+    * process.
+    */
+
+   private class BuilderRelationshipRecordWrapper implements BuilderRelationshipRecord {
+
+      /**
+       * The wrapped {@link BuilderRelationshipRecord}.
+       */
+
+      private final BuilderRelationshipRecord builderRelationshipRecord;
+
+      /**
+       * Saves the {@link Artifact} that will be used as the source of the relationship.
+       */
+
+      private final Artifact sourceArtifact;
+
+      /**
+       * Wraps a {@link BuilderRelationshipRecord} with the relationship source {@link Artifact} for the test document
+       * building process.
+       *
+       * @param sourceArtifact the relationship source {@link Artifact}.
+       * @param builderRelationshipRecord {@link BuilderRelationshipRecord} to be wrapped.
+       */
+
+      BuilderRelationshipRecordWrapper(Artifact sourceArtifact, BuilderRelationshipRecord builderRelationshipRecord) {
+         this.sourceArtifact = Objects.requireNonNull(sourceArtifact);
+         this.builderRelationshipRecord = Objects.requireNonNull(builderRelationshipRecord);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public RelationTypeToken getRelationTypeToken() {
+         return this.builderRelationshipRecord.getRelationTypeToken();
+      }
 
       /*
-       * BuilderRecord methods
+       * BuilderRelationshipRecord Methods
        */
 
       /**
@@ -376,64 +342,104 @@ public class TestDocumentBuilder {
        */
 
       @Override
-      public ArtifactId getArtifactId() {
-         return this.builderRecord.getArtifactId();
+      public List<Integer> getTargetBuilderRecords() {
+         return this.builderRelationshipRecord.getTargetBuilderRecords();
       }
 
       /**
-       * {@inheritDoc}
+       * Builds a {@link Stream} of {@link RelationshipSourceTargetTypeRecord}s. The source artifact is from the
+       * constructor. The relationship type is from the wrapped {@link BuilderRelationshipRecord}. The target artifact
+       * is found from a map in the containing {@link TestDocumentBuilder} class using the {@link BuilderRecord}
+       * identifier for the relationship target.
+       *
+       * @return a {@link Stream} of {@link RelationshipSourceTargetTypeRecord}s for
        */
 
-      @Override
-      public ArtifactTypeToken getArtifactTypeToken() {
-         return this.builderRecord.getArtifactTypeToken();
+      Stream<RelationshipSourceTargetTypeRecord> stream() {
+         //@formatter:off
+         return
+            this.getTargetBuilderRecords().stream()
+               .map( TestDocumentBuilder.this.builderRecordWrapperByIdMap::get )
+               .map( BuilderRecordWrapper::getArtifact )
+               .map( (targetArtifact) -> new RelationshipSourceTargetTypeRecord
+                                                (
+                                                   this.sourceArtifact,
+                                                   targetArtifact,
+                                                   this.getRelationTypeToken()
+                                                 )
+                   );
+         //@formatter:on
+      }
+
+   }
+
+   /**
+    * Class to verify or create a relationships between artifacts.
+    */
+
+   private class RelationshipSourceTargetTypeRecord {
+
+      /**
+       * Saves the {@link RelationTypeToken} for the relationship type.
+       */
+
+      private final RelationTypeToken relationTypeToken;
+
+      /**
+       * Saves the source {@link Artifact} for the relationship.
+       */
+
+      private final Artifact sourceArtifact;
+
+      /**
+       * Saves the target {@link Artifact} for the relationship.
+       */
+
+      private final Artifact targetArtifact;
+
+      /**
+       * Creates a new {@link RelationshipSourceTargetTypeRecord}.
+       *
+       * @param sourceArtifact the source {@link Artifact}.
+       * @param targetArtifact the target {@link Artifact}.
+       * @param relationTypeToken the {@link RelationTypeToken} for the relationship type.
+       */
+
+      RelationshipSourceTargetTypeRecord(Artifact sourceArtifact, Artifact targetArtifact, RelationTypeToken relationTypeToken) {
+         this.sourceArtifact = Objects.requireNonNull(sourceArtifact);
+         this.targetArtifact = Objects.requireNonNull(targetArtifact);
+         this.relationTypeToken = Objects.requireNonNull(relationTypeToken);
       }
 
       /**
-       * {@inheritDoc}
+       * Creates the represented relationship between the source and target artifacts.
+       *
+       * @param relationEndpoint the ORCS REST API end point for managing relationships.
+       * @return the server HTTP {@link Response}.
        */
 
-      @Override
-      public List<AttributeSpecificationRecord> getAttributeSpecifications() {
-         return this.builderRecord.getAttributeSpecifications();
+      Response create(RelationEndpoint relationEndpoint) {
+         return relationEndpoint.createRelationByType(this.targetArtifact, this.sourceArtifact, this.relationTypeToken);
       }
 
       /**
-       * {@inheritDoc}
+       * Verifies a relationship of the correct type exists between the source and target artifacts.
+       *
+       * @return <code>true</code>, when the represented relationship is present between the artifacts; otherwise,
+       * <code>false</code>.
        */
 
-      @Override
-      public List<BuilderRelationshipRecord> getBuilderRelationshipRecords() {
-         return this.builderRecord.getBuilderRelationshipRecords();
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public Integer getHierarchicalParentIdentifier() {
-         return this.builderRecord.getHierarchicalParentIdentifier();
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public Integer getIdentifier() {
-         return this.builderRecord.getIdentifier();
-      }
-
-      /**
-       * {@inheritDoc}
-       */
-
-      @Override
-      public String getName() {
-         return this.builderRecord.getName();
+      boolean isNotRelated() {
+         return !RelationManager.getRelatedArtifacts(this.sourceArtifact, this.relationTypeToken,
+            RelationSide.SIDE_A).contains(this.targetArtifact);
       }
    }
+
+   /**
+    * Map used to get relationship target {@link Artifact}s using the {@link BuilderRecord} identifier.
+    */
+
+   private Map<Integer, BuilderRecordWrapper> builderRecordWrapperByIdMap;
 
    /**
     * Flag indicates if test document has been built.
@@ -460,12 +466,6 @@ public class TestDocumentBuilder {
    private final boolean setValues;
 
    /**
-    * Map used to get relationship target {@link Artifact}s using the {@link BuilderRecord} identifier.
-    */
-
-   private Map<Integer, BuilderRecordWrapper> builderRecordWrapperByIdMap;
-
-   /**
     * Creates a new {@link TestDocumentBuilder}.
     *
     * @param setValues <code>false</code> to prevent the test setup code from altering attribute values in the database.
@@ -476,131 +476,6 @@ public class TestDocumentBuilder {
       this.rootArtifactId = null;
       this.rootBranchId = null;
       this.setValues = setValues;
-   }
-
-   /**
-    * Gets or creates the artifact identifier for the test artifact.
-    *
-    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
-    * @param relationEndpoint The REST API end point for obtaining related artifacts.
-    * @param parentBranchId The identifier of the branch to get or create the test artifact on.
-    * @param hierarchicalParentArtifactIdMap A map of the {@link ArtifactToken} (identifiers) of the hierarchical parent
-    * artifacts by {@link ArtifactInfoRecord} identifiers. The {@link ArtifactToken} for the obtained or created
-    * artifact will be added to the map with the identifier of this {@link ArtifactInfoRecord} as the key.
-    */
-
-   //@formatter:off
-   private ArtifactToken
-      getOrCreateArtifactToken
-        (
-           BuilderRecordWrapper                  builderRecordWrapper,
-           RelationEndpoint                      relationEndpoint,
-           BranchId                              parentBranchId,
-           Map<Integer, ArtifactId>              hierarchicalParentArtifactIdMap,
-           Map<ArtifactId, BuilderRecordWrapper> builderRecordWrapperByArtifactIdMap
-        )
-   {
-      var artifactToken =
-         TestUtil.getOrCreateChildArtifactTokenByName
-            (
-               relationEndpoint,
-               parentBranchId,
-               hierarchicalParentArtifactIdMap.get( builderRecordWrapper.getHierarchicalParentIdentifier() ),
-               builderRecordWrapper.getArtifactId(),
-               builderRecordWrapper.getArtifactTypeToken(),
-               builderRecordWrapper.getName()
-            );
-
-      hierarchicalParentArtifactIdMap.put( builderRecordWrapper.getIdentifier(), artifactToken );
-      builderRecordWrapperByArtifactIdMap.put( artifactToken, builderRecordWrapper );
-
-      builderRecordWrapper.setArtifactToken(artifactToken);
-
-      return artifactToken;
-   }
-   //@formatter:on
-
-   /**
-    * Gets or creates the test attribute for the test artifact. The test artifact must be obtained before calling this
-    * method.
-    *
-    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
-    */
-
-   private void getOrCreateAttribute(BuilderRecordWrapper builderRecordWrapper) {
-
-      //@formatter:off
-      builderRecordWrapper.getAttributeSpecifications()
-         .forEach
-            (
-               ( attributeSpecification ) ->
-
-                  builderRecordWrapper.setAttributeValueList
-                     (
-                       attributeSpecification.getAttributeType(),
-                       TestUtil.getOrCreateAttributes
-                          (
-                            builderRecordWrapper.getArtifact(),
-                            attributeSpecification.getAttributeType(),
-                            attributeSpecification.getAttributeValues().size()
-                          )
-                     )
-            );
-      //@formatter:on
-   }
-
-   /**
-    * If the test artifact's attributes do not have the expected values, set the test attribute values.
-    *
-    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
-    */
-
-   private void setAttributeValues(BuilderRecordWrapper builderRecordWrapper) {
-
-      if (!this.setValues) {
-         return;
-      }
-
-      //@formatter:off
-      builderRecordWrapper.getAttributeSpecifications()
-         .forEach
-            (
-               ( attributeSpecification ) ->
-               {
-                  TestUtil.setAttributeValues
-                     (
-                       builderRecordWrapper.getArtifact(),
-                       attributeSpecification.getAttributeType(),
-                       new LinkedList<Object>( attributeSpecification.getAttributeValues() ),
-                       attributeSpecification.getAttributeSetter()
-                     );
-
-                  builderRecordWrapper.setAttributeValueList
-                     (
-                       attributeSpecification.getAttributeType(),
-                       TestUtil.getAttributes
-                          (
-                            builderRecordWrapper.getArtifact(),
-                            attributeSpecification.getAttributeType()
-                          )
-                          .orElseThrow()
-                     );
-               }
-            );
-      //@formatter:on
-   }
-
-   /**
-    * Save the artifact back to the database if it has been modified.
-    *
-    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
-    */
-
-   private void persistIfDirty(BuilderRecordWrapper builderRecordWrapper) {
-      var artifact = builderRecordWrapper.getArtifact();
-      if (artifact.isDirty()) {
-         artifact.persist("Three Blind Mice");
-      }
    }
 
    /**
@@ -817,6 +692,77 @@ public class TestDocumentBuilder {
    }
 
    /**
+    * Gets or creates the artifact identifier for the test artifact.
+    *
+    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
+    * @param relationEndpoint The REST API end point for obtaining related artifacts.
+    * @param parentBranchId The identifier of the branch to get or create the test artifact on.
+    * @param hierarchicalParentArtifactIdMap A map of the {@link ArtifactToken} (identifiers) of the hierarchical parent
+    * artifacts by {@link ArtifactInfoRecord} identifiers. The {@link ArtifactToken} for the obtained or created
+    * artifact will be added to the map with the identifier of this {@link ArtifactInfoRecord} as the key.
+    */
+
+   //@formatter:off
+   private ArtifactToken
+      getOrCreateArtifactToken
+        (
+           BuilderRecordWrapper                  builderRecordWrapper,
+           RelationEndpoint                      relationEndpoint,
+           BranchId                              parentBranchId,
+           Map<Integer, ArtifactId>              hierarchicalParentArtifactIdMap,
+           Map<ArtifactId, BuilderRecordWrapper> builderRecordWrapperByArtifactIdMap
+        )
+   {
+      var artifactToken =
+         TestUtil.getOrCreateChildArtifactTokenByName
+            (
+               relationEndpoint,
+               parentBranchId,
+               hierarchicalParentArtifactIdMap.get( builderRecordWrapper.getHierarchicalParentIdentifier() ),
+               builderRecordWrapper.getArtifactId(),
+               builderRecordWrapper.getArtifactTypeToken(),
+               builderRecordWrapper.getName()
+            );
+
+      hierarchicalParentArtifactIdMap.put( builderRecordWrapper.getIdentifier(), artifactToken );
+      builderRecordWrapperByArtifactIdMap.put( artifactToken, builderRecordWrapper );
+
+      builderRecordWrapper.setArtifactToken(artifactToken);
+
+      return artifactToken;
+   }
+   //@formatter:on
+
+   /**
+    * Gets or creates the test attribute for the test artifact. The test artifact must be obtained before calling this
+    * method.
+    *
+    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
+    */
+
+   private void getOrCreateAttribute(BuilderRecordWrapper builderRecordWrapper) {
+
+      //@formatter:off
+      builderRecordWrapper.getAttributeSpecifications()
+         .forEach
+            (
+               ( attributeSpecification ) ->
+
+                  builderRecordWrapper.setAttributeValueList
+                     (
+                       attributeSpecification.getAttributeType(),
+                       TestUtil.getOrCreateAttributes
+                          (
+                            builderRecordWrapper.getArtifact(),
+                            attributeSpecification.getAttributeType(),
+                            attributeSpecification.getAttributeValues().size()
+                          )
+                     )
+            );
+      //@formatter:on
+   }
+
+   /**
     * Gets the {@link ArtifactId} of the test document's root {@link Artifact}.
     *
     * @return the identifier of the root artifact.
@@ -842,6 +788,60 @@ public class TestDocumentBuilder {
          this.rootBranchId);
 
       return this.rootBranchId;
+   }
+
+   /**
+    * Save the artifact back to the database if it has been modified.
+    *
+    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
+    */
+
+   private void persistIfDirty(BuilderRecordWrapper builderRecordWrapper) {
+      var artifact = builderRecordWrapper.getArtifact();
+      if (artifact.isDirty()) {
+         artifact.persist("Three Blind Mice");
+      }
+   }
+
+   /**
+    * If the test artifact's attributes do not have the expected values, set the test attribute values.
+    *
+    * @param builderRecord The {@link BuilderRecord} containing the test artifact specification.
+    */
+
+   private void setAttributeValues(BuilderRecordWrapper builderRecordWrapper) {
+
+      if (!this.setValues) {
+         return;
+      }
+
+      //@formatter:off
+      builderRecordWrapper.getAttributeSpecifications()
+         .forEach
+            (
+               ( attributeSpecification ) ->
+               {
+                  TestUtil.setAttributeValues
+                     (
+                       builderRecordWrapper.getArtifact(),
+                       attributeSpecification.getAttributeType(),
+                       new LinkedList<Object>( attributeSpecification.getAttributeValues() ),
+                       attributeSpecification.getAttributeSetter()
+                     );
+
+                  builderRecordWrapper.setAttributeValueList
+                     (
+                       attributeSpecification.getAttributeType(),
+                       TestUtil.getAttributes
+                          (
+                            builderRecordWrapper.getArtifact(),
+                            attributeSpecification.getAttributeType()
+                          )
+                          .orElseThrow()
+                     );
+               }
+            );
+      //@formatter:on
    }
 
 }

@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests;
 
 import org.eclipse.osee.ats.ide.integration.tests.define.DefineIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.access.FrameworkAccess_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.framework.core.FrameworkCoreSuite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.skynet.core.artifact.SkyentCoreArtifact_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
@@ -47,6 +48,7 @@ import org.junit.runners.Suite;
    AtsTest_AllAts_Suite.class,
    DefineIntegrationTestSuite.class,
    FrameworkAccess_Suite.class,
+   FrameworkCoreSuite.class,
    OrcsRestTestSuite.class,
    PublishingTestSuite.class,
    SkyentCoreArtifact_Suite.class,

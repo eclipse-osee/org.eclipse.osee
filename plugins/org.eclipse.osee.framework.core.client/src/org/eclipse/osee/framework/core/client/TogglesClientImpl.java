@@ -11,17 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.httpRequests;
+package org.eclipse.osee.framework.core.client;
 
 import java.util.Objects;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.define.api.toggles.TogglesEndpoint;
-import org.eclipse.osee.framework.core.util.toggles.Toggles;
+import org.eclipse.osee.framework.core.util.toggles.ToggleAccessor;
 import org.eclipse.osee.framework.core.util.toggles.TogglesFactory;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 
-public class TogglesClientImpl implements Toggles {
+public class TogglesClientImpl {
 
    /**
     * Save a reference to the single instance of the {@link TogglesClientImpl} class.
@@ -39,8 +38,8 @@ public class TogglesClientImpl implements Toggles {
     * Constructor is private to prevent multiple instantiations of the class.
     */
 
-   private TogglesClientImpl() {
-      this.togglesEndpoint = ServiceUtil.getOseeClient().getTogglesEndpoint();
+   private TogglesClientImpl(TogglesEndpoint togglesEndpoint) {
+      this.togglesEndpoint = togglesEndpoint;
    }
 
    /**
@@ -50,11 +49,11 @@ public class TogglesClientImpl implements Toggles {
     * @return the single {@link TogglesClientImpl} instance.
     */
 
-   public synchronized static TogglesClientImpl create() {
+   public synchronized static TogglesClientImpl create(TogglesEndpoint togglesEndpoint) {
       //@formatter:off
       return
          Objects.isNull( TogglesClientImpl.togglesClientImpl )
-            ? ( TogglesClientImpl.togglesClientImpl = new TogglesClientImpl() )
+            ? ( TogglesClientImpl.togglesClientImpl = new TogglesClientImpl(Objects.requireNonNull(togglesEndpoint)) )
             : TogglesClientImpl.togglesClientImpl;
       //@formatter:on
    }
@@ -65,13 +64,36 @@ public class TogglesClientImpl implements Toggles {
     * @return the toggle's value as a {@link Boolean}.
     */
 
-   @Override
-   public Boolean apply(String name) {
+   public String getDataBaseToggle(String name) {
       try {
-         return this.togglesEndpoint.apply(name);
+         return this.togglesEndpoint.getToggle(name);
       } catch (Exception e) {
          throw new OseeWebApplicationException(e, Status.INTERNAL_SERVER_ERROR, "Exception in \"getNoTags\" request.");
       }
+   }
+
+   public static ToggleAccessor getDataBaseToggleAccessor() {
+
+      if (Objects.isNull(TogglesClientImpl.togglesClientImpl)) {
+         TogglesClientImpl.create(null);
+      }
+
+      //@formatter:off
+      return
+         new ToggleAccessor() {
+
+            @Override
+            public String getToggle(String name) {
+               return TogglesClientImpl.togglesClientImpl.getDataBaseToggle(name);
+            }
+
+            @Override
+            public String toString() {
+               return "Client dataBaseToggleAccessor";
+            }
+
+      };
+      //@formatter:on
    }
 
 }

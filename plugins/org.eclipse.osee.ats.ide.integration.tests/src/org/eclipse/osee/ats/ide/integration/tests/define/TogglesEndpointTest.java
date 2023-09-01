@@ -19,6 +19,7 @@ import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.toggles.TogglesFactory;
+import org.eclipse.osee.framework.core.util.toggles.TogglesFactory.ToggleSource;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -27,6 +28,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
+
+/**
+ * Test for database toggles.
+ *
+ * @author Loren K. Ashley
+ */
 
 public class TogglesEndpointTest {
 
@@ -72,10 +79,13 @@ public class TogglesEndpointTest {
    @Test
    public void test() {
 
-      var toggles = TogglesFactory.getTogglesImpl();
+      var toggleA =
+         TogglesFactory.create(TogglesEndpointTest.TOGGLE_A, TogglesFactory.booleanConverter, ToggleSource.DATA_BASE);
+      var toggleB =
+         TogglesFactory.create(TogglesEndpointTest.TOGGLE_B, TogglesFactory.booleanConverter, ToggleSource.DATA_BASE);
 
-      Assert.assertTrue(toggles.apply(TogglesEndpointTest.TOGGLE_A));
-      Assert.assertFalse(toggles.apply(TogglesEndpointTest.TOGGLE_B));
+      Assert.assertTrue(toggleA.get());
+      Assert.assertFalse(toggleB.get());
    }
 }
 

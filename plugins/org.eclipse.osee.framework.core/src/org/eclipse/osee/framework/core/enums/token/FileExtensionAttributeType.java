@@ -13,39 +13,77 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import java.util.stream.Stream;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
-import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.framework.core.enums.token.FileExtensionAttributeType.FileExtensionEnum;
+import org.eclipse.osee.framework.core.enums.FileExtension;
 
 /**
+ * Initializes an enumerated {@link AttributeTypeToken} implementation for file extensions.
+ *
  * @author Ryan Baldwin
+ * @author Loren K. Ashley
  */
 
-public class FileExtensionAttributeType extends AttributeTypeEnum<FileExtensionEnum> {
+public class FileExtensionAttributeType extends AttributeTypeEnum<FileExtension.FileExtensionEnum> {
 
-   public final FileExtensionEnum Xml = new FileExtensionEnum(0, "xml");
-   public final FileExtensionEnum Zip = new FileExtensionEnum(1, "zip");
-   public final FileExtensionEnum Csv = new FileExtensionEnum(2, "csv");
-   public final FileExtensionEnum Json = new FileExtensionEnum(3, "json");
-   public final FileExtensionEnum xls = new FileExtensionEnum(4, "xls");
-   public final FileExtensionEnum xlsx = new FileExtensionEnum(5, "xlsx");
+   /**
+    * The attribute type description.
+    */
 
-   public FileExtensionAttributeType(NamespaceToken namespace, int enumCount) {
-      super(3731534343896308858L, namespace, "File Extension", MediaType.TEXT_PLAIN, "",
-         TaggerTypeToken.PlainTextTagger, enumCount);
+   private static String description =
+      "The file extension used to find the application to view/edit the attribute's main content.";
+
+   /**
+    * The attribute type identifier.
+    */
+
+   private static long identifier = 3731534343896308858L;
+
+   /**
+    * The attribute type display name.
+    */
+
+   private static String name = "File Extension";
+
+   /**
+    * Creates a new {@link AttributeTypeEnum} {@link AttributeTypeToken} with the {@link NamespaceToken} specified by
+    * <code>namespace</code>. The enumeration members are created from the members of the {@link FileExtension}
+    * enumeration.
+    *
+    * @param namespace the {@link NamespaceToken} to create the {@link AttributeTypeToken} with.
+    */
+
+   public FileExtensionAttributeType(NamespaceToken namespace) {
+      //@formatter:off
+      super
+         (
+            FileExtensionAttributeType.identifier,
+            namespace,
+            FileExtensionAttributeType.name,
+            MediaType.TEXT_PLAIN,
+            FileExtensionAttributeType.description,
+            TaggerTypeToken.PlainTextTagger,
+            FileExtension.values().length
+         );
+
+      Stream.of( FileExtension.values() )
+         .map( FileExtension::getEnumToken )
+         .forEach( this::addEnum );
+      //@formatter:on
    }
+
+   /**
+    * Creates a new {@link FileExtensionAttributeType} with the {@link NamespaceToken#OSEE}.
+    */
 
    public FileExtensionAttributeType() {
-      this(NamespaceToken.OSEE, 6);
+      this(NamespaceToken.OSEE);
    }
 
-   public class FileExtensionEnum extends EnumToken {
-      public FileExtensionEnum(int ordinal, String name) {
-         super(ordinal, name);
-         addEnum(this);
-      }
-   }
 }
+
+/* EOF */

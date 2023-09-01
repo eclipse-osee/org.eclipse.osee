@@ -33,6 +33,7 @@ import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
@@ -81,7 +82,8 @@ public class PublishingDataRightsTest {
     * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
     * <dt>In Publishing Group Test Rule</dt>
     * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
-    * {@Link UserToken} cache has been flushed.</dd></dt>
+    * {@link UserToken} cache has been flushed.</dd>
+    * </dl>
     */
 
    //@formatter:off

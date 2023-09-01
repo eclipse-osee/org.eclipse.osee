@@ -13,18 +13,23 @@
 
 package org.eclipse.osee.framework.core.util.toggles;
 
-import java.util.function.Function;
-
 /**
- * This interface defines the method for obtaining a Toggle value. This interface is an extension of the
- * {@link Function} interface. The {@link TogglesFactory} creates implementations that are specific to the OSEE Client
- * and the OSEE Server. This interface may be used in both the client and server code.
+ * Implementations of this interface return the value of a specific toggle.
  *
  * @author Loren K. Ashley
+ * @param <T> the type of the {@link Toggle} implementation's return value.
  */
 
-@FunctionalInterface
-public interface Toggles extends Function<String, Boolean> {
+public interface Toggle<T> {
+
+   /**
+    * Returns the value of the toggle.
+    *
+    * @return the toggle value.
+    */
+
+   T get();
+
 }
 
 /* EOF */

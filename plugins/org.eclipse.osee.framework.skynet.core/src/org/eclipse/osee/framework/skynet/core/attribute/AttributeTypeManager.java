@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.MapEntryAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.UriAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
@@ -109,6 +110,8 @@ public class AttributeTypeManager {
          return StringAttribute.class;
       } else if (attributeTypeToken.isEnumerated()) {
          return EnumeratedAttribute.class;
+      } else if (attributeTypeToken.isMapEntry()) {
+         return MapEntryAttribute.class;
       } else if (attributeTypeToken.equals(CoreAttributeTypes.ParagraphNumber)) {
          return OutlineNumberAttribute.class;
       } else {
@@ -121,10 +124,14 @@ public class AttributeTypeManager {
       if (attributeType.isUri()) {
          return new UriAttributeDataProvider(attribute);
       }
+      if (attributeType.isMapEntry()) {
+         return new MapEntryAttributeDataProvider(attribute);
+      }
       return new DefaultAttributeDataProvider<T>(attribute);
    }
 
-   public static boolean checkIfRemovalAllowed(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
+   public static boolean checkIfRemovalAllowed(AttributeTypeToken attributeType,
+      Collection<? extends Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art.getArtifactType().getMin(attributeType) > 0) {
             return false;

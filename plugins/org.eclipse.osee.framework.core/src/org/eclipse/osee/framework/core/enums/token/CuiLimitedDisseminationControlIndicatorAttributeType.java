@@ -13,45 +13,80 @@
 
 package org.eclipse.osee.framework.core.enums.token;
 
+import java.util.stream.Stream;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
-import org.eclipse.osee.framework.core.enums.EnumToken;
-import org.eclipse.osee.framework.core.enums.token.CuiLimitedDisseminationControlIndicatorAttributeType.CuiLimitedDisseminationControlIndicatorEnum;
 import org.eclipse.osee.framework.core.publishing.CuiLimitedDisseminationControlIndicator;
 
 /**
- * Initialize multi-level enumeration of CUI Limited Dissemination Control Indicator
+ * Initialize enumeration of CUI Limited Dissemination Control Indicator
  *
  * @author Md I. Khan
+ * @author Loren K. Ashley
  */
 
-public class CuiLimitedDisseminationControlIndicatorAttributeType extends AttributeTypeEnum<CuiLimitedDisseminationControlIndicatorEnum> {
+public class CuiLimitedDisseminationControlIndicatorAttributeType extends AttributeTypeEnum<CuiLimitedDisseminationControlIndicator.CuiLimitedDisseminationControlIndicatorEnum> {
 
-   public final CuiLimitedDisseminationControlIndicatorEnum[] enumList =
-      new CuiLimitedDisseminationControlIndicatorEnum[CuiLimitedDisseminationControlIndicator.values().length];
+   /**
+    * Description of the attribute's content.
+    */
 
-   public CuiLimitedDisseminationControlIndicatorAttributeType(NamespaceToken namespace, int enumCount) {
-      super(6036586745962781830L, namespace, "CUI Limited Dissemination Control", MediaType.TEXT_PLAIN, "",
-         TaggerTypeToken.PlainTextTagger, enumCount);
+   //@formatter:off
+   private static String description =
+        "This attribute is used by the following artifact types:\n"
+      + "   * CoreArtifactTypes.Controlled:\n"
+      + "        to specify the limits for dissemination of the data contained in the controlled artifact.\n"
+      + "   * CoreArtifactTypes.DataRightsConfiguration:\n"
+      + "        to specify the limits for dissemination of the published data.\n";
+   //@formatter:on
+   /**
+    * The attribute type identifier.
+    */
 
-      for (int i = 0; i < enumList.length; i++) {
-         enumList[i] = new CuiLimitedDisseminationControlIndicatorEnum(i,
-            CuiLimitedDisseminationControlIndicator.values()[i].name());
-      }
+   private static long identifier = 6036586745962781830L;
+
+   /**
+    * Short name of the attribute type.
+    */
+
+   private static String name = "CUI Limited Dissemination Control";
+
+   /**
+    * Creates a new {@link AttributeTypeEnum} {@link AttributeTypeToken} with the {@link NamespaceToken} specified by
+    * <code>namespace</code>. The enumeration members are created from the members of the
+    * {@link CuiLimitedDisseminationControlIndicator} enumeration.
+    *
+    * @param the {@link NamespaceToken} to create the {@link AttributeTypeToken} with.
+    */
+
+   public CuiLimitedDisseminationControlIndicatorAttributeType(NamespaceToken namespace) {
+      //@formatter:off
+      super
+         (
+            CuiLimitedDisseminationControlIndicatorAttributeType.identifier,
+            namespace,
+            CuiLimitedDisseminationControlIndicatorAttributeType.name,
+            MediaType.TEXT_PLAIN,
+            CuiLimitedDisseminationControlIndicatorAttributeType.description,
+            TaggerTypeToken.PlainTextTagger,
+            CuiLimitedDisseminationControlIndicator.values().length
+         );
+      //@formatter:on
+      Stream.of(CuiLimitedDisseminationControlIndicator.values()).map(
+         CuiLimitedDisseminationControlIndicator::getEnumToken).forEach(this::addEnum);
    }
+
+   /**
+    * Creates a new {@link AttributeTypeToken} with the default {@link NameSpaceToken#OSEE}.
+    */
 
    public CuiLimitedDisseminationControlIndicatorAttributeType() {
-      this(NamespaceToken.OSEE, CuiLimitedDisseminationControlIndicator.values().length);
+      this(NamespaceToken.OSEE);
    }
 
-   public class CuiLimitedDisseminationControlIndicatorEnum extends EnumToken {
-
-      public CuiLimitedDisseminationControlIndicatorEnum(int ordinal, String name) {
-         super(ordinal, name);
-         addEnum(this);
-      }
-
-   }
 }
+
+/* EOF */

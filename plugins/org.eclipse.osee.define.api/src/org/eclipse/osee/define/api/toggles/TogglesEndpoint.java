@@ -19,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.framework.core.util.toggles.Toggles;
 
 /**
  * This interface defines the REST API end points for getting toggle values.
@@ -28,27 +27,27 @@ import org.eclipse.osee.framework.core.util.toggles.Toggles;
  */
 
 @Path("toggles")
-public interface TogglesEndpoint extends Toggles {
+public interface TogglesEndpoint {
 
    /**
     * Makes a request to obtain the value of a toggle.
     *
     * @param name the name of the toggle.
-    * @return the toggle value as a {@link Boolean}.
+    * @return the toggle value as a {@link String}.
     */
 
    //@formatter:off
-   @Override
    @GET
    @Path("{toggle}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   Boolean
-      apply
+   String
+      getToggle
          (
             @PathParam( "toggle" ) String name
          );
    //@formatter:on
+
 }
 
 /* EOF */

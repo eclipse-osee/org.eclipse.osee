@@ -18,7 +18,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 import java.util.function.BiFunction;
@@ -27,10 +29,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.EnumToken;
+import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
@@ -39,6 +44,8 @@ import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 import org.eclipse.osee.framework.jdk.core.util.regex.TokenMatcher;
 import org.eclipse.osee.framework.jdk.core.util.regex.TokenPattern;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
@@ -644,10 +651,12 @@ public class WordCoreUtil {
    //@formatter:on
 
    /**
-    * An enumeration of page types that page size Word Ml can be obtained from.
+    * An enumeration of page types that page size Word Ml can be obtained from. This enumeration is associated with the
+    * {@link PageOrientationAttributeType} and defines the attribute type's enumerated {@link PageOrientationEnum}
+    * tokens.
     */
 
-   public enum pageType {
+   public enum pageType implements ToMessage {
 
       /**
        * Word ML landscape page size
@@ -656,7 +665,9 @@ public class WordCoreUtil {
       //@formatter:off
       LANDSCAPE
          (
-            "<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />"
+            "<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />",
+            1,
+            "Landscape"
          ),
       //@formatter:on
 
@@ -664,10 +675,89 @@ public class WordCoreUtil {
        * Word ML portrait page size
        */
 
-      //@formatter:on
-      PORTRAIT("<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
       //@formatter:off
+      PORTRAIT
+         (
+            "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />",
+            0,
+            "Portrait"
+         );
+      //@formatter:on
 
+      /**
+       * Maps the {@link PageOrientationAttributeType} {@link PageOrientationEnum} members to {@link pageType}
+       * enumeration members.
+       */
+
+      private static final Map<PageOrientationEnum, pageType> pageTypeEnumMap;
+
+      /**
+       * Maps the page type display names to {@link pageType} enumeration members.
+       */
+
+      private static final Map<String, pageType> pageTypeMap;
+
+      /*
+       * Initializes the enumeration maps.
+       */
+
+      static {
+         //@formatter:off
+         pageTypeMap =
+            Arrays.stream( pageType.values() )
+               .collect( Collectors.toUnmodifiableMap( pageType::getDisplayName, Function.identity()));
+
+         pageTypeEnumMap =
+            Arrays.stream( pageType.values() )
+               .collect( Collectors.toUnmodifiableMap( pageType::getEnumToken, Function.identity()));
+
+         //@formatter:on
+      }
+
+      /**
+       * Gets the {@link pageType} enumeration member from the file extension string.
+       *
+       * @param attributeValueString the file extension string.
+       * @return when the <code>attributeValueString</code> maps to an enumeration member an {@link Optional} containing
+       * the associated {@link pageType} enumeration member; otherwise, an empty {@link Optional}.
+       */
+
+      public static Optional<pageType> valueOfAttribute(String attributeValueString) {
+         return Optional.ofNullable(pageType.pageTypeMap.get(attributeValueString));
+      }
+
+      /**
+       * Gets the {@link pageType} enumeration member from the {@link PageOrientationEnum} {@link EnumToken} of the
+       * {@link PageOrientationAttributeType}.
+       *
+       * @param enumToken the {@link PageOrientationEnum}.
+       * @return when the <code>enumToken</code> maps to an enumeration member an {@link Optional} containing the
+       * associated {@link pageType} enumeration member; otherwise, an empty {@link Optional}.
+       */
+
+      public static Optional<pageType> valueOfEnumToken(PageOrientationEnum enumToken) {
+         return Optional.ofNullable(pageType.pageTypeEnumMap.get(enumToken));
+      }
+
+      /**
+       * Class for the enumeration members of the {@link PageOrientationAttributeTypeEnum}.
+       */
+
+      public static class PageOrientationEnum extends EnumToken {
+
+         /**
+          * Creates a new {@link PageOrientationEnum} member with the specified <code>ordinal</code> and
+          * <code>name</code>.
+          *
+          * @param ordinal the ordinal value for the enumeration member.
+          * @param name the name for the enumeration member.
+          */
+
+         public PageOrientationEnum(int ordinal, String name) {
+            super(ordinal, name);
+         }
+
+      }
 
       /**
        * Word ML for the default page margins and columns settings.
@@ -675,7 +765,6 @@ public class WordCoreUtil {
 
       private static final String marginsAndColumns =
          "<w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"432\" w:footer=\"432\" w:gutter=\"0\"/><w:cols w:space=\"720\"/>";
-
 
       /**
        * Prefix used to wrap the page size, page margin, and page columns for the Word Ml to start a new page.
@@ -703,6 +792,13 @@ public class WordCoreUtil {
       //@formatter:on
 
       /**
+       * The {@link PageOrientationEnum} for the {@link PageOrientationAttributeType} that is associated with the
+       * {@link PageType} enumeration member.
+       */
+
+      private final PageOrientationEnum enumToken;
+
+      /**
        * Saves the page size Word Ml for the page type.
        */
 
@@ -720,9 +816,30 @@ public class WordCoreUtil {
        * @param pageSizeWordMl the pages size Word Ml for the enumeration member.
        */
 
-      private pageType(String pageSizeWordMl) {
+      private pageType(String pageSizeWordMl, int enumTokenOrdinal, String enumTokenName) {
          this.pageSizeWordMl = pageSizeWordMl;
+         this.enumToken = new PageOrientationEnum(enumTokenOrdinal, enumTokenName);
          this.pageSizeWithMarginsAndColumnsWordMl = pageSizeWordMl.concat(marginsAndColumns);
+      }
+
+      /**
+       * Gets the page orientation display string.
+       *
+       * @return the display string.
+       */
+
+      public String getDisplayName() {
+         return this.enumToken.getName();
+      }
+
+      /**
+       * Gets the {@link PageOrientationEnum} associated with the enumeration member.
+       *
+       * @return the associated {@link PageOrientationEnum}.
+       */
+
+      public PageOrientationEnum getEnumToken() {
+         return this.enumToken;
       }
 
       /**
@@ -843,6 +960,27 @@ public class WordCoreUtil {
 
       public static pageType getDefault() {
          return WordCoreUtil.pageType.PORTRAIT;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      public Message toMessage(int indent, Message message) {
+         var outMessage = Objects.isNull(message) ? new Message() : message;
+         outMessage.segment(this.name(), this.enumToken.getName());
+         return outMessage;
+      }
+
+      /**
+       * Returns a string representation of the enumeration member for debugging. Use the method {@link #getDisplayName}
+       * to obtain the page orientation display string.
+       */
+
+      @Override
+      public String toString() {
+         return this.toMessage(0, null).toString();
       }
 
    }

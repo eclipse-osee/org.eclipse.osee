@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.client.QueryBuilder;
+import org.eclipse.osee.framework.core.client.TogglesClientImpl;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -71,18 +72,21 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
 
    private PredicateFactory predicateFactory;
    private IAccessControlService accessControlService;
+   private TogglesClientImpl togglesClientImpl;
 
    public void bindAccessControlService(IAccessControlService accessControlService) {
       this.accessControlService = accessControlService;
    }
 
    public void start(Map<String, Object> properties) {
-      predicateFactory = new PredicateFactoryImpl();
+      this.predicateFactory = new PredicateFactoryImpl();
       jaxRsApi().createClientFactory(userService());
+      this.togglesClientImpl = TogglesClientImpl.create(this.getTogglesEndpoint());
    }
 
    public void stop() {
-      predicateFactory = null;
+      this.predicateFactory = null;
+      this.togglesClientImpl = null;
    }
 
    @Override
@@ -310,6 +314,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public TogglesEndpoint getTogglesEndpoint() {
       return this.getDefineEndpoint(TogglesEndpoint.class);
+   }
+
+   @Override
+   public TogglesClientImpl getTogglesClient() {
+      return this.togglesClientImpl;
    }
 
    @Override

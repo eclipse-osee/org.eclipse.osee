@@ -63,10 +63,23 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
       if (fromStorage != null) {
          return fromStorage;
       } else if (rawValue != null) {
-         return rawValue.toString();
+         return this.rawValueToString(rawValue);
       }
 
       return "";
+   }
+
+   /**
+    * Gets a string representation of the raw attribute value object type &lt;T&gt;.
+    *
+    * @param rawValue the raw attribute value object.
+    * @return a {@link String} representation of the raw attribute value object.
+    * @implNote This method is provided so that deriving classes for raw attribute value types, (&lt;T&gt;), where the
+    * <code>toString</code> method is not sufficient and cannot be modified.
+    */
+
+   protected String rawValueToString(T rawValue) {
+      return rawValue.toString();
    }
 
    @Override
