@@ -99,7 +99,7 @@ public class DefectUtil {
    public void handleImportDefectsViaList() {
       try {
          EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create Defects", null,
-            "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+            "Enter Defect descriptions, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
             IAtsChangeSet changes = AtsApiService.get().createChangeSet("Import Review Defects");
@@ -110,6 +110,7 @@ public class DefectUtil {
                   defectManager.addDefectItem(str);
                }
             }
+            defectManager.saveToArtifact(review, changes);
             changes.execute();
          }
       } catch (Exception ex) {
