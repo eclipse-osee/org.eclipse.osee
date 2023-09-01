@@ -62,40 +62,36 @@ public class WfeWorkPackage extends Composite {
 
       try {
          link = editor.getToolkit().createHyperlink(this, WORK_PACKAGE, SWT.NONE);
-         if (!teamWf.isCancelled() && !teamWf.isCompleted()) {
-            link.addHyperlinkListener(new IHyperlinkListener() {
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-               @Override
-               public void linkEntered(HyperlinkEvent e) {
-                  // do nothing
-               }
+            @Override
+            public void linkEntered(HyperlinkEvent e) {
+               // do nothing
+            }
 
-               @Override
-               public void linkExited(HyperlinkEvent e) {
-                  // do nothing
-               }
+            @Override
+            public void linkExited(HyperlinkEvent e) {
+               // do nothing
+            }
 
-               @Override
-               public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     if (editor.isDirty()) {
-                        editor.doSave(null);
-                     }
-                     if (atsApi.getEarnedValueService().isUseTextWorkPackages(Collections.singleton(teamWf))) {
-                        PromptChangeUtil.promptChangeAttribute(
-                           Collections.singleton((AbstractWorkflowArtifact) teamWf.getStoreObject()),
-                           AtsAttributeTypes.WorkPackage, true);
-                     } else {
-                        WorkPackageColumnUI.promptChangeActivityId(teamWf, true);
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               try {
+                  if (editor.isDirty()) {
+                     editor.doSave(null);
                   }
+                  if (atsApi.getEarnedValueService().isUseTextWorkPackages(Collections.singleton(teamWf))) {
+                     PromptChangeUtil.promptChangeAttribute(
+                        Collections.singleton((AbstractWorkflowArtifact) teamWf.getStoreObject()),
+                        AtsAttributeTypes.WorkPackage, true);
+                  } else {
+                     WorkPackageColumnUI.promptChangeActivityId(teamWf, true);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
-            });
-         } else {
-            link.setEnabled(false);
-         }
+            }
+         });
 
          valueLabel = new Text(this, SWT.NO_TRIM);
          valueLabel.setLayoutData(new GridData());
