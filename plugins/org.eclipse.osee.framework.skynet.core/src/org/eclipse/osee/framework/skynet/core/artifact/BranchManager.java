@@ -321,7 +321,8 @@ public final class BranchManager {
       return new UpdateBranchOperation(branch, resolver).run();
    }
 
-   public static UpdateBranchData updateBranch(BranchToken branch, BranchId fromBranch, ConflictResolverOperation resolver) {
+   public static UpdateBranchData updateBranch(BranchToken branch, BranchId fromBranch,
+      ConflictResolverOperation resolver) {
       return new UpdateBranchOperation(branch, fromBranch, resolver).run();
    }
 
@@ -425,7 +426,8 @@ public final class BranchManager {
     *
     * @return
     */
-   public static TransactionResult commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
+   public static TransactionResult commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager,
+      boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) {
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -438,18 +440,18 @@ public final class BranchManager {
 
       boolean skipCommitChecksAndEvents = OseeClientProperties.isSkipCommitChecksAndEvents();
       // also skip commit checks if performing update from parent
-      skipCommitChecksAndEvents = checkIfUpdateFromParent(conflictManager);
-      if (!skipCommitChecksAndEvents) {
+      boolean updating = checkIfUpdateFromParent(conflictManager);
+      if (!skipCommitChecksAndEvents && !updating) {
          XResultData rd = new XResultData();
          runCommitExtPointActions(conflictManager, rd);
          if (rd.isErrors()) {
             throw new OseeCoreException("Commit failed: %s", rd.toString());
          }
       }
-
+      boolean skipCommitEvents = OseeClientProperties.isSkipCommitEvents();
       CommitBranchHttpRequestOperation operation =
          new CommitBranchHttpRequestOperation(UserManager.getUser(), conflictManager.getSourceBranch(),
-            conflictManager.getDestinationBranch(), archiveSourceBranch, skipCommitChecksAndEvents);
+            conflictManager.getDestinationBranch(), archiveSourceBranch, skipCommitEvents);
       Operations.executeWork(operation, monitor);
       TransactionResult transactionResult = operation.getTransactionResult();
       return transactionResult;
@@ -478,7 +480,8 @@ public final class BranchManager {
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
-   public static BranchToken getOrCreateMergeBranch(BranchToken sourceBranch, BranchToken destBranch, ArrayList<ArtifactId> expectedArtIds) {
+   public static BranchToken getOrCreateMergeBranch(BranchToken sourceBranch, BranchToken destBranch,
+      ArrayList<ArtifactId> expectedArtIds) {
       BranchToken mergeBranch = getMergeBranch(sourceBranch, destBranch);
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
@@ -490,7 +493,8 @@ public final class BranchManager {
       return mergeBranch;
    }
 
-   private static BranchToken createMergeBranch(final BranchToken sourceBranch, final BranchToken destBranch, final ArrayList<ArtifactId> expectedArtIds) {
+   private static BranchToken createMergeBranch(final BranchToken sourceBranch, final BranchToken destBranch,
+      final ArrayList<ArtifactId> expectedArtIds) {
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
          for (ArtifactId artId : expectedArtIds) {
             joinQuery.add(sourceBranch, artId, TransactionId.SENTINEL, sourceBranch.getViewId());
@@ -513,7 +517,8 @@ public final class BranchManager {
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
-   public static BranchToken createWorkingBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) {
+   public static BranchToken createWorkingBranchFromTx(TransactionToken parentTransactionId, String childBranchName,
+      Artifact associatedArtifact) {
       String creationComment = String.format("New branch, copy of %s from transaction %s",
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
@@ -524,7 +529,8 @@ public final class BranchManager {
       return operation.getNewBranch();
    }
 
-   public static BranchToken createPortBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) {
+   public static BranchToken createPortBranchFromTx(TransactionToken parentTransactionId, String childBranchName,
+      Artifact associatedArtifact) {
       String creationComment = String.format("New port branch, copy of %s from transaction %s",
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
@@ -539,7 +545,8 @@ public final class BranchManager {
       return createWorkingBranch(parentBranch, childBranchName, ArtifactId.SENTINEL);
    }
 
-   public static BranchToken createWorkingBranch(BranchId parentBranch, String childBranchName, ArtifactId associatedArtifact) {
+   public static BranchToken createWorkingBranch(BranchId parentBranch, String childBranchName,
+      ArtifactId associatedArtifact) {
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, associatedArtifact);
    }
@@ -549,7 +556,8 @@ public final class BranchManager {
       return createBranch(BranchType.WORKING, parentTransactionId, childBranch, ArtifactId.SENTINEL);
    }
 
-   public static BranchToken createWorkingBranch(TransactionToken parentTransaction, String branchName, ArtifactId associatedArtifact) {
+   public static BranchToken createWorkingBranch(TransactionToken parentTransaction, String branchName,
+      ArtifactId associatedArtifact) {
       return createBranch(BranchType.WORKING, parentTransaction, BranchToken.create(branchName), associatedArtifact);
    }
 
@@ -561,7 +569,8 @@ public final class BranchManager {
       return createBaselineBranch(SYSTEM_ROOT, branch, ArtifactId.SENTINEL);
    }
 
-   private static BranchToken createBaselineBranch(BranchToken parentBranch, BranchToken childBranch, ArtifactId associatedArtifact) {
+   private static BranchToken createBaselineBranch(BranchToken parentBranch, BranchToken childBranch,
+      ArtifactId associatedArtifact) {
       TransactionToken parentTransaction = TransactionManager.getHeadTransaction(parentBranch);
       return createBranch(BranchType.BASELINE, parentTransaction, childBranch, associatedArtifact);
    }
@@ -570,7 +579,8 @@ public final class BranchManager {
       return createTopLevelBranch(BranchToken.create(branchName));
    }
 
-   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction, BranchToken childBranch, ArtifactId associatedArtifact) {
+   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction,
+      BranchToken childBranch, ArtifactId associatedArtifact) {
       String creationComment =
          String.format("New Branch from %s (%s)", getBranchName(parentTransaction), parentTransaction.getId());
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(branchType, parentTransaction,
@@ -579,7 +589,8 @@ public final class BranchManager {
       return operation.getNewBranch();
    }
 
-   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, Artifact associatedArtifact, String creationComment, Long mergeAddressingQueryId, BranchId destinationBranch) {
+   private static BranchToken createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName,
+      Artifact associatedArtifact, String creationComment, Long mergeAddressingQueryId, BranchId destinationBranch) {
       CreateBranchHttpRequestOperation operation =
          new CreateBranchHttpRequestOperation(branchType, parentTransaction, BranchToken.create(branchName),
             associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranch);

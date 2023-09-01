@@ -30,9 +30,14 @@ public class OseeClientProperties extends OseeProperties {
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
 
    private static final String OSEE_COMMIT_SKIP_CHECKS_AND_EVENTS = "osee.commit.skipChecksAndEvents";
+   private static final String OSEE_COMMIT_SKIP_EVENTS = "osee.commit.skipEvents";
 
    public static boolean isSkipCommitChecksAndEvents() {
       return Boolean.valueOf(getProperty(OSEE_COMMIT_SKIP_CHECKS_AND_EVENTS, "false"));
+   }
+
+   public static boolean isSkipCommitEvents() {
+      return Boolean.valueOf(getProperty(OSEE_COMMIT_SKIP_EVENTS, "false"));
    }
 
    /**
