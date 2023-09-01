@@ -49,9 +49,9 @@ public class TogglesEndpointImpl implements TogglesEndpoint {
     */
 
    @Override
-   public Boolean apply(String name) {
+   public String getToggle(String name) {
       try {
-         return this.defineOperations.getTogglesOperations().apply(name);
+         return this.defineOperations.getTogglesOperations().getDataBaseToggle(name);
       } catch (Exception e) {
          throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
             e);

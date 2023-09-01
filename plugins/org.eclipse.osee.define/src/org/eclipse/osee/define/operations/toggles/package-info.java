@@ -12,7 +12,7 @@
  **********************************************************************/
 
 /**
- * This package contains an implementation of the {@link Toggles} interface for for obtaining the value of configuration
+ * This package contains an implementation of the {@link ToggleAccessor} interface for for obtaining the value of configuration
  * toggles from the database.
  */
 

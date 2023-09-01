@@ -19,75 +19,62 @@ import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
-import org.eclipse.osee.framework.core.publishing.TrigraphCountryCodeIndicator;
+import org.eclipse.osee.framework.core.publishing.RequiredIndicatorFrequencyIndicator;
 
 /**
- * Initialize enumeration with the values from Tri-graph Country Code Indicator
+ * Initialize enumeration of Required Indicator Frequency
  *
  * @author Md I. Khan
  * @author Loren K. Ashley
  */
 
-public class TrigraphCountryCodeIndicatorAttributeType extends AttributeTypeEnum<TrigraphCountryCodeIndicator.TrigraphCountryCodeIndicatorEnum> {
+public class RequiredIndicatorFrequencyIndicatorAttributeType extends AttributeTypeEnum<RequiredIndicatorFrequencyIndicator.RequiredIndicatorFrequencyIndicatorEnum> {
 
    /**
     * Description of the attribute's content.
     */
 
-   //@formatter:off
    private static String description =
-      "This attribute is used by the following artifact types:\n"
-      + "   * CoreArtifactTypes.Controlled:\n"
-      + "       Specifies the countries the data in the controlled artifact may be released to."
-      + "   * CoreArtifactTypes.DataRightsConfiguration:\n"
-      + "        Specifies the countries a publish is intended to be distributed to.";
+      "Specifies the location (title page, header, footer) and frequency (every page, containing pages) for a Required Indicator.";
 
    /**
     * The attribute type identifier.
     */
 
-   private static long identifier = 8003115831873458510L;
+   private static long identifier = 1722628299042865586L;
 
    /**
     * Short name of the attribute type.
     */
 
-   private static String name = "CUI Release List";
+   private static String name = "Required Indicator Frequency";
 
    /**
     * Creates a new {@link AttributeTypeEnum} {@link AttributeTypeToken} with the {@link NamespaceToken} specified by
     * <code>namespace</code>. The enumeration members are created from the members of the
-    * {@link TrigraphCountryCodeIndicator} enumeration.
+    * {@link RequiredIndicatorFrequencyIndicator} enumeration.
     *
     * @param the {@link NamespaceToken} to create the {@link AttributeTypeToken} with.
     */
 
-   public TrigraphCountryCodeIndicatorAttributeType(NamespaceToken namespace) {
-      //@formatter:off
+   //@formatter:off
+   public RequiredIndicatorFrequencyIndicatorAttributeType(NamespaceToken namespace) {
+
       super
-         (
-            TrigraphCountryCodeIndicatorAttributeType.identifier,
+         (  RequiredIndicatorFrequencyIndicatorAttributeType.identifier,
             namespace,
-            TrigraphCountryCodeIndicatorAttributeType.name,
+            RequiredIndicatorFrequencyIndicatorAttributeType.name,
             MediaType.TEXT_PLAIN,
-            TrigraphCountryCodeIndicatorAttributeType.description,
+            RequiredIndicatorFrequencyIndicatorAttributeType.description,
             TaggerTypeToken.PlainTextTagger,
-            TrigraphCountryCodeIndicator.values().length
+            RequiredIndicatorFrequencyIndicator.values().length
          );
 
-      Stream.of( TrigraphCountryCodeIndicator.values() )
-         .map( TrigraphCountryCodeIndicator::getEnumToken )
+      Stream.of( RequiredIndicatorFrequencyIndicator.values() )
+         .map( RequiredIndicatorFrequencyIndicator::getEnumToken )
          .forEach( this::addEnum );
-      //@formatter:on
    }
-
-   /**
-    * Creates a new {@link AttributeTypeToken} with the default {@link NameSpaceToken#OSEE}.
-    */
-
-   public TrigraphCountryCodeIndicatorAttributeType() {
-      this(NamespaceToken.OSEE);
-   }
+   //@formatter:on
 
 }
 

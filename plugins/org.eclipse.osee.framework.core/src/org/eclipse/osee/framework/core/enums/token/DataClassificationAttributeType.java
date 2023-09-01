@@ -10,55 +10,162 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+
 package org.eclipse.osee.framework.core.enums.token;
 
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.NamespaceToken;
 import org.eclipse.osee.framework.core.data.TaggerTypeToken;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.token.DataClassificationAttributeType.DataClassificationEnum;
 import org.eclipse.osee.framework.core.publishing.CuiCategoryIndicator;
 import org.eclipse.osee.framework.core.publishing.CuiTypeIndicator;
+import org.eclipse.osee.framework.core.util.toggles.CuiNamesConfiguration;
+import org.eclipse.osee.framework.core.util.toggles.TogglesFactory;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
+ * Initialize enumeration of CUI Category And CUI Type pairs.
+ *
  * @author Murshed Alam
+ * @author Loren K. Ashley
  */
+
 public class DataClassificationAttributeType extends AttributeTypeEnum<DataClassificationEnum> {
 
-   public final DataClassificationEnum[] cuiCategoryCuiTypeEnumList =
-      new DataClassificationEnum[CuiCategoryIndicator.values().length * CuiTypeIndicator.values().length];
+   /**
+    * Class for the enumeration members of the {@link DataClassificationEnum}.
+    */
 
-   private final CuiCategoryIndicator[] categories = CuiCategoryIndicator.values();
-   private final CuiTypeIndicator[] types = CuiTypeIndicator.values();
-   private static int count = 0;
+   public static class DataClassificationEnum extends EnumToken {
 
-   public DataClassificationAttributeType(NamespaceToken namespace, int enumCount) {
-      super(4024614255972662076L, namespace, "Data Classification", MediaType.TEXT_PLAIN, "",
-         TaggerTypeToken.PlainTextTagger, enumCount);
+      /**
+       * Creates a new {@link DataClassificationEnum} member with the specified <code>ordinal</code> and
+       * <code>name</code>.
+       *
+       * @param ordinal the ordinal value for the enumeration member.
+       * @param name the name for the enumeration member.
+       */
 
-      for (int i = 0; i < this.categories.length; i++) {
-         for (int j = 0; j < this.types.length; j++) {
-            //@formatter:off
-            this.cuiCategoryCuiTypeEnumList[count] =
-               new DataClassificationEnum(count,
-                  this.categories[i].name()
-                                    .concat(" - ")
-                                    .concat(this.types[j].name()));
-            //@formatter:on
-            count++;
-         }
-      }
-   }
-
-   public DataClassificationAttributeType() {
-      this(NamespaceToken.OSEE, count);
-   }
-
-   public class DataClassificationEnum extends EnumToken {
       public DataClassificationEnum(int ordinal, String name) {
          super(ordinal, name);
-         addEnum(this);
       }
    }
+
+   /**
+    * The attribute type description for the {@link CuiNamesConfiguration#STANDARD} configuration.
+    */
+
+   //@formatter:off
+   private static String standardDescription =
+      "This attribute is used by the following artifact types:\n"
+    + "   * CoreArtifactTypes.Controlled:\n"
+    + "        to specify a CUI Category and CUI Type of the data contained in the controlled artifact.\n"
+    + "   * CoreArtifactTypes.DataRightsConfiguration:\n"
+    + "        to specify an allowed CUI Category and CUI Type for a publish.\n";
+   //@formatter:on
+
+   /**
+    * The attribute type name for the {@link CuiNamesConfiguration#STANDARD} configuration.
+    */
+
+   private static String standardName = "CUI Category And CUI Type Pairs";
+
+   /**
+    * The attribute type description for the {@link CuiNamesConfiguration#VERSION_ONE} configuration.
+    */
+
+   private static String versionOneDescription = Strings.emptyString();
+
+   /**
+    * The attribute type name for the {@link CuiNamesConfiguration#VERSION_ONE} configuration.
+    */
+
+   private static String versionOneName = "Data Classification";
+
+   /**
+    * Reads the "CuiNamesConfiguration" toggle from the Manifest Unloaded Configuration map and returns the configured
+    * name and description.
+    *
+    * @return a {@link Pair} containing first the name and second the description.
+    */
+
+   public static Pair<String, String> getConfiguredNameAndDescription() {
+      var toggles = TogglesFactory.create("CuiNamesConfiguration", CuiNamesConfiguration::convert,
+         TogglesFactory.ToggleSource.BUNDLE_MANIFEST);
+      var cuiNamesConfiguration = toggles.get();
+      //@formatter:off
+      switch (cuiNamesConfiguration) {
+         case VERSION_ONE:
+            return
+               new Pair<>
+                      (
+                         DataClassificationAttributeType.versionOneName,
+                         DataClassificationAttributeType.versionOneDescription
+                      );
+         case STANDARD:
+         default:
+            return
+               new Pair<>
+                      (
+                         DataClassificationAttributeType.standardName,
+                         DataClassificationAttributeType.standardDescription
+                      );
+      }
+      //@formatter:off
+   }
+
+   /**
+    * Creates a new {@link AttributeTypeEnum} {@link AttributeTypeToken} with the {@link NamespaceToken} specified by
+    * <code>namespace</code>. The enumeration members are created from all the permutations of the members of the
+    * {@link CuiCategoryIndicator} and {@link CuiTypeIndicator} enumerations.
+    *
+    * @param the {@link NamespaceToken} to create the {@link AttributeTypeToken} with.
+    */
+
+   //@formatter:off
+   public DataClassificationAttributeType
+             (
+                Long            identifier,
+                String          name,
+                String          description,
+                TaggerTypeToken taggerTypeToken,
+                String          mediaType,
+                NamespaceToken  namespace
+             ) {
+      super
+         (
+            identifier,
+            namespace,
+            name,
+            mediaType,
+            description,
+            taggerTypeToken,
+            CuiCategoryIndicator.values().length * CuiTypeIndicator.values().length
+         );
+
+      var cuiCategoryIndicatorValues = CuiCategoryIndicator.values();
+      var cuiTypeIndicatorValues = CuiTypeIndicator.values();
+      var stringBuilder = new StringBuilder( 512 );
+
+      for (int i = 0; i < cuiCategoryIndicatorValues.length; i++) {
+         for (int j = 0; j < cuiTypeIndicatorValues.length; j++) {
+            stringBuilder.setLength(0);
+            stringBuilder
+               .append( cuiCategoryIndicatorValues[i].name() )
+               .append( " - " )
+               .append( cuiTypeIndicatorValues[j].name() )
+               ;
+            this.addEnum
+               (
+                  new DataClassificationEnum( i * j + j, stringBuilder.toString() )
+               );
+         }
+      }
+      //@formatter:on
+   }
 }
+
+/* EOF */

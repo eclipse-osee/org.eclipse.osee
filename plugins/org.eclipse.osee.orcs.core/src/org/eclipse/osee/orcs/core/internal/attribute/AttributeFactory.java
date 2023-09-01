@@ -39,6 +39,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.primitives.FloatingPointAtt
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.IntegerAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.JavaObjectAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.LongAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.MapEntryAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.StringAttribute;
 
 /**
@@ -109,6 +110,8 @@ public class AttributeFactory {
          attribute = new JavaObjectAttribute(id);
       } else if (attributeType.isInputStream()) {
          attribute = new CompressedContentAttribute(id);
+      } else if (attributeType.isMapEntry()) {
+         attribute = new MapEntryAttribute(id);
       } else {
          attribute = new StringAttribute(id);
       }

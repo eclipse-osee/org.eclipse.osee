@@ -142,6 +142,8 @@ public interface OseeClient extends OseeApi {
 
    TogglesEndpoint getTogglesEndpoint();
 
+   TogglesClientImpl getTogglesClient();
+
    @Deprecated
    String loadAttributeValue(AttributeId attrId, TransactionId transactionId, ArtifactToken artifact);
 }

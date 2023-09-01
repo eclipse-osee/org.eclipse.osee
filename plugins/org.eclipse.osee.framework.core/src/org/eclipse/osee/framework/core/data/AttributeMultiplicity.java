@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 
@@ -62,6 +63,13 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
 
    public <T> AttributeMultiplicity any(AttributeTypeGeneric<T> attributeType) {
       return any(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
+   }
+
+   public <T> AttributeMultiplicity anyWhen(AttributeTypeGeneric<T> attributeType, Supplier<Boolean> includeWhenTrue) {
+      if (includeWhenTrue.get()) {
+         return any(attributeType, attributeType.getBaseAttributeTypeDefaultValue());
+      }
+      return this;
    }
 
    public <T> AttributeMultiplicity exactlyOne(AttributeTypeGeneric<T> attributeType, T defaultValue,

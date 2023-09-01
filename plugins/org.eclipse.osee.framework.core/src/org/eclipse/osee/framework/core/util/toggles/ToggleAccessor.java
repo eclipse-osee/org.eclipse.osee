@@ -11,27 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.define.api.toggles;
+package org.eclipse.osee.framework.core.util.toggles;
+
+import java.util.function.Function;
 
 /**
  * This interface defines the method for obtaining a Toggle value. This interface is an extension of the
- * {@link Function} interface with a {@link String} input for the toggle name and a {@link Boolean} output for the
- * toggle value.
+ * {@link Function} interface. The {@link TogglesFactory} creates implementations that are specific to the OSEE Client
+ * and the OSEE Server. This interface may be used in both the client and server code.
  *
  * @author Loren K. Ashley
  */
 
-public interface TogglesOperations {
+@FunctionalInterface
+public interface ToggleAccessor {
 
-   /**
-    * Gets the value of a toggle.
-    *
-    * @param name the name of the toggle to get.
-    * @return the value of the toggle as a {@link String}.
-    */
-
-   String getDataBaseToggle(String name);
-
+   String getToggle(String name);
 }
 
 /* EOF */
