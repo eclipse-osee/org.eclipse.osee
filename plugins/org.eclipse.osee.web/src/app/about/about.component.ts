@@ -17,7 +17,7 @@ import { BuildNum, version } from './version';
 @Component({
 	selector: 'osee-about',
 	templateUrl: './about.component.html',
-	styleUrls: ['./about.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatFormFieldModule],
 })

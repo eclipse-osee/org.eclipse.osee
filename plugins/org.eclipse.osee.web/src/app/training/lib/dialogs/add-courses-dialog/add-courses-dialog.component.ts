@@ -39,7 +39,7 @@ import { TrainingCourseService } from './../../services/training-course.service'
 	standalone: true,
 	selector: 'osee-add-courses-dialog',
 	templateUrl: './add-courses-dialog.component.html',
-	styleUrls: ['./add-courses-dialog.component.sass'],
+	styles: [],
 	imports: [
 		MatFormFieldModule,
 		MatDividerModule,

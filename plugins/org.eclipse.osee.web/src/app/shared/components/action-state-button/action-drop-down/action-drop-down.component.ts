@@ -28,7 +28,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'osee-action-dropdown',
 	templateUrl: './action-drop-down.component.html',
-	styleUrls: ['./action-drop-down.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

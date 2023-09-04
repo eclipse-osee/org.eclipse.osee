@@ -14,7 +14,7 @@
 	hasBackdrop="false"
 	(keydown.escape)="closeLeftLevelNav()">
 	<mat-sidenav-content
-		class="sidenav-content"
+		class="tw-h-[94vh]"
 		(click)="closeLeftLevelNav()">
 		<router-outlet></router-outlet>
 	</mat-sidenav-content>
@@ -38,7 +38,7 @@
 		[fixedBottomGap]="0"
 		[opened]="leftSideNavOpened | async"
 		#topLevelNav>
-		<nav class="side-nav">
+		<nav class="tw-h-full tw-w-[400px] tw-overflow-x-hidden tw-bg-inherit">
 			<router-outlet name="TopLevelNav"></router-outlet>
 		</nav>
 	</mat-sidenav>

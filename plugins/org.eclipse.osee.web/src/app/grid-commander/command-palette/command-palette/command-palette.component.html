@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div>
-	<div class="input-container">
-		<div class="auto-complete-and-helper-button">
+<div class="tw-flex tw-items-end">
+	<div class="tw-flex tw-grow tw-items-start tw-pl-2">
+		<div class="tw-flex tw-w-72 tw-flex-col tw-items-end">
 			<ng-container>
 				<ng-container
 					*ngIf="filteredCommandGroups$ | async as optionGroup">
 					<osee-input-control
-						class="full-width"
+						class="tw-w-full"
 						[placeHolder]="'Command Name'"
 						[label]="'Enter a Command'"
 						[displayHelpIcon]="true"
@@ -34,7 +34,7 @@
 			</ng-container>
 		</div>
 
-		<div class="args-container">
+		<div class="tw-ml-16 tw-flex tw-flex-col tw-items-end">
 			<ng-container *ngIf="isFilterEnabled$ | async">
 				<osee-table-filter-component></osee-table-filter-component>
 			</ng-container>

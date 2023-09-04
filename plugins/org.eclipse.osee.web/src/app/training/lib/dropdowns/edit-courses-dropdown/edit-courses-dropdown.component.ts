@@ -26,7 +26,7 @@ import { DefaultTrainingCourseRecord } from './../../types/training-course';
 	standalone: true,
 	selector: 'osee-edit-courses-dropdown',
 	templateUrl: './edit-courses-dropdown.component.html',
-	styleUrls: ['./edit-courses-dropdown.component.sass'],
+	styles: [],
 	imports: [
 		MatMenuModule,
 		MatIconModule,

@@ -34,7 +34,7 @@ import { ParameterSingleSelectComponent } from '../../parameter-types/parameter-
 	selector: 'osee-create-command-form',
 	standalone: true,
 	templateUrl: './create-command-form.component.html',
-	styleUrls: ['./create-command-form.component.sass'],
+	styles: [],
 	imports: [
 		CommonModule,
 		FormsModule,

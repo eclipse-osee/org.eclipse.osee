@@ -19,7 +19,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 @Component({
 	selector: 'osee-parameter-multiple-select',
 	templateUrl: './parameter-multiple-select.component.html',
-	styleUrls: ['./parameter-multiple-select.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, HideColumnCommandComponent, AsyncPipe],
 })

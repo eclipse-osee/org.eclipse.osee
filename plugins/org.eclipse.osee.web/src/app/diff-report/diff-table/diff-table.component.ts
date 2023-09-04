@@ -46,7 +46,6 @@ import { MatIconModule } from '@angular/material/icon';
 		MatIconModule,
 	],
 	templateUrl: './diff-table.component.html',
-	styleUrls: ['./diff-table.component.sass'],
 	animations: [
 		trigger('detailExpand', [
 			state(

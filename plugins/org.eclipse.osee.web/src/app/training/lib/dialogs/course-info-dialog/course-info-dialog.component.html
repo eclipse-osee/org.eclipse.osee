@@ -13,52 +13,52 @@
 
 <h1
 	mat-dialog-title
-	class="dialog-title">
+	class="tw-font-mat-bold">
 	Course Info
 </h1>
 <div
 	mat-dialog-content
-	class="course-content">
+	class="tw-max-w-[50%]">
 	<ng-container *ngFor="let course of courses$ | async">
-		<div class="course-item">
-			<div class="course-label">Name:</div>
-			<div class="course-value">
+		<div class="tw-flex tw-justify-start">
+			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">Name:</div>
+			<div>
 				{{ course.courseTitle }}
 			</div>
 		</div>
-		<div class="course-item">
-			<div class="course-label">ID:</div>
-			<div class="course-value">
+		<div class="tw-flex tw-justify-start">
+			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">ID:</div>
+			<div>
 				{{ course.courseID }}
 			</div>
 		</div>
-		<div class="course-item">
-			<div class="course-label">Delivery Method:</div>
-			<div class="course-value">
+		<div class="tw-flex tw-justify-start">
+			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">Delivery Method:</div>
+			<div>
 				{{ course.deliveryMethod }}
 			</div>
 		</div>
-		<div class="course-item">
-			<div class="course-label">Optional:</div>
-			<div class="course-value">
+		<div class="tw-flex tw-justify-start">
+			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">Optional:</div>
+			<div>
 				{{ course.optional }}
 			</div>
 		</div>
-		<div class="course-item">
-			<div class="course-label">Status:</div>
-			<div class="course-value">
+		<div class="tw-flex tw-justify-start">
+			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">Status:</div>
+			<div>
 				{{ course.status }}
 			</div>
 		</div>
-		<div class="course-item">
-			<div class="course-label">Document Title:</div>
-			<div class="course-value">
+		<div class="tw-flex tw-justify-start">
+			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">Document Title:</div>
+			<div>
 				{{ course.docTitle }}
 			</div>
 		</div>
-		<div class="course-item">
-			<div class="course-label">Link:</div>
-			<div class="course-value">
+		<div class="tw-flex tw-justify-start">
+			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">Link:</div>
+			<div>
 				<button (click)="goToLink(course.link)">
 					<mat-icon color="primary">open_in_new</mat-icon>
 				</button>

@@ -21,7 +21,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 @Component({
 	selector: 'osee-parameter-integer',
 	templateUrl: './parameter-integer.component.html',
-	styleUrls: ['./parameter-integer.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, MatFormFieldModule, MatInputModule, FormsModule, AsyncPipe],
 })

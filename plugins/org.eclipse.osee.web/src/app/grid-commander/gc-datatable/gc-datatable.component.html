@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  -->
 <div
-	class="data-table-component"
+	class="tw-relative tw-z-[1] tw-mt-4"
 	*ngIf="(displayedTableData | async)?.length; else noData">
 	<ng-container *ngIf="dataSource | async as data">
 		<table
-			class="data-table mat-elevation-z8"
+			class="mat-elevation-z8 tw-w-[98.5%]"
 			mat-table
 			[dataSource]="data"
 			#dataTable
@@ -49,7 +49,7 @@
 						<th
 							mat-header-cell
 							*matHeaderCellDef
-							class="data-table-header-cell"
+							class="mat-headline-6 tw-justify-center tw-text-primary-a700"
 							mat-sort-header>
 							{{ col.name }}
 						</th>
@@ -58,51 +58,51 @@
 						<th
 							mat-header-cell
 							*matHeaderCellDef
-							class="data-table-header-cell action-header">
+							class="mat-headline-6 tw-justify-center tw-text-center tw-text-primary-a700">
 							{{ col.name }}
 						</th>
 					</ng-template>
 
 					<td
-						class="table-cell"
+						class="tw-text-center"
 						mat-cell
 						*matCellDef="let row; let i = index">
 						<ng-container
 							[ngSwitch]="col.type"
 							*ngIf="!row.isEdit">
 							<div
-								class="action-link"
+								class="tw-flex tw-items-end tw-justify-center"
 								*ngSwitchCase="'Action'">
 								<a>
 									<mat-icon
 										*ngIf="row.Favorite === 'false'"
-										class="data-table-elements-icons-action-favorite"
+										class="tw-text-accent-a200"
 										(click)="toggleFavorite(row)"
 										matTooltip="Favorite Command"
-										matTooltipClass="data-table-elements-tooltips-tooltip-accent">
+										matTooltipClass="tw-bg-accent-a200">
 										star_border
 									</mat-icon>
 									<mat-icon
 										*ngIf="row.Favorite === 'true'"
-										class="data-table-elements-icons-action-favorite"
+										class="tw-text-accent-a200"
 										(click)="toggleFavorite(row)"
 										matTooltip="Favorite Command"
-										matTooltipClass="data-table-elements-tooltips-tooltip-accent">
+										matTooltipClass="tw-bg-accent-a200">
 										star
 									</mat-icon>
 								</a>
 								<a>
 									<mat-icon
-										class="data-table-elements-icons-action-add"
+										class="tw-mx-[0.2rem] tw-my-0 tw-text-success-500"
 										matTooltip="Add row"
 										*ngIf="canAddRowViaAction | async"
-										matTooltipClass="data-table-elements-tooltips-tooltip-success">
+										matTooltipClass="tw-bg-success-500">
 										add
 									</mat-icon>
 								</a>
 								<a (click)="row.isEdit = !row.isEdit">
 									<mat-icon
-										class="data-table-elements-icons-action-edit"
+										class="tw-mt-2"
 										matTooltip="Edit row"
 										*ngIf="canEditRowViaAction | async">
 										mode_edit
@@ -110,22 +110,22 @@
 								</a>
 								<a>
 									<mat-icon
-										class="data-table-elements-icons-action-delete"
+										class="tw-mx-[0.2rem] tw-my-0 tw-text-warning-700"
 										(click)="
 											openDeleteRowDialog('Delete', row)
 										"
 										matTooltip="Delete row"
-										matTooltipClass="data-table-elements-tooltips-tooltip-warn">
+										matTooltipClass="tw-bg-warning-700">
 										delete
 									</mat-icon>
 								</a>
 								<a>
 									<mat-icon
-										class="data-table-elements-icons-action-hide"
+										class="tw-text-primary-900"
 										(click)="hideRow(row)"
 										*ngIf="canHideRowViaAction | async"
 										matTooltip="Hide row"
-										matTooltipClass="data-table-elements-tooltips-tooltip-primary">
+										matTooltipClass="tw-bg-primary-900">
 										visibility_off
 									</mat-icon>
 								</a>
@@ -154,22 +154,22 @@
 							[ngSwitch]="col.type"
 							*ngIf="row.isEdit">
 							<div
-								class="action-link"
+								class="tw-flex tw-items-end tw-justify-center"
 								*ngSwitchCase="'Action'">
 								<a (click)="row.isEdit = !row.isEdit">
 									<mat-icon
-										class="data-table-elements-icons-action-done"
+										class="tw-mr-[0.2rem] tw-text-success-500"
 										matTooltip="Save Changes"
-										matTooltipClass="data-table-elements-tooltips-tooltip-success">
+										matTooltipClass="tw-bg-success-500">
 										done_outline
 									</mat-icon>
 								</a>
 
 								<a (click)="row.isEdit = !row.isEdit">
 									<mat-icon
-										class="data-table-elements-icons-action-cancel"
+										class="tw-mr-[0.2rem] tw-text-warning-700"
 										matTooltip="Cancel Changes"
-										matTooltipClass="data-table-elements-tooltips-tooltip-warn">
+										matTooltipClass="tw-bg-warning-700">
 										update_disabled
 									</mat-icon>
 								</a>
@@ -183,7 +183,6 @@
 							</ng-container>
 
 							<mat-form-field
-								class="data-table-form-input"
 								appearance="outline"
 								*ngSwitchDefault>
 								<input
@@ -199,65 +198,66 @@
 			<ng-container *ngIf="displayedColumns | async as displayedCols">
 				<tr
 					mat-header-row
-					*matHeaderRowDef="displayedCols; sticky: true"></tr>
+					*matHeaderRowDef="displayedCols; sticky: true"
+					class="hover:tw-cursor-pointer"></tr>
 				<tr
 					mat-row
-					class="data-table-row"
-					*matRowDef="let row; columns: displayedCols; let i = index"
-					[ngClass]="
-						i % 2 === 0
-							? 'data-table-row-even'
-							: 'data-table-row-odd'
+					class="odd:tw-bg-background-unselected-chip even:tw-bg-background-disabled-button-toggle hover:tw-cursor-pointer hover:tw-bg-background-dialog dark:hover:tw-bg-background-hover"
+					*matRowDef="
+						let row;
+						columns: displayedCols;
+						let i = index
 					"></tr>
 			</ng-container>
 		</table>
 	</ng-container>
-	<mat-toolbar class="mat-elevation-z4 toolbar">
-		<mat-toolbar-row class="data-table-mat-toolbar-row">
-			<div class="action-link">
+	<mat-toolbar class="mat-elevation-z4 tw-w-full">
+		<mat-toolbar-row class="tw-mr-8 tw-bg-background-card">
+			<div class="tw-flex tw-items-end tw-justify-center">
 				<button
 					mat-icon-button
 					matTooltip="Add row"
-					matTooltipClass="data-table-elements-tooltips-tooltip-success"
+					matTooltipClass="tw-bg-success-500"
 					*ngIf="canAddRowViaAction | async">
 					<mat-icon
-						class="action-add data-table-elements-icons-action-add">
+						class="action-add tw-mx-[0.2rem] tw-my-0 tw-text-success-500">
 						add
 					</mat-icon>
 				</button>
 				<button
 					mat-icon-button
 					matTooltip="Delete selected rows"
-					matTooltipClass="data-table-elements-tooltips-tooltip-warn"
+					matTooltipClass="tw-bg-warning-700"
 					*ngIf="multiRowDeleteActionIcon | async">
-					<mat-icon class="data-table-elements-icons-action-delete">
+					<mat-icon
+						class="tw-mx-[0.2rem] tw-my-0 tw-text-warning-700">
 						delete
 					</mat-icon>
 				</button>
 				<button
 					mat-icon-button
 					matTooltip="Hide selected rows"
-					matTooltipClass="data-table-elements-tooltips-tooltip-primary"
+					matTooltipClass="tw-bg-primary-900"
 					(click)="hideSelectedRows()"
 					*ngIf="canHideRowViaAction | async">
-					<mat-icon class="data-table-elements-icons-action-hide">
+					<mat-icon class="tw-text-primary-900">
 						visibility_off
 					</mat-icon>
 				</button>
 				<button
 					mat-icon-button
 					matTooltip="Unhide rows"
-					matTooltipClass="data-table-elements-tooltips-tooltip-primary"
+					matTooltipClass="tw-bg-primary-900"
 					[disabled]="hiddenRows.value.length === 0"
 					(click)="showHiddenRows()"
 					*ngIf="canHideRowViaAction | async">
-					<mat-icon class="data-table-elements-icons-action-hide">
+					<mat-icon class="tw-text-primary-900">
 						visibility
 					</mat-icon>
 				</button>
 			</div>
 			<mat-paginator
-				class="paginator"
+				class="tw-w-full"
 				hidePageSize
 				showFirstLastButtons
 				pageSize="100"
@@ -267,7 +267,7 @@
 	</mat-toolbar>
 </div>
 <ng-template #noData>
-	<div class="no-data-container">
+	<div class="tw-flex tw-justify-center">
 		<osee-no-data-to-display></osee-no-data-to-display>
 	</div>
 </ng-template>

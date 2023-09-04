@@ -23,7 +23,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 	standalone: true,
 	selector: 'osee-training',
 	templateUrl: './training.component.html',
-	styleUrls: ['./training.component.sass'],
+	styles: [],
 	imports: [
 		EditCoursesDropdownComponent,
 		EditRolesDropdownComponent,

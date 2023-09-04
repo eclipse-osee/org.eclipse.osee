@@ -21,7 +21,7 @@ import { map } from 'rxjs';
 	selector: 'osee-nav-container',
 	standalone: true,
 	templateUrl: './nav-container.component.html',
-	styleUrls: ['./nav-container.component.sass'],
+	styles: [],
 	imports: [MatSidenavModule, RouterOutlet, AsyncPipe],
 })
 export class NavContainerComponent {

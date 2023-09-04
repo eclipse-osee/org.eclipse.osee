@@ -39,7 +39,7 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 @Component({
 	selector: 'osee-input-control',
 	templateUrl: './input-control.component.html',
-	styleUrls: ['./input-control.component.sass'],
+	styles: [],
 	providers: [
 		{
 			provide: MatFormFieldControl,

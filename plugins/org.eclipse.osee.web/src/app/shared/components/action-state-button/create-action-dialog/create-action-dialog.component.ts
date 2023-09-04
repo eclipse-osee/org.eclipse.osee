@@ -39,7 +39,7 @@ import {
 @Component({
 	selector: 'osee-create-action-dialog',
 	templateUrl: './create-action-dialog.component.html',
-	styleUrls: ['./create-action-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

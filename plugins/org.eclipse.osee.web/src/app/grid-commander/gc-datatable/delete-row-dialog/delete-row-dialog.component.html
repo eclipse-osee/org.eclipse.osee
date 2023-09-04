@@ -12,14 +12,14 @@
  -->
 <div>
 	<h2 mat-dialog-title>
-		<span class="dialog-component-warning-text title"
+		<span class="mat-headline-6 tw-text-warning-700"
 			>{{ data.action }}
 		</span>
 		Row Globally?
 	</h2>
 	<mat-dialog-content>
 		Action will permanently
-		<span class="dialog-component-warning-text content">{{
+		<span class="tw-font-mat-bold tw-text-warning-700">{{
 			data.action
 		}}</span>
 		artifact
@@ -31,7 +31,7 @@
 		align="end">
 		<button
 			mat-raised-button
-			class="cancel-btn"
+			class="tw-bg-background-selected-disabled-button tw-text-foreground-slider-min dark:tw-bg-background-unselected-chip dark:tw-text-background-app-bar"
 			mat-dialog-close
 			(click)="closeDialog('Cancel')">
 			Cancel

@@ -28,7 +28,7 @@ import { TrainingCourse } from '../../types/training-course';
 	standalone: true,
 	imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
 	templateUrl: './course-info-dialog.component.html',
-	styleUrls: ['./course-info-dialog.component.sass'],
+	styles: [],
 })
 export class CourseInfoDialogComponent {
 	courses$: Observable<TrainingCourse[]>;

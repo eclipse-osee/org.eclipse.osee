@@ -19,7 +19,7 @@ import { BranchRoutedUIService } from '../../../../internal/services/branch-rout
 @Component({
 	selector: 'osee-branch-type-selector',
 	templateUrl: './branch-type-selector.component.html',
-	styleUrls: ['./branch-type-selector.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatRadioModule, FormsModule, NgFor, NgClass, LowerCasePipe],
 })

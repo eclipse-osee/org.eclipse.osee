@@ -19,7 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
 	selector: 'osee-parameter-single-select',
 	templateUrl: './parameter-single-select.component.html',
-	styleUrls: ['./parameter-single-select.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule],
 })

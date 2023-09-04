@@ -12,9 +12,7 @@
  -->
 <h1 mat-dialog-title>Create Action</h1>
 <div mat-dialog-content>
-	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width">
+	<mat-form-field class="tw-w-full tw-text-lg">
 		<mat-label>Select Actionable Item</mat-label>
 		<mat-select
 			[(ngModel)]="data.actionableItem"
@@ -32,10 +30,10 @@
 	<br />
 	<div
 		*ngIf="data.actionableItem.id.length !== 0"
-		class="dialog-font-size">
+		class="tw-text-lg">
 		<mat-form-field
 			*ngIf="data.actionableItem.id.length !== 0"
-			class="dialog-full-width">
+			class="tw-w-full">
 			<mat-label>Select Targeted Version</mat-label>
 			<mat-select
 				[(ngModel)]="data.targetedVersion"
@@ -51,7 +49,7 @@
 		</mat-form-field>
 		<mat-form-field
 			*ngIf="data.actionableItem.id.length !== 0"
-			class="dialog-full-width">
+			class="tw-w-full">
 			<mat-label>Select Change Type</mat-label>
 			<mat-select
 				[(ngModel)]="data.changeType"
@@ -66,9 +64,7 @@
 			</mat-select>
 		</mat-form-field>
 	</div>
-	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width">
+	<mat-form-field class="tw-w-full tw-text-lg">
 		<mat-label>Title</mat-label>
 		<input
 			matInput
@@ -79,9 +75,7 @@
 			data-cy="action-title" />
 	</mat-form-field>
 	<br />
-	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width">
+	<mat-form-field class="tw-w-full tw-text-lg">
 		<mat-label>Description</mat-label>
 		<input
 			matInput
@@ -92,9 +86,7 @@
 			data-cy="action-description" />
 	</mat-form-field>
 	<br />
-	<mat-form-field
-		class="dialog-font-size"
-		class="dialog-full-width">
+	<mat-form-field class="tw-w-full tw-text-lg">
 		<mat-label>Select Priority</mat-label>
 		<mat-select
 			[(ngModel)]="data.priority"

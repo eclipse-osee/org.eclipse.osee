@@ -28,7 +28,7 @@ import { MatTableModule } from '@angular/material/table';
 @Component({
 	selector: 'osee-change-report-table',
 	templateUrl: './change-report-table.component.html',
-	styleUrls: ['./change-report-table.component.scss'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, NgClass, NgFor, AsyncPipe, MatTableModule],
 })

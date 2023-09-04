@@ -21,7 +21,7 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 @Component({
 	selector: 'osee-parameter-branch',
 	templateUrl: './parameter-branch.component.html',
-	styleUrls: ['./parameter-branch.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [BranchPickerComponent, ActionDropDownComponent],
 })

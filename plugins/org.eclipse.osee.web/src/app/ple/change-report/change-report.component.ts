@@ -20,7 +20,7 @@ import { ChangeReportTableComponent } from './components/change-report-table/cha
 @Component({
 	selector: 'osee-change-report',
 	templateUrl: './change-report.component.html',
-	styleUrls: ['./change-report.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		BranchPickerComponent,

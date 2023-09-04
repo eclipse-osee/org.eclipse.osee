@@ -10,28 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="change-report-table-container">
+<div>
 	<ng-container *ngIf="viewData | async as _viewData">
-		<div class="transaction-info">
+		<div class="tw-pl-8">
 			<p>
 				Showing changes made to
-				<span class="tx-info-bold">{{ _viewData.branch!.name }}</span>
+				<span class="tw-font-mat-bold">{{
+					_viewData.branch!.name
+				}}</span>
 				compared to its parent branch
-				<span class="tx-info-bold">{{
+				<span class="tw-font-mat-bold">{{
 					_viewData.parentBranch.name
 				}}</span>
 			</p>
 			<p>
 				Last modified on
-				<span class="tx-info-bold">{{
+				<span class="tw-font-mat-bold">{{
 					_viewData.txInfo.timeStamp
 				}}</span>
 				by
-				<span class="tx-info-bold">{{
+				<span class="tw-font-mat-bold">{{
 					_viewData.txInfo.author.name
 				}}</span>
 				-- Comment:
-				<span class="tx-info-bold">{{ _viewData.txInfo.comment }}</span>
+				<span class="tw-font-mat-bold">{{
+					_viewData.txInfo.comment
+				}}</span>
 			</p>
 		</div>
 	</ng-container>
@@ -39,14 +43,14 @@
 		<table
 			mat-table
 			[dataSource]="_changes || []"
-			class="mat-elevation-z1 change-table">
+			class="mat-elevation-z1 tw-w-full">
 			<ng-container
 				[matColumnDef]="header"
 				*ngFor="let header of headers">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
-					class="table-header-cell">
+					class="tw-text-primary-600">
 					{{ (getHeaderByName(header) | async)?.humanReadable || '' }}
 				</th>
 				<td
@@ -61,9 +65,7 @@
 			<tr
 				mat-row
 				*matRowDef="let row; let i = index; columns: headers"
-				[ngClass]="
-					i % 2 === 0 ? 'table-row-even' : 'table-row-odd'
-				"></tr>
+				class="odd:tw-bg-background-selected-button even:tw-bg-background-background"></tr>
 		</table>
 	</ng-container>
 </div>

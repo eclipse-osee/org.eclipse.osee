@@ -22,7 +22,7 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 @Component({
 	selector: 'osee-helperdialog',
 	templateUrl: './helperdialog.component.html',
-	styleUrls: ['./helperdialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatDialogModule, NgIf, NgFor, AsyncPipe],
 })

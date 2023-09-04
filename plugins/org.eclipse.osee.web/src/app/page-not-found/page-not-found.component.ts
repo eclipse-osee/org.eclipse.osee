@@ -15,7 +15,9 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'osee-page-not-found',
 	templateUrl: './page-not-found.component.html',
-	styleUrls: ['./page-not-found.component.sass'],
+	styles: [
+		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
+	],
 	standalone: true,
 })
 export class PageNotFoundComponent {

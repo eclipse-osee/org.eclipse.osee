@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 	standalone: true,
 	imports: [CommonModule],
 	templateUrl: './ple-help.component.html',
-	styleUrls: ['./ple-help.component.sass'],
+	styles: [],
 })
 export class PleHelpComponent {}
 export default PleHelpComponent;

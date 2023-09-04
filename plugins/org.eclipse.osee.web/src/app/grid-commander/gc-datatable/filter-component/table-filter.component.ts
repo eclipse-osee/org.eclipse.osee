@@ -25,7 +25,7 @@ import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 @Component({
 	selector: 'osee-table-filter-component',
 	templateUrl: './table-filter.component.html',
-	styleUrls: ['./table-filter.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

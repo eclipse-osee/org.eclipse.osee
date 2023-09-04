@@ -16,7 +16,7 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
 	selector: 'osee-no-data-to-display',
 	templateUrl: './no-data-to-display.component.html',
-	styleUrls: ['./no-data-to-display.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatCardModule],
 })

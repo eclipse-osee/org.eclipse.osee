@@ -11,237 +11,237 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="artifactData | async as _data"></ng-container>
-<div class="scrolling-container">
+<div class="tw-flex tw-gap-2">
 	<button
 		mat-raised-button
-		class="light-button"
+		class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
 		(click)="manageAllRows(true)">
 		Expand All
 	</button>
 	<button
 		mat-raised-button
-		class="light-button"
+		class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
 		(click)="manageAllRows(false)">
 		Collpase All
 	</button>
 	<button
 		mat-raised-button
-		class="light-button"
+		class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
 		(click)="exportDataAsCsv()">
 		Export Displayed Data to CSV
 	</button>
 	<ng-container *ngIf="link | async as _link">
 		<button
 			mat-raised-button
-			class="light-button"
+			class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
 			(click)="exportAllDataAsCsv(_link)">
 			Export All Data to CSV
 		</button>
 	</ng-container>
-	<div>
-		<mat-form-field
-			subscriptSizing="dynamic"
-			class="tw-py-4">
-			<input
-				matInput
-				class="form-field"
-				[formControl]="workflowFilter"
-				placeholder="Filter Workflow ID" /><mat-icon matPrefix
-				>filter_list</mat-icon
-			></mat-form-field
-		>
-	</div>
-
-	<table
-		mat-table
-		class="report-table mat-elevation-z8"
-		matSortDisableClear
-		matSortDirection="asc"
-		[dataSource]="dataSource"
-		matSort
-		multiTemplateDataRows>
-		<ng-container matColumnDef="workflowID">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				mat-sort-header
-				class="header-cell">
-				Workflow ID
-			</th>
-			<td
-				mat-cell
-				class="row-cell"
-				*matCellDef="let artifact">
-				{{ artifact.workflowID }}
-				<ng-container *ngIf="link | async as _link">
-					<ng-container *ngIf="artifact.changeReport">
-						<br /><a
-							class="tw-font-bold tw-text-blue-900 tw-underline"
-							href="{{ _link + '/' + artifact.changeReport }}"
-							>REQ</a
-						>
-					</ng-container>
-					<ng-container *ngIf="artifact.icdDiff">
-						<br /><a
-							class="tw-font-bold tw-text-blue-900 tw-underline"
-							target="_blank"
-							href="{{ _link + '/' + artifact.icdDiff }}"
-							>ICD</a
-						>
-					</ng-container>
-				</ng-container>
-			</td>
-		</ng-container>
-
-		<ng-container matColumnDef="program">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				mat-sort-header
-				class="header-cell">
-				Program
-			</th>
-			<td
-				mat-cell
-				class="row-cell"
-				*matCellDef="let artifact">
-				{{ artifact.program }}
-			</td>
-		</ng-container>
-
-		<ng-container matColumnDef="build">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				mat-sort-header
-				class="header-cell">
-				Build
-			</th>
-			<td
-				mat-cell
-				class="row-cell"
-				*matCellDef="let artifact">
-				{{ artifact.build }}
-			</td>
-		</ng-container>
-
-		<ng-container matColumnDef="state">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				mat-sort-header
-				class="header-cell">
-				State
-			</th>
-			<td
-				mat-cell
-				class="row-cell"
-				*matCellDef="let artifact">
-				{{ artifact.state }}
-			</td>
-		</ng-container>
-
-		<ng-container matColumnDef="title">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				mat-sort-header
-				class="header-cell">
-				Title
-			</th>
-			<td
-				mat-cell
-				class="row-cell"
-				*matCellDef="let artifact">
-				{{ artifact.title }}
-			</td>
-		</ng-container>
-
-		<ng-container matColumnDef="actions">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				class="header-cell">
-				Actions
-			</th>
-			<td
-				mat-cell
-				class="row-cell"
-				mat-raised-button
-				*matCellDef="let artifact">
-				<a
-					mat-button
-					(click)="toggleRow(artifact)"
-					>{{ artifact.expanded ? 'Collapse' : 'Expand' }}</a
-				>
-			</td>
-		</ng-container>
-
-		<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-		<ng-container matColumnDef="expandedDetail">
-			<td
-				mat-cell
-				*matCellDef="let element"
-				[attr.colspan]="displayedColumns.length">
-				<div
-					class="element-detail"
-					[@detailExpand]="
-						element.expanded || allRowsExpanded
-							? 'expanded'
-							: 'collapsed'
-					">
-					<table class="detail-table">
-						<tr mat-cell>
-							<th
-								mat-header-cell
-								class="header-cell">
-								Requirement
-							</th>
-							<th
-								mat-header-cell
-								class="header-cell">
-								Test
-							</th>
-						</tr>
-						<tr
-							class="detail-table-row-border"
-							*ngFor="let requirement of element.requirements">
-							<td mat-cell>
-								{{ requirement.name }}
-							</td>
-							<td mat-cell>
-								<tr
-									mat-cell
-									*ngFor="let test of requirement.tests">
-									{{
-										getTestTd(test)
-									}}
-								</tr>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</td>
-		</ng-container>
-
-		<tr
-			mat-header-row
-			*matHeaderRowDef="displayedColumns; sticky: true"></tr>
-
-		<tr
-			mat-row
-			*matRowDef="let artifact; columns: displayedColumns"></tr>
-
-		<tr
-			mat-row
-			*matRowDef="let row; columns: ['expandedDetail']"
-			class="detail-row"></tr>
-	</table>
-
-	<mat-paginator
-		[length]="dataSource.data.length"
-		[pageSizeOptions]="[10, 25, 50, 100, dataSource.data.length]"
-		showFirstLastButtons
-		[disabled]="false">
-	</mat-paginator>
 </div>
+<mat-form-field
+	subscriptSizing="dynamic"
+	class="tw-py-4">
+	<input
+		matInput
+		[formControl]="workflowFilter"
+		placeholder="Filter Workflow ID" /><mat-icon matPrefix
+		>filter_list</mat-icon
+	></mat-form-field
+>
+<table
+	mat-table
+	class="report-table mat-elevation-z8"
+	matSortDisableClear
+	matSortDirection="asc"
+	[dataSource]="dataSource"
+	matSort
+	multiTemplateDataRows>
+	<ng-container matColumnDef="workflowID">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			mat-sort-header
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			Workflow ID
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			*matCellDef="let artifact">
+			{{ artifact.workflowID }}
+			<ng-container *ngIf="link | async as _link">
+				<ng-container *ngIf="artifact.changeReport">
+					<br /><a
+						class="tw-font-bold tw-text-blue-900 tw-underline"
+						href="{{ _link + '/' + artifact.changeReport }}"
+						>REQ</a
+					>
+				</ng-container>
+				<ng-container *ngIf="artifact.icdDiff">
+					<br /><a
+						class="tw-font-bold tw-text-blue-900 tw-underline"
+						target="_blank"
+						href="{{ _link + '/' + artifact.icdDiff }}"
+						>ICD</a
+					>
+				</ng-container>
+			</ng-container>
+		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="program">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			mat-sort-header
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			Program
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			*matCellDef="let artifact">
+			{{ artifact.program }}
+		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="build">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			mat-sort-header
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			Build
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			*matCellDef="let artifact">
+			{{ artifact.build }}
+		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="state">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			mat-sort-header
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			State
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			*matCellDef="let artifact">
+			{{ artifact.state }}
+		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="title">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			mat-sort-header
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			Title
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			*matCellDef="let artifact">
+			{{ artifact.title }}
+		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="actions">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			Actions
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			mat-raised-button
+			*matCellDef="let artifact">
+			<a
+				mat-button
+				(click)="toggleRow(artifact)"
+				>{{ artifact.expanded ? 'Collapse' : 'Expand' }}</a
+			>
+		</td>
+	</ng-container>
+
+	<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+	<ng-container matColumnDef="expandedDetail">
+		<td
+			mat-cell
+			*matCellDef="let element"
+			[attr.colspan]="displayedColumns.length">
+			<div
+				class="tw-overflow-hidden"
+				[@detailExpand]="
+					element.expanded || allRowsExpanded
+						? 'expanded'
+						: 'collapsed'
+				">
+				<table class="tw-bg-accent tw-text-left">
+					<tr mat-cell>
+						<th
+							mat-header-cell
+							class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+							Requirement
+						</th>
+						<th
+							mat-header-cell
+							class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+							Test
+						</th>
+					</tr>
+					<tr
+						class="tw-border-b-[0.1rem] tw-border-b-primary"
+						*ngFor="let requirement of element.requirements">
+						<td
+							mat-cell
+							class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]">
+							{{ requirement.name }}
+						</td>
+						<td
+							mat-cell
+							class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]">
+							<tr
+								mat-cell
+								*ngFor="let test of requirement.tests">
+								{{
+									getTestTd(test)
+								}}
+							</tr>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</td>
+	</ng-container>
+
+	<tr
+		mat-header-row
+		*matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+	<tr
+		mat-row
+		*matRowDef="let artifact; columns: displayedColumns"></tr>
+
+	<tr
+		mat-row
+		*matRowDef="let row; columns: ['expandedDetail']"
+		class="tw-h-0"></tr>
+</table>
+
+<mat-paginator
+	[length]="dataSource.data.length"
+	[pageSizeOptions]="[10, 25, 50, 100, dataSource.data.length]"
+	showFirstLastButtons
+	[disabled]="false">
+</mat-paginator>

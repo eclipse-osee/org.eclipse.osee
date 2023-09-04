@@ -19,7 +19,7 @@ import { MarkdownModule } from 'ngx-markdown';
 	standalone: true,
 	imports: [CommonModule, MarkdownModule],
 	templateUrl: './bat.component.html',
-	styleUrls: ['./bat.component.sass'],
+	styles: [],
 })
 export class BatComponent {
 	markdown = 'assets/help/bat/BAT.md';

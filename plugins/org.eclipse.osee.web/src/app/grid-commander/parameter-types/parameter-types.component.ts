@@ -19,7 +19,7 @@ import { NgIf, NgSwitch, NgSwitchCase, AsyncPipe } from '@angular/common';
 @Component({
 	selector: 'osee-parameter-types',
 	templateUrl: './parameter-types.component.html',
-	styleUrls: ['./parameter-types.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

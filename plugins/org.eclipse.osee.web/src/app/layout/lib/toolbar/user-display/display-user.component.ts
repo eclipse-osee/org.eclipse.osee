@@ -29,7 +29,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
 	selector: 'osee-display-user',
 	templateUrl: './display-user.component.html',
-	styleUrls: ['./display-user.component.sass'],
+	styles: [],
 	animations: [
 		trigger('expandButton', [
 			state('closed', style({ transform: 'rotate(0)' })),
