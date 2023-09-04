@@ -12,8 +12,9 @@
  -->
 <mat-radio-group
 	(change)="selectType($event)"
+	class="tw-min-w-fit"
 	[(ngModel)]="branchType">
-	<div class="branch-types">
+	<div class="tw-flex tw-flex-row">
 		<mat-radio-button
 			*ngFor="let type of branchTypes"
 			[attr.data-cy]="normalizeType(type | lowercase)"
@@ -22,8 +23,8 @@
 			[name]="type | lowercase"
 			[ngClass]="
 				branchType === (type | lowercase)
-					? 'branch-radio-option-selected'
-					: 'branch-radio-option'
+					? 'tw-pr-3 tw-text-foreground-base tw-drop-shadow'
+					: 'tw-pr-3 tw-text-foreground-base'
 			"
 			color="primary">
 			{{ type }}

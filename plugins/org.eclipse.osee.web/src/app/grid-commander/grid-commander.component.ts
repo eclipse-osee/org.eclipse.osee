@@ -18,11 +18,12 @@ import { GcDatatableComponent } from './gc-datatable/gc-datatable.component';
 import { CreateCommandFormComponent } from './create-form/create-command-form/create-command-form.component';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { CommandPaletteComponent } from './command-palette/command-palette/command-palette.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
 	selector: 'osee-grid-commander',
 	templateUrl: './grid-commander.component.html',
-	styleUrls: ['./grid-commander.component.sass'],
+	styles: [],
 	providers: [],
 	standalone: true,
 	imports: [
@@ -31,6 +32,7 @@ import { CommandPaletteComponent } from './command-palette/command-palette/comma
 		CreateCommandFormComponent,
 		GcDatatableComponent,
 		AsyncPipe,
+		MatDialogModule,
 	],
 })
 export class GridCommanderComponent implements OnDestroy {

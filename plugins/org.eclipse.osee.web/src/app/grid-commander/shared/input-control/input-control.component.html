@@ -14,7 +14,7 @@
 	#f="ngForm"
 	(ngSubmit)="_onSubmit(f)">
 	<mat-form-field
-		class="full-width"
+		class="tw-w-full"
 		appearance="outline"
 		[floatLabel]="floatLabelControl">
 		<mat-label>{{ label }}</mat-label>
@@ -22,7 +22,7 @@
 			matInput
 			[matAutocomplete]="auto"
 			id="input"
-			class="input-form-input"
+			class="tw-relative"
 			type="{{ type }}"
 			pattern="{{ patternValidator }}"
 			placeholder="{{ placeHolder }}"
@@ -34,7 +34,7 @@
 
 		<input
 			*ngIf="usePredictiveText"
-			class="suggestion full-width"
+			class="mat-elevation-z0 tw-absolute tw-left-0 tw-w-full"
 			id="suggestion-text"
 			matInput
 			placeholder="{{ predictiveText | async }}"
@@ -62,7 +62,7 @@
 								oseeHighlightFilteredText
 								[searchTerms]="input"
 								[text]="commandObject.name"
-								classToApply="command-palette-highlighted-text">
+								classToApply="tw-text-accent-900">
 								{{ commandObject.name }}
 							</span>
 						</ng-container>
@@ -76,9 +76,10 @@
 			matIconSuffix
 			mat-icon-button
 			matTooltip="Shows all commands"
-			matTooltipClass="input-form-helper-button-tooltip"
+			matTooltipClass="tw-text-background-selected-disabled-button"
 			(click)="_dialog($event)">
-			<mat-icon class="input-form-helper-button-icon">
+			<mat-icon
+				class="tw-text-background-selected-disabled-button dark:tw-text-foreground-disabled-button">
 				help_center
 			</mat-icon>
 		</button>

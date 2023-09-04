@@ -61,7 +61,7 @@ import { MatIconModule } from '@angular/material/icon';
 	selector: 'osee-applicability-selector',
 	standalone: true,
 	templateUrl: './applicability-selector.component.html',
-	styleUrls: ['./applicability-selector.component.sass'],
+	styles: [],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,

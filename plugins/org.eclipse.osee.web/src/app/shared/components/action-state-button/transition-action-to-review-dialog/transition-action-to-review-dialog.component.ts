@@ -32,7 +32,7 @@ import { action } from '@osee/shared/types/configuration-management';
 @Component({
 	selector: 'osee-transition-action-to-review-dialog',
 	templateUrl: './transition-action-to-review-dialog.component.html',
-	styleUrls: ['./transition-action-to-review-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatDialogModule,

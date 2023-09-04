@@ -23,7 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
 	selector: 'osee-checkbox-container',
 	templateUrl: './checkbox-container.component.html',
-	styleUrls: ['./checkbox-container.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatTooltipModule,

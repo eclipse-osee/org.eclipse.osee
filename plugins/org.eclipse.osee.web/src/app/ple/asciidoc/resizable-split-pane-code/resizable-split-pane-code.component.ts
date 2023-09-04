@@ -18,6 +18,7 @@ import {
 	ElementRef,
 	OnDestroy,
 	Renderer2,
+	RendererStyleFlags2,
 	ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -35,7 +36,7 @@ import { INSERTIONS } from '../types/constants/insertions';
 @Component({
 	selector: 'osee-resizable-split-pane-code',
 	templateUrl: './resizable-split-pane-code.component.html',
-	styleUrls: ['./resizable-split-pane-code.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		FormsModule,
@@ -77,7 +78,7 @@ export class ResizableSplitPaneCodeComponent
 	@ViewChild('resizer') resizerRef!: ElementRef;
 	@ViewChild('container__left') container__leftRef!: ElementRef;
 	@ViewChild('container__right') container__rightRef!: ElementRef;
-	@ViewChild('body') bodyRef!: ElementRef;
+	@ViewChild('main') bodyRef!: ElementRef;
 
 	private unlistenSlideMouseDown!: () => void;
 	private unlistenSlideMouseMoving!: () => void;
@@ -140,7 +141,8 @@ export class ResizableSplitPaneCodeComponent
 						this.renderer2.setStyle(
 							container__leftEL,
 							'width',
-							newLeftWidth + '%'
+							newLeftWidth + '%',
+							RendererStyleFlags2.Important
 						);
 					}
 				);

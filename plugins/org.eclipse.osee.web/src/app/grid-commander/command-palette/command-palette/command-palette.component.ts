@@ -28,7 +28,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 @Component({
 	selector: 'osee-command-palette',
 	templateUrl: './command-palette.component.html',
-	styleUrls: ['./command-palette.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

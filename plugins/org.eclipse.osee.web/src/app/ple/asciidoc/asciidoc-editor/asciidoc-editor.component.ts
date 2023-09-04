@@ -20,7 +20,9 @@ import { TextEditorUiService } from '../services/text-editor-ui.service';
 @Component({
 	selector: 'osee-asciidoc-editor',
 	templateUrl: './asciidoc-editor.component.html',
-	styleUrls: ['./asciidoc-editor.component.sass'],
+	styles: [
+		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
+	],
 	standalone: true,
 	imports: [BranchPickerComponent, ResizableSplitPaneCodeComponent],
 })

@@ -36,7 +36,7 @@ import {
 		MatIconModule,
 	],
 	templateUrl: './open-url-form.component.html',
-	styleUrls: ['./open-url-form.component.sass'],
+	styles: [],
 })
 export class OpenUrlFormComponent {
 	@Output('submitOpenURLCommandForm') submitOpenUrlForm: EventEmitter<{

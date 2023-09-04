@@ -22,7 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
 	selector: 'osee-delete-row-dialog',
 	templateUrl: './delete-row-dialog.component.html',
-	styleUrls: ['./delete-row-dialog.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatDialogModule, MatButtonModule],
 })

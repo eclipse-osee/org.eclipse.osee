@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="multi-select-div">
+<div class="tw-w-[30rem]">
 	<ng-container *ngIf="columnOptions | async as columnOptions">
 		<ng-container *ngIf="commandDescription$ | async as description">
 			<mat-form-field
-				class="full-width"
+				class="tw-w-full"
 				appearance="outline">
 				<mat-label>{{ description + ':' }}</mat-label>
 				<mat-select

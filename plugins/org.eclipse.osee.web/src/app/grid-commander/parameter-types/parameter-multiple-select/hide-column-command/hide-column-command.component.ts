@@ -26,7 +26,7 @@ import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 @Component({
 	selector: 'osee-hide-column-command',
 	templateUrl: './hide-column-command.component.html',
-	styleUrls: ['./hide-column-command.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

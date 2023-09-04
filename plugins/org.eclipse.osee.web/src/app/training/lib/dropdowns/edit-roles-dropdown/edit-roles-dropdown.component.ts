@@ -27,7 +27,7 @@ import {
 	standalone: true,
 	selector: 'osee-edit-roles-dropdown',
 	templateUrl: './edit-roles-dropdown.component.html',
-	styleUrls: ['./edit-roles-dropdown.component.sass'],
+	styles: [],
 	imports: [
 		MatMenuModule,
 		MatIconModule,

@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="container">
+<div class="tw-flex">
 	<ng-container *ngIf="filterColumnOptions | async as filterColumnOptions">
-		<div class="filter-container">
+		<div class="filter-container tw-w-[18.75rem]">
 			<mat-form-field
-				class="full-width"
+				class="tw-w-full"
 				appearance="outline">
 				<mat-label>Select Columns to filter by:</mat-label>
 				<mat-select
@@ -54,7 +54,7 @@
 	</ng-container>
 	<ng-container *ngIf="selectedColsToFilter.value.length > 0">
 		<osee-column-filter
-			class="filter-input"
+			class="tw-ml-16 tw-w-[18.75rem]"
 			*ngIf="_filterInputLabelObs$ | async as filterLabel"
 			[filterInputLabel]="filterLabel"
 			(update)="updateColFilterStrings($event)"></osee-column-filter>

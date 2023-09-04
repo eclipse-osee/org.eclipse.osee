@@ -37,7 +37,7 @@ import { TrainingRoleService } from './../../services/training-role.service';
 	standalone: true,
 	selector: 'osee-add-roles-dialog',
 	templateUrl: './add-roles-dialog.component.html',
-	styleUrls: ['./add-roles-dialog.component.sass'],
+	styles: [],
 	imports: [
 		MatFormFieldModule,
 		MatDividerModule,

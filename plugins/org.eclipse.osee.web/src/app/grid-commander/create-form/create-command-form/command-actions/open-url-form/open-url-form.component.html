@@ -12,13 +12,12 @@
  -->
 <ng-container>
 	<form
-		class="create-form"
 		#createArtifactForm="ngForm"
 		(ngSubmit)="onSubmitHandler(createArtifactForm)">
 		<section>
 			<mat-form-field
 				appearance="outline"
-				class="command-input-field">
+				class="tw-m-4 tw-w-80">
 				<mat-label>Command Name</mat-label>
 				<input
 					matInput
@@ -39,7 +38,7 @@
 			</mat-form-field>
 			<mat-form-field
 				appearance="outline"
-				class="command-input-field">
+				class="tw-m-4 tw-w-80">
 				<mat-label>Description</mat-label>
 				<input
 					matInput
@@ -60,7 +59,7 @@
 			</mat-form-field>
 			<mat-form-field
 				appearance="outline"
-				class="command-input-field">
+				class="tw-m-4 tw-w-80">
 				<mat-label>URL</mat-label>
 				<input
 					matInput
@@ -82,7 +81,7 @@
 			</mat-form-field>
 			<button
 				type="button"
-				class="adv-options-btn"
+				class="tw-m-4 tw-ml-8 tw-bg-background-app-bar"
 				mat-raised-button
 				color="accent"
 				(click)="displayParameterOptionsBtnHandler($event)">
@@ -99,7 +98,7 @@
 			<section>
 				<mat-form-field
 					appearance="outline"
-					class="parameter-input-field">
+					class="tw-m-4 tw-w-64">
 					<mat-label>Parameter Description</mat-label>
 					<input
 						matInput
@@ -119,7 +118,7 @@
 				</mat-form-field>
 				<mat-form-field
 					appearance="outline"
-					class="parameter-input-field">
+					class="tw-m-4 tw-w-64">
 					<mat-label>Parameters Default Value</mat-label>
 					<input
 						matInput
@@ -138,9 +137,10 @@
 				</mat-form-field>
 			</section>
 		</ng-container>
-		<div class="submit-btn-container">
+		<div class="tw-m-4 tw-mb-7">
 			<button
 				type="submit"
+				class="tw-bg-background-app-bar"
 				mat-raised-button
 				color="accent"
 				[disabled]="!createArtifactForm.valid">

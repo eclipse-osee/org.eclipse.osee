@@ -33,7 +33,7 @@ import { applic } from '@osee/shared/types/applicability';
 @Component({
 	selector: 'osee-single-diff',
 	templateUrl: './single-diff.component.html',
-	styleUrls: ['./single-diff.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		MatButtonModule,

@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  -->
 <div
-	class="parameter-string-container"
+	class="tw-w-[18.75rem]"
 	*ngIf="displayInParamStringComponent$ | async as parameter">
 	<ng-container *ngIf="parameter.parameter.name === 'URL'">
 		<osee-input-control
-			class="full-width"
+			class="tw-w-full"
 			[input]="parameterValueFromHistory | async"
 			[placeHolder]="parameter.placeholder"
 			[label]="parameter.prompt"

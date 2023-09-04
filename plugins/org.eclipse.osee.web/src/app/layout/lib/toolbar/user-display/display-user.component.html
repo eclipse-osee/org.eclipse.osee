@@ -10,19 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="user-button">
+<div>
 	<div
 		[matMenuTriggerFor]="userTrigger"
 		data-cy="user-overflow-btn"
-		class="avatar-button">
-		<div class="avatar-image">
-			<mat-icon class="avatar-icon">account_circle</mat-icon>
+		class="tw-flex tw-items-center tw-justify-center tw-gap-[0.35em] hover:tw-cursor-pointer hover:tw-opacity-95">
+		<div class="tw-flex">
+			<mat-icon
+				class="tw-h-10 tw-w-10 tw-rounded-full tw-bg-background-tooltip tw-bg-cover tw-text-[2.5rem] tw-text-foreground-icon"
+				>account_circle</mat-icon
+			>
 		</div>
 	</div>
 </div>
 <mat-menu
 	#userTrigger="matMenu"
-	class="mat-menu-fit-content">
-	<div class="user-name">{{ (userInfo | async)?.name }}</div>
+	class="tw-max-w-fit">
+	<div
+		class="tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base">
+		{{ (userInfo | async)?.name }}
+	</div>
 	<router-outlet name="userMenu"></router-outlet>
 </mat-menu>

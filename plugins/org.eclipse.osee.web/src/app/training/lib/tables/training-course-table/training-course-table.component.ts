@@ -29,7 +29,7 @@ import { CourseInfoDialogComponent } from './../../dialogs/course-info-dialog/co
 	standalone: true,
 	selector: 'osee-training-course-table',
 	templateUrl: './training-course-table.component.html',
-	styleUrls: ['./training-course-table.component.sass'],
+	styles: [],
 	imports: [
 		MatFormFieldModule,
 		MatTableModule,

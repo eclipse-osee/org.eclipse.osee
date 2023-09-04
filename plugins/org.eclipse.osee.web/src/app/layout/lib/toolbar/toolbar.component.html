@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-toolbar class="top-toolbar-container">
-	<div class="top-toolbar">
+<mat-toolbar class="tw-h-[6vh]">
+	<div class="tw-flex tw-w-full tw-items-center tw-justify-between tw-gap-2">
 		<!-- Top Level Nav - Button -->
-		<span class="left-icon">
+		<span class="tw-flex tw-items-center tw-justify-start tw-gap-2">
 			<button
 				mat-icon-button
 				(click)="toggleTopLevelNavIcon()">
@@ -33,7 +33,7 @@
 				(click)="closeTopLevelNavIcon()"></router-outlet>
 		</span>
 	</div>
-	<span class="right-icon">
+	<span class="tw-flex tw-items-center tw-justify-end tw-gap-2">
 		<ng-container *ngIf="(isLoading | async) === 'true'">
 			<mat-progress-spinner
 				mode="indeterminate"

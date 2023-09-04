@@ -24,7 +24,7 @@ import { MatTableModule } from '@angular/material/table';
 	standalone: true,
 	selector: 'osee-training-role-table',
 	templateUrl: './training-role-table.component.html',
-	styleUrls: ['./training-role-table.component.sass'],
+	styles: [],
 	imports: [MatTableModule, CommonModule],
 })
 export class TrainingRoleTableComponent {

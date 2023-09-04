@@ -376,6 +376,12 @@ module.exports = {
 			spacing: {
 				'landing-button': '255px',
 			},
+			fontFamily: {
+				roboto: ['Roboto', 'Helvetica Neue', 'sans-serif'],
+			},
+			fontWeight: {
+				'mat-bold': 'bold',
+			},
 		},
 	},
 	plugins: [

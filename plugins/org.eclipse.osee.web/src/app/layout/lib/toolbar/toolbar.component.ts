@@ -26,7 +26,7 @@ import { SideNavService } from '@osee/shared/services/layout';
 	selector: 'osee-toolbar',
 	standalone: true,
 	templateUrl: './toolbar.component.html',
-	styleUrls: ['./toolbar.component.sass'],
+	styles: [],
 	imports: [
 		MatToolbarModule,
 		MatButtonModule,

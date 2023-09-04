@@ -24,7 +24,7 @@ import {
 @Component({
 	selector: 'osee-two-layer-add-button',
 	templateUrl: './two-layer-add-button.component.html',
-	styleUrls: ['./two-layer-add-button.component.sass'],
+	styles: [],
 	animations: [
 		slidingAddButtonAnim,
 		addButtonIconTransition,

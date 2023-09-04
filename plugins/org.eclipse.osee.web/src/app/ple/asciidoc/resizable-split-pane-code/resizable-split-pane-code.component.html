@@ -13,44 +13,44 @@
 
 <!-- http://localhost:4200/ple/asciidoc/working/10/201279 -->
 
-<body
-	#body
-	class="body">
-	<div class="action_bar">
-		<div class="operation_actions">
+<div
+	#main
+	class="tw-flex tw-h-full tw-w-full tw-flex-col tw-items-center">
+	<div class="tw-flex tw-w-full tw-justify-start tw-pl-8">
+		<div class="tw-pr-6">
 			<button
 				mat-icon-button
-				class="action_bar_button"
+				class="hover:tw-brightness-70 hover:-tw-translate-y-1"
 				(click)="save()">
 				<mat-icon>save</mat-icon>
 			</button>
 			<button
 				mat-icon-button
-				class="action_bar_button">
+				class="hover:tw-brightness-70 hover:-tw-translate-y-1">
 				<mat-icon>undo</mat-icon>
 			</button>
 			<button
 				mat-icon-button
-				class="action_bar_button">
+				class="hover:tw-brightness-70 hover:-tw-translate-y-1">
 				<mat-icon>redo</mat-icon>
 			</button>
 		</div>
 		<div class="insertion_actions">
 			<button
 				mat-icon-button
-				class="action_bar_button"
+				class="hover:tw-brightness-70 hover:-tw-translate-y-1"
 				(click)="makeInsertion('TABLE')">
 				<mat-icon>border_all</mat-icon>
 			</button>
 			<button
 				mat-icon-button
-				class="action_bar_button"
+				class="hover:tw-brightness-70 hover:-tw-translate-y-1"
 				(click)="makeInsertion('IMAGE')">
 				<mat-icon>image</mat-icon>
 			</button>
 			<button
 				mat-icon-button
-				class="action_bar_button"
+				class="hover:tw-brightness-70 hover:-tw-translate-y-1"
 				(click)="makeInsertion('OSEE_LOGO')">
 				<mat-icon>public</mat-icon>
 			</button>
@@ -58,18 +58,19 @@
 		</div>
 	</div>
 
-	<div class="container">
+	<div
+		class="container tw-z-[4] tw-flex tw-h-4/5 tw-w-11/12 tw-rounded-3xl tw-border tw-border-solid tw-border-background-tooltip">
 		<div
 			#container__left
-			class="container__left">
-			<div class="container_left_internal">
+			class="tw-w-1/4 tw-overflow-y-auto tw-overflow-x-hidden tw-rounded-l-2xl tw-rounded-r-none tw-p-2">
+			<div class="tw-m-auto tw-flex tw-h-full tw-w-full tw-flex-col">
 				<mat-form-field ngPreserveWhitespaces>
 					<textarea
 						type="text"
 						matInput
 						#code
 						placeholder="Start typing code..."
-						class="codeInput"
+						class="codeInput placeholder:tw-font-mat-bold placeholder:tw-opacity-50"
 						[ngModel]="(mdRightinput$ | async) || ''"
 						(ngModelChange)="updateText($event)"
 						cdkTextareaAutosize
@@ -79,29 +80,29 @@
 		</div>
 		<div
 			#resizer
-			class="resizer vert-divider"
+			class="resizer vert-divider tw-group tw-flex tw-cursor-ew-resize tw-flex-col tw-items-center tw-justify-center"
 			id="dragMe">
 			<mat-divider
 				vertical
-				class="divider"></mat-divider>
+				class="divider tw-grow group-hover:tw-border-r-primary-200"></mat-divider>
 			<button
 				mat-icon-button
-				class="divider-icon"
+				class="tw-cursor-ew-resize group-hover:tw-text-primary-400"
 				disableRipple>
 				<mat-icon>more_vert</mat-icon>
 			</button>
 			<mat-divider
 				vertical
-				class="divider"></mat-divider>
+				class="divider tw-grow group-hover:tw-border-r-primary-200"></mat-divider>
 		</div>
 
 		<div
 			#container__right
-			class="container__right">
+			class="tw-flex tw-min-w-[1rem] tw-overflow-auto tw-rounded-l-none tw-rounded-r-2xl tw-p-2">
 			<markdown
 				[data]="(htmlRightInput$ | async) || ''"
 				ngPreserveWhitespaces>
 			</markdown>
 		</div>
 	</div>
-</body>
+</div>

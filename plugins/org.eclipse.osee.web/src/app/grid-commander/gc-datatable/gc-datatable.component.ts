@@ -60,7 +60,7 @@ import {
 @Component({
 	selector: 'osee-gc-datatable',
 	templateUrl: './gc-datatable.component.html',
-	styleUrls: ['./gc-datatable.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [
 		NgIf,

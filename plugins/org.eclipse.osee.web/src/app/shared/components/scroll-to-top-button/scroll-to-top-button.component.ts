@@ -22,7 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
 	selector: 'osee-scroll-to-top-button',
 	templateUrl: './scroll-to-top-button.component.html',
-	styleUrls: ['./scroll-to-top-button.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [MatButtonModule, MatIconModule],
 })

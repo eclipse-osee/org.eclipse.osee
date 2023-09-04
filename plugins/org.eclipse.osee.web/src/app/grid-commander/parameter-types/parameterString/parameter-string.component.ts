@@ -23,7 +23,7 @@ import { NgIf, AsyncPipe } from '@angular/common';
 @Component({
 	selector: 'osee-parameter-string',
 	templateUrl: './parameter-string.component.html',
-	styleUrls: ['./parameter-string.component.sass'],
+	styles: [],
 	standalone: true,
 	imports: [NgIf, InputControlComponent, AsyncPipe],
 })

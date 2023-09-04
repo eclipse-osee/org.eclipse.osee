@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <div class="training-course-table-container">
-	<mat-form-field class="table-filter">
+	<mat-form-field class="tw-w-full">
 		<mat-label>Filter Table</mat-label>
 		<input
 			matInput
@@ -23,7 +23,7 @@
 		<table
 			mat-table
 			[dataSource]="data"
-			class="mat-elevation-z8 training-table">
+			class="mat-elevation-z8 tw-rounded-md tw-border tw-border-solid">
 			<!-- If there is no data for the table, display a no data message -->
 			<div *matNoDataRow>No Courses</div>
 
@@ -34,9 +34,9 @@
 					mat-header-cell
 					*matHeaderCellDef
 					[ngClass]="{
-						'column-border': header !== 'endDate'
+						'tw-border-r tw-border-solid': header !== 'endDate'
 					}">
-					<div class="table-header-cell">
+					<div class="tw-font-mat-bold tw-text-primary-600">
 						{{
 							(getTableHeadersByName(header) | async)
 								?.humanReadable || ''
@@ -48,9 +48,7 @@
 					mat-cell
 					*matCellDef="let item; let row = index"
 					[ngClass]="{
-						'column-border': header !== 'endDate',
-						'table-row-even': row % 2 === 0,
-						'table-row-odd': row % 2 !== 0
+						'tw-border-r tw-border-solid': header !== 'endDate'
 					}">
 					<ng-container *ngIf="header !== 'courseID'">
 						{{ item[header] }}
@@ -71,7 +69,8 @@
 				*matHeaderRowDef="recordHeaders"></tr>
 			<tr
 				mat-row
-				*matRowDef="let row; columns: recordHeaders"></tr>
+				*matRowDef="let row; columns: recordHeaders"
+				class="odd:tw-bg-background-selected-button even:tw-bg-background-background"></tr>
 		</table>
 	</ng-container>
 </div>
