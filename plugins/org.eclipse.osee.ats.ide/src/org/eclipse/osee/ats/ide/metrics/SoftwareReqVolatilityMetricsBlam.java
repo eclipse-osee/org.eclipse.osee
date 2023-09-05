@@ -75,7 +75,7 @@ public class SoftwareReqVolatilityMetricsBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Generates Software Requirements Volatility Metrics Report based on selected version. The date selection chooses requirements based on the completion date. Software Requirements are always included by default.";
+      return "Generates Software Requirements Volatility Metrics Report based on selected version. The date selection chooses requirements based on the completion date. Software Requirements are always included by default. Results are in the downloads folder.";
    }
 
    @Override
