@@ -73,7 +73,7 @@ public class DevProgressMetricsBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Generates Dev Progress Report based on Version";
+      return "Generates Dev Progress Report based on Version. Results are in the downloads folder.";
    }
 
    @Override

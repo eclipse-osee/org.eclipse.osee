@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Stephen J. Molaro
@@ -61,7 +60,6 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
    private final Date endDate;
    private final boolean allTime;
    Collection<IAtsTask> tasksMissingChangeType = new ArrayList<>();
-   Map<IAtsTeamWorkflow, List<ChangeItem>> wfToJsonMap = new HashMap<IAtsTeamWorkflow, List<ChangeItem>>();
 
    private ExcelXmlWriter writer;
 
@@ -147,47 +145,29 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       programVersion = atsApi.getRelationResolver().getRelatedOrSentinel(version,
          AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).getName();
 
-      for (IAtsTeamWorkflow teamWf : reqWorkflows) {
-         BranchToken branch = atsApi.getBranchService().getBranch(teamWf);
-         if (branch == null || branch.isInvalid()) {
-            continue;
-         }
-         String changeReportData = "";
-         List<ChangeItem> changeItems = new ArrayList<>();
-
-         try {
-            if (atsApi.getAttributeResolver().getAttributeCount(teamWf, CoreAttributeTypes.BranchDiffData) == 1) {
-               changeReportData =
-                  atsApi.getAttributeResolver().getSoleAttributeValue(teamWf, CoreAttributeTypes.BranchDiffData, "");
-            } else {
-               changeItems = orcsApi.getBranchOps().compareBranch(branch);
-               if (changeItems.isEmpty()) {
-                  continue;
-               }
-               changeReportData = JsonUtil.toJson(changeItems);
-               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(),
-                  "Add missing Branch Diff Data attribute");
-               tx.createAttribute(atsApi.getArtifactResolver().get(teamWf), CoreAttributeTypes.BranchDiffData,
-                  changeReportData);
-               tx.commit();
-            }
-         } catch (Exception ex) {
-            continue;
-         }
-
-         if (changeItems.isEmpty() && !changeReportData.isEmpty()) {
-            changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
-         } else {
-            try {
-               changeItems = orcsApi.getBranchOps().compareBranch(branch);
-            } catch (Exception ex) {
-               continue;
-            }
-         }
-         wfToJsonMap.put(teamWf, changeItems);
-      }
-
       return reqWorkflows;
+   }
+
+   private List<ChangeItem> getChangeItems(IAtsTeamWorkflow reqWorkflow) {
+      BranchToken branch = atsApi.getBranchService().getBranch(reqWorkflow);
+      if (branch == null || branch.isInvalid()) {
+         return List.of();
+      }
+      String changeReportData = "";
+
+      try {
+         if (atsApi.getAttributeResolver().getAttributeCount(reqWorkflow, CoreAttributeTypes.BranchDiffData) == 1) {
+            changeReportData =
+               atsApi.getAttributeResolver().getSoleAttributeValue(reqWorkflow, CoreAttributeTypes.BranchDiffData, "");
+         }
+      } catch (Exception ex) {
+         return List.of();
+      }
+      List<ChangeItem> changeItems = new ArrayList<>();
+      if (changeItems.isEmpty() && !changeReportData.isEmpty()) {
+         changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
+      }
+      return changeItems;
    }
 
    private void fillActionableData(Collection<IAtsTeamWorkflow> reqWorkflows) throws IOException {
@@ -197,9 +177,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          buffer[i] = reportColumns[i].getDisplayName();
       }
       writer.writeRow(buffer);
-      for (Map.Entry<IAtsTeamWorkflow, List<ChangeItem>> entry : wfToJsonMap.entrySet()) {
-         IAtsTeamWorkflow reqWorkflow = entry.getKey();
-         List<ChangeItem> changeItems = entry.getValue();
+
+      for (IAtsTeamWorkflow reqWorkflow : reqWorkflows) {
+         List<ChangeItem> changeItems = getChangeItems(reqWorkflow);
          Date completedDate = new Date();
          try {
             completedDate = reqWorkflow.getCompletedDate();
