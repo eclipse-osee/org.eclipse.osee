@@ -24,7 +24,7 @@ public class ChangeReportTaskMatchResult extends OseeEnum {
 
    public static final ChangeReportTaskMatchResult None = new ChangeReportTaskMatchResult("None");
    public static final ChangeReportTaskMatchResult TaskExistsNeedsDereference =
-      new ChangeReportTaskMatchResult("Task %s Exists - Needs DeReference\\n");
+      new ChangeReportTaskMatchResult("Task %s Exists - Needs DeReference\n");
    public static final ChangeReportTaskMatchResult TaskExistsNoChangeNeeded =
       new ChangeReportTaskMatchResult("Task %s Exists - No Change Needed\n");
    public static final ChangeReportTaskMatchResult CreateNewChgRptTask =
