@@ -111,8 +111,7 @@ describe('EditElementFieldComponent', () => {
 		component.structureId = '10';
 		component.elementId = '15';
 		component.platformType = platformTypesMock[0];
-		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
+		//@todo luciano backport gamma id reactivity
 	});
 
 	it('should create', () => {
@@ -123,6 +122,8 @@ describe('EditElementFieldComponent', () => {
 		beforeEach(() => {
 			component.header = 'platformType';
 			component.value = platformTypesMock[0];
+			fixture.detectChanges();
+			loader = TestbedHarnessEnvironment.loader(fixture);
 		});
 
 		it('should update the platform type', fakeAsync(async () => {
@@ -135,7 +136,7 @@ describe('EditElementFieldComponent', () => {
 			await select.enterText('2');
 			const val = await select.getValue();
 			tick(500);
-			expect(val).toBe('First2');
+			expect(val).toBe('2');
 		}));
 
 		it('should emit an event to parent component', () => {
@@ -149,6 +150,8 @@ describe('EditElementFieldComponent', () => {
 		beforeEach(() => {
 			component.header = 'units';
 			component.value = unitsMock[0];
+			fixture.detectChanges();
+			loader = TestbedHarnessEnvironment.loader(fixture);
 		});
 		it('should update the units', fakeAsync(async () => {
 			let serviceSpy = spyOn(

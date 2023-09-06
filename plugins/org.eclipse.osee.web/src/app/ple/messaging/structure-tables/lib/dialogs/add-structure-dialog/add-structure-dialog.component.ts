@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -36,7 +36,16 @@ import {
 } from '@osee/shared/components';
 import { AddStructureDialog } from './add-structure-dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { BehaviorSubject, debounceTime, map, switchMap } from 'rxjs';
+import {
+	BehaviorSubject,
+	Subject,
+	debounceTime,
+	delay,
+	distinct,
+	map,
+	switchMap,
+	tap,
+} from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
@@ -63,6 +72,27 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 	],
 })
 export class AddStructureDialogComponent {
+	@ViewChild(MatStepper) set _internalStepper(stepper: MatStepper) {
+		this.__internalStepper.next(stepper);
+	}
+	__internalStepper = new Subject<MatStepper>();
+
+	_firstStepFilled = new BehaviorSubject<boolean>(true);
+	private _moveToNextStep = this.__internalStepper.pipe(
+		debounceTime(1),
+		delay(1),
+		distinct(),
+		tap((stepper) => {
+			if (
+				stepper &&
+				this.data.structure.id !== undefined &&
+				this.data.structure.id !== '-1'
+			) {
+				stepper.next();
+				this._firstStepFilled.next(false);
+			}
+		})
+	);
 	categories = this.enumService.categories;
 	paginationSize: number = 50;
 
@@ -94,7 +124,9 @@ export class AddStructureDialogComponent {
 		public dialogRef: MatDialogRef<AddStructureDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: AddStructureDialog,
 		private enumService: EnumsService
-	) {}
+	) {
+		this._moveToNextStep.subscribe();
+	}
 
 	moveToStep(index: number, stepper: MatStepper) {
 		stepper.selectedIndex = index - 1;

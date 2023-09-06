@@ -20,7 +20,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { of } from 'rxjs/internal/observable/of';
 import { state, style, trigger } from '@angular/animations';
 import { MatSortModule } from '@angular/material/sort';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { apiURL } from '@osee/environments';
 import { MatIconModule } from '@angular/material/icon';
+import { of } from 'rxjs';
 
 @Component({
 	selector: 'osee-diff-table',

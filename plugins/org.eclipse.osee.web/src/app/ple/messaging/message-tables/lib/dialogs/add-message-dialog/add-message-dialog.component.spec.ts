@@ -75,6 +75,7 @@ describe('AddMessageDialogComponent', () => {
 				name: '',
 			},
 		],
+		subMessages: [],
 	};
 	let enumServiceMock: Partial<EnumsService> = {
 		periodicities: of(['p1', 'p2', 'p3']),

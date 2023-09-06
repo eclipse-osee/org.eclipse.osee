@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
 	CurrentMessagesService,
@@ -36,6 +36,7 @@ import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 @Component({
 	selector: 'osee-edit-message-nodes-field',
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		CommonModule,
 		FormsModule,

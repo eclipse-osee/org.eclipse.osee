@@ -115,7 +115,6 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 		return of(transactionResultMock);
 	},
 	expandedRows: of([]),
-	expandedRowsDecreasing: new BehaviorSubject<boolean>(false),
 	singleStructureId: _singleStructureId,
 	set singleStructureIdValue(value: string) {
 		_singleStructureId.next(value);

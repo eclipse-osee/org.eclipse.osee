@@ -95,6 +95,7 @@
 					required
 					name="pub_nodes"
 					[multiple]="type.maximumPublisherMultiplicity !== 1"
+					[compareWith]="compareIds"
 					#pubSelect="ngModel"
 					[oseeMessageNodesCount]="true"
 					data-cy="field-pub-node">
@@ -127,11 +128,13 @@
 					name="sub_nodes"
 					[multiple]="type.maximumSubscriberMultiplicity !== 1"
 					#subSelect="ngModel"
+					[compareWith]="compareIds"
 					[oseeMessageNodesCount]="false"
 					data-cy="field-sub-node">
 					<mat-option
 						*ngFor="let option of nodes | async"
 						[value]="option"
+						[id]="option.id"
 						[attr.data-cy]="'option-' + option.name">
 						{{ option.name }}
 					</mat-option>

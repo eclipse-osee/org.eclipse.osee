@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
 import {
 	share,
@@ -57,6 +57,8 @@ import type {
 } from '@osee/messaging/shared/types';
 import { relation, transaction, transactionToken } from '@osee/shared/types';
 import { SideNavService } from '@osee/shared/services/layout';
+import { StructuresService } from 'src/app/ple/messaging/shared/services/public-api';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -249,13 +251,12 @@ export class CurrentMessagesService {
 		undefined
 	);
 
-	private _expandedRows = new BehaviorSubject<
-		(message | messageWithChanges)[]
-	>([]);
-	private _expandedRowsDecreasing = new BehaviorSubject<boolean>(false);
+	private _expandedRows = signal<(message | messageWithChanges)[]>([]);
+	private _expandedRows$ = toObservable(this._expandedRows);
 	constructor(
 		private messageService: MessagesService,
 		private subMessageService: SubMessagesService,
+		private structureService: StructuresService,
 		private ui: MessageUiService,
 		private applicabilityService: ApplicabilityListUIService,
 		private preferenceService: PreferencesUIService,
@@ -389,44 +390,21 @@ export class CurrentMessagesService {
 	}
 
 	get expandedRows() {
-		return this._expandedRows.asObservable();
-	}
-
-	get expandedRowsDecreasing() {
-		return this._expandedRowsDecreasing;
+		return this._expandedRows$;
 	}
 
 	set addExpandedRow(value: message | messageWithChanges) {
-		if (
-			this._expandedRows
-				.getValue()
-				.map((s) => s.id)
-				.indexOf(value.id) === -1
-		) {
-			const temp = this._expandedRows.getValue();
-			temp.push(value);
-			this._expandedRows.next(temp);
-		}
-		this._expandedRowsDecreasing.next(false);
+		this._expandedRows.update((rows) => [...rows, value]);
 	}
 
 	set removeExpandedRow(value: message | messageWithChanges) {
-		if (
-			this._expandedRows
-				.getValue()
-				.map((s) => s.id)
-				.indexOf(value.id) > -1
-		) {
-			const temp = this._expandedRows.getValue();
-			temp.splice(this._expandedRows.getValue().indexOf(value), 1);
-			this._expandedRows.next(temp);
-		}
-		this._expandedRowsDecreasing.next(true);
+		this._expandedRows.update((rows) =>
+			rows.filter((v) => v.id !== value.id)
+		);
 	}
 
 	clearRows() {
-		this._expandedRows.next([]);
-		this._expandedRowsDecreasing.next(true);
+		this._expandedRows.set([]);
 	}
 
 	getPaginatedSubMessages(pageNum: string | number) {
@@ -676,12 +654,82 @@ export class CurrentMessagesService {
 			)
 		);
 	}
+	copySubMessage(
+		body: subMessage,
+		messageId: string,
+		afterSubMessage?: string
+	) {
+		const branchId = this.ui.BranchId.pipe(
+			take(1),
+			filter((id) => id !== '' && id !== '-1')
+		);
+		const connectionId = this.connectionId.pipe(
+			take(1),
+			filter((id) => id !== '' && id !== '-1')
+		);
+		const structures = combineLatest([branchId, connectionId]).pipe(
+			switchMap(([id, connection]) =>
+				this.structureService.getFilteredStructures(
+					'',
+					id,
+					messageId,
+					body.id || '-1',
+					connection,
+					'-1',
+					1,
+					0
+				)
+			)
+		);
+		const structureIds = structures.pipe(
+			concatMap((st) => from(st).pipe(map((structure) => structure.id))),
+			reduce((acc, curr) => [...acc, curr], [] as string[])
+		);
+		const structureRelations = structureIds.pipe(
+			concatMap((st) =>
+				from(st).pipe(
+					switchMap((structure) =>
+						this.structureService.createSubMessageRelation(
+							undefined,
+							structure
+						)
+					)
+				)
+			),
+			reduce((acc, curr) => [...acc, curr], [] as relation[])
+		);
+		const messageRelation = this.subMessageService.createMessageRelation(
+			messageId,
+			undefined,
+			afterSubMessage
+		);
+		const transaction = combineLatest([
+			structureRelations,
+			messageRelation,
+			branchId,
+		]).pipe(
+			switchMap(([structureRelations, messageRelation, branchId]) =>
+				this.subMessageService.createSubMessage(branchId, body, [
+					...structureRelations,
+					messageRelation,
+				])
+			)
+		);
+		return transaction.pipe(
+			switchMap((tx) =>
+				this.subMessageService.performMutation('', '', '', tx)
+			),
+			tap((_) => (this.ui.updateMessages = true))
+		);
+	}
 
 	createMessage(
 		publisherNodes: ConnectionNode | ConnectionNode[],
 		subscriberNodes: ConnectionNode | ConnectionNode[],
-		body: message
+		body: message,
+		subMessages?: subMessage[]
 	) {
+		const key = '1b91f809-783c-415e-8825-7920c76be31e'; //random string for message
 		const pubNodes = Array.isArray(publisherNodes)
 			? publisherNodes
 			: [publisherNodes];
@@ -715,22 +763,47 @@ export class CurrentMessagesService {
 			),
 			reduce((acc, curr) => [...acc, curr], [] as relation[])
 		);
+		const subMessageRelations = subMessages
+			? from(subMessages).pipe(
+					filter((v) => v.id !== '0' && v.id !== '-1'),
+					concatMap((subMessage) =>
+						this.messageService.createSubMessageRelation(
+							subMessage.id
+						)
+					),
+					reduce((acc, curr) => [...acc, curr], [] as relation[])
+			  )
+			: of<relation[]>([]);
 
 		return combineLatest([
 			this.BranchId,
 			connectionRelation,
 			pubNodeRelations,
 			subNodeRelations,
+			subMessageRelations,
 		]).pipe(
 			take(1),
 			switchMap(
-				([branch, connectionRelation, pubRelations, subRelations]) =>
+				([
+					branch,
+					connectionRelation,
+					pubRelations,
+					subRelations,
+					subMessageRelations,
+				]) =>
 					this.messageService
-						.createMessage(branch, body, [
-							connectionRelation,
-							...pubRelations,
-							...subRelations,
-						])
+						.createMessage(
+							branch,
+							body,
+							[
+								connectionRelation,
+								...pubRelations,
+								...subRelations,
+								...subMessageRelations,
+							],
+							undefined,
+							key
+						)
 						.pipe(
 							take(1),
 							switchMap((transaction) =>

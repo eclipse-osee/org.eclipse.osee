@@ -45,6 +45,7 @@ import {
 	catchError,
 	combineLatest,
 	concatMap,
+	debounceTime,
 	filter,
 	ignoreElements,
 	Observable,
@@ -58,7 +59,6 @@ import {
 	tap,
 	timer,
 } from 'rxjs';
-import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { paginationMode } from '../internal/pagination-options';
 /**
  * Component that handles loading, pagination and error states for mat-options

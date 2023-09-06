@@ -10,7 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	Inject,
+	Input,
+	OnInit,
+	ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
@@ -31,7 +38,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import type { element } from '@osee/messaging/shared/types';
+import type { element, elementWithChanges } from '@osee/messaging/shared/types';
 import {
 	CurrentStructureService,
 	HeaderService,
@@ -45,6 +52,7 @@ import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-a
 	styles: [
 		':host {display: block;width: 100%;overflow-x: auto;max-height: 10%;}',
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: true,
 	imports: [
 		NgFor,
@@ -163,6 +171,10 @@ export class SubElementArrayTableComponent implements OnInit {
 
 	getHeaderByName(value: string) {
 		return this.headerService.getHeaderByName(value, 'element');
+	}
+
+	elementTracker(index: number, item: element | elementWithChanges) {
+		return item.id !== '-1' ? item.id : index.toString();
 	}
 
 	viewDiff(value: difference, header: string) {

@@ -114,24 +114,6 @@ export class ElementTableDropdownService {
 								: '-1',
 							afterElement || 'end'
 						)
-					).pipe(
-						switchMap((transaction) =>
-							combineLatest([
-								this._ui.isLoading,
-								of(transaction),
-							]).pipe(
-								filter(
-									([loading, transaction]) =>
-										loading !== 'false'
-								),
-								take(1),
-								map(() => {
-									this.router.navigate([], {
-										fragment: 'a' + data.element.id,
-									});
-								})
-							)
-						)
 					),
 					iif(
 						() => isArray,
@@ -146,28 +128,6 @@ export class ElementTableDropdownService {
 							parent.id,
 							data.type.id as string,
 							afterElement || 'end'
-						)
-					).pipe(
-						switchMap((transaction) =>
-							combineLatest([
-								this._ui.isLoading,
-								of(transaction),
-							]).pipe(
-								filter(
-									([loading, transaction]) =>
-										loading !== 'false'
-								),
-								take(1),
-								map(([loading, transaction]) => {
-									this.router.navigate([], {
-										fragment:
-											'a' +
-											(transaction.results.ids[0] ||
-												afterElement ||
-												''),
-									});
-								})
-							)
 						)
 					)
 				)

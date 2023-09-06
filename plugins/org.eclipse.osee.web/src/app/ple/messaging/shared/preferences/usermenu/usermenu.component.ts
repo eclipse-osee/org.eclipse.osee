@@ -20,7 +20,14 @@ import type { settingsDialogData } from '@osee/messaging/shared/types';
 import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
-import { map, share, shareReplay, take, switchMap } from 'rxjs/operators';
+import {
+	map,
+	share,
+	shareReplay,
+	take,
+	switchMap,
+	debounceTime,
+} from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 
 @Component({
@@ -39,6 +46,7 @@ import { UiService } from '@osee/shared/services';
 })
 export class UsermenuComponent {
 	settingsCapable = this.routeState.id.pipe(
+		debounceTime(0),
 		switchMap((val) =>
 			iif(
 				() => val !== '' && val !== '-1' && val !== '0',

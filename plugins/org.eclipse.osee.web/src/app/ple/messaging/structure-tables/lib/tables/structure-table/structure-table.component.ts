@@ -18,6 +18,7 @@ import {
 	trigger,
 } from '@angular/animations';
 import {
+	ChangeDetectionStrategy,
 	Component,
 	Inject,
 	Input,
@@ -30,8 +31,6 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { combineLatest, from, iif, of, OperatorFunction } from 'rxjs';
 import {
-	delay,
-	distinctUntilChanged,
 	distinct,
 	filter,
 	first,
@@ -55,7 +54,6 @@ import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { HttpLoadingService } from '@osee/shared/services/network';
 import { DataSource } from '@angular/cdk/collections';
 import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-structure-dialog';
 import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/add-structure-dialog.component';
@@ -91,7 +89,6 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { UiService } from '@osee/shared/services';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	MessagingControlsComponent,
@@ -115,6 +112,7 @@ import { StructureDataSource } from '@osee/messaging/shared/datasources';
 	templateUrl: './structure-table.component.html',
 	styles: [],
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		NgIf,
 		NgFor,
@@ -165,21 +163,12 @@ import { StructureDataSource } from '@osee/messaging/shared/datasources';
 		]),
 	],
 })
-export class StructureTableComponent implements OnInit, OnDestroy {
+export class StructureTableComponent implements OnDestroy {
 	expandedElement = this.structureService.expandedRows;
 	@Input() previousLink = '../../../../';
 	@Input() structureId = '';
 	messageData: DataSource<structure | structureWithChanges> =
 		new StructureDataSource(this.structureService);
-	private _expandedElementData = combineLatest([
-		this._loadingService.isLoading,
-		this.structureService.expandedRows,
-		this.structureService.structures,
-	]).pipe(
-		map(([updated, rows, structures]) =>
-			structures.filter((s) => rows.map((r) => r.id).includes(s.id))
-		)
-	);
 	@Input() hasFilter: boolean = false;
 	truncatedSections: string[] = [];
 	editableStructureHeaders: (keyof structure)[] = [
@@ -433,66 +422,14 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 		this.textExpanded = !this.textExpanded;
 	}
 
-	private _moveView = combineLatest([
-		this.route.fragment,
-		this._expandedElementData,
-		this.structureService.expandedRowsDecreasing,
-		this._loadingService.isLoading,
-	]).pipe(
-		skipUntil(
-			this._loadingService.isLoading.pipe(
-				filter((load) => load === 'true'),
-				take(1)
-			)
-		),
-		switchMap(([fragment, rows, decreasing, loading]) =>
-			iif(
-				() =>
-					decreasing === false &&
-					fragment !== null &&
-					fragment !== undefined &&
-					fragment.includes('a') &&
-					rows !== undefined &&
-					rows.length > 0 &&
-					rows[rows.length - 1] !== undefined &&
-					(rows[rows.length - 1].elements?.length || 0) > 0 &&
-					(rows[rows.length - 1].elements
-						?.map((element) => element.id)
-						.some((id) => id === fragment.split('a')[1]) ||
-						false) &&
-					loading === 'false',
-				of(fragment).pipe(
-					distinctUntilChanged(),
-					map((f) => document.querySelector('#' + f)),
-					filter(
-						(query) => query !== null && query !== undefined
-					) as OperatorFunction<Element | null, Element>,
-					map((query) =>
-						query.scrollIntoView({ behavior: 'smooth' })
-					),
-					delay(1000),
-					map((final) => this.router.navigate([]))
-				),
-				of(null)
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
 	constructor(
 		public dialog: MatDialog,
 		private route: ActivatedRoute,
-		private _loadingService: HttpLoadingService,
-		private router: Router,
 		@Inject(STRUCTURE_SERVICE_TOKEN)
 		private structureService: CurrentStructureService,
 		private layoutNotifier: LayoutNotifierService,
-		private headerService: HeaderService,
-		private _ui: UiService
+		private headerService: HeaderService
 	) {}
-
-	ngOnInit(): void {
-		this._moveView.subscribe();
-	}
 
 	ngOnDestroy(): void {
 		this.structureService.filter = '';
@@ -500,6 +437,10 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 
 	valueTracker(index: any, item: any) {
 		return index;
+	}
+
+	structureTracker(index: number, item: structure | structureWithChanges) {
+		return item.id !== '-1' ? item.id : index.toString();
 	}
 	openAddElementDialog(structure: structure | structureWithChanges) {
 		const dialogData = new DefaultAddElementDialog(
@@ -522,60 +463,15 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 						value.element.id !== undefined &&
 						value.element.id !== '-1' &&
 						value.element.id.length > 0,
-					this.structureService
-						.relateElement(
-							structure.id,
-							value.element.id !== undefined
-								? value.element.id
-								: '-1'
-						)
-						.pipe(
-							switchMap((transaction) =>
-								combineLatest([
-									this._ui.isLoading,
-									of(transaction),
-								]).pipe(
-									filter(
-										([loading, transaction]) =>
-											loading !== 'false'
-									),
-									take(1),
-									map(([loading, transaction]) => {
-										this.router.navigate([], {
-											fragment: 'a' + value.element.id,
-										});
-									})
-								)
-							)
-						),
-					this.structureService
-						.createNewElement(
-							value.element,
-							structure.id,
-							value.type.id as string
-						)
-						.pipe(
-							switchMap((transaction) =>
-								combineLatest([
-									this._ui.isLoading,
-									of(transaction),
-								]).pipe(
-									filter(
-										([loading, transaction]) =>
-											loading !== 'false'
-									),
-									take(1),
-									map(([loading, transaction]) => {
-										this.router.navigate([], {
-											fragment:
-												'a' +
-												(transaction.results.ids[0] ||
-													''),
-										});
-									})
-								)
-							)
-						)
+					this.structureService.relateElement(
+						structure.id,
+						value.element.id !== undefined ? value.element.id : '-1'
+					),
+					this.structureService.createNewElement(
+						value.element,
+						structure.id,
+						value.type.id as string
+					)
 				)
 			),
 			take(1)
@@ -741,6 +637,32 @@ export class StructureTableComponent implements OnInit, OnDestroy {
 							value.structure,
 							afterStructure
 						)
+					)
+				)
+			)
+			.subscribe();
+	}
+
+	copyStructure(
+		structure: structure | structureWithChanges,
+		afterStructure?: string
+	) {
+		this.dialog
+			.open(AddStructureDialogComponent, {
+				data: {
+					id: this.structureService.subMessageId,
+					name: this.breadCrumb,
+					structure: structuredClone(structure),
+				},
+			})
+			.afterClosed()
+			.pipe(
+				take(1),
+				filter((val) => val !== undefined),
+				switchMap((result) =>
+					this.structureService.copyStructure(
+						result.structure,
+						afterStructure
 					)
 				)
 			)

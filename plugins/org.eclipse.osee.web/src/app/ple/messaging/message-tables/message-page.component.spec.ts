@@ -18,6 +18,7 @@ import { MessagePageComponent } from './message-page.component';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
 import type { message } from '@osee/messaging/shared/types';
 import { MockMessageTableComponent } from '@osee/messaging/message-tables/testing';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
 
 describe('MessageInterfaceComponent', () => {
 	let component: MessagePageComponent;
@@ -66,6 +67,7 @@ describe('MessageInterfaceComponent', () => {
 					name: 'Node2',
 				},
 			],
+			applicability: applicabilitySentinel,
 		},
 	];
 

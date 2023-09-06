@@ -22,6 +22,7 @@ import {
 	EventEmitter,
 	Inject,
 	SimpleChanges,
+	ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -69,6 +70,7 @@ import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 	templateUrl: './edit-element-field.component.html',
 	styles: [':host{display: block;width: 100%;}'],
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		MatFormFieldModule,
 		FormsModule,

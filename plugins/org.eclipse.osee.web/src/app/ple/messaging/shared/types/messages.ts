@@ -36,7 +36,7 @@ export interface message {
 	interfaceMessageRptCmdWord: string;
 	interfaceMessageRunBeforeProc: boolean;
 	interfaceMessageVer: string;
-	applicability?: applic;
+	applicability: applic;
 	publisherNodes: Array<ConnectionNode>;
 	subscriberNodes: Array<ConnectionNode>;
 }

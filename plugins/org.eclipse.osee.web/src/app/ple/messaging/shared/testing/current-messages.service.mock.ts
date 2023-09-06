@@ -175,7 +175,6 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
 			description: 'description',
 		} as message,
 	]),
-	expandedRowsDecreasing: new BehaviorSubject<boolean>(false),
 	currentPage: new BehaviorSubject(0),
 	currentPageSize: new BehaviorSubject(10),
 	clearRows() {},

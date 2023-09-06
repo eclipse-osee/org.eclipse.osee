@@ -76,17 +76,22 @@ describe('EditStructureFieldComponent', () => {
 		uiService = TestBed.inject(StructuresUiService);
 		fixture = TestBed.createComponent(EditStructureFieldComponent);
 		component = fixture.componentInstance;
+		//@todo luciano: backport gamma id changes to these components to make them more reactive
+	});
+
+	it('should create', () => {
 		component.header = 'interfaceStructureCategory';
 		component.value = 'blah';
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
-	});
-
-	it('should create', () => {
 		expect(component).toBeTruthy();
 	});
 
 	it('should update value', async () => {
+		component.header = 'interfaceStructureCategory';
+		component.value = 'blah';
+		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
 		uiService.BranchIdString = '8';
 		uiService.messageIdString = '10';
 		uiService.subMessageIdString = '20';
@@ -110,6 +115,7 @@ describe('EditStructureFieldComponent', () => {
 		component.header = 'description';
 		component.value = 'asdf';
 		fixture.detectChanges();
+		loader = TestbedHarnessEnvironment.loader(fixture);
 		component.focusChanged(null);
 		let spy = spyOn(component, 'updateStructure').and.callThrough();
 		let input = await loader.getHarness(MatInputHarness);

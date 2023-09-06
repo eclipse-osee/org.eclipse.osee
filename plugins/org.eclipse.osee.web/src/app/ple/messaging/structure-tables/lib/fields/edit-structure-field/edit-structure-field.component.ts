@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, Input } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	Inject,
+	Input,
+} from '@angular/core';
 import { combineLatest, iif, of, Subject } from 'rxjs';
 import {
 	debounceTime,
@@ -44,6 +49,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 	templateUrl: './edit-structure-field.component.html',
 	styles: [':host{ display: block; width: 100%;}'],
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		MatFormFieldModule,
 		FormsModule,
@@ -63,7 +69,7 @@ export class EditStructureFieldComponent<
 	T extends Pick<structure, keyof structure> = any,
 > {
 	@Input() structureId!: string;
-	@Input() header: R = {} as R;
+	@Input() header!: R;
 	@Input() value: T = {} as T;
 	private _value: Subject<T> = new Subject();
 	private _immediateValue: Subject<T> = new Subject();
