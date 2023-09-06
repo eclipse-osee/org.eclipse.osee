@@ -90,7 +90,7 @@ public class ArtifactReadableSerializer extends StdScalarSerializer<@NonNull Art
          List<?> values = artifactReadable.getAttributeValues(type);
          for (Object value : values) {
             jgen.writeStartObject();
-            jgen.writeStringField(type.getName(), value.toString());
+            jgen.writeStringField(type.getName(), value == null ? "" : value.toString());
             jgen.writeEndObject();
          }
       }
