@@ -56,5 +56,12 @@ module.exports = function (config) {
 		},
 		singleRun: false,
 		restartOnFileChange: true,
+		browsers: ['ChromeHeadlessNoSandbox'],
+		customLaunchers: {
+			ChromeHeadlessNoSandbox: {
+				base: 'ChromeHeadless',
+				flags: ['--no-sandbox'],
+			},
+		},
 	});
 };

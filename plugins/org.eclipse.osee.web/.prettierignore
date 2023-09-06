@@ -6,3 +6,5 @@ node_modules
 dist
 src/sass-utils/mdc-migration/_form-field.sass
 *.md
+pnpm-lock.yaml
+.pnpm-store
