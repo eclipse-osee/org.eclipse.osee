@@ -113,7 +113,7 @@ export class ElementService {
 	}
 
 	createStructureRelation(
-		structureId: string,
+		structureId?: string,
 		elementId?: string,
 		afterArtifact?: string
 	) {

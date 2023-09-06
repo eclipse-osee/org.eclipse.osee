@@ -90,6 +90,9 @@ describe('UsermenuComponent', () => {
 			'open'
 		).and.returnValue(dialogRefSpy);
 		let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
+		await fixture.whenStable();
+		fixture.detectChanges();
+		await fixture.whenStable();
 		await (
 			await loader.getHarness(
 				MatMenuItemHarness.with({ text: new RegExp('Settings') })

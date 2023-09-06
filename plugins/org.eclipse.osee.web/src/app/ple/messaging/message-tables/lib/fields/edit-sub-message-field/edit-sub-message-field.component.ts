@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	Input,
+	OnInit,
+} from '@angular/core';
 import { combineLatest, iif, of, Subject } from 'rxjs';
 import {
 	debounceTime,
@@ -42,6 +47,7 @@ import { applic } from '@osee/shared/types/applicability';
 	selector: 'osee-messaging-edit-sub-message-field',
 	templateUrl: './edit-sub-message-field.component.html',
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		NgIf,
 		NgFor,

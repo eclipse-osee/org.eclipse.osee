@@ -22,7 +22,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-message-table-titles-to-string.pipe';
 
 import { MessageTableComponent } from './message-table.component';
 import { of } from 'rxjs';
@@ -139,7 +138,6 @@ describe('MessageTableComponent', () => {
 					AddMessageDialogComponent,
 					MockEditMessageFieldComponent,
 					MockEditMessageNodesFieldComponent,
-					ConvertMessageTableTitlesToStringPipe,
 					MessageTableComponent,
 					MockSubMessageTableComponent,
 					MockAddMessageDialogComponent,

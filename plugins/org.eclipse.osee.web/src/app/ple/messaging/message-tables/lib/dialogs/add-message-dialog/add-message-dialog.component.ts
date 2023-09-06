@@ -78,4 +78,9 @@ export class AddMessageDialogComponent {
 	onNoClick() {
 		this.dialogRef.close();
 	}
+	compareIds(o1: { id: string }, o2: { id: string }[]) {
+		return (
+			o1 !== null && o2 !== null && o2.map((v) => v.id).includes(o1.id)
+		);
+	}
 }

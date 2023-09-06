@@ -182,6 +182,15 @@ export class MessagesService {
 		return of(relation);
 	}
 
+	createSubMessageRelation(subMessageId?: string, afterArtifact?: string) {
+		let relation: relation = {
+			typeName: 'Interface Message SubMessage Content',
+			sideB: subMessageId,
+			afterArtifact: afterArtifact || 'end',
+		};
+		return of(relation);
+	}
+
 	changeMessage(branchId: string, message: Partial<message>) {
 		return of(
 			this.builder.modifyArtifact(
@@ -207,7 +216,7 @@ export class MessagesService {
 				relations,
 				transaction,
 				branchId,
-				'Create Message',
+				`Creating message ${message.name}`,
 				key
 			)
 		);

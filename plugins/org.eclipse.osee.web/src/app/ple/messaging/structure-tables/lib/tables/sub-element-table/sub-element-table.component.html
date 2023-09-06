@@ -17,6 +17,7 @@
 	cdkDropList
 	[cdkDropListDisabled]="!editMode"
 	(cdkDropListDropped)="handleDragDrop($event)"
+	[trackBy]="elementTracker"
 	class="mat-elevation-z8 tw-w-full tw-max-w-max"
 	data-cy="sub-element-table">
 	<ng-container

@@ -20,7 +20,7 @@ import {
 	SharedStructureUIService,
 } from '@osee/messaging/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap } from 'rxjs/operators';
 import { CurrentBranchInfoService } from '@osee/shared/services';
 
 @Component({
@@ -41,6 +41,7 @@ export class MimHeaderComponent {
 		this._routeService.submessageToStructureBreadCrumbs,
 		this._routeService.singleStructureId,
 	]).pipe(
+		debounceTime(0),
 		switchMap(
 			([
 				type,

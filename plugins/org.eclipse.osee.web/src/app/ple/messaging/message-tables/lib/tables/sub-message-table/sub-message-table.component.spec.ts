@@ -26,8 +26,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { ConvertMessageTableTitlesToStringPipe } from '../../pipes/convert-message-table-titles-to-string.pipe';
-import { ConvertSubMessageTitlesToStringPipe } from '../../pipes/convert-sub-message-titles-to-string.pipe';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
 
 import { SubMessageTableComponent } from './sub-message-table.component';
@@ -40,6 +38,7 @@ import {
 	subMessagesMock,
 } from '@osee/messaging/shared/testing';
 import { MockSingleDiffComponent } from '@osee/shared/testing';
+import { applicabilitySentinel } from '@osee/shared/types/applicability';
 
 describe('SubMessageTableComponent', () => {
 	let component: SubMessageTableComponent;
@@ -84,8 +83,6 @@ describe('SubMessageTableComponent', () => {
 				HighlightFilteredTextDirective,
 				AddSubMessageDialogComponent,
 				MockEditMessageFieldComponent,
-				ConvertMessageTableTitlesToStringPipe,
-				ConvertSubMessageTitlesToStringPipe,
 				SubMessageTableComponent,
 			],
 			providers: [
@@ -132,6 +129,7 @@ describe('SubMessageTableComponent', () => {
 					name: 'Node2',
 				},
 			],
+			applicability: applicabilitySentinel,
 		};
 		component.dataSource = new MatTableDataSource();
 		component.data = expectedData;

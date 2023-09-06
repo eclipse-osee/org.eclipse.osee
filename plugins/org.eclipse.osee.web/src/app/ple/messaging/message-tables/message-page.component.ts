@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	OnDestroy,
+	OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageTableComponent } from '@osee/messaging/message-tables';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
@@ -23,6 +28,7 @@ import { combineLatest, iif, of } from 'rxjs';
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [MessageTableComponent],
 })
 export class MessagePageComponent implements OnInit, OnDestroy {

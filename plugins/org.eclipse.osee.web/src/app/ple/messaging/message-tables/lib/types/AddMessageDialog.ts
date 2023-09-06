@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { ConnectionNode } from '@osee/messaging/shared/types';
+import type { ConnectionNode, subMessage } from '@osee/messaging/shared/types';
 import { applic } from '@osee/shared/types/applicability';
 
 export interface AddMessageDialog {
@@ -25,4 +25,5 @@ export interface AddMessageDialog {
 	applicability: applic;
 	publisherNodes: ConnectionNode[];
 	subscriberNodes: ConnectionNode[];
+	subMessages: subMessage[];
 }

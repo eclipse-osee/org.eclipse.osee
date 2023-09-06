@@ -17,16 +17,14 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { AfterViewChecked, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
-	delay,
-	distinctUntilChanged,
 	filter,
 	first,
 	map,
@@ -38,7 +36,6 @@ import {
 	switchMap,
 	take,
 	takeUntil,
-	tap,
 } from 'rxjs/operators';
 import { difference } from '@osee/shared/types/change-report';
 
@@ -73,7 +70,6 @@ import type {
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { HttpLoadingService } from '@osee/shared/services/network';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	MessagingControlsComponent,
@@ -84,6 +80,7 @@ import {
 	selector: 'osee-messaging-message-table',
 	templateUrl: './message-table.component.html',
 	styles: [],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	animations: [
 		trigger('detailExpand', [
 			state('collapsed', style({ maxHeight: '0vh' })),
@@ -136,7 +133,7 @@ import {
 		MessagingControlsComponent,
 	],
 })
-export class MessageTableComponent implements AfterViewChecked {
+export class MessageTableComponent {
 	messageData = this.messageService.messages.pipe(
 		switchMap((data) =>
 			of(new MatTableDataSource<message | messageWithChanges>(data))
@@ -146,15 +143,6 @@ export class MessageTableComponent implements AfterViewChecked {
 	headers = this.headerService.AllMessageHeaders;
 	nonEditableHeaders: (keyof message)[] = [];
 	expandedElement = this.messageService.expandedRows;
-	private _expandedElementData = combineLatest([
-		this.messageService.messages,
-		this.messageService.expandedRows,
-	]).pipe(
-		map(([messages, rows]) =>
-			messages.filter((m) => rows.map((r) => r.id).includes(m.id))
-		),
-		takeUntil(this.messageService.done)
-	);
 	filter: string = '';
 	searchTerms: string = '';
 	preferences = this.messageService.preferences.pipe(
@@ -178,45 +166,6 @@ export class MessageTableComponent implements AfterViewChecked {
 		switchMap((val) => iif(() => val, of('true'), of('false')))
 	);
 	_connectionsRoute = this.messageService.connectionsRoute;
-	private _moveView = combineLatest([
-		this.route.fragment,
-		this._expandedElementData,
-		this.messageService.expandedRowsDecreasing,
-		this._loadingService.isLoading,
-	]).pipe(
-		switchMap(([fragment, rows, decreasing, loading]) =>
-			iif(
-				() =>
-					decreasing === false &&
-					fragment !== null &&
-					fragment !== undefined &&
-					fragment.includes('a') &&
-					rows !== undefined &&
-					rows.length > 0 &&
-					rows[rows.length - 1] !== undefined &&
-					rows[rows.length - 1].subMessages.length > 0 &&
-					(rows[rows.length - 1].subMessages
-						.map((submsg) => submsg.id)
-						.some((id) => id === fragment.split('a')[1]) ||
-						false) &&
-					loading === 'false',
-				of(fragment).pipe(
-					distinctUntilChanged(),
-					map((f) => document.querySelector('#' + f)),
-					filter(
-						(query) => query !== null && query !== undefined
-					) as OperatorFunction<Element | null, Element>,
-					map((query) =>
-						query.scrollIntoView({ behavior: 'smooth' })
-					),
-					delay(1000),
-					map((final) => this.router.navigate([]))
-				),
-				of(null)
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
 	messages = this.messageService.messages;
 	messagesCount = this.messageService.messagesCount;
 	currentPage = this.messageService.currentPage;
@@ -245,14 +194,8 @@ export class MessageTableComponent implements AfterViewChecked {
 	constructor(
 		private messageService: CurrentMessagesService,
 		public dialog: MatDialog,
-		private headerService: HeaderService,
-		private route: ActivatedRoute,
-		private router: Router,
-		private _loadingService: HttpLoadingService
+		private headerService: HeaderService
 	) {}
-	ngAfterViewChecked() {
-		this._moveView.subscribe();
-	}
 	rowIsExpanded(value: string) {
 		return this.messageService.expandedRows.pipe(
 			map((rows) => rows.map((s) => s.id).includes(value))
@@ -279,8 +222,12 @@ export class MessageTableComponent implements AfterViewChecked {
 		this.messageService.filter = filterValue.trim().toLowerCase();
 		this.filter = filterValue.trim().toLowerCase();
 	}
-	valueTracker(index: any, item: any) {
+	valueTracker(index: any, item: keyof message) {
 		return index;
+	}
+
+	messageTracker(index: any, item: message | messageWithChanges) {
+		return item.id;
 	}
 
 	openNewMessageDialog() {
@@ -308,6 +255,7 @@ export class MessageTableComponent implements AfterViewChecked {
 					name: '',
 				},
 			],
+			subMessages: [],
 		};
 		const dialogRef = this.dialog.open(AddMessageDialogComponent, {
 			data: dialogData,
@@ -317,12 +265,57 @@ export class MessageTableComponent implements AfterViewChecked {
 			.pipe(
 				first(),
 				filter((val) => val !== undefined),
-				switchMap(({ publisherNodes, subscriberNodes, ...val }) =>
-					this.messageService.createMessage(
+				switchMap(
+					({
 						publisherNodes,
 						subscriberNodes,
-						val
-					)
+						subMessages,
+						...val
+					}) =>
+						this.messageService.createMessage(
+							publisherNodes,
+							subscriberNodes,
+							val
+						)
+				)
+			)
+			.subscribe();
+	}
+	copyMessageDialog(message: message) {
+		let dialogData: Partial<AddMessageDialog> = {
+			name: message.name,
+			description: message.description,
+			interfaceMessageNumber: message.interfaceMessageNumber,
+			interfaceMessagePeriodicity: message.interfaceMessagePeriodicity,
+			interfaceMessageRate: message.interfaceMessageRate,
+			interfaceMessageType: message.interfaceMessageType,
+			applicability: message.applicability,
+			interfaceMessageWriteAccess: message.interfaceMessageWriteAccess,
+			publisherNodes: message.publisherNodes,
+			subscriberNodes: message.subscriberNodes,
+			subMessages: message.subMessages,
+		};
+		const dialogRef = this.dialog.open(AddMessageDialogComponent, {
+			data: dialogData,
+		});
+		dialogRef
+			.afterClosed()
+			.pipe(
+				first(),
+				filter((val) => val !== undefined),
+				switchMap(
+					({
+						publisherNodes,
+						subscriberNodes,
+						subMessages,
+						...val
+					}) =>
+						this.messageService.createMessage(
+							publisherNodes,
+							subscriberNodes,
+							val,
+							subMessages
+						)
 				)
 			)
 			.subscribe();

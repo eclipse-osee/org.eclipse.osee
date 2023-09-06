@@ -16,7 +16,8 @@
 	class="new-submessage-stepper">
 	<mat-step
 		label="Select Sub Message options"
-		#step1>
+		#step1
+		[editable]="_firstStepFilled | async">
 		<div class="tw-flex tw-items-center tw-justify-between">
 			<button
 				mat-raised-button
@@ -109,28 +110,31 @@
 				[required]="true">
 			</osee-applicability-selector>
 		</div>
-		<button
-			mat-raised-button
-			matStepperPrevious>
-			Back
-		</button>
-		<button
-			mat-raised-button
-			color="primary"
-			*ngIf="
-				data.subMessage.name.length > 0 &&
-				data.subMessage.interfaceSubMessageNumber !== undefined &&
-				data.subMessage.interfaceSubMessageNumber !== ''
-			"
-			matStepperNext
-			data-cy="stepper-next">
-			Next
-		</button>
+		<mat-dialog-actions align="end">
+			<button
+				mat-raised-button
+				matStepperPrevious
+				*ngIf="_firstStepFilled | async">
+				Back
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				*ngIf="
+					data.subMessage.name.length > 0 &&
+					data.subMessage.interfaceSubMessageNumber !== undefined &&
+					data.subMessage.interfaceSubMessageNumber !== ''
+				"
+				matStepperNext
+				data-cy="stepper-next">
+				Next
+			</button>
+		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
 		label="Review"
 		#step3>
-		<div style="display: flex; flex-direction: column">
+		<div class="tw-flex tw-flex-col tw-text-foreground-text">
 			A sub message will be related to:
 			<mat-label>{{ data.name }}</mat-label> with the following
 			properties:

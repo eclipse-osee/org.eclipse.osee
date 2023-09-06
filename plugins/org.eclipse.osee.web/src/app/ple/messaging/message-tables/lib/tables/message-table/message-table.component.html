@@ -55,6 +55,7 @@
 		mat-table
 		[dataSource]="(messageData | async) || []"
 		multiTemplateDataRows
+		[trackBy]="messageTracker"
 		class="mat-elevation-z8 tw-w-full">
 		<ng-container
 			[matColumnDef]="header"
@@ -353,6 +354,12 @@
 			</button>
 		</ng-container>
 		<ng-container *ngIf="(inEditMode | async) === true && !message.deleted">
+			<button
+				mat-menu-item
+				(click)="copyMessageDialog(message)"
+				data-cy="message-copy-btn">
+				<mat-icon color="success"> add </mat-icon>Copy message
+			</button>
 			<button
 				mat-menu-item
 				(click)="removeMessage(message)"

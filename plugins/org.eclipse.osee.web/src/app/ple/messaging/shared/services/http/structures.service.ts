@@ -189,8 +189,15 @@ export class StructuresService {
 		);
 	}
 
+	/**
+	 *
+	 * @param subMessageId undefined is only allowed when creating a new submessage
+	 * @param structureId
+	 * @param afterArtifact
+	 * @returns
+	 */
 	createSubMessageRelation(
-		subMessageId: string,
+		subMessageId?: string,
 		structureId?: string,
 		afterArtifact?: string
 	) {

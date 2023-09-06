@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	ChangeDetectionStrategy,
 	Component,
 	Inject,
 	Input,
@@ -42,7 +43,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import type { structure, element } from '@osee/messaging/shared/types';
+import type {
+	structure,
+	element,
+	elementWithChanges,
+} from '@osee/messaging/shared/types';
 import {
 	CurrentStructureService,
 	HeaderService,
@@ -63,6 +68,7 @@ import { MatButtonModule } from '@angular/material/button';
 	styles: [
 		':host {display: block;width: 100%;max-width: 100vw;overflow-x: auto;max-height: 10%;}',
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: true,
 	imports: [
 		NgFor,
@@ -243,6 +249,9 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		return this.headerService.getHeaderByName(value, 'element');
 	}
 
+	elementTracker(index: number, item: element | elementWithChanges) {
+		return item.id !== '-1' ? item.id : index.toString();
+	}
 	viewDiff(value: difference, header: string) {
 		this.structureService.sideNav = {
 			opened: true,

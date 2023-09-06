@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import {
 	MatDialogModule,
 	MatDialogRef,
@@ -31,9 +31,19 @@ import {
 	MatOptionLoadingComponent,
 	ApplicabilitySelectorComponent,
 } from '@osee/shared/components';
-import { BehaviorSubject, debounceTime, map, switchMap } from 'rxjs';
+import {
+	BehaviorSubject,
+	Subject,
+	debounceTime,
+	delay,
+	distinct,
+	map,
+	switchMap,
+	tap,
+} from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-add-sub-message-dialog',
@@ -58,11 +68,35 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 	],
 })
 export class AddSubMessageDialogComponent {
+	@ViewChild(MatStepper) set _internalStepper(stepper: MatStepper) {
+		this.__internalStepper.next(stepper);
+	}
+	__internalStepper = new Subject<MatStepper>();
+
+	_firstStepFilled = new BehaviorSubject<boolean>(true);
+	private _moveToNextStep = this.__internalStepper.pipe(
+		debounceTime(1),
+		delay(1),
+		distinct(),
+		tap((stepper) => {
+			if (
+				stepper &&
+				this.data.subMessage.id !== undefined &&
+				this.data.subMessage.id !== '-1'
+			) {
+				stepper.next();
+				this._firstStepFilled.next(false);
+			}
+		}),
+		takeUntilDestroyed()
+	);
 	constructor(
 		public dialogRef: MatDialogRef<AddSubMessageDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: AddSubMessageDialog,
 		private messageService: CurrentMessagesService
-	) {}
+	) {
+		this._moveToNextStep.subscribe();
+	}
 
 	selectedSubmessage: subMessage | undefined;
 	submessageSearch = new BehaviorSubject<string>('');

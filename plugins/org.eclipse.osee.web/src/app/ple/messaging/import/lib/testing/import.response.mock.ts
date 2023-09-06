@@ -74,6 +74,7 @@ export const importSummaryMock: ImportSummary = {
 			interfaceMessagePeriodicity: 'Aperiodic',
 			interfaceMessageRate: '20',
 			interfaceMessageWriteAccess: true,
+			applicability: applicabilitySentinel,
 		},
 	],
 	subMessages: [

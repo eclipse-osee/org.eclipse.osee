@@ -146,7 +146,7 @@ export class SubMessagesService {
 				undefined,
 				transaction,
 				branchId,
-				'Relating SubMessage'
+				`Relating SubMessage ${relation.sideB} to ${relation.sideA}`
 			)
 		);
 	}
@@ -160,7 +160,7 @@ export class SubMessagesService {
 				undefined,
 				undefined,
 				branchId,
-				'Relating SubMessage'
+				`Unrelating submessage ${relation.sideB} from ${relation.sideA}`
 			)
 		);
 	}
@@ -178,7 +178,7 @@ export class SubMessagesService {
 				relations,
 				transaction,
 				branchId,
-				'Create SubMessage',
+				`Creating submessage ${submessage.name}`,
 				key
 			)
 		);
@@ -189,7 +189,7 @@ export class SubMessagesService {
 				submessageId,
 				undefined,
 				branchId,
-				'Deleting Submessage'
+				`Deleting Submessage ${submessageId}`
 			)
 		);
 	}
