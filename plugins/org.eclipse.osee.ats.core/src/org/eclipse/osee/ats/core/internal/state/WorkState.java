@@ -141,10 +141,10 @@ class WorkState extends NamedBase {
             if (m.find()) {
                setName(m.group(1));
                if (!m.group(3).equals("")) {
-                  setHoursSpent(Float.valueOf(m.group(3)).doubleValue());
+                  this.hoursSpent = Float.valueOf(m.group(3)).doubleValue();
                }
                if (!m.group(4).equals("")) {
-                  setPercentComplete(Integer.valueOf(m.group(4)).intValue());
+                  this.percentComplete = Integer.valueOf(m.group(4)).intValue();
                }
                String userStr = m.group(2);
                List<AtsUser> users = getUsers(userStr);
