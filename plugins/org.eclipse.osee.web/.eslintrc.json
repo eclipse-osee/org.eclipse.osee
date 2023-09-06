@@ -1,6 +1,6 @@
 {
 	"root": true,
-	"ignorePatterns": ["projects/**/*", "tailwind.config.js"],
+	"ignorePatterns": ["projects/**/*", "tailwind.config.js", "pnpm-lock.yaml"],
 	"overrides": [
 		{
 			"files": ["*.ts"],

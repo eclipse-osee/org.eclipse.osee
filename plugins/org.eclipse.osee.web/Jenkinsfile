@@ -24,6 +24,8 @@ spec:
       value: "/home/jenkins"
     - name: "CHROME_BIN"
       value: "/usr/bin/chromium-browser"
+    - name: "PNPM_HOME"
+      value: "/usr/local/bin/pnpm"
     volumeMounts:
     - mountPath: "/home/jenkins"
       name: "jenkins-home"
@@ -44,9 +46,15 @@ spec:
         container('node') {
           sh 'node -v'
           sh 'npm -v'
+          sh 'mkdir ~/bin'
+          sh 'mkdir ~/.pnpm-store'
+          sh 'corepack enable --install-directory ~/bin'
+          sh 'corepack prepare pnpm@latest-8 --activate'
+          sh 'corepack pnpm -v'
+          sh 'corepack pnpm config set store-dir ~/.pnpm-store'
           dir('plugins/org.eclipse.osee.web') {
             sh 'npm config set fetch-timeout=100000'
-            sh 'npm ci --force'
+            sh 'corepack pnpm install'
           }
         }
       }
@@ -57,8 +65,8 @@ spec:
         container('node') {
           dir('plugins/org.eclipse.osee.web') {
             sh 'npx -p @angular/cli ng lint'
-            sh 'npx stylelint "**/*.scss"'
-            sh 'npx prettier --check .'
+            sh 'corepack pnpm dlx stylelint "**/*.scss"'
+            sh 'corepack pnpm dlx prettier --check .'
           }
         }
       }
@@ -68,7 +76,7 @@ spec:
       steps {
         container('node') {
           dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng test --browsers=ChromeHeadless --watch=false'
+            sh 'npx -p @angular/cli ng test --browsers=ChromeHeadlessNoSandbox --watch=false'
           }
         }
       }
@@ -78,7 +86,7 @@ spec:
       steps{
         container('node'){
           dir('plugins/org.eclipse.osee.web'){
-            sh 'npm run prebuild'
+            sh 'corepack pnpm run prebuild'
           }
         }
       }

@@ -237,6 +237,7 @@
 		}
 	},
 	"cli": {
+		"packageManager": "pnpm",
 		"schematicCollections": ["@angular-eslint/schematics"]
 	},
 	"schematics": {
