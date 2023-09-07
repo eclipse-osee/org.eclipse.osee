@@ -105,7 +105,8 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       try {
          if (AtsApiService.get().getVersionService().isTeamUsesVersions(getTeamDefinition())) {
             IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(this);
-            return String.format("%s: [%s] - %s", getTeamName(), version != null ? version : "Un-Targeted", getName());
+            return String.format("%s - %s: [%s] - %s", getAtsId(), getTeamName(),
+               version != null ? version : "Un-Targeted", getName());
 
          }
       } catch (OseeCoreException ex) {

@@ -99,7 +99,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public String getEditorTitle() {
-      return getArtifactType() + ": " + getName();
+      return getAtsId() + " - " + getArtifactType() + ": " + getName();
    }
 
    @Override
