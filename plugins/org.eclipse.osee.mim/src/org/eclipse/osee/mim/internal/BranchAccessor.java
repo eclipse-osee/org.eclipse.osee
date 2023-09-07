@@ -138,8 +138,7 @@ public class BranchAccessor {
    @Path("{branch}/nodes")
    @Produces(MediaType.APPLICATION_JSON)
    public InterfaceNodeEndpoint getNodeEndpoint(@PathParam("branch") BranchId branch) {
-      return new InterfaceNodeEndpointImpl(branch, mimApi.getInterfaceNodeViewApi(),
-         mimApi.getInterfaceConnectionViewApi());
+      return new InterfaceNodeEndpointImpl(branch, mimApi.getInterfaceNodeViewApi());
    }
 
    @Path("{branch}/connections")

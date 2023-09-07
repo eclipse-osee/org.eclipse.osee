@@ -208,6 +208,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString InterfacePlatformTypeBitsResolution = osee.createString(3899709087455064786L, "Interface Platform Type Bits Resolution", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeCompRate = osee.createString(3899709087455064787L, "Interface Platform Type Comp Rate", MediaType.TEXT_PLAIN, "");
    AttributeTypeString InterfacePlatformTypeAnalogAccuracy = osee.createString(3899709087455064788L, "Interface Platform Type Analog Accuracy", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString InterfaceUnitMeasurement = osee.createString(2478822847543373494L, "Interface Unit Measurement", MediaType.TEXT_PLAIN, "Measurement type of the unit");
    AttributeTypeString ImportTransportType = osee.createString(238254247108261698L, "Import Transport Types", MediaType.TEXT_PLAIN, "Transport Type of MIM Import");
    AttributeTypeString InterfaceTransportType = osee.createString(4522496963078776538L, "Interface Transport Type", MediaType.TEXT_PLAIN, "Transport Type of Interface Connection");
    AttributeTypeBoolean ByteAlignValidation = osee.createBoolean(1682639796635579163L, "Byte Align Validation", MediaType.TEXT_PLAIN, "Whether or not to use byte validation rules on a per-word basis.");
