@@ -395,7 +395,8 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceRate = osee.add(osee.artifactType(2434833974449324686L, "Interface Transmission Rate", false, InterfaceArtifact));
 
-   ArtifactTypeToken InterfaceUnit = osee.add(osee.artifactType(8314622128828217343L, "Interface Unit", false, InterfaceArtifact));
+   ArtifactTypeToken InterfaceUnit = osee.add(osee.artifactType(8314622128828217343L, "Interface Unit", false, InterfaceArtifact)
+      .exactlyOne(InterfaceUnitMeasurement));
 
    ArtifactTypeToken InterfaceMessageTypeEnum = osee.add(osee.artifactType(8893121862470164649L, "Interface Message Type Enum", false, InterfaceArtifact));
 

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -222,6 +223,24 @@ public class ExcelWorkbookWriter {
             case BOLD:
                font.setBold(true);
                break;
+            case BORDER_ALL:
+               style.setBorderTop(BorderStyle.THIN);
+               style.setBorderRight(BorderStyle.THIN);
+               style.setBorderBottom(BorderStyle.THIN);
+               style.setBorderLeft(BorderStyle.THIN);
+               break;
+            case BORDER_BOTTOM:
+               style.setBorderBottom(BorderStyle.THIN);
+               break;
+            case BORDER_RIGHT:
+               style.setBorderRight(BorderStyle.THIN);
+               break;
+            case BORDER_LEFT:
+               style.setBorderLeft(BorderStyle.THIN);
+               break;
+            case BORDER_TOP:
+               style.setBorderTop(BorderStyle.THIN);
+               break;
             case CENTERH:
                style.setAlignment(HorizontalAlignment.CENTER);
                break;
@@ -264,6 +283,11 @@ public class ExcelWorkbookWriter {
 
    public enum CELLSTYLE {
       BOLD,
+      BORDER_ALL,
+      BORDER_BOTTOM,
+      BORDER_LEFT,
+      BORDER_RIGHT,
+      BORDER_TOP,
       CENTERH,
       CENTERV,
       GREEN,

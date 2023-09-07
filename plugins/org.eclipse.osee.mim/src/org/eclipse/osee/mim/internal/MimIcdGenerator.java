@@ -16,11 +16,14 @@ package org.eclipse.osee.mim.internal;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,9 +34,9 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute.InterfaceStructureCategoryEnum;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter;
@@ -71,11 +74,16 @@ public class MimIcdGenerator {
    private final InterfaceStructureApi interfaceStructureApi;
    private final InterfaceDifferenceReportApi interfaceDifferenceReportApi;
 
+   private final Set<String> logicalTypes;
+   private final Set<String> units;
+   private final Set<String> txRates;
+   private final Set<String> categories;
    private final Map<ArtifactId, StructureInfo> structuresList;
    private final Map<String, StructureInfo> headersList;
    private final Map<ArtifactId, InterfaceSubMessageToken> messageHeaders;
    private final Map<String, InterfaceStructureToken> messageHeaderStructures;
    private Map<ArtifactId, MimDifferenceItem> diffs;
+   private final Map<String, String> logicalTypeMaxRange;
 
    public MimIcdGenerator(MimApi mimApi) {
       this.mimApi = mimApi;
@@ -87,9 +95,25 @@ public class MimIcdGenerator {
       this.messageHeaderStructures = new HashMap<>();
       this.diffs = new HashMap<>();
 
+      this.logicalTypes = new HashSet<>();
+      this.units = new HashSet<>();
+      this.txRates = new HashSet<>();
+      this.categories = new HashSet<>();
       this.interfaceMessageApi = mimApi.getInterfaceMessageApi();
       this.interfaceStructureApi = mimApi.getInterfaceStructureApi();
       this.interfaceDifferenceReportApi = mimApi.getInterfaceDifferenceReportApi();
+
+      this.logicalTypeMaxRange = new HashMap<>();
+      this.logicalTypeMaxRange.put("boolean", "0 to 1");
+      this.logicalTypeMaxRange.put("character", "0 to 255");
+      this.logicalTypeMaxRange.put("sShort", "-32,768 to 32,767");
+      this.logicalTypeMaxRange.put("uShort", "0 to 2^16-1");
+      this.logicalTypeMaxRange.put("enumeration", "See Enumerated Literals");
+      this.logicalTypeMaxRange.put("float", "-Inf to Inf");
+      this.logicalTypeMaxRange.put("sInteger", "-2^31 to 2^31-1");
+      this.logicalTypeMaxRange.put("uInteger", "0 to 2^32-1");
+      this.logicalTypeMaxRange.put("double", "0.0 to 604800.0");
+      this.logicalTypeMaxRange.put("uLong", "0 to 2^64-1");
    }
 
    public void runOperation(OutputStream outputStream, BranchId branch, ArtifactId view, ArtifactId connectionId,
@@ -166,7 +190,7 @@ public class MimIcdGenerator {
             String sheetName =
                structure.getNameAbbrev().isEmpty() ? structure.getName().replace("Command Taskfile", "CT").replace(
                   "Status Taskfile", "ST") : structure.getNameAbbrev();
-            if (structure.getArtifactReadable() != null) {
+            if (structure.getArtifactReadable() != null && structure.getArtifactReadable().isValid()) {
                String abbrevName = structure.getArtifactReadable().getSoleAttributeAsString(
                   CoreAttributeTypes.GeneralStringData, "null");
                if (!abbrevName.equals("null")) {
@@ -200,11 +224,13 @@ public class MimIcdGenerator {
          createChangeSummary(writer, summary);
       }
 
-      createMessageSubMessageSummary(writer, conn.getArtifactReadable(), primaryNode.getArtifactReadable(),
-         secondaryNode.getArtifactReadable(), messages, subMessages);
+      createMessageSubMessageSummary(writer, branch, view, conn.getArtifactReadable(),
+         primaryNode.getArtifactReadable(), secondaryNode.getArtifactReadable(), messages, subMessages);
+      createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
       createStructureNamesSheet(writer, structureLinks);
       createStructureSummarySheet(writer, branch, messages, structureLinks);
       createStructureSheets(writer, subMessagesWithHeaders, structureLinks);
+      writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
 
       writer.writeWorkbook();
       writer.closeWorkbook();
@@ -326,17 +352,9 @@ public class MimIcdGenerator {
                   }
                }
                String cat = struct.getInterfaceStructureCategory();
-               InterfaceStructureCategoryEnum catEnum =
-                  CoreAttributeTypes.InterfaceStructureCategory.getEnumValues().stream().filter(
-                     e -> cat.equals(e.getName())).findAny().orElse(null);
-
                String subMsgNumber = subMessage.getInterfaceSubMessageNumber();
                String taskFileType = struct.getInterfaceTaskFileType() + "";
                String desc = struct.getDescription();
-               String categoryFull = "";
-               if (catEnum != null) {
-                  categoryFull = catEnum.getId() + " " + catEnum.getName();
-               }
                boolean txRateChanged = msgDiffItem != null && msgDiffItem.getAttributeChanges().containsKey(
                   CoreAttributeTypes.InterfaceMessageRate.getId());
                boolean msgNumChanged = msgDiffItem != null && msgDiffItem.getAttributeChanges().containsKey(
@@ -345,11 +363,13 @@ public class MimIcdGenerator {
                boolean sizeInBytesChanged = numElementsChanged || structureSizeChanged;
                structureChanged = structureChanged || diffItem != null || txRateChanged || msgNumChanged;
 
-               StructureInfo structureInfo =
-                  new StructureInfo(struct.getName(), struct.getNameAbbrev(), cat, categoryFull, msgRateText, minSim,
-                     maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber,
-                     taskFileType, desc, message, subMessage.getArtifactReadable(), flatElements, structureChanged,
-                     txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex);
+               txRates.add(msgRateText);
+               categories.add(cat);
+
+               StructureInfo structureInfo = new StructureInfo(struct.getName(), struct.getNameAbbrev(), cat,
+                  msgRateText, minSim, maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(),
+                  msgNumber, subMsgNumber, taskFileType, desc, message, subMessage.getArtifactReadable(), flatElements,
+                  structureChanged, txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex);
                if (struct.getId() == 0) {
                   headersList.put(struct.getName(), structureInfo);
                } else {
@@ -633,7 +653,7 @@ public class MimIcdGenerator {
                maxAttrs = Math.max(maxAttrs, structureInfo.numAttributes);
                totalStructs++;
 
-               writer.writeCell(rowIndex, 0, structureInfo.categoryFull,
+               writer.writeCell(rowIndex, 0, structureInfo.category,
                   getCellColor(structReadable, CoreAttributeTypes.InterfaceStructureCategory.getId()));
                writer.writeCell(rowIndex, 1, struct.getName(), "'" + sheetName + "'!A1", HyperLinkType.SHEET,
                   getCellColor(structReadable, CoreAttributeTypes.Name.getId()), CELLSTYLE.HYPERLINK);
@@ -933,6 +953,9 @@ public class MimIcdGenerator {
       writer.writeCell(rowIndex.get(), 11, values[11]);
       writer.writeCell(rowIndex.get(), 12, values[12]);
 
+      this.logicalTypes.add(dataType + ";" + byteSize);
+      this.units.add(units);
+
       return createStringLengthArray(values);
    }
 
@@ -1056,6 +1079,11 @@ public class MimIcdGenerator {
          rowIndex.getAndAdd(1);
       }
 
+      if (logicalTypeMaxRange.containsKey(dataType)) { // Needed to prevent unwanted logical types making it into the table...
+         this.logicalTypes.add(dataType + ";" + byteSize);
+      }
+      this.units.add(units);
+
       return createStringLengthArray(values);
    }
 
@@ -1088,9 +1116,9 @@ public class MimIcdGenerator {
       return validRange;
    }
 
-   private void createMessageSubMessageSummary(ExcelWorkbookWriter writer, ArtifactReadable connection,
-      ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages,
-      List<ArtifactReadable> subMessages) {
+   private void createMessageSubMessageSummary(ExcelWorkbookWriter writer, BranchId branch, ArtifactId view,
+      ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode,
+      List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) {
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
          e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
             Collectors.toList());
@@ -1143,13 +1171,15 @@ public class MimIcdGenerator {
 
          if (primaryMessage.isValid()) {
             writer.writeCell(rowIndex, 0,
-               primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber),
-               getCellColor(primaryMessage, CoreAttributeTypes.InterfaceMessageNumber.getId()));
+               primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber), CELLSTYLE.CENTERH,
+               CELLSTYLE.CENTERV, getCellColor(primaryMessage, CoreAttributeTypes.InterfaceMessageNumber.getId()));
             writer.writeCell(rowIndex, 1,
                primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
+               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
                getCellColor(primaryMessage, CoreAttributeTypes.InterfaceMessageRate.getId()));
             writer.writeCell(rowIndex, 2,
-               primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageWriteAccess),
+               primaryMessage.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false) ? "W" : "R",
+               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
                getCellColor(primaryMessage, CoreAttributeTypes.InterfaceMessageWriteAccess.getId()));
             writer.writeCell(rowIndex, 3, primaryMessage.getName(),
                getCellColor(primaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
@@ -1157,13 +1187,16 @@ public class MimIcdGenerator {
          }
          if (secondaryMessage.isValid()) {
             writer.writeCell(rowIndex, 5,
-               secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber),
-               getCellColor(secondaryMessage, CoreAttributeTypes.InterfaceMessageNumber.getId()));
+               secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber), CELLSTYLE.CENTERH,
+               CELLSTYLE.CENTERV, getCellColor(secondaryMessage, CoreAttributeTypes.InterfaceMessageNumber.getId()));
             writer.writeCell(rowIndex, 6,
                secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
+               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
                getCellColor(secondaryMessage, CoreAttributeTypes.InterfaceMessageRate.getId()));
             writer.writeCell(rowIndex, 7,
-               secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageWriteAccess),
+               secondaryMessage.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess,
+                  false) ? "W" : "R",
+               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
                getCellColor(secondaryMessage, CoreAttributeTypes.InterfaceMessageWriteAccess.getId()));
             writer.writeCell(rowIndex, 8, secondaryMessage.getName(),
                getCellColor(secondaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
@@ -1225,6 +1258,139 @@ public class MimIcdGenerator {
       writer.setColumnWidth(6, 3000);
    }
 
+   private void createUnitsAndTypesSheet(ExcelWorkbookWriter writer) {
+      writer.createSheet("Units and Types");
+   }
+
+   private void writeUnitsAndTypesSheet(ExcelWorkbookWriter writer, BranchId branch, ArtifactId view,
+      InterfaceNode primaryNode, InterfaceNode secondaryNode) {
+      // Sort logical types by byte size
+      List<String> logicalTypes = new LinkedList<>(this.logicalTypes);
+      logicalTypes.sort(new Comparator<String>() {
+         @Override
+         public int compare(String o1, String o2) {
+            String[] split1 = o1.split(";");
+            String[] split2 = o2.split(";");
+            Integer byteSize1 = Integer.parseInt(split1[1]);
+            Integer byteSize2 = Integer.parseInt(split2[1]);
+            if (byteSize1.equals(byteSize2)) {
+               return split1[0].compareTo(split2[0]);
+            }
+            return byteSize1.compareTo(byteSize2);
+         }
+      });
+
+      List<String> units = new LinkedList<>(this.units);
+      units.sort(Comparator.comparing(String::toString));
+      if (units.remove("n/a")) {
+         units.add(0, "n/a");
+      }
+
+      List<ArtifactReadable> unitArts = this.orcsApi.getQueryFactory().fromBranch(branch, view).andIsOfType(
+         CoreArtifactTypes.InterfaceUnit).asArtifacts();
+      Map<String, String> unitsToMeasurementType = new HashMap<>();
+      unitArts.stream().forEach(art -> {
+         if (units.contains(art.getName())) {
+            unitsToMeasurementType.put(art.getName(),
+               art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceUnitMeasurement, ""));
+         }
+      });
+
+      // Async rates go first
+      List<String> txRates = new LinkedList<>(this.txRates);
+      txRates.sort(new Comparator<String>() {
+         @Override
+         public int compare(String o1, String o2) {
+            String[] split1 = o1.split("-");
+            String[] split2 = o2.split("-");
+            Integer rate1 = Integer.parseInt(split1[0]);
+            Integer rate2 = Integer.parseInt(split2[0]);
+            if (split1.length > 1 && split2.length == 1) {
+               return -1;
+            }
+            if (split2.length > 1 && split1.length == 1) {
+               return 1;
+            }
+            return rate1.compareTo(rate2);
+         }
+      });
+
+      List<String> categories = new LinkedList<>(this.categories);
+      categories.sort(Comparator.comparing(String::toString));
+
+      writer.setActiveSheet("Units and Types");
+
+      String[] headers = {"Sheet Type", "Full Sheet Name", "Abbrev. Sheet Name"};
+
+      writer.writeRow(0, headers, CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(1, 0, "Admin", CELLSTYLE.BORDER_ALL);
+      writer.writeCell(1, 1, "Units and Types", CELLSTYLE.BORDER_ALL);
+      writer.writeCell(1, 2, "Units and Types", CELLSTYLE.BORDER_ALL);
+
+      // Units Table
+      writer.addMergedRegion(4, 4, 0, 2);
+      writer.writeCell(4, 0, "Unit Name and Size", CELLSTYLE.BOLD, CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(4, 1, "", CELLSTYLE.BORDER_ALL);
+      writer.writeCell(4, 2, "", CELLSTYLE.BORDER_ALL);
+      writer.writeCell(5, 0, "Data Types", CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(5, 1, "Size in Bytes", CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(5, 2, "Maximum Valid Range", CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+
+      int rowIndex = 6;
+      for (String logicalType : logicalTypes) {
+         String[] typeSplit = logicalType.split(";");
+         writer.writeCell(rowIndex, 0, typeSplit[0], CELLSTYLE.BORDER_ALL, CELLSTYLE.BORDER_TOP);
+         writer.writeCell(rowIndex, 1, typeSplit[1], CELLSTYLE.BORDER_ALL);
+         writer.writeCell(rowIndex, 2, this.logicalTypeMaxRange.getOrDefault(typeSplit[0], ""), CELLSTYLE.BORDER_ALL);
+         rowIndex++;
+      }
+
+      // Measurements Table
+      writer.writeCell(4, 4, "Measurement", CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(4, 5, "Units", CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+      rowIndex = 5;
+      for (String unit : units) {
+         writer.writeCell(rowIndex, 4, unitsToMeasurementType.get(unit), CELLSTYLE.BORDER_ALL);
+         writer.writeCell(rowIndex, 5, unit, CELLSTYLE.BORDER_ALL);
+         rowIndex++;
+      }
+
+      // Category Table
+      writer.writeCell(4, 7, "Category", CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+      rowIndex = 5;
+      for (String category : categories) {
+         writer.writeCell(rowIndex, 7, category, CELLSTYLE.BORDER_ALL);
+         rowIndex++;
+      }
+
+      // Tx Rate Table
+      writer.writeCell(4, 9, "Transmission Rate (Hz)", CELLSTYLE.BOLD, CELLSTYLE.BORDER_ALL);
+      rowIndex = 5;
+      for (String rate : txRates) {
+         writer.writeCell(rowIndex, 9, rate, CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+         rowIndex++;
+      }
+
+      // Systems Table
+      writer.writeCell(4, 11, "Systems", CELLSTYLE.BOLD, CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(5, 11, primaryNode.getName(), CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(6, 11, secondaryNode.getName(), CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+
+      // Alterable After Table
+      writer.writeCell(4, 13, "Alterable After", CELLSTYLE.BOLD, CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(5, 13, "Yes", CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(6, 13, "No", CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+
+      writer.autoSizeAllColumns(16);
+      writer.setColumnWidth(0, writer.getColumnWidth(0) + 500);
+      writer.setColumnWidth(1, writer.getColumnWidth(1) + 500);
+      writer.setColumnWidth(2, writer.getColumnWidth(2) + 500);
+      writer.setColumnWidth(4, writer.getColumnWidth(4) + 500);
+      writer.setColumnWidth(5, writer.getColumnWidth(5) + 500);
+      writer.setColumnWidth(7, writer.getColumnWidth(7) + 500);
+
+   }
+
    private CELLSTYLE getCellColor(ArtifactReadable artifact, boolean changed) {
       MimDifferenceItem diffItem = artifact == null ? null : diffs.get(ArtifactId.valueOf(artifact.getId()));
       CELLSTYLE style = CELLSTYLE.NONE;
@@ -1260,7 +1426,6 @@ public class MimIcdGenerator {
       final String name;
       final String nameAbbrev;
       final String category;
-      final String categoryFull;
       final String txRate;
       final String minSim;
       final String maxSim;
@@ -1281,11 +1446,10 @@ public class MimIcdGenerator {
       final boolean numElementsChanged;
       final boolean structureSizeChanged;
       final int byteChangeIndex;
-      public StructureInfo(String name, String nameAbbrev, String cat, String catFull, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
+      public StructureInfo(String name, String nameAbbrev, String cat, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
          this.name = name;
          this.nameAbbrev = nameAbbrev;
          this.category = cat;
-         this.categoryFull = catFull;
          this.txRate = msgRateText;
          this.minSim = minSim;
          this.maxSim = maxSim;
