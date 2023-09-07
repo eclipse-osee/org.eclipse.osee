@@ -56,10 +56,15 @@ public class OpenWorkflowByIdAction extends Action {
    }
 
    @Override
+   public void run() {
+      runWithEvent(null);
+   }
+
+   @Override
    public void runWithEvent(Event event) {
       MultipleIdSearchData data = null;
       // Use clipboard value if CTRL is down on click
-      if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+      if (event != null && (event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
          Clipboard clipboard = new Clipboard(AWorkbench.getDisplay());
          String str = (String) clipboard.getContents(TextTransfer.getInstance());
          if (Strings.isValid(str)) {
