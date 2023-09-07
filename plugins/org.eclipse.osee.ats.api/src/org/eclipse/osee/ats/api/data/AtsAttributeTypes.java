@@ -159,6 +159,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString ProductLineBranchId = ats.createString(8728667450560659060L, "ats.Product Line Branch Id", MediaType.TEXT_PLAIN, "PL branch associated with ATS object.");
    AttributeTypeArtifactId ProgramId = ats.createArtifactId(1152922093377028266L, "ats.Program Id", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ProposedResolution = ats.createString(1152921504606847194L, "ats.Proposed Resolution", MediaType.TEXT_PLAIN, "Recommended resolution.", DisplayHint.MultiLine);
+   AttributeTypeDate ProposedResolutionDate = ats.createDate(5780824580881083976L, "ats.Proposed Resolution Date", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString Rationale = ats.createString(1152922093379715242L, "ats.Rationale", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
    AttributeTypeArtifactId RelatedPeerWorkflowDefinitionReference = ats.createArtifactId(6245695017677665082L, "ats.Related Peer Workflow Definition Reference", MediaType.TEXT_PLAIN, "Specific work flow definition id used by Peer To Peer Reviews for this Team");
    AttributeTypeString RelatedTaskWorkflowDefinitionOld = ats.createString(1152921504606847151L, "ats.Related Task Workflow Definition Old", MediaType.TEXT_PLAIN, "");

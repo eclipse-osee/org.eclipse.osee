@@ -262,6 +262,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ProductLineApprovedDate)
       .zeroOrOne(ProgramId)
       .zeroOrOne(ProposedResolution)
+      .zeroOrOne(ProposedResolutionDate)
       .zeroOrOne(ProblemFirstObserved)
       .zeroOrOne(Rank)
       .zeroOrOne(Rationale)
