@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.mim.types;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -55,7 +54,6 @@ public class PlatformTypeToken extends PLGenericDBObject {
 
    private Boolean InterfacePlatformType2sComplement; //required
 
-   private ArtifactReadable artifactReadable;
    private InterfaceEnumerationSet enumSet = InterfaceEnumerationSet.SENTINEL;
 
    private ApplicabilityToken applicability;
@@ -65,7 +63,7 @@ public class PlatformTypeToken extends PLGenericDBObject {
    }
 
    public PlatformTypeToken(ArtifactReadable art) {
-      this();
+      super(art);
       this.setId(art.getId());
       this.setName(art.getName());
       this.setInterfaceLogicalType(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceLogicalType, ""));
@@ -101,7 +99,6 @@ public class PlatformTypeToken extends PLGenericDBObject {
          this.setEnumSet(new InterfaceEnumerationSet(
             art.getRelated(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getExactlyOne()));
       }
-      this.artifactReadable = art;
    }
 
    public PlatformTypeToken(Long id, String name, String logicalType, String bitSize, String minVal, String maxVal, String units) {
@@ -307,11 +304,6 @@ public class PlatformTypeToken extends PLGenericDBObject {
     */
    public void setDescription(String description) {
       Description = description;
-   }
-
-   @JsonIgnore
-   public ArtifactReadable getArtifactReadable() {
-      return artifactReadable;
    }
 
    /**

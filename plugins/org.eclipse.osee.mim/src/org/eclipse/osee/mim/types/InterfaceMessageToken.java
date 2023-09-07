@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,7 +49,6 @@ public class InterfaceMessageToken extends PLGenericDBObject {
    private List<InterfaceNode> publisherNodes = new LinkedList<>();
    private List<InterfaceNode> subscriberNodes = new LinkedList<>();
    private ApplicabilityToken applicability;
-   private ArtifactReadable artifactReadable;
 
    public InterfaceMessageToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -89,7 +87,6 @@ public class InterfaceMessageToken extends PLGenericDBObject {
          a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceNode(a)).collect(Collectors.toList()));
       this.setSubscriberNodes(art.getRelated(CoreRelationTypes.InterfaceMessageSubNode_Node).getList().stream().filter(
          a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceNode(a)).collect(Collectors.toList()));
-      this.artifactReadable = art;
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
@@ -320,11 +317,6 @@ public class InterfaceMessageToken extends PLGenericDBObject {
 
    public void setInterfaceMessageVer(String interfaceMessageVer) {
       this.interfaceMessageVer = interfaceMessageVer;
-   }
-
-   @JsonIgnore
-   public ArtifactReadable getArtifactReadable() {
-      return artifactReadable;
    }
 
 }
