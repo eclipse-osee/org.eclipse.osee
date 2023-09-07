@@ -44,7 +44,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  * @author Luciano T. Vaglienti
  * @param <T> Class for storing/presenting artifact
  */
-public class ArtifactAccessorImpl<T extends PLGenericDBObject> implements ArtifactAccessor<T> {
+public abstract class ArtifactAccessorImpl<T extends PLGenericDBObject> implements ArtifactAccessor<T> {
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private final OrcsApi orcsApi;
 
