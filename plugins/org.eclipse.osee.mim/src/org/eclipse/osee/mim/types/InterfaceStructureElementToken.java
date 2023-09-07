@@ -53,7 +53,6 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
    private boolean includedInCounts = true;
    private boolean hasNegativeEndByteOffset = false;
    private PlatformTypeToken platformType = PlatformTypeToken.SENTINEL;
-   private ArtifactReadable artifactReadable;
    private boolean shouldValidate = false;
    private int validationSize = 8;
    /**
@@ -67,7 +66,7 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
     * @param art
     */
    public InterfaceStructureElementToken(ArtifactReadable art) {
-      this();
+      super(art);
       this.setId(art.getId());
       this.setName(art.getSoleAttributeValue(CoreAttributeTypes.Name));
       this.setInterfaceElementAlterable(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementAlterable, false));
@@ -131,7 +130,6 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
          art.getRelated(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceStructureElementToken(a)).collect(
                Collectors.toList()));
-      this.artifactReadable = art;
    }
 
    public InterfaceStructureElementToken(String name, String description, Double beginByte, Double beginWord, Integer size) {
@@ -549,11 +547,6 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
 
    public void setArrayElements(List<InterfaceStructureElementToken> arrayElements) {
       this.arrayElements = arrayElements;
-   }
-
-   @JsonIgnore
-   public ArtifactReadable getArtifactReadable() {
-      return this.artifactReadable;
    }
 
    /**

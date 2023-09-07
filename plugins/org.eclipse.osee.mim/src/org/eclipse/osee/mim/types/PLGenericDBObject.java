@@ -27,12 +27,15 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 public class PLGenericDBObject extends NamedIdBase {
    public static final PLGenericDBObject SENTINEL = new PLGenericDBObject();
 
+   private ArtifactReadable artifactReadable = ArtifactReadable.SENTINEL;
+
    public PLGenericDBObject(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
 
    public PLGenericDBObject(ArtifactReadable art) {
       this(art.getId(), art.getName());
+      this.artifactReadable = art;
    }
 
    public PLGenericDBObject(Long id, String name) {
@@ -44,6 +47,11 @@ public class PLGenericDBObject extends NamedIdBase {
    public PLGenericDBObject() {
       super(ArtifactId.SENTINEL.getId(), "");
       // Not doing anything
+   }
+
+   @JsonIgnore
+   public ArtifactReadable getArtifactReadable() {
+      return artifactReadable;
    }
 
    @JsonIgnore

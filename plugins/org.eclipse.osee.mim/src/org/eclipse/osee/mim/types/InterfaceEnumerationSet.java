@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -30,7 +29,6 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
    private String Description = "";
    private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
    private List<InterfaceEnumeration> enumerations = new LinkedList<InterfaceEnumeration>();
-   private ArtifactReadable artifactReadable = ArtifactReadable.SENTINEL;
 
    public InterfaceEnumerationSet(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -44,7 +42,6 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
       art.getRelated(CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList().stream().filter(
          a -> !a.getExistingAttributeTypes().isEmpty()).forEach(
             a -> getEnumerations().add(new InterfaceEnumeration(a)));
-      this.artifactReadable = art;
 
       if (!getEnumerations().isEmpty()) {
          String desc = "";
@@ -105,11 +102,6 @@ public class InterfaceEnumerationSet extends PLGenericDBObject {
     */
    public void setEnumerations(List<InterfaceEnumeration> enumerations) {
       this.enumerations = enumerations;
-   }
-
-   @JsonIgnore
-   public ArtifactReadable getArtifactReadable() {
-      return artifactReadable;
    }
 
 }

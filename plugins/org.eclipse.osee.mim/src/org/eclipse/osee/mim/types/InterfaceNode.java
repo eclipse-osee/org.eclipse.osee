@@ -39,7 +39,6 @@ public class InterfaceNode extends PLGenericDBObject {
    private boolean interfaceNodeCodeGen;
    private boolean interfaceNodeBuildCodeGen;
    private boolean interfaceNodeToolUse;
-   private ArtifactReadable artifactReadable;
 
    public InterfaceNode(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -62,7 +61,6 @@ public class InterfaceNode extends PLGenericDBObject {
       this.setInterfaceNodeCodeGen(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeCodeGen, false));
       this.setInterfaceNodeBuildCodeGen(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBuildCodeGen, false));
       this.setInterfaceNodeToolUse(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeToolUse, false));
-      this.setArtifactReadable(art);
    }
 
    public InterfaceNode(Long id, String name) {
@@ -142,15 +140,6 @@ public class InterfaceNode extends PLGenericDBObject {
 
    public void setInterfaceNodeGroupId(String interfaceNodeGroupId) {
       this.interfaceNodeGroupId = interfaceNodeGroupId;
-   }
-
-   @JsonIgnore
-   public ArtifactReadable getArtifactReadable() {
-      return artifactReadable;
-   }
-
-   private void setArtifactReadable(ArtifactReadable artifactReadable) {
-      this.artifactReadable = artifactReadable;
    }
 
    public String getNameAbbrev() {

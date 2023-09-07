@@ -27,7 +27,6 @@ public class InterfaceEnumeration extends PLGenericDBObject {
    private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
    private Long ordinal = 0L;
    private InterfaceEnumOrdinalType ordinalType;
-   private ArtifactReadable artifactReadable = ArtifactReadable.SENTINEL;
 
    public InterfaceEnumeration(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -40,7 +39,6 @@ public class InterfaceEnumeration extends PLGenericDBObject {
          art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinalType, "LONG")));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-      this.artifactReadable = art;
    }
 
    public InterfaceEnumeration(Long id, String name) {
@@ -94,11 +92,6 @@ public class InterfaceEnumeration extends PLGenericDBObject {
 
    public void setOrdinalType(InterfaceEnumOrdinalType ordinalType) {
       this.ordinalType = ordinalType;
-   }
-
-   @JsonIgnore
-   public ArtifactReadable getArtifactReadable() {
-      return artifactReadable;
    }
 
    @Override
