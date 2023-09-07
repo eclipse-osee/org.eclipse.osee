@@ -131,6 +131,12 @@ public class UserServiceImpl implements UserService {
       return tx.commit();
    }
 
+   /**
+    * @implNote Login identifiers are converted to lower case in the {@link AuthenticationRequestFilter} before being
+    * assigned as the thread user. All login identifiers read from the user artifact are set to lower case before being
+    * set as keys in the {@link #loginIdToUser} map.
+    */
+
    private synchronized void ensureLoaded() {
       if (loginIdToUser.isEmpty()) {
          for (ArtifactReadable userArtifact : query.andTypeEquals(CoreArtifactTypes.User).follow(
@@ -146,7 +152,7 @@ public class UserServiceImpl implements UserService {
 
                for (String loginId : user.getLoginIds()) {
                   if (Strings.isValid(loginId)) {
-                     loginIdToUser.put(loginId, user);
+                     loginIdToUser.put(loginId.toLowerCase(), user);
                   }
                }
             }
@@ -168,8 +174,7 @@ public class UserServiceImpl implements UserService {
       return this.getUser().getRoles();
    }
 
-   private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact,
-      TransactionBuilder tx, ArtifactToken userGroupHeader) {
+   private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact, TransactionBuilder tx, ArtifactToken userGroupHeader) {
       ArtifactToken userGroupArt = userGroupToArtifact.get(userGroup);
       if (userGroupArt == null) {
          userGroupArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrNull();
