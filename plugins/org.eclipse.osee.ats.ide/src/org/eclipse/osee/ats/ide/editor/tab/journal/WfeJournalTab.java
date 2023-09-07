@@ -176,6 +176,7 @@ public class WfeJournalTab extends WfeAbstractTab {
                   journalData.setTransaction(TransactionId.SENTINEL);
                }
             }
+            text.set("");
             text.getStyledText().setFocus();
          }
       });
