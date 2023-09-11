@@ -12,5 +12,6 @@
  **********************************************************************/
 /* Note this file serves just to keep angular language service from crashing. */
 {
-	"extends": "../../tsconfig.editor.json"
+	"references": [{ "path": "../../tsconfig.json" }],
+	"files": ["../main.ts", "../polyfills.ts"]
 }
