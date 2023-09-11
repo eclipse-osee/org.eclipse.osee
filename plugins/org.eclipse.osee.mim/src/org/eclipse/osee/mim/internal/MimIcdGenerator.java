@@ -297,7 +297,9 @@ public class MimIcdGenerator {
                         for (InterfaceStructureElementToken arrayElement : element.getArrayElements()) {
                            InterfaceStructureElementToken arrayElementCopy =
                               new InterfaceStructureElementToken(arrayElement.getArtifactReadable());
-                           arrayElementCopy.setName(arrayElement.getName() + " " + i);
+                           String arrayElementName =
+                              element.getInterfaceElementWriteArrayHeaderName() ? element.getName() + " " + i + " " + arrayElement.getName() : arrayElement.getName() + " " + i;
+                           arrayElementCopy.setName(arrayElementName);
                            flatElements.add(arrayElementCopy);
                         }
                      }
@@ -1120,7 +1122,7 @@ public class MimIcdGenerator {
       ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode,
       List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) {
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
-         e -> (e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Operational")).collect(
+         e -> !(e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Connection")).collect(
             Collectors.toList());
       List<ArtifactReadable> primaryList = connectionMessages.stream().filter(
          e -> primaryNode.equals(e.getRelated(CoreRelationTypes.InterfaceMessagePubNode_Node).getAtMostOneOrDefault(
@@ -1254,8 +1256,10 @@ public class MimIcdGenerator {
       writer.autoSizeAllColumns(10);
       writer.setColumnWidth(0, 3000);
       writer.setColumnWidth(1, 3000);
+      writer.setColumnWidth(4, writer.getColumnWidth(4) + 1200);
       writer.setColumnWidth(5, 3000);
       writer.setColumnWidth(6, 3000);
+      writer.setColumnWidth(8, writer.getColumnWidth(8) + 1200);
    }
 
    private void createUnitsAndTypesSheet(ExcelWorkbookWriter writer) {

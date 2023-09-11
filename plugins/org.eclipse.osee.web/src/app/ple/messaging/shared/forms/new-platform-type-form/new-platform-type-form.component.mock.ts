@@ -12,14 +12,7 @@
  **********************************************************************/
 
 import { Component, Input, Output } from '@angular/core';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import type {
-	enumerationSet,
-	logicalType,
-	logicalTypeFieldInfo,
-	PlatformType,
-} from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
+import type { logicalType, PlatformType } from '@osee/messaging/shared/types';
 import { Subject } from 'rxjs';
 import { NewPlatformTypeFormComponent } from './new-platform-type-form.component';
 

@@ -38,12 +38,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import type { element, elementWithChanges } from '@osee/messaging/shared/types';
+import {
+	element,
+	elementSentinel,
+	elementWithChanges,
+} from '@osee/messaging/shared/types';
 import {
 	CurrentStructureService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-array-table-dropdown/sub-element-array-table-dropdown.component';
 
 @Component({
@@ -75,20 +78,7 @@ import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-a
 })
 export class SubElementArrayTableComponent implements OnInit {
 	@Input() filter: string = '';
-	@Input() element: element = {
-		id: '-1',
-		name: '',
-		description: '',
-		notes: '',
-		interfaceElementIndexStart: 0,
-		interfaceElementIndexEnd: 0,
-		interfaceElementAlterable: false,
-		interfaceElementArrayHeader: false,
-		interfaceDefaultValue: '',
-		enumLiteral: '',
-		platformType: new PlatformTypeSentinel(),
-		arrayElements: [],
-	};
+	@Input() element: element = elementSentinel;
 	@Input() elementHeaders: any;
 	@Input() editMode: boolean = false;
 
