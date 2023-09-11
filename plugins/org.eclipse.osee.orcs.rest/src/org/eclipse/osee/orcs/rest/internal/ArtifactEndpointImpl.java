@@ -47,6 +47,7 @@ import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
+import org.eclipse.osee.orcs.rest.model.TxBuilderInput;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -382,4 +383,11 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       // pojo to store artifact's direct relations and all valid relation types
       return new ArtifactRelatedDirectPojo(token.get(), arts);
    }
+
+   @Override
+   public TxBuilderInput getTxBuilderInput(ArtifactTypeToken artifactTypeId) {
+      return new TxBuilderInput(branch,
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactTypeId).asArtifacts());
+   }
+
 }
