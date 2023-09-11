@@ -23,11 +23,12 @@ import { applic } from '@osee/shared/types/applicability';
 import { EditElementFieldComponent } from '../edit-element-field/edit-element-field.component';
 import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
-import type {
-	element,
-	elementWithChanges,
-	PlatformType,
-	structure,
+import {
+	elementSentinel,
+	type element,
+	type elementWithChanges,
+	type PlatformType,
+	type structure,
 } from '@osee/messaging/shared/types';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { MatIconModule } from '@angular/material/icon';
@@ -52,25 +53,7 @@ export class SubElementTableFieldComponent {
 	@Input() header!: keyof element | 'rowControls';
 	@Input() editMode: boolean = false;
 
-	@Input() element: element | elementWithChanges = {
-		id: '',
-		name: '',
-		description: '',
-		notes: '',
-		interfaceDefaultValue: '',
-		interfaceElementIndexEnd: 0,
-		interfaceElementIndexStart: 0,
-		platformType: new PlatformTypeSentinel(),
-		arrayElements: [],
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-		units: '',
-		interfaceElementAlterable: false,
-		interfaceElementArrayHeader: false,
-		enumLiteral: '',
-	};
+	@Input() element: element | elementWithChanges = elementSentinel;
 
 	@Input() structure: structure = {
 		id: '',

@@ -191,6 +191,7 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger InterfaceTaskFileType = osee.createInteger(2455059983007225760L, "Interface Task File Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean InterfaceElementAlterable = osee.createBoolean(2455059983007225788L, "Interface Element Alterable", MediaType.TEXT_PLAIN, "Element can be altered after creation.");
    AttributeTypeBoolean InterfaceElementArrayHeader = osee.createBoolean(3313203088521964923L, "Interface Element Array Header", MediaType.TEXT_PLAIN, "Element is an array header");
+   AttributeTypeBoolean InterfaceElementArrayWriteHeaderName = osee.createBoolean(3313203088521964924L, "Interface Element Array Write Header Name", MediaType.TEXT_PLAIN, "Exports write the array header name");
    AttributeTypeInteger InterfaceElementIndexStart = osee.createInteger(2455059983007225801L, "Interface Element Index Start", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger InterfaceElementIndexEnd = osee.createInteger(2455059983007225802L, "Interface Element Index End", MediaType.TEXT_PLAIN, "");
    InterfaceLogicalTypeAttribute InterfaceLogicalType = osee.createEnum(new InterfaceLogicalTypeAttribute());

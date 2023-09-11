@@ -30,7 +30,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
 
    private String enumLiteral;
    private Boolean InterfaceElementAlterable;
-   private Boolean interfaceElementArrayHeader;
+   private Boolean interfaceElementArrayHeader = false;
+   private Boolean interfaceElementWriteArrayHeaderName = false;
    private String Notes;
    private String Description;
    private Integer InterfaceElementIndexStart;
@@ -72,6 +73,8 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
       this.setInterfaceElementAlterable(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementAlterable, false));
       this.setInterfaceElementArrayHeader(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementArrayHeader, false));
+      this.setInterfaceElementWriteArrayHeaderName(
+         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementArrayWriteHeaderName, false));
       this.setInterfaceElementIndexStart(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0));
       this.setInterfaceElementIndexEnd(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0));
       this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
@@ -246,6 +249,14 @@ public class InterfaceStructureElementToken extends PLGenericDBObject {
 
    public void setInterfaceElementArrayHeader(Boolean interfaceElementArrayHeader) {
       this.interfaceElementArrayHeader = interfaceElementArrayHeader;
+   }
+
+   public Boolean getInterfaceElementWriteArrayHeaderName() {
+      return interfaceElementWriteArrayHeaderName;
+   }
+
+   public void setInterfaceElementWriteArrayHeaderName(Boolean interfaceElementWriteArrayHeaderName) {
+      this.interfaceElementWriteArrayHeaderName = interfaceElementWriteArrayHeaderName;
    }
 
    /**

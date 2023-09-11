@@ -16,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import type { element } from '@osee/messaging/shared/types';
+import { elementSentinel, type element } from '@osee/messaging/shared/types';
 import { SubElementTableNoEditFieldDynamicWidthComponent } from '../sub-element-table-no-edit-field-dynamic-width/sub-element-table-no-edit-field-dynamic-width.component';
 import { SubElementTableNoEditFieldFilteredComponent } from '../sub-element-table-no-edit-field-filtered/sub-element-table-no-edit-field-filtered.component';
 import { SubElementTableNoEditFieldNameComponent } from '../sub-element-table-no-edit-field-name/sub-element-table-no-edit-field-name.component';
@@ -38,25 +38,7 @@ import { SubElementTableNoEditFieldNameComponent } from '../sub-element-table-no
 })
 export class SubElementTableNoEditFieldComponent implements OnInit {
 	@Input() filter: string = '';
-	@Input() element: element = {
-		id: '',
-		name: '',
-		description: '',
-		notes: '',
-		interfaceDefaultValue: '',
-		interfaceElementIndexEnd: 0,
-		interfaceElementIndexStart: 0,
-		platformType: new PlatformTypeSentinel(),
-		arrayElements: [],
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-		units: '',
-		interfaceElementAlterable: false,
-		interfaceElementArrayHeader: false,
-		enumLiteral: '',
-	};
+	@Input() element: element = elementSentinel;
 	@Input() header!: keyof element;
 	@Input() width: string = '';
 	_branchId: string = '';

@@ -31,7 +31,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { UniquePlatformTypeAttributesDirective } from '@osee/messaging/shared/directives';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import { TypesService, EnumsService } from '@osee/messaging/shared/services';
+import { TypesService } from '@osee/messaging/shared/services';
 import type {
 	enumerationSet,
 	logicalType,
@@ -46,13 +46,10 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	filter,
-	ReplaySubject,
-	scan,
 	Subject,
 	switchMap,
 	tap,
 } from 'rxjs';
-import { NewAttributeFormFieldComponent } from '../new-attribute-form-field/new-attribute-form-field.component';
 import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdown.component';
 /**
  * Form that handles the selection of platform type attributes for a new platform type based on it's logical type.
@@ -114,7 +111,6 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 			this.updateField();
 		})
 	);
-	private _latestFormInfo = new Subject<logicalTypeFieldInfo>();
 
 	protected _platformType: PlatformType = new PlatformTypeSentinel();
 	@Output() protected platformType = new Subject<PlatformType>();
@@ -136,9 +132,6 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 		) {
 			this.logicalTypeSubject.next(changes.logicalType.currentValue);
 		}
-	}
-	updatedFormValue(event: logicalTypeFieldInfo) {
-		this._latestFormInfo.next(event);
 	}
 	protected isLogicalTypeFieldInfo(
 		value: unknown

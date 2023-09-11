@@ -366,6 +366,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceDefaultValue)
       .zeroOrOne(InterfaceElementAlterable)
       .zeroOrOne(InterfaceElementArrayHeader)
+      .zeroOrOne(InterfaceElementArrayWriteHeaderName)
       .zeroOrOne(Notes)
       .zeroOrOne(InterfaceElementEnumLiteral)
       .zeroOrOne(InterfaceElementIndexStart)

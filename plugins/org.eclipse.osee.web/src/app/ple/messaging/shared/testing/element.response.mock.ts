@@ -22,6 +22,7 @@ export const elementsMock: element[] = [
 		notes: '',
 		interfaceElementAlterable: true,
 		interfaceElementArrayHeader: false,
+		interfaceElementWriteArrayHeaderName: false,
 		interfaceElementIndexEnd: 1,
 		interfaceElementIndexStart: 0,
 		interfaceDefaultValue: '',
