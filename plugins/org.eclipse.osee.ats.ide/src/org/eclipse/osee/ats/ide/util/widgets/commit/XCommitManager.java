@@ -391,26 +391,29 @@ public class XCommitManager extends GenericXWidget implements ArtifactWidget, IB
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (Widgets.isAccessible(mainComp)) {
          if (artifactEvent.isModified(getTeamArt())) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  loadTable();
-               }
-            });
+            reloadTableInDisplayThread();
+            return;
+         }
+         if (artifactEvent.isRelAddedChangedDeleted(getTeamArt())) {
+            reloadTableInDisplayThread();
          }
       }
+   }
+
+   private void reloadTableInDisplayThread() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            loadTable();
+         }
+      });
    }
 
    @Override
    public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
       if (Widgets.isAccessible(mainComp)) {
          if (artifactTopicEvent.isModified(getTeamArt())) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  loadTable();
-               }
-            });
+            reloadTableInDisplayThread();
          }
       }
    }
