@@ -12,37 +12,38 @@
  **********************************************************************/
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-	"extends": "./tsconfig.base.json",
+	"compileOnSave": false,
 	"compilerOptions": {
-		"outDir": "./out-tsc/spec",
-		"types": ["jasmine"],
+		"baseUrl": "./",
+		"outDir": "./out-tsc/base",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"sourceMap": true,
+		"declaration": false,
+		"esModuleInterop": true,
+		"downlevelIteration": true,
+		"experimentalDecorators": true,
+		"moduleResolution": "node",
+		"importHelpers": true,
+		"skipLibCheck": true,
+		"target": "ES2022",
+		"module": "ES2022",
+		"lib": ["ES2022", "dom"],
+		"useDefineForClassFields": false,
 		"paths": {
-			"@osee/shared/components/testing": [
-				"src/app/shared/components/testing"
-			],
-			"@osee/messaging/shared/testing": [
-				"src/app/ple/messaging/shared/testing"
-			],
-			"@osee/shared/transactions/testing": [
-				"src/app/shared/transactions/testing"
-			],
 			"@osee/about": ["src/app/about"],
 			"@osee/auth": ["src/app/auth"],
-			"@osee/auth/testing": ["src/app/auth/testing"],
 			"@osee/diff/views": ["src/app/diff-views"],
 			"@osee/environments": ["src/environments"],
 			"@osee/interceptors": ["src/app/interceptors"],
 			"@osee/layout": ["src/app/layout"],
-			"@osee/layout/container": ["src/app/layout/lib/containers"],
 			"@osee/layout/notification": ["src/app/layout/lib/notification"],
+			"@osee/layout/container": ["src/app/layout/lib/containers"],
 			"@osee/layout/routing": ["src/app/layout/lib/routing"],
-			"@osee/page-not-found": ["src/app/page-not-found"],
-			"@osee/plconfig": ["src/app/ple/plconfig/lib"],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"
-			],
-			"@osee/messaging/connection-view/testing": [
-				"src/app/ple/messaging/connection-view/lib/testing"
 			],
 			"@osee/messaging/cross-reference": [
 				"src/app/ple/messaging/cross-reference/lib"
@@ -50,21 +51,12 @@
 			"@osee/messaging/help": [
 				"src/app/ple/messaging/messaging-help/lib"
 			],
-			"@osee/messaging/help/testing": [
-				"src/app/ple/messaging/messaging-help/lib/testing"
-			],
 			"@osee/messaging/import": ["src/app/ple/messaging/import/lib"],
-			"@osee/messaging/import/testing": [
-				"src/app/ple/messaging/import/lib/testing"
-			],
 			"@osee/messaging/message-tables": [
 				"src/app/ple/messaging/message-tables/lib"
 			],
 			"@osee/messaging/message-tables/menus": [
 				"src/app/ple/messaging/message-tables/lib/menus"
-			],
-			"@osee/messaging/message-tables/testing": [
-				"src/app/ple/messaging/message-tables/lib/testing"
 			],
 			"@osee/messaging/reports/diff": [
 				"src/app/ple/messaging/reports/lib/diff"
@@ -75,14 +67,11 @@
 			"@osee/messaging/structure-tables": [
 				"src/app/ple/messaging/structure-tables/lib"
 			],
-			"@osee/messaging/structure-tables/menus": [
-				"src/app/ple/messaging/structure-tables/lib/menus"
-			],
-			"@osee/messaging/structure-tables/testing": [
-				"src/app/ple/messaging/structure-tables/lib/testing"
-			],
 			"@osee/messaging/structure-tables/services": [
 				"src/app/ple/messaging/structure-tables/lib/services"
+			],
+			"@osee/messaging/structure-tables/menus": [
+				"src/app/ple/messaging/structure-tables/lib/menus"
 			],
 			"@osee/messaging/type-detail": [
 				"src/app/ple/messaging/type-detail/lib"
@@ -90,18 +79,14 @@
 			"@osee/messaging/type-element-search": [
 				"src/app/ple/messaging/type-element-search/lib"
 			],
-			"@osee/messaging/type-element-search/testing": [
-				"src/app/ple/messaging/type-element-search/lib/testing"
-			],
 			"@osee/messaging/types-interface": [
 				"src/app/ple/messaging/types-interface/lib"
 			],
 			"@osee/messaging/types-interface/menus": [
 				"src/app/ple/messaging/types-interface/lib/menus"
 			],
-			"@osee/messaging/types-interface/testing": [
-				"src/app/ple/messaging/types-interface/lib/testing"
-			],
+			"@osee/page-not-found": ["src/app/page-not-found"],
+			"@osee/plconfig": ["src/app/ple/plconfig/lib"],
 			"@osee/toolbar": ["src/app/layout/lib/toolbar"],
 			"@osee/toolbar/component": [
 				"src/app/layout/lib/toolbar/osee-toolbar/osee-toolbar.component"
@@ -117,7 +102,6 @@
 				"src/app/shared/services/network"
 			],
 			"@osee/shared/validators": ["src/app/shared/validators"],
-			"@osee/shared/testing": ["src/app/shared/testing"],
 			"@osee/shared/transactions": ["src/app/shared/transactions"],
 			"@osee/shared/types": ["src/app/shared/types"],
 			"@osee/shared/types/applicability": [
@@ -141,14 +125,11 @@
 			"@osee/messaging/shared/headers": [
 				"src/app/ple/messaging/shared/headers"
 			],
-			"@osee/messaging/shared/dropdowns": [
-				"src/app/ple/messaging/shared/dropdowns"
-			],
-			"@osee/messaging/shared/dropdowns/testing": [
-				"src/app/ple/messaging/shared/dropdowns/testing"
-			],
 			"@osee/messaging/shared/headers/*": [
 				"src/app/ple/messaging/shared/headers/*"
+			],
+			"@osee/messaging/shared/dropdowns": [
+				"src/app/ple/messaging/shared/dropdowns"
 			],
 			"@osee/messaging/shared/constants": [
 				"src/app/ple/messaging/shared/constants"
@@ -189,6 +170,9 @@
 			"@osee/messaging/shared/services": [
 				"src/app/ple/messaging/shared/services"
 			],
+			"@osee/messaging/shared/services/warnings": [
+				"src/app/ple/messaging/shared/services/warnings"
+			],
 			"@osee/messaging/shared/preferences": [
 				"src/app/ple/messaging/shared/preferences"
 			],
@@ -200,6 +184,17 @@
 			]
 		}
 	},
-	"files": ["src/test.ts", "src/polyfills.ts"],
-	"exclude": ["node_modules/cypress", "./cypress.config.ts", "cypress"]
+	"angularCompilerOptions": {
+		"enableI18nLegacyMessageIdFormat": false,
+		"strictInjectionParameters": true,
+		"strictInputAccessModifiers": true,
+		"strictTemplates": true
+	},
+	"include": ["**/*.d.ts", "**/*.ts"],
+	"exclude": [
+		"node_modules/cypress",
+		"./cypress.config.ts",
+		"cypress",
+		"cypress/**/*"
+	]
 }

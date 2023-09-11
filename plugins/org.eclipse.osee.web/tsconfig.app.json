@@ -12,17 +12,21 @@
  **********************************************************************/
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-	"extends": "./tsconfig.json",
+	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"outDir": "./out-tsc/app",
 		"types": []
 	},
-	"files": [],
-	"include": ["src/main.ts", "src/polyfills.ts", "src/**/*.d.ts"],
+	"files": ["src/main.ts", "src/polyfills.ts"],
 	"exclude": [
 		"src/**/*.mock.ts",
 		"src/**/*.spec.ts",
 		"src/test.ts",
-		"src/**/*.harness.ts"
+		"src/**/*.harness.ts",
+		"src/**/testing/**/*.ts",
+		"node_modules/cypress",
+		"./cypress.config.ts",
+		"cypress",
+		"cypress/**/*"
 	]
 }
