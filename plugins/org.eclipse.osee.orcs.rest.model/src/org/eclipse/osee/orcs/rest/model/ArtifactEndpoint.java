@@ -203,4 +203,9 @@ public interface ArtifactEndpoint {
    @Tag(name = "hierarchy")
    ArtifactRelatedDirectPojo getRelatedDirect(@PathParam("branch") BranchId branch,
       @PathParam("artifact") ArtifactId artifact);
+
+   @GET
+   @Path("createTxBuilder/{artifactTypeId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   TxBuilderInput getTxBuilderInput(@PathParam("artifactTypeId") ArtifactTypeToken artifactTypeId);
 }
