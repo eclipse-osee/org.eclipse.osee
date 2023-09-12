@@ -143,7 +143,8 @@ public class AtsWidgetProvider extends BaseXWidgetProvider {
          return toReturn;
       } else if (widgetName.equals(XCreateChangeReportTasksXButton.WIDGET_ID)) {
          AtsTaskDefToken atsTaskDefToken = (AtsTaskDefToken) rItem.getParameters().get(AtsTaskDefToken.ID);
-         return new XCreateChangeReportTasksXButton(name, atsTaskDefToken);
+         return new XCreateChangeReportTasksXButton(name, XCreateChangeReportTasksXButton.class.getSimpleName(),
+            atsTaskDefToken);
       } else if (widgetName.equals(XHyperlinkChangeTypeSelection.WIDGET_ID) || widgetName.equals(
          XHyperlinkChangeTypeSelectionDam.WIDGET_ID)) {
          String changeTypesStr = (String) rItem.getParameters().get(ChangeTypes.CHANGE_TYPE_PARAM_KEY);

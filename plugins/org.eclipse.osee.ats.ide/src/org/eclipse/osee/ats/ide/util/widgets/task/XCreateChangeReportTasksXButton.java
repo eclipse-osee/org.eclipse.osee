@@ -59,9 +59,11 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
    boolean debug = false; // true to display more detail regarding task matches
    boolean reportOnly = false; // true to not persist; used for debugging
    AtsApi atsApi;
+   private final String commitComment;
 
-   public XCreateChangeReportTasksXButton(String name, AtsTaskDefToken... taskDefTokens) {
+   public XCreateChangeReportTasksXButton(String name, String commitComment, AtsTaskDefToken... taskDefTokens) {
       super(name);
+      this.commitComment = commitComment;
       for (AtsTaskDefToken taskDefToken : taskDefTokens) {
          this.taskDefTokens.add(taskDefToken);
       }
@@ -140,6 +142,7 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
 
                      ChangeReportTaskData crtd = new ChangeReportTaskData();
                      crtd.setOperationName(getName());
+                     crtd.setCommitComment(commitComment);
                      crtd.setTaskDefToken(taskDefToken);
                      crtd.setHostTeamWf(hostTeamWf);
                      crtd.setAsUser(AtsApiService.get().getUserService().getCurrentUser());
@@ -147,7 +150,8 @@ public class XCreateChangeReportTasksXButton extends XButton implements Artifact
                      // Use booleans above to debug task matches
                      crtd.setDebug(debug);
                      crtd.setReportOnly(reportOnly);
-                     crtd.setFinalTaskGen(false);
+                     boolean isFinalTaskGen = atsApi.getBranchService().isCommittedBranchExists(teamWf);
+                     crtd.setFinalTaskGen(isFinalTaskGen);
 
                      crtd = AtsApiService.get().getTaskService().createTasks(crtd);
                      XResultDataUI.report(crtd.getResults(), getName());

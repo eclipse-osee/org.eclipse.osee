@@ -184,7 +184,13 @@ public class CreateChangeReportTasksOperation {
 
          IAtsChangeSet changes = null;
          if (!reportOnly) {
-            changes = atsApi.createChangeSet(setDef.getName(), crtd.getAsUser());
+            String useComment = crtd.getCommitComment();
+            if (Strings.isInvalid(useComment)) {
+               rd.errorf("Commit comment can not be invalid for %s", crtd.toString());
+               return crtd;
+            }
+            rd.logf("\nCommitting with comment [%s]\n", useComment);
+            changes = atsApi.createChangeSet(crtd.getCommitComment(), crtd.getAsUser());
          }
          for (ChangeReportOptionsToTeam toSiblingTeamDef : toSiblingTeamDatas) {
             IAtsTeamDefinition toTeamDef = getToTeamDef(setDef, program, rd, toSiblingTeamDef);
@@ -468,6 +474,7 @@ public class CreateChangeReportTasksOperation {
          } else if (changes != null) {
             if (crtd.isFinalTaskGen()) {
                changes.addTag(hostTeamWf, ChangeReportTasksUtil.FINAL_TASK_GEN_TAG);
+               crtd.getResults().logf("Setting %s\n", ChangeReportTasksUtil.FINAL_TASK_GEN_TAG);
             }
             TransactionId transId = changes.executeIfNeeded();
             crtd.getResults().log("\n");
