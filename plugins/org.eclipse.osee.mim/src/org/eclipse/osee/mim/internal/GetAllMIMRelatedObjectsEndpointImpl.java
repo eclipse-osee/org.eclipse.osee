@@ -14,8 +14,10 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -42,7 +44,7 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
    }
 
    @Override
-   public Collection<StructurePath> getAllStructureNames(String filter) {
+   public Collection<StructurePath> getAllStructureNames(String filter, ArtifactId connectionId) {
       List<StructurePath> structures = this.interfaceStructureApi.getAllWithRelations(branch,
          FollowRelation.followList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
@@ -50,8 +52,9 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
          filter, Arrays.asList(CoreAttributeTypes.Name), CoreAttributeTypes.Name).stream().map(
             s -> new StructurePath(s)).collect(Collectors.toList());
 
+      List<StructurePath> connectionStructures = new LinkedList<>();
+
       //work up the structure to generate a path i.e. structure -> submessage -> message -> connection
-      //structure.addPath(path)
       for (StructurePath structure : structures) {
          for (ArtifactReadable submessage : structure.getStructure().getArtifactReadable().getRelatedList(
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage)) {
@@ -59,14 +62,17 @@ public class GetAllMIMRelatedObjectsEndpointImpl implements GetAllMIMRelatedObje
                CoreRelationTypes.InterfaceMessageSubMessageContent_Message)) {
                for (ArtifactReadable connection : message.getRelatedList(
                   CoreRelationTypes.InterfaceConnectionMessage_Connection)) {
-                  structure.addPath(new ResolvedStructurePath(message.getName() + " > " + submessage.getName(),
-                     "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString()));
+                  if (connectionId.isInvalid() || connectionId.equals(connection.getArtifactId())) {
+                     structure.addPath(new ResolvedStructurePath(message.getName() + " > " + submessage.getName(),
+                        "/" + connection.getIdString() + "/messages/" + message.getIdString() + "/" + submessage.getIdString() + "/elements/" + structure.getIdString()));
+                     connectionStructures.add(structure);
+                  }
                }
             }
          }
       }
 
-      return structures;
+      return connectionStructures;
    }
 
    @Override

@@ -10,15 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<osee-messaging-controls></osee-messaging-controls>
-<mat-form-field
-	class="tw-w-full tw-pb-4"
-	*ngIf="(loading | async) !== 'true'">
+<osee-messaging-controls>
+	<ng-container *ngIf="connection | async as _connection"
+		><osee-connection-dropdown
+			[connection]="_connection"
+			(connectionChange)="selectConnection($event)"
+			[showNoneOption]="true"></osee-connection-dropdown> </ng-container
+></osee-messaging-controls>
+<mat-form-field class="tw-w-full tw-pb-4">
 	<mat-label>Filter Structures</mat-label>
 	<input
 		matInput
 		type="search"
 		(keyup)="applyFilter($event)"
+		[disabled]="(loading | async) === 'true'"
 		#input />
 	<mat-icon matPrefix>filter_list</mat-icon>
 	<mat-hint>Enter text to filter structures.</mat-hint>

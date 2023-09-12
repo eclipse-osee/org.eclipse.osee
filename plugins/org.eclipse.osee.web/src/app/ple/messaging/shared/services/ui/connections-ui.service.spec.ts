@@ -10,11 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
-{
-	"extends": "./tsconfig.editor.json",
-	"references": [
-		{ "path": "./tsconfig.spec.editor.json" },
-		{ "path": "./tsconfig.app.editor.json" }
-	]
-}
+import { TestBed } from '@angular/core/testing';
+
+import { ConnectionsUiService } from './connections-ui.service';
+
+describe('ConnectionsUiService', () => {
+	let service: ConnectionsUiService;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(ConnectionsUiService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

@@ -13,13 +13,18 @@
 package org.eclipse.osee.mim.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
@@ -49,6 +54,15 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
       relations.add(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node));
       relations.add(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType));
       return relations;
+   }
+
+   private List<AttributeTypeId> getConnectionSearchAttributes() {
+      List<AttributeTypeId> attributes = CoreArtifactTypes.InterfaceConnection.getValidAttributeTypes().stream().map(
+         a -> AttributeTypeId.valueOf(a.getId())).collect(Collectors.toList());
+      List<AttributeTypeToken> excluded = CoreArtifactTypes.Artifact.getValidAttributeTypes();
+      excluded.removeAll(Arrays.asList(CoreAttributeTypes.Name, CoreAttributeTypes.Description));
+      attributes.removeAll(excluded);
+      return attributes;
    }
 
    @Override
@@ -193,6 +207,24 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          System.out.println(ex);
       }
       return new LinkedList<InterfaceConnection>();
+   }
+
+   @Override
+   public Collection<InterfaceConnection> getAll(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute, ArtifactId viewId) {
+      try {
+         return this.getAccessor().getAll(branch, relations, filter, getConnectionSearchAttributes(), pageNum, pageSize,
+            orderByAttribute, viewId);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<InterfaceConnection>();
+   }
+
+   @Override
+   public int getCount(BranchId branch, String filter, ArtifactId viewId) {
+      return this.getAccessor().getAllByFilterAndCount(branch, filter, getConnectionSearchAttributes(), viewId);
    }
 
 }

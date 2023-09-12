@@ -1,0 +1,93 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container
+	*ngIf="{
+		openedState: isOpen | async,
+		filter: filter | async
+	} as autoCompleteState">
+	<mat-form-field
+		subscriptSizing="dynamic"
+		id="connection-selector"
+		class="tw-w-full">
+		<input
+			type="text"
+			matInput
+			#input
+			[ngModel]="autoCompleteState.filter"
+			[required]="required"
+			[disabled]="disabled"
+			placeholder="Select a Connection"
+			[errorStateMatcher]="errorMatcher"
+			id="connections"
+			name="connections"
+			(focusin)="autoCompleteOpened()"
+			(focusout)="close()"
+			(ngModelChange)="updateTypeAhead($event)"
+			#connections="ngModel"
+			[matAutocomplete]="autoConnections" />
+		<mat-icon
+			*ngIf="!autoCompleteState.openedState"
+			[@dropdownOpen]="autoCompleteState.openedState ? 'open' : 'closed'"
+			matIconSuffix
+			>arrow_drop_down</mat-icon
+		>
+		<button
+			mat-icon-button
+			*ngIf="
+				autoCompleteState.openedState && autoCompleteState.filter !== ''
+			"
+			[@dropdownOpen]="!autoCompleteState.openedState ? 'open' : 'closed'"
+			matIconSuffix
+			(mousedown)="clear()">
+			<mat-icon>close</mat-icon>
+		</button>
+		<mat-autocomplete
+			autoActiveFirstOption="true"
+			autoSelectActiveOption="true"
+			#autoConnections="matAutocomplete"
+			(optionSelected)="updateValue($event.option.value)">
+			<ng-container
+				*ngIf="_connections | async as connections; else loading">
+				<ng-container *ngIf="_count | async as count; else loading">
+					<ng-container *ngIf="_size | async as size; else loading">
+						<osee-mat-option-loading
+							[data]="connections"
+							objectName="connections"
+							[paginationSize]="size"
+							paginationMode="AUTO"
+							[noneOption]="
+								showNoneOption ? noneOption : undefined
+							"
+							[count]="count">
+							<ng-template let-option>
+								<mat-option
+									[attr.data-cy]="'option-' + option.name"
+									[value]="option"
+									[id]="option.id">
+									{{ option.name }}
+								</mat-option>
+							</ng-template>
+						</osee-mat-option-loading>
+					</ng-container>
+				</ng-container>
+			</ng-container>
+			<ng-template #loading>
+				<mat-option
+					id="-1"
+					[value]="{ id: '-1', name: 'invalid' }">
+					Loading...
+				</mat-option>
+			</ng-template>
+		</mat-autocomplete>
+	</mat-form-field>
+</ng-container>

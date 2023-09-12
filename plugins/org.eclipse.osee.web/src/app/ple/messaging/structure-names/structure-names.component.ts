@@ -25,6 +25,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { UiService } from '@osee/shared/services';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { ConnectionDropdownComponent } from 'src/app/ple/messaging/shared/dropdowns/connection-dropdown/connection-dropdown.component';
+import { connection, connectionSentinel } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-structure-names',
@@ -45,24 +47,40 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 		MatIconModule,
 		MatExpansionModule,
 		MessagingControlsComponent,
+		ConnectionDropdownComponent,
 	],
 })
 export class StructureNamesComponent implements OnInit {
 	_filter = new BehaviorSubject<string>('');
-	names = combineLatest([this.structureService.names, this._filter]).pipe(
-		map(([names, filter]) =>
-			filter !== ''
-				? names.filter(
-						(path) =>
-							path.name.toLowerCase().includes(filter) ||
-							path.paths
-								.map((p) => p.name.toLowerCase())
-								.flat()
-								.includes(filter)
-				  )
-				: names
+	connection = new BehaviorSubject<connection>(connectionSentinel);
+
+	names = this.connection.pipe(
+		switchMap((connection) =>
+			this.structureService.getStructureNames(connection.id || '-1').pipe(
+				switchMap((names) =>
+					this._filter.pipe(
+						map((filter) =>
+							filter !== ''
+								? names.filter(
+										(path) =>
+											path.name
+												.toLowerCase()
+												.includes(filter) ||
+											path.paths
+												.map((p) =>
+													p.name.toLowerCase()
+												)
+												.flat()
+												.includes(filter)
+								  )
+								: names
+						)
+					)
+				)
+			)
 		)
 	);
+
 	basePath = combineLatest([
 		this.uiService.id,
 		this.uiService.type,
@@ -73,6 +91,7 @@ export class StructureNamesComponent implements OnInit {
 		)
 	);
 	loading = this.loadingService.isLoading;
+
 	constructor(
 		private uiService: UiService,
 		private structureService: CurrentStructureNamesService,
@@ -89,6 +108,10 @@ export class StructureNamesComponent implements OnInit {
 				})
 			)
 			.subscribe();
+	}
+
+	selectConnection(value: connection) {
+		this.connection.next(value);
 	}
 
 	applyFilter(event: Event) {

@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import type { StructurePath } from '@osee/messaging/shared/types';
+import { HttpParamsType } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,9 +22,14 @@ import type { StructurePath } from '@osee/messaging/shared/types';
 export class StructureNamesService {
 	constructor(private http: HttpClient) {}
 
-	getStructureNames(branchId: string) {
+	getStructureNames(branchId: string, connectionId?: string) {
+		let params: HttpParamsType = {};
+		if (connectionId) {
+			params = { ...params, connectionId: connectionId };
+		}
 		return this.http.get<StructurePath[]>(
-			apiURL + '/mim/branch/' + branchId + '/all/StructureNames'
+			apiURL + '/mim/branch/' + branchId + '/all/StructureNames',
+			{ params: params }
 		);
 	}
 }

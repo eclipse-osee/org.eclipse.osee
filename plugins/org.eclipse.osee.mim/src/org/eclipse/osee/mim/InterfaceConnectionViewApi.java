@@ -41,11 +41,16 @@ public interface InterfaceConnectionViewApi extends QueryCapableMIMAPI<Interface
    Collection<InterfaceConnection> getAll(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute, ArtifactId viewId);
 
+   Collection<InterfaceConnection> getAll(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute, ArtifactId viewId);
+
    InterfaceConnection get(BranchId branch, ArtifactId connectionId);
 
    InterfaceConnection get(BranchId branch, ArtifactId viewId, ArtifactId connectionId,
       Collection<FollowRelation> followRelations);
 
    Collection<InterfaceConnection> get(BranchId branch, Collection<ArtifactId> connectionIds);
+
+   int getCount(BranchId branch, String filter, ArtifactId viewId);
 
 }

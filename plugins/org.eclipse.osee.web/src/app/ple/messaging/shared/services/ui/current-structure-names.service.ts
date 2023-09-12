@@ -19,17 +19,20 @@ import { StructureNamesService } from '../http/structure-names.service';
 	providedIn: 'root',
 })
 export class CurrentStructureNamesService {
-	private _names = this.ui.id.pipe(
-		filter(
-			(id) => id !== '' && id !== undefined && id !== '-1' && id !== '0'
-		),
-		switchMap((id) => this.structureService.getStructureNames(id))
-	);
 	constructor(
 		private ui: UiService,
 		private structureService: StructureNamesService
 	) {}
-	get names() {
-		return this._names;
+
+	getStructureNames(connectionId: string) {
+		return this.ui.id.pipe(
+			filter(
+				(id) =>
+					id !== '' && id !== undefined && id !== '-1' && id !== '0'
+			),
+			switchMap((id) =>
+				this.structureService.getStructureNames(id, connectionId)
+			)
+		);
 	}
 }

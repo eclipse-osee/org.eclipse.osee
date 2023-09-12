@@ -15,12 +15,15 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from '@osee/environments';
 import type { connection, _newConnection } from '../../types/connection';
-import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import {
+	ARTIFACTTYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/shared/types/constants';
 import {
 	TransactionBuilderService,
 	TransactionService,
 } from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import { HttpParamsType, relation, transaction } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -35,6 +38,57 @@ export class ConnectionService {
 	getConnections(branchId: string) {
 		return this.http.get<connection[]>(
 			apiURL + '/mim/branch/' + branchId + '/connections'
+		);
+	}
+
+	getFiltered(
+		branchId: string,
+		filter?: string,
+		viewId?: string,
+		pageNum?: string | number,
+		pageSize?: number,
+		orderByName?: boolean
+	) {
+		let params: HttpParamsType = {};
+		if (pageNum) {
+			params = { ...params, pageNum: pageNum };
+		}
+		if (pageSize) {
+			params = { ...params, count: pageSize };
+		}
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		if (orderByName) {
+			params = {
+				...params,
+				orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+			};
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<connection[]>(
+			apiURL + '/mim/branch/' + branchId + '/connections',
+			{
+				params: params,
+			}
+		);
+	}
+
+	getCount(branchId: string, filter?: string, viewId?: string) {
+		let params: HttpParamsType = {};
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<number>(
+			apiURL + '/mim/branch/' + branchId + '/connections/count',
+			{
+				params: params,
+			}
 		);
 	}
 
