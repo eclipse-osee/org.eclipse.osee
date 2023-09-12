@@ -49,7 +49,9 @@ describe('CurrentStructureNamesService', () => {
 	it('should fetch an array equal to getNames()', () => {
 		scheduler.run(({ expectObservable }) => {
 			uiService.idValue = '10';
-			expectObservable(service.names).toBe('a', { a: [] });
+			expectObservable(service.getStructureNames('-1')).toBe('a', {
+				a: [],
+			});
 		});
 	});
 });

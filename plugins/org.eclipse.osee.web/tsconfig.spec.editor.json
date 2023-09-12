@@ -12,9 +12,5 @@
  **********************************************************************/
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-	"extends": "./tsconfig.editor.json",
-	"references": [
-		{ "path": "./tsconfig.spec.editor.json" },
-		{ "path": "./tsconfig.app.editor.json" }
-	]
+	"extends": ["./tsconfig.spec.json", "./tsconfig.editor.json"]
 }

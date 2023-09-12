@@ -13,47 +13,46 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	inject,
 	Input,
 	OnChanges,
 	Output,
 	SimpleChanges,
+	inject,
 } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
-import {
-	trigger,
-	state,
-	style,
-	transition,
-	animate,
-} from '@angular/animations';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import {
-	ErrorStateMatcher,
-	MatOptionModule,
-	ShowOnDirtyErrorStateMatcher,
-} from '@angular/material/core';
-import { CurrentRatesService } from '@osee/messaging/shared/services';
-import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	ReplaySubject,
 	Subject,
 	debounceTime,
 	distinctUntilChanged,
-	switchMap,
 	of,
-	skip,
+	switchMap,
 } from 'rxjs';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import {
+	ErrorStateMatcher,
+	MatOptionModule,
+	ShowOnDirtyErrorStateMatcher,
+} from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { connection, connectionSentinel } from '@osee/messaging/shared/types';
+import { CurrentConnectionsService } from 'src/app/ple/messaging/shared/services/ui/current-connections.service';
+import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
 
 @Component({
-	selector: 'osee-rate-dropdown',
+	selector: 'osee-connection-dropdown',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
@@ -68,8 +67,7 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 		MatButtonModule,
 		MatOptionLoadingComponent,
 	],
-	templateUrl: './rate-dropdown.component.html',
-	styles: [],
+	templateUrl: './connection-dropdown.component.html',
 	animations: [
 		trigger('dropdownOpen', [
 			state(
@@ -88,31 +86,28 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 			transition('closed=>open', [animate('0.5s 0.25s')]),
 		]),
 	],
-	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
-export class RateDropdownComponent implements OnChanges {
-	private _currentRatesService = inject(CurrentRatesService);
-
-	private _typeAhead = new BehaviorSubject<string>('');
-	private _openAutoComplete = new ReplaySubject<void>();
-
-	private _isOpen = new BehaviorSubject<boolean>(false);
-
+export class ConnectionDropdownComponent implements OnChanges {
 	@Input() required: boolean = false;
 	@Input() disabled: boolean = false;
-
-	@Input() hintHidden: boolean = false;
-	@Input() rate: string = '';
-
-	private _rateChange = new Subject<string>();
-	@Output() rateChange = this._rateChange.pipe(skip(1));
-
+	@Input() showNoneOption: boolean = false;
+	@Input() connection: connection = connectionSentinel;
 	@Input() errorMatcher: ErrorStateMatcher =
 		new ShowOnDirtyErrorStateMatcher();
 
-	protected _size = this._currentRatesService.currentPageSize;
+	@Output() connectionChange = new Subject<connection>();
 
-	protected _rates = this._openAutoComplete.pipe(
+	private _currentConnectionsService = inject(CurrentConnectionsService);
+
+	private _typeAhead = new BehaviorSubject<string>('');
+	private _openAutoComplete = new ReplaySubject<void>();
+	private _isOpen = new BehaviorSubject<boolean>(false);
+
+	protected _size = this._currentConnectionsService.currentPageSize;
+
+	noneOption = { ...connectionSentinel, name: 'None' };
+
+	protected _connections = this._openAutoComplete.pipe(
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap((_) =>
@@ -121,7 +116,7 @@ export class RateDropdownComponent implements OnChanges {
 				debounceTime(500),
 				switchMap((filter) =>
 					of((pageNum: string | number) =>
-						this._currentRatesService.getFilteredPaginatedRates(
+						this._currentConnectionsService.getFilteredPaginatedConnections(
 							pageNum,
 							filter
 						)
@@ -137,22 +132,14 @@ export class RateDropdownComponent implements OnChanges {
 		switchMap((_) =>
 			this._typeAhead.pipe(
 				switchMap((filter) =>
-					this._currentRatesService.getFilteredCount(filter)
+					this._currentConnectionsService.getFilteredCount(filter)
 				)
 			)
 		)
 	);
 
-	get filter() {
-		return this._typeAhead;
-	}
-
-	updateTypeAhead(value: string | NamedId) {
-		if (typeof value === 'string') {
-			this._typeAhead.next(value);
-		} else {
-			this._typeAhead.next(value.name);
-		}
+	updateTypeAhead(value: string) {
+		this._typeAhead.next(value);
 	}
 	autoCompleteOpened() {
 		this._openAutoComplete.next();
@@ -161,24 +148,31 @@ export class RateDropdownComponent implements OnChanges {
 	close() {
 		this._isOpen.next(false);
 	}
-	updateValue(value: string) {
-		this._rateChange.next(value);
-		this.updateTypeAhead(value);
+	updateValue(value: connection) {
+		this.connectionChange.next(value);
+		this.updateTypeAhead(value.name);
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (
-			changes.rate !== undefined &&
-			changes.rate.previousValue !== changes.rate.currentValue &&
-			changes.rate.currentValue !== undefined
+			changes.connection !== undefined &&
+			changes.connection.previousValue !==
+				changes.connection.currentValue &&
+			changes.connection.currentValue !== undefined
 		) {
-			this.updateValue(changes.rate.currentValue);
+			this.updateValue(changes.connection.currentValue);
 		}
 	}
-	get isOpen() {
-		return this._isOpen;
-	}
+
 	clear() {
 		this.updateTypeAhead('');
+	}
+
+	get filter() {
+		return this._typeAhead;
+	}
+
+	get isOpen() {
+		return this._isOpen;
 	}
 }

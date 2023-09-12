@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceConnectionEndpoint;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
@@ -33,13 +34,19 @@ public class InterfaceConnectionEndpointImpl implements InterfaceConnectionEndpo
    }
 
    @Override
-   public Collection<InterfaceConnection> getAllConnections() {
-      return interfaceConnectionApi.getAll(branch);
+   public Collection<InterfaceConnection> getAllConnections(String filter, ArtifactId viewId, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeType) {
+      return interfaceConnectionApi.getAll(branch, filter, pageNum, pageSize, orderByAttributeType, viewId);
    }
 
    @Override
    public InterfaceConnection getConnection(ArtifactId ConnectionId) {
       return interfaceConnectionApi.get(branch, ConnectionId);
+   }
+
+   @Override
+   public int getAllConnectionsCount(String filter, ArtifactId viewId) {
+      return interfaceConnectionApi.getCount(branch, filter, viewId);
    }
 
 }

@@ -52,6 +52,7 @@ import {
 	of,
 	ReplaySubject,
 	scan,
+	shareReplay,
 	Subject,
 	Subscription,
 	switchMap,
@@ -125,6 +126,8 @@ export class MatOptionLoadingComponent<T>
 	 * Rate Limit Api requests to once per x ms. Auto mode only.
 	 */
 	@Input() rateLimit: number = 500;
+
+	@Input() noneOption: T | undefined = undefined;
 
 	private _currentPageNumber = new BehaviorSubject<number | string>(1);
 	private _done = new Subject<void>();
@@ -235,36 +238,45 @@ export class MatOptionLoadingComponent<T>
 							})
 						)
 					),
-					scan((acc, curr) => {
-						// For plain non-paginated observables, return the initial query results.
-						if (!this._isNotObservable(query)) {
-							return curr;
-						}
-
-						if (count < 0) {
-							if (acc.length === 0) {
-								return [...curr];
-							} else if (curr.length === 0) {
-								this._paginationComplete.next(true);
-								return acc;
+					scan(
+						(acc, curr) => {
+							// For plain non-paginated observables, return the initial query results.
+							if (!this._isNotObservable(query)) {
+								return curr;
 							}
-						} else if (acc.length + curr.length >= count) {
-							this._paginationComplete.next(true);
-						}
-						const deDupedArr = [...acc, ...curr].filter(
-							(value, index, array) =>
-								array.findIndex(
-									(value2) =>
-										JSON.stringify(value) ===
-										JSON.stringify(value2)
-								) === index
-						);
 
-						if (deDupedArr.length !== acc.length + curr.length) {
-							return deDupedArr;
-						}
-						return [...acc, ...curr];
-					}, [] as T[])
+							if (count < 0) {
+								if (acc.length === 0) {
+									return [...curr];
+								} else if (curr.length === 0) {
+									this._paginationComplete.next(true);
+									return acc;
+								}
+							} else if (acc.length + curr.length >= count) {
+								this._paginationComplete.next(true);
+							}
+							const deDupedArr = [...acc, ...curr].filter(
+								(value, index, array) =>
+									array.findIndex(
+										(value2) =>
+											JSON.stringify(value) ===
+											JSON.stringify(value2)
+									) === index
+							);
+
+							if (
+								deDupedArr.length !==
+								acc.length + curr.length
+							) {
+								return deDupedArr;
+							}
+							return [...acc, ...curr];
+						},
+						this.noneOption
+							? ([this.noneOption] as T[])
+							: ([] as T[])
+					),
+					shareReplay({ bufferSize: 1, refCount: true })
 				)
 			)
 		);
