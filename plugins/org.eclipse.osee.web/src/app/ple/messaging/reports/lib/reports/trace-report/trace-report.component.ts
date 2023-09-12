@@ -18,6 +18,7 @@ import { UiService } from '@osee/shared/services';
 import { TraceReportTableComponent } from '../../tables/trace-report-table/trace-report-table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
 	selector: 'osee-trace-report',
@@ -26,6 +27,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 		CommonModule,
 		MatButtonModule,
 		MatButtonToggleModule,
+		MatExpansionModule,
 		TraceReportTableComponent,
 	],
 	templateUrl: './trace-report.component.html',
@@ -43,7 +45,13 @@ export class NodeTraceReportRequirementsComponent {
 	}
 
 	requirementsReport = this.reportsService.nodeTraceReportRequirements;
+
+	missingRequirementsReport =
+		this.reportsService.nodeTraceReportNoMatchingArtifacts;
 	artifactsReport = this.reportsService.nodeTraceReportInterfaceArtifacts;
+
+	missingInterfaceArtifactsReport =
+		this.reportsService.nodeTraceReportNoMatchingInterfaceArtifacts;
 }
 
 export default NodeTraceReportRequirementsComponent;

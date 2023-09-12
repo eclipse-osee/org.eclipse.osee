@@ -56,4 +56,14 @@ public class MimReportsEndpointImpl implements MimReportsEndpoint {
       return mimApi.getMimReportsApi().getRequirementsFromInterface(branch, artId);
    }
 
+   @Override
+   public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(BranchId branch) {
+      return mimApi.getMimReportsApi().getAllRequirementsToInterfaceWithNoMatch(branch);
+   }
+
+   @Override
+   public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(BranchId branch) {
+      return mimApi.getMimReportsApi().getAllInterfaceToRequirementsWithNoMatch(branch);
+   }
+
 }

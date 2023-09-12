@@ -49,6 +49,15 @@ public class MimReportsApiImpl implements MimReportsApi {
    }
 
    @Override
+   public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(BranchId branch) {
+      return orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+         CoreArtifactTypes.Requirement).andRelationNotExists(
+            CoreRelationTypes.RequirementsToInterface).asArtifacts().stream().map(
+               r -> new NodeTraceReportItem(r, CoreRelationTypes.RequirementsToInterface_InterfaceArtifact)).collect(
+                  Collectors.toList());
+   }
+
+   @Override
    public List<NodeTraceReportItem> getAllInterfaceToRequirements(BranchId branch) {
       List<NodeTraceReportItem> results = new LinkedList<>();
       List<ArtifactReadable> arts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
@@ -58,6 +67,15 @@ public class MimReportsApiImpl implements MimReportsApi {
          arts.stream().map(a -> new NodeTraceReportItem(a, CoreRelationTypes.RequirementsToInterface_Artifact)).collect(
             Collectors.toList());
       return results;
+   }
+
+   @Override
+   public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(BranchId branch) {
+      return orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+         CoreArtifactTypes.InterfaceArtifact).andRelationNotExists(
+            CoreRelationTypes.RequirementsToInterface).asArtifacts().stream().map(
+               a -> new NodeTraceReportItem(a, CoreRelationTypes.RequirementsToInterface_Artifact)).collect(
+                  Collectors.toList());
    }
 
    @Override

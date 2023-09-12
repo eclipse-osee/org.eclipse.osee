@@ -21,4 +21,10 @@ export const ReportsServiceMock: Partial<ReportsService> = {
 	get nodeTraceReportInterfaceArtifacts() {
 		return of(NodeTraceReportMock);
 	},
+	get nodeTraceReportNoMatchingArtifacts() {
+		return of(NodeTraceReportMock);
+	},
+	get nodeTraceReportNoMatchingInterfaceArtifacts() {
+		return of(NodeTraceReportMock);
+	},
 };

@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import {
+	AfterViewInit,
+	ChangeDetectionStrategy,
+	Component,
+	Input,
+	ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { NodeTraceReportItem } from '@osee/messaging/shared/types';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -22,10 +28,12 @@ import { FormsModule } from '@angular/forms';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { HeaderService } from '@osee/shared/services';
 import { nodeTraceReportHeaderDetails } from '../../table-headers/trace-report-table-headers';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
 	selector: 'osee-trace-report-table',
 	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		CommonModule,
 		FormsModule,
@@ -35,6 +43,7 @@ import { nodeTraceReportHeaderDetails } from '../../table-headers/trace-report-t
 		MatInputModule,
 		MatSortModule,
 		MatTableModule,
+		MatPaginatorModule,
 	],
 	templateUrl: './trace-report-table.component.html',
 })
@@ -42,8 +51,11 @@ export class TraceReportTableComponent implements AfterViewInit {
 	@Input() data: NodeTraceReportItem[] = [];
 
 	@ViewChild(MatSort) sort!: MatSort;
+	@ViewChild(MatPaginator) paginator!: MatPaginator;
 
 	dataSource: MatTableDataSource<NodeTraceReportItem>;
+
+	pageSize = 200;
 
 	constructor(private headerService: HeaderService) {
 		this.dataSource = new MatTableDataSource(this.data);
@@ -77,6 +89,7 @@ export class TraceReportTableComponent implements AfterViewInit {
 	ngAfterViewInit() {
 		this.dataSource = new MatTableDataSource(this.data);
 		this.dataSource.sort = this.sort;
+		this.dataSource.paginator = this.paginator;
 	}
 
 	getTableHeaderByName(header: keyof NodeTraceReportItem) {
@@ -84,6 +97,9 @@ export class TraceReportTableComponent implements AfterViewInit {
 			nodeTraceReportHeaderDetails,
 			header
 		);
+	}
+	trackRows(index: number, item: NodeTraceReportItem) {
+		return item.id;
 	}
 
 	headers: (keyof NodeTraceReportItem)[] = [
