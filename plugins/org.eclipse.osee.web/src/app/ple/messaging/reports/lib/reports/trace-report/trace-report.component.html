@@ -42,11 +42,40 @@
 	<ng-container *ngIf="requirementsReport | async as data; else loading">
 		<osee-trace-report-table [data]="data"></osee-trace-report-table>
 	</ng-container>
+	<mat-expansion-panel>
+		<mat-expansion-panel-header>
+			Requirements Missing Trace
+		</mat-expansion-panel-header>
+
+		<ng-template matExpansionPanelContent>
+			<ng-container
+				*ngIf="missingRequirementsReport | async as data; else loading">
+				<osee-trace-report-table
+					[data]="data"></osee-trace-report-table>
+			</ng-container>
+		</ng-template>
+	</mat-expansion-panel>
 </ng-container>
 <ng-container *ngIf="group.value === 'artifacts'">
 	<ng-container *ngIf="artifactsReport | async as data; else loading">
 		<osee-trace-report-table [data]="data"></osee-trace-report-table>
 	</ng-container>
+	<mat-expansion-panel>
+		<mat-expansion-panel-header>
+			<mat-panel-title> MIM Artifacts Missing Trace </mat-panel-title>
+		</mat-expansion-panel-header>
+
+		<ng-template matExpansionPanelContent>
+			<ng-container
+				*ngIf="
+					missingInterfaceArtifactsReport | async as data;
+					else loading
+				">
+				<osee-trace-report-table
+					[data]="data"></osee-trace-report-table>
+			</ng-container>
+		</ng-template>
+	</mat-expansion-panel>
 </ng-container>
 <ng-template #loading>
 	<h3 class="tw-px-8 tw-py-4">Loading report...</h3>

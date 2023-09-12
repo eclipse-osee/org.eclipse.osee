@@ -24,7 +24,11 @@ public interface MimReportsApi {
 
    public List<NodeTraceReportItem> getAllRequirementsToInterface(BranchId branch);
 
+   public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(BranchId branch);
+
    public List<NodeTraceReportItem> getAllInterfaceToRequirements(BranchId branch);
+
+   public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(BranchId branch);
 
    public NodeTraceReportItem getInterfacesFromRequirement(BranchId branch, ArtifactId artId);
 

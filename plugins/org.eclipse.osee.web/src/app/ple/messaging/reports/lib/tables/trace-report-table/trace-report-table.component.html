@@ -25,6 +25,8 @@
 		mat-table
 		[dataSource]="dataSource"
 		matSort
+		matRecycleRows
+		[trackBy]="trackRows"
 		class="mat-elevation-z2">
 		<ng-container
 			[matColumnDef]="header"
@@ -97,6 +99,14 @@
 			*matRowDef="let row; columns: headers"
 			class="odd:tw-bg-background-background even:tw-bg-background-selected-button hover:tw-opacity-80"></tr>
 	</table>
+	<mat-paginator
+		[pageSizeOptions]="[
+			5, 10, 20, 25, 50, 75, 100, 150, 200, 250, 500, 750, 100
+		]"
+		[pageSize]="pageSize"
+		showFirstLastButtons
+		aria-label="Select page of artifacts">
+	</mat-paginator>
 </div>
 <ng-template
 	#subTableCell

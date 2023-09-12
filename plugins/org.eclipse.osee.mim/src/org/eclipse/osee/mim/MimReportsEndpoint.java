@@ -41,9 +41,19 @@ public interface MimReportsEndpoint {
    public List<NodeTraceReportItem> getAllRequirementsToInterface(@PathParam("branchId") BranchId branch);
 
    @GET()
+   @Path("{branchId}/noRequirementsToInterface")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(@PathParam("branchId") BranchId branch);
+
+   @GET()
    @Path("{branchId}/allInterfaceToRequirements")
    @Produces(MediaType.APPLICATION_JSON)
    public List<NodeTraceReportItem> getAllInterfaceToRequirements(@PathParam("branchId") BranchId branch);
+
+   @GET()
+   @Path("{branchId}/noInterfaceToRequirements")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(@PathParam("branchId") BranchId branch);
 
    @GET()
    @Path("{branchId}/interfacesFromRequirement/{artId}")

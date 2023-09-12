@@ -135,11 +135,31 @@ export class ReportsService {
 		take(1)
 	);
 
+	private _nodeTraceReportRequirementsNoMatch = this.ui.id.pipe(
+		filter((v) => v !== undefined && v !== '' && v !== '-1'),
+		switchMap((id) =>
+			this.http.get<NodeTraceReportItem[]>(
+				apiURL + '/mim/reports/' + id + '/noRequirementsToInterface'
+			)
+		),
+		take(1)
+	);
+
 	private _nodeTraceReportInterfaceArtifacts = this.ui.id.pipe(
 		filter((v) => v !== undefined && v !== '' && v !== '-1'),
 		switchMap((id) =>
 			this.http.get<NodeTraceReportItem[]>(
 				apiURL + '/mim/reports/' + id + '/allInterfaceToRequirements'
+			)
+		),
+		take(1)
+	);
+
+	private _nodeTraceReportInterfaceArtifactsNoMatch = this.ui.id.pipe(
+		filter((v) => v !== undefined && v !== '' && v !== '-1'),
+		switchMap((id) =>
+			this.http.get<NodeTraceReportItem[]>(
+				apiURL + '/mim/reports/' + id + '/noInterfaceToRequirements'
 			)
 		),
 		take(1)
@@ -176,8 +196,16 @@ export class ReportsService {
 		return this._nodeTraceReportRequirements;
 	}
 
+	get nodeTraceReportNoMatchingArtifacts() {
+		return this._nodeTraceReportRequirementsNoMatch;
+	}
+
 	get nodeTraceReportInterfaceArtifacts() {
 		return this._nodeTraceReportInterfaceArtifacts;
+	}
+
+	get nodeTraceReportNoMatchingInterfaceArtifacts() {
+		return this._nodeTraceReportInterfaceArtifactsNoMatch;
 	}
 
 	get diffReportRoute() {
