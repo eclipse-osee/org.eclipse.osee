@@ -86,11 +86,8 @@ public class CreateChangeReportTaskCommitHook implements IAtsWorkItemHook {
       data.setHostTeamWf(workItem.getStoreObject());
       data.setAsUser(asUser);
       data.setFinalTaskGen(finalTaskGen);
+      data.setCommitComment(CreateChangeReportTaskCommitHook.class.getSimpleName());
 
-      /**
-       * Until all transitions are done on server, need to directly call this operation so it's part of the full
-       * IAtsChangeSet. Otherwise transitioning will reload teamWfs and tasks after task creation.
-       */
       CreateChangeReportTasksOperation operation =
          new CreateChangeReportTasksOperation(data, AtsApiService.get(), changes);
       operation.run();

@@ -78,6 +78,7 @@ public class CreateChangeReportTaskTransitionHook implements IAtsTransitionHook 
       data.setHostTeamWf(workItem.getStoreObject());
       data.setAsUser(asUser);
       data.setFinalTaskGen(finalTaskGen);
+      data.setCommitComment(CreateChangeReportTaskTransitionHook.class.getSimpleName());
 
       /**
        * Until all transitions are done on server, need to directly call this operation so it's part of the full

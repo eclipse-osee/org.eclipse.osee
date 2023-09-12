@@ -44,6 +44,7 @@ public class ChangeReportTaskData {
     */
    public XResultData results = new XResultData();
    public String operationName = "";
+   public String commitComment = "";
    public List<ChangeReportTaskTeamWfData> changeReportDatas = new ArrayList<ChangeReportTaskTeamWfData>();
    // True if just want results of what would be done
    boolean reportOnly = false;
@@ -252,6 +253,14 @@ public class ChangeReportTaskData {
    @JsonIgnore
    public boolean isNoChangeItems() {
       return changeItems == null || changeItems.isEmpty();
+   }
+
+   public String getCommitComment() {
+      return commitComment;
+   }
+
+   public void setCommitComment(String commitComment) {
+      this.commitComment = commitComment;
    }
 
 }
