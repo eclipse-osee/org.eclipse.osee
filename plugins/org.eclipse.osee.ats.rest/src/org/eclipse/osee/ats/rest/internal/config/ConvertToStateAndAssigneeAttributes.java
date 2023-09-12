@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsOperationCache;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.rest.internal.AtsApiServerImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsOperationCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -47,12 +46,12 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class ConvertToStateAndAssigneeAttributes implements IAtsDatabaseConversion {
 
-   private final AtsApiServerImpl atsApiServer;
+   private final OrcsApi orcsApi;
    private final boolean debug = false;
    private final String TITLE = "Convert Current State Attrs";
 
-   public ConvertToStateAndAssigneeAttributes(AtsApiServerImpl atsApiServer) {
-      this.atsApiServer = atsApiServer;
+   public ConvertToStateAndAssigneeAttributes(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -62,9 +61,8 @@ public class ConvertToStateAndAssigneeAttributes implements IAtsDatabaseConversi
          return;
       }
       ElapsedTime time = new ElapsedTime(TITLE + " - Loading", true);
-      List<ArtifactId> artIds =
-         atsApiServer.getOrcsApi().getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
-            AtsArtifactTypes.AbstractWorkflowArtifact).andNotExists(AtsAttributeTypes.CurrentStateName).asArtifactIds();
+      List<ArtifactId> artIds = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
+         AtsArtifactTypes.AbstractWorkflowArtifact).andNotExists(AtsAttributeTypes.CurrentStateName).asArtifactIds();
       List<Collection<ArtifactId>> artIdLists = Collections.subDivide(artIds, 1000);
       time.end();
 

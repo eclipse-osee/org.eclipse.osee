@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCompCancelStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
+import org.eclipse.osee.ats.rest.internal.config.ConvertToStateAndAssigneeAttributes;
+import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
 import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.CountryResource;
 import org.eclipse.osee.ats.rest.internal.config.InsertionActivityEndpointImpl;
@@ -39,6 +41,9 @@ import org.eclipse.osee.ats.rest.internal.config.ReportResource;
 import org.eclipse.osee.ats.rest.internal.config.TeamResource;
 import org.eclipse.osee.ats.rest.internal.config.UserResource;
 import org.eclipse.osee.ats.rest.internal.config.VersionResource;
+import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
+import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
+import org.eclipse.osee.ats.rest.internal.convert.ConvertStateNotesFromXmlToJson;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.test.AtsTestEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsProductLineEndpointImpl;
@@ -102,12 +107,19 @@ public class AtsApplication extends Application {
       IResourceRegistry registry = new ResourceRegistry();
       OseeTemplateTokens.register(registry);
 
-      // Register conversions
-      ConvertCreateUpdateAtsConfig atsConfgConversion = new ConvertCreateUpdateAtsConfig(orcsApi);
-      atsApiServer.addAtsDatabaseConversion(atsConfgConversion);
+      // Register conversions (add new ones to top)
+      atsApiServer.addAtsDatabaseConversion(new ConvertCompCancelStateAndAssigneeAttributes(atsApiServer));
+      atsApiServer.addAtsDatabaseConversion(new ConvertToStateAndAssigneeAttributes(orcsApi));
+      atsApiServer.addAtsDatabaseConversion(new ConvertCreateUpdateAtsConfig(orcsApi));
       atsApiServer.addAtsDatabaseConversion(new ConvertAtsConfigGuidAttributes());
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionToAttributes());
-      atsApiServer.addAtsDatabaseConversion(new ConvertCompCancelStateAndAssigneeAttributes(atsApiServer));
+      atsApiServer.addAtsDatabaseConversion(
+         new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, atsApiServer));
+      atsApiServer.addAtsDatabaseConversion(
+         new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, atsApiServer));
+      atsApiServer.addAtsDatabaseConversion(new ConvertWorkDefinitionsToJava());
+      atsApiServer.addAtsDatabaseConversion(
+         new ConvertStateNotesFromXmlToJson(logger, jdbcService.getClient(), orcsApi, atsApiServer));
 
       // Register agile html report operations
       atsApiServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsApiServer, registry));
