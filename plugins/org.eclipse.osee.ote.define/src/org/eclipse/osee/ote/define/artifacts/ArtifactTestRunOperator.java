@@ -85,7 +85,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public String getScriptRevision() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.Revision, "");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.Revision, "");
    }
 
    public String getScriptUrl() {
@@ -213,32 +213,32 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public int getTestPointsPassed() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.Passed);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.PassedCount);
    }
 
    @Override
    public int getTestPointsFailed() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.Failed);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.FailedCount);
    }
 
    @Override
    public int getTotalTestPoints() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.TotalTestPoints);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.TotalTestPoints);
    }
 
    @Override
    public Date getEndDate() {
-      return processDateAttribute(OteAttributeTypes.EndDate);
+      return processDateAttribute(CoreAttributeTypes.EndDate);
    }
 
    @Override
    public Date getLastModifiedDate() {
-      return processDateAttribute(OteAttributeTypes.LastModifiedDate);
+      return processDateAttribute(CoreAttributeTypes.LastModifiedDate);
    }
 
    @Override
    public Date getTestStartDate() {
-      return processDateAttribute(OteAttributeTypes.StartDate);
+      return processDateAttribute(CoreAttributeTypes.StartDate);
    }
 
    private Date processDateAttribute(AttributeTypeId attributeType) {
@@ -253,7 +253,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    public boolean wasAborted() {
       boolean toReturn = true;
       try {
-         toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.ScriptAborted, false);
+         toReturn = artifact.getSoleAttributeValue(CoreAttributeTypes.ScriptAborted, false);
       } catch (Exception ex) {
          // do nothing
       }
@@ -290,32 +290,32 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public String getOseeVersion() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OseeVersion, "").trim();
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.OseeVersion, "").trim();
    }
 
    @Override
    public String getOseeServerTitle() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OseeServerTitle, "").trim();
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.OseeServerTitle, "").trim();
    }
 
    @Override
    public String getOseeServerVersion() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OseeServerJarVersion, "").trim();
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.OseeServerJarVersion, "").trim();
    }
 
    @Override
    public String getProcessorId() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.ProcessorId, "");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.ProcessorId, "");
    }
 
    @Override
    public String getRunDuration() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.ElapsedDate, "");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.ElapsedDate, "");
    }
 
    @Override
    public String getQualificationLevel() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.QualificationLevel, "");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.QualificationLevel, "");
    }
 
    @Override
@@ -325,12 +325,12 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    @Override
    public String getRanOnOperatingSystem() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.OsName, "");
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.OsName, "");
    }
 
    @Override
    public String getLastAuthor() {
-      return artifact.getSoleAttributeValue(OteAttributeTypes.LastAuthor, null);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.LastAuthor, null);
    }
 
    @Override
