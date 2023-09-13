@@ -93,14 +93,16 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                //This is here because current auth isn't passing in windows login id at first layer
                String accountId = requestContext.getHeaderString("osee.account.id");
                String userId = requestContext.getHeaderString("osee.user.id");
-               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(userId.toLowerCase()));
-               if (orcsApi.userService().getUser().isInvalid()) {
+
+               if (userId != null) {
+                  orcsApi.userService().setUserForCurrentThread(UserId.valueOf(userId.toLowerCase()));
+               }
+               if (accountId != null && orcsApi.userService().getUser().isInvalid()) {
                   orcsApi.userService().setUserForCurrentThread(UserId.valueOf(accountId.toLowerCase()));
                }
             }
 
          }
-
       } catch (Exception ex) {
          orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
       }
@@ -123,7 +125,6 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
 
          }
       }
-
    }
 
    private void unauthorized(ContainerRequestContext requestContext) {

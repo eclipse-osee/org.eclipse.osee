@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * @author Donald G. Dunne
@@ -34,14 +33,8 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
          "txs.gamma_id = attr.gamma_id and attr.attr_type_id = 239475839435799 AND lower(attr.value) = lower(?)) AND attr.attr_type_id " + //
          "IN (1152921504606847088, 1152921504606847073, 1152921504606847082)";
 
-   private JdbcService jdbcService;
-
    // for ReviewOsgiXml public void setLogger(Log logger)
    // for ReviewOsgiXml public void setOrcsApi(OrcsApi orcsApi)
-
-   public void setJdbcService(JdbcService jdbcService) {
-      this.jdbcService = jdbcService;
-   }
 
    @Override
    public String getProtocol() {
@@ -59,7 +52,7 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
       try {
          final Long[] artId = new Long[1];
          final Map<Long, String> typeIdToValue = new HashMap<Long, String>(3);
-         jdbcService.getClient().runQuery(stmt -> {
+         getOrcsApi().getJdbcService().getClient().runQuery(stmt -> {
             artId[0] = stmt.getLong("art_id");
             typeIdToValue.put(stmt.getLong("attr_type_id"), stmt.getString("value"));
          }, ART_ID_FROM_LOGIN_ID, loginId);
@@ -73,8 +66,7 @@ public class LoginIdAuthenticationProvider extends AbstractAuthenticationProvide
          return userTok;
       } catch (Exception ex) {
          getLogger().error(ex, "Exception resolving loginId: [%s]", loginId);
+         throw ex;
       }
-
-      return createUserToken(loginId, loginId, loginId + "@dbinit.com");
    }
 }
