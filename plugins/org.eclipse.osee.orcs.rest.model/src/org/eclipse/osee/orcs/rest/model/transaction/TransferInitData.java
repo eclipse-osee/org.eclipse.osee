@@ -34,6 +34,8 @@ public class TransferInitData {
    private TransferDBType transferDBType;
    @JsonProperty("results")
    private XResultData results;
+   @JsonProperty("branchLocations")
+   private List<BranchLocation> branchLocations;
 
    public List<BranchId> getBranchIds() {
       return branchIds;
@@ -73,6 +75,14 @@ public class TransferInitData {
 
    public void setResults(XResultData results) {
       this.results = results;
+   }
+
+   public List<BranchLocation> getBranchLocations() {
+      return branchLocations;
+   }
+
+   public void setBranchLocations(List<BranchLocation> asList) {
+      this.branchLocations = asList;
    }
 
 }
