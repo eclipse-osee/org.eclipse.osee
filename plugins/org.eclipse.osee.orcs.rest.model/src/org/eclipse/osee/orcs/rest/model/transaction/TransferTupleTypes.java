@@ -16,7 +16,7 @@ package org.eclipse.osee.orcs.rest.model.transaction;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.TransferFamily;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 
 /**
@@ -25,16 +25,21 @@ import org.eclipse.osee.framework.core.data.Tuple4Type;
 public final class TransferTupleTypes {
    private static final TransferOpType[] transferOpTypes = TransferOpType.values();
    private static final TransferDBType[] transferDBTypes = TransferDBType.values();
-   // repository, code unit, commitArtId, changeType
-   public static final Tuple4Type<BranchId, TransactionId, TransactionId, TransferOpType> TransferFile =
-      Tuple4Type.valueOf(TransferFamily, 100L, BranchId::valueOf, TransactionId::valueOf, TransactionId::valueOf,
-         ordinal -> transferOpTypes[ordinal.intValue()]);
+   // Exported Branch, Transfer Type, Exported Transaction, Unique Common Transaction
+   public static final Tuple4Type<BranchId, TransferOpType, TransactionId, TransactionId> TransferFile =
+      Tuple4Type.valueOf(TransferFamily, 100L, BranchId::valueOf, ordinal -> transferOpTypes[ordinal.intValue()],
+         TransactionId::valueOf, TransactionId::valueOf);
 
-   // repository, code unit, latest commitArtId, latest baseline commitArtId
-   public static final Tuple3Type<TransactionId, BranchId, TransferDBType> ExportedBranch = Tuple3Type.valueOf(
-      TransferFamily, 101L, TransactionId::valueOf, BranchId::valueOf, ordinal -> transferDBTypes[ordinal.intValue()]);
+   // Exported Transaction ID?, Branch ID, Branch Base Transaction Id, Transfer Type
+   public static final Tuple4Type<TransactionId, BranchId, TransactionId, TransferDBType> ExportedBranch =
+      Tuple4Type.valueOf(TransferFamily, 101L, TransactionId::valueOf, BranchId::valueOf, TransactionId::valueOf,
+         ordinal -> transferDBTypes[ordinal.intValue()]);
+
+   // Lock Check TransactionId (BaseTx), BranchId, TransactionId(ExportId)
+   public static final Tuple2Type<BranchId, TransactionId> TransferLocked =
+      Tuple2Type.valueOf(TransferFamily, 102L, BranchId::valueOf, TransactionId::valueOf);
 
    private TransferTupleTypes() {
-      // Constants
+      /* Constants */
    }
 }

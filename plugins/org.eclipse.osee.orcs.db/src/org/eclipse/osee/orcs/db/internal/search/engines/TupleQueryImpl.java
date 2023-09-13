@@ -99,6 +99,9 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_TUPLE3_GAMMA_FROM_E1 =
       "select tp3.gamma_id from osee_txs txs, osee_tuple3 tp3 where tuple_type = ? and e1 = ? and tp3.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1";
 
+   private static final String SELECT_TUPLE3_E2_FROM_E1 =
+      "select distinct e2 from osee_txs txs, osee_tuple3 tp3, osee_key_value where tuple_type = ? and e1 = ? and tp3.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1";
+
    private static final String SELECT_TUPLE3_E2_FROM_E3 =
       "select distinct e2 from osee_txs txs, osee_tuple3 tp3, osee_key_value where tuple_type = ? and e3 = ? and tp3.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1";
 
@@ -292,6 +295,13 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
+   public <E1, E2, E3> void getTuple3E2FromE1(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, E1 e1,
+      Consumer<E2> consumer) {
+      jdbcClient.runQuery(stmt -> consumer.accept(e2FromLong(tupleType, stmt)), SELECT_TUPLE3_E2_FROM_E1, tupleType, e1,
+         branchId);
+   }
+
+   @Override
    public <E1, E2, E3> void getTuple3E2FromE3(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, E3 e3,
       Consumer<E2> consumer) {
       jdbcClient.runQuery(stmt -> consumer.accept(e2FromLong(tupleType, stmt)), SELECT_TUPLE3_E2_FROM_E3, tupleType, e3,
@@ -412,6 +422,8 @@ public class TupleQueryImpl implements TupleQuery {
          return keyValue.getByValue((String) element);
       } else if (element instanceof Id) {
          return ((Id) element).getId();
+      } else if (element instanceof Enum<?>) {
+         return Long.valueOf(((Enum<?>) element).ordinal());
       }
       return (Long) element;
    }

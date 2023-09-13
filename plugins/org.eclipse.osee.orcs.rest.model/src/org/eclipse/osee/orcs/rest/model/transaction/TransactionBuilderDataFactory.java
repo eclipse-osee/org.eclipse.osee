@@ -77,8 +77,10 @@ public class TransactionBuilderDataFactory {
       Objects.requireNonNull(txId2, "The given end transaction cannot be null");
 
       List<ChangeItem> changes = orcsApi.getTransactionFactory().compareTxs(txId1, txId2);
+      if (changes.isEmpty()) {
+         throw new OseeCoreException("Change report is empty");
+      }
       TransactionBuilderData tbd = new TransactionBuilderData();
-
       for (ChangeItem change : changes) {
          if (isGoodChange(change)) {
             ChangeType ct = change.getChangeType();
