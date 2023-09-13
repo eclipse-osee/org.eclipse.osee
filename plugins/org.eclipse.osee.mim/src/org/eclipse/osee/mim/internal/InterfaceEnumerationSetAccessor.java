@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.orcs.OrcsApi;

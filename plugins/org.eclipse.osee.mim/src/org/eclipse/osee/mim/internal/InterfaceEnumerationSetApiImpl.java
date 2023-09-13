@@ -16,19 +16,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
-import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
@@ -66,7 +66,7 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query) {
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, false);
    }
 
@@ -91,12 +91,12 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> queryExact(BranchId branch, MimAttributeQuery query) {
+   public Collection<InterfaceEnumerationSet> queryExact(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, true);
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, AttributeQuery query, boolean isExact) {
       return this.query(branch, query, isExact, 0L, 0L);
    }
 
@@ -112,19 +112,19 @@ public class InterfaceEnumerationSetApiImpl implements InterfaceEnumerationSetAp
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, long pageNum,
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, AttributeQuery query, long pageNum,
       long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+   public Collection<InterfaceEnumerationSet> queryExact(BranchId branch, AttributeQuery query, long pageNum,
       long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceEnumerationSet> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+   public Collection<InterfaceEnumerationSet> query(BranchId branch, AttributeQuery query, boolean isExact,
       long pageNum, long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query, isExact, pageNum, pageSize);

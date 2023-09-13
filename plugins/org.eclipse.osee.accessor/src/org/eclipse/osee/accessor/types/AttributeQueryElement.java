@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim.types;
+package org.eclipse.osee.accessor.types;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
-public class MimAttributeQueryElement {
+public class AttributeQueryElement {
    private AttributeTypeId attributeId;
    private String value;
 
-   public MimAttributeQueryElement() {
+   public AttributeQueryElement() {
    }
 
    /**

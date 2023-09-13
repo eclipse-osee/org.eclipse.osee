@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.mim.types;
+package org.eclipse.osee.accessor.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -24,27 +24,27 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  *
  * @author Luciano T. Vaglienti
  */
-public class PLGenericDBObject extends NamedIdBase {
-   public static final PLGenericDBObject SENTINEL = new PLGenericDBObject();
+public class ArtifactAccessorResult extends NamedIdBase {
+   public static final ArtifactAccessorResult SENTINEL = new ArtifactAccessorResult();
 
    private ArtifactReadable artifactReadable = ArtifactReadable.SENTINEL;
 
-   public PLGenericDBObject(ArtifactToken art) {
+   public ArtifactAccessorResult(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
 
-   public PLGenericDBObject(ArtifactReadable art) {
+   public ArtifactAccessorResult(ArtifactReadable art) {
       this(art.getId(), art.getName());
       this.artifactReadable = art;
    }
 
-   public PLGenericDBObject(Long id, String name) {
+   public ArtifactAccessorResult(Long id, String name) {
       this();
       this.setId(id);
       this.setName(name);
    }
 
-   public PLGenericDBObject() {
+   public ArtifactAccessorResult() {
       super(ArtifactId.SENTINEL.getId(), "");
       // Not doing anything
    }

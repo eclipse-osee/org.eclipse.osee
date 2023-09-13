@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.concurrent.ThreadLocalRandom;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceNode extends PLGenericDBObject {
+public class InterfaceNode extends ArtifactAccessorResult {
 
    public static final InterfaceNode SENTINEL = new InterfaceNode();
 

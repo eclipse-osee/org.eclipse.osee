@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.types;
 
 import java.util.List;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -20,7 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 /**
  * @author Luciano T. Vaglienti
  */
-public class ConnectionViewData extends PLGenericDBObject {
+public class ConnectionViewData extends ArtifactAccessorResult {
    private TransportType TransportType; //will need logic for both of these or data stored in DB
    private List<InterfaceNode> nodes;
    private ApplicabilityToken applicability;

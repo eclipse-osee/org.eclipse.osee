@@ -18,17 +18,17 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
-import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
@@ -67,7 +67,7 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query) {
+   public Collection<PlatformTypeToken> query(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, false);
    }
 
@@ -187,12 +187,12 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public Collection<PlatformTypeToken> queryExact(BranchId branch, MimAttributeQuery query) {
+   public Collection<PlatformTypeToken> queryExact(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, true);
    }
 
    @Override
-   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+   public Collection<PlatformTypeToken> query(BranchId branch, AttributeQuery query, boolean isExact) {
       return this.query(branch, query, isExact, 0L, 0L);
    }
 
@@ -213,18 +213,17 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    }
 
    @Override
-   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<PlatformTypeToken> query(BranchId branch, AttributeQuery query, long pageNum, long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<PlatformTypeToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
-      long pageSize) {
+   public Collection<PlatformTypeToken> queryExact(BranchId branch, AttributeQuery query, long pageNum, long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<PlatformTypeToken> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
+   public Collection<PlatformTypeToken> query(BranchId branch, AttributeQuery query, boolean isExact, long pageNum,
       long pageSize) {
       try {
          return this.getAccessor().getAllByQuery(branch, query,

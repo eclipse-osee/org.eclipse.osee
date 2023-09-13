@@ -15,11 +15,12 @@ package org.eclipse.osee.mim.types;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class StructurePath extends PLGenericDBObject {
+public class StructurePath extends ArtifactAccessorResult {
    public static final StructurePath SENTINEL = new StructurePath();
    private final LinkedList<ResolvedStructurePath> paths = new LinkedList<ResolvedStructurePath>();
    private final InterfaceStructureToken structure;

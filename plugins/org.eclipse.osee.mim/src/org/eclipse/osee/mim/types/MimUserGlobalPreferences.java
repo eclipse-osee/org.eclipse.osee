@@ -12,13 +12,14 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class MimUserGlobalPreferences extends PLGenericDBObject {
+public class MimUserGlobalPreferences extends ArtifactAccessorResult {
    public static final MimUserGlobalPreferences SENTINEL = new MimUserGlobalPreferences();
    private boolean wordWrap = false;
 

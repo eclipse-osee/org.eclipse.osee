@@ -13,6 +13,8 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.accessor.types.AttributeQuery;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
@@ -26,8 +28,6 @@ import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.QueryCapableMIMAPI;
 import org.eclipse.osee.mim.QueryMIMResourcesEndpoint;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 
 public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint {
    private final BranchId branch;
@@ -55,7 +55,7 @@ public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint 
    }
 
    @Override
-   public Collection<? extends PLGenericDBObject> get(MimAttributeQuery query) {
+   public Collection<? extends ArtifactAccessorResult> get(AttributeQuery query) {
       if (getApi(query.getType()) != null) {
          return getApi(query.getType()).query(branch, query);
       }
@@ -63,7 +63,7 @@ public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint 
       return null;
    }
 
-   private QueryCapableMIMAPI<? extends PLGenericDBObject> getApi(ArtifactTypeId type) {
+   private QueryCapableMIMAPI<? extends ArtifactAccessorResult> getApi(ArtifactTypeId type) {
       switch (type.getIdString()) {
          case "6039606571486514295":
             return this.nodeApi;
@@ -91,7 +91,7 @@ public class QueryMIMResourcesEndpointImpl implements QueryMIMResourcesEndpoint 
    }
 
    @Override
-   public Collection<? extends PLGenericDBObject> getExact(MimAttributeQuery query) {
+   public Collection<? extends ArtifactAccessorResult> getExact(AttributeQuery query) {
       if (getApi(query.getType()) != null) {
          return getApi(query.getType()).queryExact(branch, query);
       } else {

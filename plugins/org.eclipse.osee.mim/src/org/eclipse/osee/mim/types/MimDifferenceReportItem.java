@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.types;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
@@ -21,17 +22,17 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
  * @author Ryan T. Baldwin
  */
 public class MimDifferenceReportItem {
-   private final PLGenericDBObject item;
+   private final ArtifactAccessorResult item;
    private final List<ChangeItem> changes;
    private final List<ArtifactId> parents;
 
-   public MimDifferenceReportItem(PLGenericDBObject item, List<ChangeItem> changes) {
+   public MimDifferenceReportItem(ArtifactAccessorResult item, List<ChangeItem> changes) {
       this.item = item;
       this.changes = changes;
       this.parents = new LinkedList<>();
    }
 
-   public PLGenericDBObject getItem() {
+   public ArtifactAccessorResult getItem() {
       return item;
    }
 

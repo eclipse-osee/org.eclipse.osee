@@ -10,16 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim;
+package org.eclipse.osee.accessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.mim.types.ArtifactMatch;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
@@ -335,51 +335,51 @@ public interface ArtifactAccessor<T> {
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query)
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact)
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<FollowRelation> followRelations,
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
       boolean isExact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
       InvocationTargetException, NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, long pageCount, long pageSize)
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, long pageCount, long pageSize)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, long pageCount, long pageSize)
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact, long pageCount, long pageSize)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<FollowRelation> followRelations,
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
       boolean isExact, long pageCount, long pageSize) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, AttributeTypeId orderByAttribute)
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, AttributeTypeId orderByAttribute)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact,
-      AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException;
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact, AttributeTypeId orderByAttribute)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<FollowRelation> followRelations,
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
       boolean isExact, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, long pageCount, long pageSize,
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, long pageCount, long pageSize,
       AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
       InvocationTargetException, NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, long pageCount, long pageSize,
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact, long pageCount, long pageSize,
       AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
       InvocationTargetException, NoSuchMethodException, SecurityException;
 
-   Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, Collection<FollowRelation> followRelations,
+   Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
       boolean isExact, long pageCount, long pageSize, AttributeTypeId orderByAttribute)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;

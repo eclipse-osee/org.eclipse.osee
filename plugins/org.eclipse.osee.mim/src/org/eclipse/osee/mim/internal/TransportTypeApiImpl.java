@@ -15,14 +15,14 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.TransportTypeApi;
-import org.eclipse.osee.mim.types.ArtifactMatch;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.TransportType;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -42,17 +42,17 @@ public class TransportTypeApiImpl implements TransportTypeApi {
    }
 
    @Override
-   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query) {
+   public Collection<TransportType> query(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, 0L, 0L);
    }
 
    @Override
-   public Collection<TransportType> queryExact(BranchId branch, MimAttributeQuery query) {
+   public Collection<TransportType> queryExact(BranchId branch, AttributeQuery query) {
       return this.queryExact(branch, query, 0L, 0L);
    }
 
    @Override
-   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+   public Collection<TransportType> query(BranchId branch, AttributeQuery query, boolean isExact) {
       return this.query(branch, query, isExact, 0L, 0L);
    }
 
@@ -78,17 +78,17 @@ public class TransportTypeApiImpl implements TransportTypeApi {
    }
 
    @Override
-   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<TransportType> query(BranchId branch, AttributeQuery query, long pageNum, long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<TransportType> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize) {
+   public Collection<TransportType> queryExact(BranchId branch, AttributeQuery query, long pageNum, long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<TransportType> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum,
+   public Collection<TransportType> query(BranchId branch, AttributeQuery query, boolean isExact, long pageNum,
       long pageSize) {
       try {
          return this.accessor.getAllByQuery(branch, query, isExact, pageNum, pageSize);

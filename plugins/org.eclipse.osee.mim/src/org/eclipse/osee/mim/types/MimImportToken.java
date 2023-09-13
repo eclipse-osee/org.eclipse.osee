@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Ryan Baldwin
  */
-public class MimImportToken extends PLGenericDBObject {
+public class MimImportToken extends ArtifactAccessorResult {
    public static final MimImportToken SENTINEL = new MimImportToken();
 
    private String url;

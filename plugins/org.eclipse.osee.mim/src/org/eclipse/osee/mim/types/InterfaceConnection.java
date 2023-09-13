@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.types;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceConnection extends PLGenericDBObject {
+public class InterfaceConnection extends ArtifactAccessorResult {
 
    public static final InterfaceConnection SENTINEL = new InterfaceConnection();
 

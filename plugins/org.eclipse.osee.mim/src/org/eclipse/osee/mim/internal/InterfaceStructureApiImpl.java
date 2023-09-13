@@ -21,6 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -31,18 +34,15 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
-import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
@@ -486,7 +486,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query) {
+   public Collection<InterfaceStructureToken> query(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, false);
    }
 
@@ -677,12 +677,12 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public Collection<InterfaceStructureToken> queryExact(BranchId branch, MimAttributeQuery query) {
+   public Collection<InterfaceStructureToken> queryExact(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, true);
    }
 
    @Override
-   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+   public Collection<InterfaceStructureToken> query(BranchId branch, AttributeQuery query, boolean isExact) {
       return this.query(branch, query, isExact, 0L, 0L);
    }
 
@@ -698,19 +698,19 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    @Override
-   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query, long pageNum,
+   public Collection<InterfaceStructureToken> query(BranchId branch, AttributeQuery query, long pageNum,
       long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+   public Collection<InterfaceStructureToken> queryExact(BranchId branch, AttributeQuery query, long pageNum,
       long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureToken> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+   public Collection<InterfaceStructureToken> query(BranchId branch, AttributeQuery query, boolean isExact,
       long pageNum, long pageSize) {
       try {
          List<InterfaceStructureToken> structureList = new LinkedList<InterfaceStructureToken>();

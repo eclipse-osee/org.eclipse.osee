@@ -514,7 +514,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                   String attrName = orcsApi.tokenService().getAttributeType(change.getItemTypeId().getId()).getName();
                   String oldValue = change.getBaselineVersion().getValue();
                   String newValue = change.getCurrentVersion().getValue();
-                  item.addAttributeChange(change.getItemTypeId().getId(), attrName, oldValue, newValue);
+                  item.addMimAttributeChange(change.getItemTypeId().getId(), attrName, oldValue, newValue);
                } else if (change.getChangeType().equals(
                   ChangeType.Artifact) && change.getCurrentVersion().getModType().equals(ModificationType.DELETED)) {
                   deleted = true;
@@ -524,11 +524,11 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                         ModificationType.INTRODUCED);
                   String artBName = orcsApi.getQueryFactory().fromBranch(compareBranch).andId(
                      change.getArtIdB()).asArtifactOrSentinel().getName();
-                  item.addRelationChange(change.getItemTypeId().getId(), change.getArtId(), change.getArtIdB(),
+                  item.addMimRelationChange(change.getItemTypeId().getId(), change.getArtId(), change.getArtIdB(),
                      artBName, relationAdded);
                }
             }
-            if (item.getAttributeChanges().isEmpty()) {
+            if (item.getMimAttributeChanges().isEmpty()) {
                added = false;
             }
             item.setAdded(added);

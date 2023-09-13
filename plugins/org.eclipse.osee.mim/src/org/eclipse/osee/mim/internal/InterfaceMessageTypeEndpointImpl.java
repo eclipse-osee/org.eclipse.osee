@@ -14,13 +14,13 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.InterfaceMessageTypeApi;
 import org.eclipse.osee.mim.InterfaceMessageTypeEndpoint;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 
 /**
  * @author Luciano T. Vaglienti
@@ -35,7 +35,7 @@ public class InterfaceMessageTypeEndpointImpl implements InterfaceMessageTypeEnd
    }
 
    @Override
-   public Collection<PLGenericDBObject> getAllMessageTypes(String filter, ArtifactId viewId, long pageNum,
+   public Collection<ArtifactAccessorResult> getAllMessageTypes(String filter, ArtifactId viewId, long pageNum,
       long pageSize, AttributeTypeToken orderByAttributeType) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (Strings.isValid(filter)) {
@@ -45,7 +45,7 @@ public class InterfaceMessageTypeEndpointImpl implements InterfaceMessageTypeEnd
    }
 
    @Override
-   public PLGenericDBObject getMessageType(ArtifactId messageTypeId) {
+   public ArtifactAccessorResult getMessageType(ArtifactId messageTypeId) {
       return messageTypeApi.get(branch, messageTypeId);
    }
 

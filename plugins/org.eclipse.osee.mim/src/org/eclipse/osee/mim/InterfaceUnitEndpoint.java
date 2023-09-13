@@ -20,10 +20,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 
 /**
  * @author Luciano T. Vaglienti
@@ -36,7 +36,7 @@ public interface InterfaceUnitEndpoint {
    /**
     * @return all units matching criteria
     */
-   Collection<PLGenericDBObject> getAllUnits(@QueryParam("filter") String filter,
+   Collection<ArtifactAccessorResult> getAllUnits(@QueryParam("filter") String filter,
       @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
@@ -54,6 +54,6 @@ public interface InterfaceUnitEndpoint {
    /**
     * Gets a specific unit.
     */
-   PLGenericDBObject getUnit(@PathParam("id") ArtifactId rateId);
+   ArtifactAccessorResult getUnit(@PathParam("id") ArtifactId rateId);
 
 }

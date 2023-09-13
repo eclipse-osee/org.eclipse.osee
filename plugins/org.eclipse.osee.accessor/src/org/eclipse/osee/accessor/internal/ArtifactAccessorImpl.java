@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim.internal;
+package org.eclipse.osee.accessor.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,6 +19,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.AttributeQuery;
+import org.eclipse.osee.accessor.types.AttributeQueryElement;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.RelatedArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -28,12 +34,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.mim.ArtifactAccessor;
-import org.eclipse.osee.mim.types.ArtifactMatch;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
-import org.eclipse.osee.mim.types.MimAttributeQueryElement;
-import org.eclipse.osee.mim.types.MimRelatedArtifact;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
@@ -44,9 +44,9 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  * @author Luciano T. Vaglienti
  * @param <T> Class for storing/presenting artifact
  */
-public abstract class ArtifactAccessorImpl<T extends PLGenericDBObject> implements ArtifactAccessor<T> {
+public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements ArtifactAccessor<T> {
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
-   private final OrcsApi orcsApi;
+   private OrcsApi orcsApi;
 
    @SuppressWarnings("unchecked")
    private Class<T> getType() {
@@ -55,6 +55,10 @@ public abstract class ArtifactAccessorImpl<T extends PLGenericDBObject> implemen
 
    public ArtifactAccessorImpl(ArtifactTypeToken artifactType, OrcsApi orcsApi) {
       this.setArtifactType(artifactType);
+      this.bindOrcsApi(orcsApi);
+   }
+
+   public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
@@ -728,71 +732,68 @@ public abstract class ArtifactAccessorImpl<T extends PLGenericDBObject> implemen
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query)
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, false);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact)
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, new LinkedList<FollowRelation>(), isExact);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query,
-      Collection<FollowRelation> followRelations, boolean isExact)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
+      boolean isExact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, followRelations, isExact, 0L, 0L);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, long pageCount, long pageSize)
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, long pageCount, long pageSize)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, new LinkedList<FollowRelation>(), false, pageCount, pageSize);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, long pageCount,
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact, long pageCount,
       long pageSize) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
       InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, new LinkedList<FollowRelation>(), isExact, pageCount, pageSize);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query,
-      Collection<FollowRelation> followRelations, boolean isExact, long pageCount, long pageSize)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
+      boolean isExact, long pageCount, long pageSize) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, followRelations, isExact, pageCount, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, AttributeTypeId orderByAttribute)
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, AttributeTypeId orderByAttribute)
       throws IllegalArgumentException, SecurityException {
       return this.getAllByQuery(branch, query, false, orderByAttribute);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact,
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact,
       AttributeTypeId orderByAttribute) throws IllegalArgumentException, SecurityException {
       return null;
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query,
-      Collection<FollowRelation> followRelations, boolean isExact, AttributeTypeId orderByAttribute)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException {
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
+      boolean isExact, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, new LinkedList<FollowRelation>(), isExact, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, long pageCount, long pageSize,
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, long pageCount, long pageSize,
       AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
       InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, new LinkedList<FollowRelation>(), false, pageCount, pageSize,
@@ -800,7 +801,7 @@ public abstract class ArtifactAccessorImpl<T extends PLGenericDBObject> implemen
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query, boolean isExact, long pageCount,
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, boolean isExact, long pageCount,
       long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAllByQuery(branch, query, new LinkedList<FollowRelation>(), isExact, pageCount, pageSize,
@@ -808,10 +809,10 @@ public abstract class ArtifactAccessorImpl<T extends PLGenericDBObject> implemen
    }
 
    @Override
-   public Collection<T> getAllByQuery(BranchId branch, MimAttributeQuery query,
-      Collection<FollowRelation> followRelations, boolean isExact, long pageCount, long pageSize,
-      AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException {
+   public Collection<T> getAllByQuery(BranchId branch, AttributeQuery query, Collection<FollowRelation> followRelations,
+      boolean isExact, long pageCount, long pageSize, AttributeTypeId orderByAttribute)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
       /**
        * Perform a query using the: relation defined in query.getRelated()(if it exists) attribute type id list defined
        * in query.getQueries() value list defined in query.getQueries()
@@ -819,11 +820,11 @@ public abstract class ArtifactAccessorImpl<T extends PLGenericDBObject> implemen
       QueryOption[] queryOptions = isExact ? QueryOption.EXACT_MATCH_OPTIONS : QueryOption.CONTAINS_MATCH_OPTIONS;
       QueryBuilder executeQuery =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
-      if (!query.getRelated().equals(MimRelatedArtifact.SENTINEL)) {
+      if (!query.getRelated().equals(RelatedArtifact.SENTINEL)) {
          executeQuery = executeQuery.andRelatedTo(RelationTypeSide.create(query.getRelated().getRelation(),
             RelationSide.fromString(query.getRelated().getSide())), query.getRelated().getRelatedId());
       }
-      for (MimAttributeQueryElement q : query.getQueries()) {
+      for (AttributeQueryElement q : query.getQueries()) {
          executeQuery =
             executeQuery.and(orcsApi.tokenService().getAttributeType(q.getAttributeId()), q.getValue(), queryOptions);
       }

@@ -15,6 +15,7 @@ package org.eclipse.osee.mim.types;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class MimUserPreference extends PLGenericDBObject {
+public class MimUserPreference extends ArtifactAccessorResult {
    public static final MimUserPreference SENTINEL = new MimUserPreference();
    private boolean isInEditMode = false;
    private boolean hasBranchPref = false;

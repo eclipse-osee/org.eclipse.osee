@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceStructureToken extends PLGenericDBObject {
+public class InterfaceStructureToken extends ArtifactAccessorResult {
    public static final InterfaceStructureToken SENTINEL = new InterfaceStructureToken();
 
    private String nameAbbrev;

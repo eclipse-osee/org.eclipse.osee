@@ -14,13 +14,13 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.InterfaceRateApi;
 import org.eclipse.osee.mim.InterfaceRateEndpoint;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 
 /**
  * @author Luciano T. Vaglienti
@@ -35,7 +35,7 @@ public class InterfaceRateEndpointImpl implements InterfaceRateEndpoint {
    }
 
    @Override
-   public Collection<PLGenericDBObject> getAllRates(String filter, ArtifactId viewId, long pageNum, long pageSize,
+   public Collection<ArtifactAccessorResult> getAllRates(String filter, ArtifactId viewId, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeType) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (Strings.isValid(filter)) {
@@ -45,7 +45,7 @@ public class InterfaceRateEndpointImpl implements InterfaceRateEndpoint {
    }
 
    @Override
-   public PLGenericDBObject getRate(ArtifactId rateId) {
+   public ArtifactAccessorResult getRate(ArtifactId rateId) {
       return rateApi.get(branch, rateId);
    }
 

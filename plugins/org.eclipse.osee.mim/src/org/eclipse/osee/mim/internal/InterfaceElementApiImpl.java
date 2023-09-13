@@ -19,6 +19,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -26,13 +29,10 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.mim.ArtifactAccessor;
 import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
-import org.eclipse.osee.mim.types.ArtifactMatch;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementTokenWithPath;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
@@ -309,7 +309,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query) {
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, false);
    }
 
@@ -344,12 +344,12 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, MimAttributeQuery query) {
+   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, AttributeQuery query) {
       return this.query(branch, query, true);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, boolean isExact) {
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, AttributeQuery query, boolean isExact) {
       return this.query(branch, query, isExact, 0L, 0L);
    }
 
@@ -394,19 +394,19 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, long pageNum,
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, AttributeQuery query, long pageNum,
       long pageSize) {
       return this.query(branch, query, false, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, MimAttributeQuery query, long pageNum,
+   public Collection<InterfaceStructureElementToken> queryExact(BranchId branch, AttributeQuery query, long pageNum,
       long pageSize) {
       return this.query(branch, query, true, pageNum, pageSize);
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> query(BranchId branch, MimAttributeQuery query, boolean isExact,
+   public Collection<InterfaceStructureElementToken> query(BranchId branch, AttributeQuery query, boolean isExact,
       long pageNum, long pageSize) {
       try {
          List<InterfaceStructureElementToken> elements =

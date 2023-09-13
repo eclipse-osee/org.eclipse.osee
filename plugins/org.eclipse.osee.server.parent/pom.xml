@@ -109,6 +109,9 @@
 					../../plugins/org.eclipse.osee.web.ui
 				</module>
 				<module>
+					../../plugins/org.eclipse.osee.accessor
+				</module>
+				<module>
 					../../plugins/org.eclipse.osee.mim
 				</module>
 			</modules>
@@ -168,6 +171,9 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.web.ui
+				</module>
+				<module>
+					../../plugins/org.eclipse.osee.accessor
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.mim

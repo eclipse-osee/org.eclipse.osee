@@ -14,6 +14,7 @@ package org.eclipse.osee.mim;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
