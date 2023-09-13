@@ -37,31 +37,31 @@ public class OteToAttributeMap {
 
       outfileFieldToAttributeMap.put(TestRunField.USER_ID, CoreAttributeTypes.UserId);
 
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_REVISION, OteAttributeTypes.Revision);
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_MODIFIED_FLAG, OteAttributeTypes.ModifiedFlag);
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_LAST_AUTHOR, OteAttributeTypes.LastAuthor);
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_LAST_MODIFIED, OteAttributeTypes.LastModifiedDate);
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_REVISION, CoreAttributeTypes.Revision);
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_MODIFIED_FLAG, CoreAttributeTypes.ModifiedFlag);
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_LAST_AUTHOR, CoreAttributeTypes.LastAuthor);
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_LAST_MODIFIED, CoreAttributeTypes.LastModifiedDate);
       outfileFieldToAttributeMap.put(TestRunField.SCRIPT_URL, OteAttributeTypes.TestScriptUrl);
 
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_ARCH, OteAttributeTypes.OsArchitecture);
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_NAME, OteAttributeTypes.OsName);
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_VERSION, OteAttributeTypes.OsVersion);
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_VERSION, OteAttributeTypes.OseeVersion);
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_TITLE, OteAttributeTypes.OseeServerTitle);
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_ARCH, CoreAttributeTypes.OsArchitecture);
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_NAME, CoreAttributeTypes.OsName);
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_VERSION, CoreAttributeTypes.OsVersion);
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_VERSION, CoreAttributeTypes.OseeVersion);
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_TITLE, CoreAttributeTypes.OseeServerTitle);
       outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_JAR_VERSIONS,
-         OteAttributeTypes.OseeServerJarVersion);
+         CoreAttributeTypes.OseeServerJarVersion);
 
-      outfileFieldToAttributeMap.put(TestRunField.PROCESSOR_ID, OteAttributeTypes.ProcessorId);
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_START_DATE, OteAttributeTypes.StartDate);
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_END_DATE, OteAttributeTypes.EndDate);
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_ELAPSED_TIME, OteAttributeTypes.ElapsedDate);
+      outfileFieldToAttributeMap.put(TestRunField.PROCESSOR_ID, CoreAttributeTypes.ProcessorId);
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_START_DATE, CoreAttributeTypes.StartDate);
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_END_DATE, CoreAttributeTypes.EndDate);
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_ELAPSED_TIME, CoreAttributeTypes.ElapsedDate);
 
-      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_PASSED, OteAttributeTypes.Passed);
-      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_FAILED, OteAttributeTypes.Failed);
-      outfileFieldToAttributeMap.put(TestRunField.TOTAL_TEST_POINTS, OteAttributeTypes.TotalTestPoints);
-      outfileFieldToAttributeMap.put(TestRunField.TEST_ABORT_STATUS, OteAttributeTypes.ScriptAborted);
+      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_PASSED, CoreAttributeTypes.PassedCount);
+      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_FAILED, CoreAttributeTypes.FailedCount);
+      outfileFieldToAttributeMap.put(TestRunField.TOTAL_TEST_POINTS, CoreAttributeTypes.TotalTestPoints);
+      outfileFieldToAttributeMap.put(TestRunField.TEST_ABORT_STATUS, CoreAttributeTypes.ScriptAborted);
 
-      outfileFieldToAttributeMap.put(TestRunField.QUALIFICATION_LEVEL, OteAttributeTypes.QualificationLevel);
+      outfileFieldToAttributeMap.put(TestRunField.QUALIFICATION_LEVEL, CoreAttributeTypes.QualificationLevel);
 
       outfileFieldToAttributeMap.put(TestRunField.BUILD_ID, OteAttributeTypes.BuildId);
 
@@ -119,24 +119,24 @@ public class OteToAttributeMap {
    }
 
    private SimpleDateFormat getFormat(AttributeTypeId attributeType) {
-      if (attributeType.equals(OteAttributeTypes.LastModifiedDate)) {
+      if (attributeType.equals(CoreAttributeTypes.LastModifiedDate)) {
          return lastModifiedFormat;
       }
       return scriptStartEndDataFormat;
    }
 
    private boolean isDate(AttributeTypeId attributeType) {
-      return attributeType.matches(OteAttributeTypes.LastModifiedDate, OteAttributeTypes.StartDate,
-         OteAttributeTypes.EndDate);
+      return attributeType.matches(CoreAttributeTypes.LastModifiedDate, CoreAttributeTypes.StartDate,
+         CoreAttributeTypes.EndDate);
    }
 
    private boolean isInteger(AttributeTypeId attributeType) {
-      return attributeType.matches(OteAttributeTypes.TotalTestPoints, OteAttributeTypes.Passed,
-         OteAttributeTypes.Failed);
+      return attributeType.matches(CoreAttributeTypes.TotalTestPoints, CoreAttributeTypes.PassedCount,
+         CoreAttributeTypes.FailedCount);
    }
 
    private boolean isBoolean(AttributeTypeId attributeType) {
-      return attributeType.matches(OteAttributeTypes.ScriptAborted, OteAttributeTypes.RanInBatchMode,
+      return attributeType.matches(CoreAttributeTypes.ScriptAborted, OteAttributeTypes.RanInBatchMode,
          OteAttributeTypes.IsBatchModeAllowed);
    }
 }

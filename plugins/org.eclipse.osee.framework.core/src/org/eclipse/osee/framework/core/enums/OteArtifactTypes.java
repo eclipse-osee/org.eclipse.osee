@@ -16,36 +16,36 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractTestResult;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Extension;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.FailedCount;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.LastAuthor;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.LastModifiedDate;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ModifiedFlag;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.OsArchitecture;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.OsName;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.OsVersion;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.OseeServerJarVersion;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.OseeServerTitle;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.OseeVersion;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PassedCount;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ProcessorId;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.QualificationLevel;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Revision;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ScriptAborted;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.TestScriptGuid;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.TotalTestPoints;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UserId;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.ote;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.BuildId;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.Checksum;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.ElapsedDate;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.EndDate;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.Failed;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ElapsedDate;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.EndDate;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.IsBatchModeAllowed;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.LastAuthor;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.LastDateUploaded;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.LastModifiedDate;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.ModifiedFlag;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.OsArchitecture;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.OsName;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.OsVersion;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.OseeServerJarVersion;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.OseeServerTitle;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.OseeVersion;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.OutfileUrl;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.Passed;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.ProcessorId;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.QualificationLevel;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.RanInBatchMode;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.Revision;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.ScriptAborted;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.StartDate;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.StartDate;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.TestDisposition;
 import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.TestScriptUrl;
-import static org.eclipse.osee.framework.core.enums.OteAttributeTypes.TotalTestPoints;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 public interface OteArtifactTypes {
@@ -57,7 +57,7 @@ public interface OteArtifactTypes {
       .zeroOrOne(ElapsedDate)
       .zeroOrOne(EndDate)
       .zeroOrOne(Extension)
-      .exactlyOne(Failed)
+      .exactlyOne(FailedCount)
       .exactlyOne(IsBatchModeAllowed, Boolean.TRUE)
       .zeroOrOne(LastAuthor)
       .zeroOrOne(LastDateUploaded)
@@ -70,7 +70,7 @@ public interface OteArtifactTypes {
       .zeroOrOne(OseeServerTitle)
       .zeroOrOne(OseeVersion)
       .exactlyOne(OutfileUrl, "\"\"")
-      .exactlyOne(Passed)
+      .exactlyOne(PassedCount)
       .zeroOrOne(ProcessorId)
       .zeroOrOne(QualificationLevel, "DEVELOPMENT")
       .exactlyOne(RanInBatchMode)
