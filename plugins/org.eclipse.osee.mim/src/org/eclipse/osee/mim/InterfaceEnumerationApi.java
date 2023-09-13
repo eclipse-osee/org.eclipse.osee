@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim;
 
 import java.util.List;
+import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;

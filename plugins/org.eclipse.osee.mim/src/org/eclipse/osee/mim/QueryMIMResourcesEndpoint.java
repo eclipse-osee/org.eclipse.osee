@@ -18,9 +18,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.accessor.types.AttributeQuery;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 
 @Path("query")
 @Swagger
@@ -29,11 +29,11 @@ public interface QueryMIMResourcesEndpoint {
    @POST()
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Collection<? extends PLGenericDBObject> get(MimAttributeQuery query);
+   public Collection<? extends ArtifactAccessorResult> get(AttributeQuery query);
 
    @POST()
    @Path("exact")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Collection<? extends PLGenericDBObject> getExact(MimAttributeQuery query);
+   public Collection<? extends ArtifactAccessorResult> getExact(AttributeQuery query);
 }

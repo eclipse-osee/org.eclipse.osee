@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceEnumeration extends PLGenericDBObject {
+public class InterfaceEnumeration extends ArtifactAccessorResult {
    public static final InterfaceEnumeration SENTINEL = new InterfaceEnumeration();
    private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
    private Long ordinal = 0L;

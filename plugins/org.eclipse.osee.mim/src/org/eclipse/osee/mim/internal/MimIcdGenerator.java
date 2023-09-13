@@ -323,10 +323,10 @@ public class MimIcdGenerator {
                   MimDifferenceItem elementDiffItem = diffs.get(ArtifactId.valueOf(element.getId()));
                   MimDifferenceItem pTypeDiffItem = diffs.get(ArtifactId.valueOf(element.getPlatformType().getId()));
                   structureSizeChanged =
-                     structureSizeChanged || (pTypeDiffItem != null && pTypeDiffItem.getAttributeChanges().containsKey(
-                        CoreAttributeTypes.InterfacePlatformTypeBitSize.getId())) || (elementDiffItem != null && (elementDiffItem.isAdded() || !elementDiffItem.getRelationChanges().isEmpty()));
-                  boolean elementAdded = diffItem != null && diffItem.getRelationChanges().containsKey(
-                     ArtifactId.valueOf(element.getId())) && diffItem.getRelationChanges().get(
+                     structureSizeChanged || (pTypeDiffItem != null && pTypeDiffItem.getMimAttributeChanges().containsKey(
+                        CoreAttributeTypes.InterfacePlatformTypeBitSize.getId())) || (elementDiffItem != null && (elementDiffItem.isAdded() || !elementDiffItem.getMimRelationChanges().isEmpty()));
+                  boolean elementAdded = diffItem != null && diffItem.getMimRelationChanges().containsKey(
+                     ArtifactId.valueOf(element.getId())) && diffItem.getMimRelationChanges().get(
                         ArtifactId.valueOf(element.getId())).isAdded();
                   if (structureSizeChanged || elementAdded) {
                      byteChangeIndex = Math.min(i, byteChangeIndex);
@@ -356,11 +356,11 @@ public class MimIcdGenerator {
                String subMsgNumber = subMessage.getInterfaceSubMessageNumber();
                String taskFileType = struct.getInterfaceTaskFileType() + "";
                String desc = struct.getDescription();
-               boolean txRateChanged = msgDiffItem != null && msgDiffItem.getAttributeChanges().containsKey(
+               boolean txRateChanged = msgDiffItem != null && msgDiffItem.getMimAttributeChanges().containsKey(
                   CoreAttributeTypes.InterfaceMessageRate.getId());
-               boolean msgNumChanged = msgDiffItem != null && msgDiffItem.getAttributeChanges().containsKey(
+               boolean msgNumChanged = msgDiffItem != null && msgDiffItem.getMimAttributeChanges().containsKey(
                   CoreAttributeTypes.InterfaceMessageNumber.getId());
-               boolean numElementsChanged = diffItem != null && !diffItem.getRelationChanges().isEmpty();
+               boolean numElementsChanged = diffItem != null && !diffItem.getMimRelationChanges().isEmpty();
                boolean sizeInBytesChanged = numElementsChanged || structureSizeChanged;
                structureChanged = structureChanged || diffItem != null || txRateChanged || msgNumChanged;
 
@@ -985,9 +985,10 @@ public class MimIcdGenerator {
 
       MimDifferenceItem structDiff = diffs.get(structure.getArtifactId());
       MimDifferenceItem elementDiff = diffs.get(elementToken.getArtifactId());
-      boolean elementAdded = structDiff != null && structDiff.getRelationChanges().containsKey(
-         elementToken.getArtifactId()) && structDiff.getRelationChanges().get(elementToken.getArtifactId()).isAdded();
-      boolean platformTypeChanged = elementDiff != null && !elementDiff.getRelationChanges().isEmpty();
+      boolean elementAdded = structDiff != null && structDiff.getMimRelationChanges().containsKey(
+         elementToken.getArtifactId()) && structDiff.getMimRelationChanges().get(
+            elementToken.getArtifactId()).isAdded();
+      boolean platformTypeChanged = elementDiff != null && !elementDiff.getMimRelationChanges().isEmpty();
       CELLSTYLE pTypeStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : platformTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
@@ -1404,7 +1405,7 @@ public class MimIcdGenerator {
       CELLSTYLE color = CELLSTYLE.NONE;
       MimDifferenceItem diffItem = rowDiffItem != null && rowDiffItem.isAdded() ? rowDiffItem : cellDiffItem;
       if (diffItem != null) {
-         color = diffItem.isAdded() ? CELLSTYLE.GREEN : diffItem.getAttributeChanges().keySet().contains(
+         color = diffItem.isAdded() ? CELLSTYLE.GREEN : diffItem.getMimAttributeChanges().keySet().contains(
             attrId) ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
       }
       return color;

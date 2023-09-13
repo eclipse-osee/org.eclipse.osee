@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -20,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceSubMessageToken extends PLGenericDBObject {
+public class InterfaceSubMessageToken extends ArtifactAccessorResult {
    public static final InterfaceSubMessageToken SENTINEL = new InterfaceSubMessageToken();
 
    private String InterfaceSubMessageNumber; //required

@@ -10,31 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim.types;
+package org.eclipse.osee.accessor.types;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
-public class MimAttributeQuery {
+public class AttributeQuery {
 
    private ArtifactTypeId type = ArtifactTypeId.SENTINEL;
-   private MimRelatedArtifact related = MimRelatedArtifact.SENTINEL;
-   private Collection<MimAttributeQueryElement> queries = new LinkedList<MimAttributeQueryElement>();
-   public MimAttributeQuery() {
+   private RelatedArtifact related = RelatedArtifact.SENTINEL;
+   private Collection<AttributeQueryElement> queries = new LinkedList<AttributeQueryElement>();
+   public AttributeQuery() {
    }
 
    /**
     * @return the queries
     */
-   public Collection<MimAttributeQueryElement> getQueries() {
+   public Collection<AttributeQueryElement> getQueries() {
       return queries;
    }
 
    /**
     * @param queries the queries to set
     */
-   public void setQueries(Collection<MimAttributeQueryElement> queries) {
+   public void setQueries(Collection<AttributeQueryElement> queries) {
       this.queries = queries;
    }
 
@@ -55,14 +55,14 @@ public class MimAttributeQuery {
    /**
     * @return the related
     */
-   public MimRelatedArtifact getRelated() {
+   public RelatedArtifact getRelated() {
       return related;
    }
 
    /**
     * @param related the related to set
     */
-   public void setRelated(MimRelatedArtifact related) {
+   public void setRelated(RelatedArtifact related) {
       this.related = related;
    }
 

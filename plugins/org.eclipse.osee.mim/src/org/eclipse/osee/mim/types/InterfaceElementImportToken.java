@@ -12,10 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+
 /**
  * @author Ryan T. Baldwin
  */
-public class InterfaceElementImportToken extends PLGenericDBObject {
+public class InterfaceElementImportToken extends ArtifactAccessorResult {
    public static final InterfaceElementImportToken SENTINEL = new InterfaceElementImportToken();
    private Boolean InterfaceElementAlterable;
    private String Notes;

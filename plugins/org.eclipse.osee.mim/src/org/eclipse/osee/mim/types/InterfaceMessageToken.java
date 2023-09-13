@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceMessageToken extends PLGenericDBObject {
+public class InterfaceMessageToken extends ArtifactAccessorResult {
    public static final InterfaceMessageToken SENTINEL = new InterfaceMessageToken();
 
    private String InterfaceMessageNumber; //required

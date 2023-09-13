@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
@@ -43,11 +44,11 @@ public class MimDifferenceReport {
       this.enumSets = new LinkedList<>();
    }
 
-   public void addItem(PLGenericDBObject item) {
+   public void addItem(ArtifactAccessorResult item) {
       addItem(item, new LinkedList<>());
    }
 
-   public void addItem(PLGenericDBObject item, List<ChangeItem> changes) {
+   public void addItem(ArtifactAccessorResult item, List<ChangeItem> changes) {
       MimDifferenceReportItem itemChanges =
          changeItems.getOrDefault(item.getArtifactId(), new MimDifferenceReportItem(item, new LinkedList<>()));
       itemChanges.getChanges().addAll(changes);

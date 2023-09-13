@@ -14,6 +14,7 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  *
  * @author Luciano T. Vaglienti
  */
-public class PlatformTypeImportToken extends PLGenericDBObject {
+public class PlatformTypeImportToken extends ArtifactAccessorResult {
    public static final PlatformTypeImportToken SENTINEL = new PlatformTypeImportToken();
 
    private String InterfacePlatformTypeUnits;

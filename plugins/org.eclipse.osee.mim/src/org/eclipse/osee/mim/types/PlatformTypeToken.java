@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.mim.types;
 
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -26,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Luciano T. Vaglienti
  */
-public class PlatformTypeToken extends PLGenericDBObject {
+public class PlatformTypeToken extends ArtifactAccessorResult {
    public static final PlatformTypeToken SENTINEL = new PlatformTypeToken();
 
    private String InterfacePlatformTypeUnits;

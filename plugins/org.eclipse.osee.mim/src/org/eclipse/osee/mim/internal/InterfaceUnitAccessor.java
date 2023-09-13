@@ -13,14 +13,15 @@
 
 package org.eclipse.osee.mim.internal;
 
+import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceUnitAccessor extends ArtifactAccessorImpl<PLGenericDBObject> {
+public class InterfaceUnitAccessor extends ArtifactAccessorImpl<ArtifactAccessorResult> {
 
    public InterfaceUnitAccessor(OrcsApi orcsApi) {
       super(CoreArtifactTypes.InterfaceUnit, orcsApi);

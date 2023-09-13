@@ -13,22 +13,22 @@
 package org.eclipse.osee.mim;
 
 import java.util.Collection;
+import org.eclipse.osee.accessor.types.AttributeQuery;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.mim.types.MimAttributeQuery;
-import org.eclipse.osee.mim.types.PLGenericDBObject;
 
-public interface QueryCapableMIMAPI<T extends PLGenericDBObject> {
+public interface QueryCapableMIMAPI<T extends ArtifactAccessorResult> {
 
-   Collection<T> query(BranchId branch, MimAttributeQuery query);
+   Collection<T> query(BranchId branch, AttributeQuery query);
 
-   Collection<T> queryExact(BranchId branch, MimAttributeQuery query);
+   Collection<T> queryExact(BranchId branch, AttributeQuery query);
 
-   Collection<T> query(BranchId branch, MimAttributeQuery query, boolean isExact);
+   Collection<T> query(BranchId branch, AttributeQuery query, boolean isExact);
 
-   Collection<T> query(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize);
+   Collection<T> query(BranchId branch, AttributeQuery query, long pageNum, long pageSize);
 
-   Collection<T> queryExact(BranchId branch, MimAttributeQuery query, long pageNum, long pageSize);
+   Collection<T> queryExact(BranchId branch, AttributeQuery query, long pageNum, long pageSize);
 
-   Collection<T> query(BranchId branch, MimAttributeQuery query, boolean isExact, long pageNum, long pageSize);
+   Collection<T> query(BranchId branch, AttributeQuery query, boolean isExact, long pageNum, long pageSize);
 
 }

@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceStructureElementToken extends PLGenericDBObject {
+public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    public static final InterfaceStructureElementToken SENTINEL = new InterfaceStructureElementToken();
 
    private String enumLiteral;

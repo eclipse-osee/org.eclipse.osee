@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.mim.types;
+package org.eclipse.osee.accessor.types;
 
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class ArtifactMatch extends PLGenericDBObject {
+public class ArtifactMatch extends ArtifactAccessorResult {
 
    private String Name; //required
 

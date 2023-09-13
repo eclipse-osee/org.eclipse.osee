@@ -13,6 +13,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
+import org.eclipse.osee.accessor.types.ArtifactMatch;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.AffectedArtifactEndpoint;
@@ -24,7 +25,6 @@ import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
-import org.eclipse.osee.mim.types.ArtifactMatch;
 
 public class AffectedArtifactEndpointImpl implements AffectedArtifactEndpoint {
 
