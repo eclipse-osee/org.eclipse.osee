@@ -116,11 +116,19 @@
  </extension>
  
       <extension
-         id    = "PublishWithSpecifiedTemplate"
-         name  = "Publish With Specified Template"
+         id    = "PublishingAttributeContentBlam"
+         name  = "Publishing Attribute Content BLAM"
          point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
          <Operation
-            className="org.eclipse.osee.define.ide.blam.operation.PublishWithSpecifiedTemplate" />
+            className="org.eclipse.osee.define.ide.blam.operation.PublishingAttributeContentBlam" />
+      </extension>
+   
+      <extension
+         id    = "PublishingClearCachesBlam"
+         name  = "Publishing Clear Caches BLAM"
+         point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation
+            className="org.eclipse.osee.define.ide.blam.operation.PublishingClearCachesBlam" />
       </extension>
       
       <extension
@@ -132,13 +140,13 @@
       </extension>
 
       <extension
-         id    = "PublishingAttributeContentBlam"
-         name  = "Publishing Attribute Content BLAM"
+         id    = "PublishWithSpecifiedTemplate"
+         name  = "Publish With Specified Template"
          point = "org.eclipse.osee.framework.ui.skynet.BlamOperation">
          <Operation
-            className="org.eclipse.osee.define.ide.blam.operation.PublishingAttributeContentBlam" />
+            className="org.eclipse.osee.define.ide.blam.operation.PublishWithSpecifiedTemplate" />
       </extension>
-   
+      
  <extension
        id="RemoveTraceMarksFromTraceUnits"
        name="RemoveTraceMarksFromTraceUnits"

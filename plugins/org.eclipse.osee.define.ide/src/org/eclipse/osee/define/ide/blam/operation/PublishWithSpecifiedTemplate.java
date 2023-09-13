@@ -300,9 +300,12 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       var primaryPublishingTemplateSafeName = variableMap.getString(PublishWithSpecifiedTemplate.PRIMARY_TEMPLATE);
 
-      if (Strings.isInvalidOrBlank(primaryPublishingTemplateSafeName)) {
+      //@formatter:off
+      if(    Strings.isInvalidOrBlank(primaryPublishingTemplateSafeName)
+          || PublishWithSpecifiedTemplate.NOT_SELECTED.equals( primaryPublishingTemplateSafeName ) ) {
          throw new OseeArgumentException("Must select a Parent Template");
       }
+      //@formatter:on
 
       var primaryPublishingTemplate = this.getTemplate(primaryPublishingTemplateSafeName);
 
@@ -310,7 +313,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       //@formatter:off
       var secondaryPublishingTemplate =
-         Strings.isValidAndNonBlank( secondaryPublishingTemplateSafeName )
+         (    Strings.isValidAndNonBlank( secondaryPublishingTemplateSafeName )
+           && !PublishWithSpecifiedTemplate.NOT_SELECTED.equals( secondaryPublishingTemplateSafeName ) )
             ? this.getTemplate( secondaryPublishingTemplateSafeName )
             : null;
       //@formatter:on
