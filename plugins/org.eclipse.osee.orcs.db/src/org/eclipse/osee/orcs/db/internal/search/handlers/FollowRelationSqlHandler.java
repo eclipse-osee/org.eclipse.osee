@@ -102,8 +102,9 @@ public class FollowRelationSqlHandler extends SqlHandler<CriteriaRelationTypeFol
          writer.writeEquals(relAlias, toArtField, artAlias, "art_id");
       } else {
          writer.writeAnd();
-         writer.write(
-            sourceArtTable + ".art_id in (" + relAlias + ".a_art_id, " + relAlias + ".b_art_id) and case when " + sourceArtTable + ".art_id = " + relAlias + ".a_art_id then " + artAlias + ".art_id = " + relAlias + ".b_art_id else " + artAlias + ".art_id = " + relAlias + ".a_art_id end");
+         writer.write(sourceArtTable + ".art_id in (" + relAlias + ".a_art_id, " + relAlias + ".b_art_id) " + //
+            "and case when " + sourceArtTable + ".art_id = " + relAlias + ".a_art_id then " + relAlias + ".b_art_id else " + //
+            relAlias + ".a_art_id end " + " = " + artAlias + ".art_id");
       }
    }
 
