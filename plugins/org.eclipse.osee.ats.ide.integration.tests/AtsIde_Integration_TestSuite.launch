@@ -37,7 +37,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.eclipse.osee.ats.ide.integration.tests"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-Dosee.log.default=WARNING&#13;&#10;-Dequinox.ds.debug=true &#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-DeventDebug=log&#13;&#10;-DeventSystem=new&#13;&#10;-Dosee.is.in.db.init=true&#13;&#10;-Dlogback.configurationFile=${project_loc:org.eclipse.osee.server.p2}\logback-dev.xml&#13;&#10;-Duser.name=3333"/>
-    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${env_var:UserProfile}\Documents\"/>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}/AtsIde_Integration_TestSuite"/> 
     <stringAttribute key="pde.version" value="3.3"/>
     <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
