@@ -55,7 +55,7 @@ public class InterfaceMessageToken extends PLGenericDBObject {
    }
 
    public InterfaceMessageToken(ArtifactReadable art) {
-      this();
+      super(art);
       this.setId(art.getId());
       this.setName(art.getName());
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
