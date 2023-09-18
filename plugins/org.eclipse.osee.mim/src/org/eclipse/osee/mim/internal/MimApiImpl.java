@@ -28,6 +28,7 @@ import org.eclipse.osee.mim.InterfaceRateApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.InterfaceUnitApi;
+import org.eclipse.osee.mim.InterfaceValidationApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimArtifactsApi;
 import org.eclipse.osee.mim.MimReportsApi;
@@ -74,6 +75,7 @@ public class MimApiImpl implements MimApi {
    private InterfaceMessageTypeApi interfaceMessageTypeApi;
    private TransportTypeApi transportTypeApi;
    private CrossReferenceApi crossReferenceApi;
+   private InterfaceValidationApi interfaceValidationApi;
    private MimArtifactsApi mimArtifactsApi;
    private MimReportsApi mimReportsApi;
 
@@ -141,6 +143,7 @@ public class MimApiImpl implements MimApi {
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
       this.mimReportsApi = new MimReportsApiImpl(orcsApi);
       this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);
+      this.interfaceValidationApi = new InterfaceValidationApiImpl(this.interfaceConnectionViewApi);
    }
 
    @Override
@@ -244,6 +247,11 @@ public class MimApiImpl implements MimApi {
    @Override
    public InterfaceMessageTypeApi getInterfaceMessageTypeApi() {
       return interfaceMessageTypeApi;
+   }
+
+   @Override
+   public InterfaceValidationApi getInterfaceValidationApi() {
+      return interfaceValidationApi;
    }
 
 }

@@ -29,13 +29,14 @@ public class MimReportToken extends ArtifactAccessorResult {
    private String fileNamePrefix;
    private String producesMediaType;
    private boolean diffAvailable;
+   private boolean requiresValidation;
 
    public MimReportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
    }
 
    public MimReportToken(ArtifactReadable art) {
-      this();
+      super(art);
       this.setId(art.getId());
       this.setName(art.getName());
       this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.EndpointUrl, ""));
@@ -44,6 +45,7 @@ public class MimReportToken extends ArtifactAccessorResult {
       this.setFileExtension(art.getSoleAttributeAsString(CoreAttributeTypes.FileExtension, ""));
       this.setProducesMediaType(art.getSoleAttributeAsString(CoreAttributeTypes.ProducesMediaType, ""));
       this.setDiffAvailable(art.getSoleAttributeValue(CoreAttributeTypes.DiffAvailable, false));
+      this.setRequiresValidation(art.getSoleAttributeValue(CoreAttributeTypes.RequiresValidation, false));
    }
 
    /**
@@ -104,6 +106,14 @@ public class MimReportToken extends ArtifactAccessorResult {
 
    public void setDiffAvailable(boolean diffAvailable) {
       this.diffAvailable = diffAvailable;
+   }
+
+   public boolean isRequiresValidation() {
+      return requiresValidation;
+   }
+
+   public void setRequiresValidation(boolean requiresValidation) {
+      this.requiresValidation = requiresValidation;
    }
 
 }

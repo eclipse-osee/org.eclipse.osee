@@ -13,14 +13,27 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { combineLatest, from, iif, of } from 'rxjs';
-import { filter, map, scan, startWith, switchMap } from 'rxjs/operators';
+import { Subject, combineLatest, from, iif, of } from 'rxjs';
+import {
+	filter,
+	map,
+	scan,
+	shareReplay,
+	startWith,
+	switchMap,
+	tap,
+} from 'rxjs/operators';
 import { applic } from '@osee/shared/types/applicability';
 import {
 	ConnectionService,
 	ReportsService,
+	ValidationUiService,
 } from '@osee/messaging/shared/services';
-import type { connection, MimReport } from '@osee/messaging/shared/types';
+import {
+	connectionValidationResultSentinel,
+	type connection,
+	type MimReport,
+} from '@osee/messaging/shared/types';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { ApplicabilityListService, UiService } from '@osee/shared/services';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
@@ -30,6 +43,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-reports',
@@ -55,9 +69,18 @@ export class ReportsComponent implements OnInit {
 		private route: ActivatedRoute,
 		private routerState: UiService,
 		private reportsService: ReportsService,
+		private validationService: ValidationUiService,
 		private connectionService: ConnectionService,
 		private applicService: ApplicabilityListService
-	) {}
+	) {
+		// When the branch changes, need to reset the validation results
+		this.reportsService.branchId
+			.pipe(
+				tap(() => this.startConnectionValidation.next(false)),
+				takeUntilDestroyed()
+			)
+			.subscribe();
+	}
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
@@ -66,12 +89,28 @@ export class ReportsComponent implements OnInit {
 		});
 	}
 
+	bypassValidation: boolean = false;
+
 	selectedReport: MimReport | undefined = undefined;
 	selectedApplic: applic = { id: '-1', name: 'None' };
 
-	branchId = this.reportsService.branchId;
 	branchType = this.reportsService.branchType;
 	reports = this.reportsService.getReports();
+
+	startConnectionValidation = new Subject<boolean>();
+	connectionValidationResults = this.startConnectionValidation.pipe(
+		switchMap((start) =>
+			iif(
+				() => start === true,
+				this.validationService.validateConnection(
+					this.selectedConnection.id || '-1',
+					this.selectedApplic.id || '-1'
+				),
+				of(connectionValidationResultSentinel)
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
 
 	webReportRoutes = combineLatest([
 		this.reportsService.diffReportRoute,
@@ -135,8 +174,12 @@ export class ReportsComponent implements OnInit {
 			.subscribe();
 	}
 
-	selectConnection(event: MatSelectChange) {
-		this.selectedConnection = event.value;
+	validateConnection() {
+		this.startConnectionValidation.next(true);
+	}
+
+	resetValidation() {
+		this.startConnectionValidation.next(false);
 	}
 
 	selectFile(event: Event) {
@@ -169,6 +212,14 @@ export class ReportsComponent implements OnInit {
 
 	set includeDiff(value: boolean) {
 		this.reportsService.IncludeDiff = value;
+	}
+
+	get branchId() {
+		return this.reportsService.branchId;
+	}
+
+	set BranchId(id: string) {
+		this.reportsService.BranchId = id;
 	}
 }
 

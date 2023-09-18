@@ -39,6 +39,7 @@ import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageEndpoint;
 import org.eclipse.osee.mim.InterfaceSubMessageFilterEndpoint;
 import org.eclipse.osee.mim.InterfaceUnitEndpoint;
+import org.eclipse.osee.mim.InterfaceValidationEndpoint;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.PlatformTypesEndpoint;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
@@ -228,5 +229,10 @@ public class BranchAccessor {
    @Path("{branch}/messageTypes")
    public InterfaceMessageTypeEndpoint getMessageTypesEndpoint(@PathParam("branch") BranchId branch) {
       return new InterfaceMessageTypeEndpointImpl(branch, mimApi.getInterfaceMessageTypeApi());
+   }
+
+   @Path("{branch}/validation")
+   public InterfaceValidationEndpoint getValidationEndpoint(@PathParam("branch") BranchId branch) {
+      return new InterfaceValidationEndpointImpl(branch, mimApi.getInterfaceValidationApi());
    }
 }

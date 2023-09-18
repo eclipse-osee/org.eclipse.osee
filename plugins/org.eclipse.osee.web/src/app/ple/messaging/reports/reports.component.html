@@ -64,7 +64,7 @@
 									connectionSelectionText | async
 								}}</mat-label>
 								<mat-select
-									(selectionChange)="selectConnection($event)"
+									(selectionChange)="resetValidation()"
 									[disabled]="_connections.length === 0"
 									[(value)]="selectedConnection">
 									<mat-option
@@ -82,6 +82,7 @@
 								appearance="fill">
 								<mat-label>Select a view</mat-label>
 								<mat-select
+									(selectionChange)="resetValidation()"
 									[disabled]="_views.length === 0"
 									[(value)]="selectedApplic">
 									<mat-option
@@ -122,18 +123,71 @@
 								>
 							</mat-checkbox>
 						</ng-container>
-						<button
-							mat-raised-button
-							color="primary"
-							(click)="getSelectedReport()"
-							[disabled]="
-								!selectedReport ||
-								!selectedConnection ||
-								selectedConnection.id === '-1'
-							"
-							class="tw-mt-4">
-							Get Report
-						</button>
+						<ng-container
+							*ngIf="selectedReport?.requiresValidation">
+							<mat-checkbox
+								class="tw-block"
+								[(ngModel)]="bypassValidation"
+								color="primary"
+								cdkFocusInitial>
+								<mat-label
+									>Bypass Connection Validation</mat-label
+								>
+							</mat-checkbox>
+						</ng-container>
+						<ng-container
+							*ngIf="
+								connectionValidationResults | async as _results
+							">
+							<ng-container *ngIf="_results.branch !== '-1'">
+								<div class="tw-text-md tw-pt-4 tw-font-bold">
+									Connection Validation
+									{{ _results.passed ? 'Passed' : 'Failed' }}
+								</div>
+								<ul
+									*ngIf="!_results.passed"
+									class="tw-pl-2">
+									<li *ngFor="let error of _results.errors">
+										{{ error }}
+									</li>
+								</ul>
+							</ng-container>
+						</ng-container>
+						<div class="tw-flex tw-gap-4">
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="validateConnection()"
+								[disabled]="
+									!selectedConnection ||
+									selectedConnection.id === '-1'
+								"
+								class="tw-mt-4">
+								Validate Connection
+							</button>
+							<ng-container
+								*ngIf="
+									connectionValidationResults
+										| async as _results
+								">
+								<button
+									mat-raised-button
+									color="primary"
+									(click)="getSelectedReport()"
+									[disabled]="
+										!selectedReport ||
+										!selectedConnection ||
+										selectedConnection.id === '-1' ||
+										(selectedReport.requiresValidation &&
+											!bypassValidation &&
+											(_results.branch === '-1' ||
+												!_results.passed))
+									"
+									class="tw-mt-4">
+									Get Report
+								</button>
+							</ng-container>
+						</div>
 					</div>
 				</ng-container>
 			</div>

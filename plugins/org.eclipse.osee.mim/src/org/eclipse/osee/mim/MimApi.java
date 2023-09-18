@@ -60,5 +60,7 @@ public interface MimApi {
 
    CrossReferenceApi getCrossReferenceApi();
 
+   InterfaceValidationApi getInterfaceValidationApi();
+
    ConcurrentHashMap<Long, ? extends InterfaceLogicalTypeGeneric> getLogicalTypes();
 }
