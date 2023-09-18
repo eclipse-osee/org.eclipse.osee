@@ -164,11 +164,18 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
 
    private UserRoleError validateRoleMinimums() {
       for (Entry<ReviewRole, Integer> expectedEntry : expectedRoleMap.entrySet()) {
-         int actualCount = actualCountMap.get(expectedEntry.getKey());
+         ReviewRole role = expectedEntry.getKey();
+         int actualCount = actualCountMap.get(role);
+         if (role.equals(ReviewRole.Reviewer)) {
+            actualCount += actualCountMap.get(ReviewRole.ModeratorReviewer);
+         }
+         if (role.equals(ReviewRole.Moderator)) {
+            actualCount += actualCountMap.get(ReviewRole.ModeratorReviewer);
+         }
          int expectedCount = expectedEntry.getValue();
          if (actualCount < expectedCount) {
             return new UserRoleError("MustMeetMinimumRole",
-               "Must have minimum of " + expectedCount + " not " + actualCount + " " + "\'" + expectedEntry.getKey() + "\'.",
+               "Must have minimum of " + expectedCount + " not " + actualCount + " " + "\'" + role + "\'.",
                WidgetStatus.Invalid_Incompleted);
          }
       }
