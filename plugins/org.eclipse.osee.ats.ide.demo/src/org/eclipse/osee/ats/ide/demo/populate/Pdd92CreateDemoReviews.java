@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.demo.populate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -37,6 +38,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -112,14 +114,21 @@ public class Pdd92CreateDemoReviews {
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
             "2 - Peer Review algorithm used in code", firstCodeArt.getCurrentStateName(), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt2, AtsAttributeTypes.Description, "description");
+
+      Result result1 = AtsApiService.get().getReviewService().transitionTo(reviewArt2, PeerToPeerReviewState.Review,
+         Collections.emptyList(), null, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
+
+      Conditions.assertTrue(result1.getText().contains("minimum of 1 [Author]"), result1.getText());
+
       List<UserRole> roles = new ArrayList<>();
       roles.add(new UserRole(ReviewRole.Author, DemoUsers.Joe_Smith));
       roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Kay_Jones));
       roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Alex_Kay, 2.0, true));
-      Result result = AtsApiService.get().getReviewService().transitionTo(reviewArt2, PeerToPeerReviewState.Review,
+
+      Result result2 = AtsApiService.get().getReviewService().transitionTo(reviewArt2, PeerToPeerReviewState.Review,
          roles, null, AtsApiService.get().getUserService().getCurrentUser(), false, changes);
-      if (result.isFalse()) {
-         throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
+      if (result2.isFalse()) {
+         throw new IllegalStateException("Failed transitioning review to Review: " + result2.getText());
       }
       changes.add(reviewArt2);
       changes.execute();

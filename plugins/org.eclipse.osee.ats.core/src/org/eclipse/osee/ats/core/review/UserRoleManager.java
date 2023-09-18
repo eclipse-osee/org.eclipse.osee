@@ -140,14 +140,10 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
 
    @Override
    public UserRoleError validateRoleTypeMinimums(StateDefinition fromStateDef, IAtsPeerReviewRoleManager roleMgr) {
-      for (Entry<ReviewRoleType, Integer> expectedEntry : expectedRoleTypeMap.entrySet()) {
-         int actualCount = actualTypeCountMap.get(expectedEntry.getKey());
-         int expectedCount = expectedEntry.getValue();
-         if (actualCount < expectedCount) {
-            return new UserRoleError("MustMeetMinimumRoleType",
-               "Must have minimum of " + expectedCount + " not " + actualCount + " " + "\'" + expectedEntry.getKey() + "\'.",
-               WidgetStatus.Invalid_Incompleted);
-         }
+
+      UserRoleError rError = validateRoleMinimums();
+      if (!rError.getName().equals(UserRoleError.None.name())) {
+         return rError;
       }
 
       // If in review state, all roles must have hours spent entered
@@ -159,7 +155,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
             }
          }
       }
-      return validateRoleMinimums();
+      return UserRoleError.None;
    }
 
    private UserRoleError validateRoleMinimums() {
@@ -174,9 +170,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          }
          int expectedCount = expectedEntry.getValue();
          if (actualCount < expectedCount) {
-            return new UserRoleError("MustMeetMinimumRole",
-               "Must have minimum of " + expectedCount + " not " + actualCount + " " + "\'" + role + "\'.",
-               WidgetStatus.Invalid_Incompleted);
+            return new UserRoleError("MustMeetMinimumRoleType", String.format("Must have minimum of %s [%s], not %s",
+               expectedCount, expectedEntry.getKey(), actualCount), WidgetStatus.Invalid_Incompleted);
          }
       }
       return UserRoleError.None;
