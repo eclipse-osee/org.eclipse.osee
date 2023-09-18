@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -539,44 +538,29 @@ public class MimIcdGenerator {
       String[] headers = {"Structure Name", "Structure Name", "Structure Name"};
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
 
-      Iterator<InterfaceStructureToken> iterator = structures.keySet().iterator();
-      int size = structures.size();
-      int firstCol = (int) Math.ceil(size / 3.0);
-      int secCol = firstCol * 2;
-      int count = 0;
-      int rowNum = 1;
-      SortedMap<InterfaceStructureToken, String> col1 = new TreeMap<InterfaceStructureToken, String>();
-      SortedMap<InterfaceStructureToken, String> col2 = new TreeMap<InterfaceStructureToken, String>();
-      SortedMap<InterfaceStructureToken, String> col3 = new TreeMap<InterfaceStructureToken, String>();
-      while (iterator.hasNext()) {
-         InterfaceStructureToken structure = iterator.next();
-         String sLink = structures.get(structure);
-         if (count < firstCol) {
-            col1.put(structure, sLink);
-         } else if (count < secCol) {
-            col2.put(structure, sLink);
-         } else {
-            col3.put(structure, sLink);
+      List<InterfaceStructureToken> structureList = new LinkedList<>(structures.keySet());
+      structureList.sort(new Comparator<InterfaceStructureToken>() {
+         @Override
+         public int compare(InterfaceStructureToken o1, InterfaceStructureToken o2) {
+            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
          }
-         count++;
-      }
-      Iterator<InterfaceStructureToken> col1Iterator = col1.keySet().iterator();
-      Iterator<InterfaceStructureToken> col2Iterator = col2.keySet().iterator();
-      Iterator<InterfaceStructureToken> col3Iterator = col3.keySet().iterator();
-      while (col1Iterator.hasNext()) {
-         InterfaceStructureToken structure = col1Iterator.next();
-         writer.writeCell(rowNum, 0, structure.getName(), "'" + col1.get(structure) + "'!A1", HyperLinkType.SHEET,
-            CELLSTYLE.HYPERLINK, getStructureNameColor(structure));
-         if (col2Iterator.hasNext()) {
-            structure = col2Iterator.next();
-            writer.writeCell(rowNum, 1, structure.getName(), "'" + col2.get(structure) + "'!A1", HyperLinkType.SHEET,
-               CELLSTYLE.HYPERLINK, getStructureNameColor(structure));
+      });
+
+      int colLength = (int) Math.ceil(structureList.size() / 3.0);
+      for (int i = 0; i < structureList.size(); i++) {
+         int rowNum = i + 1;
+         int colNum = 0;
+         InterfaceStructureToken structure = structureList.get(i);
+         if (i >= colLength * 2) {
+            colNum = 2;
+            rowNum -= (colLength * 2);
+         } else if (i >= colLength) {
+            colNum = 1;
+            rowNum -= colLength;
          }
-         if (col3Iterator.hasNext()) {
-            structure = col3Iterator.next();
-            writer.writeCell(rowNum, 2, structure.getName(), "'" + col3.get(structure) + "'!A1", HyperLinkType.SHEET,
-               CELLSTYLE.HYPERLINK, getStructureNameColor(structure));
-         }
+
+         writer.writeCell(rowNum, colNum, structure.getName(), "'" + structures.get(structure) + "'!A1",
+            HyperLinkType.SHEET, CELLSTYLE.HYPERLINK, getStructureNameColor(structure));
          rowNum++;
       }
 
