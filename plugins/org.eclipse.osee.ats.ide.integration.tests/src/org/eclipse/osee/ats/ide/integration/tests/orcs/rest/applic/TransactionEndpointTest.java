@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -60,6 +61,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.junit.BeforeClass;
@@ -71,11 +73,13 @@ import org.junit.Test;
 public class TransactionEndpointTest {
 
    private static TransactionEndpoint transactionEndpoint;
+   private static ApplicabilityEndpoint applicEndpoint;
    private static JaxRsApi jaxRsApi;
 
    @BeforeClass
    public static void testSetup() {
       transactionEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
+      applicEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(DemoBranches.SAW_PL_Working_Branch);
       jaxRsApi = ServiceUtil.getOseeClient().jaxRsApi();
    }
 
@@ -196,11 +200,13 @@ public class TransactionEndpointTest {
       //Create a transaction and add a artifact with a changed applicabilityId
       SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
          TransactionEndpointTest.class.getName() + ": Create Applicability Change");
+      ApplicabilityToken applic =
+         applicEndpoint.getApplicabilityTokens().stream().findFirst().orElse(ApplicabilityToken.SENTINEL);
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement,
          DemoBranches.SAW_PL_Working_Branch, "Artifact for Applicability Change");
-      artifact.internalSetApplicablityId(ApplicabilityId.valueOf(1234321L));
+      artifact.internalSetApplicablityId(ApplicabilityId.valueOf(applic.getId()));
       //Test to ensure applicabilityId was actually changed successfully
-      assertTrue(artifact.getApplicablityId().equals(1234321L));
+      assertTrue(artifact.getApplicablityId().equals(ApplicabilityId.valueOf(applic.getId())));
 
       //Complete transfer of transaction to a new branch
       transaction.addArtifact(artifact);
@@ -240,12 +246,14 @@ public class TransactionEndpointTest {
       //Create a transaction and add a artifact with a changed applicabilityId
       SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
          TransactionEndpointTest.class.getName() + ": Create Applicability Change");
+      ApplicabilityToken applic =
+         applicEndpoint.getApplicabilityTokens().stream().findFirst().orElse(ApplicabilityToken.SENTINEL);
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement,
          DemoBranches.SAW_PL_Working_Branch, "Artifact for Applicability Change");
-      artifact.internalSetApplicablityId(ApplicabilityId.valueOf(1234321L));
+      artifact.internalSetApplicablityId(ApplicabilityId.valueOf(applic.getId()));
       transaction.addArtifact(artifact);
       //Test to ensure applicabilityId was actually changed successfully
-      assertTrue(artifact.getApplicablityId().equals(1234321L));
+      assertTrue(artifact.getApplicablityId().equals(ApplicabilityId.valueOf(applic.getId())));
 
       //Complete transfer of transaction to a new branch
       TransactionToken createTx = transaction.execute();
@@ -404,7 +412,8 @@ public class TransactionEndpointTest {
     * Helper method that will create a new Artifact with a single added attribute with multiple Strings and return the
     * Transfer Json created from the exportTxsDiff
     */
-   private String setupTransferJsonFromStrings(ArtifactTypeToken artType, AttributeTypeId attrType, List<String> values) {
+   private String setupTransferJsonFromStrings(ArtifactTypeToken artType, AttributeTypeId attrType,
+      List<String> values) {
       //Create a new Artifact of type artType on SAWL_PL_Working_Branch
       SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
          TransactionEndpointTest.class.getName() + attrType.getIdString());

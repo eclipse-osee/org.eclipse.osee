@@ -53,27 +53,31 @@ public class LoadDeltasBetweenBranches {
          "branch_id = ? and txs.tx_current <> ? and transaction_id <> ? AND \n" +
          "NOT EXISTS (SELECT 1 FROM %s txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? \n" +
          "AND txs1.gamma_id = txs.gamma_id and txs1.mod_type = txs.mod_type and txs1.app_id = txs.app_id)) \n" +
-         "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, value as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
-         "FROM osee_attribute item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, item.value as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+         "FROM osee_attribute item, txsOuter, osee_key_value kv where txsOuter.gamma_id = item.gamma_id AND txsOuter.app_id = kv.key\n" +
          "UNION ALL\n" +
-         "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
-         "FROM osee_artifact item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+         "FROM osee_artifact item, txsOuter, osee_key_value kv where txsOuter.gamma_id = item.gamma_id AND txsOuter.app_id = kv.key\n" +
          "UNION ALL\n" +
-         "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
-         "FROM osee_relation_link item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+         "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+         "FROM osee_relation_link item, txsOuter,osee_key_value kv where txsOuter.gamma_id = item.gamma_id AND txsOuter.app_id = kv.key\n" +
          "UNION ALL\n" +
-         "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, 'Base' as app_value \n" +
          "from osee_tuple2 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
          "UNION ALL\n" +
-         "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, 'Base' as app_value \n" +
          "from osee_tuple3 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
          "UNION ALL\n" +
-         "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
+         "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, 'Base' as app_value \n" +
          "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
          "UNION ALL\n" +
-         "SELECT 7 as table_type, rel_type as item_type_id, 0 as item_id,  a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id \n" +
-         "FROM osee_relation item, txsOuter where txsOuter.gamma_id = item.gamma_id";
+         "SELECT 7 as table_type, rel_type as item_type_id, 0 as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+         "FROM osee_relation item, txsOuter,osee_key_value kv where txsOuter.gamma_id = item.gamma_id AND txsOuter.app_id = kv.key";
          ;
+
+         private static final String NON_MATCH_APP="023ef52a-eb74-4ac0-8826-db44093dbe31";
+         //note: this is just for giving tuples a value that shouldn't ever be matched by a user. If you are relying on this value, please reconsider the code you are writing.
+         //If in the future it makes sense for tuples to have applicability, remove this and replace with a value from the osee_key_value table.
 
 
    // @formatter:on
@@ -173,14 +177,14 @@ public class LoadDeltasBetweenBranches {
                hashChangeData.put(1, itemId,
                   ChangeItemUtil.newAttributeChange(AttributeId.valueOf(itemId),
                      tokenService.getAttributeTypeOrCreate(itemTypeId), artId, gammaId, modType, value,
-                     getApplicabilityToken(appId), txToken));
+                     ApplicabilityToken.valueOf(stmt.getLong("app_id"), stmt.getString("app_value")), txToken));
                break;
 
             case 2: {
                hashChangeData.put(2, itemId,
                   ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(itemId),
-                     tokenService.getArtifactTypeOrCreate(itemTypeId), gammaId, modType, getApplicabilityToken(appId),
-                     txToken));
+                     tokenService.getArtifactTypeOrCreate(itemTypeId), gammaId, modType,
+                     ApplicabilityToken.valueOf(stmt.getLong("app_id"), stmt.getString("app_value")), txToken));
                break;
             }
             case 3: {
@@ -190,7 +194,7 @@ public class LoadDeltasBetweenBranches {
                hashChangeData.put(3, itemId,
                   ChangeItemUtil.newRelationChange(RelationId.valueOf(itemId),
                      tokenService.getRelationTypeOrCreate(itemTypeId), gammaId, modType, aArtId, bArtId, rationale,
-                     getApplicabilityToken(appId), txToken));
+                     ApplicabilityToken.valueOf(stmt.getLong("app_id"), stmt.getString("app_value")), txToken));
                break;
             }
             case 4: {
@@ -224,7 +228,8 @@ public class LoadDeltasBetweenBranches {
                int relOrder = stmt.getInt("item_fourth");
                hashChangeData.put(7, gammaId.getId(),
                   ChangeItemUtil.newRelationChange2(tokenService.getRelationTypeOrCreate(itemTypeId), gammaId, modType,
-                     aArtId, bArtId, relArtId, relOrder, getApplicabilityToken(appId), txToken));
+                     aArtId, bArtId, relArtId, relOrder,
+                     ApplicabilityToken.valueOf(stmt.getLong("app_id"), stmt.getString("app_value")), txToken));
                break;
             }
 
@@ -246,42 +251,54 @@ public class LoadDeltasBetweenBranches {
          Long itemId = stmt.getLong("item_id");
          Integer tableType = stmt.getInt("table_type");
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+         String appValue = stmt.getString("app_value");
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          ChangeItem change = changesByItemId.get(tableType, itemId);
          TransactionToken txToken = TransactionToken.valueOf(stmt.getLong("transaction_id"), txBranchId);
          if (isMergeBranch) {
             change.getNetChange().setGammaId(gammaId);
             change.getNetChange().setModType(ModificationType.MERGED);
-            change.getNetChange().setApplicabilityToken(getApplicabilityToken(appId));
+            if (appValue.equals(NON_MATCH_APP)) {
+
+               change.getNetChange().setApplicabilityToken(getApplicabilityToken(appId));
+            } else {
+               change.getNetChange().setApplicabilityToken(ApplicabilityToken.valueOf(appId.getId(), appValue));
+            }
             change.getNetChange().setTransactionToken(txToken);
          } else {
             change.getDestinationVersion().setModType(ModificationType.valueOf(stmt.getInt("mod_type")));
             change.getDestinationVersion().setGammaId(gammaId);
-            change.getDestinationVersion().setApplicabilityToken(getApplicabilityToken(appId));
+            if (appValue.equals(NON_MATCH_APP)) {
+
+               change.getDestinationVersion().setApplicabilityToken(getApplicabilityToken(appId));
+            } else {
+               change.getDestinationVersion().setApplicabilityToken(
+                  ApplicabilityToken.valueOf(appId.getId(), appValue));
+            }
             change.getDestinationVersion().setTransactionToken(txToken);
          }
       };
 
       String query =
-         "select txs.gamma_id, txs.mod_type, txs.app_id, item.art_id as item_id, 2 as table_type, txs.transaction_id from osee_join_export_import idj," + //
-            " osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2" + //
+         "select txs.gamma_id, txs.mod_type, txs.app_id, item.art_id as item_id, 2 as table_type, txs.transaction_id, kv.value as app_value from osee_join_export_import idj," + //
+            " osee_artifact item, osee_txs txs,osee_key_value kv where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2" + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ? AND txs.app_id = kv.key" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.attr_id as item_id, 1 as table_type, txs.transaction_id, kv.value as app_value from osee_join_export_import idj," + //
+            " osee_attribute item, osee_txs txs,osee_key_value kv where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1" + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ? AND txs.app_id = kv.key" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type, txs.transaction_id, kv.value as app_value from osee_join_export_import idj," + //
+            " osee_relation_link item, osee_txs txs,osee_key_value kv where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 AND txs.app_id = kv.key " + //
             " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.attr_id as item_id, 1 as table_type, txs.transaction_id from osee_join_export_import idj," + //
-            " osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1" + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 7 as table_type, txs.transaction_id, kv.value as app_value from osee_join_export_import idj," + //
+            " osee_relation item, osee_txs txs, osee_key_value kv where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7 AND txs.app_id = kv.key " + //
             " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type, txs.transaction_id from osee_join_export_import idj," + //
-            " osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 7 as table_type, txs.transaction_id from osee_join_export_import idj," + //
-            " osee_relation item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7" + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 4 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 4 as table_type, txs.transaction_id, '" + NON_MATCH_APP + "' as app_value from osee_join_export_import idj," + //
             " osee_tuple2 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
             " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 5 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 5 as table_type, txs.transaction_id, '" + NON_MATCH_APP + "' as app_value from osee_join_export_import idj," + //
             " osee_tuple3 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
             " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 6 as table_type, txs.transaction_id from osee_join_export_import idj," + //
+            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.gamma_id as item_id, 6 as table_type, txs.transaction_id, '" + NON_MATCH_APP + "' as app_value from osee_join_export_import idj," + //
             " osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and item.gamma_id = txs.gamma_id" + //
             " and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
@@ -298,25 +315,25 @@ public class LoadDeltasBetweenBranches {
       try (JdbcStatement chStmt = jdbcClient.getStatement()) {
 
          String query =
-            "select * from (select null as value, item.art_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 2 as table_type from osee_join_export_import idj, " + //
-               "osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2 " + //
+            "select * from (select null as value, item.art_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 2 as table_type, kv.value as app_value from osee_join_export_import idj, " + //
+               "osee_artifact item, osee_txs txs, osee_key_value kv where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? AND txs.app_id = kv.key " + //
+               "union all select item.value as value, item.attr_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 1 as table_type, kv.value as app_value from osee_join_export_import idj, " + //
+               "osee_attribute item, osee_txs txs, osee_key_value kv where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1 " + //
+               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? AND txs.app_id = kv.key " + //
+               "union all select null as value, item.rel_link_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type, kv.value as app_value from osee_join_export_import idj, " + //
+               "osee_relation_link item, osee_txs txs,osee_key_value kv where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 AND txs.app_id = kv.key " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select item.value as value, item.attr_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 1 as table_type from osee_join_export_import idj, " + //
-               "osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1 " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 7 as table_type, kv.value as app_value from osee_join_export_import idj, " + //
+               "osee_relation item, osee_txs txs,osee_key_value kv where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7 AND txs.app_id = kv.key " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select null as value, item.rel_link_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
-               "osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 " + //
-               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 7 as table_type from osee_join_export_import idj, " + //
-               "osee_relation item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 7 " + //
-               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 4 as table_type from osee_join_export_import idj, " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 4 as table_type, '" + NON_MATCH_APP + "' as app_value from osee_join_export_import idj, " + //
                "osee_tuple2 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 4 " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 5 as table_type from osee_join_export_import idj, " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 5 as table_type, '" + NON_MATCH_APP + "' as app_value from osee_join_export_import idj, " + //
                "osee_tuple3 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 5 " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 6 as table_type from osee_join_export_import idj, " + //
+               "union all select null as value, item.gamma_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 6 as table_type, '" + NON_MATCH_APP + "' as app_value from osee_join_export_import idj, " + //
                "osee_tuple4 item, osee_txs txs where idj.query_id = ? and idj.id2 = item.gamma_id and idj.id1 = 6 " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
                ") t order by t.id2, t.transaction_id asc";
@@ -336,6 +353,7 @@ public class LoadDeltasBetweenBranches {
             ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
             ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
             GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
+            String appValue = chStmt.getString("app_value");
 
             String value = chStmt.getString("value");
 
@@ -344,9 +362,22 @@ public class LoadDeltasBetweenBranches {
                isFirstSet = false;
             }
             if (sourceBaselineTxId.equals(transactionId)) {
-               setVersionData(change.getBaselineVersion(), gammaId, modType, value, appId);
+               if (appValue.equals(NON_MATCH_APP)) {
+
+                  setVersionData(change.getBaselineVersion(), gammaId, modType, value, appId);
+               } else {
+                  setVersionData(change.getBaselineVersion(), gammaId, modType, value,
+                     ApplicabilityToken.valueOf(appId.getId(), appValue));
+               }
             } else if (!isFirstSet) {
-               setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value, appId);
+               if (appValue.equals(NON_MATCH_APP)) {
+
+                  setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value, appId);
+               } else {
+                  setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value,
+                     ApplicabilityToken.valueOf(appId.getId(), appValue));
+
+               }
                isFirstSet = true;
             }
             previousItemId = itemId;
@@ -356,13 +387,18 @@ public class LoadDeltasBetweenBranches {
 
    private void setVersionData(ChangeVersion versionedChange, GammaId gammaId, ModificationType modType, String value,
       ApplicabilityId appId) {
+      this.setVersionData(versionedChange, gammaId, modType, value, getApplicabilityToken(appId));
+   }
+
+   private void setVersionData(ChangeVersion versionedChange, GammaId gammaId, ModificationType modType, String value,
+      ApplicabilityToken app) {
       // Tolerates the case of having more than one version of an item on a
       // baseline transaction by picking the most recent one
       if (versionedChange.getGammaId() == null || versionedChange.getGammaId().getId().compareTo(gammaId.getId()) < 0) {
          versionedChange.setValue(value);
          versionedChange.setModType(modType);
          versionedChange.setGammaId(gammaId);
-         versionedChange.setApplicabilityToken(getApplicabilityToken(appId));
+         versionedChange.setApplicabilityToken(app);
       }
    }
 }
