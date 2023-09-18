@@ -38,3 +38,4 @@ export * from './structure';
 export * from './StructurePath';
 export * from './sub-messages';
 export * from './transportType';
+export * from './validation';

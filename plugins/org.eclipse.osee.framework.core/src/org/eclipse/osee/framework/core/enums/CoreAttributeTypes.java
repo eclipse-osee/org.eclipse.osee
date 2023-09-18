@@ -303,6 +303,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString RepositoryType = osee.createString(8150083798685627257L, "Repository Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RepositoryUrl = osee.createString(1152921504606847700L, "Repository URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean RequireConfirmation = osee.createBooleanNoTag(188458869981239L, "Require Confirmation", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean RequiresValidation = osee.createBoolean(2822557585371250127L, "Requires Validation", MediaType.TEXT_PLAIN, "Specifies if a report requires validation before running");
    AttributeTypeBoolean Scheduled = osee.createBoolean(1152921504606847360L, "Rerun", MediaType.TEXT_PLAIN, "Should the script be run again");
    AttributeTypeDate ScheduledTime = osee.createDate(1152921504606847361L, "Rerun Time", MediaType.TEXT_PLAIN, "Time to Rerun Script");
    AttributeTypeString RerunMachine = osee.createString(527991454069746927L, "Rerun Time", MediaType.TEXT_PLAIN, "Time to Rerun Script");

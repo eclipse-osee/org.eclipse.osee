@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,20 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type {
-	HttpMethods,
-	FileExtensions,
-	ProducesMediaType,
-} from '@osee/shared/types';
-
-export interface MimReport {
-	id: string;
-	name: string;
-	url: string;
-	httpMethod: HttpMethods;
-	fileExtension: FileExtensions;
-	fileNamePrefix: string;
-	producesMediaType: ProducesMediaType;
-	diffAvailable: boolean;
-	requiresValidation: boolean;
+export interface ConnectionValidationResult {
+	branch: string;
+	viewId: string;
+	connectionName: string;
+	passed: boolean;
+	errors: string[];
 }
+
+export const connectionValidationResultSentinel: ConnectionValidationResult = {
+	branch: '-1',
+	viewId: '-1',
+	connectionName: '',
+	passed: false,
+	errors: [],
+};

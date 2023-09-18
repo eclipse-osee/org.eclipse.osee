@@ -14,13 +14,21 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
+import {
+	MessagingControlsMockComponent,
+	connectionValidationResponseMock,
+	validationServiceMock,
+} from '@osee/messaging/shared/testing';
 
 import { ReportsComponent } from './reports.component';
+import { connectionSentinel } from '@osee/messaging/shared/types';
+import { TestScheduler } from 'rxjs/testing';
+import { ValidationService } from '@osee/messaging/shared/services';
 
 describe('ReportsComponent', () => {
 	let component: ReportsComponent;
 	let fixture: ComponentFixture<ReportsComponent>;
+	let scheduler: TestScheduler;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -31,6 +39,9 @@ describe('ReportsComponent', () => {
 				HttpClientTestingModule,
 				ReportsComponent,
 			],
+			providers: [
+				{ provide: ValidationService, useValue: validationServiceMock },
+			],
 		}).compileComponents();
 	});
 
@@ -40,7 +51,28 @@ describe('ReportsComponent', () => {
 		fixture.detectChanges();
 	});
 
+	beforeEach(
+		() =>
+			(scheduler = new TestScheduler((actual, expected) => {
+				expect(actual).toEqual(expected);
+			}))
+	);
+
 	it('should create', () => {
 		expect(component).toBeTruthy();
+	});
+
+	it('should run connection validation', () => {
+		scheduler.run(({ expectObservable, cold }) => {
+			component.BranchId = '10';
+			component.selectedConnection = { ...connectionSentinel, id: '1' };
+			component.selectedApplic = { id: '1', name: 'Applic' };
+			cold('-a').subscribe(() =>
+				component.startConnectionValidation.next(true)
+			);
+			expectObservable(component.connectionValidationResults).toBe('-a', {
+				a: connectionValidationResponseMock,
+			});
+		});
 	});
 });

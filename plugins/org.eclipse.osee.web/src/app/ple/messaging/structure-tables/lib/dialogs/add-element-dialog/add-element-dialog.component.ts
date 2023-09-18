@@ -160,7 +160,21 @@ export class AddElementDialogComponent {
 	getElementOptionToolTip(element: element) {
 		let tooltip = '';
 		if (element.logicalType) {
-			tooltip += element.logicalType + '\n\n';
+			tooltip += element.logicalType;
+		}
+		if (
+			element.interfaceElementIndexStart !==
+			element.interfaceElementIndexEnd
+		) {
+			tooltip +=
+				' [' +
+				element.interfaceElementIndexStart +
+				'...' +
+				element.interfaceElementIndexEnd +
+				']';
+		}
+		if (tooltip !== '') {
+			tooltip += '\n\n';
 		}
 		tooltip += element.description;
 		return tooltip;

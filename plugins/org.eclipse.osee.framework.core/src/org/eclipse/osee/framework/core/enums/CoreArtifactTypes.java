@@ -427,18 +427,21 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceRequirementMsWord = osee.add(osee.artifactType(32L, "Interface Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement)
       .exactlyOne(CoreAttributeTypes.Component, CoreAttributeTypes.Component.Unspecified));
+
    ArtifactTypeToken HelpPage = osee.add(osee.artifactType(5728426866732962911L, "Help Page", false, Artifact)
       .exactlyOne(CoreAttributeTypes.MarkdownContent)
       .exactlyOne(CoreAttributeTypes.ApplicationName)
       .exactlyOne(CoreAttributeTypes.IsHelpPageHeader)
       .exactlyOne(CoreAttributeTypes.IsTrainingPage));
+
    ArtifactTypeToken OseeReport = osee.add(osee.artifactType(3379299200905896452L, "OSEE Report", false, Artifact)
       .exactlyOne(CoreAttributeTypes.HttpMethod)
       .exactlyOne(CoreAttributeTypes.FileExtension)
       .exactlyOne(CoreAttributeTypes.FileNamePrefix)
       .exactlyOne(CoreAttributeTypes.ProducesMediaType)
       .exactlyOne(CoreAttributeTypes.DiffAvailable)
-      .exactlyOne(CoreAttributeTypes.EndpointUrl));
+      .exactlyOne(CoreAttributeTypes.EndpointUrl)
+      .exactlyOne(CoreAttributeTypes.RequiresValidation));
 
    ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
 

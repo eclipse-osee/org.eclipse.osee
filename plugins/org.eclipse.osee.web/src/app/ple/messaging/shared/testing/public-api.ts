@@ -86,3 +86,5 @@ export * from './rates.service.mock';
 export * from './message-types.service.mock';
 export * from './transport-type-form.component.mock';
 export * from './element-table-dropdown.service.mock';
+export * from './validation-response.mock';
+export * from './validation.service.mock';

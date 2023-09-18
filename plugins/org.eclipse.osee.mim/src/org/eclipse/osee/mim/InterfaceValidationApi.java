@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,20 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type {
-	HttpMethods,
-	FileExtensions,
-	ProducesMediaType,
-} from '@osee/shared/types';
+package org.eclipse.osee.mim;
 
-export interface MimReport {
-	id: string;
-	name: string;
-	url: string;
-	httpMethod: HttpMethods;
-	fileExtension: FileExtensions;
-	fileNamePrefix: string;
-	producesMediaType: ProducesMediaType;
-	diffAvailable: boolean;
-	requiresValidation: boolean;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.ConnectionValidationResult;
+
+/**
+ * @author Ryan T. Baldwin
+ */
+public interface InterfaceValidationApi {
+
+   ConnectionValidationResult validateConnection(BranchId branch, ArtifactId viewId, ArtifactId connectionId);
+
 }
