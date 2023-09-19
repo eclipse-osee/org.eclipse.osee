@@ -101,8 +101,8 @@ public interface CoreAttributeTypes {
    AttributeTypeString CrossReferenceArrayValues = osee.createString(1395395257321371828L, "Cross Reference Array Values", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CrossReferenceAdditionalContent = osee.createString(6645243569977378792L, "Cross Reference Additional Content", MediaType.TEXT_PLAIN, "");
    DataClassificationAttributeType DataClassification = osee.createEnum(new DataClassificationAttributeType());
-   AttributeTypeString DataClassificationRationale = osee.createString(6697327397016528458L, "CUI Category Rationale", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
-   AttributeTypeString DataRightsBasis = osee.createString(72057594037928276L, "Required Indicator Rationale", MediaType.TEXT_PLAIN, "The basis or rationale for the Data Rights Classification selected such as developed under program X");
+   AttributeTypeString DataClassificationRationale = osee.createString(6697327397016528458L, "Data Classification Rationale", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
+   AttributeTypeString DataRightsBasis = osee.createString(72057594037928276L, "Data Rights Basis", MediaType.TEXT_PLAIN, "The basis or rationale for the Data Rights Classification selected such as developed under program X");
    DataRightsClassificationAttributeType DataRightsClassification = osee.createEnum(new DataRightsClassificationAttributeType());
    CuiLimitedDisseminationControlIndicatorAttributeType DataRightsCuiLimitedDisseminationControl = osee.createEnum(new CuiLimitedDisseminationControlIndicatorAttributeType());
    AttributeTypeString DataRightsRequiredIndicator = osee.createString(6276333737522301050L, "Required Indicator", MediaType.TEXT_PLAIN, "", DisplayHint.MultiLine);
