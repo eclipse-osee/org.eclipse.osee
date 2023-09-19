@@ -34,7 +34,7 @@ public class DataClassificationAttributeType extends AttributeTypeEnum<DataClass
    private static int count = 0;
 
    public DataClassificationAttributeType(NamespaceToken namespace, int enumCount) {
-      super(4024614255972662076L, namespace, "CUI Category And CUI Type", MediaType.TEXT_PLAIN, "",
+      super(4024614255972662076L, namespace, "Data Classification", MediaType.TEXT_PLAIN, "",
          TaggerTypeToken.PlainTextTagger, enumCount);
 
       for (int i = 0; i < this.categories.length; i++) {
