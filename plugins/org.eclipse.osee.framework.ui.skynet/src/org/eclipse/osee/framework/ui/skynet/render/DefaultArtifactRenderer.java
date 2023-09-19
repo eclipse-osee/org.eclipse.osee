@@ -17,9 +17,11 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPE
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW_SERVER;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATTRIBUTE;
 import static org.eclipse.osee.framework.core.enums.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
+import com.vladsch.flexmark.util.ast.IRender;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -241,15 +243,14 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
-      RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       if (presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_TYPE;
       }
       if (presentationType.matches(SPECIALIZED_EDIT, DEFAULT_OPEN)) {
          return GENERAL_MATCH;
       }
-      if (presentationType.matches(PREVIEW, RENDER_AS_HUMAN_READABLE_TEXT)) {
+      if (presentationType.matches(PREVIEW, PREVIEW_SERVER, RENDER_AS_HUMAN_READABLE_TEXT)) {
          return BASE_MATCH;
       }
       return NO_MATCH;
@@ -310,8 +311,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact,
-      Collection<? extends AttributeTypeToken> attributeTypes) {
+   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes) {
 
       ArrayList<AttributeTypeToken> orderedAttributeTypes = new ArrayList<>(attributeTypes.size());
 
@@ -441,8 +441,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType,
-      WordMLProducer producer, String format, String label, String footer) {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
       WordMLProducer wordMl = producer;
       boolean allAttrs = (boolean) this.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES);
 
@@ -482,8 +481,7 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact,
-      PresentationType presentationType, final String defaultValue) {
+   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, final String defaultValue) {
       String returnValue = defaultValue;
       if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT)) {
          if (artifact == null) {
