@@ -70,21 +70,29 @@
 			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
 			*matCellDef="let artifact">
 			{{ artifact.workflowID }}
-			<ng-container *ngIf="link | async as _link">
+			<ng-container *ngIf="endPointUrl | async as _link">
 				<ng-container *ngIf="artifact.changeReport">
-					<br /><a
-						class="tw-font-bold tw-text-blue-900 tw-underline"
-						href="{{ _link + '/' + artifact.changeReport }}"
-						>REQ</a
-					>
+					<br />
+					<button
+						mat-raised-button
+						color="primary"
+						class="tw-mt-4"
+						(click)="
+							getChangeReport(_link + '/' + artifact.changeReport)
+						">
+						REQ
+					</button>
 				</ng-container>
 				<ng-container *ngIf="artifact.icdDiff">
-					<br /><a
-						class="tw-font-bold tw-text-blue-900 tw-underline"
-						target="_blank"
-						href="{{ _link + '/' + artifact.icdDiff }}"
-						>ICD</a
-					>
+					<br /><button
+						mat-raised-button
+						color="primary"
+						class="tw-mt-4"
+						(click)="
+							getChangeReport(_link + '/' + artifact.icdDiff)
+						">
+						ICD
+					</button>
 				</ng-container>
 			</ng-container>
 		</td>
