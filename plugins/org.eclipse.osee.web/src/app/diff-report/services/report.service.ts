@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, iif, Observable, of } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
@@ -26,6 +26,8 @@ import { Build, Program, SearchOptions } from '../model/types';
 import { DiffEndPoint } from '../model/types';
 import { Config } from '../model/types';
 import { apiURL } from '@osee/environments';
+import { FilesService } from '@osee/shared/services';
+import { HttpMethods } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -46,7 +48,10 @@ export class ReportService {
 
 	private _displayTable$ = new BehaviorSubject<boolean>(false);
 
-	constructor(private http: HttpClient) {}
+	constructor(
+		private http: HttpClient,
+		private fileService: FilesService
+	) {}
 
 	diffEndpoint = this.http
 		.get<DiffEndPoint>(apiURL + '/ats/teamwf/diff')
@@ -176,5 +181,17 @@ export class ReportService {
 				},
 			});
 		} else return of();
+	}
+
+	getReport(reportUrl: string) {
+		return iif(
+			() => reportUrl !== undefined,
+			this.fileService.getFileAsBlob(
+				HttpMethods.GET,
+				reportUrl,
+				undefined
+			),
+			of(new Blob())
+		);
 	}
 }

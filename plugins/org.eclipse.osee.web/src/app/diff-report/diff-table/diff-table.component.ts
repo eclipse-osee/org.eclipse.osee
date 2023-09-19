@@ -82,10 +82,12 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	}
 
 	workflowFilter = new FormControl('');
+
 	endPointUrl = this.reportService.diffEndpoint.pipe(
 		take(1),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
+
 	link = this.endPointUrl.pipe(map((endUrl) => apiURL + endUrl));
 
 	constructor(private reportService: ReportService) {
@@ -164,6 +166,17 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		this.allRowsExpanded = flag;
 	}
 
+	getChangeReport(report: string) {
+		let data: string;
+		this.reportService.getReport(report).subscribe((resp: any) => {
+			data = resp;
+			this.downloadAsXmlFile(
+				data,
+				report.substring(report.lastIndexOf('/') + 1)
+			);
+		});
+	}
+
 	updateRowsforCSV(results: Array<workflow>) {
 		var rows = [];
 		for (var i = 0; i < results.length; i++) {
@@ -239,6 +252,20 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		} else {
 			return data;
 		}
+	}
+
+	downloadAsXmlFile(data: string, filename: string) {
+		let blob = new Blob([data], {
+			type: 'text/xml;',
+		});
+		let dwldLink = document.createElement('a');
+		let url = URL.createObjectURL(blob);
+		dwldLink.setAttribute('href', url);
+		dwldLink.setAttribute('download', filename);
+		dwldLink.style.visibility = 'hidden';
+		document.body.appendChild(dwldLink);
+		dwldLink.click();
+		document.body.removeChild(dwldLink);
 	}
 
 	downloadAsCsvFile(csvData: string, filename: string) {
