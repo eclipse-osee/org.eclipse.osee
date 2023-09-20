@@ -144,13 +144,24 @@
 									Connection Validation
 									{{ _results.passed ? 'Passed' : 'Failed' }}
 								</div>
-								<ul
-									*ngIf="!_results.passed"
-									class="tw-pl-2">
-									<li *ngFor="let error of _results.errors">
-										{{ error }}
-									</li>
-								</ul>
+								<ng-container
+									[ngTemplateOutlet]="validationResults"
+									[ngTemplateOutletContext]="{
+										label: 'Structures are byte aligned',
+										errors: _results.structureByteAlignmentErrors
+									}"></ng-container>
+								<ng-container
+									[ngTemplateOutlet]="validationResults"
+									[ngTemplateOutletContext]="{
+										label: 'Structure names are unique',
+										errors: _results.duplicateStructureNameErrors
+									}"></ng-container>
+								<ng-container
+									[ngTemplateOutlet]="validationResults"
+									[ngTemplateOutletContext]="{
+										label: 'All Messages have Message Type set',
+										errors: _results.messageTypeErrors
+									}"></ng-container>
 							</ng-container>
 						</ng-container>
 						<div class="tw-flex tw-gap-4">
@@ -194,3 +205,27 @@
 		</ng-container>
 	</ng-container>
 </ng-container>
+
+<ng-template
+	let-label="label"
+	let-errors="errors"
+	#validationResults>
+	<ng-container *ngIf="errors !== undefined">
+		<ul class="tw-pl-4">
+			<li class="tw-flex tw-items-center tw-gap-2">
+				{{ label }}
+				<ng-container *ngIf="errors.length === 0">
+					<mat-icon color="success">check</mat-icon>
+				</ng-container>
+				<ng-container *ngIf="errors.length > 0">
+					<mat-icon color="warn">close</mat-icon>
+				</ng-container>
+			</li>
+			<li
+				*ngFor="let error of errors"
+				class="tw-pl-4">
+				{{ error }}
+			</li>
+		</ul>
+	</ng-container>
+</ng-template>

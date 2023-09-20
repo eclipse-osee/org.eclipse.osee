@@ -25,8 +25,9 @@ public class ConnectionValidationResult {
    private final BranchId branch;
    private final ArtifactId viewId;
    private final String connectionName;
-   private boolean passed = true;
-   private List<String> errors = new LinkedList<>();
+   private final List<String> structureByteAlignmentErrors = new LinkedList<>();
+   private final List<String> duplicateStructureNameErrors = new LinkedList<>();
+   private final List<String> messageTypeErrors = new LinkedList<>();
 
    public ConnectionValidationResult(BranchId branch, ArtifactId viewId, String connectionName) {
       this.branch = branch;
@@ -47,19 +48,19 @@ public class ConnectionValidationResult {
    }
 
    public boolean isPassed() {
-      return passed;
+      return structureByteAlignmentErrors.isEmpty() && duplicateStructureNameErrors.isEmpty() && messageTypeErrors.isEmpty();
    }
 
-   public void setPassed(boolean passed) {
-      this.passed = passed;
+   public List<String> getStructureByteAlignmentErrors() {
+      return structureByteAlignmentErrors;
    }
 
-   public List<String> getErrors() {
-      return errors;
+   public List<String> getDuplicateStructureNameErrors() {
+      return duplicateStructureNameErrors;
    }
 
-   public void setErrors(List<String> errors) {
-      this.errors = errors;
+   public List<String> getMessageTypeErrors() {
+      return messageTypeErrors;
    }
 
 }
