@@ -15,20 +15,35 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -55,6 +70,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class TransactionEndpointImpl implements TransactionEndpoint {
 
    private final OrcsApi orcsApi;
+   private final int PURGE_TXS_LIMIT = 1000;
    private final IResourceManager resourceManager;
    private final TupleQuery tupleQuery;
    private final TupleEndpointImpl tupleEndpointImpl;
@@ -235,10 +251,371 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       return results;
    }
 
-   @Override
-   public XResultData applyTransferFile(String fileName) {
+   public XResultData applyTransferFile(String dirName) {
       XResultData results = new XResultData();
+      File manifestFile = new File(String.format("%s%s%s", dirName, File.separator, "Manifest.md"));
+      String manifest = null;
+      ArrayList<String> dirs;
+      ArrayList<ArrayList<String>> subfiles = new ArrayList<ArrayList<String>>();
+      HashMap<String, String> txMap = new HashMap<String, String>();
+      // Extract file directories
+      try {
+         manifest = Lib.fileToString(manifestFile);
+         dirs = Lib.readListFromDir(dirName, null);
+         for (int i = 0; i < dirs.size(); i++) {
+            if (!dirs.get(i).equals("Manifest")) {
+               ArrayList<String> tempfiles =
+                  Lib.readListFromDir(String.format("%s%s%s", dirName, File.separator, dirs.get(i)), null);
+               tempfiles.add(dirs.get(i));
+               subfiles.add(tempfiles);
+            }
+         }
+      } catch (IOException e) {
+         results.errorf("%s",
+            String.format("IO Exception while reading manifest and transaction files. %s", e.getMessage()));
+         return results;
+      }
+      //validate Manifest
+      String[] mdLines = manifest.split("\n");
+      String strBuildId = "", strExportId = "";
+      String strBranchId = "", strLocalTx = "", strUniqueTx = "", strOp = "";
+      int readKeyCt = 0, subfileCt = 0;
+      try {
+         for (int i = 0; i < mdLines.length; i++) {
+            if (mdLines[i].contains("BuildID")) {
+               strBuildId = mdLines[i].split(":")[1].trim();
+               readKeyCt++;
+               continue;
+            }
+            if (mdLines[i].contains("ExportID")) {
+               strExportId = mdLines[i].split(":")[1].trim();
+               readKeyCt++;
+               continue;
+            }
+            if (mdLines[i].contains("PrevTX")) {
+               //verify subfiles ct from previous branch id
+               if (subfileCt != 0) {
+                  for (int j = 0; j < subfiles.size(); j++) {
+                     if (subfiles.get(j).get(subfiles.get(j).size() - 1).equals(strBranchId)) {
+                        if (subfiles.get(j).size() - 1 != subfileCt) {
+                           results.errorf("%s", "Number of files does not match with Manifest.");
+                           return results;
+                        }
+                        break;
+                     }
+                  }
+                  subfileCt = 0;
+               }
+               strBranchId = mdLines[i].split("\\|")[1].trim();
+               strLocalTx = mdLines[i].split("\\|")[2].trim();
+               strUniqueTx = mdLines[i].split("\\|")[3].trim();
+               strOp = mdLines[i].split("\\|")[4].trim();
+               txMap.put(strBranchId, strLocalTx);
+               txMap.put(strBranchId + "-" + strLocalTx, strUniqueTx + "-" + strOp);
+               readKeyCt++;
+               continue;
+            }
+            if (mdLines[i].contains("List of Directories")) {
+               //verify subfiles ct from previous branch id
+               if (subfileCt != 0) {
+                  for (int j = 0; j < subfiles.size(); j++) {
+                     if (subfiles.get(j).get(subfiles.get(j).size() - 1).equals(strBranchId)) {
+                        if (subfiles.get(j).size() - 1 != subfileCt) {
+                           results.errorf("%s", "Number of files does not match with Manifest.");
+                           return results;
+                        }
+                        break;
+                     }
+                  }
+               }
+               break;
+            }
+            //read transaction detail
+            if (readKeyCt > 2) {
+               strBranchId = mdLines[i].split("\\|")[1].trim();
+               strLocalTx = mdLines[i].split("\\|")[2].trim();
+               strUniqueTx = mdLines[i].split("\\|")[3].trim();
+               strOp = mdLines[i].split("\\|")[4].trim();
+               txMap.put(strBranchId + "-" + strLocalTx, strUniqueTx + "-" + strOp);
+               for (int j = 0; j < subfiles.size(); j++) {
+                  if (subfiles.get(j).get(subfiles.get(j).size() - 1).equals(strBranchId)) {
+                     if (!subfiles.get(j).get(subfileCt).equals(strLocalTx)) {
+                        results.errorf("%s", "File name is mismatched or not in correct order.");
+                     }
+                     break;
+                  }
+               }
+               subfileCt++;
+               continue;
+            }
+         }
+      } catch (Exception e) {
+         results.errorf("%s", e.getMessage());
+         return results;
+      }
+
+      if (readKeyCt < 3) {
+         results.errorf("%s", "Manifest is missing data.");
+         return results;
+      }
+
+      if (results.isFailed()) {
+         return results;
+         //End Manifest Validation
+      }
+
+      // Check to make sure there is a matching destination type init for this DB (or should that be by branch - needs investigation)
+      // Check the PrevTX to make sure the DBs are in alignment using the manifest info
+      // for each transaction, do the orcs/txs create command for the applicable transaction
+      // update the tuple table (the TransferFile one) with the new tx but the same unique transaction id, e.g.:
+      // tx.addTuple4(TransferFile, branch, newTxId, txId for processed JSON file, TransferOpType.ADD);
+      // write an info for the xresult data to tell for all successful transactions
+      // otherwise write errors for unsuccessful transfer transaction and purge all imported transactions.
+
+      ArrayList<String> transIdList = new ArrayList<String>();
+      //HashMap<BranchId, GammaId> gammaIdMap = new HashMap<BranchId, GammaId>();
+      try {
+         for (int i = 0; i < subfiles.size(); i++) {
+            BranchId branchId = BranchId.valueOf(subfiles.get(i).get(subfiles.get(i).size() - 1));
+            //TransactionBuilder txTupleBuilder =
+            //   orcsApi.getTransactionFactory().createTransaction(branchId, "Upload transfer tuples");
+
+            String strManBaseTxId = txMap.get(branchId.toString());
+
+            List<TransactionId> txIds = new ArrayList<>();
+            //tupleQuery.getTuple4E3E4FromE1E2(TupleType, branchId, e1, e2, consumer);
+            tupleQuery.getTuple4E3E4FromE1E2(TransferFile, CoreBranches.COMMON, branchId, TransferOpType.PREV_TX,
+               (E3, E4) -> {
+                  txIds.add(E3);
+               });
+
+            if (txIds.isEmpty()) {
+               //if there is no preTx add the new prevTx so that it can pass the validation
+               //txIds.add(TransationId.valueOf(strManBaseTxId));
+            } else if (!txIds.get(0).toString().equals(strManBaseTxId)) {
+               results.errorf("%s", String.format("Previous Tx %s of %s does not match with current value in database.",
+                  strManBaseTxId, branchId.toString()));
+               break;
+            }
+
+            //List<GammaId> tuples = new ArrayList<>();
+            //tupleQuery.getTuple4GammaFromE1E2(TransferFile, CoreBranches.COMMON, branchId, TransferOpType.PREV_TX, tuples::add);
+            /*
+             * tupleQuery.getTuple4GammaFromE1E2(TransferFile, branchId, branchId, TransferOpType.PREV_TX, tuples::add);
+             * if(tuples.isEmpty() ) { results.errorf("%s", String.format("Can not get gamma Id from %s and Prev_TX.",
+             * branchId.toString())); } else gammaIdMap.put(branchId, tuples.get(0));
+             */
+            //import transactions to branchId
+            int j = 0;
+            try {
+               for (j = 0; j < subfiles.get(i).size() - 1; j++) {
+                  File transFile = new File(String.format("%s%s%s%s%s.json", dirName, File.separator,
+                     branchId.toString(), File.separator, subfiles.get(i).get(j)));
+                  String transStr = Lib.fileToString(transFile);
+                  TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
+                  TransactionBuilder trans = txBdf.loadFromJson(transStr);
+
+                  trans.createArtifact(CoreArtifactTypes.AcronymPlainText, "Test Artifact");
+
+                  //trans.addkeyValueOps(id, name);
+                  //make small change to get the transaction id
+                  TransactionToken token = trans.commit();
+                  transIdList.add(token.getIdString());
+               }
+            } catch (Exception e) {
+               results.errorf("Failed at %s - %s.json: %s.", branchId.toString(), subfiles.get(i).get(j),
+                  e.getMessage());
+            }
+
+            if (results.isFailed()) {
+               break;
+            }
+         }
+      } catch (Exception e) {
+         results.errorf("%s", e.getMessage());
+      }
+
+      if (results.isFailed()) {
+         try {
+            StringBuilder transIds = new StringBuilder("");
+            for (int i = 0; i < transIdList.size(); i++) {
+               if (i % PURGE_TXS_LIMIT == 0 && transIds.length() > 0) {
+                  orcsApi.getTransactionFactory().purgeTxs(transIds.toString());
+                  results.log(String.format("Purged succesfully the transaction ids: %s.", transIds.toString()));
+                  //transIds = new StringBuilder("");
+                  transIds.setLength(0);
+               }
+               if (transIds.length() > 0) {
+                  transIds.append(",").append(transIdList.get(i));
+               } else {
+                  transIds.append(transIdList.get(i));
+               }
+            }
+            if (transIds.length() > 0) {
+               orcsApi.getTransactionFactory().purgeTxs(transIds.toString());
+               results.log(String.format("Purged succesfully the transaction ids: %s.", transIds.toString()));
+            }
+
+         } catch (Exception e) {
+            results.errorf("%s", String.format("Roll back failed while purging transaction ids %s.", e.getMessage()));
+         }
+
+      } else {
+         //update prevTX tuple
+
+         StringBuilder transIds = new StringBuilder("");
+         for (int i = 0; i < transIdList.size(); i++) {
+            if (i % PURGE_TXS_LIMIT == 0 && transIds.length() != 0) {
+               //orcsApi.getTransactionFactory().purgeTxs(transIds.toString()); //for test
+               results.log(String.format("Imported succesfully the transaction ids: %s.", transIds.toString()));
+               //transIds.setLength(0);
+               transIds = new StringBuilder("");
+            }
+            if (transIds.length() == 0) {
+               transIds.append(transIdList.get(i));
+            } else {
+               transIds.append(",").append(transIdList.get(i));
+            }
+         }
+         if (transIds.length() != 0) {
+            //orcsApi.getTransactionFactory().purgeTxs(transIds.toString()); //for test
+            results.log(String.format("Imported succesfully the transaction ids: %s.", transIds.toString()));
+         }
+      }
       return results;
+   }
+
+   @Override
+   public Response downloadTransferFile() {
+      return downloadTransferFile("n/a");
+   }
+
+   @Override
+   public Response downloadTransferFile(String currentFlag) {
+      if (currentFlag.equals("true")) {
+         //call generateTransferFile otherwise look for the latest existing files
+      }
+      //where to get the path???
+      String downloadDataPath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+
+      if (downloadDataPath == null) {
+         downloadDataPath = System.getProperty("user.home");
+      }
+
+      File downloadTransDir = new File(downloadDataPath + File.separator + "fileTransfer");
+      if (!downloadTransDir.isDirectory()) {
+         return Response.noContent().build();
+      }
+
+      String filename = "";
+      filename = OrcsRestUtil.getLatestFile(downloadTransDir.toString(), "OSEETransfer", "zip");
+
+      File downloadZip = new File(String.format("%s%s%s", downloadTransDir.getPath(), File.separator, filename));
+
+      if (downloadZip.exists()) {
+         try {
+            return Response.ok(Files.readAllBytes(downloadZip.toPath())).type("application/zip").header(
+               "Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+         } catch (IOException ex) {
+            return Response.serverError().build();
+         }
+      }
+      return Response.noContent().build();
+   }
+
+   @Override
+   public Response uploadTransferFile(InputStream zip) {
+      String serverDataPath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverDataPath == null) {
+         serverDataPath = System.getProperty("user.home");
+      }
+      File serverApplicDir = new File(String.format("%s%sOSSEDataTransferUploads", serverDataPath, File.separator));
+      if (!serverApplicDir.exists()) {
+         serverApplicDir.mkdirs();
+         try {
+            FileWriter readme =
+               new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));
+            readme.write(
+               "This folder contains OSEE data transfer files which were uploaded via rest api and imported into database.");
+            readme.close();
+         } catch (IOException e) {
+            return Response.serverError().build();
+         }
+      }
+
+      Date date = Calendar.getInstance().getTime();
+      DateFormat dateFormat = new SimpleDateFormat("yyyymmmdd_hhmmss");
+      String timedId = String.format("%sOSEETransferFile-%s", File.separator, dateFormat.format(date));
+      String timedIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, timedId);
+      String sourceNameDir = String.format("%s%ssource", timedIdDir, File.separator);
+      OutputStream outStream = null;
+      ZipInputStream zis = null;
+      String transDir = null;
+      try {
+         new File(timedIdDir).mkdir();
+         String fileZip = String.format("%s.zip", sourceNameDir);
+         File uploadedZip = new File(fileZip);
+         byte[] buffer = zip.readAllBytes();
+
+         outStream = new FileOutputStream(uploadedZip);
+         outStream.write(buffer);
+
+         zis = new ZipInputStream(new FileInputStream(fileZip));
+         ZipEntry zipEntry = zis.getNextEntry();
+         File unzipLocation = new File(sourceNameDir);
+         unzipLocation.mkdirs();
+         while (zipEntry != null) {
+            File uploadedDirectory = new File(unzipLocation, zipEntry.getName());
+            if (transDir == null) {
+               transDir = uploadedDirectory.getPath();
+            }
+            if (zipEntry.isDirectory()) {
+               if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
+                  zis.close();
+                  Lib.close(outStream);
+                  throw new IOException("Failed to create directory " + uploadedDirectory);
+               }
+            } else {
+               // for Windows-created archives
+               File parent = uploadedDirectory.getParentFile();
+               if (!parent.isDirectory() && !parent.mkdirs()) {
+                  zis.close();
+                  Lib.close(outStream);
+                  throw new IOException("Failed to create directory " + parent);
+               }
+               // write file content
+               try (FileOutputStream fos = new FileOutputStream(uploadedDirectory);) {
+                  int len;
+                  while ((len = zis.read(buffer)) > 0) {
+                     fos.write(buffer, 0, len);
+                  }
+               }
+
+            }
+            zipEntry = zis.getNextEntry();
+         }
+
+         zip.close();
+         outStream.close();
+         zis.closeEntry();
+         zis.close();
+      } catch (Exception ex) {
+         //throw new OseeCoreException(ex, "OSEE Upload Transfer file Failed");
+         return Response.serverError().build();
+      } finally {
+         if (zis != null) {
+            Lib.close(zis);
+         }
+         Lib.close(outStream);
+      }
+
+      XResultData results = applyTransferFile(transDir);
+      results.log(String.format("The file is extracted to %s.", sourceNameDir));
+      if (results.isOK()) {
+         return Response.ok().entity(String.format("\nResult: %s", results.toString())).build();
+      } else {
+         return Response.serverError().entity(String.format("\nResult: %s", results.toString())).build();
+      }
    }
 
    // external API to check for transfer file locks, internally, just use the util class TransferFileLockUtil

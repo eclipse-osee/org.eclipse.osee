@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import java.io.InputStream;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -102,11 +103,20 @@ public interface TransactionEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData generateTransferFile(@QueryParam("exportId") TransactionId exportId);
 
+   @GET
+   @Path("xfer/download")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response downloadTransferFile();
+
+   @GET
+   @Path("xfer/download/{currentFlag}")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response downloadTransferFile(@PathParam("currentFlag") String flag);
+
    @POST
-   @Path("xfer/apply")
-   @Consumes(MediaType.TEXT_PLAIN)
-   @Produces(MediaType.APPLICATION_JSON)
-   XResultData applyTransferFile(@QueryParam("file") String pathToFile);
+   @Path("xfer/upload")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response uploadTransferFile(InputStream zip);
 
    /**
     * Makes a request to lock down transfers for the given export ID. This will set the lock that identifies the
