@@ -66,8 +66,7 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
       // All messages must have a message type
       for (InterfaceMessageToken message : messages) {
          if (Strings.isInvalid(message.getInterfaceMessageType())) {
-            result.setPassed(false);
-            result.getErrors().add("Message missing Message Type: " + message.getName());
+            result.getMessageTypeErrors().add(message.getName());
          }
 
          // Get all the structs for this message while we're here
@@ -82,14 +81,12 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
       Set<String> structureSheetNames = new HashSet<>();
       for (InterfaceStructureToken structure : structures) {
          if (structure.getIncorrectlySized()) {
-            result.setPassed(false);
-            result.getErrors().add("Structure is not byte aligned: " + structure.getName());
+            result.getStructureByteAlignmentErrors().add(structure.getName());
          }
          String structureSheetName =
             structure.getNameAbbrev().isEmpty() ? structure.getName() : structure.getNameAbbrev();
          if (structureSheetNames.contains(structureSheetName)) {
-            result.setPassed(false);
-            result.getErrors().add("Duplicate structure name: " + structureSheetName);
+            result.getDuplicateStructureNameErrors().add(structureSheetName);
          }
          structureSheetNames.add(structureSheetName);
       }

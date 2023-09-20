@@ -36,7 +36,7 @@ import {
 } from '@osee/messaging/shared/types';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { ApplicabilityListService, UiService } from '@osee/shared/services';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
@@ -44,6 +44,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-messaging-reports',
@@ -54,8 +55,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 		AsyncPipe,
 		RouterLink,
 		NgFor,
+		NgTemplateOutlet,
 		FormsModule,
 		MatFormFieldModule,
+		MatIconModule,
 		MatInputModule,
 		MatSelectModule,
 		MatOptionModule,

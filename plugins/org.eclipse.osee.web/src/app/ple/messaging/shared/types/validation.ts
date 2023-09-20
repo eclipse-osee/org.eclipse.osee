@@ -15,13 +15,17 @@ export interface ConnectionValidationResult {
 	viewId: string;
 	connectionName: string;
 	passed: boolean;
-	errors: string[];
+	structureByteAlignmentErrors: string[];
+	duplicateStructureNameErrors: string[];
+	messageTypeErrors: string[];
 }
 
 export const connectionValidationResultSentinel: ConnectionValidationResult = {
 	branch: '-1',
 	viewId: '-1',
 	connectionName: '',
-	passed: false,
-	errors: [],
+	passed: true,
+	structureByteAlignmentErrors: [],
+	duplicateStructureNameErrors: [],
+	messageTypeErrors: [],
 };

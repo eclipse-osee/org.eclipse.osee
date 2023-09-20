@@ -17,5 +17,7 @@ export const connectionValidationResponseMock: ConnectionValidationResult = {
 	viewId: '-1',
 	connectionName: 'Name',
 	passed: true,
-	errors: ['Error 1', 'Error 2'],
+	structureByteAlignmentErrors: ['Error 1', 'Error 2'],
+	duplicateStructureNameErrors: [],
+	messageTypeErrors: [],
 };
