@@ -96,6 +96,18 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
    }
 
    @Override
+   public Collection<IAtsTeamWorkflow> getTeamWorkflows(String ids) {
+      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
+      List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
+      for (IAtsWorkItem workItem : workItems) {
+         if (workItem.isTeamWorkflow()) {
+            teamWfs.add((IAtsTeamWorkflow) workItem);
+         }
+      }
+      return teamWfs;
+   }
+
+   @Override
    public Collection<IAtsVersion> getVersionsbyTeamDefinition(String aiId, String sort) {
       IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItem(aiId);
       IAtsTeamDefinition impactedTeamDef = atsApi.getTeamDefinitionService().getImpactedTeamDef(ai);
