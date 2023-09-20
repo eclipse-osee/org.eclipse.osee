@@ -50,10 +50,21 @@ public interface AtsTeamWfEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    Collection<IAtsVersion> getVersionsbyTeamDefinition(@PathParam("aiId") String aiId, @QueryParam("sort") String sort);
 
+   /**
+    * @param ids (atsId, artId) of action to display
+    */
    @GET
    @Path("{id}")
    @Produces({MediaType.APPLICATION_JSON})
    IAtsTeamWorkflow getTeamWorkflow(@PathParam("id") String id);
+
+   /**
+    * @param ids (atsId, artId) of action to display
+    */
+   @GET
+   @Path("ids/{id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   Collection<IAtsTeamWorkflow> getTeamWorkflows(@PathParam("id") String id);
 
    /**
     * @param id can be ai,teamdef,workflow id

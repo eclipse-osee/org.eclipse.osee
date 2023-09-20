@@ -22,7 +22,9 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -42,6 +44,7 @@ import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
+import org.eclipse.osee.ats.rest.util.WorkItemJsonProvider;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
@@ -67,6 +70,11 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    private JsonFactory jsonFactory;
    private AtsApi atsApiServer;
    private OrcsApi orcsApi;
+   private static Set<WorkItemJsonProvider> jsonProviders = new HashSet<>();
+
+   public void addJsonProvider(WorkItemJsonProvider jsonProvider) {
+      WorkItemJsonWriter.jsonProviders.add(jsonProvider);
+   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -142,12 +150,24 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeStringField("ArtifactType", workItemArt.getArtifactType().getName());
       String actionUrl = AtsUtil.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsApi);
       writer.writeStringField("actionLocation", actionUrl);
+      // Add items from extended work items
+      for (WorkItemJsonProvider jsonProvider : jsonProviders) {
+         jsonProvider.addFields(workItem, writer, atsApi, orcsApi);
+      }
       if (!identityView) {
          ConfigJsonWriter.addAttributeData(writer, workItemArt, options, atsApi, orcsApi);
          if (!workItem.isGoal()) {
             writer.writeStringField("TeamName", ActionPage.getTeamStr(atsApi, workItemArt));
          }
-         writer.writeStringField("Assignees", workItem.getAssigneesStr());
+         writer.writeArrayFieldStart("Assignees");
+         for (AtsUser assignee : workItem.getAssignees()) {
+            writer.writeStartObject();
+            writer.writeStringField("id", assignee.getIdString());
+            writer.writeStringField("name", assignee.getName());
+            writer.writeStringField("email", assignee.getEmail());
+            writer.writeEndObject();
+         }
+         writer.writeEndArray();
          if (options.contains(WorkItemWriterOptions.WriteRelatedAsTokens)) {
             writer.writeArrayFieldStart("AssigneesTokens");
             for (AtsUser assignee : workItem.getAssignees()) {
@@ -169,7 +189,9 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          String userId = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, "");
          if (Strings.isValid(userId)) {
             try {
-               writer.writeStringField("CreatedBy", workItem.getCreatedBy().getName());
+               AtsUser createdBy = workItem.getCreatedBy();
+               writer.writeStringField("CreatedBy", createdBy.getName());
+               writer.writeStringField("CreatedByEmail", createdBy.getEmail());
             } catch (Exception ex) {
                writer.writeStringField("CreatedBy", "Exception getting user: " + ex.getLocalizedMessage());
             }

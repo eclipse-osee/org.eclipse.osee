@@ -7,4 +7,5 @@
    </service>
    <reference bind="setAtsApiServer" cardinality="1..1" interface="org.eclipse.osee.ats.rest.AtsApiServer" name="AtsApiServer" policy="static"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+   <reference bind="addJsonProvider" cardinality="0..n" interface="org.eclipse.osee.ats.rest.util.WorkItemJsonProvider" name="WorkItemJsonProvider" policy="dynamic"/>
 </scr:component>
