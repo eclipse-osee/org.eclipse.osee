@@ -22,8 +22,10 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -32,14 +34,19 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
+import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
@@ -52,6 +59,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -211,6 +219,18 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             }
          }
       }
+
+      if (workItem.isTeamWorkflow()) {
+         writeReviews(atsApi, writer, teamWf);
+      }
+
+      if (workItem.isReview()) {
+         writeAttachments(atsApi, workItem, writer);
+         if (workItem.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
+            writeRoles(atsApi, writer, workItem);
+         }
+      }
+
       TransactionId lastModTransId = ((ArtifactReadable) workItem.getStoreObject()).getLastModifiedTransaction();
       TransactionReadable tx = orcsApi.getTransactionFactory().getTx(lastModTransId);
       writer.writeStringField("LastModDate", tx.getDate().toString());
@@ -309,5 +329,65 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             }
          }
       }
+   }
+
+   private static void writeAttachments(AtsApi atsApi, IAtsWorkItem workItem, JsonGenerator writer) throws IOException {
+      writer.writeArrayFieldStart("Attachments");
+
+      Set<ArtifactToken> relationSet = new HashSet<>();
+      relationSet.addAll(
+         atsApi.getRelationResolver().getRelated(workItem, CoreRelationTypes.SupportingInfo_SupportingInfo));
+      relationSet.addAll(
+         atsApi.getRelationResolver().getRelated(workItem, CoreRelationTypes.SupportingInfo_IsSupportedBy));
+
+      for (ArtifactToken token : relationSet) {
+         writer.writeStartObject();
+         writer.writeStringField("id", token.getIdString());
+         writer.writeStringField("name", token.getName());
+         writer.writeStringField("type", token.getArtifactType().getName());
+         writer.writeEndObject();
+      }
+
+      writer.writeEndArray();
+   }
+
+   private static void writeRoles(AtsApi atsApi, JsonGenerator writer, IAtsWorkItem workItem) throws IOException {
+      writer.writeArrayFieldStart("roles");
+
+      UserRoleManager manager = new UserRoleManager((IAtsPeerToPeerReview) workItem, atsApi);
+
+      // pre-process
+      Map<String, UserRole> roleMap = new HashMap<>();
+      for (UserRole role : manager.getUserRoles()) {
+         roleMap.put(role.getUserId(), role);
+      }
+
+      // Write user
+      for (AtsUser user : atsApi.getUserService().getUsersByUserIds(roleMap.keySet())) {
+         writer.writeStartObject();
+         writer.writeStringField("id", user.getIdString());
+         writer.writeStringField("name", user.getName());
+         writer.writeStringField("email", user.getEmail());
+
+         UserRole userRole = roleMap.get(user.getUserId());
+         writer.writeStringField("role", userRole.getRole().getName());
+         writer.writeBooleanField("completed", userRole.isCompleted());
+         writer.writeEndObject();
+      }
+
+      writer.writeEndArray();
+   }
+
+   private static void writeReviews(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf) throws IOException {
+      writer.writeArrayFieldStart("Reviews");
+      for (IAtsAbstractReview review : atsApi.getReviewService().getReviews(teamWf)) {
+         writer.writeStartObject();
+         writer.writeStringField("id", review.getIdString());
+         writer.writeStringField("state", review.getCurrentStateName());
+         writer.writeStringField("type", review.getArtifactType().getName());
+         writer.writeEndObject();
+      }
+
+      writer.writeEndArray();
    }
 }

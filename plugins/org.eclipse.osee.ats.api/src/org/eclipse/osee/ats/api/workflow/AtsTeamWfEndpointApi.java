@@ -23,6 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -102,5 +103,10 @@ public interface AtsTeamWfEndpointApi {
    @Path("diff")
    @Produces(MediaType.APPLICATION_JSON)
    public DiffReportEndpointDto getDiffReportEndpoint();
+
+   @GET
+   @Path("{id}/review")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<IAtsAbstractReview> getReviews(@PathParam("id") String id);
 
 }
