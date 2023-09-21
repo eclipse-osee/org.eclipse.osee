@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -277,5 +278,17 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          orcsApi.getQueryFactory().fromBranch(BranchId.valueOf(CoreBranches.COMMON.getId())).andIsOfType(
             CoreArtifactTypes.DiffReportEndPoint).asArtifactOrSentinel();
       return new DiffReportEndpointDto(art);
+   }
+
+   @Override
+   public Collection<IAtsAbstractReview> getReviews(String id) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(id);
+      if (workItem == null || !workItem.isTeamWorkflow()) {
+         throw new UnsupportedOperationException();
+      }
+
+      Collection<IAtsAbstractReview> reviews = atsApi.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem);
+
+      return reviews;
    }
 }
