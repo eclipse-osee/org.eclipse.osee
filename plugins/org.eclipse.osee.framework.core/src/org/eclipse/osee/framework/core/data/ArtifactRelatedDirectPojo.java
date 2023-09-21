@@ -17,19 +17,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
+/**
+ * @author Jaden W. Puckett
+ */
 public class ArtifactRelatedDirectPojo {
-   private ArtifactTypeToken token;
-   private List<ArtifactReadable> artReadables;
+   private final ArtifactTypeToken token;
+   private final ArtifactReadable artReadable;
+   private final BranchId branchId;
    private final OrcsTokenService tokenService = new OrcsTokenServiceImpl();
 
+   public String getBranchId() {
+      return this.branchId.getIdString();
+   }
+
    public String getArtId() {
-      return artReadables.stream().map(a -> a.getIdString()).collect(Collectors.joining());
+      return artReadable.getIdString();
    }
 
    public String getArtName() {
-      return artReadables.stream().map(a -> a.getName()).collect(Collectors.joining());
+      return artReadable.getName();
    }
 
    public String getArtType() {
@@ -40,46 +47,35 @@ public class ArtifactRelatedDirectPojo {
       List<PojoRelation> relations = new ArrayList<>();
       // get the list of all valid relation types for the overall artifact we are finding the direct relations for
       List<RelationTypeToken> validRelationTypes = tokenService.getValidRelationTypes(token);
-      // artReadables.length should = 1
-      for (ArtifactReadable artRead : artReadables) {
 
-         for (RelationTypeToken rel : validRelationTypes) {
-            // relation object to place into relations list
-            PojoRelation pojoRelation = new PojoRelation(rel);
+      for (RelationTypeToken rel : validRelationTypes) {
+         // relation object to place into relations list
+         PojoRelation pojoRelation = new PojoRelation(rel);
 
-            // get relation resultsets for side A and side B for the current overall artifact readable
-            RelationTypeSide rtsA = new RelationTypeSide(rel, RelationSide.SIDE_A);
-            RelationTypeSide rtsB = new RelationTypeSide(rel, RelationSide.SIDE_B);
-            ResultSet<ArtifactReadable> resultSetA = artRead.getRelated(rtsA);
-            ResultSet<ArtifactReadable> resultSetB = artRead.getRelated(rtsB);
+         // iterate over the result sets and populate the relation object with artifacts (dividing into collections for side A and side B)
+         this.artReadable.getRelated(new RelationTypeSide(rel, RelationSide.SIDE_A)).forEach(artReadA -> {
+            pojoRelation.addArtifactSideA(new PojoArtifact(artReadA));
+         });
+         this.artReadable.getRelated(new RelationTypeSide(rel, RelationSide.SIDE_B)).forEach(artReadB -> {
+            pojoRelation.addArtifactSideB(new PojoArtifact(artReadB));
+         });
 
-            // iterate over the result sets and populate the relation object with artifacts (dividing into collections for side A and side B)
-            resultSetA.forEach(artReadA -> {
-               PojoArtifact newArt = new PojoArtifact(artReadA.getIdString(), artReadA.getName(),
-                  artReadA.getArtifactType().getIdString());
-               pojoRelation.addArtifactSideA(newArt);
-            });
-            resultSetB.forEach(artReadB -> {
-               PojoArtifact newArt = new PojoArtifact(artReadB.getIdString(), artReadB.getName(),
-                  artReadB.getArtifactType().getIdString());
-               pojoRelation.addArtifactSideB(newArt);
-            });
-
-            //add pojoRelation to relations list
-            relations.add(pojoRelation);
-         }
+         //add pojoRelation to relations list
+         relations.add(pojoRelation);
       }
+
       return relations;
    }
 
-   public ArtifactRelatedDirectPojo(ArtifactTypeToken token, List<ArtifactReadable> artReadables) {
+   public ArtifactRelatedDirectPojo(ArtifactTypeToken token, ArtifactReadable artReadable, BranchId branchId) {
       this.token = token;
-      this.artReadables = artReadables;
+      this.artReadable = artReadable;
+      this.branchId = branchId;
    }
 
    public class PojoRelationSide {
       private String name = "";
-      private List<PojoArtifact> artifacts = new ArrayList<>();
+      private final List<PojoArtifact> artifacts = new ArrayList<>();
       private Boolean isSideA = false;
       private Boolean isSideB = false;
 
@@ -114,7 +110,7 @@ public class ArtifactRelatedDirectPojo {
       private RelationTypeToken relationTypeToken = null;
       private PojoRelationSide sideA = null;
       private PojoRelationSide sideB = null;
-      private List<PojoRelationSide> relationSides = new ArrayList<>();
+      private final List<PojoRelationSide> relationSides = new ArrayList<>();
 
       public PojoRelation(RelationTypeToken rel) {
          this.relationTypeToken = rel;
@@ -142,38 +138,100 @@ public class ArtifactRelatedDirectPojo {
    }
 
    public class PojoArtifact {
-      private String id = "";
-      private String name = "";
-      private String type = "";
+      private final ArtifactReadable art;
+      private final List<PojoAttribute> attributes = new ArrayList<>();
 
-      public PojoArtifact(String id, String name, String type) {
-         this.id = id;
-         this.name = name;
-         this.type = type;
+      public PojoArtifact(ArtifactReadable art) {
+         this.art = art;
+         List<IAttribute<?>> attrs = art.getAttributesHashCollection().getValues();
+         List<PojoAttribute> pojoAttributes =
+            attrs.stream().filter(attr -> attr != null).map(attr -> new PojoAttribute(attr)).collect(
+               Collectors.toList());
+         this.attributes.addAll(pojoAttributes);
+      }
+
+      public List<PojoAttribute> getAttributes() {
+         return this.attributes;
       }
 
       public String getId() {
-         return this.id;
-      }
-
-      public void setId(String id) {
-         this.id = id;
+         return this.art.getIdString();
       }
 
       public String getName() {
-         return name;
+         return this.art.getName();
       }
 
-      public void setName(String name) {
-         this.name = name;
+      public String getTypeId() {
+         return this.art.getArtifactType().getIdString();
       }
 
-      public String getType() {
-         return type;
+      public String getTypeName() {
+         return this.art.getArtifactType().getName();
+      }
+   }
+
+   public class PojoAttribute {
+      private final IAttribute<?> attr;
+
+      public PojoAttribute(IAttribute<?> attr) {
+         this.attr = attr;
       }
 
-      public void setType(String type) {
-         this.type = type;
+      public String getBaseType() {
+         if (attr.getAttributeType().isArtifactId()) {
+            return "ART_ID";
+         }
+         if (attr.getAttributeType().isBoolean()) {
+            return "BOOLEAN";
+         }
+         if (attr.getAttributeType().isBranchId()) {
+            return "BRANCH_ID";
+         }
+         if (attr.getAttributeType().isDate()) {
+            return "DATE";
+         }
+         if (attr.getAttributeType().isDouble()) {
+            return "DOUBLE";
+         }
+         if (attr.getAttributeType().isEnumerated()) {
+            return "ENUM";
+         }
+         if (attr.getAttributeType().isInputStream()) {
+            return "STREAM";
+         }
+         if (attr.getAttributeType().isInteger()) {
+            return "INTEGER";
+         }
+         if (attr.getAttributeType().isLong()) {
+            return "LONG";
+         }
+         if (attr.getAttributeType().isString()) {
+            return "STRING";
+         }
+         if (attr.getAttributeType().isUri()) {
+            return "URI";
+         }
+         if (attr.getAttributeType().isJavaObject()) {
+            return "JAVA_OBJECT";
+         }
+         return "COMPLEX";
+      }
+
+      public String getName() {
+         return this.attr.getAttributeType().getName();
+      }
+
+      public Object getValue() {
+         return this.attr.getValue();
+      }
+
+      public String getTypeId() {
+         return this.attr.getAttributeType().getIdString();
+      }
+
+      public String getId() {
+         return this.attr.getIdString();
       }
    }
 }

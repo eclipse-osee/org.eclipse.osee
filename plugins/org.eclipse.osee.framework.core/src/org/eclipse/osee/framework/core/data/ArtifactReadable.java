@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -221,10 +222,17 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       return Collections.castAll(getAttributeValues(CoreAttributeTypes.StaticId));
    }
 
+   HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection();
+
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
 
       public ArtifactReadableImpl() {
          super(Id.SENTINEL, Named.SENTINEL);
+      }
+
+      @Override
+      public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
+         return null;
       }
 
       @Override

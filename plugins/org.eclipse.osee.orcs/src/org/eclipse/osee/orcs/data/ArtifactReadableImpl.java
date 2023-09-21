@@ -504,4 +504,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
          "Unknown Name: " + getIdString());
    }
 
+   @Override
+   public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
+      return this.attributes;
+   }
 }

@@ -1,0 +1,71 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container
+	*ngIf="{
+		openedState: isOpen | async,
+		filter: filter | async
+	} as autoCompleteState">
+	<mat-form-field
+		subscriptSizing="dynamic"
+		id="enum-selector"
+		class="tw-w-full">
+		<input
+			type="text"
+			matInput
+			#input
+			[ngModel]="autoCompleteState.filter"
+			[required]="required"
+			[disabled]="disabled"
+			placeholder="Unspecified"
+			[errorStateMatcher]="errorMatcher"
+			id="enums"
+			name="enums"
+			(focusin)="autoCompleteOpened()"
+			(focusout)="close()"
+			(ngModelChange)="updateTypeAhead($event)"
+			#enums="ngModel"
+			[matAutocomplete]="autoRates" />
+		<mat-icon
+			*ngIf="!autoCompleteState.openedState"
+			matIconSuffix
+			>arrow_drop_down</mat-icon
+		>
+		<button
+			mat-icon-button
+			*ngIf="
+				autoCompleteState.openedState && autoCompleteState.filter !== ''
+			"
+			matIconSuffix
+			(mousedown)="clear()">
+			<mat-icon>close</mat-icon>
+		</button>
+		<mat-autocomplete
+			autoActiveFirstOption="true"
+			autoSelectActiveOption="true"
+			#autoRates="matAutocomplete"
+			(optionSelected)="updateValue($event.option.value)">
+			<mat-option
+				*ngFor="let enum of _enums | async"
+				[value]="enum">
+				{{ enum }}
+			</mat-option>
+			<ng-template #loading>
+				<mat-option
+					id="-1"
+					[value]="{ id: '-1', name: 'invalid' }">
+					Loading...
+				</mat-option>
+			</ng-template>
+		</mat-autocomplete>
+	</mat-form-field>
+</ng-container>

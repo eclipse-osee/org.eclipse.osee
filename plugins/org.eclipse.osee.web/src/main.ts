@@ -22,6 +22,7 @@ import { OseeUrlSerializer } from './app/UrlSerializer';
 import {
 	provideRouter,
 	UrlSerializer,
+	withComponentInputBinding,
 	withInMemoryScrolling,
 } from '@angular/router';
 import { GlobalHttpInterceptors } from '@osee/interceptors';
@@ -51,7 +52,8 @@ bootstrapApplication(AppComponent, {
 			withInMemoryScrolling({
 				anchorScrolling: 'enabled',
 				scrollPositionRestoration: 'enabled',
-			})
+			}),
+			withComponentInputBinding()
 		),
 		provideHttpClient(withInterceptors(GlobalHttpInterceptors)),
 		provideAnimations(),

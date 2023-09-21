@@ -20,9 +20,9 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { GraphComponent } from '../graph/graph.component';
 import { ConnectionsTableComponent } from '../connections-table/connections-table.component';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { ViewSelectorComponent } from '@osee/messaging/shared/main-content';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
+import { ViewSelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-connection-view-host',

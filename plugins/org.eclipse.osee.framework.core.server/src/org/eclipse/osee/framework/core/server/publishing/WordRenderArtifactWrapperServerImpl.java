@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 
@@ -876,6 +877,11 @@ public class WordRenderArtifactWrapperServerImpl implements PublishingArtifact {
    @Override
    public String toString() {
       return this.toMessage(0, null).toString();
+   }
+
+   @Override
+   public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
+      throw new UnsupportedOperationException();
    }
 
 }

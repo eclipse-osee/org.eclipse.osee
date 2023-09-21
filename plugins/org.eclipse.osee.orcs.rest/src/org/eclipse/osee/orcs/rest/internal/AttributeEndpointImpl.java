@@ -18,6 +18,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.WebApplicationException;
@@ -25,14 +26,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeDataTransfer;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Multiplicity;
+import org.eclipse.osee.framework.core.data.OrcsTokenServiceImpl;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -304,5 +309,16 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   @Override
+   public Set<String> getAttributeEnums(AttributeId attributeId) {
+      Set<String> enums = new HashSet<>();
+      OrcsTokenService tokenService = new OrcsTokenServiceImpl();
+      AttributeTypeGeneric<?> tok = tokenService.getAttributeType(attributeId.getId());
+      if (tok instanceof AttributeTypeEnum<?>) {
+         enums = ((AttributeTypeEnum) tok).getEnumStrValues();
+      }
+      return enums;
    }
 }

@@ -1,0 +1,69 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="branchId$ | async as branchId">
+	<ng-container *ngIf="branchType$ | async as branchType">
+		<ng-container *ngIf="artifact$ | async as arts">
+			<!-- artifacts -->
+			<ng-container *ngFor="let artifact of arts; trackBy: trackById">
+				<div
+					class="tw-flex tw-py-1 tw-pl-4"
+					[ngClass]="
+						artifactsOpen().includes(artifact.id)
+							? 'tw-bg-background-hover'
+							: ''
+					">
+					<!-- expand icon button -->
+					<button
+						(click)="
+							artifactsOpen().includes(artifact.id)
+								? removeArtifactsOpen(artifact.id)
+								: addArtifactsOpen(artifact.id)
+						"
+						class="tw-flex tw-items-center hover:tw-text-primary">
+						<!-- animated icon -->
+						<mat-icon
+							matListItemIcon
+							[ngClass]="
+								artifactsOpen().includes(artifact.id)
+									? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+									: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+							">
+							chevron_right
+						</mat-icon>
+					</button>
+					<!-- artifact icon and name button -->
+					<button
+						cdkDrag
+						[cdkDragData]="artifact"
+						class="tw-flex tw-flex-grow tw-items-center hover:tw-text-primary"
+						(click)="addTab(artifact)">
+						<mat-icon class="tw-ml-4">
+							{{ fetchIcon(artifact.typeName) }}
+						</mat-icon>
+						<div class="tw-ml-2">
+							{{ artifact.name }}
+						</div>
+					</button>
+				</div>
+				<!-- child artifacts -->
+				<div
+					class="tw-pl-8"
+					*ngIf="artifactsOpen().includes(artifact.id)">
+					<osee-artifact-hierarchy [artifactId]="artifact.id" />
+				</div>
+			</ng-container>
+			<!-- relations (toggled via option) -->
+			<osee-artifact-hierarchy-relations [relation$]="relation$" />
+		</ng-container>
+	</ng-container>
+</ng-container>

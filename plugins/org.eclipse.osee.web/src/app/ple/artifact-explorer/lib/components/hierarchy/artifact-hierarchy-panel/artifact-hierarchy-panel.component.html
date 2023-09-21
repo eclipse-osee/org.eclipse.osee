@@ -1,0 +1,41 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-expansion-panel
+	[expanded]="panelOpen.value"
+	class="[&>div>div]:tw-px-0">
+	<mat-expansion-panel-header
+		(click)="togglePanel()"
+		[ngClass]="panelOpen.value ? 'tw-bg-primary' : ''"
+		><mat-panel-title
+			class="tw-font-bold"
+			[ngClass]="panelOpen.value ? 'tw-text-background' : ''">
+			Artifact Hierarchy
+		</mat-panel-title></mat-expansion-panel-header
+	>
+
+	<div class="tw-pt-2">
+		<osee-branch-picker category="3"></osee-branch-picker>
+		<div
+			class="tw-flex tw-justify-between tw-pt-4"
+			*ngIf="changedBranchId() && (branchType | async)">
+			<osee-view-selector />
+			<osee-artifact-hierarchy-options />
+		</div>
+		<div
+			cdkDropList
+			class="tw-pt-4">
+			<osee-artifact-hierarchy
+				artifactId="197818"></osee-artifact-hierarchy>
+		</div>
+	</div>
+</mat-expansion-panel>

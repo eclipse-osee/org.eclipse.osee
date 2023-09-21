@@ -1,0 +1,40 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-drawer-container
+	class="tw-h-full"
+	cdkDropListGroup
+	autosize>
+	<!-- Collapsable artifact explorer drawer -->
+	<mat-drawer
+		#drawer
+		class="tw-w-1/4 tw-min-w-fit"
+		mode="side"
+		position="end"
+		opened="true">
+		<osee-artifact-hierarchy-panel />
+	</mat-drawer>
+	<button
+		mat-icon-button
+		color="primary"
+		class="tw-float-right -tw-rotate-90 hover:tw-bg-primary hover:tw-text-white"
+		(click)="drawer.toggle()">
+		<mat-icon>
+			{{
+				drawer.opened
+					? 'keyboard_double_arrow_down'
+					: 'keyboard_double_arrow_up'
+			}}
+		</mat-icon>
+	</button>
+	<osee-artifact-tab-group />
+</mat-drawer-container>

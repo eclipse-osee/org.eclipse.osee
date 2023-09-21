@@ -1,0 +1,36 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="branchId$ | async as branchId">
+	<ng-container *ngIf="option$ | async as options">
+		<ng-container *ngIf="options.showRelations">
+			<ng-container *ngIf="relation$ | async as relations">
+				<ng-container
+					*ngFor="let rel of relations; trackBy: trackRelations">
+					<ng-container
+						*ngFor="
+							let relSide of rel.relationSides;
+							trackBy: trackRelationSides
+						">
+						<ng-container *ngIf="relSide.artifacts.length > 0">
+							<osee-artifact-hierarchy-relation-side
+								[relationSide]="relSide"
+								[typeToken]="
+									rel.relationTypeToken
+								"></osee-artifact-hierarchy-relation-side>
+						</ng-container>
+					</ng-container>
+				</ng-container>
+			</ng-container>
+		</ng-container>
+	</ng-container>
+</ng-container>
