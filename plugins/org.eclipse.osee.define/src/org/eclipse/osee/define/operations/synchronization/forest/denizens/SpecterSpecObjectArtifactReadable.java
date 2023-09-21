@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -218,7 +219,8 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
     */
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
@@ -423,7 +425,8 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
     */
 
    @Override
-   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag) {
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
@@ -630,6 +633,11 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
 
    @Override
    public boolean isHistorical() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       throw new UnsupportedOperationException();
    }
 

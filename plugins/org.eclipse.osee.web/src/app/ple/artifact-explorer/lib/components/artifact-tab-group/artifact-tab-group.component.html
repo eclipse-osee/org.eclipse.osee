@@ -1,0 +1,39 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-tab-group [animationDuration]="0">
+	<mat-tab *ngFor="let tab of tabs(); let i = index; trackBy: trackByIndex">
+		<ng-template mat-tab-label>
+			<div
+				(cdkDropListDropped)="onTabDropped($event)"
+				[cdkDropListConnectedTo]="getAllDropListConnections(i)()"
+				cdkDropListOrientation="horizontal"
+				cdkDropList
+				[id]="'' + i">
+				<div
+					class="tw-flex tw-items-center tw-rounded-t-md tw-bg-primary tw-text-background"
+					cdkDrag>
+					<div class="tw-ml-4">
+						{{ tab.artifact.name }}
+					</div>
+					<button
+						mat-icon-button
+						(click)="removeTab(i)">
+						<mat-icon>clear</mat-icon>
+					</button>
+				</div>
+			</div>
+		</ng-template>
+
+		<osee-artifact-editor [tab]="tab" />
+	</mat-tab>
+</mat-tab-group>

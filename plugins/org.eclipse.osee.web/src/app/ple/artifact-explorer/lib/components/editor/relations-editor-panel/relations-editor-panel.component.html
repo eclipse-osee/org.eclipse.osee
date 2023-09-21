@@ -1,0 +1,180 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-expansion-panel class="[&>div>div]:tw-px-0">
+	<mat-expansion-panel-header
+		(click)="togglePanel()"
+		[ngClass]="panelOpen.value ? 'tw-bg-primary' : ''"
+		><mat-panel-title
+			class="tw-font-bold"
+			[ngClass]="panelOpen.value ? 'tw-text-background' : ''">
+			Relations Editor
+		</mat-panel-title></mat-expansion-panel-header
+	>
+	<div class="tw-mt-4">
+		<ng-container *ngIf="artWithRelation$ | async as art">
+			<ng-container
+				*ngFor="let relation of art.relations; trackBy: relationOpen">
+				<div class="tw-h-auto">
+					<!-- expand icon button and relation name -->
+					<div
+						class="tw-flex tw-items-center tw-py-1 tw-pl-4"
+						[ngClass]="
+							dropdownsOpen.value.includes(
+								relation.relationTypeToken.id
+							)
+								? 'tw-bg-background-hover'
+								: 'tw-bg-inherit'
+						">
+						<button
+							(click)="
+								toggleExpand(relation.relationTypeToken.id)
+							"
+							class="tw-flex hover:tw-text-primary">
+							<!-- animated icon -->
+							<mat-icon
+								[ngClass]="
+									dropdownsOpen.value.includes(
+										relation.relationTypeToken.id
+									)
+										? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+										: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+								">
+								chevron_right
+							</mat-icon>
+						</button>
+						<!-- relation icon -->
+						<mat-icon
+							class="tw-ml-4"
+							[ngClass]="[
+								relation.relationSides[0].artifacts.length >
+									0 ||
+								relation.relationSides[1].artifacts.length > 0
+									? 'tw-text-accent-700'
+									: 'tw-text-foreground-disabled'
+							]"
+							>swap_horiz</mat-icon
+						>
+						<div class="tw-ml-2">
+							{{ relation.relationTypeToken.name }}
+						</div>
+					</div>
+					<!-- relation sides and their artifacts -->
+					<ng-container
+						*ngFor="
+							let side of relation.relationSides;
+							trackBy: relationSideOpen
+						">
+						<div
+							*ngIf="
+								dropdownsOpen.value.includes(
+									relation.relationTypeToken.id
+								)
+							"
+							class="tw-ml-8"
+							[ngClass]="
+								dropdownsOpen.value.includes(
+									relation.relationTypeToken.id
+								)
+									? 'tw-h-auto '
+									: 'tw-h-0 tw-bg-inherit'
+							"
+							cdkDropList
+							(cdkDropListDropped)="
+								addRelationOnItemDropped($event, relation, side)
+							">
+							<div
+								class="tw-flex tw-items-center tw-py-1 tw-pl-4"
+								[ngClass]="
+									dropdownsOpen.value.includes(side.name)
+										? 'tw-bg-background-hover'
+										: 'tw-bg-inherit'
+								">
+								<button
+									(click)="toggleExpand(side.name)"
+									class="tw-flex hover:tw-text-primary">
+									<!-- animated icon -->
+									<mat-icon
+										[ngClass]="
+											dropdownsOpen.value.includes(
+												side.name
+											)
+												? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+												: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+										">
+										chevron_right
+									</mat-icon>
+								</button>
+								<mat-icon
+									class="tw-ml-4"
+									[ngClass]="[
+										side.artifacts.length > 0
+											? 'tw-text-accent-700'
+											: 'tw-text-foreground-disabled'
+									]"
+									>swap_horiz</mat-icon
+								>
+								<div class="tw-ml-2">
+									{{ side.name }}
+								</div>
+							</div>
+							<div
+								*ngIf="dropdownsOpen.value.includes(side.name)"
+								class="tw-ml-14"
+								[ngClass]="
+									dropdownsOpen.value.includes(side.name)
+										? 'tw-h-auto'
+										: 'tw-h-0'
+								">
+								<!-- aritfacts within the relation side -->
+								<ng-container *ngIf="side.artifacts as arts">
+									<mat-list class="tw-p-0">
+										<div
+											*ngFor="let art of arts"
+											class="tw-h-auto tw-px-0 tw-py-1">
+											<div
+												class="tw-flex tw-items-center">
+												<mat-icon>
+													{{
+														fetchIcon(art.typeName)
+													}}
+												</mat-icon>
+												<div class="tw-ml-2">
+													{{ art.name }}
+												</div>
+												<button
+													class="tw-ml-auto tw-mr-4 tw-flex tw-transform tw-text-warning tw-transition-transform tw-duration-200 tw-ease-in-out hover:tw-rotate-180"
+													(click)="
+														editable
+															? deleteRelation(
+																	art,
+																	relation,
+																	side
+															  )
+															: ''
+													">
+													<mat-icon
+														>remove_circle_outline</mat-icon
+													>
+												</button>
+											</div>
+										</div>
+									</mat-list>
+								</ng-container>
+							</div>
+						</div>
+					</ng-container>
+				</div>
+			</ng-container>
+		</ng-container>
+	</div>
+</mat-expansion-panel>

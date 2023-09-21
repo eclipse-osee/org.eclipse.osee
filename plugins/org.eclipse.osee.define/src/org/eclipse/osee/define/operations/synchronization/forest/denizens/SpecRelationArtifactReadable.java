@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -247,7 +248,8 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
     */
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
@@ -496,7 +498,8 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
     */
 
    @Override
-   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType, DeletionFlag deletionFlag) {
+   public List<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, ArtifactTypeToken artifactType,
+      DeletionFlag deletionFlag) {
       throw new UnsupportedOperationException();
    }
 
@@ -762,6 +765,10 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
       throw new UnsupportedOperationException();
    }
 
+   @Override
+   public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
+      throw new UnsupportedOperationException();
+   }
 }
 
 /* EOF */

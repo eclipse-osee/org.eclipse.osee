@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -52,12 +53,14 @@ public interface AttributeEndpoint {
    @GET
    @Consumes({MediaType.APPLICATION_JSON})
    @Path("{attributeId}/version/{transactionId}/text")
-   Response getAttributeWithGammaAsText(@PathParam("attributeId") AttributeId attributeId, @PathParam("transactionId") TransactionId transaction);
+   Response getAttributeWithGammaAsText(@PathParam("attributeId") AttributeId attributeId,
+      @PathParam("transactionId") TransactionId transaction);
 
    @GET
    @Consumes({MediaType.APPLICATION_JSON})
    @Path("{attributeId}/version/{transactionId}")
-   Response getAttributeWithGamma(@PathParam("attributeId") AttributeId attributeId, @PathParam("transactionId") TransactionId transaction);
+   Response getAttributeWithGamma(@PathParam("attributeId") AttributeId attributeId,
+      @PathParam("transactionId") TransactionId transaction);
 
    @GET
    @Path("type")
@@ -74,5 +77,11 @@ public interface AttributeEndpoint {
    @Path("type/{attributeType}/version/{transactionId}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.TEXT_HTML)
-   Response getAttributeTypeValuesForTransaction(@PathParam("attributeType") AttributeTypeToken attributeType, @PathParam("transactionId") TransactionId transaction);
+   Response getAttributeTypeValuesForTransaction(@PathParam("attributeType") AttributeTypeToken attributeType,
+      @PathParam("transactionId") TransactionId transaction);
+
+   @GET
+   @Path("{attributeId}/enums")
+   @Produces(MediaType.APPLICATION_JSON)
+   Set<String> getAttributeEnums(@PathParam("attributeId") AttributeId attributeId);
 }

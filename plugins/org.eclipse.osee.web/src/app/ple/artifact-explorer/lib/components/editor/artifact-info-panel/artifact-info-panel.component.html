@@ -1,0 +1,55 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-expansion-panel>
+	<mat-expansion-panel-header
+		(click)="togglePanel()"
+		[ngClass]="panelOpen.value ? 'tw-bg-primary' : ''"
+		><mat-panel-title
+			class="tw-font-bold"
+			[ngClass]="panelOpen.value ? 'tw-text-background' : ''">
+			Artifact Info
+		</mat-panel-title></mat-expansion-panel-header
+	>
+	<div class="tw-mt-4">
+		<div class="tw-mb-2 tw-flex">
+			<div class="tw-font-bold">Artifact Name:</div>
+			<div class="tw-ml-4">
+				{{ tab.artifact.name }}
+			</div>
+		</div>
+		<div class="tw-mb-2 tw-flex">
+			<div class="tw-font-bold">Artifact Id:</div>
+			<div class="tw-ml-4">
+				{{ tab.artifact.id }}
+			</div>
+		</div>
+		<div class="tw-mb-2 tw-flex">
+			<div class="tw-font-bold">Artifact Type:</div>
+			<div class="tw-ml-4">
+				{{ tab.artifact.typeName }}
+			</div>
+		</div>
+		<div class="tw-mb-2 tw-flex">
+			<div class="tw-font-bold">Branch Id:</div>
+			<div class="tw-ml-4">
+				{{ tab.branchId }}
+			</div>
+		</div>
+		<div class="tw-mb-2 tw-flex">
+			<div class="tw-font-bold">Editable:</div>
+			<div class="tw-ml-4">
+				{{ tab.artifact.editable }}
+			</div>
+		</div>
+	</div>
+</mat-expansion-panel>

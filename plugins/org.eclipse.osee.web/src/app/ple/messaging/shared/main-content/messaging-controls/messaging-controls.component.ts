@@ -23,11 +23,11 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ViewSelectorComponent } from '../view-selector/view-selector.component';
 import {
 	MimRouteService,
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
+import { ViewSelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-controls',

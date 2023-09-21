@@ -202,7 +202,7 @@ public interface ArtifactEndpoint {
    @Operation(summary = "Gets only the first layer of related Artifacts")
    @Tag(name = "hierarchy")
    ArtifactRelatedDirectPojo getRelatedDirect(@PathParam("branch") BranchId branch,
-      @PathParam("artifact") ArtifactId artifact);
+      @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId);
 
    @GET
    @Path("createTxBuilder/{artifactTypeId}")

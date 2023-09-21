@@ -14,7 +14,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ViewsRoutedUiService } from '@osee/messaging/shared/services';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -27,7 +26,10 @@ import {
 import { applic } from '@osee/shared/types/applicability';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { ApplicabilityListUIService } from '@osee/shared/services';
+import {
+	ApplicabilityListUIService,
+	ViewsRoutedUiService,
+} from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-view-selector',

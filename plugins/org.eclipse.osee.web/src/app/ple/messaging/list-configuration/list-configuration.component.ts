@@ -15,7 +15,6 @@ import { AsyncPipe, CommonModule, NgIf } from '@angular/common';
 import {
 	MessagingControlsComponent,
 	NamedIdListEditorComponent,
-	ViewSelectorComponent,
 } from '@osee/messaging/shared/main-content';
 import { UiService } from '@osee/shared/services';
 import { filter, Subject, takeUntil, tap } from 'rxjs';
@@ -27,6 +26,7 @@ import {
 } from '@osee/messaging/shared/services';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
+import { ViewSelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-list-configuration',

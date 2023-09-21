@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -373,15 +372,15 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public ArtifactRelatedDirectPojo getRelatedDirect(BranchId branch, ArtifactId artifact) {
+   public ArtifactRelatedDirectPojo getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       // query for artifact and its direct relations
-      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
-      List<ArtifactReadable> arts = query.andId(artifact).followAll(true).asArtifacts();
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
+      ArtifactReadable art = query.andId(artifact).followAll(true).asArtifact();
       // query for artifact type token using input artifact id
-      Optional<ArtifactTypeToken> token =
-         arts.stream().filter(a -> a.getId().equals(artifact.getId())).map(a -> a.getArtifactType()).findFirst();
+      ArtifactTypeToken token = art.getArtifactType();
       // pojo to store artifact's direct relations and all valid relation types
-      return new ArtifactRelatedDirectPojo(token.get(), arts);
+      return new ArtifactRelatedDirectPojo(token, art, branch);
    }
 
    @Override

@@ -24,8 +24,17 @@ public class JsonArtifact {
    private ArtifactId id;
    private String typeName;
    private ArtifactTypeToken artifactType;
+   private boolean hasChildren;
 
    private List<JsonAttribute> attrs;
+
+   public void setHasChildren(boolean hasChildren) {
+      this.hasChildren = hasChildren;
+   }
+
+   public boolean getHasChildren() {
+      return this.hasChildren;
+   }
 
    public String getName() {
       return name;

@@ -1,0 +1,78 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	class="tw-flex tw-py-1 tw-pl-2"
+	[ngClass]="isOpen() ? 'tw-bg-background-hover' : ''">
+	<!-- expand icon button -->
+	<button
+		(click)="isOpen() ? close() : open()"
+		class="tw-flex tw-items-center hover:tw-text-primary">
+		<!-- animated icon -->
+		<mat-icon
+			matListItemIcon
+			[ngClass]="
+				isOpen()
+					? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+					: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+			">
+			chevron_right
+		</mat-icon>
+	</button>
+	<div class="tw-flex tw-items-center">
+		<mat-icon class="tw-pl-2 tw-text-accent-700"> swap_horiz </mat-icon>
+		<div class="tw-pl-2">{{ typeName() }} - [{{ relationSideName() }}]</div>
+	</div>
+</div>
+<ng-container *ngIf="isOpen()">
+	<ng-container *ngFor="let art of artifacts(); trackBy: trackArtifacts">
+		<div class="tw-py-2 tw-pl-4">
+			<div class="tw-flex">
+				<button
+					(click)="
+						artifactsOpen().includes(art.id)
+							? removeArtifactsOpen(art.id)
+							: addArtifactsOpen(art.id)
+					"
+					class="tw-flex tw-items-center hover:tw-text-primary">
+					<!-- animated icon -->
+					<mat-icon
+						matListItemIcon
+						[ngClass]="
+							artifactsOpen().includes(art.id)
+								? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+								: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
+						">
+						chevron_right
+					</mat-icon>
+				</button>
+				<button
+					cdkDrag
+					[cdkDragData]="art"
+					class="tw-flex tw-flex-grow tw-items-center hover:tw-text-primary"
+					(click)="addTab(art)">
+					<mat-icon class="tw-ml-4">
+						{{ fetchIcon(art.typeName) }}
+					</mat-icon>
+					<div class="tw-ml-2">
+						{{ art.name }}
+					</div>
+				</button>
+			</div>
+			<div class="tw-pl-2">
+				<osee-artifact-hierarchy
+					*ngIf="artifactsOpen().includes(art.id)"
+					[artifactId]="art.id"></osee-artifact-hierarchy>
+			</div>
+		</div>
+	</ng-container>
+</ng-container>

@@ -68,13 +68,13 @@ import type {
 	ConnectionNode,
 } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { TwoLayerAddButtonComponent } from '@osee/shared/components';
+import {
+	TwoLayerAddButtonComponent,
+	ViewSelectorComponent,
+} from '@osee/shared/components';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
-import {
-	MessagingControlsComponent,
-	ViewSelectorComponent,
-} from '@osee/messaging/shared/main-content';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 
 @Component({
 	selector: 'osee-messaging-message-table',
