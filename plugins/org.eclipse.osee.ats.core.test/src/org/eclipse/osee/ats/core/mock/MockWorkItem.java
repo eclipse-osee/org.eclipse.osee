@@ -64,7 +64,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public List<AtsUser> getImplementers() {
+   public Collection<AtsUser> getImplementers() {
       return implementers.getUsers();
    }
 

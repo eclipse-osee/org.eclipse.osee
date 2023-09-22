@@ -43,11 +43,11 @@ public class Pdd51CreateWorkaroundForGraphViewActions extends AbstractPopulateDe
    static {
       versionToWorkflowToken = new HashMap<>(3);
       versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_1,
-         DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld1_TeamWf);
+         DemoArtifactToken.WorkaroundForGraphViewForBld1_TeamWf);
       versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_2,
-         DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld2_TeamWf);
+         DemoArtifactToken.WorkaroundForGraphViewForBld2_TeamWf);
       versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_3,
-         DemoArtifactToken.WorkaroundForGraphViewWorkflowForBld3_TeamWf);
+         DemoArtifactToken.WorkaroundForGraphViewForBld3_TeamWf);
    }
 
    public Pdd51CreateWorkaroundForGraphViewActions(XResultData rd, AtsApi atsApi) {

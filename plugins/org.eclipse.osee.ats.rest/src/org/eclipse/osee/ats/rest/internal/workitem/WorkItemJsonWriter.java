@@ -187,6 +187,15 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             writer.writeEndObject();
          }
          writer.writeEndArray();
+         writer.writeArrayFieldStart("Implementers");
+         for (AtsUser assignee : workItem.getImplementers()) {
+            writer.writeStartObject();
+            writer.writeStringField("id", assignee.getIdString());
+            writer.writeStringField("name", assignee.getName());
+            writer.writeStringField("email", assignee.getEmail());
+            writer.writeEndObject();
+         }
+         writer.writeEndArray();
          if (options.contains(WorkItemWriterOptions.WriteRelatedAsTokens)) {
             writer.writeArrayFieldStart("AssigneesTokens");
             for (AtsUser assignee : workItem.getAssignees()) {

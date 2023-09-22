@@ -77,14 +77,15 @@ public class WfeWorkflowSection extends SectionPart {
    private Section section;
    private final WorkflowEditor editor;
    private WfeStateNotesHeader stateNotesHeader;
+   private final AtsApi atsApi;
 
    public WfeWorkflowSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super(parent, editor.getToolkit(), style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.statePage = page;
       this.sma = sma;
       this.editor = editor;
-
-      isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(sma);
+      this.atsApi = AtsApiService.get();
+      isEditable = atsApi.getAtsAccessService().isWorkflowEditable(sma);
    }
 
    public boolean isCurrentState() {
@@ -256,11 +257,17 @@ public class WfeWorkflowSection extends SectionPart {
       xWidget.addXModifiedListener(xModListener);
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
+      xWidget = new XLabelValue("Implementer(s)", atsApi.getImplementerService().getImplementersStr(sma));
+      xWidget.createWidgets(parent, 1);
+      allXWidgets.add(xWidget);
    }
 
    private void createCompletedPageWidgets(Composite parent) {
       XWidget xWidget = null;
       xWidget = new XLabelValue("Completed from State", sma.getCompletedFromState());
+      xWidget.createWidgets(parent, 1);
+      allXWidgets.add(xWidget);
+      xWidget = new XLabelValue("Implementer(s)", atsApi.getImplementerService().getImplementersStr(sma));
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
    }
@@ -360,7 +367,7 @@ public class WfeWorkflowSection extends SectionPart {
             IAtsLogItem item = atsApi.getWorkItemService().getStateStartedData(workItem, statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
+               sb.append(AtsLogUtility.getUserName(item.getUserId(), atsApi.getUserService()));
             }
          } else if (workItem.isCancelled()) {
             if (!workItem.getCurrentStateName().equals(StateType.Cancelled.toString())) {
@@ -371,7 +378,7 @@ public class WfeWorkflowSection extends SectionPart {
             IAtsLogItem item = atsApi.getWorkItemService().getStateStartedData(workItem, statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
+               sb.append(AtsLogUtility.getUserName(item.getUserId(), atsApi.getUserService()));
             }
          }
          if (workItem.getAssignees().size() > 0) {
@@ -390,7 +397,7 @@ public class WfeWorkflowSection extends SectionPart {
          if (item != null) {
             sb.append(item.getDate(DateUtil.MMDDYYHHMM));
             sb.append(" by ");
-            sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsApiService.get().getUserService()));
+            sb.append(AtsLogUtility.getUserName(item.getUserId(), atsApi.getUserService()));
          }
       }
       return sb.toString();

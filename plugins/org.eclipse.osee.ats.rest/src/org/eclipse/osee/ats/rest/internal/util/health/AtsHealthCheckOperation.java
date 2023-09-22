@@ -113,6 +113,7 @@ public class AtsHealthCheckOperation {
       healthChecks.add(new TestActionableItemsLoad());
 
       healthChecks.add(new TestDuplicateAssignees());
+      healthChecks.add(new TestImplementers());
       healthChecks.add(new TestWorkflowTeamDefinition());
       healthChecks.add(new TestWorkflowVersions());
       healthChecks.add(new TestWorkflowDefinition());
@@ -688,6 +689,25 @@ public class AtsHealthCheckOperation {
             changes.setAssignees(workItem, workItemAssignees);
          }
          return true;
+      }
+
+   }
+
+   private class TestImplementers implements IAtsHealthCheck {
+
+      @Override
+      public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+         IAtsChangeSet changes, IAtsOperationCache cache) {
+         if (!atsApi.getAttributeResolver().hasAttribute(workItem,
+            AtsAttributeTypes.Implementer) && !workItem.isUnAssigned()) {
+            results.log("TestImplementers",
+               String.format("Implementers not set for %s; [%s]", workItem.toStringWithId(), workItem.getAssignees()));
+            if (changes != null) {
+               changes.updateImplementers(workItem, workItem.getAssignees());
+               return true;
+            }
+         }
+         return false;
       }
 
    }

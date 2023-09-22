@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -229,7 +228,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testQueryMulti() {
       String name =
-         DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20").replaceAll("\\(",
+         DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20").replaceAll("\\(",
             "%28").replaceAll("\\)", "%29");
 
       WebTarget target = createWebTarget( //
@@ -274,7 +273,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    private JsonNode testAction(JsonNode action) {
-      Assert.assertEquals(DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, action.get("Name").asText());
+      Assert.assertEquals(DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, action.get("Name").asText());
       Assert.assertNotNull(action.has("id"));
       Assert.assertNotNull(action.has("AtsId"));
       Assert.assertEquals("/ats/ui/action/" + action.get("AtsId").asText(), action.get("actionLocation").asText());

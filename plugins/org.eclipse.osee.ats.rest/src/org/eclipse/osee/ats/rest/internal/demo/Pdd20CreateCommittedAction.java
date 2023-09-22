@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -81,7 +80,7 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
 
       IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName() + " - 1");
       ActionResult actionResult =
-         atsApi.getActionService().createAction(null, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
+         atsApi.getActionService().createAction(null, DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
             "Problem with the Diagram View", ChangeTypes.Problem, priority, false, null, aias, createdDate, createdBy,
             Arrays.asList(new ArtifactTokenActionListener()), changes);
       changes.execute();

@@ -76,7 +76,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public List<AtsUser> getImplementers() {
+   public Collection<AtsUser> getImplementers() {
       return AtsApiService.get().getImplementerService().getImplementers(this);
    }
 

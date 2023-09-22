@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.workflow.cr.taskest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.jface.window.Window;
@@ -139,7 +140,7 @@ public abstract class XTaskEstViewer extends TaskXViewer {
       }
 
       IAtsTeamDefinition teamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(useAi);
-      List<AtsUser> assignees = task.getImplementers();
+      Collection<AtsUser> assignees = task.getImplementers();
       IAtsAction action = crTeamWf.getParentAction();
 
       // Create workflow with configured or selected AI

@@ -214,6 +214,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ExternalReference)
       .zeroOrOne(HoursSpentWorkflow)
       .zeroOrOne(Imported)
+      .any(Implementer)
       .zeroOrOne(Log)
       .zeroOrOne(Numeric1)
       .zeroOrOne(Numeric2)

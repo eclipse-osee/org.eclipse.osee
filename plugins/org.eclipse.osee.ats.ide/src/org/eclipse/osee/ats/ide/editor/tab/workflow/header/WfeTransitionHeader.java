@@ -261,7 +261,6 @@ public class WfeTransitionHeader extends Composite {
          toStateDef.getName(), awa.getTransitionAssignees(), null, null, TransitionOption.None);
       transData.setDebug(debug);
       TransitionDataUi.getCancellationReason(transData);
-      TransitionDataUi.getTransitionBy(transData);
 
       final TransitionToOperation operation = new TransitionToOperation(transData);
       Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {

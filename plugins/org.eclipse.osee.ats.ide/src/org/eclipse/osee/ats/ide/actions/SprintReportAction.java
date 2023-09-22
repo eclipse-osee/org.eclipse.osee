@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.actions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -186,7 +187,7 @@ public class SprintReportAction extends AbstractAtsAction {
             if (itemPts > 0) {
 
                // Add points per assignee
-               List<AtsUser> assignees = null;
+               Collection<AtsUser> assignees = null;
                if (forBacklog) {
                   assignees = sprintItem.getAssignees();
                } else {

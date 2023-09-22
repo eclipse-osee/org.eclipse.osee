@@ -142,7 +142,7 @@ public class CreateSiblingOffTaskEstOperation {
          ArtifactToken aiTok = ted.getActionableItem();
          IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(aiTok);
          IAtsTeamDefinition teamDef = atsApi.getActionableItemService().getTeamDefinitionInherited(ai);
-         List<AtsUser> assignees = task.getImplementers();
+         Collection<AtsUser> assignees = task.getImplementers();
          IAtsTeamWorkflow newTeamWf = createTaskEstSiblingWorkflow(rd, changes, createdDate, task, ai, teamDef,
             assignees, teamWf.getParentAction(), atsApi);
          workflows.add(newTeamWf);
@@ -153,7 +153,8 @@ public class CreateSiblingOffTaskEstOperation {
 
    public static IAtsTeamWorkflow createTaskEstSiblingWorkflow(XResultData rd, IAtsChangeSet changes, Date createdDate,
       IAtsTask task, //
-      IAtsActionableItem ai, IAtsTeamDefinition teamDef, List<AtsUser> assignees, IAtsAction action, AtsApi atsApi) {
+      IAtsActionableItem ai, IAtsTeamDefinition teamDef, Collection<AtsUser> assignees, IAtsAction action,
+      AtsApi atsApi) {
 
       IAtsTeamWorkflow newTeamWf = AtsApiService.get().getActionService().createTeamWorkflow(action, teamDef,
          Arrays.asList(ai), new LinkedList<AtsUser>(assignees), changes, createdDate,
