@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -50,19 +49,19 @@ public class Pdd20CreateCommittedActionTest extends AbstractPopulateDemoDatabase
       IAtsTeamWorkflow reqTeamArt = DemoUtil.getSawReqCommittedWf();
       assertNotNull(reqTeamArt);
 
-      testTeamContents(codeTeamArt, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
+      testTeamContents(codeTeamArt, DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code", DemoUsers.Joe_Smith.getName(),
          AtsArtifactTypes.DemoCodeTeamWorkflow, getTeamDef(DemoArtifactToken.SAW_Code));
       assertTrue(codeTeamArt.getWorkTypes().contains(WorkType.Code));
       assertTrue(codeTeamArt.isWorkType(WorkType.Code));
 
-      testTeamContents(testTeamArt, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
+      testTeamContents(testTeamArt, DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test", DemoUsers.Kay_Jones.getName(),
          AtsArtifactTypes.DemoTestTeamWorkflow, getTeamDef(DemoArtifactToken.SAW_Test));
       assertTrue(testTeamArt.getWorkTypes().contains(WorkType.Test));
       assertTrue(testTeamArt.isWorkType(WorkType.Test));
 
-      testTeamContents(reqTeamArt, DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
+      testTeamContents(reqTeamArt, DemoArtifactToken.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1",
          SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements", DemoUsers.Joe_Smith.getName(),
          AtsArtifactTypes.DemoReqTeamWorkflow, getTeamDef(DemoArtifactToken.SAW_Requirements));
       assertTrue(reqTeamArt.getWorkTypes().contains(WorkType.Requirements));

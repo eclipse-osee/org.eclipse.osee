@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
@@ -35,6 +36,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -45,7 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class Pdd92CreateDemoReviews extends AbstractPopulateDemoDatabase {
 
-   private IAtsPeerToPeerReview reviewArt3;
+   private ArtifactToken reviewArt3Tok;
 
    public Pdd92CreateDemoReviews(XResultData rd, AtsApi atsApi) {
       super(rd, atsApi);
@@ -117,7 +119,7 @@ public class Pdd92CreateDemoReviews extends AbstractPopulateDemoDatabase {
 
       // Create PeerToPeer review 2 and transition to Review state
       IAtsPeerToPeerReview peerRev = atsApi.getReviewService().createNewPeerToPeerReview(firstCodeArt,
-         "2 - Peer Review algorithm used in code", firstCodeArt.getCurrentStateName(), changes);
+         DemoArtifactToken.PeerReview2.getName(), firstCodeArt.getCurrentStateName(), changes);
       changes.setSoleAttributeValue(peerRev.getStoreObject(), AtsAttributeTypes.Description, "description");
 
       Result result1 = atsApi.getReviewService().transitionTo(peerRev, PeerToPeerReviewState.Review,
@@ -143,14 +145,18 @@ public class Pdd92CreateDemoReviews extends AbstractPopulateDemoDatabase {
       IAtsChangeSet changes = atsApi.createChangeSet("Populate Demo DB - PeerToPeer 3.1");
       IAtsTeamWorkflow secondCodeArt = DemoUtil.getSawCodeUnCommittedWf();
 
-      reviewArt3 = atsApi.getReviewService().createNewPeerToPeerReview(secondCodeArt, "3 - Review new logic",
-         secondCodeArt.getCurrentStateName(), new Date(), atsApi.getUserService().getUserById(DemoUsers.Kay_Jones),
-         changes);
+      IAtsPeerToPeerReview reviewArt3 = atsApi.getReviewService().createNewPeerToPeerReview(secondCodeArt,
+         "3 - Review new logic", secondCodeArt.getCurrentStateName(), new Date(),
+         atsApi.getUserService().getUserById(DemoUsers.Kay_Jones), changes);
       changes.setSoleAttributeValue(reviewArt3.getStoreObject(), AtsAttributeTypes.Description, "description");
       changes.execute();
+      this.reviewArt3Tok = reviewArt3.getArtifactToken();
    }
 
    public void createPeerToPeerReview3Roles() {
+
+      IAtsPeerToPeerReview reviewArt3 = (IAtsPeerToPeerReview) atsApi.getReviewService().getReview(reviewArt3Tok);
+
       // reviewArt3 - Add Roles
       IAtsChangeSet changes = atsApi.createChangeSet("Populate Demo DB - PeerToPeer 3.2");
 
@@ -163,6 +169,10 @@ public class Pdd92CreateDemoReviews extends AbstractPopulateDemoDatabase {
    }
 
    public void createPeerToPeerReview3Review() {
+
+      IAtsPeerToPeerReview reviewArt3 = (IAtsPeerToPeerReview) atsApi.getReviewService().getReview(reviewArt3Tok);
+
+      reviewArt3 = (IAtsPeerToPeerReview) atsApi.getReviewService().getReview(reviewArt3.getArtifactToken());
       IAtsChangeSet changes = atsApi.createChangeSet("Populate Demo DB - PeerToPeer 3.3");
 
       reviewArt3 = (IAtsPeerToPeerReview) atsApi.getWorkItemService().getWorkItem(reviewArt3.getId());
@@ -179,6 +189,9 @@ public class Pdd92CreateDemoReviews extends AbstractPopulateDemoDatabase {
    }
 
    public void createPeerToPeerReview3Defects() {
+
+      IAtsPeerToPeerReview reviewArt3 = (IAtsPeerToPeerReview) atsApi.getReviewService().getReview(reviewArt3Tok);
+
       IAtsChangeSet changes = atsApi.createChangeSet("Populate Demo DB - PeerToPeer 3.4");
 
       // Add defects
@@ -208,6 +221,8 @@ public class Pdd92CreateDemoReviews extends AbstractPopulateDemoDatabase {
    }
 
    public void createPeerToPeerReview3Complete() {
+      IAtsPeerToPeerReview reviewArt3 = (IAtsPeerToPeerReview) atsApi.getReviewService().getReview(reviewArt3Tok);
+
       IAtsChangeSet changes = atsApi.createChangeSet("Populate Demo DB - PeerToPeer 3.5");
 
       // reviewArt3 - Transition to Completed

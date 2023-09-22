@@ -156,6 +156,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean Imported = ats.createBoolean(8620185214138100058L, "ats.Imported", TEXT_PLAIN, "", Read);
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", TEXT_PLAIN, "Is Direct Commercial Sale", Edit);
    AttributeTypeString ImpactToMissionOrCrew = ats.createString(1442232314L, "ats.Impact to Mission or Crew", TEXT_PLAIN, "", Edit);
+   AttributeTypeString Implementer = ats.createString(1290983522993822936L, "ats.Implementer", MediaType.TEXT_PLAIN, "Users assigned to workflow at some point", Read);
    AttributeTypeString Journal = ats.createString(4323598592300832478L, "ats.Journal", TEXT_PLAIN, "", Read);
    AttributeTypeArtifactId JournalSubscriber = ats.createArtifactId(42051756273953L, "ats.Journal Subscriber",TEXT_PLAIN,  "Artifact Id of User Subscribed to Journal Notifications", Read);
    AttributeTypeString KanbanIgnoreStates = ats.createString(726700946264587643L, "ats.kb.Ignore States", TEXT_PLAIN, "", Config);

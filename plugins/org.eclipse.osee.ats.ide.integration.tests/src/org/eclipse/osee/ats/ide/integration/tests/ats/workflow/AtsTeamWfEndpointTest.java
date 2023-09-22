@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
+import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -52,7 +53,6 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
    private AtsTeamWfEndpointApi teamWfEp;
    private AtsApiIde atsApi;
    private TeamWorkFlowArtifact codeTeamWorkFlow;
-   private IAtsTeamWorkflow buttonSTeamWf, buttonWTeamWf;
 
    @Before
    public void setup() {
@@ -73,10 +73,10 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
    //   @Path("{id}")
    @Test
    public void testGetTeamWorkflow() {
-      buttonSTeamWf = getButtonSTeamWf();
+      IAtsTeamWorkflow buttonSTeamWf = DemoTestUtil.getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 42);
+      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 44);
    }
 
    //   @Path("ids/{id}/")
@@ -99,19 +99,19 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
    //   @Path("{id}/goals")
    @Test
    public void testGetGoals() {
-      buttonSTeamWf = getButtonSTeamWf();
+      IAtsTeamWorkflow buttonSTeamWf = DemoTestUtil.getButtonSTeamWf();
       testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId() + "/goal", 0);
-      buttonWTeamWf = getButtonWTeamWf();
+      IAtsTeamWorkflow buttonWTeamWf = DemoTestUtil.getButtonWTeamWf();
       testUrl("ats/teamwf/" + buttonWTeamWf.getAtsId() + "/goal", 1);
    }
 
    //   @Path("details/{id}")
    @Test
    public void testGetTeamWorkflowDetails() {
-      buttonSTeamWf = getButtonSTeamWf();
+      IAtsTeamWorkflow buttonSTeamWf = DemoTestUtil.getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 48);
+      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 50);
    }
 
    //   @Path("release/{release}")
@@ -187,20 +187,6 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       changes.deleteAttributes(codeTeamWorkFlow.getArtifactId(), CoreAttributeTypes.GitChangeId);
       changes.execute();
 
-   }
-
-   private IAtsTeamWorkflow getButtonWTeamWf() {
-      if (buttonWTeamWf == null) {
-         buttonWTeamWf = atsApi.getQueryService().getTeamWf(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
-      }
-      return buttonWTeamWf;
-   }
-
-   private IAtsTeamWorkflow getButtonSTeamWf() {
-      if (buttonSTeamWf == null) {
-         buttonSTeamWf = atsApi.getQueryService().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
-      }
-      return buttonSTeamWf;
    }
 
 }

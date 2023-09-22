@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -40,7 +39,7 @@ public class Pdd23CreateNoBranchActionTest extends AbstractPopulateDemoDatabaseT
       DemoUtil.checkDbInitAndPopulateSuccess();
       DemoUtil.setPopulateDbSuccessful(false);
 
-      String title = DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW;
+      String title = DemoArtifactToken.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW;
 
       IAtsTeamWorkflow codeTeamWf = DemoUtil.getSawCodeNoBranchWf();
       assertNotNull(codeTeamWf);

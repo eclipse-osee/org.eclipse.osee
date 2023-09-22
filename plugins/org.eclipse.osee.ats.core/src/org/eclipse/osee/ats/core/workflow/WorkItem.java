@@ -269,7 +269,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public List<AtsUser> getImplementers() {
+   public Collection<AtsUser> getImplementers() {
       return atsApi.getImplementerService().getImplementers(this);
    }
 

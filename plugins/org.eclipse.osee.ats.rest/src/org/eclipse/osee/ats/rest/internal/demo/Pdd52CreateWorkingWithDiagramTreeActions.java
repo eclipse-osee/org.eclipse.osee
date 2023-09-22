@@ -47,11 +47,11 @@ public class Pdd52CreateWorkingWithDiagramTreeActions extends AbstractPopulateDe
    static {
       versionToWorkflowToken = new HashMap<>(3);
       versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_1,
-         DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld1_TeamWf);
+         DemoArtifactToken.WorkingWithDiagramTreeForBld1_TeamWf);
       versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_2,
-         DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld2_TeamWf);
+         DemoArtifactToken.WorkingWithDiagramTreeForBld2_TeamWf);
       versionToWorkflowToken.put(DemoArtifactToken.SAW_Bld_3,
-         DemoArtifactToken.WorkingWithDiagramTreeWorkflowForBld3_TeamWf);
+         DemoArtifactToken.WorkingWithDiagramTreeForBld3_TeamWf);
    }
 
    public synchronized Map<ArtifactToken, ArtifactToken> getVersionToWorkflowToken() {

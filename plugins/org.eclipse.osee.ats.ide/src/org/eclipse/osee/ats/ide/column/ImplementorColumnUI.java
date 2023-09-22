@@ -13,21 +13,18 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerValueColumn {
+public class ImplementorColumnUI extends XViewerAtsCoreCodeXColumn {
 
    public static ImplementorColumnUI instance = new ImplementorColumnUI();
 
@@ -36,8 +33,7 @@ public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerVal
    }
 
    private ImplementorColumnUI() {
-      super(AtsColumnTokensDefault.ImplementersColumn.getId(), "Implementer", 80, XViewerAlign.Left, false,
-         SortDataType.String, false, "User assigned to the Implementation of the changes.");
+      super(AtsColumnTokensDefault.ImplementersColumn, AtsApiService.get());
    }
 
    /**

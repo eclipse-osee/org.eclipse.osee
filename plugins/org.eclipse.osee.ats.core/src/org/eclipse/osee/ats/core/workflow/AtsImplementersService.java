@@ -14,11 +14,12 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -27,9 +28,10 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * Implementers for a WorkItem are<br/>
@@ -48,29 +50,40 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 public class AtsImplementersService implements IAtsImplementerService {
 
    @Override
-   public String getImplementersStr(IAtsObject atsObject) {
-      List<AtsUser> implementers = getImplementers(atsObject);
+   public String getImplementersStr(IAtsWorkItem workItem) {
+      Collection<AtsUser> implementers = getImplementers(workItem);
       return implementers.isEmpty() ? "" : AtsObjects.toString("; ", implementers);
    }
 
    @Override
-   public List<AtsUser> getImplementers(IAtsObject atsObject) {
-      List<AtsUser> implementers = new LinkedList<>();
-      if (atsObject instanceof IAtsAction) {
-         for (AtsUser user : getActionGroupImplementers((IAtsAction) atsObject)) {
-            if (!implementers.contains(user)) {
-               implementers.add(user);
-            }
-         }
-      } else if (atsObject instanceof IAtsWorkItem) {
-         for (AtsUser user : getWorkItemImplementers((IAtsWorkItem) atsObject)) {
+   public Collection<AtsUser> getImplementers(IAtsWorkItem workItem) {
+      Collection<AtsUser> implementers = getImplementersNew(workItem);
+      // TBD This should be removed when databases are converted to have ats.Implementers
+      if (implementers.isEmpty()) {
+         for (AtsUser user : getWorkItemImplementers(workItem)) {
             if (!implementers.contains(user)) {
                implementers.add(user);
             }
          }
       }
       implementers.remove(AtsCoreUsers.UNASSIGNED_USER);
-      Collections.sort(implementers);
+      return implementers;
+   }
+
+   /**
+    * Return implementers from attribute. This will be the only way in the future, all other methods will be removed
+    * once the attribute is set for all workitems
+    */
+   private Collection<AtsUser> getImplementersNew(IAtsWorkItem workItem) {
+      Set<AtsUser> implementers = new HashSet<>();
+      Collection<String> attributes =
+         AtsApiService.get().getAttributeResolver().getAttributeValues(workItem, AtsAttributeTypes.Implementer);
+      for (String artIdStr : attributes) {
+         AtsUser user = AtsApiService.get().getUserService().getUserById(ArtifactId.valueOf(artIdStr));
+         if (user != null) {
+            implementers.add(user);
+         }
+      }
       return implementers;
    }
 
@@ -127,20 +140,6 @@ public class AtsImplementersService implements IAtsImplementerService {
             implementers.add(user);
          }
       }
-   }
-
-   public List<AtsUser> getActionGroupImplementers(IAtsAction actionGroup) {
-      List<AtsUser> implementers = new LinkedList<>();
-      for (IAtsWorkItem action : actionGroup.getTeamWorkflows()) {
-         if (action.getCurrentStateType().isCompletedOrCancelled()) {
-            for (AtsUser user : getWorkItemImplementers(action)) {
-               if (!implementers.contains(user)) {
-                  implementers.add(user);
-               }
-            }
-         }
-      }
-      return implementers;
    }
 
    public List<AtsUser> getImplementersByState(IAtsWorkItem workItem, IStateToken state) {

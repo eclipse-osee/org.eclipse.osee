@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -58,6 +59,7 @@ public class DemoTestUtil {
    public static Map<DemoWorkType, IAtsTeamWorkflow> unCommittedWorkflows;
    public static Map<DemoWorkType, IAtsTeamWorkflow> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
+   private static IAtsTeamWorkflow buttonSTeamWf, buttonWTeamWf;
 
    public static User getDemoUser(UserToken demoUser) {
       return UserManager.getUserByName(demoUser.getName());
@@ -140,8 +142,8 @@ public class DemoTestUtil {
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() {
       if (toolsTeamWorkflow == null) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
-            AtsApiService.get().getAtsBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromName(
+            DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(), AtsApiService.get().getAtsBranch())) {
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
             }
@@ -219,6 +221,22 @@ public class DemoTestUtil {
          }
       }
       return num;
+   }
+
+   public static IAtsTeamWorkflow getButtonWTeamWf() {
+      if (buttonWTeamWf == null) {
+         buttonWTeamWf =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
+      }
+      return buttonWTeamWf;
+   }
+
+   public static IAtsTeamWorkflow getButtonSTeamWf() {
+      if (buttonSTeamWf == null) {
+         buttonSTeamWf =
+            AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
+      }
+      return buttonSTeamWf;
    }
 
 }

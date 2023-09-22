@@ -303,4 +303,6 @@ public interface IAtsWorkItemService {
       // do not set team here as it will cause another query/load
    }
 
+   Collection<AtsUser> getImplementers(IAtsWorkItem workItem);
+
 }

@@ -819,6 +819,17 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
+   public List<AtsUser> getImplementers(IAtsWorkItem workItem) {
+      List<AtsUser> users = new ArrayList<>();
+      for (String userArtId : atsApi.getAttributeResolver().getAttributesToStringList(workItem,
+         AtsAttributeTypes.Implementer)) {
+         AtsUser atsUser = atsApi.getConfigService().getConfigurations().getIdToUser().get((Long.valueOf(userArtId)));
+         users.add(atsUser);
+      }
+      return users;
+   }
+
+   @Override
    public boolean isAllowSiblingCreation(IAtsWorkItem workItem) {
       if (!workItem.getWorkDefinition().getHeaderDef().isShowSiblingLinks()) {
          return false;

@@ -358,6 +358,25 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
+   public void updateImplementers(IAtsWorkItem workItem, Collection<AtsUser> implementers) {
+      Conditions.assertFalse(implementers.contains(AtsCoreUsers.SYSTEM_USER), "Implementers can't contain System User");
+      Conditions.assertFalse(implementers.contains(AtsCoreUsers.UNASSIGNED_USER),
+         "Implementers can't contain UnAssigned");
+      List<Object> implementerIds = new ArrayList<>();
+      // Retain old implementers
+      for (AtsUser user : workItem.getImplementers()) {
+         implementerIds.add(user.getIdString());
+      }
+      // Add new implementers
+      for (AtsUser user : implementers) {
+         if (!implementerIds.contains(user.getIdString())) {
+            implementerIds.add(user.getIdString());
+         }
+      }
+      setAttributeValues(workItem, AtsAttributeTypes.Implementer, implementerIds);
+   }
+
+   @Override
    public void setAssignees(IAtsWorkItem workItem, Collection<AtsUser> newAssignees) {
       assigneesChanging(workItem);
       if (newAssignees == null || newAssignees.isEmpty()) {
@@ -381,6 +400,10 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       }
 
       setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, newAssigneeIds);
+
+      if (!newAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+         updateImplementers(workItem, newAssignees);
+      }
    }
 
    @Override

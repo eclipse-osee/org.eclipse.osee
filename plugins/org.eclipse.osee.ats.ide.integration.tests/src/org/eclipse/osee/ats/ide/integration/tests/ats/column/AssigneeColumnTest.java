@@ -14,6 +14,8 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -68,11 +70,19 @@ public class AssigneeColumnTest {
          "3 - Review new logic");
       String rev3Assignees = AssigneeColumn.getAssigneeStrr((IAtsPeerToPeerReview) rev3);
       Assert.assertEquals("(Alex Kay; Joe Smith; Kay Jones)", rev3Assignees);
+      IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) AtsApiService.get().getReviewService().getReview(rev3);
+      Assert.assertTrue(peerRev.getAssignees().isEmpty());
+      Assert.assertEquals(0,
+         AtsApiService.get().getAttributeResolver().getAttributeCount(rev3, AtsAttributeTypes.CurrentStateAssignee));
 
-      ArtifactToken revButton = AtsApiService.get().getQueryService().getArtifactByName(AtsArtifactTypes.TeamWorkflow,
-         "Button S doesn't work on help");
-      String revButtonAssignees = AssigneeColumn.getAssigneeStrr((IAtsTeamWorkflow) revButton);
-      Assert.assertEquals("(Joe Smith)", revButtonAssignees);
+      ArtifactToken revButtonTeamWf = AtsApiService.get().getQueryService().getArtifactByName(
+         AtsArtifactTypes.TeamWorkflow, DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName());
+      ((Artifact) revButtonTeamWf).reloadAttributesAndRelations();
+      String revButtonAssignees = AssigneeColumn.getAssigneeStrr((IAtsTeamWorkflow) revButtonTeamWf);
+      Assert.assertEquals("(Jeffery Kay)", revButtonAssignees);
+      IAtsTeamWorkflow revWf = AtsApiService.get().getWorkItemService().getTeamWf(revButtonTeamWf);
+      String revButtonWfImplementers = AtsApiService.get().getImplementerService().getImplementersStr(revWf);
+      Assert.assertEquals("Jeffery Kay", revButtonWfImplementers);
    }
 
    @org.junit.Test
