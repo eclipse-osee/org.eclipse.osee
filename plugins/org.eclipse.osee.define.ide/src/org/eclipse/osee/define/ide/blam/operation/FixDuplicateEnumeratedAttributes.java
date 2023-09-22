@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class FixDuplicateEnumeratedAttributes extends AbstractBlam {
 
-   public static String SELECT_BRANCH_LABEL = "Select Branch";
+   public static String SELECT_BRANCH_LABEL = "Branch";
    public static String COMMIT_CHANGES_LABEL = "Commit Changes to Branch?";
 
    @Override

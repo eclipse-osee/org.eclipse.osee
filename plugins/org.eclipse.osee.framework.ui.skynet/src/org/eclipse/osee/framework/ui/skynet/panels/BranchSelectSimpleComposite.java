@@ -97,7 +97,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       });
 
       branchSelectButton = new Button(parent, SWT.PUSH);
-      branchSelectButton.setText("Select Branch...");
+      branchSelectButton.setText("Branch");
       branchSelectButton.addListener(SWT.Selection, this);
       branchSelectButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
       branchSelectButton.setFont(parent.getFont());

@@ -176,7 +176,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
 
    private static BranchToken createDialog(boolean allowOnlyWorkingBranches) {
       BranchToken toReturn = null;
-      BranchSelectionDialog branchSelection = new BranchSelectionDialog("Select Branch", allowOnlyWorkingBranches);
+      BranchSelectionDialog branchSelection = new BranchSelectionDialog("Branch", allowOnlyWorkingBranches);
       if (lastSelectedBranch != null) {
          try {
             if (!BranchManager.isArchived(lastSelectedBranch)) {

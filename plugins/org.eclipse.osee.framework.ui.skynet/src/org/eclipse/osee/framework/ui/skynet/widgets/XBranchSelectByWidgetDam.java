@@ -32,11 +32,7 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements Att
    private AttributeTypeToken attributeType;
 
    public XBranchSelectByWidgetDam() {
-      this("Branch");
-   }
-
-   public XBranchSelectByWidgetDam(String label) {
-      super(label);
+      super("");
       addXModifiedListener(new DirtyListener());
    }
 

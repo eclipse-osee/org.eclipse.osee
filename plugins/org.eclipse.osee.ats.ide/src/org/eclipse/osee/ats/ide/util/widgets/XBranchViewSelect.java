@@ -83,7 +83,7 @@ public class XBranchViewSelect extends GenericXWidget {
 
       setBranchViewButton = new Button(applicabilityComp, SWT.PUSH);
       setBranchViewButton.setToolTipText("Select a branch view to associate this version artifact with.");
-      setBranchViewButton.setText("Select Branch View");
+      setBranchViewButton.setText("Branch View");
       setBranchViewButton.addSelectionListener(new SelectionListener() {
 
          @Override
@@ -133,7 +133,7 @@ public class XBranchViewSelect extends GenericXWidget {
    private boolean changeView(BranchId branch) {
       Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(branch);
       ViewBranchViewFilterTreeDialog dialog =
-         new ViewBranchViewFilterTreeDialog("Select Branch View", "Select Branch View", branchViews);
+         new ViewBranchViewFilterTreeDialog("Branch View", "Branch View", branchViews);
       Collection<String> values = new ArrayList<>();
       values.add("<Clear View Selection>");
       values.addAll(branchViews.values());

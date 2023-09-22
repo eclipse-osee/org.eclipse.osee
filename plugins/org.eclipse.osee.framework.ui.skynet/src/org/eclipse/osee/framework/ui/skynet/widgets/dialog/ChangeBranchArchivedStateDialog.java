@@ -44,7 +44,7 @@ public class ChangeBranchArchivedStateDialog extends ListDialog {
       setLabelProvider(new ChangeLabelProvider());
       setInput(BranchArchivedState.values());
       setShellStyle(getShellStyle() | SWT.RESIZE);
-      setTitle("Select Branch Archived State");
+      setTitle("Branch Archived State");
    }
 
    public BranchArchivedState getSelection() {

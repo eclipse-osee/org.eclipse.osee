@@ -85,7 +85,7 @@ public class BranchSelectComposite extends Composite {
 
    private void createButton(Composite parent) {
       branchSelectButton = new Button(parent, SWT.PUSH);
-      branchSelectButton.setText("Select Branch...");
+      branchSelectButton.setText("Branch");
       branchSelectButton.addListener(SWT.Selection, new Listener() {
 
          @Override
