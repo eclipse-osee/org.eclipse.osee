@@ -44,7 +44,7 @@ public class ChangeBranchTypeDialog extends ListDialog {
       setLabelProvider(new ChangeLabelProvider());
       setInput(BranchType.values());
       setShellStyle(getShellStyle() | SWT.RESIZE);
-      setTitle("Select Branch Type");
+      setTitle("Branch Type");
    }
 
    public BranchType getSelection() {

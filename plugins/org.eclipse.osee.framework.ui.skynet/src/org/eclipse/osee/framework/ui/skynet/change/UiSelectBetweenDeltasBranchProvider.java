@@ -61,7 +61,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       if (display.getThread().equals(Thread.currentThread())) {
          status = getUserSelection(selectable, selectedBranch);
       } else {
-         Job job = new UIJob("Select Branch") {
+         Job job = new UIJob("Branch") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                return getUserSelection(selectable, selectedBranch);

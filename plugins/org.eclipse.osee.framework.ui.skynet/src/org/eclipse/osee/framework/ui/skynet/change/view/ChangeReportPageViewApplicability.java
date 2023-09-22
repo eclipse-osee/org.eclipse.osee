@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -120,8 +119,8 @@ public class ChangeReportPageViewApplicability {
          }
       }
       // bug[tw23643] resolves UI issue of not displaying transaction(s) change report on working branches
-      if(branch == null) {
-         branch = BranchId.SENTINEL;         
+      if (branch == null) {
+         branch = BranchId.SENTINEL;
       }
       return branch;
    }
@@ -129,7 +128,7 @@ public class ChangeReportPageViewApplicability {
    private boolean changeView() {
       Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(getBranch());
       ViewBranchViewFilterTreeDialog dialog =
-         new ViewBranchViewFilterTreeDialog("Select Branch View", "Select Branch View", branchViews);
+         new ViewBranchViewFilterTreeDialog("Branch View", "Branch View", branchViews);
       Collection<String> values = new ArrayList<>();
       values.add("<Clear View Selection>");
       values.addAll(branchViews.values());

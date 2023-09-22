@@ -51,7 +51,6 @@ import org.eclipse.swt.widgets.Widget;
  * @author Roberto E. Escobar
  */
 public class SearchComposite extends Composite implements Listener {
-   private static final String SEARCH_BUTTON_TOOLTIP = "Executes GUID or ArtId search";
    private static final String SEARCH_COMBO_TOOLTIP =
       "Enter word(s) to search for or select historical value from pull-down on the right.";
 
@@ -64,6 +63,9 @@ public class SearchComposite extends Composite implements Listener {
    private QuickSearchOptionComposite optionsComposite;
    private final QuickSearchView quickSearch;
    private final boolean isAttributeComposite;
+   private Composite checkOptionsComp;
+   private Button byIdCheckbox;
+   private Button incDeletedCheckbox;
 
    public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText, QuickSearchView quickSearch, boolean isAttributeComposite) {
       super(parent, style);
@@ -81,7 +83,7 @@ public class SearchComposite extends Composite implements Listener {
       gL.marginHeight = 0;
       gL.marginWidth = 0;
       parent.setLayout(gL);
-      parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      parent.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
       createSearchInputArea(parent);
    }
@@ -136,6 +138,34 @@ public class SearchComposite extends Composite implements Listener {
       });
 
       this.searchArea.setToolTipText(SEARCH_COMBO_TOOLTIP);
+
+      checkOptionsComp = new Composite(parent, SWT.NONE);
+      checkOptionsComp.setLayout(new GridLayout(2, false));
+      checkOptionsComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+      byIdCheckbox = new Button(checkOptionsComp, SWT.CHECK);
+      byIdCheckbox.setText("By ID");
+      byIdCheckbox.setData(new GridData());
+      byIdCheckbox.setToolTipText("Enter numeric Artifact Ids (comma delimited)");
+      byIdCheckbox.setFont(getFont());
+      byIdCheckbox.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Object object = e.getSource();
+            if (object instanceof Button) {
+               Button button = (Button) object;
+               boolean selected = button.getSelection();
+               System.err.println("By Id " + selected);
+            }
+         }
+      });
+
+      incDeletedCheckbox = new Button(checkOptionsComp, SWT.CHECK);
+      incDeletedCheckbox.setText("Include Deleted");
+      incDeletedCheckbox.setToolTipText("Select to include deleted artifacts in results");
+      incDeletedCheckbox.setData(new GridData());
+      incDeletedCheckbox.setFont(getFont());
    }
 
    private void createButtonBar(Composite parent) {
@@ -154,13 +184,14 @@ public class SearchComposite extends Composite implements Listener {
       this.executeSearch.addListener(SWT.Selection, this);
       this.executeSearch.setEnabled(false);
       this.executeSearch.setFont(getFont());
-      this.executeSearch.setToolTipText(SEARCH_BUTTON_TOOLTIP);
    }
 
    public void clearHistory() {
       if (searchArea.getItemCount() > 0) {
          searchArea.removeAll();
       }
+      byIdCheckbox.setSelection(false);
+      incDeletedCheckbox.setSelection(false);
    }
 
    private void updateFromSourceField() {
@@ -269,7 +300,8 @@ public class SearchComposite extends Composite implements Listener {
       }
    }
 
-   public void restoreWidgetValues(List<String> querySearches, String lastSelected, Map<String, Boolean> options, Map<String, String[]> configs) {
+   public void restoreWidgetValues(List<String> querySearches, String lastSelected, Map<String, Boolean> options,
+      Map<String, String[]> configs) {
       String currentSearch = getQuery();
 
       // Add stored directories into selector
@@ -383,6 +415,14 @@ public class SearchComposite extends Composite implements Listener {
 
    public Button getExecuteSearch() {
       return executeSearch;
+   }
+
+   public boolean isIncludeDeletedEnabled() {
+      return incDeletedCheckbox.getSelection();
+   }
+
+   public boolean isById() {
+      return byIdCheckbox.getSelection();
    }
 
 }

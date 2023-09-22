@@ -44,7 +44,7 @@ public class ChangeBranchStateDialog extends ListDialog {
       setLabelProvider(new ChangeLabelProvider());
       setInput(BranchState.values());
       setShellStyle(getShellStyle() | SWT.RESIZE);
-      setTitle("Select Branch State");
+      setTitle("Branch State");
    }
 
    public BranchState getSelection() {

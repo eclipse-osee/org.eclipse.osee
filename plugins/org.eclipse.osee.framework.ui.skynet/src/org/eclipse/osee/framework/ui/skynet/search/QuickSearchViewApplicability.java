@@ -136,7 +136,7 @@ public class QuickSearchViewApplicability {
    private boolean changeView() {
       Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(quickSearch.getBranch());
       ViewBranchViewFilterTreeDialog dialog =
-         new ViewBranchViewFilterTreeDialog("Select Branch View", "Select Branch View", branchViews);
+         new ViewBranchViewFilterTreeDialog("Branch View", "Branch View", branchViews);
       Collection<String> values = new ArrayList<>();
       values.add("<Clear View Selection>");
       values.addAll(branchViews.values());

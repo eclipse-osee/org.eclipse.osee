@@ -52,10 +52,8 @@ public class QuickSearchApplicabilityToken {
 
    public void create() {
       Composite applicabilityComp = new Composite(parent, SWT.WRAP);
-      applicabilityComp.setLayout(ALayout.getZeroMarginLayout());
-
       applicabilityComp.setLayout(ALayout.getZeroMarginLayout(4, false));
-      applicabilityComp.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
+      applicabilityComp.setLayoutData(new GridData(SWT.BEGINNING, SWT.TOP, true, false));
       checkBox = new Button(applicabilityComp, SWT.CHECK);
       checkBox.addSelectionListener(new SelectionAdapter() {
 
@@ -136,7 +134,7 @@ public class QuickSearchApplicabilityToken {
       apps.add(new ApplicabilityToken(-1, "<Clear Applicability Selection>"));
       apps.addAll(ViewApplicabilityUtil.getApplicabilityEndpoint(quickSearch.getBranch()).getApplicabilityTokens());
       ViewApplicabilityTokenFilterTreeDialog dialog =
-         new ViewApplicabilityTokenFilterTreeDialog("Select Branch View", "Select Branch View");
+         new ViewApplicabilityTokenFilterTreeDialog("Branch View", "Branch View");
       dialog.setInput(apps);
       dialog.setMultiSelect(false);
       int result = dialog.open();

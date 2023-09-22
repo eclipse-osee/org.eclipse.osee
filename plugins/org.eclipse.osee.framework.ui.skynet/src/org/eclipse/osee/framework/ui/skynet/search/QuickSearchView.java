@@ -58,16 +58,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -86,15 +81,11 @@ public class QuickSearchView extends GenericViewPart {
    private static final String LAST_APPLIC_TEXT = "lastApplicText";
    private static final String LAST_VIEW_UUID = "lastViewUuid";
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
-   private Label branchLabel;
    private XBranchSelectWidget branchSelect;
-   private SearchComposite attrSearchComposite;
-   private SearchComposite idSearchComposite;
+   private SearchComposite searchComposite;
    private QuickSearchOptionComposite optionsComposite;
    private IMemento memento;
-   private Button includeDeleted;
-   private final AttributeSearchListener attrSearchListener = new AttributeSearchListener();
-   private final IdSearchListener idSearchListener = new IdSearchListener();
+   private final SearchListener searchListener = new SearchListener();
    private QuickSearchViewApplicability view;
    private QuickSearchApplicabilityToken applicability;
    private ApplicabilityToken applicabilityId = ApplicabilityToken.SENTINEL;
@@ -112,8 +103,8 @@ public class QuickSearchView extends GenericViewPart {
    @Override
    public void saveState(IMemento memento) {
       if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
-         if (Widgets.isAccessible(attrSearchComposite)) {
-            memento.putString(LAST_QUERY_KEY_ID, attrSearchComposite.getQuery());
+         if (Widgets.isAccessible(searchComposite)) {
+            memento.putString(LAST_QUERY_KEY_ID, searchComposite.getQuery());
             branch = branchSelect.getData();
             if (branch != null) {
                memento.putString(LAST_BRANCH_UUID, branch.getIdString());
@@ -126,7 +117,7 @@ public class QuickSearchView extends GenericViewPart {
                memento.putString(LAST_APPLIC_TEXT, applicabilityId.getName());
             }
             StringBuilder builder = new StringBuilder();
-            String[] queries = attrSearchComposite.getQueryHistory();
+            String[] queries = searchComposite.getQueryHistory();
             for (int index = 0; index < queries.length; index++) {
                try {
                   builder.append(URLEncoder.encode(queries[index], "UTF-8"));
@@ -147,7 +138,7 @@ public class QuickSearchView extends GenericViewPart {
 
    private void loadState() {
       if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
-         if (Widgets.isAccessible(attrSearchComposite)) {
+         if (Widgets.isAccessible(searchComposite)) {
             String lastQuery = memento.getString(LAST_QUERY_KEY_ID);
             List<String> queries = new ArrayList<>();
             String rawHistory = memento.getString(QUERY_HISTORY_KEY_ID);
@@ -161,7 +152,7 @@ public class QuickSearchView extends GenericViewPart {
                   }
                }
             }
-            attrSearchComposite.restoreWidgetValues(queries, lastQuery, null, null);
+            searchComposite.restoreWidgetValues(queries, lastQuery, null, null);
          }
 
          if (branchSelect != null) {
@@ -199,29 +190,23 @@ public class QuickSearchView extends GenericViewPart {
    public void createPartControl(Composite parent) {
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
-         sc.setExpandHorizontal(true);
-         sc.setExpandVertical(true);
-         sc.setMinSize(500, 500);
+         ScrolledComposite sComp = new ScrolledComposite(parent, SWT.V_SCROLL);
+         sComp.setLayout(new GridLayout());
+         sComp.setLayoutData(new GridData());
+         sComp.setExpandHorizontal(true);
+         sComp.setExpandVertical(true);
+         sComp.setMinSize(200, 500);
 
-         Composite group = new Composite(sc, SWT.NONE);
-         sc.setContent(group);
-         group.setLayout(new GridLayout());
-         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-         gridData.widthHint = 300;
-         group.setLayoutData(gridData);
+         Composite comp = new Composite(sComp, SWT.None);
+         comp.setLayout(new GridLayout());
+         comp.setLayoutData(new GridData());
+
+         sComp.setContent(comp);
 
          branchSelect = new XBranchSelectWidget("");
          branchSelect.setDisplayLabel(false);
-         branchSelect.createWidgets(group, 2);
-         branchSelect.addListener(attrSearchListener);
-         branchSelect.addListener(idSearchListener);
-         // allow user to double click the branch text area to select the branch
-         if (Widgets.isAccessible(branchSelect.getSelectComposite())) {
-            if (Widgets.isAccessible(branchSelect.getSelectComposite().getBranchSelectText())) {
-               branchSelect.getSelectComposite().getBranchSelectText().setDoubleClickEnabled(true);
-            }
-         }
+         branchSelect.createWidgets(comp, 2);
+         branchSelect.addListener(searchListener);
          branchSelect.addListener(new Listener() {
             @Override
             public void handleEvent(Event event) {
@@ -241,66 +226,38 @@ public class QuickSearchView extends GenericViewPart {
 
          });
          OseeStatusContributionItemFactory.addTo(this, true);
-         Composite panel = new Composite(group, SWT.NONE);
-         GridLayout gL = new GridLayout();
-         gL.marginHeight = 0;
-         gL.marginWidth = 0;
-         panel.setLayout(gL);
-         panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-         if (ServiceUtil.accessControlService().isOseeAdmin()) {
-            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
-            idSearchComposite.addListener(idSearchListener);
-         }
+         searchComposite = new SearchComposite(comp, SWT.NONE, "Search", null, this, true);
+         searchComposite.addListener(searchListener);
 
-         Group attrSearchGroup = new Group(panel, SWT.NONE);
-         attrSearchGroup.setLayout(new GridLayout());
-         attrSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         attrSearchGroup.setToolTipText("Search by attributes, artifact types, or applicability parameters");
-         attrSearchComposite = new SearchComposite(attrSearchGroup, SWT.NONE, "Search", null, this, true);
-         attrSearchComposite.addListener(attrSearchListener);
-
-         optionsComposite = new QuickSearchOptionComposite(attrSearchGroup, SWT.NONE);
+         optionsComposite = new QuickSearchOptionComposite(comp, SWT.NONE);
          optionsComposite.setLayout(ALayout.getZeroMarginLayout());
-         optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         attrSearchComposite.setOptionsComposite(optionsComposite);
-         optionsComposite.setAttrSearchComposite(attrSearchComposite);
-         Group appSearchGroup = new Group(attrSearchGroup, SWT.NONE);
-         appSearchGroup.setLayout(ALayout.getZeroMarginLayout());
+         optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+         searchComposite.setOptionsComposite(optionsComposite);
+         optionsComposite.setAttrSearchComposite(searchComposite);
 
-         appSearchGroup.setLayout(new GridLayout());
-         appSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         Group appSearchGroup = new Group(comp, SWT.NONE);
+         appSearchGroup.setLayout(ALayout.getZeroMarginLayout());
+         appSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
          appSearchGroup.setText("Product Line Options:");
+
          view = new QuickSearchViewApplicability(appSearchGroup, this);
          view.create();
 
          applicability = new QuickSearchApplicabilityToken(appSearchGroup, this);
          applicability.create();
-         if (!ServiceUtil.accessControlService().isOseeAdmin()) {
-            idSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:", this, false);
-            idSearchComposite.addListener(idSearchListener);
-         }
-
-         addContextMenu(idSearchComposite.getSearchArea());
-
-         includeDeleted = new Button(group, SWT.CHECK);
-         includeDeleted.setToolTipText("When selected, does not filter out deleted artifacts from search results.");
-         includeDeleted.setText("Include Deleted");
 
          loadState();
-         compositeEnablement(attrSearchComposite, false);
-         attrSearchComposite.setHelpContext(OseeHelpContext.QUICK_SEARCH);
+         compositeEnablement(searchComposite, false);
 
-         branchLabel = new Label(group, SWT.NONE);
-         branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-         branchLabel.setText("");
+         searchComposite.setHelpContext(OseeHelpContext.QUICK_SEARCH);
 
          createClearHistoryAction();
 
-         setFocusWidget(attrSearchComposite);
+         setFocusWidget(searchComposite);
 
-         group.layout(true);
-         sc.layout(true);
+         comp.layout(true);
+         sComp.layout(true);
       }
    }
 
@@ -308,8 +265,8 @@ public class QuickSearchView extends GenericViewPart {
       Action action = new Action("Clear Search History") {
          @Override
          public void run() {
-            if (attrSearchComposite != null) {
-               attrSearchComposite.clearHistory();
+            if (searchComposite != null) {
+               searchComposite.clearHistory();
             }
          }
       };
@@ -331,154 +288,97 @@ public class QuickSearchView extends GenericViewPart {
          branchSelect.setSelection(branch);
          this.branch = branchSelect.getData();
          // branch has been selected; allow user to set up search string
-         compositeEnablement(attrSearchComposite, true);
+         compositeEnablement(searchComposite, true);
          refreshView();
          refreshApplicability();
       }
    }
 
    private boolean isIncludeDeletedEnabled() {
-      return includeDeleted.getSelection();
+      return searchComposite.isIncludeDeletedEnabled();
    }
 
-   private class AttributeSearchListener implements Listener {
+   private class SearchListener implements Listener {
 
       @Override
       public void handleEvent(Event event) {
-         if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
-            branchLabel.setText("");
+         if (Widgets.isAccessible(searchComposite) && branchSelect != null) {
+
             final BranchToken branch = branchSelect.getData();
             if (branch == null) {
-               branchLabel.setText("Error: Must Select a Branch");
-            } else {
-               XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ,
-                  AccessControlArtifactUtil.getXResultAccessHeader("Select Branch", branch));
-               if (rd.isErrors()) {
-                  XResultDataDialog.open(rd, "Branch Select Failed", "Access Denied for branch [%s]", branch);
+               AWorkbench.popup("Error: Must Select a Branch");
+               return;
+            }
 
-               } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(
-                  event) && Widgets.isAccessible(optionsComposite)) {
+            XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ,
+               AccessControlArtifactUtil.getXResultAccessHeader("Branch", branch));
+            if (rd.isErrors()) {
+               XResultDataDialog.open(rd, "Branch Select Failed", "Access Denied for branch [%s]", branch);
+               return;
 
-                  NewSearchUI.activateSearchResultView();
+            }
 
-                  ISearchQuery query;
-                  ArtifactSearchOptions options = new ArtifactSearchOptions();
-                  options.setIncludeDeleted(DeletionFlag.allowDeleted(includeDeleted.getSelection()));
-                  if (optionsComposite.isAttributeTypeFilterEnabled()) {
-                     options.setAttrTypeIds(Arrays.asList(optionsComposite.getAttributeTypeFilter()));
-                  }
-                  if (optionsComposite.isArtifactTypeFilterEnabled()) {
-                     options.setArtTypeIds(Arrays.asList(optionsComposite.getArtifactTypeFilter()));
-                  }
-                  options.setCaseSensitive(optionsComposite.isCaseSensitiveEnabled());
-                  options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
-                  options.setExactMatch(optionsComposite.isExactMatchEnabled());
-                  if (Strings.isValid(attrSearchComposite.getQuery())) {
-                     options.setSearchString(attrSearchComposite.getQuery());
-                  }
-                  if (applicability.getCheckBox()) {
-                     options.setApplic(getApplicabilityId());
-                  }
-                  if (view.getCheckBox()) {
-                     options.setView(getViewId());
-                  }
-                  query = new ArtifactSearch(branchSelect.getData(), options);
-                  NewSearchUI.runQueryInBackground(query);
-
+            if (Widgets.isAccessible(searchComposite) && searchComposite.isExecuteSearchEvent(
+               event) && Widgets.isAccessible(optionsComposite)) {
+               if (searchComposite.isById()) {
+                  handleSearchById();
                } else {
-                  // branch has been selected; allow user to set up search string
-                  compositeEnablement(attrSearchComposite, true);
+                  handleSearch();
                }
+            }
+            // branch has been selected; allow user to set up search string
+            else {
+               compositeEnablement(searchComposite, true);
             }
          }
       }
    }
 
-   private class IdSearchListener implements Listener {
+   private void handleSearch() {
+      NewSearchUI.activateSearchResultView();
 
-      @Override
-      public void handleEvent(Event event) {
-         if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
-            branchLabel.setText("");
-            final BranchToken branch = branchSelect.getData();
-            if (branch == null) {
-               branchLabel.setText("Error: Must Select a Branch");
-            } else if (!ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ,
-               null).isSuccess()) {
-               // since AttributeSearchListener is called when Select Branch is selected, only display if this is the guid search button
-               if (event.widget instanceof Button && ((Button) event.widget).getText().equals("Search")) {
-                  AWorkbench.popup(String.format("Access Denied for branch [%s]", branch));
-               }
-            } else if (Widgets.isAccessible(idSearchComposite) && idSearchComposite.isExecuteSearchEvent(event)) {
-               String searchString = idSearchComposite.getQuery();
-               List<String> invalids = new LinkedList<>();
-               for (String id : Arrays.asList(searchString.split("[\\s,]+"))) {
-                  if (!Strings.isValid(id) || !(GUID.isValid(id) || Strings.isNumeric(id))) {
-                     invalids.add(id);
-                  }
-               }
-
-               if (invalids.isEmpty()) {
-                  NewSearchUI.activateSearchResultView();
-
-                  ISearchQuery query = new IdArtifactSearch(searchString, branch, isIncludeDeletedEnabled());
-                  NewSearchUI.runQueryInBackground(query);
-               } else {
-                  String message =
-                     String.format("The following IDs are invalid: %s", Collections.toString(",", invalids));
-                  MessageDialog.openError(Displays.getActiveShell(), "Invalid ID(s)", message);
-               }
-
-            } else {
-               // branch has been selected; allow user to set up search string
-               compositeEnablement(attrSearchComposite, true);
-            }
-         }
+      ISearchQuery query;
+      ArtifactSearchOptions options = new ArtifactSearchOptions();
+      options.setIncludeDeleted(DeletionFlag.allowDeleted(isIncludeDeletedEnabled()));
+      if (optionsComposite.isAttributeTypeFilterEnabled()) {
+         options.setAttrTypeIds(Arrays.asList(optionsComposite.getAttributeTypeFilter()));
       }
+      if (optionsComposite.isArtifactTypeFilterEnabled()) {
+         options.setArtTypeIds(Arrays.asList(optionsComposite.getArtifactTypeFilter()));
+      }
+      options.setCaseSensitive(optionsComposite.isCaseSensitiveEnabled());
+      options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
+      options.setExactMatch(optionsComposite.isExactMatchEnabled());
+      if (Strings.isValid(searchComposite.getQuery())) {
+         options.setSearchString(searchComposite.getQuery());
+      }
+      if (applicability.getCheckBox()) {
+         options.setApplic(getApplicabilityId());
+      }
+      if (view.getCheckBox()) {
+         options.setView(getViewId());
+      }
+      query = new ArtifactSearch(branchSelect.getData(), options);
+      NewSearchUI.runQueryInBackground(query);
+
    }
 
-   /**
-    * Since adding new menu replaces the default menu, we must re-create the default copy/paste options
-    */
-   private void addContextMenu(final Combo searchArea) {
-      Menu menu = new Menu(searchArea);
-      MenuItem item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Cut");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            searchArea.cut();
+   private void handleSearchById() {
+      String searchString = searchComposite.getQuery();
+      List<String> invalids = new LinkedList<>();
+      for (String id : Arrays.asList(searchString.split("[\\s,]+"))) {
+         if (!Strings.isValid(id) || !(GUID.isValid(id) || Strings.isNumeric(id))) {
+            invalids.add(id);
          }
-      });
-      item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Copy");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            searchArea.copy();
-         }
-      });
-      item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Paste");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            searchArea.paste();
-         }
-      });
-      // Add Paste-and-Go menu option
-      item = new MenuItem(menu, SWT.PUSH);
-      item.setText("Paste-and-Go");
-      item.addListener(SWT.Selection, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            searchArea.setText("");
-            searchArea.paste();
-            idSearchComposite.getExecuteSearch().notifyListeners(SWT.Selection, null);
-         }
-      });
-
-      searchArea.setMenu(menu);
+      }
+      if (invalids.isEmpty()) {
+         NewSearchUI.activateSearchResultView();
+         ISearchQuery query = new IdArtifactSearch(searchString, branch, isIncludeDeletedEnabled());
+         NewSearchUI.runQueryInBackground(query);
+      } else {
+         String message = String.format("The following IDs are invalid: %s", Collections.toString(",", invalids));
+         MessageDialog.openError(Displays.getActiveShell(), "Invalid ID(s)", message);
+      }
    }
 
    public ApplicabilityToken getApplicabilityId() {
@@ -516,7 +416,7 @@ public class QuickSearchView extends GenericViewPart {
    }
 
    public void updateWidgetEnablements() {
-      attrSearchComposite.updateWidgetEnablements();
+      searchComposite.updateWidgetEnablements();
    }
 
    public void setApplicabilityCheckBox(boolean selected) {
