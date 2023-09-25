@@ -35,6 +35,21 @@ dependencies:
   '@angular/router':
     specifier: ^16.1.7
     version: 16.1.7(@angular/common@16.1.7)(@angular/core@16.1.7)(@angular/platform-browser@16.1.7)(rxjs@7.8.1)
+  '@fontsource/material-icons':
+    specifier: ^5.0.7
+    version: 5.0.7
+  '@fontsource/material-icons-outlined':
+    specifier: ^5.0.7
+    version: 5.0.7
+  '@fontsource/material-icons-round':
+    specifier: ^5.0.7
+    version: 5.0.7
+  '@fontsource/material-icons-sharp':
+    specifier: ^5.0.7
+    version: 5.0.7
+  '@fontsource/material-icons-two-tone':
+    specifier: ^5.0.7
+    version: 5.0.7
   '@swimlane/ngx-graph':
     specifier: ^8.2.1
     version: 8.2.1(@angular/animations@16.1.7)(@angular/cdk@16.1.6)(@angular/common@16.1.7)(@angular/core@16.1.7)(rxjs@7.8.1)
@@ -93,7 +108,7 @@ devDependencies:
     version: 1.7.0(@angular/cli@16.1.6)(@angular/core@16.1.7)
   '@jscutlery/cypress-harness':
     specifier: ^0.4.4
-    version: 0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.1.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1)
+    version: 0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.2.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1)
   '@types/d3-dispatch':
     specifier: ^3.0.0
     version: 3.0.2
@@ -126,7 +141,7 @@ devDependencies:
     version: 10.4.14(postcss@8.4.24)
   cypress:
     specifier: latest
-    version: 13.1.0
+    version: 13.2.0
   cypress-pipe:
     specifier: ^2.0.0
     version: 2.0.0
@@ -2433,6 +2448,26 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
+  /@fontsource/material-icons-outlined@5.0.7:
+    resolution: {integrity: sha512-2JYHqyv3ODxd1RbnU8lXJJF6zZjL8ehkL/H47JZdy2eJUMwUWulxGJx397DltZa6s999rdYGcw0AqpS+WbDSQg==}
+    dev: false
+
+  /@fontsource/material-icons-round@5.0.7:
+    resolution: {integrity: sha512-Zgy+i7h9GykCdIe8dt+hKqEoEQrxgPAOsx+/hlCVBEnnH3xuTNddA6KQ1ZFDJ41WLXfpxZnJw4Y8DdChLVZVJA==}
+    dev: false
+
+  /@fontsource/material-icons-sharp@5.0.7:
+    resolution: {integrity: sha512-L8FG0PKJNFhLv62qfPs8+tk2zolejjY2UpGIJwya9cvRFOcbiiwcV8ExfDSUwoUreNzxNeMmJO/D0dO7pY7kPA==}
+    dev: false
+
+  /@fontsource/material-icons-two-tone@5.0.7:
+    resolution: {integrity: sha512-2EGmuTqxvOA8Cvg26MHa2FhltDQdtlyrgVC2yeRlqFmju09PZsPxEVulLsQqV7TbA7O86RN7wCuxiYC27gJ5RQ==}
+    dev: false
+
+  /@fontsource/material-icons@5.0.7:
+    resolution: {integrity: sha512-QNEk24i1KhV1MoZqpLHfD+T90N2U8lzYxyeHbr6qAWTJG7KgOMib4TA+RonS9vtBT4sw59L9e9Wd1vebXxOhOQ==}
+    dev: false
+
   /@humanwhocodes/config-array@0.11.10:
     resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}
     engines: {node: '>=10.10.0'}
@@ -2518,7 +2553,7 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@jscutlery/cypress-harness@0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.1.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1):
+  /@jscutlery/cypress-harness@0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.2.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1):
     resolution: {integrity: sha512-fSnF354b8FJTY8ZSzxuwh+98OHaSfnpudcNsOc5Si5yQVhAl4szljdc4vIANyi0VHrYIS39g8MmCJaWHUKcOng==}
     peerDependencies:
       '@angular/cdk': '*'
@@ -2530,7 +2565,7 @@ packages:
       '@angular/cdk': 16.1.6(@angular/common@16.1.7)(@angular/core@16.1.7)(rxjs@7.8.1)
       '@cypress/webpack-batteries-included-preprocessor': 2.4.1(@cypress/webpack-preprocessor@5.17.1)(typescript@5.1.6)
       '@cypress/webpack-preprocessor': 5.17.1(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(webpack@5.86.0)
-      cypress: 13.1.0
+      cypress: 13.2.0
       cypress-pipe: 2.0.0
       tslib: 2.5.3
       webpack: 5.86.0
@@ -3667,8 +3702,8 @@ packages:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
     dev: true
 
-  /@types/node@16.18.48:
-    resolution: {integrity: sha512-mlaecDKQ7rIZrYD7iiKNdzFb6e/qD5I9U1rAhq+Fd+DWvYVs+G2kv74UFHmSOlg5+i/vF3XxuR522V4u8BqO+Q==}
+  /@types/node@18.17.19:
+    resolution: {integrity: sha512-+pMhShR3Or5GR0/sp4Da7FnhVmTalWm81M6MkEldbwjETSaPalw138Z4KdpQaistvqQxLB7Cy4xwYdxpbSOs9Q==}
     dev: true
 
   /@types/node@20.4.5:
@@ -3752,7 +3787,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 20.4.5
+      '@types/node': 12.20.55
     dev: true
     optional: true
 
@@ -5651,15 +5686,15 @@ packages:
     resolution: {integrity: sha512-KW9s+bz4tFLucH3rBGfjW+Q12n7S4QpUSSyxiGrgPOfoHlbYWzAGB3H26MO0VTojqf9NVvfd5Kt0MH5XMgbfyg==}
     dev: true
 
-  /cypress@13.1.0:
-    resolution: {integrity: sha512-LUKxCYlB973QBFls1Up4FAE9QIYobT+2I8NvvAwMfQS2YwsWbr6yx7y9hmsk97iqbHkKwZW3MRjoK1RToBFVdQ==}
+  /cypress@13.2.0:
+    resolution: {integrity: sha512-AvDQxBydE771GTq0TR4ZUBvv9m9ffXuB/ueEtpDF/6gOcvFR96amgwSJP16Yhqw6VhmwqspT5nAGzoxxB+D89g==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     requiresBuild: true
     dependencies:
       '@cypress/request': 3.0.1
       '@cypress/xvfb': 1.2.4(supports-color@8.1.1)
-      '@types/node': 16.18.48
+      '@types/node': 18.17.19
       '@types/sinonjs__fake-timers': 8.1.1
       '@types/sizzle': 2.3.3
       arch: 2.2.0
