@@ -15,6 +15,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReportsService } from '@osee/messaging/shared/services';
 import { ReportsServiceMock } from '@osee/messaging/shared/testing';
 import { NodeTraceReportRequirementsComponent } from './trace-report.component';
+import { BranchInfoService } from '@osee/shared/services';
+import { BranchInfoServiceMock } from '@osee/shared/testing';
 
 describe('NodeTraceReportComponent', () => {
 	let component: NodeTraceReportRequirementsComponent;
@@ -27,6 +29,7 @@ describe('NodeTraceReportComponent', () => {
 				RouterTestingModule,
 			],
 			providers: [
+				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
 				{ provide: ReportsService, useValue: ReportsServiceMock },
 			],
 		}).compileComponents();

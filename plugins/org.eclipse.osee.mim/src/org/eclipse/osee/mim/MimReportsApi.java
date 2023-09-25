@@ -24,11 +24,29 @@ public interface MimReportsApi {
 
    public List<NodeTraceReportItem> getAllRequirementsToInterface(BranchId branch);
 
+   public List<NodeTraceReportItem> getAllRequirementsToInterface(BranchId branch, long pageNum, long pageSize);
+
+   int getCountRequirementsToInterface(BranchId branch);
+
    public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(BranchId branch);
+
+   public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(BranchId branch, long pageNum,
+      long pageSize);
+
+   public int getCountRequirementsToInterfaceWithNoMatch(BranchId branch);
 
    public List<NodeTraceReportItem> getAllInterfaceToRequirements(BranchId branch);
 
+   public List<NodeTraceReportItem> getAllInterfaceToRequirements(BranchId branch, long pageNum, long pageSize);
+
+   public int getCountInterfaceToRequirements(BranchId branch);
+
    public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(BranchId branch);
+
+   public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(BranchId branch, long pageNum,
+      long pageSize);
+
+   public int getCountInterfaceToRequirementsWithNoMatch(BranchId branch);
 
    public NodeTraceReportItem getInterfacesFromRequirement(BranchId branch, ArtifactId artId);
 

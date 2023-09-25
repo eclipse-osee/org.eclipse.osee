@@ -57,7 +57,7 @@ export class MimHeaderComponent {
 					() => type !== '',
 					iif(
 						() => id != '',
-						this._currentBranchService.currentBranchDetail.pipe(
+						this._currentBranchService.currentBranch.pipe(
 							switchMap((detail) =>
 								iif(
 									() =>

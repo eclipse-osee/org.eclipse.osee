@@ -15,6 +15,18 @@ import { ReportsService } from '../services';
 import { NodeTraceReportMock } from './node-trace-report-mock';
 
 export const ReportsServiceMock: Partial<ReportsService> = {
+	get currentPage() {
+		return of(0);
+	},
+	get currentPageSize() {
+		return of(200);
+	},
+	get missingPage() {
+		return of(0);
+	},
+	get missingPageSize() {
+		return of(200);
+	},
 	get nodeTraceReportRequirements() {
 		return of(NodeTraceReportMock);
 	},
@@ -26,5 +38,17 @@ export const ReportsServiceMock: Partial<ReportsService> = {
 	},
 	get nodeTraceReportNoMatchingInterfaceArtifacts() {
 		return of(NodeTraceReportMock);
+	},
+	get nodeTraceReportRequirementsCount() {
+		return of(Math.min(NodeTraceReportMock.length, 200));
+	},
+	get nodeTraceReportNoMatchingArtifactsCount() {
+		return of(Math.min(NodeTraceReportMock.length, 200));
+	},
+	get nodeTraceReportInterfaceArtifactsCount() {
+		return of(Math.min(NodeTraceReportMock.length, 200));
+	},
+	get nodeTraceReportNoMatchingInterfaceArtifactsCount() {
+		return of(Math.min(NodeTraceReportMock.length, 200));
 	},
 };

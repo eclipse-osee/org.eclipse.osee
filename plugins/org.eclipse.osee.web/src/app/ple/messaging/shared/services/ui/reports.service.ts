@@ -12,8 +12,16 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
-import { filter, map, shareReplay, switchMap, take } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest, iif, of } from 'rxjs';
+import {
+	debounceTime,
+	distinct,
+	filter,
+	map,
+	shareReplay,
+	switchMap,
+	take,
+} from 'rxjs/operators';
 import { FilesService } from '@osee/shared/services';
 import { apiURL } from '@osee/environments';
 import type { connection, MimReport } from '@osee/messaging/shared/types';
@@ -38,6 +46,14 @@ export class ReportsService {
 		new BehaviorSubject<File | undefined>(undefined);
 	private _includeDiff: BehaviorSubject<boolean> =
 		new BehaviorSubject<boolean>(false);
+
+	private _allCurrentPage$ = new BehaviorSubject<number>(0);
+
+	private _allCurrentPageSize$ = new BehaviorSubject<number>(200);
+
+	private _noCurrentPage$ = new BehaviorSubject<number>(0);
+
+	private _noCurrentPageSize$ = new BehaviorSubject<number>(200);
 
 	getReports() {
 		return this.http
@@ -125,41 +141,165 @@ export class ReportsService {
 		);
 	}
 
-	private _nodeTraceReportRequirements = this.ui.id.pipe(
-		filter((v) => v !== undefined && v !== '' && v !== '-1'),
-		switchMap((id) =>
+	private _nodeTraceReportRequirements = combineLatest([
+		this.ui.id,
+		this._allCurrentPage$,
+		this._allCurrentPageSize$,
+	]).pipe(
+		filter(
+			([v, page, size]) =>
+				v !== undefined &&
+				v !== '' &&
+				v !== '-1' &&
+				page >= 0 &&
+				size >= 0
+		),
+		distinct(),
+		debounceTime(50),
+		switchMap(([id, page, size]) =>
 			this.http.get<NodeTraceReportItem[]>(
-				apiURL + '/mim/reports/' + id + '/allRequirementsToInterface'
+				apiURL + '/mim/reports/' + id + '/allRequirementsToInterface',
+				{
+					params: {
+						count: size,
+						pageNum: page + 1,
+					},
+				}
+			)
+		)
+	);
+
+	private _nodeTraceReportRequirementsCount = this.ui.id.pipe(
+		filter((id) => id !== undefined && id !== '' && id !== '-1'),
+		switchMap((id) =>
+			this.http.get<number>(
+				apiURL +
+					'/mim/reports/' +
+					id +
+					'/allRequirementsToInterface/count'
 			)
 		),
 		take(1)
 	);
 
-	private _nodeTraceReportRequirementsNoMatch = this.ui.id.pipe(
-		filter((v) => v !== undefined && v !== '' && v !== '-1'),
-		switchMap((id) =>
+	private _nodeTraceReportRequirementsNoMatch = combineLatest([
+		this.ui.id,
+		this._noCurrentPage$,
+		this._noCurrentPageSize$,
+	]).pipe(
+		filter(
+			([v, page, size]) =>
+				v !== undefined &&
+				v !== '' &&
+				v !== '-1' &&
+				page >= 0 &&
+				size >= 0
+		),
+		distinct(),
+		debounceTime(50),
+		switchMap(([id, page, size]) =>
 			this.http.get<NodeTraceReportItem[]>(
-				apiURL + '/mim/reports/' + id + '/noRequirementsToInterface'
+				apiURL + '/mim/reports/' + id + '/noRequirementsToInterface',
+				{
+					params: {
+						count: size,
+						pageNum: page + 1,
+					},
+				}
+			)
+		)
+	);
+
+	private _nodeTraceReportRequirementsNoMatchCount = this.ui.id.pipe(
+		filter((id) => id !== undefined && id !== '' && id !== '-1'),
+		switchMap((id) =>
+			this.http.get<number>(
+				apiURL +
+					'/mim/reports/' +
+					id +
+					'/noRequirementsToInterface/count'
 			)
 		),
 		take(1)
 	);
 
-	private _nodeTraceReportInterfaceArtifacts = this.ui.id.pipe(
-		filter((v) => v !== undefined && v !== '' && v !== '-1'),
-		switchMap((id) =>
+	private _nodeTraceReportInterfaceArtifacts = combineLatest([
+		this.ui.id,
+		this._allCurrentPage$,
+		this._allCurrentPageSize$,
+	]).pipe(
+		filter(
+			([v, page, size]) =>
+				v !== undefined &&
+				v !== '' &&
+				v !== '-1' &&
+				page >= 0 &&
+				size >= 0
+		),
+		distinct(),
+		debounceTime(50),
+		switchMap(([id, page, size]) =>
 			this.http.get<NodeTraceReportItem[]>(
-				apiURL + '/mim/reports/' + id + '/allInterfaceToRequirements'
+				apiURL + '/mim/reports/' + id + '/allInterfaceToRequirements',
+				{
+					params: {
+						count: size,
+						pageNum: page + 1,
+					},
+				}
+			)
+		)
+	);
+
+	private _nodeTraceReportInterfaceArtifactsCount = this.ui.id.pipe(
+		filter((id) => id !== undefined && id !== '' && id !== '-1'),
+		switchMap((id) =>
+			this.http.get<number>(
+				apiURL +
+					'/mim/reports/' +
+					id +
+					'/allInterfaceToRequirements/count'
 			)
 		),
 		take(1)
 	);
 
-	private _nodeTraceReportInterfaceArtifactsNoMatch = this.ui.id.pipe(
-		filter((v) => v !== undefined && v !== '' && v !== '-1'),
-		switchMap((id) =>
+	private _nodeTraceReportInterfaceArtifactsNoMatch = combineLatest([
+		this.ui.id,
+		this._noCurrentPage$,
+		this._noCurrentPageSize$,
+	]).pipe(
+		filter(
+			([v, page, size]) =>
+				v !== undefined &&
+				v !== '' &&
+				v !== '-1' &&
+				page >= 0 &&
+				size >= 0
+		),
+		distinct(),
+		debounceTime(50),
+		switchMap(([id, page, size]) =>
 			this.http.get<NodeTraceReportItem[]>(
-				apiURL + '/mim/reports/' + id + '/noInterfaceToRequirements'
+				apiURL + '/mim/reports/' + id + '/noInterfaceToRequirements',
+				{
+					params: {
+						count: size,
+						pageNum: page + 1,
+					},
+				}
+			)
+		)
+	);
+
+	private _nodeTraceReportInterfaceArtifactsNoMatchCount = this.ui.id.pipe(
+		filter((id) => id !== undefined && id !== '' && id !== '-1'),
+		switchMap((id) =>
+			this.http.get<number>(
+				apiURL +
+					'/mim/reports/' +
+					id +
+					'/noInterfaceToRequirements/count'
 			)
 		),
 		take(1)
@@ -196,16 +336,32 @@ export class ReportsService {
 		return this._nodeTraceReportRequirements;
 	}
 
+	get nodeTraceReportRequirementsCount() {
+		return this._nodeTraceReportRequirementsCount;
+	}
+
 	get nodeTraceReportNoMatchingArtifacts() {
 		return this._nodeTraceReportRequirementsNoMatch;
+	}
+
+	get nodeTraceReportNoMatchingArtifactsCount() {
+		return this._nodeTraceReportRequirementsNoMatchCount;
 	}
 
 	get nodeTraceReportInterfaceArtifacts() {
 		return this._nodeTraceReportInterfaceArtifacts;
 	}
 
+	get nodeTraceReportInterfaceArtifactsCount() {
+		return this._nodeTraceReportInterfaceArtifactsCount;
+	}
+
 	get nodeTraceReportNoMatchingInterfaceArtifacts() {
 		return this._nodeTraceReportInterfaceArtifactsNoMatch;
+	}
+
+	get nodeTraceReportNoMatchingInterfaceArtifactsCount() {
+		return this._nodeTraceReportInterfaceArtifactsNoMatchCount;
 	}
 
 	get diffReportRoute() {
@@ -262,5 +418,37 @@ export class ReportsService {
 
 	set IncludeDiff(value: boolean) {
 		this._includeDiff.next(value);
+	}
+
+	get currentPageSize(): Observable<number> {
+		return this._allCurrentPageSize$;
+	}
+
+	set currentPageSize(value: number) {
+		this._allCurrentPageSize$.next(value);
+	}
+
+	get currentPage(): Observable<number> {
+		return this._allCurrentPage$;
+	}
+
+	set currentPage(value: number) {
+		this._allCurrentPage$.next(value);
+	}
+
+	get missingPageSize(): Observable<number> {
+		return this._noCurrentPageSize$;
+	}
+
+	set missingPageSize(value: number) {
+		this._noCurrentPageSize$.next(value);
+	}
+
+	get missingPage(): Observable<number> {
+		return this._noCurrentPage$;
+	}
+
+	set missingPage(value: number) {
+		this._noCurrentPage$.next(value);
 	}
 }

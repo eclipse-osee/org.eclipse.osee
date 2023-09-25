@@ -479,7 +479,7 @@ export class CurrentMessagesService {
 	}
 	getMessageFromParent(messageId: string, viewId: string) {
 		return combineLatest([
-			this.branchInfoService.currentBranchDetail,
+			this.branchInfoService.currentBranch,
 			this.connectionId,
 		]).pipe(
 			take(1),
@@ -496,7 +496,7 @@ export class CurrentMessagesService {
 
 	getSubMessageFromParent(messageId: string, subMessageId: string) {
 		return combineLatest([
-			this.branchInfoService.currentBranchDetail,
+			this.branchInfoService.currentBranch,
 			this.connectionId,
 		]).pipe(
 			take(1),

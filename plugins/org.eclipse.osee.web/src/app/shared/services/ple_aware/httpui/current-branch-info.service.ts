@@ -49,7 +49,7 @@ export class branchImpl implements branch {
 	providedIn: 'root',
 })
 export class CurrentBranchInfoService {
-	private readonly _currentBranchDetail = this._uiService.id.pipe(
+	private readonly _currentBranch = this._uiService.id.pipe(
 		filter((val) => val !== '0'),
 		switchMap((branchId) =>
 			iif(
@@ -69,19 +69,19 @@ export class CurrentBranchInfoService {
 		private _uiService: UiService
 	) {}
 
-	get currentBranchDetail() {
-		return this._currentBranchDetail;
+	get currentBranch() {
+		return this._currentBranch;
 	}
 
 	get parentBranch() {
-		return this.currentBranchDetail.pipe(
+		return this.currentBranch.pipe(
 			//take(1),
 			map((branches) => branches.parentBranch.id)
 		);
 	}
 
 	commitBranch(body: { committer: string; archive: string }) {
-		return this.currentBranchDetail.pipe(
+		return this.currentBranch.pipe(
 			take(1),
 			switchMap((detail) =>
 				iif(
