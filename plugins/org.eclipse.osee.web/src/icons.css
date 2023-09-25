@@ -1,0 +1,47 @@
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+@import '@fontsource/material-icons';
+@import '@fontsource/material-icons-outlined';
+@import '@fontsource/material-icons-round';
+@import '@fontsource/material-icons-sharp';
+@import '@fontsource/material-icons-two-tone';
+
+.material-icons {
+	font-family: 'Material Icons', sans-serif;
+	font-size: 24px;
+	line-height: 1;
+}
+
+.material-icons-outlined {
+	font-family: 'Material Icons Outlined', sans-serif;
+	font-size: 24px;
+	line-height: 1;
+}
+
+.material-icons-round {
+	font-family: 'Material Icons Round', sans-serif;
+	font-size: 24px;
+	line-height: 1;
+}
+
+.material-icons-sharp {
+	font-family: 'Material Icons Sharp', sans-serif;
+	font-size: 24px;
+	line-height: 1;
+}
+
+.material-icons-two-tone {
+	font-family: 'Material Icons Two Tone', sans-serif;
+	font-size: 24px;
+	line-height: 1;
+}

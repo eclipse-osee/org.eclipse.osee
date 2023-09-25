@@ -38,9 +38,9 @@
 							]
 						},
 						"styles": [
-							"src/assets/iconassets/material-icons.css",
 							"src/custom-theme.scss",
-							"src/styles.sass"
+							"src/styles.sass",
+							"src/icons.css"
 						],
 						"scripts": [],
 						"vendorChunk": true,
