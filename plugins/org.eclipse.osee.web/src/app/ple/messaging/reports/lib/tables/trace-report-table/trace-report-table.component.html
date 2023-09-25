@@ -103,7 +103,10 @@
 		[pageSizeOptions]="[
 			5, 10, 20, 25, 50, 75, 100, 150, 200, 250, 500, 750, 100
 		]"
-		[pageSize]="pageSize"
+		[pageSize]="(pageSize$ | async) || 0"
+		[pageIndex]="(currentPage$ | async) || 0"
+		(page)="updatePage($event)"
+		[length]="(total$ | async) || 0"
 		showFirstLastButtons
 		aria-label="Select page of artifacts">
 	</mat-paginator>

@@ -37,13 +37,23 @@ public class MimReportsEndpointImpl implements MimReportsEndpoint {
    }
 
    @Override
-   public List<NodeTraceReportItem> getAllRequirementsToInterface(BranchId branch) {
-      return mimApi.getMimReportsApi().getAllRequirementsToInterface(branch);
+   public List<NodeTraceReportItem> getAllRequirementsToInterface(BranchId branch, long pageNum, long pageSize) {
+      return mimApi.getMimReportsApi().getAllRequirementsToInterface(branch, pageNum, pageSize);
    }
 
    @Override
-   public List<NodeTraceReportItem> getAllInterfaceToRequirements(BranchId branch) {
-      return mimApi.getMimReportsApi().getAllInterfaceToRequirements(branch);
+   public int getCountRequirementsToInterface(BranchId branch) {
+      return mimApi.getMimReportsApi().getCountRequirementsToInterface(branch);
+   }
+
+   @Override
+   public List<NodeTraceReportItem> getAllInterfaceToRequirements(BranchId branch, long pageNum, long pageSize) {
+      return mimApi.getMimReportsApi().getAllInterfaceToRequirements(branch, pageNum, pageSize);
+   }
+
+   @Override
+   public int getCountInterfaceToRequirements(BranchId branch) {
+      return mimApi.getMimReportsApi().getCountInterfaceToRequirements(branch);
    }
 
    @Override
@@ -57,13 +67,25 @@ public class MimReportsEndpointImpl implements MimReportsEndpoint {
    }
 
    @Override
-   public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(BranchId branch) {
-      return mimApi.getMimReportsApi().getAllRequirementsToInterfaceWithNoMatch(branch);
+   public List<NodeTraceReportItem> getAllRequirementsToInterfaceWithNoMatch(BranchId branch, long pageNum,
+      long pageSize) {
+      return mimApi.getMimReportsApi().getAllRequirementsToInterfaceWithNoMatch(branch, pageNum, pageSize);
    }
 
    @Override
-   public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(BranchId branch) {
-      return mimApi.getMimReportsApi().getAllInterfaceToRequirementsWithNoMatch(branch);
+   public int getCountRequirementsToInterfaceWithNoMatch(BranchId branch) {
+      return mimApi.getMimReportsApi().getCountRequirementsToInterfaceWithNoMatch(branch);
+   }
+
+   @Override
+   public List<NodeTraceReportItem> getAllInterfaceToRequirementsWithNoMatch(BranchId branch, long pageNum,
+      long pageSize) {
+      return mimApi.getMimReportsApi().getAllInterfaceToRequirementsWithNoMatch(branch, pageNum, pageSize);
+   }
+
+   @Override
+   public int getCountInterfaceToRequirementsWithNoMatch(BranchId branch) {
+      return mimApi.getMimReportsApi().getCountInterfaceToRequirementsWithNoMatch(branch);
    }
 
 }

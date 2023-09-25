@@ -91,7 +91,7 @@ export class ActionStateButtonService {
 	getChangeTypes(actionableItem: string) {
 		return this.actionService.getChangeTypes(actionableItem);
 	}
-	private _branchState = this.currentBranchService.currentBranchDetail;
+	private _branchState = this.currentBranchService.currentBranch;
 	private _branchAction = this.currentActionService.branchAction;
 	private _branchWorkflow = this.currentActionService.branchWorkFlow;
 

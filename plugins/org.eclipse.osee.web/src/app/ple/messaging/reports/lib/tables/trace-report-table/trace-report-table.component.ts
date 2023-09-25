@@ -15,6 +15,7 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	Input,
+	Output,
 	ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -28,7 +29,12 @@ import { FormsModule } from '@angular/forms';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { HeaderService } from '@osee/shared/services';
 import { nodeTraceReportHeaderDetails } from '../../table-headers/trace-report-table-headers';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import {
+	MatPaginator,
+	MatPaginatorModule,
+	PageEvent,
+} from '@angular/material/paginator';
+import { BehaviorSubject, debounceTime, distinct, skip, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-trace-report-table',
@@ -55,7 +61,41 @@ export class TraceReportTableComponent implements AfterViewInit {
 
 	dataSource: MatTableDataSource<NodeTraceReportItem>;
 
-	pageSize = 200;
+	@Input() set pageSize(value: number) {
+		if (value) {
+			this.pageSize$.next(value);
+		}
+	}
+	_pageSize = 200;
+	pageSize$ = new BehaviorSubject<number>(this._pageSize);
+
+	@Output() paginationSize = this.pageSize$.pipe(
+		skip(1),
+		debounceTime(50),
+		distinct()
+	);
+
+	@Input() set total(value: number) {
+		if (value) {
+			this.total$.next(value);
+		}
+	}
+
+	total$ = new BehaviorSubject<number>(0);
+
+	@Input() set currentPage(value: number) {
+		if (value) {
+			this.currentPage$.next(value);
+		}
+	}
+
+	currentPage$ = new BehaviorSubject<number>(0);
+
+	@Output() currentPageChange = this.currentPage$.pipe(
+		skip(1),
+		debounceTime(50),
+		distinct()
+	);
 
 	constructor(private headerService: HeaderService) {
 		this.dataSource = new MatTableDataSource(this.data);
@@ -107,4 +147,12 @@ export class TraceReportTableComponent implements AfterViewInit {
 		'artifactType',
 		'relatedItems',
 	];
+	updatePage(ev: PageEvent) {
+		if (this.currentPage$.getValue() !== ev.pageIndex) {
+			this.currentPage$.next(ev.pageIndex);
+		}
+		if (this.pageSize$.getValue() !== ev.pageSize) {
+			this.pageSize = ev.pageSize;
+		}
+	}
 }

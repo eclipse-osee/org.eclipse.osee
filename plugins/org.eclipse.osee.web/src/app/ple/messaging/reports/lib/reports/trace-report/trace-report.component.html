@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <div class="tw-pt-4 tw-text-center">
-	<h2>Traceability Report Type</h2>
+	<h2>Traceability Report Type for {{ branchName | async }}</h2>
 	<mat-button-toggle-group
 		name="reportType"
 		aria-label="Report Type"
@@ -40,7 +40,17 @@
 </div>
 <ng-container *ngIf="group.value === 'requirements'">
 	<ng-container *ngIf="requirementsReport | async as data; else loading">
-		<osee-trace-report-table [data]="data"></osee-trace-report-table>
+		<ng-container *ngIf="currentPageSize | async as size; else loading">
+			<osee-trace-report-table
+				[data]="data"
+				[pageSize]="size"
+				(paginationSize)="currentPageSize = $event"
+				[currentPage]="currentPage()"
+				(currentPageChange)="currentPage = $event"
+				[total]="
+					(requirementsReportCount | async) || 0
+				"></osee-trace-report-table>
+		</ng-container>
 	</ng-container>
 	<mat-expansion-panel>
 		<mat-expansion-panel-header>
@@ -50,15 +60,35 @@
 		<ng-template matExpansionPanelContent>
 			<ng-container
 				*ngIf="missingRequirementsReport | async as data; else loading">
-				<osee-trace-report-table
-					[data]="data"></osee-trace-report-table>
+				<ng-container
+					*ngIf="missingPageSize | async as size; else loading">
+					<osee-trace-report-table
+						[data]="data"
+						[pageSize]="size"
+						(paginationSize)="missingPageSize = $event"
+						[currentPage]="missingPage()"
+						(currentPageChange)="missingPage = $event"
+						[total]="
+							(missingRequirementsReportCount | async) || 0
+						"></osee-trace-report-table>
+				</ng-container>
 			</ng-container>
 		</ng-template>
 	</mat-expansion-panel>
 </ng-container>
 <ng-container *ngIf="group.value === 'artifacts'">
 	<ng-container *ngIf="artifactsReport | async as data; else loading">
-		<osee-trace-report-table [data]="data"></osee-trace-report-table>
+		<ng-container *ngIf="currentPageSize | async as size; else loading">
+			<osee-trace-report-table
+				[data]="data"
+				[pageSize]="size"
+				(paginationSize)="currentPageSize = $event"
+				[currentPage]="currentPage()"
+				(currentPageChange)="currentPage = $event"
+				[total]="
+					(requirementsReportCount | async) || 0
+				"></osee-trace-report-table>
+		</ng-container>
 	</ng-container>
 	<mat-expansion-panel>
 		<mat-expansion-panel-header>
@@ -71,8 +101,18 @@
 					missingInterfaceArtifactsReport | async as data;
 					else loading
 				">
-				<osee-trace-report-table
-					[data]="data"></osee-trace-report-table>
+				<ng-container
+					*ngIf="missingPageSize | async as size; else loading">
+					<osee-trace-report-table
+						[data]="data"
+						[pageSize]="size"
+						(paginationSize)="missingPageSize = $event"
+						[currentPage]="missingPage()"
+						(currentPageChange)="missingPage = $event"
+						[total]="
+							(missingInterfaceArtifactsReportCount | async) || 0
+						"></osee-trace-report-table>
+				</ng-container>
 			</ng-container>
 		</ng-template>
 	</mat-expansion-panel>

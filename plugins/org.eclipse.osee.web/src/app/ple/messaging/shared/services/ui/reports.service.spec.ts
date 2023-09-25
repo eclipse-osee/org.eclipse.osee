@@ -14,7 +14,7 @@ import {
 	HttpClientTestingModule,
 	HttpTestingController,
 } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { mimReportsMock } from '@osee/messaging/shared/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
@@ -89,29 +89,33 @@ describe('ReportsService', () => {
 		});
 	});
 
-	it('should get a requirement trace report', () => {
+	it('should get a requirement trace report', fakeAsync(() => {
 		const traceReport = NodeTraceReportMock;
 		service.BranchId = '10';
 		service.BranchType = 'abc';
 		service.nodeTraceReportRequirements.subscribe();
+		tick(100);
 		const req = httpTestingController.expectOne(
-			apiURL + '/mim/reports/10/allRequirementsToInterface'
+			apiURL +
+				'/mim/reports/10/allRequirementsToInterface?count=200&pageNum=1'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(traceReport);
 		httpTestingController.verify();
-	});
+	}));
 
-	it('should get an interface artifact trace report', () => {
+	it('should get an interface artifact trace report', fakeAsync(() => {
 		const traceReport = NodeTraceReportMock;
 		service.BranchId = '10';
 		service.BranchType = 'abc';
 		service.nodeTraceReportInterfaceArtifacts.subscribe();
+		tick(100);
 		const req = httpTestingController.expectOne(
-			apiURL + '/mim/reports/10/allInterfaceToRequirements'
+			apiURL +
+				'/mim/reports/10/allInterfaceToRequirements?count=200&pageNum=1'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(traceReport);
 		httpTestingController.verify();
-	});
+	}));
 });

@@ -41,7 +41,7 @@ export class CurrentActionService {
 		private accountService: UserDataAccountService
 	) {}
 	private _user = this.accountService.user;
-	private _branchState = this.currentBranchService.currentBranchDetail;
+	private _branchState = this.currentBranchService.currentBranch;
 
 	public get branchState() {
 		return this._branchState;
