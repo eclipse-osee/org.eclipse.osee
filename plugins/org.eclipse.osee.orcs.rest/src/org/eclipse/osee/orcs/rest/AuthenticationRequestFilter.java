@@ -57,13 +57,15 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
     */
    @Override
    public void filter(ContainerRequestContext requestContext) {
-      boolean loadingData = requestContext.getUriInfo().getRequestUri().toString().contains("/ide/session") //
-         || requestContext.getUriInfo().getRequestUri().toString().contains("orcs/datastore/initialize") //
-         || requestContext.getRequest().getMethod().equals(
-            HttpMethod.GET) && requestContext.getUriInfo().getRequestUri().toString().contains("orcs/datastore/user") //
-         || requestContext.getUriInfo().getRequestUri().toString().contains("/osee/") //
-         || requestContext.getUriInfo().getRequestUri().toString().contains("/dispo/") //
-         || requestContext.getUriInfo().getRequestUri().toString().contains("/coverage/");
+
+      boolean exceptionList = requestContext.getUriInfo().getRequestUri().getPath().startsWith("/ide/session") //
+         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/orcs/datastore/initialize") //
+         || (requestContext.getRequest().getMethod().equals(
+            HttpMethod.GET) && requestContext.getUriInfo().getRequestUri().getPath().startsWith("/orcs/datastore/user")) //
+         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/osee/") //
+         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/dispo/") //
+         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/coverage/") //
+         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/server/health/");
       try {
          String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -79,12 +81,12 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                   String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase();
                   orcsApi.userService().setUserForCurrentThread(loginId);
                }
-            } else if (!loadingData && authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
+            } else if (!exceptionList && authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
                String loginId = authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length()).toLowerCase();
 
                orcsApi.userService().setUserForCurrentThread(loginId);
 
-            } else if (!loadingData) {
+            } else if (!exceptionList) {
                //TODO: ensure web clients to use Basic scheme then remove
                if (Strings.isNumeric(authHeader)) {
                   orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader.toLowerCase()));
@@ -106,7 +108,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
       } catch (Exception ex) {
          orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
       }
-      if (!loadingData && orcsApi.userService().getUser().isInvalid()) {
+      if (!exceptionList && orcsApi.userService().getUser().isInvalid()) {
          unauthorized(requestContext);
       }
       if (activityLog.isEnabled()) {
