@@ -36,6 +36,7 @@ export const importSummaryMock: ImportSummary = {
 				maximumSubscriberMultiplicity: 0,
 				directConnection: false,
 				dashedPresentation: false,
+				spareAutoNumbering: false,
 				availableMessageHeaders: [],
 				availableSubmessageHeaders: [],
 				availableStructureHeaders: [],

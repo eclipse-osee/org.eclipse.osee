@@ -390,6 +390,7 @@ export class ElementFormComponent implements OnInit, OnChanges {
 			),
 			tap((value: ElementDialog) => {
 				if (this.data.element.arrayElements) {
+					value.element.platformType = value.type;
 					this.data.element.arrayElements.push(
 						value.element as element
 					);

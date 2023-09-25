@@ -193,12 +193,23 @@
 			</mat-select>
 		</mat-form-field>
 		<mat-slide-toggle
+			[(ngModel)]="transportType.spareAutoNumbering"
+			color="primary"
+			data-cy="field-spare-auto-numbering"
+			name="spareAutoNumbering"
+			><mat-label
+				>Automatically Number Spares</mat-label
+			></mat-slide-toggle
+		>
+		<br />
+		<mat-slide-toggle
 			[(ngModel)]="transportType.dashedPresentation"
 			color="primary"
 			data-cy="field-dashed"
 			name="dashedPresentation"
 			><mat-label>Dashed Line</mat-label></mat-slide-toggle
 		>
+		<br />
 		<osee-applicability-selector
 			[required]="true"
 			[(applicability)]="transportType.applicability">

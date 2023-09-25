@@ -62,6 +62,7 @@ export interface transportTypeAttributes {
 	availableElementHeaders: (keyof element)[];
 	interfaceLevelsToUse: interfaceLevels[];
 	dashedPresentation: boolean;
+	spareAutoNumbering: boolean;
 }
 
 export interface computedTransportTypeAttributes {
@@ -105,6 +106,7 @@ export class TransportType implements TransportTypeForm {
 	maximumSubscriberMultiplicity: number = 0;
 	applicability = applicabilitySentinel;
 	dashedPresentation: boolean = false;
+	spareAutoNumbering: boolean = false;
 	availableMessageHeaders: (keyof message)[] = [];
 	availableSubmessageHeaders: (keyof subMessage)[] = [];
 	availableStructureHeaders: (
@@ -182,6 +184,7 @@ export function serialize<T extends TransportTypeForm>(
 		minimumSubscriberMultiplicity: body.minimumSubscriberMultiplicity,
 		maximumSubscriberMultiplicity: body.maximumSubscriberMultiplicity,
 		dashedPresentation: body.dashedPresentation,
+		spareAutoNumbering: body.spareAutoNumbering,
 		applicability: body.applicability,
 		id: body.id,
 	};
