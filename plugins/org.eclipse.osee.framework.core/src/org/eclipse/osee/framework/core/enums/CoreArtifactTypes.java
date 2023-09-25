@@ -366,7 +366,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceDefaultValue)
       .zeroOrOne(InterfaceElementAlterable)
       .zeroOrOne(InterfaceElementArrayHeader)
-      .zeroOrOne(InterfaceElementArrayWriteHeaderName)
+      .zeroOrOne(InterfaceElementWriteArrayHeaderName)
       .zeroOrOne(Notes)
       .zeroOrOne(InterfaceElementEnumLiteral)
       .zeroOrOne(InterfaceElementIndexStart)
@@ -421,7 +421,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(AvailableSubmessageHeaders)
       .zeroOrOne(AvailableStructureHeaders)
       .zeroOrOne(AvailableElementHeaders)
-      .zeroOrOne(DashedPresentation));
+      .zeroOrOne(DashedPresentation)
+      .zeroOrOne(SpareAutoNumbering));
 
    ArtifactTypeToken IndirectSoftwareRequirementMsWord = osee.add(osee.artifactType(25L, "Indirect Software Requirement - MS Word", false, MsWordTemplate, AbstractSoftwareRequirement));
 

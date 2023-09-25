@@ -38,6 +38,7 @@ public class TransportType extends ArtifactAccessorResult {
    private int minimumPublisherMultiplicity = 0;
    private int maximumPublisherMultiplicity = 0;
    private boolean isDashed = false;
+   private boolean spareAutoNumbering = false;
    private List<String> interfaceLevelsToUse = new LinkedList<String>();
    private List<String> availableMessageHeaders = new LinkedList<String>();
    private List<String> availableSubmessageHeaders = new LinkedList<String>();
@@ -101,6 +102,7 @@ public class TransportType extends ArtifactAccessorResult {
          this.setAvailableElementHeaders(
             this.getJSONContents(art.getSoleAttributeValue(CoreAttributeTypes.AvailableElementHeaders, "[]")));
          this.setDashedPresentation(art.getSoleAttributeValue(CoreAttributeTypes.DashedPresentation, false));
+         this.setSpareAutoNumbering(art.getSoleAttributeValue(CoreAttributeTypes.SpareAutoNumbering, false));
          this.setApplicability(!art.getApplicabilityToken().getId().equals(
             -1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
       } else {
@@ -114,6 +116,7 @@ public class TransportType extends ArtifactAccessorResult {
          this.setMaximumPublisherMultiplicity(0);
          this.setMaximumSubscriberMultiplicity(0);
          this.setDashedPresentation(false);
+         this.setSpareAutoNumbering(false);
          this.setApplicability(ApplicabilityToken.SENTINEL);
       }
    }
@@ -292,6 +295,14 @@ public class TransportType extends ArtifactAccessorResult {
     */
    public void setDashedPresentation(boolean isDashed) {
       this.isDashed = isDashed;
+   }
+
+   public boolean isSpareAutoNumbering() {
+      return spareAutoNumbering;
+   }
+
+   public void setSpareAutoNumbering(boolean spareAutoNumbering) {
+      this.spareAutoNumbering = spareAutoNumbering;
    }
 
    /**

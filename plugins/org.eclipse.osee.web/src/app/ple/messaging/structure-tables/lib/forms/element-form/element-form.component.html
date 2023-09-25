@@ -124,6 +124,19 @@
 			Array Header
 		</mat-slide-toggle>
 		<ng-container *ngIf="data.element.interfaceElementArrayHeader">
+			<ng-container *ngIf="data.element.interfaceElementArrayHeader">
+				<br />
+				<mat-slide-toggle
+					labelPosition="before"
+					name="arrayWriteHeaderNameToggle"
+					[(ngModel)]="
+						data.element.interfaceElementWriteArrayHeaderName
+					"
+					data-cy="field-array-write-header-name-toggle"
+					class="tw-py-2">
+					Use Array Header Name in Reports
+				</mat-slide-toggle>
+			</ng-container>
 			<mat-label class="tw-m-0 tw-mb-2 tw-block tw-text-foreground-base"
 				>Array Elements</mat-label
 			>
@@ -157,17 +170,6 @@
 				<mat-icon color="success">add</mat-icon>
 			</button>
 		</ng-container>
-	</ng-container>
-	<ng-container *ngIf="data.element.interfaceElementArrayHeader">
-		<br />
-		<mat-slide-toggle
-			labelPosition="before"
-			name="arrayWriteHeaderNameToggle"
-			[(ngModel)]="data.element.interfaceElementWriteArrayHeaderName"
-			data-cy="field-array-write-header-name-toggle"
-			class="tw-py-2">
-			Use Array Header Name in Reports
-		</mat-slide-toggle>
 	</ng-container>
 	<ng-container *ngIf="!data.element.interfaceElementArrayHeader">
 		<ng-container

@@ -75,7 +75,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
       this.setInterfaceElementArrayHeader(
          art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementArrayHeader, false));
       this.setInterfaceElementWriteArrayHeaderName(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementArrayWriteHeaderName, false));
+         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementWriteArrayHeaderName, false));
       this.setInterfaceElementIndexStart(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0));
       this.setInterfaceElementIndexEnd(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0));
       this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));

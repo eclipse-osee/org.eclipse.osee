@@ -403,6 +403,12 @@ export class HeaderService {
 			humanReadable: 'Message Generation Type',
 		},
 		{
+			header: 'spareAutoNumbering',
+			description:
+				'Whether or not spares are automatically numbered in exports',
+			humanReadable: 'Automatically Number Spares',
+		},
+		{
 			header: 'dashedPresentation',
 			description:
 				'Whether or not the line connecting two nodes is dashed',

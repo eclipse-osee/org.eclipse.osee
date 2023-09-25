@@ -33,6 +33,7 @@ export class DefaultAddNodeDialog implements AddNodeDialog {
 			minimumSubscriberMultiplicity: 0,
 			maximumSubscriberMultiplicity: 0,
 			directConnection: false,
+			spareAutoNumbering: false,
 			applicability: applicabilitySentinel,
 			dashedPresentation: false,
 			availableMessageHeaders: [],

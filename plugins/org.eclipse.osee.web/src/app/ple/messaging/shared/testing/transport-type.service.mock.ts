@@ -30,6 +30,7 @@ export const transportTypes: Required<transportType>[] = [
 		maximumSubscriberMultiplicity: 0,
 		directConnection: true,
 		dashedPresentation: false,
+		spareAutoNumbering: false,
 		availableMessageHeaders: [],
 		availableSubmessageHeaders: [],
 		availableStructureHeaders: [],
