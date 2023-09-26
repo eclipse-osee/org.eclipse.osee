@@ -18,7 +18,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,6 +39,34 @@ public class TypesEndpointImpl implements TypesEndpoint {
       this.orcsApi = Objects.requireNonNull(orcsApi, "orcsApi cannot be null.");
       this.orcsTokenService = Objects.requireNonNull(orcsApi.tokenService(), "orcsApi.tokenService must not be null");
       this.jdbcService = Objects.requireNonNull(jdbcService, "jdbcService cannot be null.");
+   }
+
+   @Override
+   public XResultData getTypes() {
+      XResultData rd = new XResultData();
+      for (ArtifactTypeToken artType : orcsTokenService.getArtifactTypes()) {
+         if (artType.equals(ArtifactTypeToken.SENTINEL)) {
+            continue;
+         }
+         rd.logf("Art: [%s][%s]\n", artType.getName(), artType.getIdString());
+         for (ArtifactTypeToken type : artType.getSuperTypes()) {
+            rd.logf("   - IsOfType: [%s]\n", type.getName());
+         }
+         for (AttributeTypeToken attrType : artType.getValidAttributeTypes()) {
+            rd.logf("   - Attr: [%s][%s] - [%s]\n\n", attrType.getName(), attrType.getIdString(),
+               attrType.getStoreType());
+         }
+      }
+      for (RelationTypeToken relType : orcsTokenService.getRelationTypes()) {
+         if (relType.equals(RelationTypeToken.SENTINEL)) {
+            continue;
+         }
+         ArtifactTypeToken artA = relType.getArtifactType(RelationSide.SIDE_A);
+         ArtifactTypeToken artB = relType.getArtifactType(RelationSide.SIDE_B);
+         rd.logf("   - Rel: [%s][%s] - [%s][%s] <-> [%s][%s]\n\n", relType.getName(), relType.getIdString(),
+            artA.getName(), artA.getIdString(), artB.getName(), artB.getIdString());
+      }
+      return rd;
    }
 
    @Override

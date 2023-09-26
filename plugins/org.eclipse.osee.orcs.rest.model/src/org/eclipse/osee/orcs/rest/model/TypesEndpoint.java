@@ -30,6 +30,10 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public interface TypesEndpoint {
 
    @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData getTypes();
+
+   @GET
    @Path("health")
    @Produces({MediaType.APPLICATION_JSON})
    XResultData getHealthReport();

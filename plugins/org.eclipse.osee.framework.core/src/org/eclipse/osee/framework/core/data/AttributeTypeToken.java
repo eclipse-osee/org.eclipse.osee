@@ -185,4 +185,30 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    default boolean notRenderable() {
       return getDisplayHints().contains(DisplayHint.NoGeneralRender);
    }
+
+   default public String getStoreType() {
+      if (isEnumerated()) {
+         return "Enumeration";
+      } else if (isDouble()) {
+         return "Double";
+      } else if (isInteger()) {
+         return "Integer";
+      } else if (isLong()) {
+         return "Long";
+      } else if (isArtifactId()) {
+         return "ArtifactId (Long)";
+      } else if (isBranchId()) {
+         return "BranchId (Long)";
+      } else if (isString()) {
+         return "String";
+      } else if (isBoolean()) {
+         return "Boolean";
+      } else if (isDate()) {
+         return "Date";
+      } else if (isInputStream()) {
+         return "Input Stream";
+      }
+      return "Unknown";
+   }
+
 }
