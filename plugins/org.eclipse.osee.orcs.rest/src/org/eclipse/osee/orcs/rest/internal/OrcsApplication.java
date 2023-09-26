@@ -68,7 +68,7 @@ public class OrcsApplication extends Application {
       singletons.add(new BranchEndpointImpl(orcsApi, activityLog));
       singletons.add(new ApplicabilityUiEndpointImpl(orcsApi));
       singletons.add(new OrcsWriterEndpointImpl(orcsApi));
-      singletons.add(new TransactionEndpointImpl(orcsApi));
+      singletons.add(new TransactionEndpointImpl(orcsApi, resourceManager));
       singletons.add(new TypesEndpointImpl(orcsApi, jdbcService));
 
       singletons.add(new IndexerEndpointImpl(orcsApi));
@@ -78,7 +78,7 @@ public class OrcsApplication extends Application {
 
       singletons.add(new LinkUpdateResource(orcsApi));
       singletons.add(new ReportEndpointImpl(orcsApi));
-      singletons.add(new TransactionBuilderMessageReader(orcsApi));
+      singletons.add(new TransactionBuilderMessageReader(orcsApi, resourceManager));
       singletons.add(new ExceptionRegistryEndpointImpl(orcsApi));
       singletons.add(new HelpEndpointImpl(orcsApi));
    }

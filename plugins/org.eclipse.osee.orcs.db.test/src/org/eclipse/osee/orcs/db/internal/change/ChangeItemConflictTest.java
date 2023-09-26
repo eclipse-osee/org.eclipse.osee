@@ -102,7 +102,7 @@ public class ChangeItemConflictTest {
             ModificationType.MODIFIED, ApplicabilityToken.BASE, TransactionToken.SENTINEL);
       } else {
          item = ChangeItemUtil.newAttributeChange(AttributeId.SENTINEL, AttributeTypeId.SENTINEL, ArtifactId.SENTINEL,
-            GAMMA, ModificationType.MODIFIED, "change", ApplicabilityToken.BASE, TransactionToken.SENTINEL);
+            GAMMA, ModificationType.MODIFIED, "change", "", ApplicabilityToken.BASE, TransactionToken.SENTINEL);
       }
 
       buildTestCase(GAMMA, item);
@@ -155,7 +155,8 @@ public class ChangeItemConflictTest {
       addTest(data, ItemType.attribute, ChangeItemCase.SRC_MRG, ChangeItemCase.DST_MRG);
    }
 
-   private static void addTest(Collection<Object[]> data, ItemType itemType, ChangeItemCase srcCase, ChangeItemCase dstCase) {
+   private static void addTest(Collection<Object[]> data, ItemType itemType, ChangeItemCase srcCase,
+      ChangeItemCase dstCase) {
       String testMessage = srcCase + ", " + dstCase;
       data.add(new Object[] {testMessage, itemType, srcCase, dstCase});
    }

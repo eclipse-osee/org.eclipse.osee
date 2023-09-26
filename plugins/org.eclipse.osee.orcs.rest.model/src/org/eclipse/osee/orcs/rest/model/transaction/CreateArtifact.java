@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"id", "typeName", "name", "applicabilityId", "typeId", "attributes", "relations"})
+@JsonPropertyOrder({"id", "typeName", "name", "applicabilityId", "typeId", "key", "attributes", "relations"})
 public class CreateArtifact {
 
    @JsonProperty("id")
@@ -40,6 +40,8 @@ public class CreateArtifact {
    private String applicabilityId;
    @JsonProperty("typeId")
    private String typeId;
+   @JsonProperty("key")
+   private String key;
    @JsonProperty("attributes")
    private List<Attribute> attributes;
    @JsonProperty("relations")
@@ -95,6 +97,16 @@ public class CreateArtifact {
    @JsonProperty("typeId")
    public void setTypeId(String typeId) {
       this.typeId = typeId;
+   }
+
+   @JsonProperty("key")
+   public String getKey() {
+      return key;
+   }
+
+   @JsonProperty("key")
+   public void setkey(String key) {
+      this.key = key;
    }
 
    @JsonProperty("attributes")

@@ -14,14 +14,12 @@ package org.eclipse.osee.orcs.rest.model.transaction;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,15 +47,17 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.resource.management.DataResource;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 public class TransactionBuilderDataFactory {
    private final OrcsApi orcsApi;
    private final OrcsTokenService tokenService;
+   private final IResourceManager resourceManager;
    private BranchId currentBranch;
    private TransactionId currentTransaction;
    private final HashMap<ArtifactId, ArtifactSortContainer> workingArtsById = new HashMap<>();
@@ -66,9 +66,10 @@ public class TransactionBuilderDataFactory {
    private final ArrayList<ChangeItem> tupleChanges = new ArrayList<>();
    private final XResultData results = new XResultData();
 
-   public TransactionBuilderDataFactory(OrcsApi orcsApi) {
+   public TransactionBuilderDataFactory(OrcsApi orcsApi, IResourceManager resourceManager) {
       this.orcsApi = orcsApi;
       this.tokenService = orcsApi.tokenService();
+      this.resourceManager = resourceManager;
    }
 
    public TransactionBuilderData loadFromChanges(TransactionId txId1, TransactionId txId2) {
@@ -112,12 +113,11 @@ public class TransactionBuilderDataFactory {
       tbd.setBranch(currentBranch.getIdString());
       orcsApi.getTransactionFactory().getTx(txId2);
       TransactionReadable txReadable = orcsApi.getTransactionFactory().getTx(txId2);
-      if(txReadable.isValid()) {
-         tbd.setTxComment(txReadable.getComment());         
-      }
-      else {
+      if (txReadable.isValid()) {
+         tbd.setTxComment(txReadable.getComment());
+      } else {
          tbd.setTxComment(String.format("Set from JSON data that exports a change report from txId %s to txId %s",
-         txId1.getIdString(), txId2.getIdString()));
+            txId1.getIdString(), txId2.getIdString()));
       }
       return tbd;
    }
@@ -228,6 +228,7 @@ public class TransactionBuilderDataFactory {
                createdArt.setApplicabilityId(change.getCurrentVersion().getApplicabilityToken().getIdString());
                createdArt.setName(art.getName());
                createdArt.setTypeId(change.getItemTypeId().getIdString());
+               createdArt.setkey(art.getIdString());
                artSortCreate.setCreateArtifact(createdArt);
                workingArtsById.put(artId, artSortCreate);
                return artSortCreate;
@@ -355,27 +356,62 @@ public class TransactionBuilderDataFactory {
       Function<String, AttributeTransfer> attrTrans) {
       AttributeTypeGeneric<?> attrType = orcsApi.tokenService().getAttributeType(change.getItemTypeId().getId());
       AttributeTransfer item = attrTrans.apply(attrType.getIdString());
+      ChangeVersion cv = change.getNetChange();
 
-      if (attrType.isDate()) {
-         List<Date> dates = art.getAttributeValues(attrType);
-         item.setValue(Arrays.asList(Long.valueOf(dates.get(0).getTime()).toString()));
-      } else if (attrType.isInputStream()) {
-         Encoder encoder = Base64.getEncoder();
-         List<String> list = new ArrayList<>();
-         List<InputStream> isList = art.getAttributeValues(attrType);
-         for (InputStream is : isList) {
-            try {
-               list.add(encoder.encodeToString(Lib.inputStreamToBytes(is)));
-            } catch (IOException ex) {
-               throw new OseeCoreException("Could not encode binary attribute");
+      if (cv != null && cv.isValid()) {
+         String value = cv.getValue();
+         String uri = cv.getUri();
+         if (Strings.isValidAndNonBlank(value)) {
+            item.setValue(Arrays.asList(value));
+         } else if (Strings.isValidAndNonBlank(uri)) {
+            if (attrType.isInputStream()) {
+               // get the data from the change if possible
+               List<String> list = new ArrayList<>();
+               Encoder encoder = Base64.getEncoder();
+               byte[] data = resourceManager.acquire(new DataResource("application/zip", "UTF-8", ".zip", uri));
+               list.add(encoder.encodeToString(data));
+               item.setValue(list);
+            } else {
+               results.errorf("uri %s is not attr type input stream", uri);
             }
+         } else {
+            results.errorf("change %s has invalid net change", change.toString());
          }
-
-         item.setValue(list);
       } else {
-         item.setValue(art.fetchAttributesAsStringList(attrType));
+         results.errorf("unhandled data for art %s setting type %s", art, attrType);
       }
       return item;
+   }
+
+   private void addToTransferArtifact(ChangeItem change, ArtifactReadable art, Attribute item) {
+      ArtifactTypeToken token = art.getArtifactType();
+      AttributeTypeGeneric<?> attrType = orcsApi.tokenService().getAttributeType(change.getItemTypeId().getId());
+      if (token.getMax(attrType) > 1) {
+         ChangeVersion cv = change.getNetChange();
+         List<String> list = new ArrayList<>(item.getValue());
+         if (cv != null && cv.isValid()) {
+            String value = cv.getValue();
+            String uri = cv.getUri();
+            if (Strings.isValidAndNonBlank(value)) {
+               list.add(value);
+            } else if (Strings.isValidAndNonBlank(uri)) {
+               if (attrType.isInputStream()) {
+                  Encoder encoder = Base64.getEncoder();
+                  byte[] data = resourceManager.acquire(new DataResource("application/zip", "UTF-8", ".zip", uri));
+                  list.add(encoder.encodeToString(data));
+               } else {
+                  results.errorf("uri %s is not attr type input stream", uri);
+               }
+            } else {
+               results.errorf("change %s has invalid net change", change.toString());
+            }
+            item.setValue(list);
+         } else {
+            results.errorf("unhandled data for art %s setting type %s", art, attrType);
+         }
+      } else {
+         results.errorf("Attempting to add multiple values to single valued item %s", change.toString());
+      }
    }
 
    private TransactionBuilderData newAttribute(ChangeItem change, TransactionBuilderData tbd) {
@@ -396,6 +432,7 @@ public class TransactionBuilderDataFactory {
             for (Attribute attr : attrs) {
                if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
                   found = true;
+                  addToTransferArtifact(change, sortArt.getArtifact(), attr);
                }
             }
             if (!found) {
@@ -412,6 +449,7 @@ public class TransactionBuilderDataFactory {
             for (AddAttribute attr : attrs) {
                if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
                   found = true;
+                  // TODO add multivalue modify
                }
             }
             if (!found) {

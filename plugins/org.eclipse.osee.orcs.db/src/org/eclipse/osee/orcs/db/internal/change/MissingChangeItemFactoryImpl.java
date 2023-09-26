@@ -57,7 +57,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    }
 
    @Override
-   public Collection<ChangeItem> createMissingChanges(List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery) {
+   public Collection<ChangeItem> createMissingChanges(List<ChangeItem> changes, TransactionToken sourceTx,
+      TransactionToken destTx, ApplicabilityQuery applicQuery) {
       if (changes != null && !changes.isEmpty()) {
          Set<ArtifactId> modifiedArtIds = new HashSet<>();
          Multimap<ArtifactId, Id> modifiedAttrIds = LinkedListMultimap.create();
@@ -133,7 +134,10 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return missingArtIds;
    }
 
-   private Collection<ChangeItem> createMissingChangeItems(TransactionToken sourceTx, TransactionToken destTx, final Set<ArtifactId> modifiedArtIds, final Multimap<ArtifactId, Id> modifiedAttrIds, final Multimap<ArtifactId, Id> modifiedRels, final Set<ArtifactId> missingArtIds, final Set<ArtifactId> allArtIds) {
+   private Collection<ChangeItem> createMissingChangeItems(TransactionToken sourceTx, TransactionToken destTx,
+      final Set<ArtifactId> modifiedArtIds, final Multimap<ArtifactId, Id> modifiedAttrIds,
+      final Multimap<ArtifactId, Id> modifiedRels, final Set<ArtifactId> missingArtIds,
+      final Set<ArtifactId> allArtIds) {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
       final Set<RelationData> relations = new LinkedHashSet<>();
 
@@ -191,7 +195,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return toReturn;
    }
 
-   private Set<ChangeItem> createExistingRelations(TransactionToken destTx, final Multimap<ArtifactId, RelationData> relationChangesToAdd) {
+   private Set<ChangeItem> createExistingRelations(TransactionToken destTx,
+      final Multimap<ArtifactId, RelationData> relationChangesToAdd) {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
 
       DataLoader loader =
@@ -228,10 +233,10 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private <T> ChangeItem createAttributeChangeItem(AttributeData<T> data) {
       ApplicabilityId appId = data.getApplicabilityId();
-      ChangeItem attrChange =
-         ChangeItemUtil.newAttributeChange(data, data.getType(), data.getArtifactId(), data.getVersion().getGammaId(),
-            determineModType(data), data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId),
-            TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
+      ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data, data.getType(), data.getArtifactId(),
+         data.getVersion().getGammaId(), determineModType(data), data.getDataProxy().getDisplayableString(),
+         data.getDataProxy().getUri(), getApplicabilityToken(appId),
+         TransactionToken.valueOf(data.getVersion().getTransactionId(), data.getVersion().getBranch()));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }

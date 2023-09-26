@@ -49,25 +49,25 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
   // @formatter:off
    private static final String SELECT_ITEMS_BETWEEN_TRANSACTIONS =
       "with txsOuter as (select gamma_id, mod_type, app_id, transaction_id from %s where branch_id = ? and transaction_id > ? and transaction_id <= ?) \n" +
-      "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, item.value as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+      "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, item.value as item_value, item.uri as item_uri, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
       "FROM osee_attribute item, txsOuter, osee_key_value kv where txsOuter.gamma_id = item.gamma_id and txsOuter.app_id = kv.key \n" +
       "UNION ALL\n" +
-      "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+      "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, 'na' as item_uri, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
       "FROM osee_artifact item, txsOuter, osee_key_value kv where txsOuter.gamma_id = item.gamma_id and txsOuter.app_id = kv.key\n" +
       "UNION ALL\n" +
-      "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+      "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, 'na' as item_uri, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
       "FROM osee_relation_link item, txsOuter, osee_key_value kv where txsOuter.gamma_id = item.gamma_id and txsOuter.app_id = kv.key\n" +
       "UNION ALL\n" +
-      "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id,'Base' as app_value \n" +
+      "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, 'na' as item_uri, item.gamma_id, mod_type, app_id, transaction_id, 'Base' as app_value \n" +
       "from osee_tuple2 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id,'Base' as app_value \n" +
+      "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, 'na' as item_uri, item.gamma_id, mod_type, app_id, transaction_id, 'Base' as app_value \n" +
       "from osee_tuple3 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, 'Base' as app_value \n" +
+      "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, 'na' as item_uri, item.gamma_id, mod_type, app_id, transaction_id, 'Base' as app_value \n" +
       "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 7 as table_type, rel_type as item_type_id, 0 as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
+      "SELECT 7 as table_type, rel_type as item_type_id, 0 as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, 'na' as item_uri, item.gamma_id, mod_type, app_id, transaction_id, kv.value as app_value \n" +
       "from osee_relation item, txsOuter, osee_key_value kv where txsOuter.gamma_id = item.gamma_id and txsOuter.app_id = kv.key";
    // @formatter:on
 
@@ -126,9 +126,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch {
             case 1: {
                ArtifactId artId = ArtifactId.valueOf(stmt.getLong("item_first"));
                String value = stmt.getString("item_value");
+               String uri = stmt.getString("item_uri");
                hashChangeData.put(1, itemId,
                   ChangeItemUtil.newAttributeChange(AttributeId.valueOf(itemId),
-                     tokenService.getAttributeType(itemTypeId), artId, gammaId, modType, value,
+                     tokenService.getAttributeType(itemTypeId), artId, gammaId, modType, value, uri,
                      ApplicabilityToken.valueOf(appId.getId(), appValue), txToken));
                break;
             }
