@@ -60,8 +60,8 @@ public final class ChangeItemUtil {
    }
 
    public static ChangeItem newAttributeChange(AttributeId attrId, AttributeTypeId attrTypeId, ArtifactId artId,
-      GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken,
-      TransactionToken txToken) {
+      GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, String uri,
+      ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Attribute);
 
@@ -74,7 +74,7 @@ public final class ChangeItemUtil {
       current.setModType(currentSourceModType);
       current.setApplicabilityToken(appToken);
       current.setTransactionToken(txToken);
-
+      current.setUri(uri);
       item.setArtId(artId);
       item.getCurrentVersion().setValue(value);
       return item;

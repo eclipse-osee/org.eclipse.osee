@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -54,12 +55,17 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class TransactionEndpointImpl implements TransactionEndpoint {
 
    private final OrcsApi orcsApi;
-   private TupleQuery tupleQuery;
+   private final IResourceManager resourceManager;
+   private final TupleQuery tupleQuery;
+   private final TupleEndpointImpl tupleEndpointImpl;
 
    @Context
    private UriInfo uriInfo;
-   public TransactionEndpointImpl(OrcsApi orcsApi) {
+   public TransactionEndpointImpl(OrcsApi orcsApi, IResourceManager resourceManager) {
       this.orcsApi = orcsApi;
+      this.resourceManager = resourceManager;
+      this.tupleEndpointImpl = new TupleEndpointImpl(orcsApi, CoreBranches.COMMON);
+      this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
    }
 
    protected void setUriInfo(UriInfo uriInfo) {
@@ -97,7 +103,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public TransactionBuilderData exportTxsDiff(TransactionId txId1, TransactionId txId2) {
-      TransactionBuilderDataFactory tbdf = new TransactionBuilderDataFactory(orcsApi);
+      TransactionBuilderDataFactory tbdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
       try {
          return tbdf.loadFromChanges(txId1, txId2);
       } catch (Exception ex) {
@@ -175,7 +181,6 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public XResultData generateTransferFile(TransactionId exportId) {
       XResultData results = new XResultData();
-      tupleQuery = orcsApi.getQueryFactory().tupleQuery();
       DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
       Date date = new Date();
 

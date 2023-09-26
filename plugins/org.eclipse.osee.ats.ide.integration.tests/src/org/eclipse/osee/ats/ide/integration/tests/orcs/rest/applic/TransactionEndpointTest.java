@@ -142,6 +142,31 @@ public class TransactionEndpointTest {
    }
 
    @Test
+   public void testModifyDateAttribute() {
+      Date currentDate = new Date();
+      Long time = currentDate.getTime();
+      time += 10000;
+      Date nextDate = new Date(time);
+      List<String> jsons = setupTransferModificationJsons(CoreArtifactTypes.GitCommit,
+         AttributeTypeId.valueOf(CoreAttributeTypes.GitCommitAuthorDate.getId()), currentDate, nextDate);
+
+      List<TransactionToken> txs = new ArrayList<>();
+      // simpler to get the art_id that is changing when we create it -
+      JsonNode readTree = jaxRsApi.readTree(jsons.get(0));
+      ArtifactId artId = ArtifactId.valueOf(readTree.get("createArtifacts").get(0).get("id").asLong());
+      txs.add(testWrapUpFromDate(jsons.get(0), CoreAttributeTypes.GitCommitAuthorDate, currentDate, artId));
+      txs.add(testWrapUpFromDate(jsons.get(1), CoreAttributeTypes.GitCommitAuthorDate, nextDate, artId));
+      for (TransactionToken tx : txs) {
+         try {
+            purge(tx);
+         } catch (Exception ex) {
+            throw new OseeCoreException("couldn't clean up in testModifyDateAttribute");
+         }
+      }
+
+   }
+
+   @Test
    public void testAddBooleanAttribute() {
       boolean testBoolean = true;
       String json = setupTransferJson(CoreArtifactTypes.OseeTypeDefinition,
@@ -409,6 +434,64 @@ public class TransactionEndpointTest {
    }
 
    /**
+    * Helper method that will create a new Artifact with a single added attribute and return two different Transfer Json
+    * created from the exportTxsDiff from the original value and the next value
+    */
+   private List<String> setupTransferModificationJsons(ArtifactTypeToken artType, AttributeTypeId attrType,
+      Object value, Object later) {
+      //Create a new Artifact of type artType on SAWL_PL_Working_Branch
+      SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + attrType.getIdString());
+      Artifact artifact = ArtifactTypeManager.addArtifact(artType, DemoBranches.SAW_PL_Working_Branch);
+      //Check if the artifact already has an attribute of the supplied type, then create a new Attribute on the Artifact of type attrType with supplied value
+      if (!artifact.getAttributes(attrType).isEmpty()) {
+         artifact.deleteAttributes(attrType);
+      }
+      artifact.addAttribute(attrType, value);
+      //Commit transaction and return the newly created TransactionToken
+      transaction.addArtifact(artifact);
+      TransactionToken originalTx = transaction.execute();
+
+      SkynetTransaction transactionMod = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + attrType.getIdString());
+
+      //Check if the artifact already has an attribute of the supplied type, then create a new Attribute on the Artifact of type attrType with supplied value
+      if (!artifact.getAttributes(attrType).isEmpty()) {
+         artifact.setSoleAttributeValue(attrType, later);
+         artifact.persist(transactionMod);
+      } else {
+         throw new OseeCoreException("artifact expected to already have a value");
+      }
+
+      //Commit transaction and return the newly created TransactionToken
+      TransactionToken currentTx = transactionMod.execute();
+      TransactionToken startingTx = TransactionManager.getPriorTransaction(originalTx);
+      TransactionBuilderData txData = transactionEndpoint.exportTxsDiff(startingTx, originalTx);
+      TransactionBuilderData txDataMod = transactionEndpoint.exportTxsDiff(originalTx, currentTx);
+      //Switch branches in TransactionBuilderData so the transfer will be onto a different branch
+      txData.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      txDataMod.setBranch(DemoBranches.SAW_PL_Hardening_Branch.getIdString());
+      ObjectMapper mapper = new ObjectMapper();
+      List<String> jsons = new ArrayList<>();
+      String json;
+      try {
+         json = mapper.writeValueAsString(txData);
+         jsons.add(json);
+         json = mapper.writeValueAsString(txDataMod);
+         jsons.add(json);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json in TransactionEndpointTest");
+      }
+      try {
+         purge(currentTx);
+         purge(originalTx);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to purge Transaction:" + currentTx.getIdString());
+      }
+      return jsons;
+   }
+
+   /**
     * Helper method that will create a new Artifact with a single added attribute with multiple Strings and return the
     * Transfer Json created from the exportTxsDiff
     */
@@ -496,6 +579,29 @@ public class TransactionEndpointTest {
          purge(TransactionToken.valueOf(txId, branchId));
       } catch (Exception ex) {
          throw new OseeCoreException("Failed to convert response to Strings");
+      }
+   }
+
+   private TransactionToken testWrapUpFromDate(String json, AttributeTypeToken attrType, Date expectedValue,
+      ArtifactId artId) {
+      Response response = jaxRsApi.newTarget("orcs/txs").request(MediaType.APPLICATION_JSON).post(Entity.json(json));
+      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+      try {
+         JsonNode readTree = jaxRsApi.readTree(Lib.inputStreamToString((InputStream) response.getEntity()));
+         BranchId branchId = BranchId.valueOf(readTree.get("tx").get("branchId").asLong());
+         TransactionId txId = TransactionId.valueOf(readTree.get("tx").get("id").asLong());
+         ArtifactQuery.reloadArtifactFromId(artId, branchId);
+         Artifact art = ArtifactQuery.getArtifactFromId(artId, branchId);
+         List<Attribute<Date>> attributes = art.getAttributes(attrType);
+         if (attributes.get(0).getValue().getTime() != expectedValue.getTime()) {
+            long t1 = attributes.get(0).getValue().getTime();
+            long t2 = expectedValue.getTime();
+            long delta = t1 - t2;
+            throw new OseeCoreException("Dates values do not match %d", delta);
+         }
+         return TransactionToken.valueOf(txId, branchId);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to convert response to String");
       }
    }
 

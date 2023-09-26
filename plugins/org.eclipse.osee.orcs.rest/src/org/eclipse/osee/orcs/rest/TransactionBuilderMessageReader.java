@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -34,9 +35,11 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class TransactionBuilderMessageReader implements MessageBodyReader<TransactionBuilder> {
    private final OrcsApi orcsApi;
+   private final IResourceManager resourceManager;
 
-   public TransactionBuilderMessageReader(OrcsApi orcsApi) {
+   public TransactionBuilderMessageReader(OrcsApi orcsApi, IResourceManager resourceManager) {
       this.orcsApi = orcsApi;
+      this.resourceManager = resourceManager;
    }
 
    @Override
@@ -48,7 +51,7 @@ public class TransactionBuilderMessageReader implements MessageBodyReader<Transa
    public TransactionBuilder readFrom(Class<TransactionBuilder> type, Type genericType, Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
       throws IOException, WebApplicationException {
-      TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi);
+      TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
       TransactionBuilder tx = txBdf.loadFromJson(Lib.inputStreamToString(entityStream));
       return tx;
    }
