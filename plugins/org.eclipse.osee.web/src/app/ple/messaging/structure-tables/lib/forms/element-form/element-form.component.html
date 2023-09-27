@@ -112,6 +112,18 @@
 			>
 		</mat-form-field>
 	</div>
+	<ng-container
+		*ngIf="!data.allowArray && data.element.interfaceElementArrayHeader">
+		<br />
+		<mat-slide-toggle
+			labelPosition="before"
+			name="arrayWriteHeaderNameToggle"
+			[(ngModel)]="data.element.interfaceElementWriteArrayHeaderName"
+			data-cy="field-array-write-header-name-toggle"
+			class="tw-py-2">
+			Use Array Header Name in Reports
+		</mat-slide-toggle>
+	</ng-container>
 	<ng-container *ngIf="data.allowArray">
 		<mat-slide-toggle
 			*ngIf="data.mode === 'add'"

@@ -10,8 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-tab-group [animationDuration]="0">
-	<mat-tab *ngFor="let tab of tabs(); let i = index; trackBy: trackByIndex">
+<mat-tab-group
+	[animationDuration]="0"
+	mat-stretch-tabs="false"
+	mat-align-tabs="start">
+	<mat-tab
+		*ngFor="let tab of tabs(); let i = index; trackBy: trackByIndex"
+		#matTab>
 		<ng-template mat-tab-label>
 			<div
 				(cdkDropListDropped)="onTabDropped($event)"
@@ -20,9 +25,14 @@
 				cdkDropList
 				[id]="'' + i">
 				<div
-					class="tw-flex tw-items-center tw-rounded-t-md tw-bg-primary tw-text-background"
+					class="tw-flex tw-items-center tw-rounded-t-md"
+					[ngClass]="{
+						'tw-bg-primary tw-text-background': matTab.isActive,
+						'tw-bg-background-app-bar tw-text-foreground-base':
+							!matTab.isActive
+					}"
 					cdkDrag>
-					<div class="tw-ml-4">
+					<div class="tw-pl-4">
 						{{ tab.artifact.name }}
 					</div>
 					<button

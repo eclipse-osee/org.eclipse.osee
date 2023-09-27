@@ -15,11 +15,15 @@
 		<osee-applicability-selector
 			[applicability]="value"
 			(applicabilityChange)="
-				updateImmediately('applicability', returnAsT($event))
+				updateImmediately(returnAsT($event))
 			"></osee-applicability-selector>
 	</ng-container>
 	<mat-form-field
-		*ngIf="header !== 'applicability' && header !== 'units'"
+		*ngIf="
+			header !== 'applicability' &&
+			header !== 'units' &&
+			header !== 'interfaceElementAlterable'
+		"
 		cdkMonitorSubtreeFocus
 		(cdkFocusChange)="focusChanged($event)"
 		subscriptSizing="dynamic"
@@ -28,7 +32,7 @@
 			matInput
 			[(ngModel)]="value"
 			(ngModelChange)="updateElement(header, value)"
-			*ngIf="header !== 'platformType' && header !== 'units'"
+			*ngIf="header !== 'platformType'"
 			[disabled]="editingDisabled" />
 		<ng-container *ngIf="header === 'name'">
 			<ng-container *ngIf="elementEnd - elementStart > 0">
@@ -91,6 +95,15 @@
 			</ng-container>
 		</ng-container>
 	</mat-form-field>
+	<ng-container *ngIf="header === 'interfaceElementAlterable'">
+		<mat-slide-toggle
+			[(ngModel)]="value"
+			[labelPosition]="value ? 'after' : 'before'"
+			color="primary"
+			(ngModelChange)="updateImmediately(value)">
+			{{ value ? 'True' : 'False' }}
+		</mat-slide-toggle>
+	</ng-container>
 	<ng-container *ngIf="header === 'units'">
 		<ng-container *ngIf="isString(value)">
 			<form>
