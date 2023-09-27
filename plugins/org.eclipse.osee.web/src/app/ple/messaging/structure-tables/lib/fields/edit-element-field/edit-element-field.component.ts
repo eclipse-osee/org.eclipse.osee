@@ -64,6 +64,7 @@ import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { applic } from '@osee/shared/types/applicability';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
 	selector: 'osee-messaging-edit-element-field',
@@ -83,6 +84,7 @@ import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 		MatOptionLoadingComponent,
 		MatButtonModule,
 		MatIconModule,
+		MatSlideToggleModule,
 		AsyncPipe,
 		A11yModule,
 		RouterLink,
@@ -285,7 +287,7 @@ export class EditElementFieldComponent<U extends keyof element>
 			this.focusChanged(null);
 		}
 	}
-	updateImmediately(header: string, value: element[U]) {
+	updateImmediately(value: element[U]) {
 		this._immediateValue.next(value);
 	}
 	updateType(value: PlatformType) {
