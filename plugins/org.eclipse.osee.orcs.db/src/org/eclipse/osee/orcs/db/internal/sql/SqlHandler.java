@@ -35,7 +35,7 @@ public abstract class SqlHandler<T extends Criteria> {
    public void setData(T criteria) {
       // do nothing
    }
-   
+
    public void addTables(AbstractSqlWriter writer) {
       // do nothing
    }
@@ -69,6 +69,13 @@ public abstract class SqlHandler<T extends Criteria> {
    }
 
    public void endWithPreSelect(AbstractSqlWriter writer) {
+
+   }
+
+   /**
+    * NOTE: most instances of SqlHandler shouldn't implement, use with caution
+    */
+   public void writeOrder(AbstractSqlWriter writer) {
 
    }
 }

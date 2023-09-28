@@ -196,6 +196,11 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
             List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs) {
             return null;
          }
+
+         @Override
+         public BranchQuery orderByName() {
+            return null;
+         }
       }
       return new BranchQuerySentinel();
    }

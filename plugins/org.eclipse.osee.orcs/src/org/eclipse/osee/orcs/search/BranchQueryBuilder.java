@@ -73,4 +73,6 @@ public interface BranchQueryBuilder<T> {
    T mapAssocArtIdToRelatedAttributes(String value, BranchId relatedBranch,
       List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs);
 
+   T orderByName();
+
 }

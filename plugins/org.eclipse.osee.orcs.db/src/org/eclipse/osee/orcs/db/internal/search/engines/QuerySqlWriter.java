@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
+import java.util.Iterator;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.logger.Log;
@@ -47,7 +48,13 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    @Override
    public void writeGroupAndOrder(Iterable<SqlHandler<?>> handlers) {
       if (!rootQueryData.isCountQueryType()) {
-         write("\n ORDER BY %s.%s", tableAlias, idColumn);
+         Iterator<SqlHandler<?>> iter = handlers.iterator();
+         write("\n ORDER BY ");
+         while (iter.hasNext()) {
+            SqlHandler<?> next = iter.next();
+            next.writeOrder(this);
+         }
+         write("%s.%s", tableAlias, idColumn);
       }
    }
 
