@@ -37,6 +37,8 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMapAssocArtToRelatedAttributes;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaOrderByBranchId;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 
 /**
  * @author Roberto E. Escobar
@@ -94,5 +96,13 @@ public class BranchCriteriaFactory {
 
    public Criteria createBranchOrderByNameCriteria() {
       return new CriteriaBranchOrderByName();
+   }
+
+   public Criteria createPaginationCriteria(long page, long pageSize) {
+      return new CriteriaPagination(page, pageSize);
+   }
+
+   public Criteria createOrderByBranchIdCriteria() {
+      return new CriteriaOrderByBranchId();
    }
 }

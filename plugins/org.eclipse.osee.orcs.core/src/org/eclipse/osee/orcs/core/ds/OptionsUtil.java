@@ -39,6 +39,7 @@ public final class OptionsUtil {
    private static final String ORDER_BY_ATTRIBUTE = "order.by.attribute";
    private static final String FOLLOW_SEARCH_IN_PROGRESS = "follow.search.in.progress";
    private static final String SINGLE_LEVEL_RELATIONS_SEARCH = "single.level.relations.search";
+   private static final String BRANCH_ORDER = "branch.order";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -48,6 +49,7 @@ public final class OptionsUtil {
       setIncludeDeletedRelations(options, false);
       setLoadLevel(options, LoadLevel.ARTIFACT_DATA);
       setIncludeApplicabilityTokens(options, false);
+      setBranchOrder(options, "id");
       return options;
    }
 
@@ -55,6 +57,7 @@ public final class OptionsUtil {
       Options options = new Options();
       reset(options);
       setFollowSearchInProgress(options, false);
+      setBranchOrder(options, "id");
       return options;
    }
 
@@ -228,5 +231,13 @@ public final class OptionsUtil {
 
    public static boolean getSingleLevelRelationsSearch(Options options) {
       return options.getBoolean(SINGLE_LEVEL_RELATIONS_SEARCH);
+   }
+
+   public static void setBranchOrder(Options options, String order) {
+      options.put(BRANCH_ORDER, order);
+   }
+
+   public static String getBranchOrder(Options options) {
+      return options.get(BRANCH_ORDER);
    }
 }

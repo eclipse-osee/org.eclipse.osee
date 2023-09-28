@@ -77,4 +77,8 @@ public interface BranchQueryBuilder<T> {
 
    T andNameLike(String pattern);
 
+   T isOnPage(long page, long pageSize);
+
+   T orderById();
+
 }

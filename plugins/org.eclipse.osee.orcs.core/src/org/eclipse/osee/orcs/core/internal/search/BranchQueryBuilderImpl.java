@@ -52,6 +52,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       this.queryData = queryData;
       includeDeleted();
       includeArchived();
+      orderById();
    }
 
    private QueryData getQueryData() {
@@ -220,6 +221,19 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    @Override
    public T orderByName() {
       Criteria criteria = criteriaFactory.createBranchOrderByNameCriteria();
+      OptionsUtil.setBranchOrder(getOptions(), "name");
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public T isOnPage(long page, long pageSize) {
+      Criteria criteria = criteriaFactory.createPaginationCriteria(page, pageSize);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public T orderById() {
+      Criteria criteria = criteriaFactory.createOrderByBranchIdCriteria();
       return addAndCheck(getQueryData(), criteria);
    }
 

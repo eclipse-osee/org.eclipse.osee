@@ -206,6 +206,16 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          public BranchQuery andNameLike(String pattern) {
             return null;
          }
+
+         @Override
+         public BranchQuery isOnPage(long page, long pageSize) {
+            return null;
+         }
+
+         @Override
+         public BranchQuery orderById() {
+            return null;
+         }
       }
       return new BranchQuerySentinel();
    }
