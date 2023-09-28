@@ -112,6 +112,9 @@
 					../../plugins/org.eclipse.osee.accessor
 				</module>
 				<module>
+					../../plugins/org.eclipse.osee.testscript
+				</module>
+				<module>
 					../../plugins/org.eclipse.osee.mim
 				</module>
 			</modules>
@@ -174,6 +177,9 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.accessor
+				</module>
+				<module>
+					../../plugins/org.eclipse.osee.testscript
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.mim

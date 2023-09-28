@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="OSEE Server Disposition Test Script API" deactivate="stop">
+   <implementation class="org.eclipse.osee.testscript.internal.ScriptApiImpl"/>
+   <reference bind="bindOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+   <service>
+      <provide interface="org.eclipse.osee.testscript.ScriptApi"/>
+   </service>
+ </scr:component>

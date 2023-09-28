@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="OSEE Server Dispo for Test Script Application" deactivate="stop">
+   <implementation class="org.eclipse.osee.testscript.internal.ScriptApplication"/>
+   <service>
+      <provide interface="javax.ws.rs.core.Application"/>
+   </service>
+   <reference bind="bindScriptApi" cardinality="1..1" interface="org.eclipse.osee.testscript.ScriptApi" name="ScriptApi" policy="static"/>
+ </scr:component>

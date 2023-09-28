@@ -130,7 +130,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString EndpointUrl = osee.createString(1103659738810857581L, "Endpoint URL", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExcludePath = osee.createString(1152921504606847708L, "Exclude Path", MediaType.TEXT_PLAIN, "");
    AttributeTypeString ExecutedBy = osee.createString(1152921504606847377L, "Executed By", MediaType.TEXT_PLAIN, "");
-   AttributeTypeDate ExecutionEnvironment = osee.createDate(8528756029132740740L, "Execution Environment", MediaType.TEXT_PLAIN, "Execution Environment");
+   AttributeTypeString ExecutionEnvironment = osee.createString(8528756029132740740L, "Execution Environment", MediaType.TEXT_PLAIN, "Execution Environment");
    AttributeTypeDate ExecutionDate = osee.createDate(1152921504606847365L, "Execution Date", MediaType.TEXT_PLAIN, "Execution Date");
    AttributeTypeInteger ExecutionFrequency = osee.createInteger(5494590235875265429L, "Execution Frequency", MediaType.TEXT_PLAIN, "Frequency of parameterized command execution");
    AttributeTypeString Extension = osee.createString(1152921504606847064L, "Extension", MediaType.TEXT_PLAIN, "");
@@ -307,7 +307,7 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean RequiresValidation = osee.createBoolean(2822557585371250127L, "Requires Validation", MediaType.TEXT_PLAIN, "Specifies if a report requires validation before running");
    AttributeTypeBoolean Scheduled = osee.createBoolean(1152921504606847360L, "Rerun", MediaType.TEXT_PLAIN, "Should the script be run again");
    AttributeTypeDate ScheduledTime = osee.createDate(1152921504606847361L, "Rerun Time", MediaType.TEXT_PLAIN, "Time to Rerun Script");
-   AttributeTypeString RerunMachine = osee.createString(527991454069746927L, "Rerun Time", MediaType.TEXT_PLAIN, "Time to Rerun Script");
+   AttributeTypeString ScheduleMachine = osee.createString(527991454069746927L, "Rerun Time", MediaType.TEXT_PLAIN, "Time to Rerun Script");
    AttributeTypeString Result = osee.createString(1152921504606847364L, "Result", MediaType.TEXT_PLAIN, "Result");
    AttributeTypeString ResultType = osee.createString(1152921504606847374L, "Result Type", MediaType.TEXT_PLAIN, "Result Type");
    AttributeTypeInteger ReviewId = osee.createInteger(1152921504606847245L, "Review Id", MediaType.TEXT_PLAIN, "");
