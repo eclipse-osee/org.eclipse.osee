@@ -24,6 +24,7 @@ public class CriteriaBranchName extends Criteria implements BranchCriteria {
 
    private final boolean isPattern;
    private final boolean isPatternIgnoreCase;
+   private final boolean isLike;
    private final String value;
 
    public CriteriaBranchName(String value, boolean isPattern, boolean isPatternIgnoreCase) {
@@ -31,6 +32,15 @@ public class CriteriaBranchName extends Criteria implements BranchCriteria {
       this.value = value;
       this.isPattern = isPattern;
       this.isPatternIgnoreCase = isPatternIgnoreCase;
+      this.isLike = false;
+   }
+
+   public CriteriaBranchName(String value, boolean isLike) {
+      super();
+      this.value = value;
+      this.isPattern = false;
+      this.isPatternIgnoreCase = false;
+      this.isLike = isLike;
    }
 
    public boolean isPattern() {
@@ -53,6 +63,13 @@ public class CriteriaBranchName extends Criteria implements BranchCriteria {
 
    public boolean isPatternIgnoreCase() {
       return isPatternIgnoreCase;
+   }
+
+   /**
+    * @return the isLike
+    */
+   public boolean isLike() {
+      return isLike;
    }
 
 }

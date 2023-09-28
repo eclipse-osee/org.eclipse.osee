@@ -75,4 +75,6 @@ public interface BranchQueryBuilder<T> {
 
    T orderByName();
 
+   T andNameLike(String pattern);
+
 }

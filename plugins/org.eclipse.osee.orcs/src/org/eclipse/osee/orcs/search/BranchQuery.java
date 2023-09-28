@@ -201,6 +201,11 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          public BranchQuery orderByName() {
             return null;
          }
+
+         @Override
+         public BranchQuery andNameLike(String pattern) {
+            return null;
+         }
       }
       return new BranchQuerySentinel();
    }

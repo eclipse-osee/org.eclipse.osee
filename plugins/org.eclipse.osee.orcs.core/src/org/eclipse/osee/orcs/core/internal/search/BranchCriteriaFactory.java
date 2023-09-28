@@ -59,6 +59,10 @@ public class BranchCriteriaFactory {
       return new CriteriaBranchName(value, isPattern, isPatternIgnoreCase);
    }
 
+   public Criteria createBranchNameLikeCriteria(String value) {
+      return new CriteriaBranchName(value, true);
+   }
+
    public Criteria createBranchChildOfCriteria(BranchId parent) {
       return new CriteriaBranchChildOf(parent);
    }
