@@ -112,7 +112,11 @@
 									placeholder="{...}"></textarea>
 							</mat-form-field>
 						</ng-container>
-						<ng-container *ngIf="selectedReport?.diffAvailable">
+						<ng-container
+							*ngIf="
+								selectedReport?.diffAvailable &&
+								_branchType !== 'baseline'
+							">
 							<mat-checkbox
 								class="tw-block"
 								[(ngModel)]="includeDiff"
