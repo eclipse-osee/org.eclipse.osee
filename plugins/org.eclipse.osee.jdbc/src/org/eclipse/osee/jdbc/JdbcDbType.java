@@ -168,4 +168,25 @@ public class JdbcDbType extends BaseId {
       }
       return true;
    }
+
+   public String getPostgresRecurse() {
+      if (matches(postgresql)) {
+         return " recursive";
+      }
+      return " ";
+   }
+
+   public String getPostgresCastStart() {
+      if (matches(postgresql)) {
+         return "CAST(";
+      }
+      return " ";
+   }
+
+   public String getPostgresCastVarCharEnd() {
+      if (matches(postgresql)) {
+         return "as varchar)";
+      }
+      return " ";
+   }
 }

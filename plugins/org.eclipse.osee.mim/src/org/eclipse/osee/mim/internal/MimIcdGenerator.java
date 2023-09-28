@@ -26,15 +26,20 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.CELLSTYLE;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.HyperLinkType;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
@@ -131,6 +137,9 @@ public class MimIcdGenerator {
             FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
             FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
 
+      Branch currentBranch =
+         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+      BranchId parentBranch = currentBranch.getParentBranch();
       InterfaceNode primaryNode = InterfaceNode.SENTINEL;
       InterfaceNode secondaryNode = InterfaceNode.SENTINEL;
 
@@ -203,8 +212,6 @@ public class MimIcdGenerator {
          // the other (getChangeSummary) is for the change summary sheet. Ultimately, the goal is to make
          // getChangeSummary work for highlighting as well.
          if (diff) {
-            BranchId parentBranch =
-               orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getList().get(0).getParentBranch();
             diffs = interfaceDifferenceReportApi.getDifferences(branch, view, parentBranch);
          }
 
@@ -214,11 +221,9 @@ public class MimIcdGenerator {
       // Write sheets
       ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
       writer.setDefaultZoom(80);
-      createChangeHistory(writer, branch);
+      createChangeHistory(writer, currentBranch, conn.getId());
 
       if (diff) {
-         BranchId parentBranch =
-            orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getList().get(0).getParentBranch();
          MimChangeSummary summary = interfaceDifferenceReportApi.getChangeSummary(branch, parentBranch, view);
          createChangeSummary(writer, summary);
       }
@@ -381,7 +386,7 @@ public class MimIcdGenerator {
       }
    }
 
-   private void createChangeHistory(ExcelWorkbookWriter writer, BranchId branch) {
+   private void createChangeHistory(ExcelWorkbookWriter writer, Branch branch, long connectionId) {
       String[] headers = {"Team Workflow", "Date", "Change Description"};
 
       writer.createSheet("Change History");
@@ -390,19 +395,64 @@ public class MimIcdGenerator {
       writer.setColumnWidth(2, 10000);
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
 
-      int rowIndex = 1;
-      for (TransactionReadable tx : orcsApi.getQueryFactory().transactionQuery().andBranch(
-         branch).getResults().getList()) {
-         if (tx.getCommitArt().getId() > 0) {
-            IAtsWorkItem change = atsApi.getQueryService().getWorkItem(tx.getCommitArt().getIdString());
-            if (change != null && change.getId() != -1) {
-               rowIndex++;
-               writer.writeCell(rowIndex, 0, change.getAtsId());
-               writer.writeCell(rowIndex, 1, tx.getDate());
-               writer.writeCell(rowIndex, 2, change.getName());
-            }
-         }
+      boolean working = branch.getBranchType().equals(BranchType.WORKING);
+      int increment = working ? 1 : 0;
+      Long queryBranch = working ? branch.getParentBranch().getId() : branch.getId();
+      if (working) {
+         ArtifactReadable tw = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+            branch.getAssociatedArtifact()).asArtifact();
+         TransactionReadable baselineTx = orcsApi.getQueryFactory().transactionQuery().andTxId(
+            branch.getBaselineTx()).getResults().getAtMostOneOrDefault(TransactionReadable.SENTINEL);
+         writer.writeCell(1, 0, tw.getSoleAttributeValue(AtsAttributeTypes.AtsId));
+         writer.writeCell(1, 1, baselineTx.getDate());
+         writer.writeCell(1, 2, tw.getSoleAttributeValue(CoreAttributeTypes.Name));
       }
+      String ordering =
+         orcsApi.getJdbcService().getClient().getDbType().isPaginationOrderingSupported() ? "ORDER BY time DESC" : "";
+      //@formatter:off
+      String query =
+         "WITH"+orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse()+" gammas (transaction_id, gamma_id, commit_art_id,time) AS "
+         + "(SELECT txd1.transaction_id, changedTxs.gamma_id,txd1.commit_art_id,txd1.time "
+         + "FROM osee_tx_details txd1, osee_txs attrTxs, osee_attribute attr, osee_txs changedTxs "
+         + "WHERE txd1.branch_id = ? AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 AND "
+         + "attrTxs.gamma_id = attr.gamma_id AND attr.art_id = txd1.commit_art_id AND attr.attr_type_id = ? AND "
+         + "attr.value IN "
+         + "(SELECT DISTINCT "+orcsApi.getJdbcService().getClient().getDbType().getPostgresCastStart()+ " art.art_id "+ orcsApi.getJdbcService().getClient().getDbType().getPostgresCastVarCharEnd()
+         + "FROM osee_txs artTxs, osee_artifact art, osee_txs attrTxs, osee_attribute attr "
+         + "WHERE artTxs.branch_id = ? AND artTxs.tx_current = 1 AND art.art_type_id = ? "
+         + "AND artTxs.gamma_id = art.gamma_id AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 "
+         + "AND attrTxs.gamma_id = attr.gamma_id AND attr.art_id = art.art_id AND attr.attr_type_id = ? "
+         + "AND attr.value = 'MIM') AND txd1.transaction_id = changedTxs.transaction_id AND changedTxs.branch_id = ?), "
+         + "arts (commit_art_id, transaction_id, art_id,time) AS (SELECT commit_art_id, transaction_id, art_id,time FROM gammas, "
+         + "osee_artifact art WHERE gammas.gamma_id = art.gamma_id UNION SELECT commit_art_id, art_id, transaction_id,time "
+         + "FROM gammas, osee_attribute attr WHERE gammas.gamma_id = attr.gamma_id UNION SELECT commit_art_id, a_art_id, "
+         + "transaction_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id UNION SELECT commit_art_id, "
+         + "b_art_id, transaction_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id ), "
+         + "allRels (a_art_id, b_art_id, gamma_id, rel_type) AS ( SELECT a_art_id, b_art_id, txs.gamma_id, rel_type "
+         + "FROM osee_txs txs, osee_relation rel WHERE txs.branch_id = ? AND txs.tx_current = 1 AND "
+         + "txs.gamma_id = rel.gamma_id UNION SELECT a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type FROM "
+         + "osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.tx_current = 1 AND "
+         + "txs.gamma_id = rel.gamma_id), cte_query(a_art_id, b_art_id, rel_type) AS "
+         + "(SELECT a_art_id, b_art_id, rel_type FROM allRels WHERE a_art_id = ? "
+         + "UNION ALL SELECT e.a_art_id, e.b_art_id, e.rel_type FROM allRels e "
+         + "INNER JOIN cte_query c ON c.a_art_id = e.b_art_id) SELECT name,atsid,time,row_number() over ("+ordering+") rn FROM (SELECT DISTINCT "
+         + "attr.value name, attr2.value atsid, arts.time time FROM cte_query, "
+         + "arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 "
+         + "WHERE b_art_id = arts.art_id AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 "
+         + "AND attrTxs.gamma_id = attr.gamma_id AND attr.art_id = arts.commit_art_id AND attr.attr_type_id = ? "
+         + "AND attrTxs2.branch_id = ? AND attrTxs2.tx_current = 1 AND attrTxs2.gamma_id = attr2.gamma_id "
+         + "AND attr2.art_id = arts.commit_art_id AND attr2.attr_type_id = ?) t1";
+      //@formatter:on
+      Consumer<JdbcStatement> consumer = stmt -> {
+         int row = stmt.getInt("rn") + increment;
+         writer.writeCell(row, 0, stmt.getString("atsId"));
+         writer.writeCell(row, 1, stmt.getTimestamp("time"));
+         writer.writeCell(row, 2, stmt.getString("name"));
+      };
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, queryBranch, CoreBranches.COMMON.getId(),
+         AtsAttributeTypes.TeamDefinitionReference, CoreBranches.COMMON.getId(), AtsArtifactTypes.TeamDefinition,
+         CoreBranches.COMMON.getId(), AtsAttributeTypes.WorkType, queryBranch, queryBranch, queryBranch, connectionId,
+         CoreBranches.COMMON.getId(), CoreAttributeTypes.Name, CoreBranches.COMMON.getId(), AtsAttributeTypes.AtsId);
    }
 
    private void createChangeSummary(ExcelWorkbookWriter writer, MimChangeSummary summary) {
