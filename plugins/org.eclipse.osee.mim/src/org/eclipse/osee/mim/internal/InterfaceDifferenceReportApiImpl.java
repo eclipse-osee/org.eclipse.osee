@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -636,16 +637,16 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          }
       }
 
-      MimChangeSummary summary = new MimChangeSummary();
-      Map<ArtifactId, List<ArtifactReadable>> elementMap = new HashMap<>(); // Maps platformTypes, enum sets, enums to a list of affected elements
-      Map<ArtifactId, MimChangeSummaryItem> elementsAndTypes = new HashMap<>(); // Collection of platform type, enum set, and enum changes.
-
       List<ArtifactTypeToken> elementTypes = Arrays.asList(CoreArtifactTypes.InterfaceDataElement,
          CoreArtifactTypes.InterfaceDataElementArray, CoreArtifactTypes.InterfacePlatformType,
          CoreArtifactTypes.InterfaceEnumSet, CoreArtifactTypes.InterfaceEnum);
 
       Map<ArtifactId, MimChangeSummaryItem> changeMap =
          changes.isEmpty() ? getChangeSummaryItems(branch1, branch2, view) : changes;
+
+      MimChangeSummary summary = new MimChangeSummary(changeMap);
+      Map<ArtifactId, List<ArtifactReadable>> elementMap = new HashMap<>(); // Maps platformTypes, enum sets, enums to a list of affected elements
+      Map<ArtifactId, MimChangeSummaryItem> elementsAndTypes = new HashMap<>(); // Collection of platform type, enum set, and enum changes.
 
       // Once all changes are read, process the summary items to add extra context or remove them if they are not applicable
       List<MimChangeSummaryItem> items = new LinkedList<>();
@@ -774,9 +775,9 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                         String isValue = newPType.getSoleAttributeAsString(attr, "");
                         if (!wasValue.equals(isValue)) {
                            ChangeReportRowDto attrChange = new ChangeReportRowDto(relationChange.getArtA(),
-                              ArtifactReadable.SENTINEL, item.getName(), attr.getName(), "Modified", isValue, wasValue,
-                              ChangeType.Attribute, ModificationType.MODIFIED, relationChange.getIsApplic(),
-                              relationChange.getWasApplic());
+                              ArtifactReadable.SENTINEL, item.getName(), attr.getName(), attr.getId(), "Modified",
+                              isValue, wasValue, ChangeType.Attribute, ModificationType.MODIFIED,
+                              relationChange.getIsApplic(), relationChange.getWasApplic());
                            item.getAttributeChanges().add(attrChange);
                         }
                      });
@@ -817,10 +818,10 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                   itemType = "Added Enum Literal";
                }
                for (MimChangeSummaryItem elementItem : elementItems) {
-                  ChangeReportRowDto newChange =
-                     new ChangeReportRowDto(elementItem.getArtifactReadable(), ArtifactReadable.SENTINEL,
-                        elementItem.getName(), itemType, "Modified", isValue, wasValue, ChangeType.Attribute,
-                        ModificationType.MODIFIED, ApplicabilityToken.SENTINEL, ApplicabilityToken.SENTINEL);
+                  ChangeReportRowDto newChange = new ChangeReportRowDto(elementItem.getArtifactReadable(),
+                     ArtifactReadable.SENTINEL, elementItem.getName(), itemType, AttributeId.SENTINEL.getId(),
+                     "Modified", isValue, wasValue, ChangeType.Attribute, ModificationType.MODIFIED,
+                     ApplicabilityToken.SENTINEL, ApplicabilityToken.SENTINEL);
                   elementItem.getAttributeChanges().add(newChange);
                }
             } else {
@@ -836,10 +837,10 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                String isValue = isOrdinal + " = " + isName;
                String wasValue = wasOrdinal + " = " + wasName;
                for (MimChangeSummaryItem elementItem : elementItems) {
-                  ChangeReportRowDto newChange =
-                     new ChangeReportRowDto(elementItem.getArtifactReadable(), ArtifactReadable.SENTINEL,
-                        elementItem.getName(), "Enum Literal", "Modified", isValue, wasValue, ChangeType.Attribute,
-                        ModificationType.MODIFIED, ApplicabilityToken.SENTINEL, ApplicabilityToken.SENTINEL);
+                  ChangeReportRowDto newChange = new ChangeReportRowDto(elementItem.getArtifactReadable(),
+                     ArtifactReadable.SENTINEL, elementItem.getName(), "Enum Literal", AttributeId.SENTINEL.getId(),
+                     "Modified", isValue, wasValue, ChangeType.Attribute, ModificationType.MODIFIED,
+                     ApplicabilityToken.SENTINEL, ApplicabilityToken.SENTINEL);
                   elementItem.getAttributeChanges().add(newChange);
                }
             }

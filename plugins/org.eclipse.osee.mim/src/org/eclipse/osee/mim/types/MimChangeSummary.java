@@ -23,18 +23,24 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  * @author Ryan T. Baldwin
  */
 public class MimChangeSummary {
+   private final Map<ArtifactId, MimChangeSummaryItem> allChanges;
    private final Map<ArtifactId, MimChangeSummaryItem> nodes;
    private final Map<ArtifactId, MimChangeSummaryItem> connections;
    private final Map<ArtifactId, MimChangeSummaryItem> messages;
    private final Map<ArtifactId, MimChangeSummaryItem> subMessages;
    private final Map<ArtifactId, MimChangeSummaryItem> structures;
 
-   public MimChangeSummary() {
+   public MimChangeSummary(Map<ArtifactId, MimChangeSummaryItem> allChanges) {
+      this.allChanges = allChanges;
       this.nodes = new HashMap<>();
       this.connections = new HashMap<>();
       this.messages = new HashMap<>();
       this.subMessages = new HashMap<>();
       this.structures = new HashMap<>();
+   }
+
+   public Map<ArtifactId, MimChangeSummaryItem> getAll() {
+      return allChanges;
    }
 
    public Map<ArtifactId, MimChangeSummaryItem> getNodes() {
