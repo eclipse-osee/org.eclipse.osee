@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -68,11 +69,13 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    private final OrcsApi orcsApi;
    private final BranchId branch;
    private final UriInfo uriInfo;
+   private final OrcsTokenService tokenService;
 
    public ArtifactEndpointImpl(OrcsApi orcsApi, BranchId branch, UriInfo uriInfo) {
       this.orcsApi = orcsApi;
       this.uriInfo = uriInfo;
       this.branch = branch;
+      this.tokenService = orcsApi.tokenService();
    }
 
    @Override
@@ -380,7 +383,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       // query for artifact type token using input artifact id
       ArtifactTypeToken token = art.getArtifactType();
       // pojo to store artifact's direct relations and all valid relation types
-      return new ArtifactRelatedDirectPojo(token, art, branch);
+      return new ArtifactRelatedDirectPojo(token, art, branch, this.tokenService);
    }
 
    @Override
