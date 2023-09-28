@@ -211,4 +211,10 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       return addAndCheck(getQueryData(), criteria);
    }
 
+   @Override
+   public T orderByName() {
+      Criteria criteria = criteriaFactory.createBranchOrderByNameCriteria();
+      return addAndCheck(getQueryData(), criteria);
+   }
+
 }
