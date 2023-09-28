@@ -147,6 +147,12 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
+   public T andNameLike(String pattern) {
+      Criteria criteria = criteriaFactory.createBranchNameLikeCriteria(pattern);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
    public T andIsChildOf(BranchId parent) {
       Criteria criteria = criteriaFactory.createBranchChildOfCriteria(parent);
       return addAndCheck(getQueryData(), criteria);
