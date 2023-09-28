@@ -15,6 +15,8 @@ package org.eclipse.osee.mim.types;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -102,7 +104,7 @@ public class MimChangeSummaryItem {
    }
 
    public ArtifactId getArtId() {
-      return ArtifactId.valueOf(art.getId());
+      return art.getArtifactId();
    }
 
    @JsonIgnore
@@ -122,12 +124,38 @@ public class MimChangeSummaryItem {
       return attributeChanges;
    }
 
+   public List<ChangeReportRowDto> getAttributeChanges(Long attributeId) {
+      return attributeChanges.stream().filter(attr -> attr.getItemTypeId().equals(attributeId)).collect(
+         Collectors.toList());
+   }
+
+   public boolean hasAttributeChanges(Long attributeId) {
+      return attributeChanges.stream().filter(attr -> attr.getItemTypeId().equals(attributeId)).findAny().isPresent();
+   }
+
    public List<ChangeReportRowDto> getRelationChanges() {
       return relationChanges;
    }
 
+   public List<ChangeReportRowDto> getRelationChanges(Long relationId) {
+      return relationChanges.stream().filter(rel -> rel.getItemTypeId().equals(relationId)).collect(
+         Collectors.toList());
+   }
+
+   public boolean hasRelationChanges(Long relationId) {
+      return relationChanges.stream().filter(rel -> rel.getItemTypeId().equals(relationId)).findAny().isPresent();
+   }
+
    public List<MimChangeSummaryItem> getChildren() {
       return children;
+   }
+
+   public Optional<MimChangeSummaryItem> getChild(ArtifactId childArtId) {
+      return children.stream().filter(child -> child.getArtId().equals(childArtId.getId())).findFirst();
+   }
+
+   public boolean hasChild(ArtifactId childArtId) {
+      return children.stream().filter(child -> child.getArtId().equals(childArtId.getId())).findAny().isPresent();
    }
 
    @Override

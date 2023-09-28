@@ -36,6 +36,7 @@ public class ChangeReportRowDto {
    private ArtifactReadable artA;
    private ArtifactReadable artB;
    private ChangeType itemKindType;
+   private Long itemTypeId;
    private ModificationType modType;
    private ApplicabilityToken isApplic;
    private ApplicabilityToken wasApplic;
@@ -43,7 +44,7 @@ public class ChangeReportRowDto {
    public ChangeReportRowDto() {
    }
 
-   public ChangeReportRowDto(ArtifactReadable artA, ArtifactReadable artB, String names, String itemType, String changeType, String isValue, String wasValue, ChangeType itemKindType, ModificationType modType, ApplicabilityToken isApplic, ApplicabilityToken wasApplic) {
+   public ChangeReportRowDto(ArtifactReadable artA, ArtifactReadable artB, String names, String itemType, Long itemTypeId, String changeType, String isValue, String wasValue, ChangeType itemKindType, ModificationType modType, ApplicabilityToken isApplic, ApplicabilityToken wasApplic) {
       this.artA = artA;
       this.artB = artB;
       this.names = names;
@@ -52,6 +53,7 @@ public class ChangeReportRowDto {
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.itemKindType = itemKindType;
+      this.itemTypeId = itemTypeId;
       this.modType = modType;
       this.isApplic = isApplic;
       this.wasApplic = wasApplic;
@@ -126,6 +128,15 @@ public class ChangeReportRowDto {
 
    public void setItemKindType(ChangeType itemKindType) {
       this.itemKindType = itemKindType;
+   }
+
+   @JsonIgnore
+   public Long getItemTypeId() {
+      return itemTypeId;
+   }
+
+   public void setItemTypeId(Long itemTypeId) {
+      this.itemTypeId = itemTypeId;
    }
 
    @JsonIgnore

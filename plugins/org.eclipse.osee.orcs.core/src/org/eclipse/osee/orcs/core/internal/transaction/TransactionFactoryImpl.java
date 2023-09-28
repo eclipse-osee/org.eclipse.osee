@@ -344,8 +344,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
             wasValue = "";
          }
 
-         changeReportRows.add(new ChangeReportRowDto(artA, artB, names, itemType, changeType, isValue, wasValue,
-            itemKindType, modType, currentApplic, baselineApplic));
+         changeReportRows.add(new ChangeReportRowDto(artA, artB, names, itemType, changeItem.getItemTypeId().getId(),
+            changeType, isValue, wasValue, itemKindType, modType, currentApplic, baselineApplic));
       }
 
       changeReportRows.sort(new Comparator<ChangeReportRowDto>() {
