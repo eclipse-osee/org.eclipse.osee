@@ -54,7 +54,12 @@ public class QuerySqlWriter extends AbstractSqlWriter {
             SqlHandler<?> next = iter.next();
             next.writeOrder(this);
          }
-         write("%s.%s", tableAlias, idColumn);
+         //this regex finds an existing ORDER BY for the id column in the query
+         if (!this.output.toString().matches(
+            "^(.|\\n)*((ORDER BY)+.*(" + tableAlias + "\\.+" + idColumn + "))(.|\\n)*$")) {
+            // TODO remove when all queries are updated to have an id order by handler
+            write("%s.%s", tableAlias, idColumn);
+         }
       }
    }
 
