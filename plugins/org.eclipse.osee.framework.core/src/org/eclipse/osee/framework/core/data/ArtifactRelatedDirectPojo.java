@@ -25,7 +25,7 @@ public class ArtifactRelatedDirectPojo {
    private final ArtifactTypeToken token;
    private final ArtifactReadable artReadable;
    private final BranchId branchId;
-   private final OrcsTokenService tokenService = new OrcsTokenServiceImpl();
+   private final OrcsTokenService tokenService;
 
    public String getBranchId() {
       return this.branchId.getIdString();
@@ -67,10 +67,11 @@ public class ArtifactRelatedDirectPojo {
       return relations;
    }
 
-   public ArtifactRelatedDirectPojo(ArtifactTypeToken token, ArtifactReadable artReadable, BranchId branchId) {
+   public ArtifactRelatedDirectPojo(ArtifactTypeToken token, ArtifactReadable artReadable, BranchId branchId, OrcsTokenService tokenService) {
       this.token = token;
       this.artReadable = artReadable;
       this.branchId = branchId;
+      this.tokenService = tokenService;
    }
 
    public class PojoRelationSide {
