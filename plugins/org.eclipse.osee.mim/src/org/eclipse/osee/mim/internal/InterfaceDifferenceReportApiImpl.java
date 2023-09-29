@@ -53,12 +53,10 @@ import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimChangeSummary;
 import org.eclipse.osee.mim.types.MimChangeSummaryItem;
-import org.eclipse.osee.mim.types.MimDifferenceItem;
 import org.eclipse.osee.mim.types.MimDifferenceReport;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Ryan T. Baldwin
@@ -478,78 +476,6 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             enumList.add(artId);
          }
       }
-   }
-
-   @Override
-   public Map<ArtifactId, MimDifferenceItem> getDifferences(BranchId branch, ArtifactId view, BranchId compareBranch) {
-      Map<ArtifactId, List<ChangeItem>> changeItems = new HashMap<>();
-      Map<ArtifactId, MimDifferenceItem> diffs = new HashMap<>();
-      List<ChangeItem> changes;
-
-      if (branch.equals(compareBranch)) {
-         List<TransactionReadable> txs =
-            orcsApi.getQueryFactory().transactionQuery().andBranch(branch).getResults().getList();
-         TransactionToken currentTx = txs.get(txs.size() - 1);
-         TransactionToken compareToTx = txs.get(txs.size() - 2);
-         changes = orcsApi.getTransactionFactory().compareTxs(compareToTx, currentTx);
-      } else {
-         TransactionToken currentTx =
-            orcsApi.getQueryFactory().transactionQuery().andIsHead(branch).getResults().getExactlyOne();
-         TransactionToken compareTx =
-            orcsApi.getQueryFactory().transactionQuery().andIsHead(compareBranch).getResults().getExactlyOne();
-         changes = orcsApi.getBranchOps().compareBranch(currentTx, compareTx); // This will get the diffs but currently will not give correct was/is values.
-      }
-
-      for (ChangeItem change : changes) {
-         if (change.getArtId().isValid()) {
-            List<ChangeItem> artChanges = changeItems.getOrDefault(change.getArtId(), new LinkedList<>());
-            artChanges.add(change);
-            changeItems.put(change.getArtId(), artChanges);
-         }
-      }
-
-      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(compareBranch, view).andIds(
-         changeItems.keySet()).asArtifacts()) {
-         if (art.isValid()) {
-            List<ChangeItem> artChanges = changeItems.get(art.getArtifactId());
-            String artTypeName = orcsApi.tokenService().getArtifactType(art.getArtifactType().getId()).getName();
-            MimDifferenceItem item =
-               new MimDifferenceItem(art.getArtifactId(), art.getName(), art.getArtifactType().getId(), artTypeName);
-            boolean added = true;
-            boolean deleted = false;
-            for (ChangeItem change : artChanges) {
-               if (!(change.getNetChange().getModType().equals(
-                  ModificationType.NEW) || change.getNetChange().getModType().equals(ModificationType.INTRODUCED))) {
-                  added = false;
-               }
-               if (change.getChangeType().equals(ChangeType.Attribute)) {
-                  String attrName = orcsApi.tokenService().getAttributeType(change.getItemTypeId().getId()).getName();
-                  String oldValue = change.getBaselineVersion().getValue();
-                  String newValue = change.getCurrentVersion().getValue();
-                  item.addMimAttributeChange(change.getItemTypeId().getId(), attrName, oldValue, newValue);
-               } else if (change.getChangeType().equals(
-                  ChangeType.Artifact) && change.getCurrentVersion().getModType().equals(ModificationType.DELETED)) {
-                  deleted = true;
-               } else if (change.getChangeType().equals(ChangeType.Relation)) {
-                  boolean relationAdded = change.getCurrentVersion().getModType().equals(
-                     ModificationType.NEW) || change.getCurrentVersion().getModType().equals(
-                        ModificationType.INTRODUCED);
-                  String artBName = orcsApi.getQueryFactory().fromBranch(compareBranch).andId(
-                     change.getArtIdB()).asArtifactOrSentinel().getName();
-                  item.addMimRelationChange(change.getItemTypeId().getId(), change.getArtId(), change.getArtIdB(),
-                     artBName, relationAdded);
-               }
-            }
-            if (item.getMimAttributeChanges().isEmpty()) {
-               added = false;
-            }
-            item.setAdded(added);
-            item.setDeleted(deleted);
-            diffs.put(art.getArtifactId(), item);
-         }
-      }
-
-      return diffs;
    }
 
    @Override
