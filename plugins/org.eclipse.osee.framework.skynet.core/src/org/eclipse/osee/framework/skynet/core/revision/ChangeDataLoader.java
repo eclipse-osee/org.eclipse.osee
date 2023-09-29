@@ -141,7 +141,8 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchToken startTxBranch, ChangeItem item) {
+   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded,
+      BranchToken startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          ArtifactId artId = item.getArtId();
@@ -181,7 +182,8 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change computeChange(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchToken startTxBranch, ChangeItem item) {
+   private Change computeChange(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded,
+      BranchToken startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          ArtifactId artId = item.getArtId();
@@ -210,7 +212,8 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change createChangeObject(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchToken startTxBranch, ArtifactDelta artifactDelta) {
+   private Change createChangeObject(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded,
+      ChangeItem item, TransactionDelta txDelta, BranchToken startTxBranch, ArtifactDelta artifactDelta) {
       Change change = null;
 
       Long itemId = item.getItemId().getId();
@@ -262,7 +265,7 @@ public class ChangeDataLoader extends AbstractOperation {
          }
       } else if (item.getChangeType().isRelationChange()) {
          RelationTypeToken relationType = tokenService.getRelationType(item.getItemTypeId().getId());
-
+         int relOrder = (relationType.isNewRelationTable()) ? item.getRelOrder() : 0;
          TransactionId transaction = txDelta.getStartTx();
          if (txDelta.areOnTheSameBranch()) {
             transaction = txDelta.getEndTx();
@@ -276,11 +279,11 @@ public class ChangeDataLoader extends AbstractOperation {
             change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
                RelationId.valueOf(itemId), item.getCurrentVersion().getApplicabilityToken().getName(),
                item.getDestinationVersion().getApplicabilityToken().getName(), relationType, isHistorical,
-               changeArtifact, artifactDelta, endTxBArtifact);
+               changeArtifact, artifactDelta, endTxBArtifact, relOrder);
          } else {
             change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
                RelationId.valueOf(itemId), rationale, "", relationType, isHistorical, changeArtifact, artifactDelta,
-               endTxBArtifact);
+               endTxBArtifact, relOrder);
          }
       } else if (item.getChangeType().isTupleChange()) {
          TupleTypeId tupleTypeId = TupleTypeId.valueOf(item.getItemTypeId().getId());
@@ -370,7 +373,8 @@ public class ChangeDataLoader extends AbstractOperation {
 
    }
 
-   private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) {
+   private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded,
+      Collection<ChangeItem> changeItems) {
       Set<ArtifactId> artIds = asArtIds(changeItems);
 
       preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), txDelta.areOnTheSameBranch());
@@ -383,7 +387,8 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private static void preloadArtifacts(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<ArtifactId> artIds, TransactionToken tx, boolean isHistorical) {
+   private static void preloadArtifacts(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded,
+      Collection<ArtifactId> artIds, TransactionToken tx, boolean isHistorical) {
       List<Artifact> artifacts;
 
       if (isHistorical) {
