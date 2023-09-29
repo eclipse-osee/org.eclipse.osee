@@ -560,11 +560,46 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
          if (insertType.equals("start")) {
             relOrder = txData.calculateHeadInsertionOrderIndex(minOrder);
+            String exists = orcsApi.getJdbcService().getClient().fetch("false",
+               "SELECT 'true' from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order = ?",
+               artA, relType.getId(), relOrder);
+            while (exists.equals("true")) {
+               relOrder = txData.calculateHeadInsertionOrderIndex(relOrder);
+               exists = orcsApi.getJdbcService().getClient().fetch("false",
+                  "SELECT 'true' from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order = ?",
+                  artA, relType.getId(), relOrder);
+            }
             txData.getNewRelations().get(relType, artA).setMinOrder(relOrder);
          } else if (insertType.equals("insert")) {
             relOrder = txData.calculateInsertionOrderIndex(afterIndex, beforeIndex);
+            //need to verify that calculated relOrder isn't already used by rel_type/a_art_id
+            String exists = orcsApi.getJdbcService().getClient().fetch("false",
+               "SELECT 'true' from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order = ?",
+               artA, relType.getId(), relOrder);
+            while (exists.equals("true")) {
+               if (relOrder < beforeIndex) {
+                  relOrder = txData.calculateInsertionOrderIndex(relOrder, beforeIndex);
+               } else if (relOrder > afterIndex) {
+                  relOrder = txData.calculateInsertionOrderIndex(afterIndex, relOrder);
+               } else {
+                  throw new OseeArgumentException(
+                     "Error Calculating new RelOrder for relType:" + relType.toString() + " a_art_id=" + artA.toString() + " b_art_id=" + artB.toString());
+               }
+               exists = orcsApi.getJdbcService().getClient().fetch("false",
+                  "SELECT 'true' from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order = ?",
+                  artA, relType.getId(), relOrder);
+            }
          } else {
             relOrder = txData.calculateEndInsertionOrderIndex(maxOrder);
+            String exists = orcsApi.getJdbcService().getClient().fetch("false",
+               "SELECT 'true' from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order = ?",
+               artA, relType.getId(), relOrder);
+            while (exists.equals("true")) {
+               relOrder = txData.calculateEndInsertionOrderIndex(relOrder);
+               exists = orcsApi.getJdbcService().getClient().fetch("false",
+                  "SELECT 'true' from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order = ?",
+                  artA, relType.getId(), relOrder);
+            }
             txData.getNewRelations().get(relType, artA).setMaxOrder(relOrder);
 
          }
