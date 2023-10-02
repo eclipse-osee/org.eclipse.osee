@@ -332,12 +332,15 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
    }
 
    private void addMessageParent(InterfaceMessageToken message) {
-      ArtifactId messageId = ArtifactId.valueOf(message.getId());
+      ArtifactId messageId = message.getArtifactId();
       if (!diffReport.hasParents(messageId)) {
-         InterfaceConnection connection = (InterfaceConnection) getFromArtifactReadable(message.getArtifactReadable(),
-            CoreRelationTypes.InterfaceConnectionMessage_Connection, InterfaceConnection.class).get(0);
-         diffReport.addParent(messageId, connection.getArtifactId());
-         diffReport.addItem(connection);
+         List<?> connections = getFromArtifactReadable(message.getArtifactReadable(),
+            CoreRelationTypes.InterfaceConnectionMessage_Connection, InterfaceConnection.class);
+         if (connections.size() > 0) {
+            InterfaceConnection connection = (InterfaceConnection) connections.get(0);
+            diffReport.addParent(messageId, connection.getArtifactId());
+            diffReport.addItem(connection);
+         }
       }
    }
 
