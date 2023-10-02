@@ -13,11 +13,15 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 
 /**
  * @author Stephen J. Molaro
@@ -50,6 +54,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    private String statusBy;
    private Date statusDate;
    private String description;
+   private List<ScriptResultToken> scriptResults;
 
    public ScriptDefToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -83,7 +88,9 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setStatusBy(art.getSoleAttributeAsString(CoreAttributeTypes.StatusBy, ""));
       this.setStatusDate(art.getSoleAttributeValue(CoreAttributeTypes.StatusDate, new Date()));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
-
+      this.setScriptResults(
+         art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().map(
+            a -> new ScriptResultToken(a)).collect(Collectors.toList()));
    }
 
    public ScriptDefToken(Long id, String name) {
@@ -112,6 +119,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setStatusBy("");
       this.setStatusDate(new Date());
       this.setDescription("");
+      this.setScriptResults(new ArrayList<ScriptResultToken>());
    }
 
    public ScriptDefToken() {
@@ -452,5 +460,19 @@ public class ScriptDefToken extends ArtifactAccessorResult {
     */
    public void setDescription(String description) {
       this.description = description;
+   }
+
+   /**
+    * @return the scriptResults
+    */
+   public List<ScriptResultToken> getScriptResults() {
+      return scriptResults;
+   }
+
+   /**
+    * @param scriptResults the scriptResults to set
+    */
+   public void setScriptResults(List<ScriptResultToken> scriptResults) {
+      this.scriptResults = scriptResults;
    }
 }

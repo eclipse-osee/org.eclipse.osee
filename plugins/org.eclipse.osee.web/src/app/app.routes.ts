@@ -51,6 +51,10 @@ export const routes: Routes = [
 		data: { requiredRoles: serverHealth?.requiredRoles },
 		loadChildren: () => import('./server-health/server-health.routes'),
 	},
+	{
+		path: 'ci-dashboard',
+		loadChildren: () => import('./ci-dashboard/ci-dashboard.routes'),
+	},
 	// {
 	// 	path: '',
 	// 	loadChildren: () => import('@osee/toolbar'),
