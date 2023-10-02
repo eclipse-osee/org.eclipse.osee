@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -323,8 +322,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                txNotCurrentsJoin4.put(key, join4);
             }
             join4.add(((RelationData) orcsData).getType(), ((RelationData) orcsData).getArtifactIdA(),
-               ((RelationData) orcsData).getArtifactIdB(),
-               Id.valueOf(Integer.toString(((RelationData) orcsData).getRelOrder())));
+               ((RelationData) orcsData).getArtifactIdB());
          } else {
 
             IdJoinQuery join = txNotCurrentsJoin.get(key);

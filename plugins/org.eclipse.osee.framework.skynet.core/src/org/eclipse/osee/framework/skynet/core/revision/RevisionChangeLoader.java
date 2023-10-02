@@ -72,8 +72,7 @@ public final class RevisionChangeLoader {
    /**
     * @return Returns all given changes from a specified artifact
     */
-   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor,
-      ChangeType... loadChangeTypes) {
+   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, ChangeType... loadChangeTypes) {
       this.loadChangeTypes.clear();
       for (ChangeType changeType : loadChangeTypes) {
          this.loadChangeTypes.add(changeType);
@@ -85,8 +84,7 @@ public final class RevisionChangeLoader {
    /**
     * @return Returns limited amount of changes from a specified artifact
     */
-   public Collection<Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow,
-      IProgressMonitor monitor, ChangeType... loadChangeTypes) {
+   public Collection<Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow, IProgressMonitor monitor, ChangeType... loadChangeTypes) {
       this.loadChangeTypes.clear();
       for (ChangeType changeType : loadChangeTypes) {
          this.loadChangeTypes.add(changeType);
@@ -100,8 +98,7 @@ public final class RevisionChangeLoader {
     * transactions. Pre-Loads the artifacts from the found artifact ids and transactions, and then creates the
     * collection of changes to return
     */
-   private Collection<Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow,
-      IProgressMonitor monitor) {
+   private Collection<Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow, IProgressMonitor monitor) {
       Collection<Change> changes = new ArrayList<>();
 
       OseeClient client = ServiceUtil.getOseeClient();
@@ -147,8 +144,7 @@ public final class RevisionChangeLoader {
    /**
     * Loads the artifacts for the given change items.
     */
-   private CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> getBulkLoadedArtifacts(
-      List<ChangeItem> changeItems) {
+   private CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> getBulkLoadedArtifacts(List<ChangeItem> changeItems) {
       CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap = new CompositeKeyHashMap<>();
       HashCollectionSet<TransactionToken, ArtifactId> txToArtIdMap = new HashCollectionSet<>();
 
@@ -190,8 +186,7 @@ public final class RevisionChangeLoader {
     * This method is what loops through the given ChangeItems and creates a collection of changes. This will only
     * process/add in changes that were previously set in the loadChangeTypes array.
     */
-   private Collection<Change> getChanges(Collection<ChangeItem> changeItems,
-      CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap, int numberTransactionsToShow) {
+   private Collection<Change> getChanges(Collection<ChangeItem> changeItems, CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap, int numberTransactionsToShow) {
       Collection<Change> changes = new ArrayList<>();
       List<TransactionToken> modifiedTxs = new ArrayList<>();
 
@@ -292,9 +287,7 @@ public final class RevisionChangeLoader {
     * name for the was/is values. If the modtype is deleted, we do not include the isValue name, it becomes blank since
     * it should no longer exist
     */
-   private ArtifactChange getApplicabilityChange(ChangeVersion startVersion, ChangeVersion currentVersion,
-      BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, Artifact artifact,
-      ArtifactDelta artDelta) {
+   private ArtifactChange getApplicabilityChange(ChangeVersion startVersion, ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, Artifact artifact, ArtifactDelta artDelta) {
       String wasValue = "";
       String isValue = "";
       if (startVersion.isValid()) {
@@ -309,9 +302,7 @@ public final class RevisionChangeLoader {
       return applicChange;
    }
 
-   private AttributeChange getAttributeChange(ChangeItem changeItem, ChangeVersion startVersion,
-      ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta,
-      ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
+   private AttributeChange getAttributeChange(ChangeItem changeItem, ChangeVersion startVersion, ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
       String isValue = currentVersion.getValue();
       String isUri = currentVersion.getUri();
       String wasValue = startVersion.getValue();
@@ -325,17 +316,14 @@ public final class RevisionChangeLoader {
       return attrChange;
    }
 
-   private RelationChange getRelationChange(ChangeItem changeItem,
-      CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap, ChangeVersion startVersion,
-      ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta,
-      ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
+   private RelationChange getRelationChange(ChangeItem changeItem, CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap, ChangeVersion startVersion, ChangeVersion currentVersion, BranchToken branch, GammaId gammaId, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, Artifact artifact, ArtifactDelta artDelta) {
       RelationId relationId = RelationId.valueOf(changeItem.getItemId().getId());
       String value = currentVersion.getValue();
       RelationTypeToken relationType = tokenService.getRelationType(changeItem.getItemTypeId().getId());
       Artifact artifactB = loadedMap.get(currentVersion.getTransactionToken(), changeItem.getArtIdB());
-      int relOrder = changeItem.getRelOrder();
+
       RelationChange relChange = new RelationChange(branch, gammaId, artId, txDelta, modType, changeItem.getArtIdB(),
-         relationId, value, "", relationType, artifact.isHistorical(), artifact, artDelta, artifactB, relOrder);
+         relationId, value, "", relationType, artifact.isHistorical(), artifact, artDelta, artifactB);
 
       return relChange;
    }
