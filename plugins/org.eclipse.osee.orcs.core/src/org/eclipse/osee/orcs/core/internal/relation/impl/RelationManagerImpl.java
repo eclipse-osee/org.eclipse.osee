@@ -253,6 +253,9 @@ public class RelationManagerImpl implements RelationManager {
       if (relation == null) { //doesn't exist at all
          if (type.isNewRelationTable()) {
             relation = relationFactory.createRelation(aNode, type, bNode, relatedArtifact, relOrder);
+            graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type, relation);
+            graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type, relation);
+            updated = true;
          } else {
             relation = relationFactory.createRelation(aNode, type, bNode, rationale);
             graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type, relation);
@@ -260,10 +263,10 @@ public class RelationManagerImpl implements RelationManager {
             updated = true;
          }
       }
-      if ((relation.isDeleted() && !type.isNewRelationTable()) || (type.isNewRelationTable() && relation.getRelOrder() == relOrder)) {
+      if (relation.isDeleted() && !type.isNewRelationTable()) {
          relation.unDelete();
          updated = true;
-      } else if (type.isNewRelationTable() && relation.getRelOrder() != relOrder) {
+      } else if (relation.isDeleted() && type.isNewRelationTable() && relation.getRelOrder() != relOrder) {
          relation = relationFactory.createRelation(aNode, type, bNode, relatedArtifact, relOrder);
          graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type, relation);
          graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type, relation);
