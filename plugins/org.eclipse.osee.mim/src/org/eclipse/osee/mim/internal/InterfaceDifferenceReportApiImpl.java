@@ -142,8 +142,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       processConnections(connectionList);
       processMessages(messageList);
       processSubMessages(submessageList);
-      elementList.addAll(processStructures(structureList)); //add moved elements so they show up on diff report
-
+      processStructures(structureList);
       processElements(elementList, ArtifactId.SENTINEL);
       processPlatformTypes(pTypeList);
       processEnumerations(enumList);
@@ -210,8 +209,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       }
    }
 
-   private LinkedList<ArtifactId> processStructures(List<ArtifactId> structureIds) {
-      LinkedList<ArtifactId> elementsMoved = new LinkedList<>();
+   private void processStructures(List<ArtifactId> structureIds) {
       List<FollowRelation> parentRelations =
          FollowRelation.followList(CoreRelationTypes.InterfaceSubMessageContent_SubMessage,
             CoreRelationTypes.InterfaceMessageSubMessageContent_Message,
@@ -225,14 +223,8 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             diffReport.addItem(structure, getChangeList(structure.getArtifactId()));
             addStructureParents(structure);
             diffReport.getStructures().add(structure.getArtifactId());
-            for (ChangeItem changeItem : getChangeList(structure.getArtifactId())) {
-               if (changeItem.getChangeType().isRelationChange()) {
-                  elementsMoved.add(changeItem.getArtIdB());
-               }
-            }
          }
       }
-      return elementsMoved;
    }
 
    private void processElements(List<ArtifactId> elementIds, ArtifactId typeId) {

@@ -32,14 +32,13 @@ public final class RelationChange extends Change {
    private final static ChangeType changeType = ChangeType.Relation;
 
    private final ArtifactId bArtId;
-   private final int relOrder;
    private final Artifact endTxBArtifact;
    private final RelationId relLinkId;
    private final String rationale;
    private final String wasValue;
    private final RelationTypeToken relationType;
 
-   public RelationChange(BranchToken branch, GammaId sourceGamma, ArtifactId aArtId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, RelationId relLinkId, String rationale, String wasValue, RelationTypeToken relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact, int relOrder) {
+   public RelationChange(BranchToken branch, GammaId sourceGamma, ArtifactId aArtId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, RelationId relLinkId, String rationale, String wasValue, RelationTypeToken relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
       super(branch, sourceGamma, aArtId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
@@ -47,7 +46,6 @@ public final class RelationChange extends Change {
       this.relationType = relationType;
       this.endTxBArtifact = endTxBArtifact;
       this.wasValue = wasValue;
-      this.relOrder = relOrder;
    }
 
    public ArtifactId getBArtId() {
@@ -114,9 +112,5 @@ public final class RelationChange extends Change {
    @Override
    public Id getItemId() {
       return relLinkId;
-   }
-
-   public int getRelOrder() {
-      return relOrder;
    }
 }

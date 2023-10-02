@@ -95,7 +95,7 @@ public final class ChangeItemUtil {
       current.setModType(currentSourceModType);
       current.setApplicabilityToken(appToken);
       current.setTransactionToken(txToken);
-      item.setRelOrder(0);
+
       item.setArtId(aArtId);
       item.setArtIdB(bArtId);
       item.getCurrentVersion().setValue(rationale);
@@ -107,10 +107,11 @@ public final class ChangeItemUtil {
       ApplicabilityToken appToken, TransactionToken txToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.Relation);
-      item.setRelOrder(relOrder);
+
       item.setItemId(currentSourceGammaId);
       item.setItemTypeId(relTypeId);
       item.setSynthetic(false);
+
       ChangeVersion current = item.getCurrentVersion();
       current.setGammaId(currentSourceGammaId);
       current.setModType(currentSourceModType);
