@@ -22,6 +22,10 @@ export const routes: Routes = [
 		pathMatch: 'prefix',
 	},
 	{
+		path: 'ci-dashboard',
+		loadChildren: () => import('./ci-dashboard/ci-dashboard.routes'),
+	},
+	{
 		path: 'diff-report',
 		loadChildren: () => import('./diff-report/diff-report.routes'),
 	},
