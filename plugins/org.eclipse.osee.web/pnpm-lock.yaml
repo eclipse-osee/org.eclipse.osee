@@ -53,6 +53,9 @@ dependencies:
   '@swimlane/ngx-graph':
     specifier: ^8.2.1
     version: 8.2.1(@angular/animations@16.1.7)(@angular/cdk@16.1.6)(@angular/common@16.1.7)(@angular/core@16.1.7)(rxjs@7.8.1)
+  chart.js:
+    specifier: ^4.4.0
+    version: 4.4.0
   d3-scale:
     specifier: ^4.0.2
     version: 4.0.2
@@ -65,6 +68,9 @@ dependencies:
   material-design-icons:
     specifier: ^3.0.1
     version: 3.0.1
+  ng2-charts:
+    specifier: ^5.0.3
+    version: 5.0.3(@angular/cdk@16.1.6)(@angular/common@16.1.7)(@angular/core@16.1.7)(@angular/platform-browser@16.1.7)(chart.js@4.4.0)(rxjs@7.8.1)
   ngx-markdown:
     specifier: ^16.0.0
     version: 16.0.0(@angular/common@16.1.7)(@angular/core@16.1.7)(@angular/platform-browser@16.1.7)(@types/marked@4.3.1)(marked@4.3.0)(rxjs@7.8.1)(zone.js@0.13.1)
@@ -108,7 +114,7 @@ devDependencies:
     version: 1.7.0(@angular/cli@16.1.6)(@angular/core@16.1.7)
   '@jscutlery/cypress-harness':
     specifier: ^0.4.4
-    version: 0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.2.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1)
+    version: 0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.3.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1)
   '@types/d3-dispatch':
     specifier: ^3.0.0
     version: 3.0.2
@@ -141,7 +147,7 @@ devDependencies:
     version: 10.4.14(postcss@8.4.24)
   cypress:
     specifier: latest
-    version: 13.2.0
+    version: 13.3.0
   cypress-pipe:
     specifier: ^2.0.0
     version: 2.0.0
@@ -2553,7 +2559,7 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@jscutlery/cypress-harness@0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.2.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1):
+  /@jscutlery/cypress-harness@0.4.4(@angular/cdk@16.1.6)(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(cypress-pipe@2.0.0)(cypress@13.3.0)(tslib@2.5.3)(typescript@5.1.6)(zone.js@0.13.1):
     resolution: {integrity: sha512-fSnF354b8FJTY8ZSzxuwh+98OHaSfnpudcNsOc5Si5yQVhAl4szljdc4vIANyi0VHrYIS39g8MmCJaWHUKcOng==}
     peerDependencies:
       '@angular/cdk': '*'
@@ -2565,7 +2571,7 @@ packages:
       '@angular/cdk': 16.1.6(@angular/common@16.1.7)(@angular/core@16.1.7)(rxjs@7.8.1)
       '@cypress/webpack-batteries-included-preprocessor': 2.4.1(@cypress/webpack-preprocessor@5.17.1)(typescript@5.1.6)
       '@cypress/webpack-preprocessor': 5.17.1(@babel/core@7.22.5)(@babel/preset-env@7.22.5)(babel-loader@9.1.2)(webpack@5.86.0)
-      cypress: 13.2.0
+      cypress: 13.3.0
       cypress-pipe: 2.0.0
       tslib: 2.5.3
       webpack: 5.86.0
@@ -2582,6 +2588,10 @@ packages:
       - webpack-cli
       - webpack-command
     dev: true
+
+  /@kurkle/color@0.3.2:
+    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+    dev: false
 
   /@leichtgewicht/ip-codec@2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
@@ -5107,6 +5117,13 @@ packages:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
     dev: true
 
+  /chart.js@4.4.0:
+    resolution: {integrity: sha512-vQEj6d+z0dcsKLlQvbKIMYFHd3t8W/7L2vfJIbYcfyPcRx92CsHqECpueN8qVGNlKyDcr5wBrYAYKnfu/9Q1hQ==}
+    engines: {pnpm: '>=7'}
+    dependencies:
+      '@kurkle/color': 0.3.2
+    dev: false
+
   /check-more-types@2.24.0:
     resolution: {integrity: sha512-Pj779qHxV2tuapviy1bSZNEL1maXr13bPYpsvSDB68HlYcYuhlDrmGd63i0JHMCLKzc7rUSNIrpdJlhVlNwrxA==}
     engines: {node: '>= 0.8.0'}
@@ -5686,8 +5703,8 @@ packages:
     resolution: {integrity: sha512-KW9s+bz4tFLucH3rBGfjW+Q12n7S4QpUSSyxiGrgPOfoHlbYWzAGB3H26MO0VTojqf9NVvfd5Kt0MH5XMgbfyg==}
     dev: true
 
-  /cypress@13.2.0:
-    resolution: {integrity: sha512-AvDQxBydE771GTq0TR4ZUBvv9m9ffXuB/ueEtpDF/6gOcvFR96amgwSJP16Yhqw6VhmwqspT5nAGzoxxB+D89g==}
+  /cypress@13.3.0:
+    resolution: {integrity: sha512-mpI8qcTwLGiA4zEQvTC/U1xGUezVV4V8HQCOYjlEOrVmU1etVvxOjkCXHGwrlYdZU/EPmUiWfsO3yt1o+Q2bgw==}
     engines: {node: ^16.0.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     requiresBuild: true
@@ -8990,7 +9007,6 @@ packages:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
     requiresBuild: true
     dev: false
-    optional: true
 
   /lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
@@ -9595,6 +9611,26 @@ packages:
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
+
+  /ng2-charts@5.0.3(@angular/cdk@16.1.6)(@angular/common@16.1.7)(@angular/core@16.1.7)(@angular/platform-browser@16.1.7)(chart.js@4.4.0)(rxjs@7.8.1):
+    resolution: {integrity: sha512-/lTY64tiCN/pJPx+oIWRWOhtCk+ZbAU9yAUDNnRJwhe+a8ajcO5yS0tVOm5k7pj3doVp9+UdBRahyt6woJ95Rw==}
+    peerDependencies:
+      '@angular/cdk': '>=16.0.0'
+      '@angular/common': '>=16.0.0'
+      '@angular/core': '>=16.0.0'
+      '@angular/platform-browser': '>=16.0.0'
+      chart.js: ^3.4.0 || ^4.0.0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/cdk': 16.1.6(@angular/common@16.1.7)(@angular/core@16.1.7)(rxjs@7.8.1)
+      '@angular/common': 16.1.7(@angular/core@16.1.7)(rxjs@7.8.1)
+      '@angular/core': 16.1.7(rxjs@7.8.1)(zone.js@0.13.1)
+      '@angular/platform-browser': 16.1.7(@angular/animations@16.1.7)(@angular/common@16.1.7)(@angular/core@16.1.7)
+      chart.js: 4.4.0
+      lodash-es: 4.17.21
+      rxjs: 7.8.1
+      tslib: 2.5.3
+    dev: false
 
   /ngx-markdown@16.0.0(@angular/common@16.1.7)(@angular/core@16.1.7)(@angular/platform-browser@16.1.7)(@types/marked@4.3.1)(marked@4.3.0)(rxjs@7.8.1)(zone.js@0.13.1):
     resolution: {integrity: sha512-/rlbXi+HBscJCDdwaTWIUrRkvwJicPnuAgeugOCZa0UbZ4VCWV3U0+uB1Zv6krRDF6FXJNXNLTUrMZV7yH8I6A==}
