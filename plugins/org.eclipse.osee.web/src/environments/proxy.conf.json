@@ -31,5 +31,13 @@
 		"pathReWrite": {
 			"^/mim": ""
 		}
+	},
+	"/script": {
+		"target": "http://localhost:8089",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/script": ""
+		}
 	}
 }

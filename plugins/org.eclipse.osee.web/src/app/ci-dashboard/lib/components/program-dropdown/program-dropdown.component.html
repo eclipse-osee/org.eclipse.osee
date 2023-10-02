@@ -1,0 +1,44 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form>
+	<mat-form-field
+		class="[&>.mat-mdc-form-field-subscript-wrapper]"
+		subscriptSizing="dynamic"
+		appearance="fill">
+		<mat-label>Select a program</mat-label>
+		<input
+			type="text"
+			matInput
+			[matAutocomplete]="auto"
+			[ngModel]="(selectedProgram | async)?.name || ''"
+			(keyup)="applyFilter($event)"
+			name="autocomplete-text" />
+		<mat-autocomplete
+			autoActiveFirstOption
+			#auto="matAutocomplete">
+			<mat-option
+				[value]="noneOption.name"
+				(click)="selectProgram(noneOption)">
+				{{ noneOption.name }}
+			</mat-option>
+			<ng-container *ngIf="programs | async as _programs">
+				<mat-option
+					*ngFor="let option of _programs"
+					[value]="option.name"
+					(click)="selectProgram(option)">
+					{{ option.name }}
+				</mat-option>
+			</ng-container>
+		</mat-autocomplete>
+	</mat-form-field>
+</form>
