@@ -43,7 +43,7 @@ describe('BranchListService', () => {
 		describe('branches observable', () => {
 			it('should call for baseline branches when set to product line', () => {
 				let testData: branch[] = [];
-				routeService.typeValue = 'product line';
+				routeService.typeValue = 'baseline';
 				categoryService.category = '3';
 				service.branches.subscribe();
 				const req = httpTestingController.expectOne(

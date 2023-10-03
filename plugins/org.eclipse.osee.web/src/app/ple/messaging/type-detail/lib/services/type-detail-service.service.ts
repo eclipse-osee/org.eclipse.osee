@@ -41,7 +41,7 @@ export class TypeDetailService {
 		return this._ui.type;
 	}
 
-	set typeValue(value: string) {
+	set typeValue(value: 'working' | 'baseline' | '') {
 		this._ui.typeValue = value;
 	}
 }

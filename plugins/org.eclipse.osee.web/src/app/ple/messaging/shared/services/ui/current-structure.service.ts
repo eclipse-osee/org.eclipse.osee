@@ -152,7 +152,7 @@ export abstract class CurrentStructureService {
 		return this.ui.branchType;
 	}
 
-	set BranchType(value: string) {
+	set BranchType(value: 'working' | 'baseline' | '') {
 		this.ui.BranchType = value;
 	}
 	get BranchType() {

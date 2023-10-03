@@ -42,7 +42,10 @@ export class AsciidocEditorComponent implements OnInit {
 				tap((paramMap) => {
 					// default to empty if undefined (obs), aka string or empty
 					this.txtEdServe.typeValue =
-						paramMap.get('branchType') || '';
+						(paramMap.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
 					// named all setters as value, id is obs, id value is setter
 					this.txtEdServe.idValue = paramMap.get('branchId') || '';
 

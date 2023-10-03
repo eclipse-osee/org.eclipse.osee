@@ -103,7 +103,11 @@ export class StructureNamesComponent implements OnInit {
 		this.route.paramMap
 			.pipe(
 				map((params) => {
-					this.uiService.typeValue = params.get('branchType') || '';
+					this.uiService.typeValue =
+						(params.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
 					this.uiService.idValue = params.get('branchId') || '';
 				})
 			)

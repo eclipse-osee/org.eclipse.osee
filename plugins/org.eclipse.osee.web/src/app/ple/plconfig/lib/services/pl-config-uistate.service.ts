@@ -27,8 +27,8 @@ export class PlConfigUIStateService {
 	private _groups = new BehaviorSubject<string[]>([]);
 	constructor(private ui: UiService) {}
 
-	public set viewBranchTypeString(branchType: string) {
-		this.ui.typeValue = branchType?.toLowerCase();
+	public set viewBranchTypeString(branchType: 'working' | 'baseline' | '') {
+		this.ui.typeValue = branchType;
 		this.updateReqConfig = true;
 	}
 

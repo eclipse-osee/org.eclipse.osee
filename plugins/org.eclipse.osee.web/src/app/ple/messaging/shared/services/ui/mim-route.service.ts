@@ -51,7 +51,7 @@ export class MimRouteService {
 		this._ui.viewIdValue = id;
 	}
 
-	set typeValue(value: string) {
+	set typeValue(value: 'working' | 'baseline' | '') {
 		this._ui.typeValue = value;
 	}
 	set idValue(value: string) {

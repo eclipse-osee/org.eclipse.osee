@@ -51,7 +51,7 @@ export class MessageUiService {
 		return this._mimRoute.type;
 	}
 
-	set typeValue(value: string) {
+	set typeValue(value: 'working' | 'baseline' | '') {
 		this._mimRoute.typeValue = value;
 	}
 

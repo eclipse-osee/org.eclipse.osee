@@ -42,7 +42,11 @@ export class TypeDetailComponent implements OnInit {
 			.pipe(
 				map((params) => {
 					this._typeDetail.idValue = params.get('branchId') || '';
-					this._typeDetail.typeValue = params.get('branchType') || '';
+					this._typeDetail.typeValue =
+						(params.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
 					this._typeDetail.type = params.get('typeId') || '';
 				})
 			)

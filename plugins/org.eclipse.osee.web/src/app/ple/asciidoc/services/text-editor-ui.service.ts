@@ -57,7 +57,7 @@ export class TextEditorUiService {
 		this.uiServe.updated = value;
 	}
 
-	set typeValue(branchType: string) {
+	set typeValue(branchType: 'working' | 'baseline' | '') {
 		this.uiServe.typeValue = branchType;
 	}
 

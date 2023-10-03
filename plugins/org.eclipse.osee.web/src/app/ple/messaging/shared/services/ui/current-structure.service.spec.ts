@@ -402,15 +402,15 @@ servicesUnderTest.forEach((testCase) => {
 		it('should get and set branch type', () => {
 			expect(service.BranchType).toEqual('');
 			scheduler.run(({ expectObservable, cold }) => {
-				let expectedObservable = { a: '10', b: '8', c: '' };
+				let expectedObservable = { a: 'baseline', b: 'working', c: '' };
 				let expectedMarble = 'c---a----b';
 				const makeemissions = cold('----a----(b|)', {
-					a: '10',
-					b: '8',
+					a: 'baseline' as const,
+					b: 'working' as const,
 				}).pipe(tap((t) => (service.BranchType = t)));
 				expectObservable(makeemissions).toBe('----a----(b|)', {
-					a: '10',
-					b: '8',
+					a: 'baseline',
+					b: 'working',
 				});
 				expectObservable(service.branchType).toBe(
 					expectedMarble,
@@ -422,9 +422,9 @@ servicesUnderTest.forEach((testCase) => {
 		it('should get a connection path', () => {
 			scheduler.run(({ expectObservable }) => {
 				service.branchId = '10';
-				service.BranchType = 'abc';
+				service.BranchType = 'working';
 				expectObservable(service.connectionsRoute).toBe('a', {
-					a: '/ple/messaging/connections/abc/10',
+					a: '/ple/messaging/connections/working/10',
 				});
 			});
 		});

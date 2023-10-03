@@ -34,12 +34,12 @@ export class BranchTypeSelectorComponent implements OnInit {
 		});
 	}
 
-	changeBranchType(value: string) {
+	changeBranchType(value: 'working' | 'baseline' | '') {
 		this.routerState.branchType = value;
 	}
 
 	selectType(event: MatRadioChange) {
-		this.changeBranchType(event.value as string);
+		this.changeBranchType(event.value as 'working' | 'baseline' | '');
 	}
 	normalizeType(type: string) {
 		if (type === 'product line') {

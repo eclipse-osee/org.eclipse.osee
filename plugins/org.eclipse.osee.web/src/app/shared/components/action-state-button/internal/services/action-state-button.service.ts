@@ -360,15 +360,11 @@ export class ActionStateButtonService {
 									tap((resp) => {
 										this.uiService.updated = true;
 										if (resp.results.success) {
-											let _branchType = '';
-											if (
+											const _branchType =
 												resp.workingBranchId
 													.branchType === '2'
-											) {
-												_branchType = 'baseline';
-											} else {
-												_branchType = 'working';
-											}
+													? 'baseline'
+													: 'working';
 											this.branchedRouter.position = {
 												type: _branchType,
 												id: resp.workingBranchId.id,

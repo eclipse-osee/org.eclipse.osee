@@ -44,7 +44,9 @@ export class ConnectionViewComponent implements OnInit {
 		]).subscribe(([params, data, mode]) => {
 			if (mode) {
 				this.routerState.branchId = params.get('branchId') || '';
-				this.routerState.branchType = params.get('branchType') || '';
+				this.routerState.branchType =
+					(params.get('branchType') as 'working' | 'baseline' | '') ||
+					'';
 				this.routerState.ViewId = params.get('viewId') || '';
 				/**
 				 * Set params to uninitalized state for invalid routes

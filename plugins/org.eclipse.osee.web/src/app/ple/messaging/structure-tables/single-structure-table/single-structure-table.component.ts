@@ -49,7 +49,10 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 			.subscribe(([paramMap, data, mode]) => {
 				if (mode) {
 					this.structureService.BranchType =
-						paramMap.get('branchType') || '';
+						(paramMap.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
 					this.structureService.branchId =
 						paramMap.get('branchId') || '';
 					this.structureService.ViewId = paramMap.get('viewId') || '';
@@ -65,7 +68,10 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 					this.structureService.DiffMode = true;
 				} else {
 					this.structureService.BranchType =
-						paramMap.get('branchType') || '';
+						(paramMap.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
 					this.structureService.branchId =
 						paramMap.get('branchId') || '';
 					this.structureService.ViewId = paramMap.get('viewId') || '';

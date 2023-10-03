@@ -384,7 +384,7 @@ export class ReportsService {
 		return this.ui.type;
 	}
 
-	set BranchType(branchType: string) {
+	set BranchType(branchType: 'working' | 'baseline' | '') {
 		this.ui.typeValue = branchType;
 	}
 

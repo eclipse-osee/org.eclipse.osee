@@ -136,22 +136,7 @@ export class PlConfigCurrentBranchService {
 		share(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	/**
-	 * @deprecated
-	 */
-	private _branchListing = this.uiStateService.viewBranchType.pipe(
-		switchMap((viewBranchType) =>
-			iif(
-				() =>
-					viewBranchType === 'all' ||
-					viewBranchType === 'working' ||
-					viewBranchType === 'baseline',
-				this.branchService.getBranches(viewBranchType),
-				of([]) // @todo replace with a false response
-			)
-		),
-		share()
-	);
+
 	private _viewsWithGroup = this._branchApplicabilityNoChanges.pipe(
 		switchMap((a) =>
 			of(a).pipe(
@@ -585,12 +570,7 @@ export class PlConfigCurrentBranchService {
 			share()
 		);
 	}
-	/**
-	 * @deprecated
-	 */
-	public get branchListing() {
-		return this._branchListing;
-	}
+
 	public getCfgGroupDetail(cfgGroup: string) {
 		return this.uiStateService.branchId.pipe(
 			filter((val) => val !== ''),

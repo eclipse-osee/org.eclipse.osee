@@ -51,7 +51,7 @@ export class UiService {
 		this.branchService.idValue = id;
 	}
 
-	set typeValue(branchType: string) {
+	set typeValue(branchType: 'working' | 'baseline' | '') {
 		this.branchService.typeValue = branchType;
 	}
 

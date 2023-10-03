@@ -27,7 +27,7 @@ export class RouteStateService {
 		return this.uiService.id;
 	}
 
-	set branchType(value: string) {
+	set branchType(value: 'working' | 'baseline' | '') {
 		this.uiService.typeValue = value;
 	}
 

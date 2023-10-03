@@ -42,7 +42,7 @@ export class BranchUIService {
 		this.idService.BranchIdValue = id;
 	}
 
-	set typeValue(branchType: string) {
+	set typeValue(branchType: 'working' | 'baseline' | '') {
 		this.typeService.BranchType = branchType;
 	}
 }

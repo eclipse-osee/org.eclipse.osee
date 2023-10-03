@@ -102,7 +102,10 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 			.pipe(
 				tap(([paramMap, data]) => {
 					this.uiStateService.viewBranchTypeString =
-						paramMap.get('branchType') || '';
+						(paramMap.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
 					this.uiStateService.branchIdNum =
 						paramMap.get('branchId') || '';
 				}),

@@ -37,7 +37,8 @@ export class TypesInterfaceComponent implements OnInit {
 		this.route.paramMap.subscribe((values) => {
 			this.filterValue = values.get('type')?.trim().toLowerCase() || '';
 			this.uiService.BranchIdString = values.get('branchId') || '';
-			this.uiService.branchType = values.get('branchType') || '';
+			this.uiService.branchType =
+				(values.get('branchType') as 'working' | 'baseline' | '') || '';
 		});
 	}
 }

@@ -101,7 +101,7 @@ export class StructuresUiService {
 		return this._mimRoute.type;
 	}
 
-	set BranchType(value: string) {
+	set BranchType(value: 'working' | 'baseline' | '') {
 		this._mimRoute.typeValue = value;
 	}
 

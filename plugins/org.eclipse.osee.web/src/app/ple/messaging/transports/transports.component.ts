@@ -99,7 +99,11 @@ export class TransportsComponent implements OnInit, OnDestroy {
 		this.route.paramMap
 			.pipe(
 				tap((params) => {
-					this.ui.typeValue = params.get('branchType') || '';
+					this.ui.typeValue =
+						(params.get('branchType') as
+							| 'working'
+							| 'baseline'
+							| '') || '';
 					this.ui.idValue = params.get('branchId') || '';
 				})
 			)
