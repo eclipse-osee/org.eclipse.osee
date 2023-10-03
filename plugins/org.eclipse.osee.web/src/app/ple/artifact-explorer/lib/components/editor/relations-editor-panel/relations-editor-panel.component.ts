@@ -12,8 +12,14 @@
  **********************************************************************/
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+	Component,
+	OnChanges,
+	Input,
+	SimpleChanges,
+	computed,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -69,6 +75,13 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	private _branchId = new BehaviorSubject<string>('');
 	private _viewId = new BehaviorSubject<string>('');
 	private _editable = new BehaviorSubject<boolean>(false);
+
+	private _hierarchyType = toSignal(this.uiService.type, {
+		initialValue: 'baseline',
+	});
+	private _hierarchyEditable = computed(
+		() => this._hierarchyType() === 'working'
+	);
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (
@@ -148,7 +161,7 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		side: relationSide
 	): void {
 		const droppedArt: artifact = event.item.data;
-		if (this._editable && droppedArt.editable) {
+		if (this._editable && this._hierarchyEditable()) {
 			// Build the transaction based on which side an artifact is dropped into
 			this._branchId
 				.pipe(
