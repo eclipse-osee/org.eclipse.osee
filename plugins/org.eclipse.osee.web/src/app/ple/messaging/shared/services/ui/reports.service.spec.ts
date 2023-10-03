@@ -72,9 +72,9 @@ describe('ReportsService', () => {
 	it('should get a diff report path', () => {
 		scheduler.run(({ expectObservable }) => {
 			service.BranchId = '10';
-			service.BranchType = 'abc';
+			service.BranchType = 'working';
 			expectObservable(service.diffReportRoute).toBe('a', {
-				a: '/ple/messaging/reports/abc/10/differences',
+				a: '/ple/messaging/reports/working/10/differences',
 			});
 		});
 	});
@@ -82,9 +82,9 @@ describe('ReportsService', () => {
 	it('should get a trace report path', () => {
 		scheduler.run(({ expectObservable }) => {
 			service.BranchId = '10';
-			service.BranchType = 'abc';
+			service.BranchType = 'working';
 			expectObservable(service.nodeTraceReportRoute).toBe('a', {
-				a: '/ple/messaging/reports/abc/10/traceReport',
+				a: '/ple/messaging/reports/working/10/traceReport',
 			});
 		});
 	});
@@ -92,7 +92,7 @@ describe('ReportsService', () => {
 	it('should get a requirement trace report', fakeAsync(() => {
 		const traceReport = NodeTraceReportMock;
 		service.BranchId = '10';
-		service.BranchType = 'abc';
+		service.BranchType = 'working';
 		service.nodeTraceReportRequirements.subscribe();
 		tick(100);
 		const req = httpTestingController.expectOne(
@@ -107,7 +107,7 @@ describe('ReportsService', () => {
 	it('should get an interface artifact trace report', fakeAsync(() => {
 		const traceReport = NodeTraceReportMock;
 		service.BranchId = '10';
-		service.BranchType = 'abc';
+		service.BranchType = 'working';
 		service.nodeTraceReportInterfaceArtifacts.subscribe();
 		tick(100);
 		const req = httpTestingController.expectOne(

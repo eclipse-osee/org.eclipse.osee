@@ -17,15 +17,14 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class BranchTypeService {
-	private _branchType: BehaviorSubject<string> = new BehaviorSubject<string>(
-		''
-	);
+	private _branchType: BehaviorSubject<'working' | 'baseline' | ''> =
+		new BehaviorSubject<'working' | 'baseline' | ''>('');
 	constructor() {}
 	get branchType() {
 		return this._branchType;
 	}
 
-	set BranchType(value: string) {
+	set BranchType(value: 'working' | 'baseline' | '') {
 		this._branchType.next(value);
 	}
 }

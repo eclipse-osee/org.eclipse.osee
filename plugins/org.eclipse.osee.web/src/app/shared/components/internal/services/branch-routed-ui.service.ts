@@ -23,7 +23,7 @@ export class BranchRoutedUIService {
 		private router: Router
 	) {}
 
-	set branchType(value: string) {
+	set branchType(value: 'working' | 'baseline' | '') {
 		let baseUrl;
 		if (this.branchService.type.getValue() != '') {
 			baseUrl = this.router.url.split(
@@ -63,7 +63,7 @@ export class BranchRoutedUIService {
 	/**
 	 *  this function is used to change position from baseline/working & the branch id, however it has the catch of doing in-line position replacement instead of replacing the whole URL
 	 */
-	set position(value: { type: string; id: string }) {
+	set position(value: { type: 'working' | 'baseline' | ''; id: string }) {
 		let baseUrl;
 		if (this.branchService.type.getValue() != '') {
 			baseUrl = this.router.url.split(

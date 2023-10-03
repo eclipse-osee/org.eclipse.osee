@@ -18,6 +18,7 @@ import {
 	Input,
 	SimpleChanges,
 	computed,
+	effect,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';

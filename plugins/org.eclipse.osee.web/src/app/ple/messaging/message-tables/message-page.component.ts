@@ -51,7 +51,9 @@ export class MessagePageComponent implements OnInit, OnDestroy {
 			if (mode) {
 				this.messageService.filter =
 					values.get('type')?.trim().toLowerCase() || ''; //@todo FIX
-				this.messageService.branchType = values.get('branchType') || '';
+				this.messageService.branchType =
+					(values.get('branchType') as 'working' | 'baseline' | '') ||
+					'';
 				this.messageService.branch = values.get('branchId') || '';
 				this.messageService.ViewId = values.get('viewId') || '';
 				this.messageService.connection = values.get('connection') || '';

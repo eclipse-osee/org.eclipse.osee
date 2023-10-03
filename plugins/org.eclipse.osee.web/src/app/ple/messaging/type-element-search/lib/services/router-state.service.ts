@@ -37,7 +37,7 @@ export class RouterStateService {
 		return this.uiService.type.getValue();
 	}
 
-	set type(value: string) {
+	set type(value: 'working' | 'baseline' | '') {
 		this.uiService.typeValue = value;
 	}
 }

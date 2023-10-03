@@ -59,7 +59,8 @@ export class ListConfigurationComponent implements OnDestroy {
 	routeSetup = this._route.paramMap.pipe(
 		tap((params) => {
 			this._uiService.idValue = params.get('branchId') || '';
-			this._uiService.typeValue = params.get('branchType') || '';
+			this._uiService.typeValue =
+				(params.get('branchType') as 'working' | 'baseline' | '') || '';
 			this._uiService.viewIdValue = params.get('viewId') || '';
 		}),
 		takeUntil(this._destroyed)

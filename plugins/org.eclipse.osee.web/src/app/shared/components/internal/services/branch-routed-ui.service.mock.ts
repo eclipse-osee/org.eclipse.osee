@@ -15,11 +15,11 @@ import { BranchRoutedUIService } from './branch-routed-ui.service';
 
 export const branchRoutedUiServiceMock: Partial<BranchRoutedUIService> = {
 	branchType: '',
-	type: new BehaviorSubject(''),
+	type: new BehaviorSubject<'working' | 'baseline' | ''>(''),
 	id: new BehaviorSubject(''),
 	branchId: '',
 
-	set position(value: { type: string; id: string }) {
+	set position(value: { type: 'working' | 'baseline' | ''; id: string }) {
 		//do nothing
 	},
 };

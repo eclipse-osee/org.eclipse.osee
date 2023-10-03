@@ -37,7 +37,11 @@ export const diffReportResolverFn: ResolveFn<changeInstance[] | undefined> = (
 	}
 	if (diffService.type !== currentRoute.paramMap.get('branchType')) {
 		requested = false;
-		diffService.branchType = currentRoute.paramMap.get('branchType') || '';
+		diffService.branchType =
+			(currentRoute.paramMap.get('branchType') as
+				| 'working'
+				| 'baseline'
+				| '') || '';
 	}
 	diffService.DiffMode = route.url.some((e) => e.path === 'diff');
 	if (!requested) {

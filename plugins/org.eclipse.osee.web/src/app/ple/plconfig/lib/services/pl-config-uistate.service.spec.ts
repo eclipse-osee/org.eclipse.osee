@@ -35,41 +35,32 @@ describe('PlConfigUIStateService', () => {
 		});
 		service.branchIdNum = 'string';
 	});
-	it('#get viewBranchType should return string "all" from observable when given a string "all"', (done: DoneFn) => {
-		service.viewBranchTypeString = 'all';
-		service.viewBranchType.subscribe((value) => {
-			expect(value).toBeInstanceOf(String);
-			expect(value).toBe('all');
-			done();
-		});
-		service.viewBranchTypeString = 'all';
-	});
 	it('#get viewBranchType should return string "all" from observable when given a string "All"', (done: DoneFn) => {
-		service.viewBranchTypeString = 'All';
+		service.viewBranchTypeString = '';
 		service.viewBranchType.subscribe((value) => {
 			expect(value).toBeInstanceOf(String);
-			expect(value).toBe('all');
+			expect(value).toBe('');
 			done();
 		});
-		service.viewBranchTypeString = 'All';
+		service.viewBranchTypeString = '';
 	});
 	it('#get viewBranchType should return string "working" from observable when given a string "Working"', (done: DoneFn) => {
-		service.viewBranchTypeString = 'Working';
+		service.viewBranchTypeString = 'working';
 		service.viewBranchType.subscribe((value) => {
 			expect(value).toBeInstanceOf(String);
 			expect(value).toBe('working');
 			done();
 		});
-		service.viewBranchTypeString = 'Working';
+		service.viewBranchTypeString = 'working';
 	});
 	it('#get viewBranchType should return string "baseline" from observable when given a string "Baseline"', (done: DoneFn) => {
-		service.viewBranchTypeString = 'Baseline';
+		service.viewBranchTypeString = 'baseline';
 		service.viewBranchType.subscribe((value) => {
 			expect(value).toBeInstanceOf(String);
 			expect(value).toBe('baseline');
 			done();
 		});
-		service.viewBranchTypeString = 'Baseline';
+		service.viewBranchTypeString = 'baseline';
 	});
 	it('#get updateReq should return boolean "true" from observable when given a bool "true"', (done: DoneFn) => {
 		service.updateReq.subscribe((value) => {

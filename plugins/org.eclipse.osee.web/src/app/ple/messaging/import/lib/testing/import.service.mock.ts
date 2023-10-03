@@ -26,7 +26,7 @@ export const importServiceMock: Partial<ImportService> = {
 	},
 
 	get branchType() {
-		return new BehaviorSubject<string>('working');
+		return new BehaviorSubject<'working' | 'baseline' | ''>('working');
 	},
 
 	get importFile() {

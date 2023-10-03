@@ -316,9 +316,9 @@ describe('CurrentMessagesService', () => {
 	it('should get a connection path', () => {
 		scheduler.run(({ expectObservable }) => {
 			service.branchId = '10';
-			service.branchType = 'abc';
+			service.branchType = 'working';
 			expectObservable(service.connectionsRoute).toBe('a', {
-				a: '/ple/messaging/connections/abc/10',
+				a: '/ple/messaging/connections/working/10',
 			});
 		});
 	});

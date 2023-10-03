@@ -35,7 +35,7 @@ import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/arti
 	templateUrl: './artifact-explorer.component.html',
 })
 export class ArtifactExplorerComponent {
-	@Input() set branchType(branchType: string) {
+	@Input() set branchType(branchType: 'working' | 'baseline' | '') {
 		if (branchType != undefined) {
 			this.uiService.typeValue = branchType;
 		} else {

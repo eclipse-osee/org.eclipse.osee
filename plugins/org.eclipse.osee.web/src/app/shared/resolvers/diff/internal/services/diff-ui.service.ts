@@ -51,7 +51,7 @@ export class DiffUIService {
 		this.uiService.idValue = value;
 	}
 
-	set branchType(value: string) {
+	set branchType(value: 'working' | 'baseline' | '') {
 		this.uiService.typeValue = value;
 	}
 }

@@ -47,7 +47,7 @@ describe('BranchRoutedUIService', () => {
 	describe('Core Functionality', () => {
 		describe('Branch Type Navigation', () => {
 			it('should utilize a split base url to form a url', () => {
-				service.branchType = 'product line';
+				service.branchType = 'baseline';
 				service.branchType = 'working';
 				expect(service.type.getValue()).toEqual('working');
 			});
@@ -55,7 +55,7 @@ describe('BranchRoutedUIService', () => {
 
 		describe('Id Navigation', () => {
 			it('should utilize a split base url to form a url', () => {
-				service.branchType = 'product line';
+				service.branchType = 'baseline';
 				service.branchId = '0';
 				service.branchId = '8';
 				expect(service.id.getValue()).toEqual('8');

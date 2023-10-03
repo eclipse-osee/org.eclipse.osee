@@ -43,7 +43,8 @@ export class NodeTraceReportRequirementsComponent {
 	) {
 		this.route.paramMap.subscribe((params) => {
 			this.ui.idValue = params.get('branchId') || '';
-			this.ui.typeValue = params.get('branchType') || '';
+			this.ui.typeValue =
+				(params.get('branchType') as 'working' | 'baseline' | '') || '';
 		});
 	}
 

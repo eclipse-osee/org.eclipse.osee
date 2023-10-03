@@ -67,7 +67,7 @@ describe('BranchTypeSelectorComponent', () => {
 		const spy = spyOn(router, 'navigate').and.returnValue(
 			new Promise(() => true)
 		);
-		component.changeBranchType('hello');
-		expect(component.branchType).toEqual('hello');
+		component.changeBranchType('baseline');
+		expect(component.branchType).toEqual('baseline');
 	});
 });

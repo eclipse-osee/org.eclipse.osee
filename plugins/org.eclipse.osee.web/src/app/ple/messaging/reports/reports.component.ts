@@ -88,7 +88,8 @@ export class ReportsComponent implements OnInit {
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
 			this.routerState.idValue = params.get('branchId') || '';
-			this.routerState.typeValue = params.get('branchType') || '';
+			this.routerState.typeValue =
+				(params.get('branchType') as 'working' | 'baseline' | '') || '';
 		});
 	}
 

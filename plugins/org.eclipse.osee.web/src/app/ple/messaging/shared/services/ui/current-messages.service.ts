@@ -385,7 +385,7 @@ export class CurrentMessagesService {
 		this._differences.next(value);
 	}
 
-	set branchType(value: string) {
+	set branchType(value: 'working' | 'baseline' | '') {
 		this.ui.typeValue = value;
 	}
 

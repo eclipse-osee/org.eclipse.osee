@@ -92,7 +92,7 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	connection: '10',
 	SubMessageId: new BehaviorSubject('10'),
 	BranchId: new BehaviorSubject('10'),
-	branchType: new BehaviorSubject('working'),
+	branchType: new BehaviorSubject<'working' | 'baseline' | ''>('working'),
 	MessageId: new BehaviorSubject('10'),
 	connectionId: new BehaviorSubject('10'),
 	getType(typeId: string) {

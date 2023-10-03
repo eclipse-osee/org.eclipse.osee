@@ -38,7 +38,8 @@ export class ChangeReportComponent implements OnInit {
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
 			this.uiService.idValue = params.get('branchId') || '';
-			this.uiService.typeValue = params.get('branchType') || '';
+			this.uiService.typeValue =
+				(params.get('branchType') as 'working' | 'baseline' | '') || '';
 		});
 	}
 
