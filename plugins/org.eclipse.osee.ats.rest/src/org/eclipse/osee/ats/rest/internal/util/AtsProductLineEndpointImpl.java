@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -28,15 +27,16 @@ import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Audrey Denk
@@ -52,35 +52,27 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
    }
 
    @Override
-   public List<BranchToken> getBranches(String branchQueryType, String workType) {
+   public List<BranchToken> getBranches(BranchType type, String workType, BranchCategoryToken category, String filter,
+      long pageNum, long pageSize) {
+      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs = new ArrayList<>();
       if (!WorkType.valueOfOrNone(workType).equals(WorkType.None)) { //check for valid workType
-         List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs = new ArrayList<>();
          artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamDefinition,
             AtsAttributeTypes.WorkType));
          artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamWorkflow,
             AtsAttributeTypes.TeamDefinitionReference));
-
-         List<BranchToken> pleBranchList = new ArrayList<>();
-         if (branchQueryType.equals("baseline")) {
-            pleBranchList =
-               orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
-                  false).includeDeleted(false).andIsOfType(BranchType.BASELINE).andStateIs(BranchState.MODIFIED,
-                     BranchState.CREATED).getResultsAsId().getList();
-         }
-         if (branchQueryType.equals("working")) {
-
-            pleBranchList =
-               orcsApi.getQueryFactory().branchQuery().andIsOfCategory(CoreBranchCategoryTokens.PLE).includeArchived(
-                  false).includeDeleted(false).andIsOfType(BranchType.WORKING).andStateIs(BranchState.MODIFIED,
-                     BranchState.CREATED).mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON,
-                        artAttrPairs).getResultsAsId().getList();
-         }
-         Collections.sort(pleBranchList);
-
-         return pleBranchList;
-      } else {
-         return Collections.EMPTY_LIST;
       }
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
+      query = category.isValid() ? query.andIsOfCategory(category) : query;
+      query = query.includeArchived(false).includeDeleted(false);
+      query = type.getId() > -1 ? query.andIsOfType(type) : query; //BranchType.WORKING = 0 :(
+      query = query.orderByName();
+      query = !filter.equals("") ? query.andNameLike(filter) : query;
+      query = pageNum > 0L && pageSize > 0L ? query.isOnPage(pageNum, pageSize) : query;
+      query = query.andStateIs(BranchState.MODIFIED, BranchState.CREATED);
+      query = type.equals(BranchType.WORKING) && !WorkType.valueOfOrNone(workType).equals(
+         WorkType.None) ? query.mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON, artAttrPairs) : query;
+      return query.getResultsAsId().getList();
+
    }
 
    @Override
@@ -110,5 +102,27 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
       changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ProductLineApprovedDate, resultDate);
       changes.execute();
       return rd;
+   }
+
+   @Override
+   public int getBranchCount(BranchType type, String workType, BranchCategoryToken category, String filter) {
+      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs = new ArrayList<>();
+      if (!WorkType.valueOfOrNone(workType).equals(WorkType.None)) { //check for valid workType
+         artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamDefinition,
+            AtsAttributeTypes.WorkType));
+         artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamWorkflow,
+            AtsAttributeTypes.TeamDefinitionReference));
+      }
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
+      query = category.isValid() ? query.andIsOfCategory(category) : query;
+      query = query.includeArchived(false).includeDeleted(false);
+      query = type.getId() > -1 ? query.andIsOfType(type) : query; //BranchType.WORKING = 0 :(
+      query = type.equals(BranchType.WORKING) && artAttrPairs.size() > 0 ? query.andStateIs(BranchState.MODIFIED,
+         BranchState.CREATED) : query;
+      query = query.orderByName();
+      query = !filter.equals("") ? query.andNameLike(filter) : query;
+      query = type.equals(BranchType.WORKING) && !WorkType.valueOfOrNone(workType).equals(
+         WorkType.None) ? query.mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON, artAttrPairs) : query;
+      return query.getCount();
    }
 }
