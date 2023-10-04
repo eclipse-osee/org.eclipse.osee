@@ -21,14 +21,23 @@ import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import org.eclipse.osee.framework.core.data.BranchToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.OmeAbstractTab;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.AbstractOmeData;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.model.ArtOmeData;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeImageLinkListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextOseeLinkListener;
@@ -84,21 +93,36 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
                // If "Display Images" option is toggled
                if (((ArtOmeData) omeData).getDisplayImagesBool()) {
 
-                  // Save the image artifact to the .preview folder in osee.data
-                  BranchToken imageArtifactBranch = ((ArtOmeData) omeData).getArtifact().getBranch();
+                  // Query for the png artifact
+                  BranchToken imgArtifactBranch = ((ArtOmeData) omeData).getArtifact().getBranch();
+                  Artifact imgArtifact = ArtifactQuery.getArtifactFromId(Long.parseLong(idStr), imgArtifactBranch);
 
-                  /*
-                   * Build the rest call to place within the image tag. Rest call requires server, branch id, artifact
-                   * id (general document artifact), attribute type id (native content attribute)
-                   */
-                  String imageContentRestCall = String.format("%s/orcs/branch/%s/artifact/%s/attribute/type/%s",
-                     System.getProperty("osee.application.server"), imageArtifactBranch.getId(), idStr,
-                     CoreAttributeTypes.NativeContent.getId());
+                  // Fetch the input stream for the png artifact's native content attribute
+                  FileSystemRenderer renderer = new NativeRenderer();
+                  InputStream inputStream =
+                     renderer.getRenderInputStream(PresentationType.DEFAULT_OPEN, Arrays.asList(imgArtifact));
 
-                  // Create the image tag with the file location specified
-                  String imgTag = String.format("<img src=\"%s\" alt=\"%s\">", imageContentRestCall, name);
+                  // Transform the input stream into a string to place within the img tag as an image url
+                  try {
+                     byte[] pngBytes = Lib.inputStreamToBytes(inputStream);
 
-                  mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", imgTag);
+                     String base64png = Base64.getEncoder().encodeToString(pngBytes);
+
+                     String imgTag = "<img src=\"data:image/png;base64," + base64png + "\" />";
+
+                     mdContent = mdContent.replaceFirst("<oseeimagelink>(.*?)</oseeimagelink>", imgTag);
+
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  } finally {
+                     if (inputStream != null) {
+                        try {
+                           inputStream.close();
+                        } catch (Exception ex) {
+                           OseeLog.log(Activator.class, Level.SEVERE, ex);
+                        }
+                     }
+                  }
 
                } else {
                   // Create normal href link to the artifact
