@@ -1,7 +1,15 @@
 # ATS Workflow Documentation/Design
 
 * <a href="../AtsWorkflowLinks.md">ATS Workflow Links</a>
- 
+
+### Transition Assignees
+- Validation
+    - Check to see if Work Definition specifies assignee required.  If so, fail if user isn't assigned already
+
+- Transition
+    - If transition-to-assignees has valid users, use them
+    - Else use the current user as the to-assignees
+
 ### Things to consider before implementing a transition hook:
 
 Most transition validation can/should be done in the Workflow Definitions. Anything "generic" should be added to

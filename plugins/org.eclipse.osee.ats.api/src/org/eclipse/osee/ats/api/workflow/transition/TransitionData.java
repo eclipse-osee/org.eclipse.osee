@@ -250,4 +250,12 @@ public class TransitionData {
       return getTransitionOptions().contains(transitionOption);
    }
 
+   public boolean isToAssigneesEmptyOrUnassigned() {
+      if (getToAssignees() == null || getToAssignees().isEmpty() || getToAssignees().contains(
+         AtsCoreUsers.UNASSIGNED_USER)) {
+         return true;
+      }
+      return false;
+   }
+
 }

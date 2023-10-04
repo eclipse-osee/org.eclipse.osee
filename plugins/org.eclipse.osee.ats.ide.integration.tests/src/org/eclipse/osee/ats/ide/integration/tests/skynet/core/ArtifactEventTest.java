@@ -164,19 +164,19 @@ public class ArtifactEventTest {
 
    @Test
    public void testArtifactRelationEvents() throws Exception {
-      if(System.getProperty("ignore_intermittent_failure") == null) {
-      OseeEventManager.removeAllListeners();
-      Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
+      if (System.getProperty("ignore_intermittent_failure") == null) {
+         OseeEventManager.removeAllListeners();
+         Assert.assertEquals(0, OseeEventManager.getNumberOfListeners());
 
-      listener = new ArtifactEventListener();
-      OseeEventManager.addListener(listener);
-      Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
+         listener = new ArtifactEventListener();
+         OseeEventManager.addListener(listener);
+         Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
-      Artifact newArt = testArtifactRelationEvents__addArtifact();
-      testArtifactRelationEvents__addRelation(newArt);
-      testArtifactRelationEvents__modifyArtifact(newArt);
-      testArtifactRelationEvents__modifyRelation(newArt);
-      testArtifactRelationEvents__deleteArtifact(newArt);
+         Artifact newArt = testArtifactRelationEvents__addArtifact();
+         testArtifactRelationEvents__addRelation(newArt);
+         testArtifactRelationEvents__modifyArtifact(newArt);
+         testArtifactRelationEvents__modifyRelation(newArt);
+         testArtifactRelationEvents__deleteArtifact(newArt);
       }
    }
 
@@ -390,10 +390,6 @@ public class ArtifactEventTest {
    private Artifact testArtifactRelationEvents__addArtifact() throws Exception {
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, COMMON);
       newArt.persist(getClass().getSimpleName());
-
-      for (EventBasicGuidArtifact guidArt : listener.getArtifacts()) {
-         System.err.println("GuidArt: " + guidArt);
-      }
 
       Assert.assertEquals(2, listener.getArtifacts().size());
       Assert.assertTrue("No relations events should be sent", listener.getRelations().isEmpty());

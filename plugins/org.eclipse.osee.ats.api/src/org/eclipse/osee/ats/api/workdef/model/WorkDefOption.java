@@ -23,6 +23,10 @@ public class WorkDefOption extends OseeEnum {
    private static final Long ENUM_ID = 3185790353298798L;
 
    public static WorkDefOption RequireTargetedVersion = new WorkDefOption(111L, "RequireTargetedVersion");
+   /**
+    * If set for Workflow Definition, user is required to select an assignee before transition. Else transition will go
+    * through with current assignees or assign current user if UnAssigned.
+    */
    public static WorkDefOption RequireAssignees = new WorkDefOption(222L, "RequireAssignees");
    public static WorkDefOption None = new WorkDefOption(333L, "None");
 
