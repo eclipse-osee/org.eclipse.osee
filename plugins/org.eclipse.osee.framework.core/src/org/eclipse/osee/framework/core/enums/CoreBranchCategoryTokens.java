@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.core.enums;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Audrey Denk
@@ -36,9 +35,6 @@ public final class CoreBranchCategoryTokens {
    public static BranchCategoryToken valueOf(Long id) {
       BranchCategoryToken found =
          values.stream().filter(cat -> cat.getId().equals(id)).findFirst().orElse(BranchCategoryToken.SENTINEL);
-      if (found.isInvalid()) {
-         throw new OseeArgumentException("[%s] is not a valid Branch Category", id);
-      }
       return found;
    }
 }

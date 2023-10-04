@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  * @author Ryan D. Brooks
  */
 public class BranchType extends NamedIdBase {
+   public static final BranchType SENTINEL = new BranchType(-1, "SENTINEL");
    public static final BranchType WORKING = new BranchType(0, "WORKING");
    public static final BranchType BASELINE = new BranchType(2, "BASELINE");
    public static final BranchType MERGE = new BranchType(3, "MERGE");

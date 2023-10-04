@@ -18,6 +18,8 @@ import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,8 +34,10 @@ public class AtsProductLineEndpointTest extends AbstractRestTest {
    @Test
    public void testAtsPleBranchesRestCall() {
 
-      String path = "ats/ple/branches/";
-      WebTarget target = jaxRsApi.newTargetQuery(path + "/baseline");
+      String path = "ats/ple/branches";
+      WebTarget target = jaxRsApi.newTargetQuery(path, "type", BranchType.BASELINE.getIdString(), "category",
+         CoreBranchCategoryTokens.PLE.getIdString());
+      System.out.println(target.getUri());
 
       testActionRestCall(target, 2);
    }
