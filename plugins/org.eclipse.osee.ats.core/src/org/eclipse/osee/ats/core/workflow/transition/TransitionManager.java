@@ -248,8 +248,7 @@ public class TransitionManager implements IExecuteListener {
                   logTimeStart("05.2 - Validate Editable");
                   boolean isEditable = AtsApiService.get().getAtsAccessService().isWorkflowEditable(workItem);
                   boolean currentlyUnAssignedOrCompletedOrCancelled =
-                     workItem.isCompletedOrCancelled() || workItem.getAssignees().contains(
-                        AtsCoreUsers.UNASSIGNED_USER);
+                     workItem.isCompletedOrCancelled() || transData.isToAssigneesEmptyOrUnassigned();
                   // Allow anyone to transition any task to completed/cancelled/working if parent is working
                   if (workItem.isTask() && workItem.getParentTeamWorkflow().getCurrentStateType().isCompletedOrCancelled()) {
                      results.addResult(workItem, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
@@ -279,7 +278,7 @@ public class TransitionManager implements IExecuteListener {
                   }
 
                   // Validate state, widgets, rules unless OverrideAttributeValidation is set or transitioning to cancel
-                  isStateTransitionable(results, workItem, toStateDef);
+                  isStateTransitionable(results, workItem, toStateDef, fromStateDef);
                   if (results.isCancelled()) {
                      continue;
                   }
@@ -377,11 +376,17 @@ public class TransitionManager implements IExecuteListener {
                   }
                   logStateStartedEvent(workItem, toState, transitionDate, transitionUser);
 
-                  // Get transition to assignees, do some checking to ensure someone is assigned and UnAssigned
+                  /**
+                   * Get transition to assignees; Use specified or get default current user. See AtsWorkflowLinks.md for
+                   * design.
+                   */
                   Set<AtsUser> toStateAssigees = new HashSet<>();
-                  if (transData.getToAssignees() != null && !transData.getToAssignees().isEmpty()) {
+                  // If toAssignees is valid, use those
+                  if (!transData.isToAssigneesEmptyOrUnassigned()) {
                      toStateAssigees.addAll(transData.getToAssignees());
-                  } else {
+                  }
+                  // Else, get toAssignees or current user if none specified
+                  else {
                      toStateAssigees.addAll(getToAssignees(workItem, toState));
                   }
 
@@ -488,7 +493,8 @@ public class TransitionManager implements IExecuteListener {
       return false;
    }
 
-   private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
+   private void isStateTransitionable(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef,
+      StateDefinition fromStateDef) {
       logTimeStart("05.4 - isStateTransitionable");
       boolean isOverrideAttributeValidationState =
          transData.isOverrideTransitionValidityCheck() || isOverrideAttributeValidationState(workItem, toStateDef);
@@ -524,11 +530,12 @@ public class TransitionManager implements IExecuteListener {
             results.addResult(workItem, TransitionResult.MUST_BE_TARGETED_FOR_VERSION);
          }
 
-         // Don't assignee if so configured
+         /**
+          * Ensure assignee is selected if required in current state, else current assignees will be used, else current
+          * user will be used when transition; Nothing to validate here. See AtsWorkflowLinks.md for design.
+          */
          boolean requireAssignee = workItem.getWorkDefinition().getOptions().contains(WorkDefOption.RequireAssignees);
-
-         // Only check this if TeamWorkflow, not for reviews
-         if (requireAssignee && toStateDef.isWorking()) {
+         if (requireAssignee && fromStateDef.isWorking() && transData.isToAssigneesEmptyOrUnassigned()) {
             results.addResult(workItem, TransitionResult.MUST_HAVE_ASSIGNEE);
          }
 

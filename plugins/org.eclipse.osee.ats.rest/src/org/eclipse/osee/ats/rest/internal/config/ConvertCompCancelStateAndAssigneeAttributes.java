@@ -52,7 +52,7 @@ public class ConvertCompCancelStateAndAssigneeAttributes implements IAtsDatabase
 
    @Override
    public void run(XResultData rd, boolean reportOnly, AtsApi atsApi) {
-      ElapsedTime time = new ElapsedTime(TITLE + " - Loading", true);
+      ElapsedTime time = new ElapsedTime(TITLE + " - Loading", false);
       Set<ArtifactId> uniqueArtIds = new HashSet<>();
       uniqueArtIds.addAll(atsApiServer.getOrcsApi() //
          .getQueryFactory() //
