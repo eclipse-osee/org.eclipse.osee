@@ -22,6 +22,8 @@ public interface KeyValueOps {
 
    Long putIfAbsent(String value);
 
+   boolean putWithKeyIfAbsent(Long key, String value);
+
    String getByKey(Long key);
 
    String getByKey(Id key);
@@ -29,6 +31,8 @@ public interface KeyValueOps {
    Long getByValue(String value);
 
    boolean putByKey(Long key, String value);
+
+   boolean updateByKey(Long key, String value);
 
    boolean putByKey(Id key, String value);
 }

@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -108,4 +107,40 @@ public interface TransactionEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    XResultData applyTransferFile(@QueryParam("file") String pathToFile);
+
+   /**
+    * Makes a request to lock down transfers for the given export ID. This will set the lock that identifies the
+    * transfer as in progress This is a utility for checking the state of transfers externally, and should not be used
+    * when the TransferFileLockUtil is available instead
+    *
+    * @param exportId a {@link TransactionId} object representing the unique export ID to lock.
+    */
+   @POST
+   @Path("xfer/lock")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData lock(@QueryParam("exportId") TransactionId exportId);
+
+   /**
+    * Makes a request to unlock transfers for the given export ID. This will remove the lock that identifies the
+    * transfer as in progress This is a utility for checking the state of transfers externally, and should not be used
+    * when the TransferFileLockUtil is available instead. If transfers are incorrectly locked, this API can clear the
+    * lock. Do not use this API if someone is currently performing a transfer for the given export ID
+    *
+    * @param exportId a {@link TransactionId} object representing the unique export ID to unlock.
+    */
+   @POST
+   @Path("xfer/unlock")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData unlock(@QueryParam("exportId") TransactionId exportId);
+
+   /**
+    * Makes a request check if transfers are locked for the given export ID. This is a utility for checking the state of
+    * transfers externally, and should not be used when the TransferFileLockUtil is available instead
+    *
+    * @param exportId a {@link TransactionId} object representing the unique export ID to check.
+    */
+   @GET
+   @Path("xfer/isLocked")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData isLocked(@QueryParam("exportId") TransactionId exportId);
 }

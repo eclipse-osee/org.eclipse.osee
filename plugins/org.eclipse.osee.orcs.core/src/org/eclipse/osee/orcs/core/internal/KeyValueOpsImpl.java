@@ -34,6 +34,11 @@ public class KeyValueOpsImpl implements KeyValueOps {
    }
 
    @Override
+   public boolean putWithKeyIfAbsent(Long key, String value) {
+      return keyValueStore.putWithKeyIfAbsent(key, value);
+   }
+
+   @Override
    public Long getByValue(String value) {
       return keyValueStore.getByValue(value);
    }
@@ -51,6 +56,11 @@ public class KeyValueOpsImpl implements KeyValueOps {
    @Override
    public boolean putByKey(Long key, String value) {
       return keyValueStore.putByKey(key, value);
+   }
+
+   @Override
+   public boolean updateByKey(Long key, String value) {
+      return keyValueStore.updateByKey(key, value);
    }
 
    @Override

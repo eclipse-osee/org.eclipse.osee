@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.rest.model.transaction;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.TransferFamily;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 
 /**
@@ -34,10 +33,6 @@ public final class TransferTupleTypes {
    public static final Tuple4Type<TransactionId, BranchId, TransactionId, TransferDBType> ExportedBranch =
       Tuple4Type.valueOf(TransferFamily, 101L, TransactionId::valueOf, BranchId::valueOf, TransactionId::valueOf,
          ordinal -> transferDBTypes[ordinal.intValue()]);
-
-   // Lock Check TransactionId (BaseTx), BranchId, TransactionId(ExportId)
-   public static final Tuple2Type<BranchId, TransactionId> TransferLocked =
-      Tuple2Type.valueOf(TransferFamily, 102L, BranchId::valueOf, TransactionId::valueOf);
 
    private TransferTupleTypes() {
       /* Constants */

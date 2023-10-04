@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -395,6 +396,55 @@ public class TransactionEndpointTest {
       } catch (Exception ex) {
          throw new OseeCoreException("Failed to purge Transaction in testArtifactDeletionTransfer");
       }
+   }
+
+   @Test
+   public void testTransferLocking() {
+      TransactionId export1 = TransactionId.valueOf(98724); // just meant to be unique
+      TransactionId export2 = TransactionId.valueOf(2356347);
+      XResultData results = transactionEndpoint.lock(export1);
+      assertTrue(results.isSuccess());
+      results = transactionEndpoint.unlock(export1);
+      assertTrue(results.isSuccess());
+      assertTrue(checkResultsString(results, (String.format("%s not locked", export1.toString()))));
+      results = transactionEndpoint.lock(export1);
+      assertTrue(results.isSuccess());
+      results = transactionEndpoint.lock(export2);
+      assertTrue(results.isSuccess());
+      results = transactionEndpoint.unlock(export1);
+      assertTrue(results.isSuccess());
+      assertTrue(checkResultsString(results, (String.format("%s not locked", export1.toString()))));
+      results = transactionEndpoint.unlock(export2);
+      assertTrue(results.isSuccess());
+      assertTrue(checkResultsString(results, (String.format("%s not locked", export2.toString()))));
+      // check is locked
+      results = transactionEndpoint.isLocked(export1);
+      assertTrue(results.isSuccess());
+      assertTrue(checkResultsString(results, (String.format("%s not locked", export1.toString()))));
+      results = transactionEndpoint.lock(export1);
+      results = transactionEndpoint.isLocked(export1);
+      assertTrue(results.isSuccess());
+      assertTrue(checkResultsString(results, (String.format("%s locked", export1.toString()))));
+
+      // lock while locked
+      results = transactionEndpoint.lock(export1);
+      assertFalse(results.isSuccess());
+      assertTrue(checkResultsString(results, (String.format("%s already locked", export1.toString()))));
+
+      // unlock while unlocked
+      results = transactionEndpoint.unlock(export2);
+      assertFalse(results.isSuccess());
+      assertTrue(checkResultsString(results, (String.format("%s already not locked", export2.toString()))));
+
+   }
+
+   private boolean checkResultsString(XResultData results, String toCheck) {
+      for (String entry : results.getResults()) {
+         if (entry.contains(toCheck)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
