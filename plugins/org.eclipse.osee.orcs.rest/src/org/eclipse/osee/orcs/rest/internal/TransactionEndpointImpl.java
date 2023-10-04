@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
-import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferLocked;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -44,6 +43,7 @@ import org.eclipse.osee.orcs.rest.model.transaction.BranchLocation;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferDBType;
+import org.eclipse.osee.orcs.rest.model.transaction.TransferFileLockUtil;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferInitData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferOpType;
 import org.eclipse.osee.orcs.search.TupleQuery;
@@ -217,24 +217,16 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    private XResultData transferActiveHelper(TransactionId exportId, XResultData results) {
       try {
-         results.logf("%s",
-            String.format("Checking if transfer currently in progress for exportID:: %s", exportId.getIdString()));
+         results.logf("Checking if transfer currently in progress for exportID:: %s", exportId.getIdString());
          int warning = results.getWarningCount();
          int error = results.getErrorCount();
-         boolean transferActive = tupleQuery.doesTuple2Exist(TransferLocked, CoreBranches.COMMON, exportId);
-         // Check if Transfer has been "locked" and is in the TupleTable2 via method
+         boolean transferActive = TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId());
          if (transferActive && (error != 0 && warning != 0)) {
-            results.errorf("%s", String.format("Transfer is active for the current export ID: ", exportId));
-            results.setErrorCount(1);
+            results.errorf("Transfer is active for the current export ID: %s", exportId);
          } else {
             // Transfer not in progress, begin lock
-            results.setInfoCount(1);
-            results.addRaw("Transfer in progress");
-            // Add to tuple2table and commit the transaction
-            TransactionBuilder txTupleTransferInProgress =
-               orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Adding exportId to Tuple2Table");
-            txTupleTransferInProgress.addTuple2(TransferLocked, CoreBranches.COMMON, exportId);
-            txTupleTransferInProgress.commit();
+            TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+            results.success("Transfer in progress");
          }
       } catch (Exception ex) {
          results.errorf("%s", String.format(
@@ -246,6 +238,43 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public XResultData applyTransferFile(String fileName) {
       XResultData results = new XResultData();
+      return results;
+   }
+
+   // external API to check for transfer file locks, internally, just use the util class TransferFileLockUtil
+   @Override
+   public XResultData lock(TransactionId exportId) {
+      XResultData results = new XResultData();
+      boolean transferLocked = TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+      if (transferLocked) {
+         results.success("Export ID %s locked", exportId.toString());
+      } else {
+         results.errorf("Export ID %s already locked", exportId.toString());
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData unlock(TransactionId exportId) {
+      XResultData results = new XResultData();
+      boolean transferUnLocked = TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
+      if (transferUnLocked) {
+         results.success("Export ID %s not locked", exportId.toString());
+      } else {
+         results.errorf("Export ID %s already not locked", exportId.toString());
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData isLocked(TransactionId exportId) {
+      XResultData results = new XResultData();
+      boolean transferIsLocked = TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId());
+      if (transferIsLocked) {
+         results.success("Export ID %s locked", exportId.toString());
+      } else {
+         results.success("Export ID %s not locked", exportId.toString());
+      }
       return results;
    }
 

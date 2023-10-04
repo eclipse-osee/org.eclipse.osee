@@ -20,9 +20,13 @@ public interface KeyValueStore {
 
    Long putIfAbsent(String value);
 
+   boolean putWithKeyIfAbsent(Long key, String value);
+
    Long getByValue(String value);
 
    String getByKey(Long key);
 
    boolean putByKey(Long key, String value);
+
+   boolean updateByKey(Long key, String value);
 }

@@ -31,6 +31,7 @@ public class KeyValueModule {
 
    private static final String SELECT_KEY_WITH_KEY = "select * from osee_key_value where key = ?";
    private static final String SELECT_KEY_WITH_VALUE = "select * from osee_key_value where value = ?";
+   private static final String UPDATE_VALUE_WITH_KEY = "update osee_key_value set value = ? where key = ?";
 
    public KeyValueModule(JdbcClient jdbcClient) {
       super();
@@ -49,6 +50,16 @@ public class KeyValueModule {
             }
 
             return key;
+         }
+
+         @Override
+         public boolean putWithKeyIfAbsent(Long key, String value) {
+            String existing = getByKey(key);
+            if (Strings.isInvalidOrBlank(existing)) {
+               jdbcClient.runPreparedUpdate(OseeDb.OSEE_KEY_VALUE_TABLE.getInsertSql(), key, value);
+               return true;
+            }
+            return false;
          }
 
          @Override
@@ -88,6 +99,18 @@ public class KeyValueModule {
                return true;
             }
 
+            return false;
+         }
+
+         @Override
+         public boolean updateByKey(Long key, String value) {
+            String existingValue = getByKey(key);
+            if (Strings.isValidAndNonBlank(existingValue)) {
+               if (!existingValue.equals(value)) {
+                  jdbcClient.runPreparedUpdate(UPDATE_VALUE_WITH_KEY, value, key);
+                  return true;
+               }
+            }
             return false;
          }
       };
