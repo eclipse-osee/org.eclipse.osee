@@ -208,4 +208,17 @@ public interface ArtifactEndpoint {
    @Path("createTxBuilder/{artifactTypeId}")
    @Produces(MediaType.APPLICATION_JSON)
    TxBuilderInput getTxBuilderInput(@PathParam("artifactTypeId") ArtifactTypeToken artifactTypeId);
+
+   @GET
+   @Path("searchByFilter")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactReadable> searchArtifactsByFilter(@QueryParam("filter") String filter,
+      @QueryParam("attributeTypeId") AttributeTypeToken attributeTypeId,
+      @QueryParam("artifactTypeId") ArtifactTypeToken artifactTypeId, @QueryParam("viewId") ArtifactId viewId);
+
+   @GET
+   @Path("{artifact}/getPathToArtifact")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<List<ArtifactId>> getPathToArtifact(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId);
 }
