@@ -47,7 +47,9 @@ describe('BranchListService', () => {
 				categoryService.category = '3';
 				service.branches.subscribe();
 				const req = httpTestingController.expectOne(
-					apiURL + '/orcs/branches/' + 'baseline/category/3'
+					apiURL +
+						'/ats/ple/branches' +
+						'?workType=None&type=2&category=3'
 				);
 				expect(req.request.method).toEqual('GET');
 				req.flush(testData);
@@ -60,7 +62,9 @@ describe('BranchListService', () => {
 				categoryService.category = '3';
 				service.branches.subscribe();
 				const req = httpTestingController.expectOne(
-					apiURL + '/orcs/branches/' + 'working/category/3'
+					apiURL +
+						'/ats/ple/branches' +
+						'?workType=None&type=0&category=3'
 				);
 				expect(req.request.method).toEqual('GET');
 				req.flush(testData);

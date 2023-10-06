@@ -11,73 +11,130 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, iif, of } from 'rxjs';
-import { share, switchMap } from 'rxjs/operators';
-import { BranchInfoService } from '@osee/shared/services';
+import { Observable, combineLatest, iif, merge, of } from 'rxjs';
+import {
+	take,
+	map,
+	switchMap,
+	debounceTime,
+	distinctUntilChanged,
+	shareReplay,
+} from 'rxjs/operators';
+import { BranchInfoService, WorktypeService } from '@osee/shared/services';
 import { UiService } from '@osee/shared/services';
 import { BranchCategoryService } from './branch-category.service';
+import { BranchFilterService } from './branch-filter.service';
+import { BranchPageService } from './branch-page.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class BranchListService {
+	private _type = this.ui.type.pipe(
+		map((type) =>
+			type === 'baseline' ? '2' : type == 'working' ? '0' : '-1'
+		)
+	);
 	private _branches = combineLatest([
-		this.ui.type,
+		this._type,
 		this.categoryService.branchCategory,
-		this.categoryService.actionSearch,
+		this.filterService.filter,
+		this.workTypeService.workType,
 	]).pipe(
-		switchMap(([type, category, searchType]) =>
-			of(this.updateType(type)).pipe(
-				switchMap((viewBranchType) =>
-					iif(
-						() =>
-							(viewBranchType === 'all' ||
-								viewBranchType === 'working' ||
-								viewBranchType === 'baseline') &&
-							category !== '' &&
-							category !== '0',
-						this.branchService.getBranches(
-							viewBranchType,
-							category,
-							searchType,
-							this.getWorkType(category)
-						),
-						of([])
-					)
-				)
+		switchMap(([type, category, filter, workType]) =>
+			iif(
+				() => type !== '-1',
+				this.branchService.getBranches(
+					type,
+					category,
+					workType,
+					filter
+				),
+				of()
 			)
-		),
-		share()
+		)
 	);
 
+	private _currentBranch = this.ui.id.pipe(
+		switchMap((id) =>
+			iif(
+				() => id !== '' && id !== '-1' && id !== '0',
+				this.branchService.getBranch(id),
+				of()
+			)
+		)
+	);
+	private _currentBranchName = this._currentBranch.pipe(map((br) => br.name));
+
+	private _filter = merge(
+		this._currentBranchName,
+		this.filterService.filter
+	).pipe(
+		distinctUntilChanged(),
+		debounceTime(500),
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
 	constructor(
 		private branchService: BranchInfoService,
 		private ui: UiService,
-		private categoryService: BranchCategoryService
+		private categoryService: BranchCategoryService,
+		private filterService: BranchFilterService,
+		private workTypeService: WorktypeService,
+		private pageSizeService: BranchPageService
 	) {}
-
-	private updateType(value: string) {
-		if (value === 'product line') {
-			return 'baseline';
-		} else if (value === 'working') {
-			return 'working';
-		} else {
-			return value;
-		}
-		//"product line , working"
-	}
-
-	private getWorkType(category?: string) {
-		if (category === '3') {
-			return 'MIM';
-		} else {
-			return 'ARB';
-		}
-
-		return '';
-	}
 
 	get branches() {
 		return this._branches;
+	}
+	get pageSize() {
+		return this.pageSizeService.pageSize;
+	}
+	get filter(): Observable<string> {
+		return this._filter;
+	}
+
+	set filter(value: string) {
+		this.filterService.filter = value;
+	}
+
+	getFilteredPaginatedBranches(pageNum: string | number, filter?: string) {
+		return combineLatest([
+			this._type,
+			this.categoryService.branchCategory,
+			this.workTypeService.workType,
+			this.pageSizeService.pageSize,
+		]).pipe(
+			take(1),
+			switchMap(([type, category, workType, pageSize]) =>
+				this.branchService.getBranches(
+					type,
+					category,
+					workType,
+					filter,
+					pageSize,
+					pageNum
+				)
+			)
+		);
+	}
+
+	getFilteredCount(pageNum: string | number, filter?: string) {
+		return combineLatest([
+			this._type,
+			this.categoryService.branchCategory,
+			this.workTypeService.workType,
+		]).pipe(
+			take(1),
+			switchMap(([type, category, workType]) =>
+				this.branchService.getBranchCount(
+					type,
+					category,
+					workType,
+					filter
+				)
+			)
+		);
 	}
 }

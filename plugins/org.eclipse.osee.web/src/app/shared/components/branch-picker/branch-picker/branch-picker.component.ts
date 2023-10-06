@@ -20,6 +20,8 @@ import {
 import { BranchCategoryService } from '../../internal/services/branch-category.service';
 import { BranchSelectorComponent } from '../internal/components/branch-selector/branch-selector.component';
 import { BranchTypeSelectorComponent } from '../internal/components/branch-type-selector/branch-type-selector.component';
+import { workType } from '@osee/shared/types/configuration-management';
+import { WorktypeService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-branch-picker',
@@ -29,10 +31,13 @@ import { BranchTypeSelectorComponent } from '../internal/components/branch-type-
 })
 export class BranchPickerComponent implements OnChanges {
 	@Input() category: string = '0';
-	@Input() actionSearch: boolean = false;
-	constructor(private branchCategoryService: BranchCategoryService) {}
+	@Input() workType: workType = 'None';
+	constructor(
+		private branchCategoryService: BranchCategoryService,
+		private workTypeService: WorktypeService
+	) {}
 	ngOnChanges(changes: SimpleChanges): void {
 		this.branchCategoryService.category = this.category;
-		this.branchCategoryService.shouldActionSearch = this.actionSearch;
+		this.workTypeService.workType = this.workType;
 	}
 }

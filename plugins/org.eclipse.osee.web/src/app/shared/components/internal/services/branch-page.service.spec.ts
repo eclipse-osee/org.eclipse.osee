@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,12 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 
-@Component({
-	selector: 'osee-branch-picker',
-	template: '<div>Dummy</div>',
-	standalone: true,
-})
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class BranchPickerStub {}
+import { BranchPageService } from './branch-page.service';
+
+describe('BranchPageService', () => {
+	let service: BranchPageService;
+
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(BranchPageService);
+	});
+
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

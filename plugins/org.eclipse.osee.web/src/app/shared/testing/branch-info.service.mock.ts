@@ -16,12 +16,20 @@ import { testBranchInfo } from './branch-info.response.mock';
 import { testCommitResponse } from './configuration-management.response.mock';
 import { MockXResultData } from './XResultData.response.mock';
 import { BranchInfoService } from '@osee/shared/services';
+import { workType } from '@osee/shared/types/configuration-management';
 
 export const BranchInfoServiceMock: Partial<BranchInfoService> = {
 	getBranch(id: string) {
 		return of(testBranchInfo);
 	},
-	getBranches(type: string, category?: string, searchType?: boolean) {
+	getBranches(
+		type: string,
+		category: string,
+		workType: workType,
+		filter?: string,
+		pageSize?: number,
+		pageNum?: string | number
+	) {
 		return of(testBranchListing);
 	},
 	commitBranch(
