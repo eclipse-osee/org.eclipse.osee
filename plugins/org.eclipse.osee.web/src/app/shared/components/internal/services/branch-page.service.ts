@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,21 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class BranchCategoryService {
-	private _branchCategory: BehaviorSubject<string> =
-		new BehaviorSubject<string>('');
+export class BranchPageService {
+	private _pageSize = new BehaviorSubject<number>(10);
+	private pageSize$ = this._pageSize.asObservable();
 	constructor() {}
 
-	get branchCategory() {
-		return this._branchCategory;
+	get pageSize(): Observable<number> {
+		return this.pageSize$;
 	}
 
-	set category(value: string) {
-		this._branchCategory.next(value);
+	set pageSize(value: number) {
+		this._pageSize.next(value);
 	}
 }

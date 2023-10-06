@@ -10,38 +10,64 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-form-field
-	appearance="fill"
-	subscriptSizing="dynamic"
-	class="branch-form-field tw-w-full">
-	<mat-label>Select a Branch</mat-label>
-	<mat-select
-		(selectionChange)="selectBranch($event)"
-		[disabled]="
-			(selectedBranchType | async) === '' || (loading | async) === 'true'
-		"
-		[(value)]="selectedBranchId"
-		[attr.data-cy]="
-			(loading | async) === 'true'
-				? 'branch-select-disabled'
-				: 'branch-select'
-		"
-		required>
-		<osee-mat-option-loading
-			[data]="options"
-			objectName="Branches">
-			<ng-template let-option>
+<ng-container
+	*ngIf="{
+		openedState: isOpen | async,
+		filter: filter | async
+	} as autoCompleteState">
+	<mat-form-field
+		appearance="fill"
+		subscriptSizing="dynamic"
+		class="branch-form-field tw-w-full">
+		<mat-label>Select a Branch</mat-label>
+		<input
+			type="text"
+			matInput
+			#input
+			[ngModel]="autoCompleteState.filter"
+			[disabled]="(selectedBranchType | async) === ''"
+			placeholder="Branches"
+			[errorStateMatcher]="errorMatcher"
+			id="branches"
+			name="branches"
+			(focusin)="autoCompleteOpened()"
+			(focusout)="close()"
+			(ngModelChange)="updateTypeAhead($event)"
+			#branches="ngModel"
+			[matAutocomplete]="autoBranches" />
+		<mat-autocomplete
+			autoActiveFirstOption="true"
+			autoSelectActiveOption="true"
+			#autoBranches="matAutocomplete"
+			(optionSelected)="selectBranch($event.option.value)">
+			<ng-container *ngIf="_branches | async as branches; else loading">
+				<ng-container *ngIf="_count | async as count; else loading">
+					<ng-container *ngIf="_size | async as size; else loading">
+						<osee-mat-option-loading
+							[data]="branches"
+							objectName="Branches"
+							[paginationSize]="size"
+							paginationMode="AUTO"
+							[count]="count">
+							<ng-template let-option>
+								<mat-option
+									[attr.data-cy]="'option-' + option.name"
+									[value]="option"
+									[id]="option.id">
+									{{ option.name }}
+								</mat-option>
+							</ng-template>
+						</osee-mat-option-loading>
+					</ng-container>
+				</ng-container>
+			</ng-container>
+			<ng-template #loading>
 				<mat-option
-					[value]="option.id"
-					[id]="option.id"
-					[attr.data-cy]="'option-' + option.name">
-					{{ option.name }}
+					id="-1"
+					[value]="{ id: '-1', name: 'invalid' }">
+					Loading...
 				</mat-option>
 			</ng-template>
-		</osee-mat-option-loading>
-	</mat-select>
-	<mat-spinner
-		*ngIf="(loading | async) === 'true'"
-		diameter="25"
-		matSuffix></mat-spinner>
-</mat-form-field>
+		</mat-autocomplete>
+	</mat-form-field>
+</ng-container>

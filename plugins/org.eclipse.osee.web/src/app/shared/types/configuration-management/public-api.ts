@@ -19,3 +19,4 @@ export * from './priority.enum';
 export * from './targeted-version';
 export * from './team-workflow';
 export * from './transition-action';
+export * from './work-type';

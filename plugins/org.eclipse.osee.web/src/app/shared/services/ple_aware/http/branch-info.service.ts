@@ -12,7 +12,6 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { iif } from 'rxjs';
 import { apiURL } from '@osee/environments';
 import {
 	HttpParamsType,
@@ -20,12 +19,7 @@ import {
 	commitResponse,
 	response,
 } from '@osee/shared/types';
-import {
-	OseeNode,
-	nodeData,
-	OseeEdge,
-	connection,
-} from '@osee/messaging/shared/types';
+import { workType } from '@osee/shared/types/configuration-management';
 
 @Injectable({
 	providedIn: 'root',
@@ -39,23 +33,50 @@ export class BranchInfoService {
 
 	public getBranches(
 		type: string,
-		category?: string,
-		searchType?: boolean,
-		workType?: string
+		category: string,
+		workType: workType,
+		filter?: string,
+		pageSize?: number,
+		pageNum?: string | number
 	) {
 		let params: HttpParamsType = {};
-		if (workType && workType !== '') {
-			params = { ...params, workType: workType };
+		params = { ...params, workType: workType };
+		params = { ...params, type: type };
+		if (category.length > 0) {
+			params = { ...params, category: category };
 		}
-		return iif(
-			() => searchType || false,
-			this.http.get<branch[]>(apiURL + '/ats/ple/branches/' + type, {
-				params: params,
-			}),
-			this.http.get<branch[]>(
-				apiURL + `/orcs/branches/${type}/category/${category}`
-			)
-		);
+		if (filter) {
+			params = { ...params, filter: filter };
+		}
+		if (pageSize) {
+			params = { ...params, count: pageSize };
+		}
+		if (pageNum) {
+			params = { ...params, pageNum: pageNum };
+		}
+		return this.http.get<branch[]>(apiURL + '/ats/ple/branches', {
+			params: params,
+		});
+	}
+
+	public getBranchCount(
+		type: string,
+		category: string,
+		workType: workType,
+		filter?: string
+	) {
+		let params: HttpParamsType = {};
+		params = { ...params, workType: workType };
+		params = { ...params, type: type };
+		if (category.length > 0) {
+			params = { ...params, category: category };
+		}
+		if (filter) {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<number>(apiURL + '/ats/ple/branches/count', {
+			params: params,
+		});
 	}
 
 	public commitBranch(

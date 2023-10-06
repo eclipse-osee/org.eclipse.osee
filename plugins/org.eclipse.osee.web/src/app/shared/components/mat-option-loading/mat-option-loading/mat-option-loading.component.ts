@@ -17,10 +17,13 @@ import {
 import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
+	Injector,
 	OnChanges,
 	OnDestroy,
 	SimpleChanges,
 	ViewChild,
+	inject,
+	runInInjectionContext,
 } from '@angular/core';
 import {
 	AfterViewInit,
@@ -61,6 +64,7 @@ import {
 	timer,
 } from 'rxjs';
 import { paginationMode } from '../internal/pagination-options';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /**
  * Component that handles loading, pagination and error states for mat-options
  */
@@ -80,7 +84,7 @@ import { paginationMode } from '../internal/pagination-options';
 	changeDetection: ChangeDetectionStrategy.OnPush, //lessen the amount of redrawing necessary to cause less "bounciness"
 })
 export class MatOptionLoadingComponent<T>
-	implements OnInit, AfterViewInit, OnDestroy, OnChanges
+	implements AfterViewInit, OnDestroy, OnChanges
 {
 	/**
 	 * Total number of items that should come from the paginated data source
@@ -135,14 +139,11 @@ export class MatOptionLoadingComponent<T>
 	@ViewChildren(MatOption) protected options!: QueryList<MatOption>;
 	@ContentChild(TemplateRef) template!: TemplateRef<{ $implicit: T; opt: T }>;
 	_paginationComplete = new BehaviorSubject<boolean>(false);
-	_options!: Observable<T[]>;
-	error!: Observable<string>;
 
 	@ContentChildren(MatOption)
 	protected resolvedOptions!: QueryList<MatOption>;
 	@ViewChild(CdkVirtualScrollViewport, { static: false })
 	cdkVirtualScrollViewPort!: CdkVirtualScrollViewport;
-
 	private _autoPaginate = timer(0, 250).pipe(
 		filter(
 			(_) =>
@@ -163,7 +164,81 @@ export class MatOptionLoadingComponent<T>
 		((pageNum: number | string) => Observable<T[]>) | Observable<T[]>
 	>();
 	private _count: BehaviorSubject<number> = new BehaviorSubject<number>(-1);
+	_options: Observable<T[]> = combineLatest([
+		this._dataSubject,
+		this._count,
+	]).pipe(
+		tap((_) => {
+			this._currentPageNumber.next(1);
+			this._paginationComplete.next(false);
+		}),
+		switchMap(([query, count]) =>
+			combineLatest([
+				this._currentPageNumber,
+				this._paginationComplete.pipe(filter((c) => c === false)),
+			]).pipe(
+				// This needs to be a concatmap in order to complete all of the page emissions
+				// in order. The catch with concatmap is if the query does not complete, or the
+				// observable stays hot, the it will not move on to the next page.
+				// If the options aren't paginating, make sure there's a take(1) on the source
+				// observable and that it's completing.
+				concatMap(([pageNum, complete]) => {
+					if (this._isNotObservable(query)) {
+						return query.call(this, pageNum).pipe(
+							tap((results) => {
+								if (results.length < this.paginationSize) {
+									this._paginationComplete.next(true);
+								}
+							})
+						);
+					}
+					this._paginationComplete.next(true);
+					return query;
+				}),
+				scan(
+					(acc, curr) => {
+						// For plain non-paginated observables, return the initial query results.
+						if (!this._isNotObservable(query)) {
+							return curr;
+						}
 
+						if (count < 0) {
+							if (acc.length === 0) {
+								return [...curr];
+							} else if (curr.length === 0) {
+								this._paginationComplete.next(true);
+								return acc;
+							}
+						} else if (acc.length + curr.length >= count) {
+							this._paginationComplete.next(true);
+						}
+						const deDupedArr = [...acc, ...curr].filter(
+							(value, index, array) =>
+								array.findIndex(
+									(value2) =>
+										JSON.stringify(value) ===
+										JSON.stringify(value2)
+								) === index
+						);
+
+						if (deDupedArr.length !== acc.length + curr.length) {
+							return deDupedArr;
+						}
+						return [...acc, ...curr];
+					},
+					this.noneOption ? ([this.noneOption] as T[]) : ([] as T[])
+				)
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
+	error: Observable<string> = this._options.pipe(
+		ignoreElements(),
+		catchError((err) =>
+			err ? of('Error when fetching data from OSEE server') : of()
+		)
+	);
 	constructor(
 		@Host()
 		@Optional()
@@ -201,93 +276,6 @@ export class MatOptionLoadingComponent<T>
 	/**
 	 * @TODO shareReplay observables need to be handled, or mat-select with delayed values needs to be handled
 	 */
-	ngOnInit(): void {
-		this._options = combineLatest([this._dataSubject, this._count]).pipe(
-			debounceTime(500),
-			tap((_) => {
-				this._currentPageNumber.next(1);
-				this._paginationComplete.next(false);
-			}),
-			switchMap(([query, count]) =>
-				this._currentPageNumber.pipe(
-					switchMap((pageNum) =>
-						this._paginationComplete.pipe(
-							filter((complete) => complete === false),
-							// This needs to be a concatmap in order to complete all of the page emissions
-							// in order. The catch with concatmap is if the query does not complete, or the
-							// observable stays hot, the it will not move on to the next page.
-							// If the options aren't paginating, make sure there's a take(1) on the source
-							// observable and that it's completing.
-							concatMap((_) => {
-								if (this._isNotObservable(query)) {
-									return query.call(this, pageNum).pipe(
-										tap((results) => {
-											if (
-												results.length <
-												this.paginationSize
-											) {
-												this._paginationComplete.next(
-													true
-												);
-											}
-										})
-									);
-								}
-								this._paginationComplete.next(true);
-								return query;
-							})
-						)
-					),
-					scan(
-						(acc, curr) => {
-							// For plain non-paginated observables, return the initial query results.
-							if (!this._isNotObservable(query)) {
-								return curr;
-							}
-
-							if (count < 0) {
-								if (acc.length === 0) {
-									return [...curr];
-								} else if (curr.length === 0) {
-									this._paginationComplete.next(true);
-									return acc;
-								}
-							} else if (acc.length + curr.length >= count) {
-								this._paginationComplete.next(true);
-							}
-							const deDupedArr = [...acc, ...curr].filter(
-								(value, index, array) =>
-									array.findIndex(
-										(value2) =>
-											JSON.stringify(value) ===
-											JSON.stringify(value2)
-									) === index
-							);
-
-							if (
-								deDupedArr.length !==
-								acc.length + curr.length
-							) {
-								return deDupedArr;
-							}
-							return [...acc, ...curr];
-						},
-						this.noneOption
-							? ([this.noneOption] as T[])
-							: ([] as T[])
-					),
-					shareReplay({ bufferSize: 1, refCount: true })
-				)
-			)
-		);
-
-		this.error = this._options.pipe(
-			ignoreElements(),
-			catchError((err) =>
-				err ? of('Error when fetching data from OSEE server') : of()
-			)
-		);
-	}
 
 	getHeightPx(itemSize: number, optLength: number) {
 		return itemSize * Math.min(5, Math.max(optLength, 1));

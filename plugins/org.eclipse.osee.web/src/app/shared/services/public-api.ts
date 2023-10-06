@@ -23,3 +23,4 @@ export * from './ple_aware/http/applicability-list.service';
 export * from './ple_aware/httpui/applicability-list-ui.service';
 export * from './ple_aware/ui/views/views-ui.service';
 export * from './ple_aware/ui/views/views-routed-ui.service';
+export * from './ple_aware/ui/worktype.service';
