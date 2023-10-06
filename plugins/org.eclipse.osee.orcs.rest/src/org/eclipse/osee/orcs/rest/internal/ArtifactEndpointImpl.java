@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -32,13 +33,16 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
@@ -390,6 +394,86 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public TxBuilderInput getTxBuilderInput(ArtifactTypeToken artifactTypeId) {
       return new TxBuilderInput(branch,
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactTypeId).asArtifacts());
+   }
+
+   @Override
+   public List<ArtifactReadable> searchArtifactsByFilter(String filter, AttributeTypeToken attributeTypeId,
+      ArtifactTypeToken artifactTypeId, ArtifactId viewId) {
+      artifactTypeId = artifactTypeId == null ? ArtifactTypeToken.SENTINEL : artifactTypeId;
+      attributeTypeId = attributeTypeId == null ? CoreAttributeTypes.Name : attributeTypeId;
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+
+      // add options to this
+      List<ArtifactReadable> arts = orcsApi.getQueryFactory().fromBranch(branch, viewId).and(attributeTypeId, filter,
+         QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_DELIMITER__ANY).asArtifacts();
+
+      return arts;
+   };
+
+   @Override
+   public List<List<ArtifactId>> getPathToArtifact(BranchId branch, ArtifactId artifact,
+      ArtifactId viewId) {
+      
+      // List of artIds to return from the query 
+      List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
+      List<ArtifactId> childArtIds = new ArrayList<>();
+      Consumer<JdbcStatement> consumer = stmt -> {
+         pairings.add(new Pair<ArtifactId, ArtifactId>(ArtifactId.valueOf(stmt.getLong("b_art_id")), ArtifactId.valueOf(stmt.getLong("a_art_id"))));
+         childArtIds.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
+      };
+      
+      String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() + " allRels as (select a_art_id, b_art_id, txs.gamma_id, rel_type "
+         + "from osee_txs txs, osee_relation rel " 
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " 
+         + "union " 
+         + "select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " 
+         + "from osee_txs txs, osee_relation_link rel " 
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " 
+         + "cte_query as ( " 
+         + "select b_art_id, a_art_id, rel_type " 
+         + "from allRels " 
+         + "where b_art_id = ? " 
+         + "union all " 
+         + "select e.b_art_id, e.a_art_id, e.rel_type " 
+         + "from allRels e " 
+         + "inner join cte_query c on c.a_art_id = e.b_art_id) "
+         + "select * " 
+         + "from cte_query;";
+      
+      // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifact);
+      
+      // organize the mixed list of pairs into a list of lists of artIds (list of paths)
+      List<List<ArtifactId>> paths = new ArrayList<>();    
+      while (childArtIds.contains(artifact)) {
+         paths.add(findPath(artifact, childArtIds, pairings));
+         // increment while condition (i.e. one path has been found)
+         childArtIds.remove(artifact);
+         // remove the pair matching the first two artIds of the path that has just been found to avoid retracing the same path
+         pairings.remove(new Pair<ArtifactId, ArtifactId>(paths.get(paths.size() - 1).get(0), paths.get(paths.size() - 1).get(1)));
+      }
+      
+      return paths;
+   }
+   
+   private static List<ArtifactId> findPath(ArtifactId artId, List<ArtifactId> childArtIds, List<Pair<ArtifactId, ArtifactId>> pairings) {
+      List<ArtifactId> path = new ArrayList<>();
+      // loop through the pairs to find a pair that includes the input artId
+      for (Pair<ArtifactId, ArtifactId> pair : pairings) {
+         if (pair.getFirst().equals(artId)) {
+            path.add(pair.getFirst());
+            // if we are not at the end of the path (i.e. the current parent has a parent)
+            if (childArtIds.contains(pair.getSecond())) {
+               path.addAll(findPath(pair.getSecond(), childArtIds, pairings));
+            } 
+            // we are at the top of the hierarchy
+            else {
+               path.add(pair.getSecond());
+            }
+            return path;
+         }
+      }
+      return path;
    }
 
 }
