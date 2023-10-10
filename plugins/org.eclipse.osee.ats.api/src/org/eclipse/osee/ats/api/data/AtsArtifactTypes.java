@@ -240,6 +240,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(DuplicatedPcrId)
       .zeroOrOne(EstimateAssumptions)
       .any(FeatureImpactReference)
+      .zeroOrOne(FunctionalArea)
       .zeroOrOne(GitRepoName)
       .zeroOrOne(GitBranchName)
       .zeroOrOne(HowToReproduceProblem)

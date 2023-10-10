@@ -36,7 +36,9 @@ import org.eclipse.swt.widgets.Composite;
  * This is the preferred widget for non-text usage because it does not load values until user selects to change. This
  * makes initial display of widget perform better. Use generic OSEE Types extensions where types are involved. Extend
  * for related types (eg: Targeted Version) or other mechanisms for loading values (eg: reading from another location
- * like filesystem)
+ * like filesystem> <br/>
+ * <br/>
+ * Implementing classes use Wfd for With Filtered Dialog
  *
  * @author Donald G. Dunne
  */
