@@ -74,36 +74,52 @@ public class LoadArtifactHistory extends AbstractDatastoreTxCallable<List<Change
          "SELECT parent.branch_id, parent.parent_branch_id, parent.baseline_transaction_id\n" + //
          "FROM osee_branch parent\n" + //
          "JOIN branches ON parent.branch_id = branches.parent_branch_id)\n" + //
-         "SELECT transaction_id, b.parent_branch_id AS branch_id, 1 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.parent_branch_id AS branch_id, 1 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, -1 as item_third, 0 as item_fourth,'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_artifact item, osee_txs txs , branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.ART_ID = ? AND txs.branch_id = b.parent_branch_id AND txs.TRANSACTION_ID < b.baseline_transaction_id\n" + //
          "UNION ALL\n" + //
-         "SELECT transaction_id, b.branch_id AS branch_id, 1 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.branch_id AS branch_id, 1 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, -1 as item_third, 0 as item_fourth,'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_artifact item, osee_txs txs , branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.ART_ID = ? AND txs.BRANCH_ID = ? AND txs.branch_id = b.branch_id\n" + //
          "UNION ALL\n" + //
-         "SELECT transaction_id, b.parent_branch_id AS branch_id, 2 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, value as item_value, uri AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.parent_branch_id AS branch_id, 2 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, -1 as item_third, 0 as item_fourth,value as item_value, uri AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_attribute item, osee_txs txs, branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.ART_ID = ? AND txs.branch_id = b.parent_branch_id AND txs.TRANSACTION_ID < b.baseline_transaction_id\n" + //
          "UNION ALL \n" + //
-         "SELECT transaction_id, b.branch_id AS branch_id, 2 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, value as item_value, uri AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.branch_id AS branch_id, 2 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, -1 as item_third, 0 as item_fourth,value as item_value, uri AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_attribute item, osee_txs txs, branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.ART_ID = ? AND txs.BRANCH_ID = ? AND txs.branch_id = b.branch_id\n" + //
          "UNION ALL\n" + //
-         "SELECT transaction_id, b.parent_branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.parent_branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, -1 as item_third, 0 as item_fourth,rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_relation_link item, osee_txs txs , branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.a_art_id = ? AND txs.branch_id = b.parent_branch_id AND txs.TRANSACTION_ID < b.baseline_transaction_id\n" + //
          "UNION ALL\n" + //
-         "SELECT transaction_id, b.branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, -1 as item_third, 0 as item_fourth,rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_relation_link item, osee_txs txs , branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.a_art_id = ? AND txs.BRANCH_ID = ? AND txs.branch_id = b.branch_id\n" + //
          "UNION ALL\n" + //
-         "SELECT transaction_id, b.parent_branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.parent_branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, -1 as item_third, 0 as item_fourth,rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_relation_link item, osee_txs txs , branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.b_art_id = ? AND txs.branch_id = b.parent_branch_id AND txs.TRANSACTION_ID < b.baseline_transaction_id\n" + //
          "UNION ALL\n" + //
-         "SELECT transaction_id, b.branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "SELECT transaction_id, b.branch_id AS branch_id, 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id, a_art_id as item_first, b_art_id as item_second, -1 as item_third, 0 as item_fourth, rationale as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
          "FROM osee_relation_link item, osee_txs txs , branches b\n" + //
+         "WHERE txs.gamma_id = item.gamma_id AND item.b_art_id = ? AND txs.BRANCH_ID = ? AND txs.branch_id = b.branch_id\n" + //
+         "UNION ALL\n" + //
+         "SELECT transaction_id, b.branch_id AS branch_id, 4 as table_type, rel_type as item_type_id, gamma_id as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "FROM osee_relation item, osee_txs txs , branches b\n" + //
+         "WHERE txs.gamma_id = item.gamma_id AND item.a_art_id = ? AND txs.branch_id = b.parent_branch_id AND txs.TRANSACTION_ID < b.baseline_transaction_id\n" + //
+         "UNION ALL\n" + //
+         "SELECT transaction_id, b.branch_id AS branch_id, 4 as table_type, rel_type as item_type_id, gamma_id as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "FROM osee_relation item, osee_txs txs , branches b\n" + //
+         "WHERE txs.gamma_id = item.gamma_id AND item.a_art_id = ? AND txs.BRANCH_ID = ? AND txs.branch_id = b.branch_id\n" + //
+         "UNION ALL\n" + //
+         "SELECT transaction_id, b.parent_branch_id AS branch_id, 4 as table_type, rel_type as item_type_id, gamma_id as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth, 'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "FROM osee_relation item, osee_txs txs , branches b\n" + //
+         "WHERE txs.gamma_id = item.gamma_id AND item.b_art_id = ? AND txs.branch_id = b.parent_branch_id AND txs.TRANSACTION_ID < b.baseline_transaction_id\n" + //
+         "UNION ALL\n" + //
+         "SELECT transaction_id, b.branch_id AS branch_id, 4 as table_type, rel_type as item_type_id, gamma_id as item_id, a_art_id as item_first, b_art_id as item_second, rel_art_id as item_third, rel_order as item_fourth,'na' as item_value, 'na' AS item_uri, item.gamma_id, mod_type, app_id\n" + //
+         "FROM osee_relation item, osee_txs txs , branches b\n" + //
          "WHERE txs.gamma_id = item.gamma_id AND item.b_art_id = ? AND txs.BRANCH_ID = ? AND txs.branch_id = b.branch_id\n" + //
          "ORDER BY TRANSACTION_ID, table_type, item_type_id, mod_type";
 
@@ -230,7 +246,8 @@ public class LoadArtifactHistory extends AbstractDatastoreTxCallable<List<Change
 
       String query = String.format(LoadArtifactHistory.query, getJdbcClient().getDbType().getRecursiveWithSql());
       getJdbcClient().runQueryWithMaxFetchSize(consumer, query, branch, artifact, artifact, branch, artifact, artifact,
-         branch, artifact, artifact, branch, artifact, artifact, branch);
+         branch, artifact, artifact, branch, artifact, artifact, branch, artifact, artifact, branch, artifact, artifact,
+         branch);
 
       return changeItems;
    }
