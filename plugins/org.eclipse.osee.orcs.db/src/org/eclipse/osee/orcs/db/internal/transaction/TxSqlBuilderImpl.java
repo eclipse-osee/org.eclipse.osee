@@ -322,7 +322,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                txNotCurrentsJoin4.put(key, join4);
             }
             join4.add(((RelationData) orcsData).getType(), ((RelationData) orcsData).getArtifactIdA(),
-               ((RelationData) orcsData).getArtifactIdB());
+               ((RelationData) orcsData).getArtifactIdB(), ((RelationData) orcsData).getRelOrder());
          } else {
 
             IdJoinQuery join = txNotCurrentsJoin.get(key);

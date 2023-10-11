@@ -248,10 +248,19 @@ public class RelationManagerImpl implements RelationManager {
       // Check we can create the type on other side of each node
       checkMultiplicityCanAdd(type, aNode, bNode, txData);
       DeletionFlag delFlag = (type.isNewRelationTable()) ? INCLUDE_HARD_DELETED : INCLUDE_DELETED;
-      Relation relation = getRelation(aNode, type, bNode, delFlag).getOneOrNull();
+      Relation relation;
+      if (type.isNewRelationTable()) {
+         relation = getRelation(aNode, type, bNode, relOrder, delFlag).getOneOrNull();
+      } else {
+         relation = getRelation(aNode, type, bNode, delFlag).getOneOrNull();
+      }
       boolean updated = false;
-      if (relation == null) {
-         relation = relationFactory.createRelation(aNode, type, bNode, rationale);
+      if (relation == null) { //doesn't exist at all
+         if (type.isNewRelationTable()) {
+            relation = relationFactory.createRelation(aNode, type, bNode, relatedArtifact, relOrder);
+         } else {
+            relation = relationFactory.createRelation(aNode, type, bNode, rationale);
+         }
          graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type, relation);
          graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type, relation);
          updated = true;
@@ -260,6 +269,7 @@ public class RelationManagerImpl implements RelationManager {
          relation.unDelete();
          updated = true;
       }
+
       if (updated) {
          relation.setDirty();
          if (!type.isNewRelationTable()) {
@@ -406,6 +416,29 @@ public class RelationManagerImpl implements RelationManager {
          bAdjacencies.add(type, relation);
       } else {
          relation = bAdjacencies.getRelation(aNode, type, bNode, inludeDeleted);
+         if (relation != null) {
+            aAdjacencies.add(type, relation);
+         }
+      }
+      return ResultSets.singleton(relation);
+   }
+
+   private ResultSet<Relation> getRelation(Artifact aNode, RelationTypeToken type, Artifact bNode, int relOrder,
+      DeletionFlag includeDeleted) {
+      GraphData graph = getGraph(aNode, bNode);
+      checkNotNull(type, "relationType");
+
+      ensureRelationsInitialized(graph, aNode);
+      ensureRelationsInitialized(graph, bNode);
+
+      RelationNodeAdjacencies aAdjacencies = graph.getAdjacencies(aNode);
+      RelationNodeAdjacencies bAdjacencies = graph.getAdjacencies(bNode);
+
+      Relation relation = aAdjacencies.getRelation(aNode, type, bNode, relOrder, includeDeleted);
+      if (relation != null) {
+         bAdjacencies.add(type, relation);
+      } else {
+         relation = bAdjacencies.getRelation(aNode, type, bNode, relOrder, includeDeleted);
          if (relation != null) {
             aAdjacencies.add(type, relation);
          }

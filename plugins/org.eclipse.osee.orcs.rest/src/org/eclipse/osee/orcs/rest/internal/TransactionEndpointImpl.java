@@ -100,7 +100,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public TransactionResult create(TransactionBuilder tx) {
-      TransactionToken token = tx.commit();
+      TransactionToken token = tx.commit(); //check relations array
       TransactionResult result = new TransactionResult();
       result.setTx(token);
       XResultData resultData = new XResultData();

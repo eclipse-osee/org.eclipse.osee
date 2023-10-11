@@ -102,9 +102,13 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 
-   public Relation getRelation(ArtifactId artIdA, RelationTypeToken relationType, ArtifactId artIdB, int relOrder) {
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   public Relation getRelation(ArtifactId artIdA, RelationTypeToken relationType, ArtifactId artIdB, int relOrder,
+      DeletionFlag excludeDeleted) {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsAndRelOrderEquals(artIdA, artIdB, relOrder);
-      List<Relation> listByFilter = getListByFilter(relationType, nodeMatcher);
+      Predicate deletionFlagEquals = deletionFlagEquals(excludeDeleted);
+      Predicate matcher = and(deletionFlagEquals, nodeMatcher);
+      List<Relation> listByFilter = getListByFilter(relationType, matcher);
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 

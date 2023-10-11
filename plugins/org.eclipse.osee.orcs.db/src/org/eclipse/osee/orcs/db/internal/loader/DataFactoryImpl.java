@@ -82,7 +82,8 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData create(BranchId branchId, ArtifactTypeToken token, String guid, ArtifactId artifactId, ApplicabilityId appId) {
+   public ArtifactData create(BranchId branchId, ArtifactTypeToken token, String guid, ArtifactId artifactId,
+      ApplicabilityId appId) {
       Conditions.checkNotNull(branchId, "branch");
 
       Conditions.checkExpressionFailOnTrue(token.isAbstract(), "Cannot create an instance of abstract type [%s]",
@@ -145,7 +146,8 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale) {
+   public RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact,
+      ArtifactId bArtifact, String rationale) {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(branch);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
@@ -154,12 +156,13 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, ArtifactId relArtifact, int order) {
+   public RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact,
+      ArtifactId bArtifact, ArtifactId relArtifact, int order) {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(branch);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      return objectFactory.createRelationData(version, relationType, modType, aArtifact, bArtifact, relArtifact, order,
-         ApplicabilityId.BASE);
+      return objectFactory.createRelationData(version, idFactory.getNextRelationId(), relationType, modType, aArtifact,
+         bArtifact, relArtifact, order, ApplicabilityId.BASE);
    }
 
    @Override
@@ -197,7 +200,8 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public TupleData createTuple4Data(Tuple4Type<?, ?, ?, ?> tupleType, BranchId branch, Long e1, Long e2, Long e3, Long e4) {
+   public TupleData createTuple4Data(Tuple4Type<?, ?, ?, ?> tupleType, BranchId branch, Long e1, Long e2, Long e3,
+      Long e4) {
       VersionData version = objectFactory.createDefaultVersionData();
       TupleData tupleData = objectFactory.createTuple4Data(version, branch, tupleType, e1, e2, e3, e4);
       return tupleData;

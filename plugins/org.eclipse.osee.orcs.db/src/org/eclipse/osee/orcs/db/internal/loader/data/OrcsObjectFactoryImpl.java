@@ -147,10 +147,11 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, RelationTypeToken relationType, ModificationType modType,
-      ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, ApplicabilityId applicId) {
-      return createRelationData(version, RelationId.SENTINEL, relationType, modType, relationType, modType, aArtId,
-         bArtId, relArtId, relOrder, "", applicId);
+   public RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType,
+      ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder,
+      ApplicabilityId applicId) {
+      return createRelationData(version, id, relationType, modType, relationType, modType, aArtId, bArtId, relArtId,
+         relOrder, "", applicId);
    }
 
    private ArtifactData createArtifactFromRow(VersionData version, ArtifactId artifactId,
