@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -73,8 +74,8 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
 
          ArtifactId relArtId = ArtifactId.valueOf(chStmt.getLong("rel_art_id"));
 
-         toReturn =
-            factory.createRelationData(version, relationType, modType, aArtId, bArtId, relArtId, rel_order, applicId);
+         toReturn = factory.createRelationData(version, RelationId.SENTINEL, relationType, modType, aArtId, bArtId,
+            relArtId, rel_order, applicId);
 
       } else {
          if (!historical) {

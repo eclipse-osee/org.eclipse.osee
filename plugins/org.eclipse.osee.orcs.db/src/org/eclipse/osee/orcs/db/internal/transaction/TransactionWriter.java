@@ -78,7 +78,7 @@ public class TransactionWriter {
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_relation_link rel, osee_txs txs WHERE jid.query_id = ? AND rel.rel_link_id = jid.id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS2 =
-      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id4 jid, osee_relation rel, osee_txs txs WHERE jid.query_id = ? and rel.rel_type = jid.id1 and rel.a_art_id = jid.id2 and rel.b_art_id = jid.id3 AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
+      "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id4 jid, osee_relation rel, osee_txs txs WHERE jid.query_id = ? and rel.rel_type = jid.id1 and rel.a_art_id = jid.id2 and rel.b_art_id = jid.id3 AND rel.rel_order = jid.id4 and rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_TUPLE =
       "SELECT%s txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_txs txs WHERE jid.query_id = ? AND jid.id = txs.gamma_id AND txs.branch_id = ?   AND txs.tx_current <> " + TxCurrent.NOT_CURRENT;
@@ -185,7 +185,8 @@ public class TransactionWriter {
       }
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branch, List<Object[]> results, String query, AbstractJoinQuery join) {
+   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branch, List<Object[]> results, String query,
+      AbstractJoinQuery join) {
       try {
          join.store();
 

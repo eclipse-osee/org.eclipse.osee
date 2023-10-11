@@ -26,9 +26,12 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface RelationObjectFactory extends VersionObjectFactory {
 
-   RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId);
+   RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType,
+      ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId);
 
-   RelationData createRelationData(VersionData version, RelationTypeToken relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder, ApplicabilityId applicId);
+   RelationData createRelationData(VersionData version, RelationId id, RelationTypeToken relationType,
+      ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, ArtifactId relArtId, int relOrder,
+      ApplicabilityId applicId);
 
    RelationData createCopy(RelationData source);
 }

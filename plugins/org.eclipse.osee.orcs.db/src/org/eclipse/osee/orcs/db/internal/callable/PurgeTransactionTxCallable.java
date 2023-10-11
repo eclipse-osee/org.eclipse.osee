@@ -138,8 +138,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete, null);
          Map<BranchId, IdJoinQuery> rels =
             findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete, null);
-         Map<BranchId, Id4JoinQuery> rels2 =
-            findAffectedItemsRel2(connection, "rel_type", "a_art_id", "b_art_id", "osee_relation", txsToDelete, null);
+         Map<BranchId, Id4JoinQuery> rels2 = findAffectedItemsRel2(connection, "rel_type", "a_art_id", "b_art_id",
+            "rel_order", "osee_relation", txsToDelete, null);
          //Update Baseline txs for Child Branches
          setChildBranchBaselineTxs(connection, txIdToDelete, previousTransactionId);
 
@@ -162,7 +162,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       return purgeCount;
    }
 
-   private void computeNewTxCurrents(JdbcConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<BranchId, IdJoinQuery> affected) {
+   private void computeNewTxCurrents(JdbcConnection connection, Collection<Object[]> updateData, String itemId,
+      String tableName, Map<BranchId, IdJoinQuery> affected) {
       String query = String.format(FIND_NEW_TX_CURRENTS, tableName, itemId);
 
       for (Entry<BranchId, IdJoinQuery> entry : affected.entrySet()) {
@@ -185,7 +186,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       }
    }
 
-   private void computeNewTxCurrentsRel2(JdbcConnection connection, Collection<Object[]> updateData, String id1, String id2, String id3, String tableName, Map<BranchId, Id4JoinQuery> affected) {
+   private void computeNewTxCurrentsRel2(JdbcConnection connection, Collection<Object[]> updateData, String id1,
+      String id2, String id3, String tableName, Map<BranchId, Id4JoinQuery> affected) {
       String query = String.format(FIND_NEW_TX_CURRENTS_REL2, tableName, id1, id2, id3);
 
       for (Entry<BranchId, Id4JoinQuery> entry : affected.entrySet()) {
@@ -207,7 +209,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       }
    }
 
-   private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList, StringBuilder artsMsg) {
+   private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable,
+      List<Object[]> bindDataList, StringBuilder artsMsg) {
       Map<BranchId, IdJoinQuery> items = new HashMap<>();
       JdbcStatement statement = getJdbcClient().getStatement(connection);
 
@@ -235,13 +238,14 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       return items;
    }
 
-   private Map<BranchId, Id4JoinQuery> findAffectedItemsRel2(JdbcConnection connection, String id1, String id2, String id3, String itemTable, List<Object[]> bindDataList, StringBuilder artsMsg) {
+   private Map<BranchId, Id4JoinQuery> findAffectedItemsRel2(JdbcConnection connection, String id1, String id2,
+      String id3, String id4, String itemTable, List<Object[]> bindDataList, StringBuilder artsMsg) {
       Map<BranchId, Id4JoinQuery> items = new HashMap<>();
       JdbcStatement statement = getJdbcClient().getStatement(connection);
 
       try {
          for (Object[] bindData : bindDataList) {
-            String query = String.format(SELECT_AFFECTED_ITEMS_REL2, id1, id2, id3, null, itemTable);
+            String query = String.format(SELECT_AFFECTED_ITEMS_REL2, id1, id2, id3, id4, itemTable);
             statement.runPreparedQueryWithMaxFetchSize(query, bindData);
             Id4JoinQuery joinId = joinFactory.createId4JoinQuery();
             items.put((BranchId) bindData[0], joinId);
@@ -250,11 +254,15 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
                Id relType = Id.valueOf(statement.getLong("id1"));
                Id artA = Id.valueOf(statement.getLong("id2"));
                Id artB = Id.valueOf(statement.getLong("id3"));
+               int relOrder = statement.getInt("id4");
                if (artsMsg != null && artsMsg.length() < JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
-                  artsMsg.append(relType.toString() + '/' + artA.toString() + "/" + artB.toString());
+                  artsMsg.append(
+                     relType.toString() + '/' + artA.toString() + "/" + artB.toString() + "/" + Integer.toString(
+                        relOrder));
                   artsMsg.append(",");
                }
-               joinId.add(relType, artA, artB);
+
+               joinId.add(relType, artA, artB, relOrder);
             }
             joinId.store();
          }
@@ -265,7 +273,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       return items;
    }
 
-   private void setChildBranchBaselineTxs(JdbcConnection connection, TransactionId toDeleteTransactionId, TransactionId previousTransactionId) {
+   private void setChildBranchBaselineTxs(JdbcConnection connection, TransactionId toDeleteTransactionId,
+      TransactionId previousTransactionId) {
       List<Object[]> data = new ArrayList<>();
       if (previousTransactionId.isValid()) {
          data.add(new Object[] {

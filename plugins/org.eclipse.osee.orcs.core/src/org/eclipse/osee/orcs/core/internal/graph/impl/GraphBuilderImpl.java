@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -121,7 +122,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    private Relation findRelation(RelationNodeAdjacencies adjacencies, RelationData data) {
       if (data.getType().isNewRelationTable()) {
          return adjacencies.getRelation(data.getArtifactIdA(), data.getType(), data.getArtifactIdB(),
-            data.getRelOrder());
+            data.getRelOrder(), DeletionFlag.EXCLUDE_DELETED);
       }
       return adjacencies.getRelation(data.getArtifactIdA(), data.getType(), data.getArtifactIdB());
    }

@@ -32,6 +32,10 @@ public class Id4JoinQuery extends AbstractJoinQuery {
       addToBatch(id_1, id_2, id_3, id_4);
    }
 
+   public void add(Id id_1, Id id_2, Id id_3, int id_4) {
+      addToBatch(id_1, id_2, id_3, id_4);
+   }
+
    public void add(Id id_1, Id id_2, Id id_3) {
       addToBatch(id_1, id_2, id_3, ArtifactId.SENTINEL);
 
