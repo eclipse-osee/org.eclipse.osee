@@ -44,6 +44,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
    private boolean isApplicabilityCopy = false;
 
    private ArtifactId artIdB = ArtifactId.SENTINEL;
+   private int relOrder = 0;
 
    public ChangeItem() {
       super();
@@ -174,7 +175,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
    public String toString() {
       String artIdBStr = "";
       if (getChangeType().isRelationChange()) {
-         artIdBStr = " artBId: " + getArtIdB();
+         artIdBStr = " artBId: " + getArtIdB() + " relOrder:" + getRelOrder();
       }
       return String.format(
          "ChangeItem %s - itemId:[%s] artId:%s%s type:[%s] base:%s first:%s current:%s destination:%s net:%s synthetic:%s ignoreType:%s",
@@ -308,5 +309,13 @@ public class ChangeItem implements Comparable<ChangeItem> {
          sb.append("\n");
       }
       return sb;
+   }
+
+   public int getRelOrder() {
+      return relOrder;
+   }
+
+   public void setRelOrder(int relOrder) {
+      this.relOrder = relOrder;
    }
 }
