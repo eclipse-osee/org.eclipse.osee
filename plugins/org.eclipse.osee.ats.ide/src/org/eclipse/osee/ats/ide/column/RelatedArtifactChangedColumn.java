@@ -14,15 +14,21 @@
 package org.eclipse.osee.ats.ide.column;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -34,6 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
    public static RelatedArtifactChangedColumn instance = new RelatedArtifactChangedColumn();
+   private final Map<IAtsTeamWorkflow, BranchToken> teamWfToDerivedBranch = new HashMap<>();
 
    public static RelatedArtifactChangedColumn getInstance() {
       return instance;
@@ -61,25 +68,42 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IA
       for (Object object : objects) {
          String value = "";
          try {
-            if (object instanceof Artifact) {
-               ArtifactId refArtId = AtsApiService.get().getQueryServiceIde().getArtifact(object).getSoleAttributeValue(
-                  AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
-               if (refArtId.isValid()) {
-                  Artifact refArt = AtsApiService.get().getQueryServiceIde().getArtifact(refArtId);
-                  if (refArt != null) {
-                     BranchId refBranch = refArt.getBranch();
-                     if (refArt.isDeleted()) {
-                        value = "Deleted";
-                     } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
-                        refBranch).isBaselineBranch()) {
-                        value = "Commited";
-                     } else if (refArt.getLastModified().after(
-                        AtsApiService.get().getQueryServiceIde().getArtifact(object).getLastModified())) {
-                        value = refArt.getLastModified().toString();
-                     } else {
-                        value = "Unmodified";
-                     }
-                  }
+            if (!(object instanceof TaskArtifact)) {
+               return;
+            }
+            TaskArtifact task = (TaskArtifact) object;
+            ArtifactId refArtId = AtsApiService.get().getQueryServiceIde().getArtifact(object).getSoleAttributeValue(
+               AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+            if (refArtId.isInvalid()) {
+               return;
+            }
+            TeamWorkFlowArtifact teamWf = task.getParentTeamWorkflow();
+            BranchToken refBranch = teamWfToDerivedBranch.get(teamWf);
+            if (refBranch == null) {
+               TeamWorkFlowArtifact reqWf =
+                  (TeamWorkFlowArtifact) AtsApiService.get().getRelationResolver().getRelatedOrNull((IAtsObject) teamWf,
+                     AtsRelationTypes.Derive_From);
+               if (reqWf == null) {
+                  return;
+               }
+               refBranch = reqWf.getWorkingBranch();
+               if (refBranch.isInvalid()) {
+                  return;
+               }
+               teamWfToDerivedBranch.put(teamWf, refBranch);
+            }
+            Artifact refArt = AtsApiService.get().getQueryServiceIde().getArtifact(refArtId, refBranch);
+            if (refArt != null) {
+               if (refArt.isDeleted()) {
+                  value = "Deleted";
+               } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
+                  refBranch).isBaselineBranch()) {
+                  value = "Commited";
+               } else if (refArt.getLastModified().after(
+                  AtsApiService.get().getQueryServiceIde().getArtifact(object).getLastModified())) {
+                  value = refArt.getLastModified().toString();
+               } else {
+                  value = "Unmodified";
                }
             }
          } catch (OseeCoreException ex) {
