@@ -208,13 +208,14 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          throw new OseeCoreException("Transfer in progress");
       } else {
          try {
-            TransferDataStoreImpl transfer = new TransferDataStoreImpl(this);
+            TransferDataStoreImpl transfer = new TransferDataStoreImpl(this, orcsApi);
             // Return XResultData
             results = transfer.transferTransactions(exportId, results);
 
          } catch (Exception e) {
             results.errorf("%s", String.format("Error in generating transfer files: ",
                e.getMessage() + " at time: " + dateFormat.format(date)));
+            TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
             throw new OseeCoreException(
                "Error in generating transfer files, exception:  " + e + "\n At time: " + dateFormat.format(
                   date) + "\n");
@@ -228,6 +229,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          results.clear();
          results.dispose();
       }
+      TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
       return results;
    }
 
