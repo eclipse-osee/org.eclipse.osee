@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,28 +46,20 @@ import org.eclipse.osee.orcs.rest.model.transaction.TransferDBType;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferOpType;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.TupleQuery;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 public class TransferDataStoreImpl {
 
-   private BranchId branchId;
-   private TransactionId localTx;
-   private TransactionId uniqueTx;
-   private TransferOpType transferOpType;
-   private OrcsApi orcsApi;
-   private int index;
-   private String transferDirectoryName;
-   private String fileName;
-   private String dirName;
-   private String json;
-
-   private TupleQuery tupleQuery;
-
+   private final OrcsApi orcsApi;
+   private final TupleQuery tupleQuery;
    private final TransactionEndpointImpl transEndpoint;
    private final List<ManifestData> manifestData = new ArrayList<>();
    private final List<TransferFileRow> transferFileRows = new ArrayList<>();
 
-   public TransferDataStoreImpl(TransactionEndpointImpl transEndpoint) {
+   public TransferDataStoreImpl(TransactionEndpointImpl transEndpoint, OrcsApi orcsApi) {
       this.transEndpoint = transEndpoint;
+      this.orcsApi = orcsApi;
+      this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
    };
 
    private XResultData getPreviousTransaction() {
@@ -82,6 +73,8 @@ public class TransferDataStoreImpl {
       String currentTransferDirectory = transferDirectoryHelper();
       int errorCount = results.getErrorCount();
 
+      TransactionId maxTransactionNum = TransactionId.SENTINEL;
+
       if (!branchLocations.isEmpty()) {
          for (BranchLocation branchLoc : branchLocations) {
             BranchId branchId = branchLoc.getBranchId();
@@ -93,53 +86,64 @@ public class TransferDataStoreImpl {
             int iniTxId = txId.getIdIntValue();
             txrs = orcsApi.getQueryFactory().transactionQuery().andBranch(branchId).andTxId(Operator.GREATER_THAN,
                iniTxId).getResults().getList();
-            TransactionId endTrans = applyTransactions(txrs, txId, results);
-            if (errorCount == 0 && endTrans != null) {
-               //TODO
-               // Once transaction applied add tuples from transferFileRows
+            maxTransactionNum = txrs.get(txrs.size() - 1);
+            if (maxTransactionNum == txId || maxTransactionNum == TransactionId.SENTINEL) {
+               results.error(
+                  "Error in generating transfer files, ending (max) transaction is empty or equivalent to starting (base) transaction");
+               break;
+            } else {
+               applyTransactions(txrs, txId, results, branchId, currentTransferDirectory, maxTransactionNum);
+            }
+            // Update Exported Branch Table with Last Transaction Tuple 4 Entry tuple type 101 with same E's as Original transfer using Last (endTrans)
+            updateTransferFileRowPrevTX(branchId, maxTransactionNum, exportId);
+         }
+      }
 
-               // Update Exported Branch Table with Last Transaction Tuple 4 Entry tuple type 101 with same E's as Original transfer using Last (endTrans)
-
-               // Build Manifest Data
-
-               // Commit the Transactions in the transfer
-
-               // txTupleTransfer.commit();
-
-               String buildId = "10000";
-               // Build Manifest File see design doc for additional info
-               buildManifestFileHelper(currentTransferDirectory, buildId, exportId, manifestData);
+      if (errorCount == 0) {
+         try {
+            // Once transaction applied add tuples from transferFileRows
+            TransactionBuilder txTupleTransfer =
+               orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Adding transfer tuples");
+            for (TransferFileRow row : transferFileRows) {
+               txTupleTransfer.addTuple4(TransferFile, row.getBranchId(), row.getTransferOpType(),
+                  row.getTransactionId(), row.getUniqueId());
             }
 
+            // Commit the Transactions in the transfer
+            txTupleTransfer.commit();
+
+            String buildId = "10000";
+            // Build Manifest File see design doc for additional info
+            buildManifestFileHelper(currentTransferDirectory, buildId, exportId, manifestData, results,
+               maxTransactionNum);
+         } catch (Exception ex) {
+            System.out.println("Exception thrown in adding tuples: " + ex.getMessage());
+            results.errorf("%s", "Error in addding tuples", ex.getMessage());
          }
+
+      } else {
+         results.addRaw("Transfer Failed, retry again");
+         results.setWarningCount(1);
+         results.setErrorCount(0); // Unlocks for next transfer
       }
+
+      System.out.println("\nResults:\t" + results.toString());
 
       return results;
-
    }
 
-   private TransactionId applyTransactions(List<TransactionReadable> txrs, TransactionId initialTx,
-      XResultData results) {
+   private XResultData applyTransactions(List<TransactionReadable> txrs, TransactionId initialTx, XResultData results,
+      BranchId branchId, String currentTransferDirectory, TransactionId endTrans) {
       Collections.sort(txrs, new TransactionIdComparator());
-      TransactionId lastTx = TransactionId.SENTINEL;
-      if (!txrs.isEmpty()) {
-         // If Initial Has more than one this is an error exception should be thrown
-         int last = txrs.size() - 1;
-         lastTx = txrs.get(last);
-         String currentTransferDirectory = transferDirectoryHelper();
+      if (!txrs.isEmpty() && endTrans != TransactionId.SENTINEL) {
          try {
-            results = buildJSONExportDataHelper(txrs, initialTx, lastTx, branchId, currentTransferDirectory,
-               manifestData, results);
+            buildJSONExportDataHelper(txrs, initialTx, endTrans, branchId, currentTransferDirectory, manifestData,
+               results);
          } catch (JsonProcessingException ex) {
-            System.out.print(ex.getMessage());
+            System.out.print("Error in JSON Build: " + ex.getMessage());
          }
       }
-      int errors = results.getErrorCount();
-      if (errors != 0) {
-         lastTx = null;
-      }
-
-      return lastTx;
+      return results;
    }
 
    // Query Branch Base Transaction based off supplied branch given
@@ -147,7 +151,6 @@ public class TransferDataStoreImpl {
    private final List<BranchLocation> branchLocations(TransactionId exportId) {
       List<BranchLocation> branchLocations = new ArrayList<>();
       List<TransferDBType> transferTypes = new ArrayList<>();
-
       tupleQuery.getTuple4E2E3E4FromE1(ExportedBranch, CoreBranches.COMMON, exportId, (E2, E3, E4) -> {
          BranchLocation bl = new BranchLocation();
          bl.setBranchId(E2);
@@ -178,14 +181,13 @@ public class TransferDataStoreImpl {
          bl.setBranchId(entry.getKey());
          bl.setBaseTxId(entry.getValue());
          bLocs.add(bl);
-
       }
       return bLocs;
    }
 
    private boolean verifyValidTransactionToTransferHelper(String transactionComment) {
       String[] commentsToCheckAgainst =
-         {"Adding transfer tuples", "User - Save Settings (IDE)", "Adding exportId to Tuple2Table"};
+         {"Adding transfer tuples", "User - Save Settings (IDE)", "Adding exportId to Tuple2Table", "Delete tuple"};
 
       for (int i = 0; i <= commentsToCheckAgainst.length - 1; i++) {
          if (commentsToCheckAgainst[i].equalsIgnoreCase(transactionComment.strip())) {
@@ -209,9 +211,10 @@ public class TransferDataStoreImpl {
    private XResultData buildJSONExportDataHelper(List<TransactionReadable> txrs, TransactionId initialTx,
       TransactionId lastTx, BranchId branchId, String transferDirectory, List<ManifestData> manifestData,
       XResultData results) throws JsonProcessingException {
-
       TransactionBuilderData tbd = null;
+
       String json = null;
+
       for (TransactionReadable tx : txrs) {
          boolean validTxToProcess = verifyValidTransactionToTransferHelper(tx.getComment());
          ManifestData md = new ManifestData();
@@ -221,24 +224,18 @@ public class TransferDataStoreImpl {
          if (validTxToProcess) {
             try {
                tbd = transEndpoint.exportTxsDiff(initialTx, tx); // This is the JSON send this mapper to return as a string
-               System.out.print("TBD diff build Content: " + tbd.toString() + "\n");
             } catch (OseeCoreException ex) {
-               System.out.print("Error in TBD diff build: " + ex + "\n");
-               // Store into New Data Container below as a row in the list
+               // Store Tuple Data into transferFilRows
                transferFileRows.add(new TransferFileRow(branchId, TransferOpType.EMPTY, tx, uniqueTx));
-               // txTupleTransfer.addTuple4(TransferFile, branchId, TransferOpType.EMPTY, tx, uniqueTx);
+               //  Populate Manifest with Tx & TransferOpType
                md.setTransferOpType(TransferOpType.EMPTY);
-               md.setLocalTx(tx); // Populate Manifest with Tx & TransferOpType
-               // Not at last transaction set initial to current tx (previous for diff on next loop)
-               initialTx = tx;
+               md.setLocalTx(tx);
                tbd = null; // Skip JSON output as this will be empty in the table (Manifest data only to populate)
             }
             if (tbd != null) {
 
                ObjectMapper mapper = new ObjectMapper();
                json = mapper.writeValueAsString(tbd);
-               System.out.print(
-                  "TBD Build Successful Value:" + tbd.toString() + " | Expected JSON Output: " + json + "\n");
                // Attempt to create file / directory structure if they do not exist
                try {
                   Path directoryPath = Paths.get(transferDirectory + branchId + File.separator);
@@ -251,26 +248,21 @@ public class TransferDataStoreImpl {
                   }
                   // Use OSEE Lib to write to file
                   Lib.writeStringToFile(json, file);
-                  //                  System.out.println("\nFile Successfully Written: " + file + " \n ");
                   md.setDirName(branchId.toString());
                   md.setFileName(fileName);
                } catch (Exception ex) {
-
                   results.errorf("%s",
                      String.format("Error in writing file: ", ex.getMessage() + " location: " + path));
-                  System.out.println("Error in writing to file at: " + path + " Exception: " + ex);
                }
             }
             long current = tx.getId();
-            long next = lastTx.getId();
             // Check if at last transaction
-            if (current == next) {
+            if (current == lastTx.getId()) {
                md.setLocalTx(tx); // Populate Manifest with Tx
                // Re-check if TBD is null JSON diff output exists and populate with appropriate TransferOpType
                if (tbd != null) {
                   md.setTransferOpType(TransferOpType.PREV_TX);
-                  // Add tx to Tuple4Table via tupleAdd4
-                  // txTupleTransfer.addTuple4(TransferFile, branchId, TransferOpType.PREV_TX, tx, uniqueTx);
+                  // Store Tuple Data into transferFilRows
                   transferFileRows.add(new TransferFileRow(branchId, TransferOpType.PREV_TX, tx, uniqueTx));
                }
 
@@ -279,12 +271,11 @@ public class TransferDataStoreImpl {
                // Re-check if TBD is null JSON diff output exists and populate with appropriate TransferOpType
                if (tbd != null) {
                   md.setTransferOpType(TransferOpType.ADD);
-                  // Add tx to Tuple4Table via tupleAdd4
-                  // txTupleTransfer.addTuple4(TransferFile, branchId, TransferOpType.ADD, tx, uniqueTx);
+                  // Store Tuple Data into transferFilRows
                   transferFileRows.add(new TransferFileRow(branchId, TransferOpType.ADD, tx, uniqueTx));
-                  // Not at last transaction set initial to current tx (previous for diff on next loop)
-                  initialTx = tx;
                }
+               // Not at last transaction set initial to current tx (previous for diff on next loop) "iterate" to next transaction number
+               initialTx = tx;
             }
             // Populate remaining available manifest data
             md.setBranchId(branchId);
@@ -296,8 +287,8 @@ public class TransferDataStoreImpl {
       return results;
    }
 
-   private void buildManifestFileHelper(String transferDirectory, String buildId, TransactionId exportId,
-      List<ManifestData> manifestData) {
+   private XResultData buildManifestFileHelper(String transferDirectory, String buildId, TransactionId exportId,
+      List<ManifestData> manifestData, XResultData results, TransactionId maxTransaction) {
       Map<String, ArrayList<String>> Hmap = new HashMap<String, ArrayList<String>>();
       // File Output String
       String fileOutput = "";
@@ -306,7 +297,7 @@ public class TransferDataStoreImpl {
       // MD |
       String markdownPipe = " | ";
       String markdownSeparator = "| ------------- |:-----------------:| ------------------:| :-----:|";
-      String filePath = transferDirectory + "manifest.MF";
+      String filePath = transferDirectory + "manifest.md";
       String dirName = "";
       String fileName = "";
       // Check if build id not null
@@ -339,7 +330,7 @@ public class TransferDataStoreImpl {
                   files = "\n \t * " + files.replaceAll(",", "\n \t *");
                   files = files.replaceAll("[\\[\\](){}]", "");
                } catch (Exception ex) {
-                  System.out.println("Error in string replace. Exception: " + ex.getMessage());
+                  results.errorf("%s", "Error in string replace. Exception: ", ex.getMessage());
                }
                fileOutput += files + newLine;
             }
@@ -357,11 +348,50 @@ public class TransferDataStoreImpl {
             // Use OSEE Lib to write to file
             Lib.writeStringToFile(fileOutput, file);
          } catch (Exception ex) {
-            System.out.println(
-               "Error in writing to file at: " + filePath + " Exception: " + ex.getMessage() + " Time: " + LocalTime.now());
+            results.errorf("%s", "Error in writting manifest file. Exception: ", ex.getMessage());
          }
       }
+      if (results.getErrorCount() == 0) {
+         results.addRaw(
+            "\nManifest File written, transfer files generated, files generated check database for completion!");
+      }
       manifestData = null;
+      return results;
+   }
+
+   private void updateTransferFileRowPrevTX(BranchId branchId, TransactionId endTx, TransactionId exportId) {
+      int index = 0;
+      boolean flag = false;
+      for (TransferFileRow row : transferFileRows) {
+         if (row.getBranchId() == branchId && row.getTransferOpType() == TransferOpType.PREV_TX) {
+            flag = true;
+            break;
+         } else {
+            index++;
+         }
+      }
+      if (flag == true) {
+         transferFileRows.get(index).setTransactionId(endTx);
+      } else {
+         // Overwrite last transaction as PrevTx
+         try {
+            if (transferFileRows.size() <= index) {
+               index = transferFileRows.size() - 1;
+               for (int i = index; i >= 0; i--) {
+                  index = i;
+                  if (transferFileRows.get(index).getBranchId() == branchId && transferFileRows.get(
+                     index).getTransferOpType() != TransferOpType.PREV_TX) {
+                     transferFileRows.get(index).setTransferOpType(TransferOpType.PREV_TX);
+                     transferFileRows.get(index).setTransactionId(endTx);
+                  }
+
+               }
+            }
+         } catch (Exception ex) {
+            throw new OseeCoreException("Error in appending prevtx: " + ex.getMessage());
+         }
+      }
+
    }
 
    private static final class TransactionIdComparator implements Comparator<TransactionId> {
@@ -373,8 +403,8 @@ public class TransferDataStoreImpl {
 
    private final class TransferFileRow {
       private final BranchId branchId;
-      private final TransferOpType transferOpType;
-      private final TransactionId localId;
+      private TransferOpType transferOpType;
+      private TransactionId localId;
       private final TransactionId uniqueId;
 
       // Exported Branch, Transfer Type, Exported Transaction, Unique Common Transaction
@@ -384,6 +414,31 @@ public class TransferDataStoreImpl {
          this.localId = localId;
          this.uniqueId = uniqueId;
       }
+
+      public BranchId getBranchId() {
+         return branchId;
+      }
+
+      public TransferOpType getTransferOpType() {
+         return transferOpType;
+      }
+
+      public void setTransferOpType(TransferOpType transferOpType) {
+         this.transferOpType = transferOpType;
+      }
+
+      public TransactionId getTransactionId() {
+         return localId;
+      }
+
+      public void setTransactionId(TransactionId localId) {
+         this.localId = localId;
+      }
+
+      public TransactionId getUniqueId() {
+         return uniqueId;
+      }
+
    };
 
 }
