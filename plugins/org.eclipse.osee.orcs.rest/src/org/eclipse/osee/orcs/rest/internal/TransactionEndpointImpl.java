@@ -534,12 +534,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       File serverApplicDir = new File(String.format("%s%sOSSEDataTransferUploads", serverDataPath, File.separator));
       if (!serverApplicDir.exists()) {
          serverApplicDir.mkdirs();
-         try {
-            FileWriter readme =
-               new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));
+         try (FileWriter readme =
+            new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"))) {
             readme.write(
                "This folder contains OSEE data transfer files which were uploaded via rest api and imported into database.");
-            readme.close();
          } catch (IOException e) {
             return Response.serverError().build();
          }
