@@ -19,6 +19,7 @@ import org.eclipse.osee.testscript.ScriptProgramApi;
 import org.eclipse.osee.testscript.ScriptResultApi;
 import org.eclipse.osee.testscript.TestCaseApi;
 import org.eclipse.osee.testscript.TestPointApi;
+import org.eclipse.osee.testscript.TmoImportApi;
 
 /**
  * @author Stephen J. Molaro
@@ -31,6 +32,7 @@ public class ScriptApiImpl implements ScriptApi {
    private ScriptResultApi scriptResultApi;
    private TestCaseApi testCaseApi;
    private TestPointApi testPointApi;
+   private TmoImportApi tmoImportApi;
 
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -42,6 +44,7 @@ public class ScriptApiImpl implements ScriptApi {
       this.scriptResultApi = new ScriptResultApiImpl(orcsApi);
       this.testCaseApi = new TestCaseApiImpl(orcsApi);
       this.testPointApi = new TestPointApiImpl(orcsApi);
+      this.tmoImportApi = new TmoImportApiImpl(scriptDefApi);
    }
 
    @Override
@@ -72,5 +75,10 @@ public class ScriptApiImpl implements ScriptApi {
    @Override
    public TestPointApi getTestPointApi() {
       return this.testPointApi;
+   }
+
+   @Override
+   public TmoImportApi getTmoImportApi() {
+      return this.tmoImportApi;
    }
 }

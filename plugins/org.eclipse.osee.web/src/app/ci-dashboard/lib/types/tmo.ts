@@ -24,13 +24,13 @@ export interface DefReference {
 	programName: string;
 	executionDate: Date;
 	executionEnvironment: string;
-	machine: string;
+	machineName: string;
 	revision: string;
 	repositoryType: string;
 	team: string;
 	lastAuthor: string;
 	lastModified: Date;
-	modified: string;
+	modifiedFlag: string;
 	repositoryUrl: string;
 	user: string;
 	qualification: string;
@@ -40,8 +40,6 @@ export interface DefReference {
 	scheduled: boolean;
 	scheduledTime: Date;
 	scheduledMachine: string;
-	executedBy: string;
-	witness: string;
 	statusBy: string;
 	statusDate: Date;
 	description: string;
@@ -55,15 +53,15 @@ export interface ResultReference {
 	runtimeVersion: string;
 	executionDate: Date;
 	executionEnvironment: string;
-	machine: string;
+	machineName: string;
 	passedCount: number;
 	failedCount: number;
 	interactiveCount: number;
+	javaVersion: string;
 	scriptAborted: boolean;
 	elapsedTime: number;
 	startDate: Date;
 	endDate: Date;
-	elapsedDate: Date;
 	osArchitecture: string;
 	osName: string;
 	osVersion: string;
@@ -72,6 +70,12 @@ export interface ResultReference {
 	oseeVersion: string;
 	result: string;
 	scriptHealth: number;
+	qualificationLevel: string;
+	executedBy: string;
+	userId: string;
+	userName: string;
+	email: string;
+	witnesses: string[];
 }
 
 export interface TestCaseReference {

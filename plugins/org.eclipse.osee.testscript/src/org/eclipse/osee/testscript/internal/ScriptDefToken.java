@@ -14,14 +14,23 @@
 package org.eclipse.osee.testscript.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 
 /**
  * @author Stephen J. Molaro
@@ -39,18 +48,14 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    private String team;
    private String lastAuthor;
    private Date lastModified;
-   private String modified;
+   private String modifiedFlag;
    private String repositoryUrl;
-   private String user;
-   private String qualification;
    private String property;
    private String notes;
    private boolean safety;
    private boolean scheduled;
    private Date scheduledTime;
    private String scheduledMachine;
-   private String executedBy;
-   private String witness;
    private String statusBy;
    private Date statusDate;
    private String description;
@@ -67,30 +72,27 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setProgramName(art.getSoleAttributeValue(CoreAttributeTypes.ProgramName, ""));
       this.setExecutionDate(art.getSoleAttributeValue(CoreAttributeTypes.ExecutionDate, new Date()));
       this.setExecutionEnvironment(art.getSoleAttributeAsString(CoreAttributeTypes.ExecutionEnvironment, ""));
-      this.setMachineName(art.getSoleAttributeAsString(CoreAttributeTypes.Machine, ""));
+      this.setMachineName(art.getSoleAttributeAsString(CoreAttributeTypes.MachineName, ""));
       this.setRevision(art.getSoleAttributeAsString(CoreAttributeTypes.Revision, ""));
       this.setRepositoryType(art.getSoleAttributeAsString(CoreAttributeTypes.RepositoryType, ""));
       this.setTeam(art.getSoleAttributeAsString(CoreAttributeTypes.TeamName, ""));
       this.setLastAuthor(art.getSoleAttributeAsString(CoreAttributeTypes.LastAuthor, ""));
       this.setLastModified(art.getSoleAttributeValue(CoreAttributeTypes.LastModifiedDate, new Date()));
-      this.setModified(art.getSoleAttributeAsString(CoreAttributeTypes.ModifiedFlag, ""));
+      this.setModifiedFlag(art.getSoleAttributeAsString(CoreAttributeTypes.ModifiedFlag, ""));
       this.setRepositoryUrl(art.getSoleAttributeAsString(CoreAttributeTypes.RepositoryUrl, ""));
-      this.setUser(art.getSoleAttributeAsString(CoreAttributeTypes.UserId, ""));
-      this.setQualification(art.getSoleAttributeAsString(CoreAttributeTypes.QualificationLevel, ""));
       this.setProperty(art.getSoleAttributeAsString(CoreAttributeTypes.PropertyKey, ""));
       this.setNotes(art.getSoleAttributeAsString(CoreAttributeTypes.Notes, ""));
       this.setSafety(art.getSoleAttributeValue(CoreAttributeTypes.Safety, false));
       this.setScheduled(art.getSoleAttributeValue(CoreAttributeTypes.Scheduled, false));
       this.setScheduledTime(art.getSoleAttributeValue(CoreAttributeTypes.ScheduledTime, new Date()));
-      this.setScheduledMachine(art.getSoleAttributeAsString(CoreAttributeTypes.ScheduleMachine, ""));
-      this.setExecutedBy(art.getSoleAttributeAsString(CoreAttributeTypes.ExecutedBy, ""));
-      this.setWitness(art.getSoleAttributeAsString(CoreAttributeTypes.Witness, ""));
+      this.setScheduledMachine(art.getSoleAttributeAsString(CoreAttributeTypes.ScheduledMachine, ""));
       this.setStatusBy(art.getSoleAttributeAsString(CoreAttributeTypes.StatusBy, ""));
       this.setStatusDate(art.getSoleAttributeValue(CoreAttributeTypes.StatusDate, new Date()));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
       this.setScriptResults(
-         art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().map(
-            a -> new ScriptResultToken(a)).collect(Collectors.toList()));
+         art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new ScriptResultToken(a)).collect(
+               Collectors.toList()));
    }
 
    public ScriptDefToken(Long id, String name) {
@@ -104,18 +106,14 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setTeam("");
       this.setLastAuthor("");
       this.setLastModified(new Date());
-      this.setModified("");
+      this.setModifiedFlag("");
       this.setRepositoryUrl("");
-      this.setUser("");
-      this.setQualification("");
       this.setProperty("");
       this.setNotes("");
       this.setSafety(false);
       this.setScheduled(false);
       this.setScheduledTime(new Date());
       this.setScheduledMachine("");
-      this.setExecutedBy("");
-      this.setWitness("");
       this.setStatusBy("");
       this.setStatusDate(new Date());
       this.setDescription("");
@@ -256,20 +254,20 @@ public class ScriptDefToken extends ArtifactAccessorResult {
     * @return the modified
     */
    public String getModified() {
-      return modified;
+      return modifiedFlag;
    }
 
    /**
     * @param modified the modified to set
     */
-   public void setModified(String modified) {
-      this.modified = modified;
+   public void setModifiedFlag(String modified) {
+      this.modifiedFlag = modified;
    }
 
    /**
     * @return the repositoryUrl
     */
-   public String setRepositoryUrl() {
+   public String getRepositoryUrl() {
       return repositoryUrl;
    }
 
@@ -278,34 +276,6 @@ public class ScriptDefToken extends ArtifactAccessorResult {
     */
    public void setRepositoryUrl(String repositoryUrl) {
       this.repositoryUrl = repositoryUrl;
-   }
-
-   /**
-    * @return the user
-    */
-   public String setUser() {
-      return user;
-   }
-
-   /**
-    * @param repositoryUrl the repositoryUrl to set
-    */
-   public void setUser(String user) {
-      this.user = user;
-   }
-
-   /**
-    * @return the qualification
-    */
-   public String getQualification() {
-      return qualification;
-   }
-
-   /**
-    * @param revision the revision to set
-    */
-   public void setQualification(String qualification) {
-      this.qualification = qualification;
    }
 
    /**
@@ -393,34 +363,6 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the executedBy
-    */
-   public String getExecutedBy() {
-      return executedBy;
-   }
-
-   /**
-    * @param executedBy the executedBy to set
-    */
-   public void setExecutedBy(String executedBy) {
-      this.executedBy = executedBy;
-   }
-
-   /**
-    * @return the witness
-    */
-   public String getWitness() {
-      return witness;
-   }
-
-   /**
-    * @param witness the witness to set
-    */
-   public void setWitness(String witness) {
-      this.witness = witness;
-   }
-
-   /**
     * @return the statusBy
     */
    public String getStatusBy() {
@@ -475,4 +417,51 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    public void setScriptResults(List<ScriptResultToken> scriptResults) {
       this.scriptResults = scriptResults;
    }
+
+   public CreateArtifact createArtifact(String key) {
+      Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.Description, this.getDescription());
+      values.put(CoreAttributeTypes.ExecutionDate, Long.toString(this.getExecutionDate().getTime()));
+      values.put(CoreAttributeTypes.ExecutionEnvironment, this.getExecutionEnvironment());
+      values.put(CoreAttributeTypes.LastAuthor, this.getLastAuthor());
+      values.put(CoreAttributeTypes.LastModifiedDate, Long.toString(this.getLastModified().getTime()));
+      values.put(CoreAttributeTypes.MachineName, this.getMachineName());
+      values.put(CoreAttributeTypes.ModifiedFlag, getModified()); // TODO should this be a boolean?
+      values.put(CoreAttributeTypes.Notes, this.getNotes());
+      values.put(CoreAttributeTypes.ProgramName, this.getProgramName());
+      values.put(CoreAttributeTypes.PropertyKey, this.getProperty()); // There can seemingly be many property tags
+      values.put(CoreAttributeTypes.RepositoryType, this.getRepositoryType());
+      values.put(CoreAttributeTypes.RepositoryUrl, this.getRepositoryUrl());
+      values.put(CoreAttributeTypes.Revision, this.getRevision());
+      values.put(CoreAttributeTypes.Safety, Boolean.toString(this.getSafety()));
+      values.put(CoreAttributeTypes.Scheduled, Boolean.toString(this.getScheduled()));
+      values.put(CoreAttributeTypes.ScheduledMachine, this.getScheduledMachine());
+      values.put(CoreAttributeTypes.ScheduledTime, Long.toString(this.getScheduledTime().getTime()));
+      values.put(CoreAttributeTypes.StatusBy, this.getStatusBy());
+      values.put(CoreAttributeTypes.StatusDate, Long.toString(this.getStatusDate().getTime()));
+      values.put(CoreAttributeTypes.TeamName, this.getTeam());
+
+      CreateArtifact art = new CreateArtifact();
+      art.setName(this.getName());
+      art.setTypeId(CoreArtifactTypes.TestScriptDef.getIdString());
+
+      List<Attribute> attrs = new LinkedList<>();
+
+      for (AttributeTypeToken type : CoreArtifactTypes.TestScriptDef.getValidAttributeTypes()) {
+         String value = values.get(type);
+         if (Strings.isInValid(value)) {
+            continue;
+         }
+         Attribute attr = new Attribute(type.getIdString());
+         attr.setValue(Arrays.asList(value));
+         attrs.add(attr);
+      }
+
+      art.setAttributes(attrs);
+
+      art.setkey(key);
+
+      return art;
+   }
+
 }

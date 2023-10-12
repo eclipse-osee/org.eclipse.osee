@@ -75,6 +75,12 @@ public class TransactionBuilderDataFactory {
       this.resourceManager = resourceManager;
    }
 
+   public TransactionBuilderDataFactory(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+      this.tokenService = orcsApi.tokenService();
+      this.resourceManager = null;
+   }
+
    public TransactionBuilderData loadFromChanges(TransactionId txId1, TransactionId txId2) {
 
       Objects.requireNonNull(txId1, "The given start transaction cannot be null");

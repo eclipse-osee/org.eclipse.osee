@@ -53,8 +53,9 @@ public class TxBuilderInput {
          this.typeId = art.getArtifactType().getIdString();
          this.name = art.getName();
          this.attributes = art.getExistingAttributeTypes().stream().filter(attr -> !attr.getName().equals("Name")).map(
-            attr -> new TxBuilderAttribute(attr.getName(), art.getSoleAttributeValue(attr, null))).filter(
-               attr -> attr.getValue() != null).collect(Collectors.toList());
+            attr -> new TxBuilderAttribute(attr.getName(),
+               art.getAttributeValues(attr).stream().filter(v -> v != null).map(v -> v.toString()).collect(
+                  Collectors.toList()))).filter(attr -> attr.getValue() != null).collect(Collectors.toList());
       }
 
       @SuppressWarnings("unused")
@@ -76,9 +77,9 @@ public class TxBuilderInput {
 
    private class TxBuilderAttribute {
       private final String typeName;
-      private final Object value;
+      private final List<String> value;
 
-      public TxBuilderAttribute(String typeName, Object value) {
+      public TxBuilderAttribute(String typeName, List<String> value) {
          this.typeName = typeName;
          this.value = value;
       }
@@ -88,7 +89,7 @@ public class TxBuilderInput {
          return typeName;
       }
 
-      public Object getValue() {
+      public List<String> getValue() {
          return value;
       }
 

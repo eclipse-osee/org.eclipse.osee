@@ -47,4 +47,8 @@ public interface TmoEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public TestPointEndpoint getTestPointTypes(@PathParam("branch") BranchId branch);
 
+   @Path("{branch}/import")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ScriptImportEndpoint getTmoImportEndpoint(@PathParam("branch") BranchId branch);
+
 }

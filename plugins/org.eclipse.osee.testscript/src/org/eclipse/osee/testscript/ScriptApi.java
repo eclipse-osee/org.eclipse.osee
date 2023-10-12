@@ -31,4 +31,6 @@ public interface ScriptApi {
 
    TestPointApi getTestPointApi();
 
+   TmoImportApi getTmoImportApi();
+
 }

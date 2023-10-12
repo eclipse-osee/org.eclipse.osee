@@ -771,11 +771,11 @@ public interface CoreAttributeTypes {
 
    AttributeTypeInteger LocationId = osee.createInteger(7167403790289697715L, "Location Id", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeInteger LocationTime = osee.createInteger(373826513060316605L, "Location Time", MediaType.TEXT_PLAIN, "");
+   AttributeTypeLong LocationTime = osee.createLong(373826513060316605L, "Location Time", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString AttentionMessage = osee.createString(4657673604881393123L, "Attention Message", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString Machine = osee.createString(1152921504606847359L, "Machine", MediaType.TEXT_PLAIN, "Machine");
+   AttributeTypeString MachineName = osee.createString(1152921504606847359L, "Machine Name", MediaType.TEXT_PLAIN, "Machine Name");
 
    AttributeTypeString MaintainerText = osee.createStringNoTag(188458874335285L, "Maintainer Text", MediaType.TEXT_PLAIN, "");
 
@@ -816,7 +816,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString OseeVersion = osee.createString(1152921504606847290L, "OSEE Version", MediaType.TEXT_PLAIN, "OSEE Version");
 
    AttributeTypeString OseeAppDefinition = osee.createStringNoTag(1152921504606847380L, "Osee App Definition", MediaType.APPLICATION_JSON, "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App");
-
+   AttributeTypeString JavaVersion = osee.createStringNoTag(1152921504606849836L, "Java Version", MediaType.APPLICATION_JSON, "Java Version");
    PageOrientationAttributeType PageOrientation = osee.createEnum(new PageOrientationAttributeType());
 
    AttributeTypeString ParagraphNumber = osee.createString(1152921504606847101L, "Paragraph Number", MediaType.TEXT_PLAIN, "This is the corresponding section number from the outline of document from which this artifact was imported");
@@ -875,11 +875,11 @@ public interface CoreAttributeTypes {
 
    AttributeTypeBoolean RequiresValidation = osee.createBoolean(2822557585371250127L, "Requires Validation", MediaType.TEXT_PLAIN, "Specifies if a report requires validation before running");
 
-   AttributeTypeBoolean Scheduled = osee.createBoolean(1152921504606847360L, "Rerun", MediaType.TEXT_PLAIN, "Should the script be run again");
+   AttributeTypeBoolean Scheduled = osee.createBoolean(1152921504606847360L, "Scheduled", MediaType.TEXT_PLAIN, "Should the script be run again");
 
-   AttributeTypeDate ScheduledTime = osee.createDate(1152921504606847361L, "Rerun Time", MediaType.TEXT_PLAIN, "Time to Rerun Script");
+   AttributeTypeDate ScheduledTime = osee.createDate(1152921504606847361L, "Scheduled Time", MediaType.TEXT_PLAIN, "Scheduled time to rerun script");
 
-   AttributeTypeString ScheduleMachine = osee.createString(527991454069746927L, "Rerun Time", MediaType.TEXT_PLAIN, "Time to Rerun Script");
+   AttributeTypeString ScheduledMachine = osee.createString(527991454069746927L, "Scheduled Machine", MediaType.TEXT_PLAIN, "Machine the script should run on next");
 
    AttributeTypeString Result = osee.createString(1152921504606847364L, "Result", MediaType.TEXT_PLAIN, "Result");
 
@@ -891,7 +891,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString Revision = osee.createString(1152921504606847283L, "Revision", MediaType.TEXT_PLAIN, "Version");
 
-   AttributeTypeString RuntimeVersion = osee.createString(2638318397467121190L, "Revision", MediaType.TEXT_PLAIN, "Version");
+   AttributeTypeString RuntimeVersion = osee.createString(2638318397467121190L, "Runtime Version", MediaType.TEXT_PLAIN, "Version");
 
    AttributeTypeString SFHA = osee.createString(1152921504606847140L, "SFHA", MediaType.TEXT_PLAIN, "");
 
@@ -918,7 +918,7 @@ public interface CoreAttributeTypes {
    ComputedSoftwareCriticalityIndex SoftwareCriticalityIndex = osee.createComp(ComputedSoftwareCriticalityIndex::new, 1152921504606847725L, "Safety Criticality Index", "Calculation of SwCI using Safety Severity and Software Control Category", SoftwareControlCategory, SafetySeverity);
 
    AttributeTypeBoolean SoftwareSafetyImpact = osee.createBooleanNoTag(8318805403746485981L, "Software Safety Impact", MediaType.TEXT_PLAIN, "Software Safety Impact");
-
+   AttributeTypeString GroupType = osee.createStringNoTag(750929222178593862L, "Group Type", MediaType.TEXT_PLAIN, "Info Group Type");
    AttributeTypeDate StartDate = osee.createDate(1152921504606847294L, "Start Date", AttributeTypeToken.TEXT_CALENDAR, "Start Date");
 
    AttributeTypeDate EndDate = osee.createDate(1152921504606847295L, "End Date", AttributeTypeToken.TEXT_CALENDAR, "Stop Date");
@@ -953,8 +953,8 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString Street = osee.createString(1152921504606847069L, "Street", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeInteger StackTraceLine = osee.createInteger(3884112593403558397L, "Stack Trace Line", AttributeTypeToken.TEXT_CALENDAR, "");
-
+   AttributeTypeInteger StackTraceLine = osee.createInteger(3884112593403558397L, "Stack Trace Line", MediaType.TEXT_PLAIN, "Stack Trace Line");
+   AttributeTypeString StackTraceSource = osee.createString(3884112593403558184L, "Stack Trace Source", MediaType.TEXT_PLAIN, "Stack Trace Source");
    AttributeTypeString SubjectMatterExpert = osee.createString(72057594037928275L, "Subject Matter Expert", MediaType.TEXT_PLAIN, "Name of the Subject Matter Expert");
 
    SubsystemAttributeType Subsystem = osee.createEnum(new SubsystemAttributeType());
@@ -994,7 +994,7 @@ public interface CoreAttributeTypes {
    AttributeTypeArtifactId UserArtifactId = osee.createArtifactIdNoTag(1152921504606847701L, "User Artifact Id", MediaType.TEXT_PLAIN, "Artifact id of an artifact of type User");
 
    AttributeTypeString UserId = osee.createString(1152921504606847073L, "User Id", MediaType.TEXT_PLAIN, "");
-
+   AttributeTypeString UserName = osee.createString(1152921504606848975L, "User Name", MediaType.TEXT_PLAIN, "");
    AttributeTypeString UserSettings = osee.createString(1152921504606847076L, "User Settings", MediaType.TEXT_PLAIN, "", XML.getFileExtension());
 
    AttributeTypeBoolean UseValidator = osee.createBoolean(322346571838162L, "Is Validator Used", MediaType.TEXT_PLAIN, "");
@@ -1013,7 +1013,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString VersionUnit = osee.createString(677533385360465714L, "Version Unit", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString UnderTest = osee.createString(5925046570190903466L, "Under Test", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean UnderTest = osee.createBoolean(5925046570190903466L, "Under Test", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString WebPreferences = osee.createString(1152921504606847386L, "Web Preferences", MediaType.TEXT_PLAIN, "", XML.getFileExtension(), DisplayHint.MultiLine);
 
