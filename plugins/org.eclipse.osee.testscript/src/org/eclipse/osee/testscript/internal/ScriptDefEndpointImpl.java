@@ -14,7 +14,6 @@
 package org.eclipse.osee.testscript.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -45,7 +44,7 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
    }
 
    @Override
-   public ArtifactAccessorResult getScriptDefType(ArtifactId scriptDefTypeId) {
+   public ScriptDefToken getScriptDefType(ArtifactId scriptDefTypeId) {
       return scriptDefTypeApi.get(branch, scriptDefTypeId);
    }
 

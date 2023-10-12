@@ -11,31 +11,28 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import DashboardComponent from './dashboard.component';
-import { DashboardHttpService } from '../../services/dashboard-http.service';
-import { dashboardHttpServiceMock } from '../../services/dashboard-http.service.mock';
+import { CiDashboardControlsComponent } from './ci-dashboard-controls.component';
 import { NgIf } from '@angular/common';
-import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
+import { BranchPickerStub } from '@osee/shared/components/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
-describe('DashboardComponent', () => {
-	let component: DashboardComponent;
-	let fixture: ComponentFixture<DashboardComponent>;
+describe('CiDashboardControlsComponent', () => {
+	let component: CiDashboardControlsComponent;
+	let fixture: ComponentFixture<CiDashboardControlsComponent>;
 
 	beforeEach(() => {
-		TestBed.overrideComponent(DashboardComponent, {
+		TestBed.overrideComponent(CiDashboardControlsComponent, {
 			set: {
-				imports: [NgIf, CiDashboardControlsMockComponent],
+				imports: [NgIf, BranchPickerStub],
 			},
 		}).configureTestingModule({
-			imports: [DashboardComponent],
-			providers: [
-				{
-					provide: DashboardHttpService,
-					useValue: dashboardHttpServiceMock,
-				},
+			imports: [
+				CiDashboardControlsComponent,
+				BranchPickerStub,
+				RouterTestingModule,
 			],
 		});
-		fixture = TestBed.createComponent(DashboardComponent);
+		fixture = TestBed.createComponent(CiDashboardControlsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

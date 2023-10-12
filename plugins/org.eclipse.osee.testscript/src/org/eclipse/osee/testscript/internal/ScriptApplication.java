@@ -34,6 +34,7 @@ public class ScriptApplication extends Application {
 
    public void start() {
       resources.add(new TmoEndpointImpl(scriptApi));
+      resources.add(new DashboardEndpointImpl(scriptApi));
    }
 
    public void stop() {

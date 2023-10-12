@@ -10,13 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-flex-col tw-items-center">
-	<mat-label class="tw-text-lg tw-font-bold">{{ title }}</mat-label>
-	<div class="tw-h-52 tw-w-52">
-		<canvas
-			baseChart
-			[data]="pieChartData"
-			[type]="'pie'"
-			[options]="pieChartOptions"></canvas>
-	</div>
+<div class="tw-flex tw-flex-row tw-gap-4 tw-py-4 tw-pl-4 tw-pr-8">
+	<osee-branch-picker
+		*ngIf="branchPicker"
+		class="tw-min-w-[350px] tw-max-w-lg"></osee-branch-picker>
 </div>

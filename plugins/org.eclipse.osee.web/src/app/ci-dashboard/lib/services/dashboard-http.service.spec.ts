@@ -11,22 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import { DashboardHttpService } from './dashboard-http.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { TmoService } from './tmo.service';
-import { TmoHttpService } from './tmo-http.service';
-import { tmoHttpServiceMock } from './tmo-http.service.mock';
-
-describe('TmoService', () => {
-	let service: TmoService;
+describe('DashboardHttpService', () => {
+	let service: DashboardHttpService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [],
-			providers: [
-				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
-			],
+			imports: [HttpClientTestingModule],
 		});
-		service = TestBed.inject(TmoService);
+		service = TestBed.inject(DashboardHttpService);
 	});
 
 	it('should be created', () => {

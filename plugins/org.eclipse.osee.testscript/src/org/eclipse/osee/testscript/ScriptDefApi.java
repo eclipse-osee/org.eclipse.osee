@@ -14,9 +14,11 @@
 package org.eclipse.osee.testscript;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.internal.ScriptDefToken;
 
 /**
@@ -30,9 +32,14 @@ public interface ScriptDefApi {
 
    Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId);
 
+   Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations);
+
    Collection<ScriptDefToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);
 
    Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, AttributeTypeId orderByAttribute);
+
+   Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations,
+      AttributeTypeId orderByAttribute);
 
    Collection<ScriptDefToken> getAll(BranchId branch, long pageNum, long pageSize);
 
@@ -42,6 +49,9 @@ public interface ScriptDefApi {
 
    Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute);
+
+   Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter);
 

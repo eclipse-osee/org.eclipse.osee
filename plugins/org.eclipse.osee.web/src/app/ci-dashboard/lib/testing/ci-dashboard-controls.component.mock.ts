@@ -10,19 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of } from 'rxjs';
-import { TmoService } from '../services/tmo.service';
+import { Component, Input } from '@angular/core';
 
-export const tmoServiceMock: Partial<TmoService> = {
-	get programId() {
-		return new BehaviorSubject<string>('3');
-	},
-
-	set ProgramId(id: string) {},
-
-	get filterValue() {
-		return new BehaviorSubject<string>('Definition');
-	},
-
-	set FilterValue(value: string) {},
-};
+@Component({
+	selector: 'osee-ci-dashboard-controls',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class CiDashboardControlsMockComponent {
+	@Input() branchPicker: boolean = true;
+}

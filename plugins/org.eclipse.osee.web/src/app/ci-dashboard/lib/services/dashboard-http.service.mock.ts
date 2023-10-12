@@ -10,19 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of } from 'rxjs';
-import { TmoService } from '../services/tmo.service';
+import { of } from 'rxjs';
+import { DashboardHttpService } from '../services/dashboard-http.service';
+import { teamStatsMock } from '../testing/dashboard.response.mock';
 
-export const tmoServiceMock: Partial<TmoService> = {
-	get programId() {
-		return new BehaviorSubject<string>('3');
+export const dashboardHttpServiceMock: Partial<DashboardHttpService> = {
+	getTeamStats(branchId: string) {
+		return of(teamStatsMock);
 	},
-
-	set ProgramId(id: string) {},
-
-	get filterValue() {
-		return new BehaviorSubject<string>('Definition');
-	},
-
-	set FilterValue(value: string) {},
 };

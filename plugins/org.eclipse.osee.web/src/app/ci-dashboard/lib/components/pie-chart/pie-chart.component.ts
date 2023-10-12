@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
@@ -21,17 +21,14 @@ import { NgChartsModule } from 'ng2-charts';
 	imports: [NgChartsModule, MatFormFieldModule],
 	templateUrl: './pie-chart.component.html',
 })
-export class PieChartComponent {
-	@Input() title = '';
+export class PieChartComponent implements OnInit {
+	@Input() title: string = '';
+	@Input() labels: string[] = [];
+	@Input() data: number[] = [];
+	@Input() colors: string[] = [];
 
 	pieChartData: ChartData<'pie', number[]> = {
-		labels: ['Fail', 'Pass', 'Abort', "Dispo'd"],
-		datasets: [
-			{
-				data: [300, 500, 100, 50],
-				backgroundColor: ['red', 'green', 'orange', 'yellow'],
-			},
-		],
+		datasets: [],
 	};
 
 	pieChartOptions: ChartConfiguration['options'] = {
@@ -42,4 +39,16 @@ export class PieChartComponent {
 			},
 		},
 	};
+
+	ngOnInit(): void {
+		this.pieChartData = {
+			labels: this.labels,
+			datasets: [
+				{
+					data: this.data,
+					backgroundColor: this.colors,
+				},
+			],
+		};
+	}
 }

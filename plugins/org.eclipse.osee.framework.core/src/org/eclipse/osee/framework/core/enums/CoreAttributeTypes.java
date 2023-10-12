@@ -906,7 +906,7 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger ScriptHealth = osee.createInteger(1152921504606847367L, "Script Health", MediaType.TEXT_PLAIN, "Script Health");
 
    AttributeTypeString ScriptName = osee.createString(1152921504606847353L, "Script Name", MediaType.TEXT_PLAIN, "Full Name of Script Run");
-
+   AttributeTypeString ScriptSubsystem = osee.createString(1152921504606848173L, "Script Subsystem", MediaType.TEXT_PLAIN, "Subsystem the script tests");
    SoftwareControlCategoryAttributeType SoftwareControlCategory = osee.createEnum(new SoftwareControlCategoryAttributeType());
 
    AttributeTypeString SoftwareControlCategoryRationale = osee.createStringNoTag(750929222178534710L, "Software Control Category Rationale", MediaType.TEXT_PLAIN, "");

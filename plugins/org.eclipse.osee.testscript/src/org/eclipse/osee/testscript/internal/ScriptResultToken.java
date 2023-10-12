@@ -574,8 +574,8 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       values.put(CoreAttributeTypes.ExecutedBy, this.getExecutedBy());
       values.put(CoreAttributeTypes.ExecutionDate, Long.toString(this.getExecutionDate().getTime()));
       values.put(CoreAttributeTypes.ExecutionEnvironment, this.getExecutionEnvironment());
-      values.put(CoreAttributeTypes.FailedCount, Integer.toString(this.getPassedCount()));
-      values.put(CoreAttributeTypes.InteractiveCount, Integer.toString(this.getPassedCount()));
+      values.put(CoreAttributeTypes.FailedCount, Integer.toString(this.getFailedCount()));
+      values.put(CoreAttributeTypes.InteractiveCount, Integer.toString(this.getInteractiveCount()));
       values.put(CoreAttributeTypes.MachineName, this.getMachineName());
       values.put(CoreAttributeTypes.OsArchitecture, this.getOsArchitecture());
       values.put(CoreAttributeTypes.OsName, this.getOsName());
