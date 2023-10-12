@@ -94,7 +94,7 @@ export class ScriptTableComponent implements OnDestroy {
 		'programName',
 		'executionDate',
 		'executionEnvironment',
-		'machine',
+		'machineName',
 		'revision',
 	];
 

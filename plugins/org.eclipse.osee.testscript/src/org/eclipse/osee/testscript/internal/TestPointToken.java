@@ -13,10 +13,23 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 
 /**
  * @author Stephen J. Molaro
@@ -38,6 +51,9 @@ public class TestPointToken extends ArtifactAccessorResult {
    private int elapsedTime;
    private int transmissionCount;
    private String notes;
+   private List<AttentionLocationToken> locations;
+   private List<TestPointToken> subTestPoints;
+   private List<InfoGroupToken> infoGroups;
 
    public TestPointToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -60,6 +76,16 @@ public class TestPointToken extends ArtifactAccessorResult {
       this.setElapsedTime(art.getSoleAttributeValue(CoreAttributeTypes.ElapsedTime, -1));
       this.setTransmissionCount(art.getSoleAttributeValue(CoreAttributeTypes.TransmissionCount, -1));
       this.setNotes(art.getSoleAttributeAsString(CoreAttributeTypes.Notes, ""));
+      this.setLocations(
+         art.getRelated(CoreRelationTypes.TestPointToAttentionLocation_AttentionLocation).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new AttentionLocationToken(a)).collect(
+               Collectors.toList()));
+      this.setSubTestPoints(
+         art.getRelated(CoreRelationTypes.TestPointGroupToTestPoint_TestPoint).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new TestPointToken(a)).collect(
+               Collectors.toList()));
+      this.setInfoGroups(art.getRelated(CoreRelationTypes.TestPointToInfoGroup_InfoGroup).getList().stream().filter(
+         a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InfoGroupToken(a)).collect(Collectors.toList()));
    }
 
    public TestPointToken(Long id, String name) {
@@ -77,6 +103,9 @@ public class TestPointToken extends ArtifactAccessorResult {
       this.setElapsedTime(-1);
       this.setTransmissionCount(-1);
       this.setNotes("");
+      this.setLocations(new LinkedList<>());
+      this.setSubTestPoints(new LinkedList<>());
+      this.setInfoGroups(new LinkedList<>());
    }
 
    public TestPointToken() {
@@ -264,4 +293,70 @@ public class TestPointToken extends ArtifactAccessorResult {
    public void setNotes(String notes) {
       this.notes = notes;
    }
+
+   public List<TestPointToken> getSubTestPoints() {
+      return subTestPoints;
+   }
+
+   public void setSubTestPoints(List<TestPointToken> subTestPoints) {
+      this.subTestPoints = subTestPoints;
+   }
+
+   @JsonIgnore
+   public List<AttentionLocationToken> getLocations() {
+      return locations;
+   }
+
+   public void setLocations(List<AttentionLocationToken> locations) {
+      this.locations = locations;
+   }
+
+   @JsonIgnore
+   public List<InfoGroupToken> getInfoGroups() {
+      return infoGroups;
+   }
+
+   public void setInfoGroups(List<InfoGroupToken> infoGroups) {
+      this.infoGroups = infoGroups;
+   }
+
+   public CreateArtifact createArtifact(String key) {
+      Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.TestNumber, Double.toString(this.getTestNumber()));
+      values.put(CoreAttributeTypes.Result, this.getResult());
+      values.put(CoreAttributeTypes.ResultType, this.getResultType());
+      values.put(CoreAttributeTypes.Interactive, Boolean.toString(this.getInteractive()));
+      values.put(CoreAttributeTypes.TestPointGroupName, this.getGroupName());
+      values.put(CoreAttributeTypes.TestPointGroupType, this.getGroupType());
+      values.put(CoreAttributeTypes.TestPointGroupOperator, this.getGroupOperator());
+      values.put(CoreAttributeTypes.Expected, this.getExpected());
+      values.put(CoreAttributeTypes.Actual, this.getActual());
+      values.put(CoreAttributeTypes.TestPointRequirement, this.getRequirement());
+      values.put(CoreAttributeTypes.ElapsedTime, Integer.toString(this.getElapsedTime()));
+      values.put(CoreAttributeTypes.TransmissionCount, Integer.toString(this.getTransmissionCount()));
+      values.put(CoreAttributeTypes.Notes, this.getNotes());
+
+      CreateArtifact art = new CreateArtifact();
+      art.setName(this.getName());
+      art.setTypeId(CoreArtifactTypes.TestPoint.getIdString());
+
+      List<Attribute> attrs = new LinkedList<>();
+
+      for (AttributeTypeToken type : CoreArtifactTypes.TestPoint.getValidAttributeTypes()) {
+         String value = values.get(type);
+         if (Strings.isInValid(value)) {
+            continue;
+         }
+         Attribute attr = new Attribute(type.getIdString());
+         attr.setValue(Arrays.asList(value));
+         attrs.add(attr);
+      }
+
+      art.setAttributes(attrs);
+
+      art.setkey(key);
+
+      return art;
+   }
+
 }

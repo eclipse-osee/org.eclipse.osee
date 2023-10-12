@@ -35,7 +35,7 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 		humanReadable: 'Execution Environment',
 	},
 	{
-		header: 'machine',
+		header: 'machineName',
 		description: '',
 		humanReadable: 'Machine',
 	},
@@ -65,7 +65,7 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 		humanReadable: 'Last Modified',
 	},
 	{
-		header: 'modified',
+		header: 'modifiedFlag',
 		description: '',
 		humanReadable: 'Modified',
 	},
@@ -113,16 +113,6 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 		header: 'scheduledMachine',
 		description: '',
 		humanReadable: 'Scheduled Machine',
-	},
-	{
-		header: 'executedBy',
-		description: '',
-		humanReadable: 'Executed By',
-	},
-	{
-		header: 'witness',
-		description: '',
-		humanReadable: 'Witness',
 	},
 	{
 		header: 'statusBy',

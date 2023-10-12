@@ -847,11 +847,10 @@ public interface CoreArtifactTypes {
       .zeroOrOne(EndDate));
 
    ArtifactTypeToken TestScriptDef = osee.add(osee.artifactType(8756764537L, "Test Script Definition", false, Artifact)
-      .exactlyOne(ProgramName)
       .exactlyOne(ScriptName)
       .zeroOrOne(ExecutionDate)
       .zeroOrOne(ExecutionEnvironment)
-      .exactlyOne(Machine)
+      .exactlyOne(MachineName)
       .exactlyOne(Revision)
       .exactlyOne(RepositoryType)
       .zeroOrOne(TeamName)
@@ -859,26 +858,23 @@ public interface CoreArtifactTypes {
       .exactlyOne(LastModifiedDate)
       .exactlyOne(ModifiedFlag)
       .exactlyOne(RepositoryUrl)
-      .exactlyOne(UserId)
-      .atLeastOne(QualificationLevel)
       .atLeastOne(PropertyKey)
       .zeroOrOne(Notes)
       .zeroOrOne(Safety, Boolean.FALSE)
       .zeroOrOne(Scheduled, Boolean.FALSE)
       .zeroOrOne(ScheduledTime)
-      .zeroOrOne(ScheduleMachine)
-      .zeroOrOne(ExecutedBy)
-      .any(Witness)
+      .zeroOrOne(ScheduledMachine)
       .zeroOrOne(StatusBy)
       .zeroOrOne(StatusDate)
       );
 
    ArtifactTypeToken TestScriptResults = osee.add(osee.artifactType(8756764538L, "Test Script Results", false, Artifact)
+      .exactlyOne(ProgramName)
       .exactlyOne(ProcessorId)
       .atLeastOne(RuntimeVersion)
       .zeroOrOne(ExecutionDate)
       .zeroOrOne(ExecutionEnvironment)
-      .exactlyOne(Machine)
+      .exactlyOne(MachineName)
       .exactlyOne(PassedCount)
       .exactlyOne(FailedCount)
       .zeroOrOne(InteractiveCount)
@@ -886,24 +882,30 @@ public interface CoreArtifactTypes {
       .exactlyOne(ElapsedTime)
       .zeroOrOne(StartDate)
       .zeroOrOne(EndDate)
-      .zeroOrOne(ElapsedDate)
       .exactlyOne(OsArchitecture)
       .exactlyOne(OsName)
       .exactlyOne(OsVersion)
       .exactlyOne(OseeServerJarVersion)
       .exactlyOne(OseeServerTitle)
       .exactlyOne(OseeVersion)
+      .exactlyOne(JavaVersion)
       .zeroOrOne(Result)
-      .zeroOrOne(ScriptHealth));
+      .zeroOrOne(ScriptHealth)
+      .exactlyOne(UserId)
+      .exactlyOne(UserName)
+      .exactlyOne(Email)
+      .exactlyOne(QualificationLevel)
+      .zeroOrOne(ExecutedBy)
+      .any(Witness));
 
-   ArtifactTypeToken TestCaseInitial = osee.add(osee.artifactType(1017100809L, "Test Script Results", false, TestCase));
+   ArtifactTypeToken TestCaseInitial = osee.add(osee.artifactType(1017100809L, "Test Case Initial", false, TestCase));
 
-   ArtifactTypeToken ScriptTestCase = osee.add(osee.artifactType(572676456L, "Test Script Results", false, TestCase)
+   ArtifactTypeToken ScriptTestCase = osee.add(osee.artifactType(572676456L, "Script Test Case", false, TestCase)
       .exactlyOne(TestNumber));
 
-   ArtifactTypeToken TestCaseCleanup = osee.add(osee.artifactType(1086040624L, "Test Script Results", false, TestCase));
+   ArtifactTypeToken TestCaseCleanup = osee.add(osee.artifactType(1086040624L, "Test Case Cleanup", false, TestCase));
 
-   ArtifactTypeToken TestPoint = osee.add(osee.artifactType(8756764539L, "Test Script Results", false, Artifact)
+   ArtifactTypeToken TestPoint = osee.add(osee.artifactType(8756764539L, "Test Point", false, Artifact)
       .exactlyOne(TestNumber)
       .zeroOrOne(Result)
       .zeroOrOne(ResultType)
@@ -918,21 +920,22 @@ public interface CoreArtifactTypes {
       .zeroOrOne(TransmissionCount)
       .zeroOrOne(Notes));
 
-   ArtifactTypeToken ScriptLog = osee.add(osee.artifactType(1588700579L, "Ote Log", false, Artifact)
+   ArtifactTypeToken ScriptLog = osee.add(osee.artifactType(1588700579L, "Script Log", false, Artifact)
       .exactlyOne(LogLevel)
       .exactlyOne(Logger)
       .exactlyOne(LogMessage)
       .zeroOrOne(LogThrowable));
 
    ArtifactTypeToken StackTrace = osee.add(osee.artifactType(1769887640L, "Stack Trace", false, Artifact)
-      .exactlyOne(StackTraceLine));
+      .exactlyOne(StackTraceLine)
+      .exactlyOne(StackTraceSource));
 
    ArtifactTypeToken AttentionLocation = osee.add(osee.artifactType(671245081L, "Attention Location", false, Artifact)
       .zeroOrOne(LocationId)
       .zeroOrOne(LocationTime)
       .zeroOrOne(AttentionMessage));
 
-   ArtifactTypeToken ResultSummary = osee.add(osee.artifactType(1851691794L, "Result Summary", false, Artifact)
+   ArtifactTypeToken LoggingSummary = osee.add(osee.artifactType(1851691794L, "Logging Summary", false, Artifact)
       .exactlyOne(SummaryId)
       .exactlyOne(StartNumber)
       .exactlyOne(InformationalCount)
@@ -960,6 +963,12 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TraceArgument = osee.add(osee.artifactType(377337235L, "Trace Argument", false, Artifact)
       .zeroOrOne(Value)
       .zeroOrOne(ArgumentType));
+
+   ArtifactTypeToken InfoGroup = osee.add(osee.artifactType(2734942363158076063L, "Info Group", false, Artifact)
+      .exactlyOne(GroupType));
+
+   ArtifactTypeToken Info = osee.add(osee.artifactType(91126474931227736L, "Info", false, Artifact)
+      .exactlyOne(Value));
 
    ArtifactTypeToken ScriptResultTypes = osee.add(osee.artifactType(8756764540L, "Script Result Types", false, Artifact));
 

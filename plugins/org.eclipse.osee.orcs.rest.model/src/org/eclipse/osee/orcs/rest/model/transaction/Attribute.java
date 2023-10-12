@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -40,6 +41,11 @@ public class Attribute extends AttributeTransfer {
 
    public Attribute(String typeId) {
       this.setTypeId(typeId);
+   }
+
+   public Attribute(String typeId, List<String> value) {
+      this.setTypeId(typeId);
+      this.setValue(value);
    }
 
    @JsonProperty("typeName")

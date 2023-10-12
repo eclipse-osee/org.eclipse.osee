@@ -31,6 +31,8 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitReposit
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GroupArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.HelpPage;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Info;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InfoGroup;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceConnection;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceDataElement;
@@ -41,11 +43,12 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceN
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfacePlatformType;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceStructure;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceSubMessage;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.LoggingSummary;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.MimUserGlobalPreferences;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ResultSummary;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAssessment;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptLog;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.StackTrace;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunctionMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SystemFunctionMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
@@ -243,13 +246,17 @@ public interface CoreRelationTypes {
    RelationTypeSide TestScriptDefToTestScriptResults_TestScriptDef = RelationTypeSide.create(TestScriptDefToTestScriptResults, SIDE_A);
    RelationTypeSide TestScriptDefToTestScriptResults_TestScriptResults = RelationTypeSide.create(TestScriptDefToTestScriptResults, SIDE_B);
 
-   RelationTypeToken TestScriptDefToScriptLog = osee.addNewRelationType(1591261270L, "Test Script Definition to Test Script Logs", ONE_TO_MANY, UNORDERED, TestScriptDef, "Test Script Def", ScriptLog, "Script Log");
-   RelationTypeSide TestScriptDefToScriptLog_TestScriptDef = RelationTypeSide.create(TestScriptDefToScriptLog, SIDE_A);
-   RelationTypeSide TestScriptDefToScriptLog_ScriptLog = RelationTypeSide.create(TestScriptDefToScriptLog, SIDE_B);
+   RelationTypeToken TestScriptResultsToScriptLog = osee.addNewRelationType(1591261271L, "Test Script Results to Test Script Logs", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", ScriptLog, "Script Log");
+   RelationTypeSide TestScriptResultsToScriptLog_TestScriptResults = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_A);
+   RelationTypeSide TestScriptResultsToScriptLog_ScriptLog = RelationTypeSide.create(TestScriptResultsToScriptLog, SIDE_B);
 
    RelationTypeToken TestScriptDefToTestCase = osee.addNewRelationType(791783953L, "Test Script Definition to Test Case", ONE_TO_MANY, UNORDERED, TestScriptDef, "Test Script Def", TestCase, "Test Case");
    RelationTypeSide TestScriptDefToTestCase_TestScriptDef = RelationTypeSide.create(TestScriptDefToTestCase, SIDE_A);
    RelationTypeSide TestScriptDefToTestCase_TestCase = RelationTypeSide.create(TestScriptDefToTestCase, SIDE_B);
+
+   RelationTypeToken TestScriptResultsToTestCase = osee.addNewRelationType(791783954L, "Test Script Results to Test Case", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", TestCase, "Test Case");
+   RelationTypeSide TestScriptResultsToTestCase_TestScriptResults = RelationTypeSide.create(TestScriptResultsToTestCase, SIDE_A);
+   RelationTypeSide TestScriptResultsToTestCase_TestCase = RelationTypeSide.create(TestScriptResultsToTestCase, SIDE_B);
 
    RelationTypeToken TestCaseGroupToTestCase = osee.addNewRelationType(1092384153L, "Test Case to Test Case", ONE_TO_MANY, UNORDERED, TestCase, "Test Case Group", TestCase, "Test Case");
    RelationTypeSide TestCaseToTestCase_TestCaseGroup = RelationTypeSide.create(TestCaseGroupToTestCase, SIDE_A);
@@ -263,6 +270,10 @@ public interface CoreRelationTypes {
    RelationTypeSide TestCaseToScriptLog_TestCase = RelationTypeSide.create(TestCaseToScriptLog, SIDE_A);
    RelationTypeSide TestCaseToScriptLog_ScriptLog = RelationTypeSide.create(TestCaseToScriptLog, SIDE_B);
 
+   RelationTypeToken TestScriptResultsToAttentionMessage = osee.addNewRelationType(934434096L, "Test Script Results To Attention Location", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", AttentionLocation, "Attention Location");
+   RelationTypeSide TestScriptResultsToAttentionMessage_Result = RelationTypeSide.create(TestScriptResultsToAttentionMessage, SIDE_A);
+   RelationTypeSide TestScriptResultsToAttentionMessage_AttentionMessage = RelationTypeSide.create(TestScriptResultsToAttentionMessage, SIDE_B);
+
    RelationTypeToken TestCaseToAttentionLocation = osee.addNewRelationType(934434095L, "Test Case To Attention Location", ONE_TO_MANY, UNORDERED, TestCase, "Test Case", AttentionLocation, "Attention Location");
    RelationTypeSide TestCaseToAttentionLocation_TestCase = RelationTypeSide.create(TestCaseToAttentionLocation, SIDE_A);
    RelationTypeSide TestCaseToAttentionLocation_AttentionLocation = RelationTypeSide.create(TestCaseToAttentionLocation, SIDE_B);
@@ -271,17 +282,21 @@ public interface CoreRelationTypes {
    RelationTypeSide TestPointToAttentionLocation_TestPoint = RelationTypeSide.create(TestPointToAttentionLocation, SIDE_A);
    RelationTypeSide TestPointToAttentionLocation_AttentionLocation = RelationTypeSide.create(TestPointToAttentionLocation, SIDE_B);
 
+   RelationTypeToken AttentionLocationToStackTrace = osee.addNewRelationType(255275876L, "Attention Location to Stack Trace", ONE_TO_MANY, UNORDERED, AttentionLocation, "Attention Location", StackTrace, "Stack Trace");
+   RelationTypeSide AttentionLocationToStackTrace_AttentionLocation = RelationTypeSide.create(AttentionLocationToStackTrace, SIDE_A);
+   RelationTypeSide AttentionLocationToStackTrace_StackTrace = RelationTypeSide.create(AttentionLocationToStackTrace, SIDE_B);
+
    RelationTypeToken TestPointGroupToTestPoint = osee.addNewRelationType(2020144233L, "Test Point Group To Test Point", ONE_TO_MANY, UNORDERED, TestPoint, "Test Point Group", TestPoint, "Test Point");
    RelationTypeSide TestPointGroupToTestPoint_TestPointGroup = RelationTypeSide.create(TestPointGroupToTestPoint, SIDE_A);
    RelationTypeSide TestPointGroupToTestPoint_TestPoint = RelationTypeSide.create(TestPointGroupToTestPoint, SIDE_B);
 
-   RelationTypeToken TestScriptResultsToResultSummary = osee.addNewRelationType(23056148L, "Test Script Results To Result Summary", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", ResultSummary, "Result Summary");
-   RelationTypeSide TestScriptResultsToResultSummary_TestScriptResults = RelationTypeSide.create(TestScriptResultsToResultSummary, SIDE_A);
-   RelationTypeSide TestScriptResultsToResultSummary_ResultSummary = RelationTypeSide.create(TestScriptResultsToResultSummary, SIDE_B);
+   RelationTypeToken TestScriptResultsToLoggingSummary = osee.addNewRelationType(23056148L, "Test Script Results To Logging Summary", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", LoggingSummary, "Logging Summary");
+   RelationTypeSide TestScriptResultsToLoggingSummary_TestScriptResults = RelationTypeSide.create(TestScriptResultsToLoggingSummary, SIDE_A);
+   RelationTypeSide TestScriptResultsToLoggingSummary_LoggingSummary = RelationTypeSide.create(TestScriptResultsToLoggingSummary, SIDE_B);
 
-   RelationTypeToken ResultSummaryToErrorEntry = osee.addNewRelationType(407833089L, "Result Summary To Error Entry", ONE_TO_MANY, UNORDERED, ResultSummary, "Result Summary", ErrorEntry, "Error Entry");
-   RelationTypeSide ResultSummaryToErrorEntry_ResultSummary = RelationTypeSide.create(ResultSummaryToErrorEntry, SIDE_A);
-   RelationTypeSide ResultSummaryToErrorEntry_ErrorEntry = RelationTypeSide.create(ResultSummaryToErrorEntry, SIDE_B);
+   RelationTypeToken LoggingSummaryToErrorEntry = osee.addNewRelationType(407833089L, "Logging Summary To Error Entry", ONE_TO_MANY, UNORDERED, LoggingSummary, "Logging Summary", ErrorEntry, "Error Entry");
+   RelationTypeSide LoggingSummaryToErrorEntry_ResultSummary = RelationTypeSide.create(LoggingSummaryToErrorEntry, SIDE_A);
+   RelationTypeSide LoggingSummaryToErrorEntry_ErrorEntry = RelationTypeSide.create(LoggingSummaryToErrorEntry, SIDE_B);
 
    RelationTypeToken TestScriptResultsToVersionInformation = osee.addNewRelationType(325459482L, "Test Script Results To Version Information", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", VersionInformation, "Version Information");
    RelationTypeSide TestScriptResultsToVersionInformation_TestScriptResults = RelationTypeSide.create(TestScriptResultsToVersionInformation, SIDE_A);
@@ -298,6 +313,14 @@ public interface CoreRelationTypes {
    RelationTypeToken TraceToScriptLog = osee.addNewRelationType(867274354L, "Trace To Script Log", ONE_TO_MANY, UNORDERED, Trace, "Trace", ScriptLog, "Script Log");
    RelationTypeSide TraceToScriptLog_Trace = RelationTypeSide.create(TraceToScriptLog, SIDE_A);
    RelationTypeSide TraceToScriptLog_ScriptLog = RelationTypeSide.create(TraceToScriptLog, SIDE_B);
+
+   RelationTypeToken TestPointToInfoGroup = osee.addNewRelationType(7295641908495831287L, "Test Point To Info Group", ONE_TO_MANY, UNORDERED, TestPoint, "Test Point", InfoGroup, "Info Group");
+   RelationTypeSide TestPointToInfoGroup_TestPoint = RelationTypeSide.create(TestPointToInfoGroup, SIDE_A);
+   RelationTypeSide TestPointToInfoGroup_InfoGroup = RelationTypeSide.create(TestPointToInfoGroup, SIDE_B);
+
+   RelationTypeToken InfoGroupToInfo = osee.addNewRelationType(7295641908495831234L, "Info Group To Info", ONE_TO_MANY, UNORDERED, InfoGroup, "Info Group", Info, "Info");
+   RelationTypeSide InfoGroupToInfo_InfoGroup = RelationTypeSide.create(InfoGroupToInfo, SIDE_A);
+   RelationTypeSide InfoGroupToInfo_Info = RelationTypeSide.create(InfoGroupToInfo, SIDE_B);
 
    RelationTypeToken UniversalGrouping = osee.add(2305843009213694294L, "Universal Grouping", MANY_TO_MANY, LEXICOGRAPHICAL_ASC, UniversalGroup, "group", Artifact, "members");
    RelationTypeSide UniversalGrouping_Group = RelationTypeSide.create(UniversalGrouping, SIDE_A);
