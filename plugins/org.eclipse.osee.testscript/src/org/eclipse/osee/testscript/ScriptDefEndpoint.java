@@ -20,7 +20,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
@@ -52,6 +51,6 @@ public interface ScriptDefEndpoint {
    /**
     * Gets a specific unit.
     */
-   ArtifactAccessorResult getScriptDefType(@PathParam("id") ArtifactId scriptDefTypeId);
+   ScriptDefToken getScriptDefType(@PathParam("id") ArtifactId scriptDefTypeId);
 
 }

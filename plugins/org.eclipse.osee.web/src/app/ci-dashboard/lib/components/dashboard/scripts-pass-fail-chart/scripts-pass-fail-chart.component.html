@@ -10,13 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-flex-col tw-items-center">
-	<mat-label class="tw-text-lg tw-font-bold">{{ title }}</mat-label>
-	<div class="tw-h-52 tw-w-52">
-		<canvas
-			baseChart
-			[data]="pieChartData"
-			[type]="'pie'"
-			[options]="pieChartOptions"></canvas>
-	</div>
-</div>
+<osee-pie-chart
+	[title]="title"
+	[labels]="labels"
+	[data]="data"
+	[colors]="colors"></osee-pie-chart>
+<ul class="tw-pl-4 tw-pt-2 tw-font-bold">
+	<li>Pass: {{ stats.scriptsPass }}</li>
+	<li>Fail: {{ stats.scriptsFail }}</li>
+	<li>Abort: {{ stats.scriptsAbort }}</li>
+	<li>Dispo'd: {{ stats.scriptsDispo }}</li>
+</ul>

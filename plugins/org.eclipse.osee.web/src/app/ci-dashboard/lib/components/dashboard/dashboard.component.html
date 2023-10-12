@@ -10,10 +10,40 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-flex-wrap tw-gap-4">
-	<osee-pie-chart title="Team 1"></osee-pie-chart>
-	<osee-pie-chart title="Team 2"></osee-pie-chart>
-	<osee-pie-chart title="Team 3"></osee-pie-chart>
-	<osee-pie-chart title="Team 4"></osee-pie-chart>
-	<osee-pie-chart title="Team 5"></osee-pie-chart>
-</div>
+<osee-ci-dashboard-controls></osee-ci-dashboard-controls>
+<ng-container *ngIf="branchId() && branchType()">
+	<div class="tw-px-4">
+		<ng-container *ngIf="teamStats() as teams; else loading">
+			<ng-container *ngIf="teams.length === 0">
+				No data available for the selected branch and CI Set
+			</ng-container>
+			<ng-container *ngIf="teams.length > 0">
+				<h2 class="tw-font-bold">Test Scripts Pass/Fail</h2>
+				<div class="tw-flex tw-flex-wrap tw-gap-8">
+					<ng-container *ngFor="let team of teams">
+						<osee-scripts-pass-fail-chart
+							[stats]="team"></osee-scripts-pass-fail-chart>
+					</ng-container>
+				</div>
+				<mat-divider class="tw-mt-4 tw-p-4"></mat-divider>
+				<h2 class="tw-font-bold">Test Points Pass/Fail</h2>
+				<div class="tw-flex tw-flex-wrap tw-gap-8">
+					<ng-container *ngFor="let team of teams">
+						<osee-test-points-pass-fail-chart
+							[stats]="team"></osee-test-points-pass-fail-chart>
+					</ng-container>
+				</div>
+				<mat-divider class="tw-mt-4 tw-p-4"></mat-divider>
+				<h2 class="tw-font-bold">Test Scripts Ran</h2>
+				<div class="tw-flex tw-flex-wrap tw-gap-8">
+					<ng-container *ngFor="let team of teams">
+						<osee-scripts-ran-chart
+							[stats]="team"></osee-scripts-ran-chart>
+					</ng-container>
+				</div>
+				<mat-divider class="tw-mt-4 tw-p-4"></mat-divider>
+			</ng-container>
+		</ng-container>
+	</div>
+</ng-container>
+<ng-template #loading>Loading...</ng-template>

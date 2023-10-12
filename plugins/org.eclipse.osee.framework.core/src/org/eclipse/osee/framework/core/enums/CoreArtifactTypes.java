@@ -882,6 +882,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(ElapsedTime)
       .zeroOrOne(StartDate)
       .zeroOrOne(EndDate)
+      .exactlyOne(ScriptSubsystem)
       .exactlyOne(OsArchitecture)
       .exactlyOne(OsName)
       .exactlyOne(OsVersion)

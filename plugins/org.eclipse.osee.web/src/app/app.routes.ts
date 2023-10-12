@@ -22,7 +22,7 @@ export const routes: Routes = [
 		pathMatch: 'prefix',
 	},
 	{
-		path: 'ci-dashboard',
+		path: 'ci',
 		loadChildren: () => import('./ci-dashboard/ci-dashboard.routes'),
 	},
 	{
@@ -54,10 +54,6 @@ export const routes: Routes = [
 		canActivate: [RoleGuard],
 		data: { requiredRoles: serverHealth?.requiredRoles },
 		loadChildren: () => import('./server-health/server-health.routes'),
-	},
-	{
-		path: 'ci-dashboard',
-		loadChildren: () => import('./ci-dashboard/ci-dashboard.routes'),
 	},
 	// {
 	// 	path: '',

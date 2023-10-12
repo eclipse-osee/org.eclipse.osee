@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.ScriptDefApi;
 
 /**
@@ -61,36 +62,53 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    }
 
    @Override
+   public Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations) {
+      return this.getAll(branch, viewId, followRelations, AttributeTypeId.SENTINEL);
+   }
+
+   @Override
    public Collection<ScriptDefToken> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
       return this.getAll(branch, ArtifactId.SENTINEL, orderByAttribute);
    }
 
    @Override
    public Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, AttributeTypeId orderByAttribute) {
-      return this.getAll(branch, viewId, 0L, 0L, orderByAttribute);
+      return this.getAll(branch, viewId, new LinkedList<>(), 0L, 0L, orderByAttribute);
+   }
+
+   @Override
+   public Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations,
+      AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, viewId, followRelations, 0L, 0L, orderByAttribute);
    }
 
    @Override
    public Collection<ScriptDefToken> getAll(BranchId branch, long pageNum, long pageSize) {
-      return this.getAll(branch, ArtifactId.SENTINEL, pageNum, pageSize);
+      return this.getAll(branch, ArtifactId.SENTINEL, new LinkedList<>(), pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize) {
-      return this.getAll(branch, viewId, pageNum, pageSize, AttributeTypeId.SENTINEL);
+      return this.getAll(branch, viewId, new LinkedList<>(), pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
    public Collection<ScriptDefToken> getAll(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
-      return this.getAll(branch, ArtifactId.SENTINEL, pageNum, pageSize, orderByAttribute);
+      return this.getAll(branch, ArtifactId.SENTINEL, new LinkedList<>(), pageNum, pageSize, orderByAttribute);
    }
 
    @Override
    public Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
+      return this.getAll(branch, viewId, new LinkedList<>(), pageNum, pageSize, orderByAttribute);
+   }
+
+   @Override
+   public Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
-         return this.accessor.getAll(branch, pageNum, pageSize, orderByAttribute);
+         return this.accessor.getAll(branch, followRelations, pageNum, pageSize, orderByAttribute, viewId);
       } catch (Exception ex) {
          return new LinkedList<ScriptDefToken>();
       }

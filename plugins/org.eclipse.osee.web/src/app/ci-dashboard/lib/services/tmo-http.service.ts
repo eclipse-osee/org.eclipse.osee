@@ -18,6 +18,7 @@ import { ResultReference } from '../types/tmo';
 import { TestCaseReference } from '../types/tmo';
 import { TestPointReference } from '../types/tmo';
 import { apiURL } from '@osee/environments';
+import { TeamStats } from '../types/team-stats';
 
 @Injectable({
 	providedIn: 'root',

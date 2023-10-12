@@ -72,9 +72,8 @@ public class TmoImportApiImpl implements TmoImportApi {
       ////// Test Script Definition //////
       // If there is an existing definition for this script, do not create a new one.
       String scriptDefKey;
-      ScriptDefToken existingDef =
-         this.scriptDefApi.getAllByFilter(branch, scriptDef.getName()).stream().findFirst().orElse(
-            ScriptDefToken.SENTINEL);
+      ScriptDefToken existingDef = this.scriptDefApi.getAllByFilter(branch, scriptDef.getName()).stream().filter(
+         def -> def.getName().equals(scriptDef.getName())).findFirst().orElse(ScriptDefToken.SENTINEL);
       if (existingDef.isValid()) {
          scriptDefKey = existingDef.getArtifactId().getIdString();
       } else {

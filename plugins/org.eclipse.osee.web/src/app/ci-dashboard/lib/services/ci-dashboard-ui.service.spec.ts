@@ -10,19 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of } from 'rxjs';
-import { TmoService } from '../services/tmo.service';
+import { TestBed } from '@angular/core/testing';
+import { CiDashboardUiService } from './ci-dashboard-ui.service';
 
-export const tmoServiceMock: Partial<TmoService> = {
-	get programId() {
-		return new BehaviorSubject<string>('3');
-	},
+describe('CiDashboardUiService', () => {
+	let service: CiDashboardUiService;
 
-	set ProgramId(id: string) {},
+	beforeEach(() => {
+		TestBed.configureTestingModule({});
+		service = TestBed.inject(CiDashboardUiService);
+	});
 
-	get filterValue() {
-		return new BehaviorSubject<string>('Definition');
-	},
-
-	set FilterValue(value: string) {},
-};
+	it('should be created', () => {
+		expect(service).toBeTruthy();
+	});
+});

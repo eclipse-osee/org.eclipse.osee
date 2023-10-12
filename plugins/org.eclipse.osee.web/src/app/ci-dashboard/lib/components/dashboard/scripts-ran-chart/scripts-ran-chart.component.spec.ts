@@ -10,26 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ScriptsRanChartComponent } from './scripts-ran-chart.component';
 
-import { TmoService } from './tmo.service';
-import { TmoHttpService } from './tmo-http.service';
-import { tmoHttpServiceMock } from './tmo-http.service.mock';
-
-describe('TmoService', () => {
-	let service: TmoService;
+describe('ScriptsRanChartComponent', () => {
+	let component: ScriptsRanChartComponent;
+	let fixture: ComponentFixture<ScriptsRanChartComponent>;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [],
-			providers: [
-				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
-			],
+			imports: [ScriptsRanChartComponent],
 		});
-		service = TestBed.inject(TmoService);
+		fixture = TestBed.createComponent(ScriptsRanChartComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
 	});
 
-	it('should be created', () => {
-		expect(service).toBeTruthy();
+	it('should create', () => {
+		expect(component).toBeTruthy();
 	});
 });
