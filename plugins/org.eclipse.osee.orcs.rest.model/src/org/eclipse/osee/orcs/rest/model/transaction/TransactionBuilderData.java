@@ -41,6 +41,8 @@ public class TransactionBuilderData {
    private String branch;
    @JsonProperty("txComment")
    private String txComment;
+   @JsonProperty("txCommitArtId")
+   private Long txCommitArtId;
    @JsonProperty("createArtifacts")
    private List<CreateArtifact> createArtifacts;
    @JsonProperty("modifyArtifacts")
@@ -72,6 +74,16 @@ public class TransactionBuilderData {
    @JsonProperty("txComment")
    public void setTxComment(String txComment) {
       this.txComment = txComment;
+   }
+
+   @JsonProperty("txCommitArtId")
+   public Long getTxCommitArtId() {
+      return txCommitArtId;
+   }
+
+   @JsonProperty("txCommitArtId")
+   public void setTxCommitArtId(Long txCommitArtId) {
+      this.txCommitArtId = txCommitArtId;
    }
 
    @JsonProperty("createArtifacts")

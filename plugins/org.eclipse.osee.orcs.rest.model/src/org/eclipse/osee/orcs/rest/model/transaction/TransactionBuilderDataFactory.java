@@ -119,6 +119,13 @@ public class TransactionBuilderDataFactory {
          tbd.setTxComment(String.format("Set from JSON data that exports a change report from txId %s to txId %s",
             txId1.getIdString(), txId2.getIdString()));
       }
+      ArtifactId commitArt = txReadable.getCommitArt();
+      if (commitArt.isValid()) {
+         tbd.setTxCommitArtId(commitArt.getId());
+      } else {
+         tbd.setTxCommitArtId(ArtifactId.SENTINEL.getId());
+      }
+
       return tbd;
    }
 
@@ -141,7 +148,14 @@ public class TransactionBuilderDataFactory {
       deleteArtifacts(readTree, tx);
       deleteRelations(readTree, tx);
       addRelations(readTree, artifactsByKeys, tx);
-
+      JsonNode commitArtNode = readTree.get("txCommitArtId");
+      if (commitArtNode != null && commitArtNode.isLong()) {
+         Long commitArtId = commitArtNode.asLong();
+         ArtifactId commitArt = ArtifactId.valueOf(commitArtId);
+         if (commitArt.isValid()) {
+            tx.setCommitArtId(commitArt);
+         }
+      }
       return tx;
    }
 
