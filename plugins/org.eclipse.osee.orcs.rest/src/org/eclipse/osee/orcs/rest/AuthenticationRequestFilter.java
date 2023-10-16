@@ -91,19 +91,19 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                if (Strings.isNumeric(authHeader)) {
                   orcsApi.userService().setUserForCurrentThread(UserId.valueOf(authHeader.toLowerCase()));
                }
-            } else {
-               //This is here because current auth isn't passing in windows login id at first layer
-               String accountId = requestContext.getHeaderString("osee.account.id");
-               String userId = requestContext.getHeaderString("osee.user.id");
-
-               if (userId != null) {
-                  orcsApi.userService().setUserForCurrentThread(UserId.valueOf(userId.toLowerCase()));
-               }
-               if (accountId != null && orcsApi.userService().getUser().isInvalid()) {
-                  orcsApi.userService().setUserForCurrentThread(UserId.valueOf(accountId.toLowerCase()));
-               }
             }
+         } else {
+            // SSO does not pass AUTHORIZATION header. AUTHORIZATION is always null on first entry. SSO maps identity attributes directly to header names.
+            // If functioning as expected, remove exception list and this comment in next commit.
+            String accountId = requestContext.getHeaderString("osee.account.id");
+            String userId = requestContext.getHeaderString("osee.user.id");
 
+            if (userId != null) {
+               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(userId.toLowerCase()));
+            }
+            if (accountId != null && orcsApi.userService().getUser().isInvalid()) {
+               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(accountId.toLowerCase()));
+            }
          }
       } catch (Exception ex) {
          orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
