@@ -84,6 +84,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private final OrcsApi orcsApi;
    private final KeyValueOps keyValueOps;
    private final TupleQuery tupleQuery;
+   private ArtifactId commitArt = ArtifactId.SENTINEL;
    private boolean committed = false;
 
    public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, OrcsApi orcsApi, KeyValueOps keyValueOps) {
@@ -114,6 +115,16 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public void setComment(String comment) {
       validateBuilder();
       txManager.setComment(txData, comment);
+   }
+
+   @Override
+   public ArtifactId getCommitArtId() {
+      return commitArt;
+   }
+
+   @Override
+   public void setCommitArtId(ArtifactId commitArt) {
+      this.commitArt = commitArt;
    }
 
    @Override
@@ -642,6 +653,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             TransactionToken txId = txFactory.createTx(txData).call();
             if (txId.isValid()) {
                committed = true;
+               // if there is a commit art, handle it here
+               ArtifactId commitArt = this.getCommitArtId();
+               if (commitArt.isValid()) {
+                  orcsApi.getTransactionFactory().setTransactionCommitArtifact(txId, this.getCommitArtId());
+               }
                return txId;
             }
             return TransactionToken.SENTINEL;

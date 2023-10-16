@@ -53,6 +53,10 @@ public interface TransactionBuilder {
 
    UserId getAuthor();
 
+   ArtifactId getCommitArtId();
+
+   void setCommitArtId(ArtifactId commitArt);
+
    /**
     * @return TransactionRecord or null of no changes made
     */
