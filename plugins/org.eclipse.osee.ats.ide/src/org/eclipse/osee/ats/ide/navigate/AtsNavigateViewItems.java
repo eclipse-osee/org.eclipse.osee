@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.ide.ev.WorkPackageConfigReport;
 import org.eclipse.osee.ats.ide.ev.WorkPackageQBDReport;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.health.AtsHealthCheckNavigateItem;
+import org.eclipse.osee.ats.ide.health.OseeProductionTestsNavItem;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.navigate.EmailTeamsItem.MemberType;
@@ -390,6 +391,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateItemAction(new PurgeTransactionAction(), FrameworkImage.PURGE, TOP_ADMIN));
          items.add(new AtsRemoteEventTestItem());
          items.add(new CleanupOseeSystemAssignedWorkflows());
+         items.add(new OseeProductionTestsNavItem());
       }
       time.end();
    }
