@@ -165,7 +165,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @TargetedVersion
    public List<IAtsWorkItem> getSiblings(String ids) {
       List<IAtsWorkItem> siblings = new LinkedList<>();
-      for (ArtifactToken teamWfArt : atsApi.getQueryService().getArtifactsByIds(ids)) {
+      List<ArtifactToken> artifactsByIds = atsApi.getQueryService().getArtifactsByIds(ids);
+      for (ArtifactToken teamWfArt : artifactsByIds) {
          IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(teamWfArt);
          if (teamWf != null) {
             for (IAtsTeamWorkflow sibTeamWf : atsApi.getWorkItemService().getSiblings(teamWf)) {
