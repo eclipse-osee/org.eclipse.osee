@@ -15,31 +15,23 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('@osee/toolbar'),
-		outlet: 'toolbar',
+		title: 'CI Dashboard',
+		loadComponent: () => import('./subsystems.component'),
 	},
 	{
-		path: '',
+		path: ':branchType',
 		title: 'CI Dashboard',
-		redirectTo: 'allScripts',
-		pathMatch: 'prefix',
+		loadComponent: () => import('./subsystems.component'),
 	},
 	{
-		path: 'allScripts',
+		path: ':branchType/:branchId',
 		title: 'CI Dashboard',
-		loadComponent: () => import('./ci-dashboard.component'),
+		loadComponent: () => import('./subsystems.component'),
 	},
 	{
-		path: 'dashboard',
+		path: ':branchType/:branchId/:ciSet',
 		title: 'CI Dashboard',
-		loadChildren: () =>
-			import('./lib/components/dashboard/dashboard.routes'),
-	},
-	{
-		path: 'subsystems',
-		title: 'CI Dashboard',
-		loadChildren: () =>
-			import('./lib/components/subsystems/subsystems.routes'),
+		loadComponent: () => import('./subsystems.component'),
 	},
 ];
 

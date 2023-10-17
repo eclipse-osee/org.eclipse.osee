@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { PieChartComponent } from '../../../components/pie-chart/pie-chart.component';
-import { TeamStats, teamStatsSentinel } from '../../../types/team-stats';
+import { CIStats, teamStatsSentinel } from '../../../types/ci-stats';
 
 @Component({
 	selector: 'osee-scripts-pass-fail-chart',
@@ -21,7 +21,7 @@ import { TeamStats, teamStatsSentinel } from '../../../types/team-stats';
 	templateUrl: './scripts-pass-fail-chart.component.html',
 })
 export class ScriptsPassFailChartComponent implements OnInit {
-	@Input() stats: TeamStats = teamStatsSentinel;
+	@Input() stats: CIStats = teamStatsSentinel;
 
 	labels = ['Pass', 'Fail', 'Abort', "Dispo'd"];
 	colors = ['green', 'red', 'orange', 'yellow'];
@@ -38,7 +38,7 @@ export class ScriptsPassFailChartComponent implements OnInit {
 			totalScripts === 0
 				? 0
 				: Math.floor((this.stats.scriptsPass / totalScripts) * 100);
-		this.title = this.stats.teamName + ' - ' + passPercent + '%';
+		this.title = this.stats.name + ' - ' + passPercent + '%';
 		this.data = [
 			this.stats.scriptsPass,
 			this.stats.scriptsFail,

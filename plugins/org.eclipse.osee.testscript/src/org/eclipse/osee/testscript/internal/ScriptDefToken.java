@@ -58,6 +58,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    private String scheduledMachine;
    private String statusBy;
    private Date statusDate;
+   private String subsystem;
    private String description;
    private List<ScriptResultToken> scriptResults;
 
@@ -88,6 +89,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setScheduledMachine(art.getSoleAttributeAsString(CoreAttributeTypes.ScheduledMachine, ""));
       this.setStatusBy(art.getSoleAttributeAsString(CoreAttributeTypes.StatusBy, ""));
       this.setStatusDate(art.getSoleAttributeValue(CoreAttributeTypes.StatusDate, new Date()));
+      this.setSubsystem(art.getSoleAttributeAsString(CoreAttributeTypes.ScriptSubsystem, ""));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
       this.setScriptResults(
          art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().filter(
@@ -116,6 +118,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setScheduledMachine("");
       this.setStatusBy("");
       this.setStatusDate(new Date());
+      this.setSubsystem("");
       this.setDescription("");
       this.setScriptResults(new ArrayList<ScriptResultToken>());
    }
@@ -390,6 +393,14 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.statusDate = statusDate;
    }
 
+   public String getSubsystem() {
+      return subsystem;
+   }
+
+   public void setSubsystem(String subsystem) {
+      this.subsystem = subsystem;
+   }
+
    /**
     * @return the description
     */
@@ -437,6 +448,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       values.put(CoreAttributeTypes.Scheduled, Boolean.toString(this.getScheduled()));
       values.put(CoreAttributeTypes.ScheduledMachine, this.getScheduledMachine());
       values.put(CoreAttributeTypes.ScheduledTime, Long.toString(this.getScheduledTime().getTime()));
+      values.put(CoreAttributeTypes.ScriptSubsystem, this.getSubsystem());
       values.put(CoreAttributeTypes.StatusBy, this.getStatusBy());
       values.put(CoreAttributeTypes.StatusDate, Long.toString(this.getStatusDate().getTime()));
       values.put(CoreAttributeTypes.TeamName, this.getTeam());

@@ -866,6 +866,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ScheduledMachine)
       .zeroOrOne(StatusBy)
       .zeroOrOne(StatusDate)
+      .exactlyOne(ScriptSubsystem)
       );
 
    ArtifactTypeToken TestScriptResults = osee.add(osee.artifactType(8756764538L, "Test Script Results", false, Artifact)
@@ -882,7 +883,6 @@ public interface CoreArtifactTypes {
       .exactlyOne(ElapsedTime)
       .zeroOrOne(StartDate)
       .zeroOrOne(EndDate)
-      .exactlyOne(ScriptSubsystem)
       .exactlyOne(OsArchitecture)
       .exactlyOne(OsName)
       .exactlyOne(OsVersion)

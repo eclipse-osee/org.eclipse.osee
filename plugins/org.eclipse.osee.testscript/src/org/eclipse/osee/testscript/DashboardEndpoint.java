@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.testscript.internal.TeamStatsToken;
+import org.eclipse.osee.testscript.internal.CIStatsToken;
 
 /**
  * @author Ryan T. Baldwin
@@ -35,7 +35,13 @@ public interface DashboardEndpoint {
    @GET
    @Path("{branch}/{ciSet}/teamstats")
    @Produces(MediaType.APPLICATION_JSON)
-   public Collection<TeamStatsToken> getTeamStats(@PathParam("branch") BranchId branch,
+   public Collection<CIStatsToken> getTeamStats(@PathParam("branch") BranchId branch,
+      @PathParam("ciSet") ArtifactId ciSet, @QueryParam("viewId") ArtifactId viewId);
+
+   @GET
+   @Path("{branch}/{ciSet}/subsystemstats")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<CIStatsToken> getSubsystemStats(@PathParam("branch") BranchId branch,
       @PathParam("ciSet") ArtifactId ciSet, @QueryParam("viewId") ArtifactId viewId);
 
 }

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TeamStats } from '../types/team-stats';
+import { CIStats } from '../types/ci-stats';
 import { apiURL } from '@osee/environments';
 
 @Injectable({
@@ -22,8 +22,14 @@ export class DashboardHttpService {
 	constructor(private http: HttpClient) {}
 
 	getTeamStats(branchId: string, ciSet: string) {
-		return this.http.get<TeamStats[]>(
+		return this.http.get<CIStats[]>(
 			`${apiURL}/script/dashboard/${branchId}/${ciSet}/teamstats`
+		);
+	}
+
+	getSubsystemStats(branchId: string, ciSet: string) {
+		return this.http.get<CIStats[]>(
+			`${apiURL}/script/dashboard/${branchId}/${ciSet}/subsystemstats`
 		);
 	}
 }

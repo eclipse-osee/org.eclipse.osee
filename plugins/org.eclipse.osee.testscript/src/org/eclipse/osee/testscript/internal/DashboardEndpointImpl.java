@@ -14,7 +14,11 @@
 package org.eclipse.osee.testscript.internal;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,10 +39,10 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    }
 
    @Override
-   public Collection<TeamStatsToken> getTeamStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+   public Collection<CIStatsToken> getTeamStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      Map<String, TeamStatsToken> stats = new HashMap<>();
-      TeamStatsToken allStats = new TeamStatsToken("All");
+      Map<String, CIStatsToken> stats = new HashMap<>();
+      CIStatsToken allStats = new CIStatsToken("All");
       Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAll(branch, viewId,
          FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults));
       boolean statsSet = false;
@@ -77,7 +81,7 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          if (def.getTeam().isEmpty()) {
             continue;
          }
-         TeamStatsToken teamStats = stats.getOrDefault(def.getTeam(), new TeamStatsToken(def.getTeam()));
+         CIStatsToken teamStats = stats.getOrDefault(def.getTeam(), new CIStatsToken(def.getTeam()));
          if (aborted) {
             teamStats.addScriptsAbort(1);
          } else if (passed) {
@@ -97,7 +101,83 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       if (statsSet) {
          stats.put("All", allStats);
       }
-      return stats.values();
+
+      List<CIStatsToken> values = new LinkedList<>(stats.values());
+
+      Collections.sort(values, new Comparator<CIStatsToken>() {
+         @Override
+         public int compare(CIStatsToken o1, CIStatsToken o2) {
+            // Make sure All ends up at the beginning
+            String name1 = o1.getName().equals("All") ? "AAAAAAAAAA" : o1.getName();
+            String name2 = o2.getName().equals("All") ? "AAAAAAAAAA" : o2.getName();
+            return name1.compareTo(name2);
+         }
+
+      });
+
+      return values;
+
+   }
+
+   @Override
+   public Collection<CIStatsToken> getSubsystemStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      Map<String, CIStatsToken> stats = new HashMap<>();
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAll(branch, viewId,
+         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults));
+
+      for (ScriptDefToken def : defs) {
+         int pointsPassed = 0;
+         int pointsFailed = 0;
+         boolean aborted = false;
+         boolean passed = false;
+         boolean scriptRun = false;
+
+         if (!def.getScriptResults().isEmpty()) {
+            ScriptResultToken results = def.getScriptResults().get(0);
+            pointsPassed = results.getPassedCount();
+            pointsFailed = results.getFailedCount();
+            aborted = results.getScriptAborted();
+            passed = aborted ? false : pointsFailed == 0;
+            scriptRun = true;
+         }
+
+         if (def.getTeam().isEmpty()) {
+            continue;
+         }
+         String subsystem = def.getSubsystem().isEmpty() ? "None" : def.getSubsystem();
+         CIStatsToken subsystemStats = stats.getOrDefault(subsystem, new CIStatsToken(subsystem));
+         if (aborted) {
+            subsystemStats.addScriptsAbort(1);
+         } else if (passed) {
+            subsystemStats.addScriptsPass(1);
+         } else {
+            subsystemStats.addScriptsFail(1);
+         }
+         if (scriptRun) {
+            subsystemStats.addScriptsRan(1);
+         } else {
+            subsystemStats.addScriptsNotRan(1);
+         }
+         subsystemStats.addTestPointsPass(pointsPassed);
+         subsystemStats.addTestPointsFail(pointsFailed);
+         stats.put(subsystem, subsystemStats);
+      }
+
+      List<CIStatsToken> values = new LinkedList<>(stats.values());
+
+      Collections.sort(values, new Comparator<CIStatsToken>() {
+         @Override
+         public int compare(CIStatsToken o1, CIStatsToken o2) {
+            // Make sure None ends up at the end
+            String name1 = o1.getName().equals("None") ? "ZZZZZZZZZZ" : o1.getName();
+            String name2 = o2.getName().equals("None") ? "ZZZZZZZZZZ" : o2.getName();
+            return name1.compareTo(name2);
+         }
+
+      });
+
+      return values;
 
    }
 
