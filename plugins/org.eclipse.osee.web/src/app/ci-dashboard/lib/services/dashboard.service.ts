@@ -34,7 +34,21 @@ export class DashboardService {
 		)
 	);
 
+	private _subsystemStats = combineLatest([
+		this.uiService.branchId,
+		this.uiService.ciSetId,
+	]).pipe(
+		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		switchMap(([branchId, ciSetId]) =>
+			this.dashboardHttpService.getSubsystemStats(branchId, ciSetId)
+		)
+	);
+
 	get teamStats() {
 		return this._teamStats;
+	}
+
+	get subsystemStats() {
+		return this._subsystemStats;
 	}
 }

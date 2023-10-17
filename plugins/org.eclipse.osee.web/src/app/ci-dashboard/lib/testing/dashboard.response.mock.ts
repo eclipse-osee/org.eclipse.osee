@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { TeamStats } from '../types/team-stats';
+import { CIStats } from '../types/ci-stats';
 
-export const teamStatsMock: TeamStats[] = [
+export const teamStatsMock: CIStats[] = [
 	{
-		teamName: 'Team 1',
+		name: 'Team 1',
 		scriptsPass: 100,
 		scriptsFail: 20,
 		scriptsAbort: 10,
@@ -25,7 +25,7 @@ export const teamStatsMock: TeamStats[] = [
 		scriptsNotRan: 1,
 	},
 	{
-		teamName: 'Team 2',
+		name: 'Team 2',
 		scriptsPass: 200,
 		scriptsFail: 10,
 		scriptsAbort: 1,

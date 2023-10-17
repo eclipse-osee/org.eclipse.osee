@@ -13,7 +13,7 @@
 <osee-ci-dashboard-controls></osee-ci-dashboard-controls>
 <ng-container *ngIf="branchId() && branchType()">
 	<div class="tw-px-4">
-		<ng-container *ngIf="teamStats() as teams; else loading">
+		<ng-container *ngIf="teamStats | async as teams; else loading">
 			<ng-container *ngIf="teams.length === 0">
 				No data available for the selected branch and CI Set
 			</ng-container>

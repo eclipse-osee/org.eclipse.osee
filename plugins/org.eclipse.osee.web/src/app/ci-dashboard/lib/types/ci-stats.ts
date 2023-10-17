@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export type TeamStats = {
-	teamName: string;
+export type CIStats = {
+	name: string;
 	scriptsPass: number;
 	scriptsFail: number;
 	scriptsAbort: number;
@@ -22,8 +22,8 @@ export type TeamStats = {
 	scriptsNotRan: number;
 };
 
-export const teamStatsSentinel: TeamStats = {
-	teamName: '',
+export const teamStatsSentinel: CIStats = {
+	name: '',
 	scriptsPass: 0,
 	scriptsFail: 0,
 	scriptsAbort: 0,

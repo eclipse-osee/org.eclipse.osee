@@ -1,0 +1,33 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<osee-ci-dashboard-controls></osee-ci-dashboard-controls>
+<ng-container *ngIf="branchId() && branchType()">
+	<div class="tw-px-4 tw-pb-4">
+		<ng-container
+			*ngIf="subsystemStats | async as subsystems; else loading">
+			<ng-container *ngIf="subsystems.length === 0">
+				No data available for the selected branch and CI Set
+			</ng-container>
+			<ng-container *ngIf="subsystems.length > 0">
+				<h2 class="tw-font-bold">Test Scripts Pass/Fail</h2>
+				<div class="tw-flex tw-flex-wrap tw-gap-8">
+					<ng-container *ngFor="let subsystem of subsystems">
+						<osee-scripts-pass-fail-chart
+							[stats]="subsystem"></osee-scripts-pass-fail-chart>
+					</ng-container>
+				</div>
+			</ng-container>
+		</ng-container>
+	</div>
+</ng-container>
+<ng-template #loading>Loading...</ng-template>

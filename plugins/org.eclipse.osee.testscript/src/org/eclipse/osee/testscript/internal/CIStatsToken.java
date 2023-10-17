@@ -16,9 +16,9 @@ package org.eclipse.osee.testscript.internal;
 /**
  * @author Ryan T. Baldwin
  */
-public class TeamStatsToken {
+public class CIStatsToken {
 
-   private String teamName;
+   private String name;
    private int scriptsPass;
    private int scriptsFail;
    private int scriptsAbort;
@@ -28,8 +28,8 @@ public class TeamStatsToken {
    private int scriptsRan;
    private int scriptsNotRan;
 
-   public TeamStatsToken(String teamName, int scriptsPass, int scriptsFail, int scriptsAbort, int scriptsDispo, int testPointsPass, int testPointsFail, int scriptsRan, int scriptsNotRan) {
-      this.teamName = teamName;
+   public CIStatsToken(String name, int scriptsPass, int scriptsFail, int scriptsAbort, int scriptsDispo, int testPointsPass, int testPointsFail, int scriptsRan, int scriptsNotRan) {
+      this.name = name;
       this.scriptsPass = scriptsPass;
       this.scriptsFail = scriptsFail;
       this.scriptsAbort = scriptsAbort;
@@ -40,8 +40,8 @@ public class TeamStatsToken {
       this.scriptsNotRan = scriptsNotRan;
    }
 
-   public TeamStatsToken(String teamName) {
-      this.teamName = teamName;
+   public CIStatsToken(String name) {
+      this.name = name;
       this.scriptsPass = 0;
       this.scriptsFail = 0;
       this.scriptsAbort = 0;
@@ -52,12 +52,12 @@ public class TeamStatsToken {
       this.scriptsNotRan = 0;
    }
 
-   public String getTeamName() {
-      return teamName;
+   public String getName() {
+      return name;
    }
 
-   public void setTeamName(String teamName) {
-      this.teamName = teamName;
+   public void setName(String name) {
+      this.name = name;
    }
 
    public int getScriptsPass() {

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
 import { PieChartComponent } from '../../pie-chart/pie-chart.component';
-import { TeamStats, teamStatsSentinel } from '../../../types/team-stats';
+import { CIStats, teamStatsSentinel } from '../../../types/ci-stats';
 
 @Component({
 	selector: 'osee-scripts-ran-chart',
@@ -21,7 +21,7 @@ import { TeamStats, teamStatsSentinel } from '../../../types/team-stats';
 	templateUrl: './scripts-ran-chart.component.html',
 })
 export class ScriptsRanChartComponent implements OnInit {
-	@Input() stats: TeamStats = teamStatsSentinel;
+	@Input() stats: CIStats = teamStatsSentinel;
 
 	labels = ['Ran', 'Not'];
 	colors = ['green', 'red'];
@@ -34,7 +34,7 @@ export class ScriptsRanChartComponent implements OnInit {
 			totalScripts === 0
 				? 0
 				: Math.floor((this.stats.scriptsRan / totalScripts) * 100);
-		this.title = this.stats.teamName + ' - ' + passPercent + '%';
+		this.title = this.stats.name + ' - ' + passPercent + '%';
 		this.data = [this.stats.scriptsRan, this.stats.scriptsNotRan];
 	}
 }

@@ -10,21 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed } from '@angular/core';
-import { ScriptsPassFailChartComponent } from './scripts-pass-fail-chart/scripts-pass-fail-chart.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { NgFor, NgIf } from '@angular/common';
+import { Component } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { DashboardService } from '../../services/dashboard.service';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { MatDividerModule } from '@angular/material/divider';
-import { TestPointsPassFailChartComponent } from './test-points-pass-fail-chart/test-points-pass-fail-chart.component';
-import { ScriptsRanChartComponent } from './scripts-ran-chart/scripts-ran-chart.component';
+import { ScriptsPassFailChartComponent } from '../charts/scripts-pass-fail-chart/scripts-pass-fail-chart.component';
+import { TestPointsPassFailChartComponent } from '../charts/test-points-pass-fail-chart/test-points-pass-fail-chart.component';
+import { ScriptsRanChartComponent } from '../charts/scripts-ran-chart/scripts-ran-chart.component';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-dashboard',
 	standalone: true,
 	imports: [
+		AsyncPipe,
 		NgIf,
 		NgFor,
 		ScriptsPassFailChartComponent,
@@ -41,7 +42,7 @@ export default class DashboardComponent {
 		private uiService: CiDashboardUiService
 	) {}
 
-	teamStats = toSignal(this.dashboardService.teamStats);
+	teamStats = this.dashboardService.teamStats;
 	branchId = toSignal(this.uiService.branchId);
 	branchType = toSignal(this.uiService.branchType);
 }
