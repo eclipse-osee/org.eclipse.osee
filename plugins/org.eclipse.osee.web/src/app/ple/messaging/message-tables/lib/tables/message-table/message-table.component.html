@@ -55,6 +55,9 @@
 		mat-table
 		[dataSource]="(messageData | async) || []"
 		multiTemplateDataRows
+		cdkDropList
+		[cdkDropListDisabled]="(inEditMode | async) === false"
+		(cdkDropListDropped)="handleDragDrop($event)"
 		[trackBy]="messageTracker"
 		class="mat-elevation-z8 tw-w-full">
 		<ng-container
@@ -116,73 +119,90 @@
 							? 'tw-bg-accent-100 dark:tw-text-background-app-bar'
 							: ''
 					">
-					<ng-container *ngIf="header === 'name'">
-						<ng-container
-							*ngIf="{
-								value: (rowIsExpanded(element.id) | async)
-							} as _expanded">
-							<button
-								mat-icon-button
-								[@expandButton]="
-									!_expanded.value ? 'closed' : 'open'
-								"
-								[attr.data-cy]="
-									_expanded.value
-										? 'close-message-btn-' + element.name
-										: 'expand-message-btn-' + element.name
-								"
-								(click)="rowChange(element, !_expanded.value)"
-								[ngClass]="
-									element.hasSubMessageChanges
-										? 'message-table-attribute-changed'
-										: 'message-table-attribute-not-changed'
-								">
-								<mat-icon>expand_more</mat-icon>
-							</button>
-						</ng-container>
+					<ng-container *ngIf="header === 'rowControls'">
+						<div class="tw-flex tw-items-center tw-gap-2 tw-pl-2">
+							<ng-container *ngIf="(inEditMode | async) === true">
+								<mat-icon
+									cdkDrag
+									cdkDragHandle
+									cdkDragLockAxis="y"
+									cdkDragRootElement=".message-drag-row"
+									>reorder</mat-icon
+								>
+							</ng-container>
+							<ng-container
+								*ngIf="{
+									value: (rowIsExpanded(element.id) | async)
+								} as _expanded">
+								<button
+									mat-icon-button
+									[@expandButton]="
+										!_expanded.value ? 'closed' : 'open'
+									"
+									[attr.data-cy]="
+										_expanded.value
+											? 'close-message-btn-' +
+											  element.name
+											: 'expand-message-btn-' +
+											  element.name
+									"
+									(click)="
+										rowChange(element, !_expanded.value)
+									"
+									[ngClass]="
+										element.hasSubMessageChanges
+											? 'message-table-attribute-changed'
+											: 'message-table-attribute-not-changed'
+									">
+									<mat-icon>expand_more</mat-icon>
+								</button>
+							</ng-container>
+						</div>
 					</ng-container>
-					<ng-container
-						*ngIf="
-							(inEditMode | async) === true &&
-								!element.deleted &&
-								!nonEditableHeaders.includes(header);
-							else no_edit
-						">
+					<ng-container *ngIf="header !== 'rowControls'">
 						<ng-container
 							*ngIf="
-								header !== 'publisherNodes' &&
-								header !== 'subscriberNodes'
+								(inEditMode | async) === true &&
+									!element.deleted &&
+									!nonEditableHeaders.includes(header);
+								else no_edit
 							">
-							<osee-messaging-edit-message-field
-								[messageId]="element.id"
-								[header]="header"
-								[value]="element[header]"
-								[attr.data-cy]="
-									'message-table-' +
-									header +
-									'-' +
-									element.name +
-									'-' +
-									element[header]
-								"></osee-messaging-edit-message-field>
-						</ng-container>
-						<ng-container
-							*ngIf="
-								header === 'publisherNodes' ||
-								header === 'subscriberNodes'
-							">
-							<osee-edit-message-nodes-field
-								[message]="element"
-								[header]="header"
-								[value]="element[header]"
-								[attr.data-cy]="
-									'message-table-' +
-									header +
-									'-' +
-									element.name +
-									'-' +
-									element[header]
-								"></osee-edit-message-nodes-field>
+							<ng-container
+								*ngIf="
+									header !== 'publisherNodes' &&
+									header !== 'subscriberNodes'
+								">
+								<osee-messaging-edit-message-field
+									[messageId]="element.id"
+									[header]="header"
+									[value]="element[header]"
+									[attr.data-cy]="
+										'message-table-' +
+										header +
+										'-' +
+										element.name +
+										'-' +
+										element[header]
+									"></osee-messaging-edit-message-field>
+							</ng-container>
+							<ng-container
+								*ngIf="
+									header === 'publisherNodes' ||
+									header === 'subscriberNodes'
+								">
+								<osee-edit-message-nodes-field
+									[message]="element"
+									[header]="header"
+									[value]="element[header]"
+									[attr.data-cy]="
+										'message-table-' +
+										header +
+										'-' +
+										element.name +
+										'-' +
+										element[header]
+									"></osee-edit-message-nodes-field>
+							</ng-container>
 						</ng-container>
 					</ng-container>
 					<ng-template #no_edit>
@@ -291,7 +311,7 @@
 		<tr
 			mat-row
 			*matRowDef="let row; columns: (headers | async) || []"
-			class="active:tw-bg-background-unselected-chip even-multi:tw-bg-background-background even-multi:hover:tw-bg-background-disabled-list-option odd-multi:tw-bg-background-selected-button odd-multi:hover:tw-bg-background-hover [&>td]:tw-border-b-0"
+			class="message-drag-row active:tw-bg-background-unselected-chip even-multi:tw-bg-background-background even-multi:hover:tw-bg-background-disabled-list-option odd-multi:tw-bg-background-selected-button odd-multi:hover:tw-bg-background-hover [&>td]:tw-border-b-0"
 			[ngClass]="{
 				'odd-multi:tw-bg-sucess-300 even-multi:tw-bg-success-100 even-multi:dark:tw-bg-success-600 odd-multi:dark:tw-bg-success-900':
 					row.added,

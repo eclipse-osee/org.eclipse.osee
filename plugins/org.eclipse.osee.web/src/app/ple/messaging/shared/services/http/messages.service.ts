@@ -151,11 +151,16 @@ export class MessagesService {
 		);
 	}
 
-	createConnectionRelation(connectionId: string, messageId?: string) {
+	createConnectionRelation(
+		connectionId: string,
+		messageId?: string,
+		afterArtifactId?: string
+	) {
 		let relation: relation = {
 			typeName: 'Interface Connection Message',
 			sideA: connectionId,
 			sideB: messageId,
+			afterArtifact: afterArtifactId || 'end',
 		};
 		return of(relation);
 	}

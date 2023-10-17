@@ -75,6 +75,13 @@ import {
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import {
+	CdkDrag,
+	CdkDragDrop,
+	CdkDragHandle,
+	CdkDropList,
+} from '@angular/cdk/drag-drop';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-message-table',
@@ -111,6 +118,9 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 		FormsModule,
 		NgFor,
 		NgClass,
+		CdkDrag,
+		CdkDragHandle,
+		CdkDropList,
 		MatButtonModule,
 		MatIconModule,
 		MatFormFieldModule,
@@ -140,7 +150,12 @@ export class MessageTableComponent {
 		),
 		takeUntil(this.messageService.done)
 	);
-	headers = this.headerService.AllMessageHeaders;
+
+	headers = this.headerService.AllMessageHeaders.pipe(
+		switchMap((headers) =>
+			of(['rowControls', ...headers] as (keyof message | 'rowControls')[])
+		)
+	);
 	nonEditableHeaders: (keyof message)[] = [];
 	expandedElement = this.messageService.expandedRows;
 	filter: string = '';
@@ -222,7 +237,7 @@ export class MessageTableComponent {
 		this.messageService.filter = filterValue.trim().toLowerCase();
 		this.filter = filterValue.trim().toLowerCase();
 	}
-	valueTracker(index: any, item: keyof message) {
+	valueTracker(index: number, item: keyof message | 'rowControls') {
 		return index;
 	}
 
@@ -410,6 +425,38 @@ export class MessageTableComponent {
 						})
 					)
 				)
+			)
+			.subscribe();
+	}
+
+	handleDragDrop(event: CdkDragDrop<unknown[]>) {
+		if (event.currentIndex === event.previousIndex) {
+			return;
+		}
+
+		this.messageData
+			.pipe(
+				take(1),
+				switchMap((messages) => {
+					// Rows not marked as draggable are not included in the index count,
+					// so remove them from the list before checking index.
+					const tableData =
+						messages.data.filter((e) => e.id !== '-1') || [];
+					const messageId = tableData[event.previousIndex].id;
+					tableData.splice(event.previousIndex, 1);
+					const newIndex = event.currentIndex - 1;
+					const afterArtifactId =
+						newIndex < 0 ? 'start' : tableData[newIndex].id;
+					return this.messageService.connectionId.pipe(
+						switchMap((connectionId) =>
+							this.messageService.changeMessageRelationOrder(
+								connectionId,
+								messageId,
+								afterArtifactId
+							)
+						)
+					);
+				})
 			)
 			.subscribe();
 	}
