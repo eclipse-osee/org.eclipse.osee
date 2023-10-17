@@ -94,15 +94,16 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
             }
          } else {
             // SSO does not pass AUTHORIZATION header. AUTHORIZATION is always null on first entry. SSO maps identity attributes directly to header names.
+            // UserId.valueOf should ONLY be used if passing artifact ID long
             // If functioning as expected, remove exception list and this comment in next commit.
             String accountId = requestContext.getHeaderString("osee.account.id");
             String userId = requestContext.getHeaderString("osee.user.id");
 
             if (userId != null) {
-               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(userId.toLowerCase()));
+               orcsApi.userService().setUserForCurrentThread(userId.toLowerCase());
             }
             if (accountId != null && orcsApi.userService().getUser().isInvalid()) {
-               orcsApi.userService().setUserForCurrentThread(UserId.valueOf(accountId.toLowerCase()));
+               orcsApi.userService().setUserForCurrentThread(accountId.toLowerCase());
             }
          }
       } catch (Exception ex) {
