@@ -88,7 +88,15 @@ describe('MessageInterfaceComponent', () => {
 					},
 				],
 			},
-		}).compileComponents();
+		})
+			.configureTestingModule({
+				imports: [
+					MessagePageComponent,
+					MockMessageTableComponent,
+					RouterTestingModule,
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

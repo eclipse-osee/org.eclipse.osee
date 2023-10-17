@@ -61,6 +61,7 @@ describe('MessagesService', () => {
 				typeName: 'Interface Connection Message',
 				sideA: '10',
 				sideB: undefined,
+				afterArtifact: 'end',
 			};
 			let expectedObservable = { a: relation };
 			let expectedMarble = '(a|)';

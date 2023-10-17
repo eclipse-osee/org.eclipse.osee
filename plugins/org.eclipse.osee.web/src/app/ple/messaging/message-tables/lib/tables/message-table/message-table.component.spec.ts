@@ -61,6 +61,7 @@ import {
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MockSingleDiffComponent } from '@osee/shared/testing';
 import { MockEditMessageNodesFieldComponent } from '@osee/messaging/message-tables/testing';
+import { CdkDrag, CdkDragHandle, CdkDropList } from '@angular/cdk/drag-drop';
 
 let loader: HarnessLoader;
 
@@ -79,6 +80,9 @@ describe('MessageTableComponent', () => {
 					FormsModule,
 					NgFor,
 					NgClass,
+					CdkDrag,
+					CdkDragHandle,
+					CdkDropList,
 					MatButtonModule,
 					MatIconModule,
 					MatFormFieldModule,
@@ -112,6 +116,9 @@ describe('MessageTableComponent', () => {
 				imports: [
 					CommonModule,
 					FormsModule,
+					CdkDrag,
+					CdkDragHandle,
+					CdkDropList,
 					MatFormFieldModule,
 					MatInputModule,
 					MatIconModule,

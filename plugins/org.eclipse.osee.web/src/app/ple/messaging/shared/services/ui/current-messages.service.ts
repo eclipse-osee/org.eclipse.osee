@@ -934,6 +934,51 @@ export class CurrentMessagesService {
 		);
 	}
 
+	changeMessageRelationOrder(
+		connectionId: string,
+		messageId: string,
+		afterArtifactId: string
+	) {
+		const branchId = this.ui.BranchId.pipe(take(1));
+		const deleteRelation = this.messageService.createConnectionRelation(
+			connectionId,
+			messageId
+		);
+		const createRelation = this.messageService.createConnectionRelation(
+			connectionId,
+			messageId,
+			afterArtifactId
+		);
+		const tx = combineLatest([
+			branchId,
+			deleteRelation,
+			createRelation,
+		]).pipe(
+			switchMap(([branchId, deleteRel, createRel]) =>
+				this.messageService
+					.deleteRelation(branchId, deleteRel)
+					.pipe(
+						switchMap((tx) =>
+							this.messageService.addRelation(
+								branchId,
+								createRel,
+								tx
+							)
+						)
+					)
+			)
+		);
+		return tx.pipe(
+			switchMap((_tx) =>
+				this.messageService.performMutation(_tx).pipe(
+					tap(() => {
+						this.ui.updateMessages = true;
+					})
+				)
+			)
+		);
+	}
+
 	private createUserPreferenceBranchTransaction(editMode: boolean) {
 		return combineLatest(
 			this.preferences,
