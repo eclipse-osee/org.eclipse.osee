@@ -24,7 +24,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.Composite;
@@ -42,6 +45,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * Abstract class for all widgets used in Wizards and Editors
@@ -51,6 +55,7 @@ public abstract class XWidget {
 
    private IManagedForm managedForm;
 
+   protected Hyperlink labelHyperlink;
    protected Label labelWidget = null;
    protected String label = "";
    private String toolTip = null;
@@ -71,7 +76,8 @@ public abstract class XWidget {
    protected FormToolkit toolkit;
    private Object object;
    private ILabelProvider labelProvider;
-   private ArtifactTypeId artifactType;
+   private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
+   private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private String id;
    protected Object defaultValueObj;
    private boolean autoSave = false;
@@ -80,6 +86,7 @@ public abstract class XWidget {
    private ISelectableValueProvider valueProvider;
    private Collection<? extends Object> values = new ArrayList<Object>();
    private List<ConditionalRule> conditions = new ArrayList<>();
+   private ArtifactId teamId = ArtifactId.SENTINEL;
 
    public XWidget(String label) {
       this.label = label;
@@ -187,23 +194,25 @@ public abstract class XWidget {
          if (isInForm()) {
             XWidgetUtility.setStatus(status, this);
          } else {
-            if (Widgets.isAccessible(labelWidget)) {
-               labelWidget.setForeground(status.isOK() ? null : Displays.getSystemColor(SWT.COLOR_RED));
+            if (Widgets.isAccessible(labelHyperlink)) {
+               labelHyperlink.setForeground(status.isOK() ? null : Displays.getSystemColor(SWT.COLOR_RED));
                if (mouseLabelListener == null) {
-                  mouseLabelListener = new MouseListener() {
+                  mouseLabelListener = new MouseAdapter() {
                      @Override
                      public void mouseDoubleClick(MouseEvent e) {
                         openHelp();
                      }
-
+                  };
+                  labelHyperlink.addMouseListener(mouseLabelListener);
+               }
+            }
+            if (Widgets.isAccessible(labelWidget)) {
+               labelWidget.setForeground(status.isOK() ? null : Displays.getSystemColor(SWT.COLOR_RED));
+               if (mouseLabelListener == null) {
+                  mouseLabelListener = new MouseAdapter() {
                      @Override
-                     public void mouseDown(MouseEvent e) {
-                        // do nothing
-                     }
-
-                     @Override
-                     public void mouseUp(MouseEvent e) {
-                        // do nothing
+                     public void mouseDoubleClick(MouseEvent e) {
+                        openHelp();
                      }
                   };
                   labelWidget.addMouseListener(mouseLabelListener);
@@ -430,7 +439,7 @@ public abstract class XWidget {
     * @return artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
     * widget knows what to do with this value.
     */
-   public ArtifactTypeId getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return artifactType;
    }
 
@@ -438,7 +447,7 @@ public abstract class XWidget {
     * @param artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
     * widget knows what to do with this value.
     */
-   public void setArtifactType(ArtifactTypeId artifactType) {
+   public void setArtifactType(ArtifactTypeToken artifactType) {
       this.artifactType = artifactType;
    }
 
@@ -528,6 +537,22 @@ public abstract class XWidget {
 
    public void setSingleSelect(boolean singleSelect) {
       this.singleSelect = singleSelect;
+   }
+
+   public AttributeTypeToken getAttributeType() {
+      return attributeType;
+   }
+
+   public void setAttributeType(AttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
+   }
+
+   public ArtifactId getTeamId() {
+      return teamId;
+   }
+
+   public void setTeamId(ArtifactId teamId) {
+      this.teamId = teamId;
    }
 
 }

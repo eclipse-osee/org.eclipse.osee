@@ -18,8 +18,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
@@ -39,7 +41,6 @@ public class XWidgetRendererItem implements Cloneable {
    private static final int DEFAULT_HEIGHT = 9999;
    private final Map<String, Object> parameters = new HashMap<String, Object>();
    private final XOptionHandler xOptionHandler = new XOptionHandler();
-
    private String name = "Unknown";
    private String id = "";
    private String storeName = "";
@@ -60,7 +61,8 @@ public class XWidgetRendererItem implements Cloneable {
    private Artifact artifact;
    private Object object;
    private String doubleClickText;
-   private ArtifactTypeId artifactType;
+   private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
+   private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private RelationTypeSide relationTypeSide;
    private ComputedCharacteristicToken<?> computedCharacteristic;
    private boolean horizontalLabel;
@@ -69,6 +71,7 @@ public class XWidgetRendererItem implements Cloneable {
    private Collection<? extends Object> values = new ArrayList<Object>();
    private List<ConditionalRule> conditions = new ArrayList<>();
    private ArtifactToken enumeratedArt;
+   private ArtifactId teamId = ArtifactId.SENTINEL;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -321,7 +324,7 @@ public class XWidgetRendererItem implements Cloneable {
     * @return artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
     * widget knows what to do with this value.
     */
-   public ArtifactTypeId getArtifactType() {
+   public ArtifactTypeToken getArtifactType() {
       return artifactType;
    }
 
@@ -329,7 +332,7 @@ public class XWidgetRendererItem implements Cloneable {
     * @param artifactType that may or may not be the storage artifact type. Can be used by any widget and only the
     * widget knows what to do with this value.
     */
-   public void setArtifactType(ArtifactTypeId artifactType) {
+   public void setArtifactType(ArtifactTypeToken artifactType) {
       this.artifactType = artifactType;
    }
 
@@ -411,6 +414,22 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setBorder(boolean border) {
       this.border = border;
+   }
+
+   public AttributeTypeToken getAttributeType() {
+      return attributeType;
+   }
+
+   public void setAttributeType(AttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
+   }
+
+   public ArtifactId getTeamId() {
+      return teamId;
+   }
+
+   public void setTeamId(ArtifactId teamId) {
+      this.teamId = teamId;
    }
 
 }

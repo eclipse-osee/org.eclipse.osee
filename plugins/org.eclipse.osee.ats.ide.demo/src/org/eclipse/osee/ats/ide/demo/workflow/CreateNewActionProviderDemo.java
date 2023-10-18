@@ -16,58 +16,45 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.ide.actions.wizard.AbstractWizardItem;
-import org.eclipse.osee.ats.ide.actions.wizard.WizardFields;
+import org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionProvider;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class DemoPlAndSawWizardItem extends AbstractWizardItem {
+public class CreateNewActionProviderDemo implements CreateNewActionProvider {
 
    private static Collection<IAtsTeamDefinition> demoTeamDefs;
 
-   public DemoPlAndSawWizardItem() {
-      super(AtsApiService.get());
+   @Override
+   public void getAdditionalXWidgetItems(XWidgetBuilder wb, IAtsTeamDefinition teamDef) {
+      // Align each widget with it's related andTeamId in case there are multiple different team defs impacted
+      wb.andWidget("Originator", "XOriginatorHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
+      wb.andWidget("Assignees", "XAssigneesHyperlinkWidget").andTeamId(
+         teamDef.getArtifactId()).andRequired().endWidget();
+      wb.andWidget("Targeted Version", "XTargetedVersionHyperlinkWidget").andTeamId(
+         teamDef.getArtifactId()).endWidget();
+      wb.andXHyperLinkEnumAttr(AtsAttributeTypes.Points).andTeamId(teamDef.getArtifactId()).endWidget();
+      wb.andXBoolean(AtsAttributeTypes.UnplannedWork).andTeamId(teamDef.getArtifactId()).endWidget();
+      wb.andXText(AtsAttributeTypes.WorkPackage).andTeamId(teamDef.getArtifactId()).endWidget();
+      wb.andWidget("Sprint", "XSprintHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
+      wb.andWidget("Feature Group", "XAgileFeatureHyperlinkWidget").andTeamId(teamDef.getArtifactId()).endWidget();
    }
 
    @Override
-   public Collection<WizardFields> getFields(IAtsTeamDefinition teamDef) {
-      ArrayList<WizardFields> fields = new ArrayList<>();
-
-      // Default Fields
-      fields.add(WizardFields.Originator);
-      fields.add(WizardFields.Assignees);
-      fields.add(WizardFields.Points);
-      fields.add(WizardFields.UnPlannedWork);
-      fields.add(WizardFields.Sprint);
-      fields.add(WizardFields.TargetedVersion);
-      fields.add(WizardFields.FeatureGroup);
-      fields.add(WizardFields.WorkPackage);
-
-      return fields;
-   }
-
-   @Override
-   protected boolean hasWizardXWidgetExtensions(IAtsTeamDefinition teamDef) {
-      if (!TestUtil.isDemoDb()) {
-         return false;
-      }
-      return getDemoTeamDefs().contains(teamDef);
-   }
-
-   @Override
-   public boolean hasWizardXWidgetExtensions(Collection<IAtsActionableItem> ais) {
+   public boolean hasProviderXWidgetExtensions(Collection<IAtsActionableItem> ais) {
       if (!TestUtil.isDemoDb()) {
          return false;
       }
       Collection<IAtsTeamDefinition> teams = AtsApiService.get().getActionableItemService().getImpactedTeamDefs(ais);
-      Collection<IAtsTeamDefinition> ceeTeamDefs = getDemoTeamDefs();
+      Collection<IAtsTeamDefinition> progTeamDefs = getDemoTeamDefs();
       List<IAtsTeamDefinition> intersect =
-         org.eclipse.osee.framework.jdk.core.util.Collections.setIntersection(teams, ceeTeamDefs);
+         org.eclipse.osee.framework.jdk.core.util.Collections.setIntersection(teams, progTeamDefs);
       if (!intersect.isEmpty()) {
          return true;
       }
@@ -99,7 +86,7 @@ public class DemoPlAndSawWizardItem extends AbstractWizardItem {
 
    @Override
    public String getName() {
-      return "SAW PL Demo Development";
+      return "SAW, CIS and SAW PL Demo";
    }
 
 }

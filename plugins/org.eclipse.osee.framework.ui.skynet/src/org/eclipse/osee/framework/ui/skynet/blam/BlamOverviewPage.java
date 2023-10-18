@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam;
 
+import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamUsageSection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -156,5 +158,9 @@ public class BlamOverviewPage extends FormPage {
             outputSection.refresh();
          }
       });
+   }
+
+   public Collection<XWidget> getBlamWidgets() {
+      return inputSection.getBlamWidgets();
    }
 }

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.ide.actions.wizard;
+package org.eclipse.osee.ats.ide.actions.newaction;
 
 import java.util.Collection;
 import java.util.LinkedList;

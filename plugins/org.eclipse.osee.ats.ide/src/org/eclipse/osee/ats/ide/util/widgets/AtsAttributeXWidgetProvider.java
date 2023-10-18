@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -39,9 +38,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
 
    private static final Collection<AttributeTypeId> xFlatAttributeTypes = new ArrayList<>();
-   private static final Map<AttributeTypeId, ArtifactTypeId> artRefAttrTypeToValidArtType =
-      new HashMap<AttributeTypeId, ArtifactTypeId>();
-   private static final Collection<AttributeTypeId> artRefAttributeTypes;
+   private static final Map<AttributeTypeToken, ArtifactTypeToken> artRefAttrTypeToValidArtType =
+      new HashMap<AttributeTypeToken, ArtifactTypeToken>();
+   private static final Collection<AttributeTypeToken> artRefAttributeTypes;
 
    static {
       xFlatAttributeTypes.add(CoreAttributeTypes.WorkTransition);
@@ -89,7 +88,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       } else if (artRefAttributeTypes.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
-         ArtifactTypeId newArtType = artRefAttrTypeToValidArtType.get(attributeType);
+         ArtifactTypeToken newArtType = artRefAttrTypeToValidArtType.get(attributeType);
          if (newArtType.isValid()) {
             layoutData.setArtifactType(newArtType);
          }

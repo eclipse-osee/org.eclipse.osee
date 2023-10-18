@@ -197,6 +197,9 @@ public final class FrameworkXWidgetProvider {
             xWidget = getXWidget(xWidgetLayoutData, xWidgetName, name, artifact);
          }
          if (xWidget != null) {
+            xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
+            xWidget.setAttributeType(xWidgetLayoutData.getAttributeType());
+            xWidget.setTeamId(xWidgetLayoutData.getTeamId());
             if (artifact != null) {
                AttributeTypeToken attributeType = getAttributeTypeOrSentinel(xWidgetLayoutData, xWidget, tokenService);
                if (attributeType != AttributeTypeToken.SENTINEL && xWidget instanceof AttributeWidget) {

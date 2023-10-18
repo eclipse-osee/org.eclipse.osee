@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.ui.IEditorInput;
@@ -228,5 +229,9 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
             }
          }
       });
+   }
+
+   public Collection<XWidget> getBlamXWidgets() {
+      return overviewPage.getBlamWidgets();
    }
 }

@@ -12,18 +12,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridLayout;
@@ -47,6 +50,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
    public final String NOT_SET = Widgets.NOT_SET;
    protected T selected = null;
    private ILabelProvider labelProvider;
+   private Collection<T> selectedItems = new ArrayList<>();
 
    public XHyperlinkWithFilteredDialog(String label) {
       this(label, new StringLabelProvider());
@@ -60,6 +64,9 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    @Override
    public String getCurrentValue() {
+      if (isMultiSelect()) {
+         return selectedItems.isEmpty() ? NOT_SET : Collections.toString("; ", selectedItems);
+      }
       return selected == null ? NOT_SET : selected.toString();
    }
 
@@ -87,7 +94,17 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
       return true;
    }
 
+   /**
+    * called if single-select
+    */
    protected void handleSelectionPersist(T selected) {
+      // for subclass implementation
+   }
+
+   /**
+    * called if multi-select
+    */
+   protected void handleSelectedItemsPersist(Collection<T> selectedItems) {
       // for subclass implementation
    }
 
@@ -98,18 +115,33 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
          if (!isSelectable()) {
             return false;
          }
-         FilteredTreeDialog dialog = new FilteredTreeDialog("Select " + label, "Select " + label,
-            new ArrayTreeContentProvider(), labelProvider, new StringNameComparator());
-         dialog.setInput(getSelectable());
-         dialog.setMultiSelect(false);
-         T defaultSelected = getDefaultSelected();
-         if (defaultSelected != null) {
-            dialog.setInitialSelections(Arrays.asList(defaultSelected));
-         }
-         if (dialog.open() == Window.OK) {
-            selected = (T) dialog.getSelectedFirst();
-            handleSelectionPersist(selected);
-            return true;
+
+         if (isMultiSelect()) {
+            FilteredCheckboxTreeDialog<T> dialog = new FilteredCheckboxTreeDialog<T>("Select " + label,
+               "Select " + label, new ArrayTreeContentProvider(), labelProvider, new StringNameComparator());
+            dialog.setInput(getSelectable());
+            T defaultSelected = getDefaultSelected();
+            if (defaultSelected != null) {
+               dialog.setInitialSelections(Arrays.asList(defaultSelected));
+            }
+            if (dialog.open() == Window.OK) {
+               selectedItems = dialog.getChecked();
+               handleSelectedItemsPersist(selectedItems);
+               return true;
+            }
+         } else {
+            FilteredTreeDialog dialog = new FilteredTreeDialog("Select " + label, "Select " + label,
+               new ArrayTreeContentProvider(), labelProvider, new StringNameComparator());
+            dialog.setInput(getSelectable());
+            T defaultSelected = getDefaultSelected();
+            if (defaultSelected != null) {
+               dialog.setInitialSelections(Arrays.asList(defaultSelected));
+            }
+            if (dialog.open() == Window.OK) {
+               selected = (T) dialog.getSelectedFirst();
+               handleSelectionPersist(selected);
+               return true;
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -135,12 +167,22 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
    @Override
    public boolean isEmpty() {
+      if (isMultiSelect()) {
+         return selectedItems.isEmpty();
+      }
       return selected == null;
    }
 
    @Override
    public Object getData() {
+      if (isMultiSelect()) {
+         return selectedItems;
+      }
       return selected;
+   }
+
+   public Collection<T> getSelectedItems() {
+      return selectedItems;
    }
 
 }

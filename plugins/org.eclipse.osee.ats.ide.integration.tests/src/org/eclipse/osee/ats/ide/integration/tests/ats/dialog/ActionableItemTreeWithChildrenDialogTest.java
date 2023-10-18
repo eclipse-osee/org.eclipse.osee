@@ -24,7 +24,7 @@ import org.junit.Test;
 public class ActionableItemTreeWithChildrenDialogTest {
 
    @Test
-   public void testNewActionWizard() {
+   public void test() {
       ActionableItemTreeWithChildrenDialog dialog = new ActionableItemTreeWithChildrenDialog(Active.Active);
       try {
          dialog.setBlockOnOpen(false);

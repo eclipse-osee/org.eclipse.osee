@@ -159,6 +159,8 @@ public class SwtXWidgetRenderer {
       xWidget.setValueProvider(xWidgetRenderItem.getValueProvider());
 
       xWidget.setArtifactType(xWidgetRenderItem.getArtifactType());
+      xWidget.setAttributeType(xWidgetRenderItem.getAttributeType());
+      xWidget.setTeamId(xWidgetRenderItem.getTeamId());
       xWidget.setValues(xWidgetRenderItem.getValues());
       xWidget.setConditions(xWidgetRenderItem.getConditions());
 
@@ -312,7 +314,13 @@ public class SwtXWidgetRenderer {
                }
                refreshOrAndXOrRequiredFlags();
                if (managedForm != null) {
-                  managedForm.getMessageManager().setAutoUpdate(true);
+                  try {
+                     managedForm.getMessageManager().setAutoUpdate(true);
+                  }
+                  // Bug in MessageManager causes NPE that we do not care about
+                  catch (NullPointerException ex) {
+                     // do nothing
+                  }
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="OSEE-INF/extensionPts/AtsWizardItem.exsd"/>
+   <extension-point id="CreateNewActionProvider" name="CreateNewActionProvider" schema="OSEE-INF/extensionPts/CreateNewActionProvider.exsd"/>
    <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="OSEE-INF/extensionPts/AtsWorldEditorItem.exsd"/>
    <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="OSEE-INF/extensionPts/AtsAdvancedOperationAction.exsd"/>
    <extension-point id="AtsWorkDefinitionSheetProvider" name="AtsWorkDefinitionSheetProvider" schema="OSEE-INF/extensionPts/AtsWorkDefinitionSheetProvider.exsd"/>

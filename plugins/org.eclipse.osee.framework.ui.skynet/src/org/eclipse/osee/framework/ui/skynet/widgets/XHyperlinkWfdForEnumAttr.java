@@ -55,4 +55,10 @@ public class XHyperlinkWfdForEnumAttr extends XHyperlinkWithFilteredDialog<Strin
       this.selectable = selectable;
    }
 
+   @Override
+   public void setRequiredEntry(boolean requiredEntry) {
+      super.setRequiredEntry(requiredEntry);
+      validate();
+   }
+
 }
