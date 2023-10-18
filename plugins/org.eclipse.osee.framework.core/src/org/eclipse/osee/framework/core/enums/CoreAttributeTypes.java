@@ -881,7 +881,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString ScheduledMachine = osee.createString(527991454069746927L, "Scheduled Machine", MediaType.TEXT_PLAIN, "Machine the script should run on next");
 
    AttributeTypeString Result = osee.createString(1152921504606847364L, "Result", MediaType.TEXT_PLAIN, "Result");
-
+   AttributeTypeString OverallResult = osee.createString(1152921504606883746L, "Overall Result", MediaType.TEXT_PLAIN, "Overall result of the test point sumarizing all groups");
    AttributeTypeString ResultType = osee.createString(1152921504606847374L, "Result Type", MediaType.TEXT_PLAIN, "Result Type");
 
    AttributeTypeInteger ReviewId = osee.createInteger(1152921504606847245L, "Review Id", MediaType.TEXT_PLAIN, "");

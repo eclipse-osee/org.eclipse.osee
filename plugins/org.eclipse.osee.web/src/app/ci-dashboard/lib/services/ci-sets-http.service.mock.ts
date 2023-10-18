@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { setsMock } from '../testing/tmo.response.mock';
-import { CiSetsHttpService } from 'src/app/ci-dashboard/lib/services/ci-sets-http.service';
+import { CiSetsHttpService } from './ci-sets-http.service';
 
 export const ciSetsHttpServiceMock: Partial<CiSetsHttpService> = {
 	getCiSets(branchId, activeOnly) {

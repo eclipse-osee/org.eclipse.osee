@@ -54,10 +54,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          boolean scriptRun = false;
 
          if (!def.getScriptResults().isEmpty()) {
-            ScriptResultToken results = def.getScriptResults().get(0);
-            pointsPassed = results.getPassedCount();
-            pointsFailed = results.getFailedCount();
-            aborted = results.getScriptAborted();
+            pointsPassed = def.getLatestPassedCount();
+            pointsFailed = def.getLatestFailedCount();
+            aborted = def.getLatestScriptAborted();
             passed = aborted ? false : pointsFailed == 0;
             scriptRun = true;
          }
@@ -108,9 +107,12 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          @Override
          public int compare(CIStatsToken o1, CIStatsToken o2) {
             // Make sure All ends up at the beginning
-            String name1 = o1.getName().equals("All") ? "AAAAAAAAAA" : o1.getName();
-            String name2 = o2.getName().equals("All") ? "AAAAAAAAAA" : o2.getName();
-            return name1.compareTo(name2);
+            if (o1.getName().equals("All")) {
+               return -1;
+            } else if (o2.getName().equals("All")) {
+               return 1;
+            }
+            return o1.getName().compareTo(o2.getName());
          }
 
       });
@@ -134,10 +136,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          boolean scriptRun = false;
 
          if (!def.getScriptResults().isEmpty()) {
-            ScriptResultToken results = def.getScriptResults().get(0);
-            pointsPassed = results.getPassedCount();
-            pointsFailed = results.getFailedCount();
-            aborted = results.getScriptAborted();
+            pointsPassed = def.getLatestPassedCount();
+            pointsFailed = def.getLatestFailedCount();
+            aborted = def.getLatestScriptAborted();
             passed = aborted ? false : pointsFailed == 0;
             scriptRun = true;
          }
@@ -170,9 +171,12 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
          @Override
          public int compare(CIStatsToken o1, CIStatsToken o2) {
             // Make sure None ends up at the end
-            String name1 = o1.getName().equals("None") ? "ZZZZZZZZZZ" : o1.getName();
-            String name2 = o2.getName().equals("None") ? "ZZZZZZZZZZ" : o2.getName();
-            return name1.compareTo(name2);
+            if (o1.getName().equals("None")) {
+               return 1;
+            } else if (o2.getName().equals("None")) {
+               return -1;
+            }
+            return o1.getName().compareTo(o2.getName());
          }
 
       });

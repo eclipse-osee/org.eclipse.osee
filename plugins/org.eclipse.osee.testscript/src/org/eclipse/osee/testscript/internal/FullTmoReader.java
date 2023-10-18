@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Ryan T. Baldwin
  */
-public class TmoReader {
+public class FullTmoReader {
 
    private TMO_LEVEL currentLevel = TMO_LEVEL.TESTSCRIPT;
 
@@ -652,7 +652,15 @@ public class TmoReader {
 
          @Override
          public void endElementFound(String uri, String localName, String qName, String content) {
-            currentScript.setName(content);
+            if (Strings.isValid(content)) {
+               String[] split = content.split("\\.");
+               String name = content;
+               if (split.length > 1) {
+                  name = split[split.length - 1];
+               }
+               currentScript.setName(name);
+               currentScript.setFullScriptName(content);
+            }
          }
 
       }
@@ -677,7 +685,7 @@ public class TmoReader {
                currentScript.setLastAuthor(lastAuthor);
             }
             if (Strings.isValid(lastModified)) {
-               System.out.println("LAST MODIFIED"); // TODO
+               System.out.println("LAST MODIFIED: " + currentScript.getName()); // TODO
                //               currentScript.setLastModified(lastModified); // TODO
             }
             if (Strings.isValid(modifiedFlag)) {

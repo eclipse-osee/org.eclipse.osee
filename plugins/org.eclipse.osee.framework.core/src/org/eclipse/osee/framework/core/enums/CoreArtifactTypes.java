@@ -906,6 +906,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestPoint = osee.add(osee.artifactType(8756764539L, "Test Point", false, Artifact)
       .exactlyOne(TestNumber)
       .zeroOrOne(Result)
+      .zeroOrOne(OverallResult)
       .zeroOrOne(ResultType)
       .zeroOrOne(Interactive, Boolean.FALSE)
       .zeroOrOne(TestPointGroupName)

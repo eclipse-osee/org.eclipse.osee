@@ -42,7 +42,6 @@ public class ScriptDefToken extends ArtifactAccessorResult {
 
    private final Comparator<Date> dateComparator = new DateComparator();
    private String fullScriptName;
-   private String setId;
    private Date executionDate;
    private String executionEnvironment;
    private String machine;
@@ -118,7 +117,6 @@ public class ScriptDefToken extends ArtifactAccessorResult {
 
       if (!getScriptResults().isEmpty()) {
          ScriptResultToken resultToken = getScriptResults().get(0);
-         this.setSetId(resultToken.getSetId());
          this.setLatestProcessorId(resultToken.getProcessorId());
          this.setLatestExecutionDate(resultToken.getExecutionDate());
          this.setLatestExecutionEnvironment(resultToken.getExecutionEnvironment());
@@ -161,7 +159,6 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setDescription("");
       this.setScriptResults(new ArrayList<ScriptResultToken>());
 
-      this.setSetId("");
       this.setLatestProcessorId("");
       this.setLatestExecutionDate(new Date());
       this.setLatestExecutionEnvironment("");
@@ -195,20 +192,6 @@ public class ScriptDefToken extends ArtifactAccessorResult {
     */
    public void setFullScriptName(String fullScriptName) {
       this.fullScriptName = fullScriptName;
-   }
-
-   /**
-    * @return the setName
-    */
-   public String getSetId() {
-      return setId;
-   }
-
-   /**
-    * @param setName the programName to set
-    */
-   public void setSetId(String setName) {
-      this.setId = setName;
    }
 
    /**
@@ -701,6 +684,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       values.put(CoreAttributeTypes.Scheduled, Boolean.toString(this.getScheduled()));
       values.put(CoreAttributeTypes.ScheduledMachine, this.getScheduledMachine());
       values.put(CoreAttributeTypes.ScheduledTime, Long.toString(this.getScheduledTime().getTime()));
+      values.put(CoreAttributeTypes.ScriptName, this.getFullScriptName());
       values.put(CoreAttributeTypes.ScriptSubsystem, this.getSubsystem());
       values.put(CoreAttributeTypes.StatusBy, this.getStatusBy());
       values.put(CoreAttributeTypes.StatusDate, Long.toString(this.getStatusDate().getTime()));

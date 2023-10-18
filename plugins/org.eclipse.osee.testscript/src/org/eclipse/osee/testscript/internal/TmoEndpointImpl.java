@@ -80,7 +80,7 @@ public class TmoEndpointImpl implements TmoEndpoint {
    @Path("{branch}/import")
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptImportEndpoint getTmoImportEndpoint(@PathParam("branch") BranchId branch) {
-      return new ScriptImportEndpointImpl(branch, testScriptApi.getOrcsApi(), testScriptApi.getTmoImportApi());
+      return new ScriptImportEndpointImpl(branch, testScriptApi.getTmoImportApi());
    }
 
 }

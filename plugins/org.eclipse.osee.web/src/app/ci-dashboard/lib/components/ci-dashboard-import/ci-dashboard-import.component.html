@@ -1,0 +1,66 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<osee-ci-dashboard-controls></osee-ci-dashboard-controls>
+<ng-container *ngIf="importResult | async"></ng-container>
+<ng-container *ngIf="ciSet | async"></ng-container>
+<div class="tw-p-4">
+	<ng-container
+		*ngIf="branchId() && branchType() === 'working' && ciSetIdValid()">
+		<div
+			class="tw-flex tw-h-14 tw-max-w-lg tw-items-end tw-justify-between tw-border-b-2 tw-border-primary tw-pb-1">
+			<label
+				for="file-upload"
+				class="tw-block tw-w-48 tw-pb-1 tw-text-[1.1em] hover:tw-cursor-pointer">
+				{{ selectedFile() ? selectedFile()?.name : 'Select File' }}
+			</label>
+			<input
+				id="file-upload"
+				type="file"
+				(change)="selectFile($event)"
+				accept=".tmo, .zip"
+				class="tw-hidden" />
+			<ng-container *ngIf="selectedFile()">
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="startImport()"
+					class="tw-mt-4">
+					<mat-icon>upload</mat-icon
+					><span class="tw-pl-2">Upload</span>
+				</button>
+			</ng-container>
+		</div>
+		<ng-container *ngIf="txResult | async as _txResult">
+			<div class="tw-pb-4 tw-pl-4 tw-pt-8">
+				{{
+					_txResult.results.success
+						? 'Upload successful'
+						: 'Upload failed'
+				}}
+			</div>
+			<div
+				*ngIf="_txResult.results.results.length > 0"
+				class="tw-pl-4">
+				Results:
+				<ul class="tw-pl-4">
+					<li *ngFor="let result of _txResult.results.results">
+						{{ result }}
+					</li>
+				</ul>
+			</div>
+		</ng-container>
+	</ng-container>
+	<ng-container *ngIf="branchType() === 'baseline'">
+		Can't import to a Product Line branch. Please select a Working branch.
+	</ng-container>
+</div>

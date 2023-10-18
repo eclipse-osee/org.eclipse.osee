@@ -146,6 +146,10 @@ public class TransactionBuilderDataFactory {
    }
 
    public TransactionBuilder loadFromJson(String json) {
+      return this.loadFromJson(json, null);
+   }
+
+   public TransactionBuilder loadFromJson(String json, TransactionBuilder tx) {
       if (Objects.isNull(json)) {
          throw new OseeArgumentException("Invalid String in loadFromJson");
       }
@@ -154,11 +158,14 @@ public class TransactionBuilderDataFactory {
       Map<String, ArtifactToken> artifactsByName = new HashMap<>();
       Map<String, ArtifactToken> artifactsByKeys = new HashMap<>();
 
-      String txComment = readTree.get("txComment").asText();
-      if (Strings.isInValid(txComment)) {
-         txComment = "create transaction REST call";
+      if (tx == null) {
+         String txComment = readTree.get("txComment").asText();
+         if (Strings.isInValid(txComment)) {
+            txComment = "create transaction REST call";
+         }
+         tx = orcsApi.getTransactionFactory().createTransaction(branch, txComment);
       }
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, txComment);
+
       createArtifacts(readTree, artifactsByName, artifactsByKeys, tx);
       modifyArtifacts(readTree, artifactsByName, tx);
       deleteArtifacts(readTree, tx);

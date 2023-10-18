@@ -13,14 +13,44 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionResult;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.transaction.AddRelation;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
+import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.testscript.ScriptDefApi;
 import org.eclipse.osee.testscript.TmoImportApi;
 
@@ -29,51 +59,49 @@ import org.eclipse.osee.testscript.TmoImportApi;
  */
 public class TmoImportApiImpl implements TmoImportApi {
 
+   private final OrcsApi orcsApi;
    private final ScriptDefApi scriptDefApi;
    private int keyIndex = 0;
 
-   public TmoImportApiImpl(ScriptDefApi scriptDefApi) {
+   public TmoImportApiImpl(OrcsApi orcsApi, ScriptDefApi scriptDefApi) {
+      this.orcsApi = orcsApi;
       this.scriptDefApi = scriptDefApi;
    }
 
    @Override
-   public ScriptDefToken getScriptDefinition(InputStream stream) {
-      return new TmoReader().getScriptDefinition(stream);
+   public ScriptDefToken getScriptDefinition(InputStream stream, ArtifactId ciSetId) {
+      return new ImportTmoReader().getScriptDefinition(stream, ciSetId);
+   }
+
+   @Override
+   public ScriptDefToken getScriptDefinition(File file, ArtifactId ciSetId) {
+      return new ImportTmoReader().getScriptDefinition(file, ciSetId);
    }
 
    @Override
    public TransactionBuilderData getTxBuilderData(BranchId branch, ScriptDefToken scriptDef) {
-      return this.getTxBuilderData(branch, new TransactionBuilderData(), scriptDef);
+      return this.getTxBuilderData(branch, scriptDef, true);
    }
 
    @Override
-   public TransactionBuilderData getTxBuilderData(BranchId branch, TransactionBuilderData data,
-      ScriptDefToken scriptDef) {
-      return this.getTxBuilderData(branch, data, scriptDef, true);
-   }
-
-   @Override
-   public TransactionBuilderData getTxBuilderData(BranchId branch, TransactionBuilderData data,
-      ScriptDefToken scriptDef, boolean reset) {
-
+   public TransactionBuilderData getTxBuilderData(BranchId branch, ScriptDefToken scriptDef, boolean resetKey) {
+      TransactionBuilderData data = new TransactionBuilderData();
       data.setBranch(branch.getIdString());
       data.setTxComment("TMO Import");
+      data.setCreateArtifacts(new LinkedList<>());
+      data.setAddRelations(new LinkedList<>());
 
-      if (data.getCreateArtifacts() == null || reset) {
-         data.setCreateArtifacts(new LinkedList<>());
-      }
-      if (data.getAddRelations() == null || reset) {
-         data.setAddRelations(new LinkedList<>());
-      }
-      if (reset) {
+      if (resetKey) {
          keyIndex = 0;
       }
 
       ////// Test Script Definition //////
       // If there is an existing definition for this script, do not create a new one.
       String scriptDefKey;
-      ScriptDefToken existingDef = this.scriptDefApi.getAllByFilter(branch, scriptDef.getName()).stream().filter(
-         def -> def.getName().equals(scriptDef.getName())).findFirst().orElse(ScriptDefToken.SENTINEL);
+      ScriptDefToken existingDef = this.scriptDefApi.getAllByFilter(branch, scriptDef.getFullScriptName(),
+         Arrays.asList(CoreAttributeTypes.ScriptName)).stream().filter(
+            def -> def.getFullScriptName().equals(scriptDef.getFullScriptName())).findFirst().orElse(
+               ScriptDefToken.SENTINEL);
       if (existingDef.isValid()) {
          scriptDefKey = existingDef.getArtifactId().getIdString();
       } else {
@@ -84,199 +112,225 @@ public class TmoImportApiImpl implements TmoImportApi {
 
       ////// Test Script Result //////
       ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
-      scriptResult.setName(scriptDef.getName() + " Result " + scriptResult.getExecutionDate());
       CreateArtifact scriptResultArtifact = scriptResult.createArtifact(getKey());
       data.getCreateArtifacts().add(scriptResultArtifact);
       data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestScriptDefToTestScriptResults, scriptDefKey,
          scriptResultArtifact.getKey()));
 
-      // Result logs
-      for (ScriptLogToken log : scriptResult.getLogs()) {
-         log.setName(scriptResult.getName() + " " + log.getLogLevel());
-         CreateArtifact logArt = log.createArtifact(getKey());
-         data.getCreateArtifacts().add(logArt);
-         data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestScriptResultsToScriptLog,
-            scriptResultArtifact.getKey(), logArt.getKey()));
-      }
-
-      // Result Attention Messages
-      for (AttentionLocationToken token : scriptResult.getAttentionMessages()) {
-         token.setName(scriptResult.getName() + " Attention");
-         CreateArtifact attnArt = token.createArtifact(getKey());
-         data.getCreateArtifacts().add(attnArt);
-         data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestScriptResultsToAttentionMessage,
-            scriptResultArtifact.getKey(), attnArt.getKey()));
-      }
-
-      // Result Version Information
-      for (VersionInformationToken version : scriptResult.getVersionInformation()) {
-         version.setName(scriptResult.getName() + " " + version.getName());
-         CreateArtifact versionArt = version.createArtifact(getKey());
-         data.getCreateArtifacts().add(versionArt);
-         data.getAddRelations().add(
-            createAddRelation(CoreRelationTypes.TestScriptResultsToVersionInformation_VersionInformation,
-               scriptResultArtifact.getKey(), versionArt.getKey()));
-      }
-
-      // Result Logging Summaries
-      for (LoggingSummaryToken summary : scriptResult.getLoggingSummaries()) {
-         summary.setName(scriptResult.getName() + " Logging Summary");
-         CreateArtifact summaryArt = summary.createArtifact(getKey());
-         data.getCreateArtifacts().add(summaryArt);
-         data.getAddRelations().add(
-            createAddRelation(CoreRelationTypes.TestScriptResultsToLoggingSummary_LoggingSummary,
-               scriptResultArtifact.getKey(), summaryArt.getKey()));
-
-         // Error Entries
-         for (ErrorEntryToken errorEntry : summary.getErrorEntries()) {
-            errorEntry.setName(summary.getName() + " " + errorEntry.getErrorSeverity() + " Error");
-            CreateArtifact errorArt = errorEntry.createArtifact(getKey());
-            data.getCreateArtifacts().add(errorArt);
-            data.getAddRelations().add(createAddRelation(CoreRelationTypes.LoggingSummaryToErrorEntry_ErrorEntry,
-               summaryArt.getKey(), errorArt.getKey()));
-         }
-      }
-
-      ////// Test Cases //////
-      for (TestCaseToken testCase : scriptResult.getTestCases()) {
-         CreateArtifact testCaseArt = testCase.createArtifact(getKey());
-         data.getCreateArtifacts().add(testCaseArt);
-         data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestScriptResultsToTestCase_TestCase,
-            scriptResultArtifact.getKey(), testCaseArt.getKey()));
-
-         // Test Case Attention Messages
-         for (AttentionLocationToken attention : testCase.getAttentionMessages()) {
-            attention.setName(testCase.getName() + " Attention");
-            CreateArtifact attnArt = attention.createArtifact(getKey());
-            data.getCreateArtifacts().add(attnArt);
-            data.getAddRelations().add(
-               createAddRelation(CoreRelationTypes.TestCaseToAttentionLocation_AttentionLocation, testCaseArt.getKey(),
-                  attnArt.getKey()));
-         }
-
-         // Test Case Logs
-         for (ScriptLogToken log : testCase.getLogs()) {
-            log.setName(testCase.getName() + " " + log.getLogLevel());
-            CreateArtifact logArt = log.createArtifact(getKey());
-            data.getCreateArtifacts().add(logArt);
-            data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestCaseToScriptLog_ScriptLog,
-               testCaseArt.getKey(), logArt.getKey()));
-         }
-
-         // Test Case Trace
-         for (TraceToken trace : testCase.getTrace()) {
-            trace.setName(testCase.getName() + " Trace");
-            CreateArtifact traceArt = trace.createArtifact(getKey());
-            data.getCreateArtifacts().add(traceArt);
-            data.getAddRelations().add(
-               createAddRelation(CoreRelationTypes.TestCaseToTrace_Trace, testCaseArt.getKey(), traceArt.getKey()));
-
-            // Trace Logs
-            for (ScriptLogToken log : trace.getLogs()) {
-               log.setName(trace.getName() + " " + log.getLogLevel());
-               CreateArtifact logArt = log.createArtifact(getKey());
-               data.getCreateArtifacts().add(logArt);
-               data.getAddRelations().add(
-                  createAddRelation(CoreRelationTypes.TraceToScriptLog_ScriptLog, traceArt.getKey(), logArt.getKey()));
-            }
-         }
-
-         ////// Test Points //////
-         for (TestPointToken testPoint : testCase.getTestPoints()) {
-            CreateArtifact testPointArt = testPoint.createArtifact(getKey());
-            data.getCreateArtifacts().add(testPointArt);
-            data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestCaseToTestPoint_TestPoint,
-               testCaseArt.getKey(), testPointArt.getKey()));
-
-            // Test Point Locations
-            for (AttentionLocationToken location : testPoint.getLocations()) {
-               location.setName(testPoint.getName() + " Location " + location.getLocationId());
-               CreateArtifact locationArt = location.createArtifact(getKey());
-               data.getCreateArtifacts().add(locationArt);
-               data.getAddRelations().add(
-                  createAddRelation(CoreRelationTypes.TestPointToAttentionLocation_AttentionLocation,
-                     testPointArt.getKey(), locationArt.getKey()));
-
-               // Test Point Location Stack Traces
-               for (StackTraceToken stackTrace : location.getStackTraces()) {
-                  stackTrace.setName(location.getName() + " " + stackTrace.getSource());
-                  CreateArtifact stackTraceArt = stackTrace.createArtifact(getKey());
-                  data.getCreateArtifacts().add(stackTraceArt);
-                  data.getAddRelations().add(
-                     createAddRelation(CoreRelationTypes.AttentionLocationToStackTrace_StackTrace, locationArt.getKey(),
-                        stackTraceArt.getKey()));
-               }
-            }
-
-            // Test Point Info Groups
-            for (InfoGroupToken infoGroup : testPoint.getInfoGroups()) {
-               CreateArtifact infoGroupArt = infoGroup.createArtifact(getKey());
-               data.getCreateArtifacts().add(infoGroupArt);
-               data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestPointToInfoGroup_InfoGroup,
-                  testPointArt.getKey(), infoGroupArt.getKey()));
-
-               // Info
-               for (InfoToken info : infoGroup.getInfo()) {
-                  CreateArtifact infoArt = info.createArtifact(getKey());
-                  data.getCreateArtifacts().add(infoArt);
-                  data.getAddRelations().add(createAddRelation(CoreRelationTypes.InfoGroupToInfo_Info,
-                     infoGroupArt.getKey(), infoArt.getKey()));
-               }
-            }
-
-            // Sub Test Points
-            createSubTestPointArtifacts(data, testPoint, testPointArt.getKey());
-         }
-      }
-
       return data;
    }
 
-   private void createSubTestPointArtifacts(TransactionBuilderData data, TestPointToken testPoint,
-      String testPointKey) {
-      for (TestPointToken subTestPoint : testPoint.getSubTestPoints()) {
-         CreateArtifact subTestPointArt = subTestPoint.createArtifact(getKey());
-         data.getCreateArtifacts().add(subTestPointArt);
-         data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestPointGroupToTestPoint_TestPoint,
-            testPointKey, subTestPointArt.getKey()));
+   @Override
+   public TransactionResult importFile(InputStream stream, BranchId branch, ArtifactId ciSetId) {
+      TransactionResult result = new TransactionResult();
+      XResultData resultData = new XResultData();
+      result.setResults(resultData);
+      File file = getTempFile(branch, ciSetId);
 
-         // Test Point Locations
-         for (AttentionLocationToken location : testPoint.getLocations()) {
-            location.setName(testPoint.getName() + " Location " + location.getLocationId());
-            CreateArtifact locationArt = location.createArtifact(getKey());
-            data.getCreateArtifacts().add(locationArt);
-            data.getAddRelations().add(
-               createAddRelation(CoreRelationTypes.TestPointToAttentionLocation_AttentionLocation,
-                  subTestPointArt.getKey(), locationArt.getKey()));
+      try {
+         Lib.inputStreamToFile(stream, file);
+      } catch (IOException ex) {
+         if (file != null && file.exists()) {
+            file.delete();
+         }
+         resultData.error("Error reading uploaded file");
+         return result;
+      }
 
-            // Test Point Location Stack Traces
-            for (StackTraceToken stackTrace : location.getStackTraces()) {
-               stackTrace.setName(location.getName() + " " + stackTrace.getSource());
-               CreateArtifact stackTraceArt = stackTrace.createArtifact(getKey());
-               data.getCreateArtifacts().add(stackTraceArt);
-               data.getAddRelations().add(createAddRelation(CoreRelationTypes.AttentionLocationToStackTrace_StackTrace,
-                  locationArt.getKey(), stackTraceArt.getKey()));
+      ScriptDefToken scriptDef = this.getScriptDefinition(file, ciSetId);
+      if (scriptDef.getScriptResults().isEmpty()) {
+         if (file != null && file.exists()) {
+            file.delete();
+         }
+         resultData.error("Error parsing TMO");
+         return result;
+      }
+
+      ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
+      File zipPath = new File(getFolderPath(branch,
+         ciSetId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip");
+      if (zipPath.exists()) {
+         if (file != null && file.exists()) {
+            file.delete();
+         }
+         resultData.error(
+            scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip" + " already exists in CI Set " + ciSetId + ". Did not create artifacts.");
+         return result;
+      }
+
+      // Compress file
+      try {
+         moveFileToZip(file, zipPath, scriptDef);
+      } catch (IOException ex) {
+         resultData.error("Error creating zip file");
+         if (file != null && file.exists()) {
+            file.delete();
+         }
+         if (zipPath.exists()) {
+            zipPath.delete();
+         }
+         return result;
+      }
+
+      ObjectMapper mapper = new ObjectMapper();
+      TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi);
+      TransactionBuilderData txData = this.getTxBuilderData(branch, scriptDef);
+
+      try {
+         TransactionBuilder tx = txBdf.loadFromJson(mapper.writeValueAsString(txData));
+         TransactionToken token = tx.commit();
+         result.setTx(token);
+         resultData.setIds(
+            tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
+      } catch (JsonProcessingException ex) {
+         resultData.error("Error processing tx json");
+      }
+
+      // If the tx failed, remove files.
+      if (result.isFailed()) {
+         if (zipPath.exists()) {
+            zipPath.delete();
+         }
+      }
+
+      return result;
+   }
+
+   @Override
+   public TransactionResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId) {
+      List<String> fileNames = new LinkedList<>();
+      TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi);
+      TransactionBuilder tx = null;
+      TransactionResult result = new TransactionResult();
+      XResultData resultData = new XResultData();
+      result.setResults(resultData);
+      ObjectMapper mapper = new ObjectMapper();
+      try (ZipInputStream zipStream = new ZipInputStream(stream)) {
+         ZipEntry zipEntry = null;
+         while ((zipEntry = zipStream.getNextEntry()) != null) {
+            // Skip any non-tmo files
+            if (!zipEntry.getName().toLowerCase().endsWith(".tmo")) {
+               continue;
+            }
+            File file = getTempFile(branch, ciSetId);
+
+            try {
+               OutputStream outputStream = new FileOutputStream(file);
+               Lib.inputStreamToOutputStream(zipStream, outputStream);
+               outputStream.close();
+            } catch (IOException ex) {
+               if (file != null && file.exists()) {
+                  file.delete();
+               }
+               resultData.addRaw("Error reading uploaded file");
+               continue;
+            }
+
+            ScriptDefToken scriptDef = this.getScriptDefinition(file, ciSetId);
+            if (scriptDef.getScriptResults().isEmpty()) {
+               if (file != null && file.exists()) {
+                  file.delete();
+               }
+               resultData.addRaw("Error parsing " + scriptDef.getName() + ".tmo");
+               continue;
+            }
+
+            ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
+            String zipPathString = getFolderPath(branch,
+               ciSetId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
+            scriptResult.setFileUrl(zipPathString);
+            File zipPath = new File(zipPathString);
+            if (zipPath.exists()) {
+               if (file != null && file.exists()) {
+                  file.delete();
+               }
+               resultData.addRaw(scriptDef.getName() + " TMO already exists. Did not create artifacts.");
+               continue;
+            }
+
+            // Compress file
+            try {
+               moveFileToZip(file, zipPath, scriptDef);
+            } catch (IOException ex) {
+               if (file != null && file.exists()) {
+                  file.delete();
+               }
+               if (zipPath.exists()) {
+                  zipPath.delete();
+               }
+               resultData.addRaw("Error creating zip file for " + scriptDef.getName());
+               continue;
+            }
+            fileNames.add(zipPathString);
+
+            TransactionBuilderData txData = this.getTxBuilderData(branch, scriptDef, false);
+
+            try {
+               if (tx == null) {
+                  tx = txBdf.loadFromJson(mapper.writeValueAsString(txData));
+               } else {
+                  tx = txBdf.loadFromJson(mapper.writeValueAsString(txData), tx);
+               }
+            } catch (JsonProcessingException ex) {
+               resultData.error("Error processing tx json");
             }
          }
 
-         // Test Point Info Groups
-         for (InfoGroupToken infoGroup : testPoint.getInfoGroups()) {
-            CreateArtifact infoGroupArt = infoGroup.createArtifact(getKey());
-            data.getCreateArtifacts().add(infoGroupArt);
-            data.getAddRelations().add(createAddRelation(CoreRelationTypes.TestPointToInfoGroup_InfoGroup,
-               subTestPointArt.getKey(), infoGroupArt.getKey()));
+         if (tx != null) {
+            TransactionToken token = tx.commit();
+            result.setTx(token);
+            resultData.setIds(
+               tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
+         }
 
-            // Info
-            for (InfoToken info : infoGroup.getInfo()) {
-               CreateArtifact infoArt = info.createArtifact(getKey());
-               data.getCreateArtifacts().add(infoArt);
-               data.getAddRelations().add(
-                  createAddRelation(CoreRelationTypes.InfoGroupToInfo_Info, infoGroupArt.getKey(), infoArt.getKey()));
+         // If the tx failed, remove files.
+         if (result.isFailed()) {
+            for (String fileName : fileNames) {
+               File f = new File(fileName);
+               if (f.exists()) {
+                  f.delete();
+               }
             }
          }
 
-         // Sub Test Points
-         createSubTestPointArtifacts(data, subTestPoint, subTestPointArt.getKey());
+      } catch (IOException ex) {
+         System.out.println(ex);
+      }
+
+      keyIndex = 0;
+
+      return result;
+   }
+
+   private String getFolderPath(BranchId branch, ArtifactId ciSetId) {
+      String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      return basePath + File.separator + "testscripts" + File.separator + branch.getIdString() + File.separator + ciSetId.getIdString() + File.separator;
+   }
+
+   /**
+    * Get the temporary file to store tmo. Since we don't have the name of the file before reading it, use a randomly
+    * generated name.
+    *
+    * @return
+    */
+   private File getTempFile(BranchId branch, ArtifactId ciSetId) {
+      String folderPath = getFolderPath(branch, ciSetId);
+      File ciSetFolder = new File(folderPath);
+      if (!ciSetFolder.exists()) {
+         ciSetFolder.mkdirs();
+      }
+      String fileName = System.currentTimeMillis() + (int) (Math.random() * 100) + ".tmo";
+      File file = new File(folderPath + fileName);
+      return file;
+   }
+
+   private void moveFileToZip(File file, File zipPath, ScriptDefToken scriptDef) throws IOException {
+      Map<String, String> env = new HashMap<>();
+      env.put("create", "true");
+      URI uri = URI.create("jar:" + Paths.get(zipPath.getAbsolutePath()).toUri());
+      try (FileSystem fs = FileSystems.newFileSystem(uri, env)) {
+         Path nf = fs.getPath(scriptDef.getName() + ".tmo");
+         Files.move(Paths.get(file.getAbsolutePath()), nf, StandardCopyOption.REPLACE_EXISTING);
       }
    }
 

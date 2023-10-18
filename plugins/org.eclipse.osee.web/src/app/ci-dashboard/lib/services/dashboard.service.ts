@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { combineLatest, filter, switchMap } from 'rxjs';
-import { DashboardHttpService } from '../services/dashboard-http.service';
-import { CiDashboardUiService } from 'src/app/ci-dashboard/lib/services/ci-dashboard-ui.service';
+import { DashboardHttpService } from './dashboard-http.service';
+import { CiDashboardUiService } from './ci-dashboard-ui.service';
 
 @Injectable({
 	providedIn: 'root',

@@ -258,6 +258,10 @@ public interface CoreRelationTypes {
    RelationTypeSide TestScriptResultsToTestCase_TestScriptResults = RelationTypeSide.create(TestScriptResultsToTestCase, SIDE_A);
    RelationTypeSide TestScriptResultsToTestCase_TestCase = RelationTypeSide.create(TestScriptResultsToTestCase, SIDE_B);
 
+   RelationTypeToken TestScriptResultsToTestPoint = osee.addNewRelationType(791783734L, "Test Script Results to Test Point", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", TestPoint, "Test Point");
+   RelationTypeSide TestScriptResultsToTestPoint_TestScriptResults = RelationTypeSide.create(TestScriptResultsToTestPoint, SIDE_A);
+   RelationTypeSide TestScriptResultsToTestPoint_TestPoint = RelationTypeSide.create(TestScriptResultsToTestPoint, SIDE_B);
+
    RelationTypeToken TestCaseGroupToTestCase = osee.addNewRelationType(1092384153L, "Test Case to Test Case", ONE_TO_MANY, UNORDERED, TestCase, "Test Case Group", TestCase, "Test Case");
    RelationTypeSide TestCaseToTestCase_TestCaseGroup = RelationTypeSide.create(TestCaseGroupToTestCase, SIDE_A);
    RelationTypeSide TestCaseToTestCase_TestCase = RelationTypeSide.create(TestCaseGroupToTestCase, SIDE_B);
