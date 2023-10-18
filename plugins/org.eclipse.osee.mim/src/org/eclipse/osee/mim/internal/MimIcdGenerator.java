@@ -993,6 +993,9 @@ public class MimIcdGenerator {
             enumChanged = enumChanged || diffs.containsKey(enumState.getArtifactId());
          }
       }
+      if ((dataType.equals("uInteger") || dataType.equals("sInteger")) && enumLiterals.isEmpty()) {
+         enumLiterals = "n/a";
+      }
 
       MimChangeSummaryItem structDiff = diffs.get(structure.getArtifactId());
       Optional<MimChangeSummaryItem> elementDiff =
