@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnumAttr;
@@ -62,6 +64,14 @@ public class XWidgetBuilder {
       newXWidget();
       currItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
       currItem.setName(displayName);
+      currItem.setXWidgetName(widgetType);
+      return this;
+   }
+
+   public XWidgetBuilder andWidget(AttributeTypeToken attrType, String widgetType) {
+      newXWidget();
+      currItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
+      setAttrTypeSettings(attrType);
       currItem.setXWidgetName(widgetType);
       return this;
    }
@@ -125,6 +135,7 @@ public class XWidgetBuilder {
    private void setAttrTypeSettings(AttributeTypeToken attrType) {
       currItem.setName(attrType.getUnqualifiedName());
       currItem.setStoreName(attrType.getName());
+      currItem.setAttributeType(attrType);
       if (Strings.isValid(attrType.getDescription())) {
          currItem.setToolTip(attrType.getDescription());
       }
@@ -142,6 +153,14 @@ public class XWidgetBuilder {
       newXWidget();
       setAttrTypeSettings(attrType);
       currItem.setXWidgetName("XInteger");
+      return this;
+   }
+
+   public XWidgetBuilder andXText(String displayName, AttributeTypeString attrType) {
+      newXWidget();
+      setAttrTypeSettings(attrType);
+      currItem.setName(displayName);
+      currItem.setXWidgetName("XText");
       return this;
    }
 
@@ -299,6 +318,14 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXBoolean(AttributeTypeToken attrType) {
+      newXWidget();
+      setAttrTypeSettings(attrType);
+      currItem.setXWidgetName(XCheckBox.class.getSimpleName());
+      currItem.setName(attrType.getUnqualifiedName());
+      return this;
+   }
+
    public XWidgetBuilder andXHyperLinkDate(String name) {
       newXWidget();
       currItem.setName(name);
@@ -358,6 +385,11 @@ public class XWidgetBuilder {
 
    public XWidgetBuilder andDisplayLabel(boolean b) {
       currItem.getXOptionHandler().add(XOption.NO_LABEL);
+      return this;
+   }
+
+   public XWidgetBuilder andTeamId(ArtifactId id) {
+      currItem.setTeamId(id);
       return this;
    }
 

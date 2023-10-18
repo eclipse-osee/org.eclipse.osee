@@ -51,6 +51,11 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
          agileTeam = atsApi.getAgileService().getAgileTeam(teamWf);
       } else if (teamDef != null) {
          agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
+      } else if (getTeamId().isValid()) {
+         IAtsTeamDefinition useTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(getTeamId());
+         if (useTeamDef != null) {
+            agileTeam = atsApi.getAgileService().getAgileTeam(useTeamDef);
+         }
       }
       if (agileTeam == null) {
          AWorkbench.popup("No Agile Team configured for this ATS Team");

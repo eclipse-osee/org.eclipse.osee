@@ -24,7 +24,7 @@ import org.junit.Test;
 public class ActionActionableItemListDialogTest {
 
    @Test
-   public void testNewActionWizard() {
+   public void test() {
       ActionActionableItemListDialog dialog = new ActionActionableItemListDialog(Active.Active);
       try {
          dialog.setBlockOnOpen(false);

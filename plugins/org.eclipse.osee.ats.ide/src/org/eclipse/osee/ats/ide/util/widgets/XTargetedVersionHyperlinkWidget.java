@@ -46,9 +46,15 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
       VersionListDialog dialog = null;
       if (!selectable.isEmpty()) {
          dialog = new VersionListDialog("Select Version", "Select Version", selectable);
-      } else if (teamDef != null) {
+      } else if (teamDef != null || getTeamId().isValid()) {
+         IAtsTeamDefinition useTeamDef = IAtsTeamDefinition.SENTINEL;
+         if (teamDef != null) {
+            useTeamDef = teamDef;
+         } else if (getTeamId().isValid()) {
+            useTeamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(getTeamId());
+         }
          IAtsTeamDefinition definitionHoldingVersions =
-            atsApi.getVersionService().getTeamDefinitionHoldingVersions(teamDef);
+            atsApi.getVersionService().getTeamDefinitionHoldingVersions(useTeamDef);
          Collection<IAtsVersion> versions =
             AtsApiService.get().getVersionService().getVersions(definitionHoldingVersions);
          dialog = new VersionListDialog("Select Version", "Select Version", versions);

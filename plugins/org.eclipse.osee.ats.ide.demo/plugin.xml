@@ -40,10 +40,10 @@
       </TraceUnitHandler>
    </extension>
    <extension
-         point="org.eclipse.osee.ats.ide.AtsWizardItem">
-      <AtsWizardItem
-            classname="org.eclipse.osee.ats.ide.demo.workflow.DemoPlAndSawWizardItem">
-      </AtsWizardItem>
+         point="org.eclipse.osee.ats.ide.CreateNewActionProvider">
+      <CreateNewActionProvider
+            classname="org.eclipse.osee.ats.ide.demo.workflow.CreateNewActionProviderDemo">
+      </CreateNewActionProvider>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.plugin.XNavigateItemProvider">

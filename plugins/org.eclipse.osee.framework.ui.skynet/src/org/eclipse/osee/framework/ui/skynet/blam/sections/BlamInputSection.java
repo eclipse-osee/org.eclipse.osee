@@ -44,9 +44,11 @@ public class BlamInputSection extends BaseBlamSection {
 
    private final Collection<XWidgetRendererItem> dynamicInputLayouts = new ArrayList<>();
    private XWidgetPage widgetPage;
+   private final List<XWidget> blamWidgets = new ArrayList<>();
 
    public BlamInputSection(BlamEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(editor, abstractBlam, parent, toolkit, style);
+      abstractBlam.setEditor(editor);
    }
 
    @Override
@@ -100,6 +102,7 @@ public class BlamInputSection extends BaseBlamSection {
          widgetPage = new XWidgetPage(layoutDatas, optionResolver, getAbstractBlam());
          widgetPage.createBody(getManagedForm(), parent, null, null, true);
          abstractBlam.createWidgets(parent, getManagedForm(), getSection(), widgetPage);
+         blamWidgets.addAll(widgetPage.getDynamicXWidgetLayout().getXWidgets());
          XWidgetUtility.setLabelFontsBold(widgetPage.getDynamicXWidgetLayout().getXWidgets());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -122,6 +125,10 @@ public class BlamInputSection extends BaseBlamSection {
    @Override
    public void refresh() {
       super.refresh();
+   }
+
+   public Collection<XWidget> getBlamWidgets() {
+      return widgetPage.getDynamicXWidgetLayout().getXWidgets();
    }
 
 }

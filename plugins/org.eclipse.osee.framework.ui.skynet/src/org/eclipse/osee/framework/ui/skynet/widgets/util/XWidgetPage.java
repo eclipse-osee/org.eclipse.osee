@@ -38,13 +38,13 @@ import org.w3c.dom.Element;
  */
 public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
-   protected SwtXWidgetRenderer dynamicXWidgetLayout;
+   protected SwtXWidgetRenderer swtXWidgetRenderer;
 
    private XWidgetPage(IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       if (dynamicWidgetLayoutListener == null) {
-         dynamicXWidgetLayout = new SwtXWidgetRenderer(this, optionResolver);
+         swtXWidgetRenderer = new SwtXWidgetRenderer(this, optionResolver);
       } else {
-         dynamicXWidgetLayout = new SwtXWidgetRenderer(dynamicWidgetLayoutListener, optionResolver);
+         swtXWidgetRenderer = new SwtXWidgetRenderer(dynamicWidgetLayoutListener, optionResolver);
       }
    }
 
@@ -64,7 +64,7 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
 
    public XWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this(optionResolver, dynamicWidgetLayoutListener);
-      dynamicXWidgetLayout.setLayoutDatas(datas);
+      swtXWidgetRenderer.setLayoutDatas(datas);
    }
 
    public XWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver) {
@@ -79,26 +79,31 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       this((String) null, optionResolver, null);
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page,
+      XModifiedListener xModListener, boolean isEditable) {
       // provided for subclass implementation
    }
 
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page,
+      XModifiedListener xModListener, boolean isEditable) {
       // provided for subclass implementation
    }
 
    @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void createXWidgetLayoutData(XWidgetRendererItem workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art,
+      XModifiedListener xModListener, boolean isEditable) {
       // provided for subclass implementation
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
@@ -112,18 +117,19 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
-      dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
-      return dynamicXWidgetLayout;
+   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact,
+      XModifiedListener xModListener, boolean isEditable) {
+      swtXWidgetRenderer.createBody(managedForm, parent, artifact, xModListener, isEditable);
+      return swtXWidgetRenderer;
    }
 
    public Result isPageComplete() {
       try {
-         for (XWidgetRendererItem layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
+         for (XWidgetRendererItem layoutData : swtXWidgetRenderer.getLayoutDatas()) {
             if (!layoutData.getXWidget().isValid().isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
-               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(
-                  layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(
+               if (!swtXWidgetRenderer.isOrGroupFromAttrNameComplete(
+                  layoutData.getStoreName()) && !swtXWidgetRenderer.isXOrGroupFromAttrNameComplete(
                      layoutData.getStoreName())) {
                   return new Result(layoutData.getXWidget().isValid().getMessage());
                }
@@ -136,19 +142,19 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
    }
 
    public Set<XWidgetRendererItem> getlayoutDatas() {
-      return dynamicXWidgetLayout.getLayoutDatas();
+      return swtXWidgetRenderer.getLayoutDatas();
    }
 
    public void addLayoutDatas(List<XWidgetRendererItem> datas) {
-      dynamicXWidgetLayout.addWorkLayoutDatas(datas);
+      swtXWidgetRenderer.addWorkLayoutDatas(datas);
    }
 
    public void addLayoutData(XWidgetRendererItem data) {
-      dynamicXWidgetLayout.addWorkLayoutData(data);
+      swtXWidgetRenderer.addWorkLayoutData(data);
    }
 
    public XWidgetRendererItem getLayoutData(String layoutName) {
-      return dynamicXWidgetLayout.getLayoutData(layoutName);
+      return swtXWidgetRenderer.getLayoutData(layoutName);
    }
 
    public void processInstructions(Document doc) {
@@ -156,15 +162,15 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
    }
 
    protected void processXmlLayoutDatas(String xWidgetXml) {
-      dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
+      swtXWidgetRenderer.processlayoutDatas(xWidgetXml);
    }
 
    protected void processLayoutDatas(Element element) {
-      dynamicXWidgetLayout.processLayoutDatas(element);
+      swtXWidgetRenderer.processLayoutDatas(element);
    }
 
    public SwtXWidgetRenderer getDynamicXWidgetLayout() {
-      return dynamicXWidgetLayout;
+      return swtXWidgetRenderer;
    }
 
    @Override

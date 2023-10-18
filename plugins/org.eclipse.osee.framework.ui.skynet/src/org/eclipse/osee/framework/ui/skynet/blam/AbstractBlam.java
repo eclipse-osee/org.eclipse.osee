@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
@@ -90,6 +91,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    private final BlamUiSource source;
    private final String name;
    protected VariableMap variableMap;
+   private BlamEditor editor;
 
    public AbstractBlam() {
       this(null, DEFAULT_DESCRIPTION, BlamUiSource.DEFAULT);
@@ -130,7 +132,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    /**
-    * Use WidgetBuilder
+    * Use WidgetBuilder and getXWidgetItems()
     */
    @Deprecated
    public String getXWidgetsXml() {
@@ -210,8 +212,13 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       }
    }
 
+   public Collection<XWidget> getBlamWidgets() {
+      return editor.getBlamXWidgets();
+   }
+
    @SuppressWarnings("unused")
-   public List<XWidgetRendererItem> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
+   public List<XWidgetRendererItem> getLayoutDatas()
+      throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
       List<XWidgetRendererItem> xWidgetItems = getXWidgetItems();
       if (xWidgetItems.isEmpty()) {
          return XWidgetParser.extractWorkAttributes(new SwtXWidgetRenderer(), getXWidgetsXml());
@@ -301,6 +308,14 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    public void inputSectionCreated(XWidgetPage widgetPage) {
       // do nothing
+   }
+
+   public void setEditor(BlamEditor editor) {
+      this.editor = editor;
+   }
+
+   public BlamEditor getEditor() {
+      return editor;
    }
 
 }

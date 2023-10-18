@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.osee.ats.ide">
+<schema targetNamespace="org.eclipse.osee.ats.ide" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.ats.ide" id="AtsWizardItem" name="AtsWizardItem"/>
+         <meta.schema plugin="org.eclipse.osee.ats.ide" id="CreateNewActionProvider" name="CreateNewActionProvider"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -11,9 +11,14 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="AtsWizardItem"/>
+            <element ref="CreateNewActionProvider"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -42,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="AtsWizardItem">
+   <element name="CreateNewActionProvider">
       <complexType>
          <attribute name="classname" type="string" use="required">
             <annotation>
                <documentation>
-                  Provides the capability for the extension of the ATS New Action wizard.  This allows for non-generic fields to be displayed and required.  It also provides for the callbacks necessary to ensure that the data is entered properly AND the data gets stored upon wizard completion.
+                  Provides the capability for the extension of the ATS Create New Action Blam.  This allows for non-generic fields to be displayed and required.  It also provides for the callbacks necessary to ensure that the data is entered properly AND the data gets stored upon creation completion.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.ats.ide.actions.wizard.IAtsWizardItem"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.ats.ide.actions.newaction.CreateNewActionProvider"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -93,13 +98,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>

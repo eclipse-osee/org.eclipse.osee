@@ -9,7 +9,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.forms,
- org.eclipse.osee.ats.api
+ org.eclipse.osee.ats.api,
+ org.eclipse.osee.framework.ui.skynet
 Import-Package: javax.ws.rs.core,
  org.eclipse.core.filesystem,
  org.eclipse.osee.ats.api,
@@ -26,7 +27,7 @@ Import-Package: javax.ws.rs.core,
  org.eclipse.osee.ats.core.workflow.state,
  org.eclipse.osee.ats.core.workflow.transition,
  org.eclipse.osee.ats.ide,
- org.eclipse.osee.ats.ide.actions.wizard,
+ org.eclipse.osee.ats.ide.actions.newaction,
  org.eclipse.osee.ats.ide.branch,
  org.eclipse.osee.ats.ide.config,
  org.eclipse.osee.ats.ide.config.version,

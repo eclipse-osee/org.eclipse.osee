@@ -89,4 +89,13 @@ public class Result {
    public void setCancelled(boolean cancelled) {
       this.cancelled = cancelled;
    }
+
+   public void errorf(String format, String data) {
+      isTrue = false;
+      this.text += String.format(format, data);
+   }
+
+   public void logf(String format, String data) {
+      this.text += String.format(format, data);
+   }
 }

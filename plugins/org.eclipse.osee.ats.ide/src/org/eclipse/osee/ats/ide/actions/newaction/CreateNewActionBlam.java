@@ -20,33 +20,49 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.Priorities;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.actions.wizard.IAtsWizardItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.XAgileFeatureHyperlinkWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XAssigneesHyperlinkWidget;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkChangeTypeSelection;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlinkPrioritySelection;
-import org.eclipse.osee.ats.ide.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.ats.ide.util.widgets.XOriginatorHyperlinkWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XSprintHyperlinkWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XTargetedVersionHyperlinkWidget;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -59,12 +75,15 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -94,16 +113,17 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    protected XHyperlinkPrioritySelection priorityWidget;
    protected XHyperlabelActionableItemSelection aiWidget;
    protected final AtsApi atsApi;
-   protected XWidgetBuilder wb;
+   protected XWidgetBuilder mainWb;
+   protected XWidgetBuilder teamWb;
    private ActionResult actionResult;
-   private XWidgetPage page;
    private Composite teamComp;
-   private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<>();
-   private final Set<IAtsWizardItem> handledExtensionItems = new HashSet<>();
+   private static Set<CreateNewActionProvider> providerExtensionItems = new HashSet<>();
+   private final Set<CreateNewActionProvider> handledExtensionItems = new HashSet<>();
    private IManagedForm form;
    private Section section;
    private Composite comp;
-   private XWidgetPage widgetPage;
+   private final Collection<XWidget> teamXWidgets = new ArrayList<>();
+   private final HashCollection<IAtsTeamDefinition, XWidget> teamDefToWidgets = new HashCollection<>();
 
    public CreateNewActionBlam() {
       this("Create New Action", BLAM_DESCRIPTION);
@@ -122,44 +142,68 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       this.variableMap = variableMap;
-      boolean valid = true;
+      AtomicBoolean valid = new AtomicBoolean(true);
 
       String title = variableMap.getString(TITLE);
       if (Strings.isInValid(title)) {
          log("Enter Title");
-         valid = false;
+         valid.set(false);
       }
 
       String desc = variableMap.getString(DESCRIPTION);
       if (Strings.isInValid(desc)) {
          log("Enter Description");
-         valid = false;
+         valid.set(false);
       }
 
       ChangeTypes cType = (ChangeTypes) variableMap.getValue(CHANGE_TYPE);
       if (cType == null || cType == ChangeTypes.None) {
          log("Invalid Change Type");
+         valid.set(false);
       }
 
       Priorities priority = (Priorities) variableMap.getValue(PRIORITY);
       if (priority == null) {
          log("Select Priority");
-         valid = false;
+         valid.set(false);
       }
       Date needBy = (Date) variableMap.getValue(NEED_BY);
 
       Collection<IAtsActionableItem> actionableItems = aiWidget.getSelectedActionableItems();
       if (actionableItems.isEmpty()) {
-         valid = false;
          log("Must select Actionable Item(s)");
+         valid.set(false);
       }
 
-      if (!isValidEntry() || !valid) {
-         return;
-      }
       String priorityStr = Priorities.Three.name();
       if (priority != null) {
          priorityStr = priority.getName();
+      }
+
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            for (XWidget widget : teamXWidgets) {
+               IStatus status = widget.isValid();
+               if (!status.isOK()) {
+                  log(status.getMessage());
+                  valid.set(false);
+               }
+            }
+         }
+      }, true);
+
+      for (CreateNewActionProvider provider : handledExtensionItems) {
+         Result result = provider.isActionValidToCreate(actionableItems);
+         if (result.isFalse()) {
+            log(result.getText());
+            valid.set(false);
+         }
+      }
+
+      if (!isValidEntry() || !valid.get()) {
+         return;
       }
 
       IAtsChangeSet changes = atsApi.createChangeSet(getName());
@@ -172,8 +216,8 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          return;
       }
 
-      for (IAtsWizardItem wizardItem : handledExtensionItems) {
-         wizardItem.wizardCompleted(actionResult, changes);
+      for (CreateNewActionProvider provider : handledExtensionItems) {
+         provider.createActionCompleted(actionResult, changes);
       }
 
       changes.execute();
@@ -191,81 +235,87 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
    @Override
    public List<XWidgetRendererItem> getXWidgetItems() {
-      wb = new XWidgetBuilder();
-      wb.andXText(TITLE).andRequired().endWidget();
-      wb.andXHyperlinkActionableItemActive().andRequired().endWidget();
-      wb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
-      addWidgetsAfterDescription(wb);
-      wb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
-      wb.andPriority().andRequired().endWidget();
+      mainWb = new XWidgetBuilder();
+      mainWb.andXText(TITLE, CoreAttributeTypes.Name).andRequired().endWidget();
+      mainWb.andXHyperlinkActionableItemActive().andRequired().endWidget();
+      mainWb.andXText(AtsAttributeTypes.Description).andHeight(80).andRequired().endWidget();
+      addWidgetsAfterDescription(mainWb);
+      mainWb.andChangeType(ChangeTypes.DEFAULT_CHANGE_TYPES).andRequired().endWidget();
+      mainWb.andPriority().andRequired().endWidget();
       addWidgetAfterPriority();
-      wb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endWidget();
-      return wb.getItems();
+      mainWb.andXHyperLinkDate(AtsAttributeTypes.NeedBy.getUnqualifiedName()).endComposite().endWidget();
+      return mainWb.getItems();
    }
 
    protected void addWidgetsAfterDescription(XWidgetBuilder wb) {
       // for extensibility
    }
 
-   /**
-    * Create widgets for specific teams
-    */
    @Override
    public void createWidgets(Composite comp, IManagedForm form, Section section, XWidgetPage widgetPage) {
       this.comp = comp;
       this.form = form;
       this.section = section;
-      this.widgetPage = widgetPage;
-      teamComp = new Composite(comp, SWT.NONE);
-      teamComp.setLayout(new GridLayout(1, false));
-      teamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
    }
 
-   private void updateTeamComposites() {
+   /**
+    * Create widgets for specific teams
+    */
+   private void updateTeamComposites(Collection<IAtsActionableItem> ais) {
       try {
-         teamComp.dispose();
-         createWidgets(comp, form, section, widgetPage);
+         teamXWidgets.clear();
+         teamDefToWidgets.clear();
+         if (Widgets.isAccessible(teamComp)) {
+            teamComp.dispose();
+         }
+         teamComp = new Composite(comp, SWT.NONE);
+         teamComp.setLayout(new GridLayout(1, false));
+         teamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          handledExtensionItems.clear();
 
-         getWizardXWidgetExtensions();
+         Collection<IAtsTeamDefinition> uniqueTeamDefs = getUniqueTeamDefs(ais);
 
-         List<XWidget> allWidgets = new ArrayList<>();
-
-         // Add XWidgets declared via widget xml
-         StringBuffer stringBuffer = new StringBuffer(500);
-         stringBuffer.append("<WorkPage>");
-         IDynamicWidgetLayoutListener dynamicWidgetLayoutListener = null;
-         for (IAtsWizardItem item : wizardExtensionItems) {
-            boolean hasWizardXWidgetExtensions = item.hasWizardXWidgetExtensions(aiWidget.getSelectedActionableItems());
-            if (hasWizardXWidgetExtensions) {
-               stringBuffer.append(
-                  "<XWidget displayName=\"--- Extra fields for " + item.getName() + " ---\" xwidgetType=\"XLabel\" horizontalLabel=\"true\" toolTip=\"These fields are available for only the team workflow specified here.\"/>");
-               try {
-                  if (item instanceof IDynamicWidgetLayoutListener) {
-                     dynamicWidgetLayoutListener = (IDynamicWidgetLayoutListener) item;
-                  }
-                  item.getWizardXWidgetExtensions(aiWidget.getSelectedActionableItems(), stringBuffer);
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         }
-         stringBuffer.append("</WorkPage>");
-         page = new XWidgetPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance(),
-            dynamicWidgetLayoutListener);
-         page.createBody(null, teamComp, null, null, true);
-         allWidgets.addAll(page.getDynamicXWidgetLayout().getXWidgets());
-
-         // Add XWidgets directly added to composite
-         for (IAtsWizardItem item : wizardExtensionItems) {
+         teamWb = new XWidgetBuilder();
+         for (CreateNewActionProvider item : getCreateNewActionProviderExtensions()) {
             if (!handledExtensionItems.contains(item)) {
-               boolean hasWizardXWidgetExtensions =
-                  item.hasWizardXWidgetExtensions(aiWidget.getSelectedActionableItems());
-               if (hasWizardXWidgetExtensions) {
-                  item.getWizardXWidgetExtensions(aiWidget.getSelectedActionableItems(), teamComp);
+               boolean hasProviderXWidgetExtensions =
+                  item.hasProviderXWidgetExtensions(aiWidget.getSelectedActionableItems());
+               if (hasProviderXWidgetExtensions) {
+                  teamWb.andXLabel(
+                     String.format("------- Additional Items for [%s] ------- ", item.getClass().getSimpleName()));
+                  for (IAtsTeamDefinition teamDef : uniqueTeamDefs) {
+                     teamWb.andXLabel(String.format("      --- Items for Team Def [%s] ---", teamDef.getName()));
+                     /*
+                      * Extensions MUST align each widget with it's related andTeamId in case there are multiple
+                      * different team defs impacted
+                      */
+                     item.getAdditionalXWidgetItems(teamWb, teamDef);
+                  }
+
                   handledExtensionItems.add(item);
                }
             }
+         }
+         List<XWidgetRendererItem> layoutDatas = teamWb.getItems();
+
+         if (!layoutDatas.isEmpty()) {
+            try {
+               DefaultXWidgetOptionResolver optionResolver = new DefaultXWidgetOptionResolver();
+               XWidgetPage widgetPage = new XWidgetPage(layoutDatas, optionResolver);
+               widgetPage.createBody(form, teamComp, null, null, true);
+               teamXWidgets.addAll(widgetPage.getDynamicXWidgetLayout().getXWidgets());
+               XWidgetUtility.setLabelFontsBold(widgetPage.getDynamicXWidgetLayout().getXWidgets());
+               for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
+                  widget.validate();
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+
+         // Re-validate all default widgets since we had to remove all prior to adding team widgets
+         for (XWidget widget : getBlamWidgets()) {
+            widget.validate();
          }
 
          teamComp.getParent().layout(true, true);
@@ -275,6 +325,15 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   private Collection<IAtsTeamDefinition> getUniqueTeamDefs(Collection<IAtsActionableItem> ais) {
+      Set<IAtsTeamDefinition> uniqueTeamDefs = new HashSet<>();
+      for (IAtsActionableItem ai : ais) {
+         Collection<IAtsTeamDefinition> teamDefs = atsApi.getTeamDefinitionService().getImpactedTeamDefInherited(ai);
+         uniqueTeamDefs.addAll(teamDefs);
+      }
+      return uniqueTeamDefs;
    }
 
    @Override
@@ -305,9 +364,9 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
             @Override
             public void widgetModified(XWidget widget) {
-               updateTeamComposites();
-
                Collection<IAtsActionableItem> ais = aiWidget.getSelectedActionableItems();
+               updateTeamComposites(ais);
+
                if (!ais.isEmpty()) {
                   IAtsActionableItem ai = ais.iterator().next();
 
@@ -370,16 +429,16 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
    }
 
    @SuppressWarnings("deprecation")
-   private Set<IAtsWizardItem> getWizardXWidgetExtensions() {
-      if (!wizardExtensionItems.isEmpty()) {
-         return wizardExtensionItems;
+   private Set<CreateNewActionProvider> getCreateNewActionProviderExtensions() {
+      if (!providerExtensionItems.isEmpty()) {
+         return providerExtensionItems;
       }
 
       IExtensionPoint point =
-         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.AtsWizardItem");
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.ide.CreateNewActionProvider");
       if (point == null) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access AtsWizardItem extension point");
-         return wizardExtensionItems;
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't access CreateNewActionProvider extension point");
+         return providerExtensionItems;
       }
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
@@ -387,7 +446,7 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
          String classname = null;
          String bundleName = null;
          for (IConfigurationElement el : elements) {
-            if (el.getName().equals("AtsWizardItem")) {
+            if (el.getName().equals("CreateNewActionProvider")) {
                classname = el.getAttribute("classname");
                bundleName = el.getContributor().getName();
                if (classname != null && bundleName != null) {
@@ -395,16 +454,17 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
                   try {
                      Class<?> taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
-                     wizardExtensionItems.add((IAtsWizardItem) obj);
+                     providerExtensionItems.add((CreateNewActionProvider) obj);
                   } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading AtsWizardItem extension", ex);
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+                        "Error loading CreateNewActionProvider extension", ex);
                   }
                }
 
             }
          }
       }
-      return wizardExtensionItems;
+      return providerExtensionItems;
    }
 
    @Override
@@ -452,6 +512,70 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
 
    protected int getChangeTypeRowColumns() {
       return 6;
+   }
+
+   @Override
+   public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            for (XWidget widget : teamXWidgets) {
+               // Skip widgets that are not tied to this teamWf's team
+               if (!teamWf.getTeamDefinition().getId().equals(widget.getTeamId().getId())) {
+                  continue;
+               }
+               if (widget.getAttributeType().isValid()) {
+                  AttributeTypeToken attrType = widget.getAttributeType();
+                  if (widget.isMultiSelect()) {
+                     List<Object> objs = new ArrayList<>();
+                     for (Object obj : widget.getValues()) {
+                        objs.add(obj);
+                     }
+                     changes.setAttributeValues(teamWf, attrType, objs);
+                  } else {
+                     Object obj = widget.getData();
+                     if (obj != null) {
+                        changes.addAttribute(teamWf, attrType, obj);
+                     }
+                  }
+               } else if (widget.getLabel().equals("Originator")) {
+                  XOriginatorHyperlinkWidget orig = (XOriginatorHyperlinkWidget) widget;
+                  AtsUser originator = orig.getSelected();
+                  if (originator != null) {
+                     changes.setCreatedBy(teamWf, originator, false, new Date());
+                  }
+               } else if (widget.getLabel().equals("Assignees")) {
+                  XAssigneesHyperlinkWidget assign = (XAssigneesHyperlinkWidget) widget;
+                  Collection<AtsUser> assignees = assign.getSelected();
+                  if (assignees != null) {
+                     changes.setAssignees(teamWf, assignees);
+                  }
+               } else if (widget.getLabel().equals("Sprint")) {
+                  XSprintHyperlinkWidget sprintWidget = (XSprintHyperlinkWidget) widget;
+                  IAgileSprint sprint = sprintWidget.getSelected();
+                  if (sprint != null) {
+                     changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+                  }
+               } else if (widget.getLabel().equals("Targeted Version")) {
+                  XTargetedVersionHyperlinkWidget verWidget = (XTargetedVersionHyperlinkWidget) widget;
+                  IAtsVersion version = verWidget.getSelected();
+                  if (version != null) {
+                     changes.relate(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
+                  }
+               } else if (widget.getLabel().equals("Feature Group")) {
+                  XAgileFeatureHyperlinkWidget featureWidget = (XAgileFeatureHyperlinkWidget) widget;
+                  Collection<IAgileFeatureGroup> features = featureWidget.getFeatures();
+                  if (!features.isEmpty()) {
+                     for (IAgileFeatureGroup feature : features) {
+                        changes.relate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, teamWf);
+                     }
+                  }
+               }
+
+            }
+         }
+      }, true);
    }
 
 }
