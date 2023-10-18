@@ -29,6 +29,9 @@ public interface ScriptDefApi {
 
    ScriptDefToken get(BranchId branch, ArtifactId scriptDefTypeId);
 
+   ScriptDefToken getWithDetailsAndFilter(BranchId branch, ArtifactId scriptDefTypeId, String filter, int pageNum,
+      int count);
+
    Collection<ScriptDefToken> getAll(BranchId branch);
 
    Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId);
@@ -61,6 +64,9 @@ public interface ScriptDefApi {
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter);
 
+   Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter,
+      Collection<AttributeTypeId> searchAttributes);
+
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter);
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter, AttributeTypeId orderByAttribute);
@@ -78,6 +84,9 @@ public interface ScriptDefApi {
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
       long pageSize, AttributeTypeId orderByAttribute);
+
+   Collection<ScriptDefToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
+      Collection<AttributeTypeId> searchAttributes, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter, Collection<FollowRelation> followRelations,
       long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes)

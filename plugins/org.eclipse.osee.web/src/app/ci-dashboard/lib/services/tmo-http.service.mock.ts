@@ -14,7 +14,6 @@ import { of } from 'rxjs';
 import { TmoHttpService } from './tmo-http.service';
 import {
 	defReferenceMock,
-	setsMock,
 	resultReferenceMock,
 	testCaseReferenceMock,
 	testPointReferenceMock,

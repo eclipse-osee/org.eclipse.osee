@@ -71,6 +71,11 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
    }
 
    @Override
+   public ScriptDefToken getScriptDefWithDetails(ArtifactId scriptDefTypeId, String filter, int pageNum, int count) {
+      return scriptDefApi.getWithDetailsAndFilter(branch, scriptDefTypeId, filter, pageNum, count);
+   }
+
+   @Override
    public int getCount(String filter, ArtifactId viewId) {
       return scriptDefApi.getCountWithFilter(branch, viewId, filter);
    }

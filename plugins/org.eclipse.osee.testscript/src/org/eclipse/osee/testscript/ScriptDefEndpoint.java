@@ -57,7 +57,16 @@ public interface ScriptDefEndpoint {
    @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
    /**
-    * Gets a specific unit.
+    * Gets a specific Script Definition
     */
    ScriptDefToken getScriptDefType(@PathParam("id") ArtifactId scriptDefTypeId);
+
+   @GET()
+   @Path("{id}/details")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * Gets a specific Script Definition with results and paginated test points
+    */
+   ScriptDefToken getScriptDefWithDetails(@PathParam("id") ArtifactId scriptDefTypeId,
+      @QueryParam("filter") String filter, @QueryParam("pageNum") int pageNum, @QueryParam("count") int count);
 }

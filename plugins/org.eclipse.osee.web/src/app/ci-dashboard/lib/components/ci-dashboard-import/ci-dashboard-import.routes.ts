@@ -15,34 +15,23 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('@osee/toolbar'),
-		outlet: 'toolbar',
+		title: 'CI Dashboard',
+		loadComponent: () => import('./ci-dashboard-import.component'),
 	},
 	{
-		path: 'allScripts',
+		path: ':branchType',
 		title: 'CI Dashboard',
-		loadChildren: () =>
-			import('./lib/components/all-scripts/all-scripts.routes'),
+		loadComponent: () => import('./ci-dashboard-import.component'),
 	},
 	{
-		path: 'dashboard',
+		path: ':branchType/:branchId',
 		title: 'CI Dashboard',
-		loadChildren: () =>
-			import('./lib/components/dashboard/dashboard.routes'),
+		loadComponent: () => import('./ci-dashboard-import.component'),
 	},
 	{
-		path: 'import',
+		path: ':branchType/:branchId/:ciSet',
 		title: 'CI Dashboard',
-		loadChildren: () =>
-			import(
-				'./lib/components/ci-dashboard-import/ci-dashboard-import.routes'
-			),
-	},
-	{
-		path: 'subsystems',
-		title: 'CI Dashboard',
-		loadChildren: () =>
-			import('./lib/components/subsystems/subsystems.routes'),
+		loadComponent: () => import('./ci-dashboard-import.component'),
 	},
 ];
 

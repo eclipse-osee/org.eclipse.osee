@@ -39,6 +39,7 @@ public class ScriptResultToken extends ArtifactAccessorResult {
 
    public static final ScriptResultToken SENTINEL = new ScriptResultToken();
 
+   private String fileUrl;
    private String setId;
    private String processorId;
    private Date executionDate;
@@ -65,9 +66,11 @@ public class ScriptResultToken extends ArtifactAccessorResult {
    private String userId;
    private String userName;
    private String email;
+   private int totalTestPoints;
    private List<String> witnesses;
    private List<String> runtimeVersions;
    private List<TestCaseToken> testCases;
+   private List<TestPointToken> testPoints;
    private List<AttentionLocationToken> attentionMessages;
    private List<ScriptLogToken> logs;
    private List<VersionInformationToken> versionInformation;
@@ -81,6 +84,7 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       super(art);
       this.setId(art.getId());
       this.setName(art.getName());
+      this.setFileUrl(art.getSoleAttributeAsString(CoreAttributeTypes.ContentUrl, ""));
       this.setSetId(art.getSoleAttributeValue(CoreAttributeTypes.SetId, ""));
       this.setProcessorId(art.getSoleAttributeAsString(CoreAttributeTypes.ProcessorId, ""));
       this.setExecutionDate(art.getSoleAttributeValue(CoreAttributeTypes.ExecutionDate, new Date()));
@@ -112,6 +116,10 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       this.setTestCases(
          art.getRelated(CoreRelationTypes.TestScriptResultsToTestCase_TestCase).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new TestCaseToken(a)).collect(Collectors.toList()));
+      this.setTestPoints(
+         art.getRelated(CoreRelationTypes.TestScriptResultsToTestPoint_TestPoint).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new TestPointToken(a)).collect(
+               Collectors.toList()));
       this.setAttentionMessages(art.getRelated(
          CoreRelationTypes.TestScriptResultsToAttentionMessage_AttentionMessage).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new AttentionLocationToken(a)).collect(
@@ -126,10 +134,12 @@ public class ScriptResultToken extends ArtifactAccessorResult {
          art.getRelated(CoreRelationTypes.TestScriptResultsToLoggingSummary_LoggingSummary).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new LoggingSummaryToken(a)).collect(
                Collectors.toList()));
+      this.setTotalTestPoints(this.getTestPoints().size());
    }
 
    public ScriptResultToken(Long id, String name) {
       super(id, name);
+      this.setFileUrl("");
       this.setSetId("");
       this.setProcessorId("");
       this.setExecutionDate(new Date());
@@ -156,9 +166,11 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       this.setUserId("");
       this.setUserName("");
       this.setEmail("");
+      this.setTotalTestPoints(0);
       this.setWitnesses(new LinkedList<>());
       this.setRuntimeVersions(new LinkedList<>());
       this.setTestCases(new LinkedList<>());
+      this.setTestPoints(new LinkedList<>());
       this.setAttentionMessages(new LinkedList<>());
       this.setLogs(new LinkedList<>());
       this.setVersionInformation(new LinkedList<>());
@@ -167,6 +179,15 @@ public class ScriptResultToken extends ArtifactAccessorResult {
 
    public ScriptResultToken() {
       super();
+   }
+
+   @JsonIgnore
+   public String getFileUrl() {
+      return fileUrl;
+   }
+
+   public void setFileUrl(String fileUrl) {
+      this.fileUrl = fileUrl;
    }
 
    /**
@@ -547,6 +568,14 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       this.testCases = testCases;
    }
 
+   public List<TestPointToken> getTestPoints() {
+      return testPoints;
+   }
+
+   public void setTestPoints(List<TestPointToken> testPoints) {
+      this.testPoints = testPoints;
+   }
+
    @JsonIgnore
    public List<AttentionLocationToken> getAttentionMessages() {
       return attentionMessages;
@@ -583,8 +612,17 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       this.loggingSummaries = loggingSummaries;
    }
 
+   public int getTotalTestPoints() {
+      return totalTestPoints;
+   }
+
+   public void setTotalTestPoints(int totalTestPoints) {
+      this.totalTestPoints = totalTestPoints;
+   }
+
    public CreateArtifact createArtifact(String key) {
       Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.ContentUrl, this.getFileUrl());
       values.put(CoreAttributeTypes.ElapsedTime, Integer.toString(this.getElapsedTime()));
       values.put(CoreAttributeTypes.Email, this.getEmail());
       values.put(CoreAttributeTypes.EndDate, Long.toString(this.getEndDate().getTime()));
@@ -607,6 +645,7 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       values.put(CoreAttributeTypes.Result, this.getResult());
       values.put(CoreAttributeTypes.ScriptAborted, Boolean.toString(this.getScriptAborted()));
       values.put(CoreAttributeTypes.ScriptHealth, Integer.toString(this.getScriptHealth()));
+      values.put(CoreAttributeTypes.SetId, this.getSetId());
       values.put(CoreAttributeTypes.StartDate, Long.toString(this.getStartDate().getTime()));
       values.put(CoreAttributeTypes.UserId, this.getUserId());
       values.put(CoreAttributeTypes.UserName, this.getUserName());

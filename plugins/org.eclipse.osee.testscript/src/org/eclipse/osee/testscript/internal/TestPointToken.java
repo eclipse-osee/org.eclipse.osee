@@ -40,6 +40,7 @@ public class TestPointToken extends ArtifactAccessorResult {
 
    private Double testNumber;
    private String result;
+   private String overallResult;
    private String resultType;
    private boolean interactive;
    private String groupName;
@@ -65,6 +66,7 @@ public class TestPointToken extends ArtifactAccessorResult {
       this.setName(art.getName());
       this.setTestNumber(art.getSoleAttributeValue(CoreAttributeTypes.TestNumber, 0.0));
       this.setResult(art.getSoleAttributeAsString(CoreAttributeTypes.Result, ""));
+      this.setOverallResult(art.getSoleAttributeAsString(CoreAttributeTypes.OverallResult, ""));
       this.setResultType(art.getSoleAttributeAsString(CoreAttributeTypes.ResultType, ""));
       this.setInteractive(art.getSoleAttributeValue(CoreAttributeTypes.Interactive, false));
       this.setGroupName(art.getSoleAttributeAsString(CoreAttributeTypes.TestPointGroupName, ""));
@@ -92,6 +94,7 @@ public class TestPointToken extends ArtifactAccessorResult {
       super(id, name);
       this.setTestNumber(0.0);
       this.setResult("");
+      this.setOverallResult("");
       this.setResultType("");
       this.setInteractive(false);
       this.setGroupName("");
@@ -140,9 +143,18 @@ public class TestPointToken extends ArtifactAccessorResult {
       this.result = result;
    }
 
+   public String getOverallResult() {
+      return overallResult;
+   }
+
+   public void setOverallResult(String overallResult) {
+      this.overallResult = overallResult;
+   }
+
    /**
     * @return the resultType
     */
+   @JsonIgnore
    public String getResultType() {
       return resultType;
    }
@@ -171,6 +183,7 @@ public class TestPointToken extends ArtifactAccessorResult {
    /**
     * @return the groupName
     */
+   @JsonIgnore
    public String getGroupName() {
       return groupName;
    }
@@ -185,6 +198,7 @@ public class TestPointToken extends ArtifactAccessorResult {
    /**
     * @return the groupType
     */
+   @JsonIgnore
    public String getGroupType() {
       return groupType;
    }
@@ -199,6 +213,7 @@ public class TestPointToken extends ArtifactAccessorResult {
    /**
     * @return the groupOperator
     */
+   @JsonIgnore
    public String getGroupOperator() {
       return groupOperator;
    }
@@ -294,6 +309,7 @@ public class TestPointToken extends ArtifactAccessorResult {
       this.notes = notes;
    }
 
+   @JsonIgnore
    public List<TestPointToken> getSubTestPoints() {
       return subTestPoints;
    }
