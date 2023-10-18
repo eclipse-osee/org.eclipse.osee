@@ -87,7 +87,10 @@ public enum OseeSql {
    ARTIFACT_TOKENS_RELATED_TO_ARTIFACT_QUERY2("select * from osee_attribute attr, OSEE_ARTIFACT art where attr.attr_type_id = 1152921504606847088 and art.ART_ID=attr.ART_ID and attr.ART_ID in (with links as (select GAMMA_ID, a_art_id, b_art_id from OSEE_RELATION where REL_SIDE_HERE in (ART_IDS_HERE) and REL_TYPE = REL_TYPE_HERE) select links.OPPOSITE_REL_SIDE_HERE from links, osee_txs txs where txs.BRANCH_ID = BRANCH_ID_HERE and txs.TX_CURRENT = 1 and txs.MOD_TYPE not in (3,5,9,10) and txs.GAMMA_ID = links.gamma_id)"),
    LOAD_CURRENT_RELATION_ORDER_MINMAX("SELECT min(rel.rel_order) || ',' ||max(rel.rel_order) from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ?"),
 
-   SELECT_RELATION_GAMMA_RT_A_ART_B_ART_ORDER_REL_ART("SELECT gamma_id FROM osee_relation WHERE rel_type=? AND a_art_id = ? AND b_art_id = ? and rel_order = ? and rel_art_id = ?");
+   SELECT_RELATION_GAMMA_RT_A_ART_B_ART_ORDER_REL_ART("SELECT gamma_id FROM osee_relation WHERE rel_type=? AND a_art_id = ? AND b_art_id = ? and rel_order = ? and rel_art_id = ?"),
+   GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A("select rel_order from osee_relation where rel_type = ? and a_art_id = ? order by rel_order"),
+   GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A_AND_ART_B("SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?"),
+   GET_NEXT_AVAILABLE_REL_ORDER_FOR_TYPE_AND_ART_A("SELECT min(rel_order) from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order > ?");
 
    private final String sql;
    private final String hints;

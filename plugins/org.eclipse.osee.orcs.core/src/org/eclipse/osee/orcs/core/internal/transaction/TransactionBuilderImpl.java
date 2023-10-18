@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -532,13 +533,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          if (related.indexOf(afterArtifactId) + 1 > related.size() - 1) {
             insertType = "end";
          } else {
-            ArtifactId beforeArtifact = related.get(related.indexOf(afterArtifactId) + 1);
             Integer selectAfterIndex = orcsApi.getJdbcService().getClient().fetch(0,
-               "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
-               getBranch(), artA, relType.getId(), afterArtifactId);
+               OseeSql.GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A_AND_ART_B.getSql(), getBranch(), artA, relType.getId(),
+               afterArtifactId);
             Integer selectBeforeIndex = orcsApi.getJdbcService().getClient().fetch(0,
-               "SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?",
-               getBranch(), artA, relType.getId(), beforeArtifact);
+               OseeSql.GET_NEXT_AVAILABLE_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), artA, relType.getId(),
+               selectAfterIndex);
             afterIndex = selectAfterIndex != null ? selectAfterIndex : 0;
             beforeIndex = selectBeforeIndex != null ? selectBeforeIndex : 0;
          }
@@ -552,30 +552,64 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       int minOrder = 0;
       int maxOrder = 0;
       int relOrder = 0;
+
       RelationTypeMultiplicity mult = relType.getMultiplicity();
       if (mult.equals(RelationTypeMultiplicity.MANY_TO_MANY) || mult.equals(RelationTypeMultiplicity.ONE_TO_MANY)) {
-
+         List<Integer> relOrders = new ArrayList<Integer>();
+         Consumer<JdbcStatement> consumer = stmt -> {
+            relOrders.add(stmt.getInt("rel_order"));
+         };
+         orcsApi.getJdbcService().getClient().runQueryWithMaxFetchSize(consumer,
+            OseeSql.GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), relType.getId(), artA.getId());
+         if (relOrders.size() > 0) {
+            minOrder = relOrders.get(0);
+            maxOrder = relOrders.get(relOrders.size() - 1);
+         }
          if (txData.relationSideAExists(relType, artA)) {
             minOrder = txData.getNewRelations().get(relType, artA).getMinOrder();
             maxOrder = txData.getNewRelations().get(relType, artA).getMaxOrder();
          } else {
-            String minMaxString = orcsApi.getJdbcService().getClient().fetch("0,0",
-               "SELECT min(rel.rel_order) || ',' ||max(rel.rel_order) from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ?",
-               artA, relType.getId());
-            if (minMaxString != null && minMaxString.length() > 3) {
-               minOrder = Integer.parseInt(minMaxString.substring(0, minMaxString.indexOf(",") - 1));
-               maxOrder = Integer.parseInt(minMaxString.substring(minMaxString.indexOf(",") + 1));
-            }
             txData.addRelationSideA(relType, artA, minOrder, maxOrder);
          }
-
          if (insertType.equals("start")) {
             relOrder = txData.calculateHeadInsertionOrderIndex(minOrder);
+            int i;
+            for (i = 0; i < 100 & relOrders.contains(relOrder); i++) {
+               relOrder = txData.calculateHeadInsertionOrderIndex(relOrder);
+            }
+            if (i > 99) {
+               throw new OseeArgumentException(
+                  "Error Calculating new RelOrder for relType:" + relType.toString() + " to the start");
+            }
             txData.getNewRelations().get(relType, artA).setMinOrder(relOrder);
          } else if (insertType.equals("insert")) {
             relOrder = txData.calculateInsertionOrderIndex(afterIndex, beforeIndex);
+            //need to verify that calculated relOrder isn't already used by rel_type/a_art_id
+            int i;
+            for (i = 0; i < 100 & relOrders.contains(relOrder); i++) {
+               if (relOrder < beforeIndex) {
+                  relOrder = txData.calculateInsertionOrderIndex(relOrder, beforeIndex);
+               } else if (relOrder > afterIndex) {
+                  relOrder = txData.calculateInsertionOrderIndex(afterIndex, relOrder);
+               } else {
+                  throw new OseeArgumentException(
+                     "Error Calculating new RelOrder for relType:" + relType.toString() + " a_art_id=" + artA.toString() + " b_art_id=" + artB.toString());
+               }
+            }
+            if (i > 99) {
+               throw new OseeArgumentException(
+                  "Error Calculating new RelOrder for relType:" + relType.toString() + " a_art_id=" + artA.toString() + " b_art_id=" + artB.toString());
+            }
          } else {
             relOrder = txData.calculateEndInsertionOrderIndex(maxOrder);
+            int i;
+            for (i = 0; i < 100 & relOrders.contains(relOrder); i++) {
+               relOrder = txData.calculateEndInsertionOrderIndex(relOrder);
+            }
+            if (i > 99) {
+               throw new OseeArgumentException(
+                  "Error Calculating new RelOrder for relType:" + relType.toString() + " to the end");
+            }
             txData.getNewRelations().get(relType, artA).setMaxOrder(relOrder);
 
          }
