@@ -36,6 +36,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.agile.AgileUtil;
+import org.eclipse.osee.ats.ide.actions.CreateEnumeratedArtifactAction;
+import org.eclipse.osee.ats.ide.actions.EditEnumeratedArtifact;
 import org.eclipse.osee.ats.ide.actions.NewGoal;
 import org.eclipse.osee.ats.ide.actions.OpenArtifactEditorById;
 import org.eclipse.osee.ats.ide.actions.OpenOrphanedTasks;
@@ -258,6 +260,11 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateItemFolder("Health", FrameworkImage.HEALTH, XNavigateItem.DEFINE_HEALTH, SUBCAT));
          items.add(
             new XNavigateItemFolder("Admin", FrameworkImage.LASER, XNavigateItem.DEFINE_ADMIN, OSEE_ADMIN, SUBCAT));
+         if (AtsApiService.get().getUserService().isAtsAdmin()) {
+            items.add(new CreateEnumeratedArtifactAction());
+            items.add(new EditEnumeratedArtifact());
+         }
+
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
