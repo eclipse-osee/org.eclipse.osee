@@ -303,7 +303,8 @@ public interface IAtsChangeReportTaskNameProvider {
 
             if (incAttrType) {
                included = true;
-               if (item.getNetChange().getModType().matches(ModificationType.MODIFIED, ModificationType.MERGED)) {
+               if (item.getNetChange().getModType().matches(ModificationType.MODIFIED, ModificationType.MERGED,
+                  ModificationType.DELETED)) {
                   modified = true;
                   break;
                } else if (item.getNetChange().getModType().matches(ModificationType.NEW, ModificationType.INTRODUCED)) {
