@@ -13,9 +13,16 @@
 package org.eclipse.osee.ats.ide.health;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 public interface OseeProductionTestProvider {
 
    public Collection<StandAloneRestData> getStandAloneRestDatas();
+
+   public void testAtsQuickSearchQueries(XResultData rd);
+
+   public void testPublishing_1(XResultData rd);
+
+   public void testPublishing_2(XResultData rd);
 
 }
