@@ -42,6 +42,7 @@ public final class CoreArtifactTokens {
    public static final ArtifactToken FeaturesFolder                              = ArtifactToken.valueOf(239420307, "Features", Folder);
    public static final ArtifactToken GitRepoFolder                               = ArtifactToken.valueOf(111111111, "Git Repositories", Folder);
    public static final ArtifactToken ProductLineFolder                           = ArtifactToken.valueOf(8255179, "Product Line", Folder);
+   public static final ArtifactToken EnumeratedArtifactsFolder                   = ArtifactToken.valueOf(89216872, "Enumerated Artifacts", Folder);
    public static final ArtifactToken UserGroups                                  = ArtifactToken.valueOf(80920, "User Groups", COMMON, Folder);
    public static final ArtifactToken ProductsFolder                              = ArtifactToken.valueOf(10039752, "Products", Folder);
    public static final ArtifactToken PlCfgGroupsFolder                           = ArtifactToken.valueOf(10862035, "PL Configuration Groups", Folder);
