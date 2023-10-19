@@ -1,4 +1,5 @@
 build --java_language_version=11
 build --javacopt="-XepDisableAllChecks"
 build --test_output=all
-#build --java_runtime_version=remotejdk_11
+build --java_runtime_version=remotejdk_11
+build:java17 --java_runtime_version=remotejdk_17

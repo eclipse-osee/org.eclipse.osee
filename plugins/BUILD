@@ -1,6 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
 alias(
+   name = "accessor",
+   actual = "//org.eclipse.osee.accessor:accessor"
+)
+
+alias(
    name = "account_rest_client",
    actual = "//org.eclipse.osee.account.rest.client:account_rest_client"
 )
@@ -124,6 +129,11 @@ alias(
 alias(
    name = "framework_core_server",
    actual = "//org.eclipse.osee.framework.core.server:framework_core_server"
+)
+
+alias(
+   name = "framework_jdk_core",
+   actual = "//org.eclipse.osee.framework.jdk.core:framework_jdk_core"
 )
 
 alias(
