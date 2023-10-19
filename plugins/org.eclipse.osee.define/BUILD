@@ -7,7 +7,7 @@ java_library(
                 "//:jaxrs","//:orcs_core",
                 "//:orcs_rest_model","//:template_engine",
                 "//:framework_core_server","//:define_api",
-	        "//:ats_api","//:activity_api","//:app"],
+	"//:ats_api","//:activity_api","//:app","//:framework_core_model"],
         visibility = ["//visibility:public"]
 
 )

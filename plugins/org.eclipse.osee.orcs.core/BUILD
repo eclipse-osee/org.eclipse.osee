@@ -3,11 +3,11 @@ java_library(
         name = "orcs_core",
         resources = ["xml_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//org.eclipse.osee.jdbc:jdbc",
-                "//org.eclipse.osee.orcs:orcs", "//org.eclipse.osee.framework.core.model:framework_core_model",
-                "//org.eclipse.osee.activity.api:activity_api","//org.eclipse.osee.console.admin:console_admin",
-                "//org.eclipse.osee.framework.resource.management:framework_resource_management",
-                "//org.eclipse.osee.framework.core.server:framework_core_server"],
+        deps = ["java_deps", "//framework_core_packages","//:jdbc",
+                "//:orcs", "//:framework_core_model",
+                "//:activity_api","//:console_admin",
+                "//:framework_resource_management",
+	"//:framework_core_server","//:define_api"],
         visibility = ["//visibility:public"]
         
 )

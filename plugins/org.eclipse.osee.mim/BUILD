@@ -6,7 +6,7 @@ java_library(
        deps = ["java_deps", "//framework_core_packages","//:framework_core_model","//:activity_api",
 	       "//:framework_resource_management","//:jdbc","//:jaxrs","//:orcs","//:orcs_core",
 	       "//:orcs_rest_model","//:console_admin","//:define_api","//:define","//:ats_api","//:ats_core",
-	       "//:framework_core_server","//:template_engine", "//:ats_rest"],
+       "//:framework_core_server","//:template_engine", "//:ats_rest","//:accessor"],
        visibility = ["//visibility:public"]
 
 )

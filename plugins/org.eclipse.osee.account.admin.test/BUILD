@@ -4,7 +4,7 @@ java_test(
         deps = ["java_deps","//framework_core_packages",
                 "//:account_rest_model",
                 "//org.eclipse.osee.authentication.admin:authentication_admin","//:account_admin",
-                "//:account_rest_model"],
+                ],
 )
 
 java_library(

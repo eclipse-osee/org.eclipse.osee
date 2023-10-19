@@ -10,6 +10,8 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
 )
 
+
+
 local_repository(
     name = "ext_jars",
     path = "ext.jars"
@@ -37,6 +39,11 @@ maven_install(
         "com.fasterxml.jackson.core:jackson-annotations:2.10.3",
         "com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.12.1",
 	"com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.12.1",
+	"com.vladsch.flexmark:flexmark:0.64.8",
+	"com.vladsch.flexmark:flexmark-ext-tables:0.64.8",
+	"com.vladsch.flexmark:flexmark-util-data:0.64.8",
+	"com.vladsch.flexmark:flexmark-util-ast:0.64.8",
+	"com.vladsch.flexmark:flexmark-ext-gfm-tasklist:0.64.8",
         "commons-codec:commons-codec:1.6",
         "org.eclipse.jdt:org.eclipse.jdt.core:3.22.0",
    #     "org.eclipse.jdt:org.eclipse.jdt.ui:3.21.100",
