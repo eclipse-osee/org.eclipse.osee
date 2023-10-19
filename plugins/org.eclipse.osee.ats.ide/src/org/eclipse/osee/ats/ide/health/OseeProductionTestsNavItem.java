@@ -102,18 +102,22 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       rd.log(AHTML.beginMultiColumnTable(95, 1));
       rd.log(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Time(ms)", "Result", "Name", "Type", "Details")));
       ElapsedTime time = new ElapsedTime(" ");
-
       testStandAloneRest(rd);
       testAtsConfig(rd);
       testAtsApiQueries(rd);
       testAtsTeamDefinition(rd);
       testAtsQueries(rd);
       testArtifactQueries(rd);
+      for (OseeProductionTestProvider provider : providers) {
+         provider.testAtsQuickSearchQueries(rd);
+         provider.testPublishing_1(rd);
+         provider.testPublishing_2(rd);
+      }
 
       Long ms = time.getTimeSpent();
       rd.log(AHTML.endMultiColumnTable());
-      Long sec = ms / 60000;
-      rd.logf(AHTML.addRowMultiColumnTable(String.format("Total Time  MS : %s  Min: %s ", ms.toString(), sec)));
+      Long sec = ms / 1000;
+      rd.logf(AHTML.addRowMultiColumnTable(String.format("Total Time  MS : %s  Sec: %s ", ms.toString(), sec)));
       XResultDataUI.report(rd, getName());
    }
 
@@ -296,11 +300,6 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
 
    private Map<String, IAtsQuery> getAtsQueries() {
       Map<String, IAtsQuery> queries = new HashMap<>();
-      ArtifactId ai = queryService.getArtifactByName(AtsArtifactTypes.ActionableItem, "PL Requirements");
-      if (ai != null) {
-         queries.put("Actionable WorkFlow",
-            queryService.createQuery(WorkItemType.TeamWorkflow).andActionableItem(Arrays.asList(ai.getId())));
-      }
       queries.put("Peer Review WorkItem", queryService.createQuery(WorkItemType.PeerReview));
       ArtifactId version = queryService.getArtifactByName(AtsArtifactTypes.Version, "0.26.0");
       if (version != null) {
@@ -335,7 +334,6 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       queries.put("Query Artifacts", query1);
       QueryBuilderArtifact query2 = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
       query2.and(CoreAttributeTypes.Name, "ATS CM Branch", QueryOption.CONTAINS_MATCH_OPTIONS);
-      //      query2.and(CoreAttributeTypes.Name, "PreviewAll", QueryOption.CONTAINS_MATCH_OPTIONS);
       queries.put("Artifact with Attribute", query2);
       return queries;
    }
