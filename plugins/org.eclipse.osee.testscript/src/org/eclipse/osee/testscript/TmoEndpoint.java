@@ -27,9 +27,9 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 @Swagger
 public interface TmoEndpoint {
 
-   @Path("{branch}/program")
+   @Path("{branch}/set")
    @Produces(MediaType.APPLICATION_JSON)
-   public ScriptProgramEndpoint getScriptProgramTypes(@PathParam("branch") BranchId branch);
+   public ScriptSetEndpoint getScriptSetTypes(@PathParam("branch") BranchId branch);
 
    @Path("{branch}/def")
    @Produces(MediaType.APPLICATION_JSON)

@@ -20,10 +20,10 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Stephen J. Molaro
  */
-public class ScriptProgramAccessor extends ArtifactAccessorImpl<ScriptProgramToken> {
+public class ScriptSetAccessor extends ArtifactAccessorImpl<ScriptSetToken> {
 
-   public ScriptProgramAccessor(OrcsApi orcsApi) {
-      super(CoreArtifactTypes.TestProgram, orcsApi);
+   public ScriptSetAccessor(OrcsApi orcsApi) {
+      super(CoreArtifactTypes.ScriptSet, orcsApi);
    }
 
 }

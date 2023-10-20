@@ -14,4 +14,10 @@
 	<osee-branch-picker
 		*ngIf="branchPicker"
 		class="tw-min-w-[350px] tw-max-w-lg"></osee-branch-picker>
+
+	<div
+		class="tw-pt-9"
+		*ngIf="changedBranchId() && _branchType()">
+		<osee-set-dropdown />
+	</div>
 </div>

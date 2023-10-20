@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ProgramReference } from '../types/tmo';
+import { SetReference } from '../types/tmo';
 import { DefReference } from '../types/tmo';
 import { ResultReference } from '../types/tmo';
 import { TestCaseReference } from '../types/tmo';
@@ -26,31 +26,33 @@ import { CIStats } from '../types/ci-stats';
 export class TmoHttpService {
 	constructor(private http: HttpClient) {}
 
-	getProgramList() {
-		return this.http.get<ProgramReference[]>(
-			`${apiURL}/script/tmo/3/program`
+	getSetList(branchId: string | number) {
+		return this.http.get<SetReference[]>(
+			`${apiURL}/script/tmo/${branchId}/set`
 		);
 	}
 
-	getScriptDefList() {
-		return this.http.get<DefReference[]>(`${apiURL}/script/tmo/3/def`);
+	getScriptDefList(branchId: string | number, setId: string | number) {
+		return this.http.get<DefReference[]>(
+			`${apiURL}/script/tmo/${branchId}/def/set/${setId}`
+		);
 	}
 
-	getScriptResultList() {
+	getScriptResultList(branchId: string | number) {
 		return this.http.get<ResultReference[]>(
-			`${apiURL}/script/tmo/3/result`
+			`${apiURL}/script/tmo/${branchId}/result`
 		);
 	}
 
-	getTestCaseList() {
+	getTestCaseList(branchId: string | number) {
 		return this.http.get<TestCaseReference[]>(
-			`${apiURL}/script/tmo/3/case`
+			`${apiURL}/script/tmo/${branchId}/case`
 		);
 	}
 
-	getTestPointList() {
+	getTestPointList(branchId: string | number) {
 		return this.http.get<TestPointReference[]>(
-			`${apiURL}/script/tmo/3}/point`
+			`${apiURL}/script/tmo/${branchId}/point`
 		);
 	}
 }

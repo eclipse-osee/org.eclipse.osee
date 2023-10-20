@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -53,6 +54,11 @@ public interface ScriptDefApi {
    Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations,
       long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
+   Collection<ScriptDefToken> getAll(BranchId branch, Collection<FollowRelation> followRelations, String filter,
+      Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter);
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter);
@@ -72,6 +78,11 @@ public interface ScriptDefApi {
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
       long pageSize, AttributeTypeId orderByAttribute);
+
+   Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
 
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter);
 }

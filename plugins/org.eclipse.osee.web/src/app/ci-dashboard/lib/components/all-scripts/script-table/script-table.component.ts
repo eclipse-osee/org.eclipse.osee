@@ -12,22 +12,21 @@
  **********************************************************************/
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { scriptDefHeaderDetails } from '../../table-headers/script-def-headers';
+import { scriptDefHeaderDetails } from '../../../table-headers/script-def-headers';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { filter, switchMap, take, tap, combineLatest } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UiService, HeaderService } from '@osee/shared/services';
 import { SplitStringPipe } from '@osee/shared/utils';
-import { TmoService } from '../../services/tmo.service';
-import type { DefReference } from '../../types/tmo';
-import type { ProgramReference } from '../../types/tmo';
+import { TmoService } from '../../../services/tmo.service';
+import type { SetReference } from '../../../types/tmo';
+import type { DefReference } from '../../../types/tmo';
 
 @Component({
 	selector: 'osee-script-table',
@@ -51,7 +50,7 @@ export class ScriptTableComponent implements OnDestroy {
 	@ViewChild(MatMenuTrigger, { static: true })
 	matMenuTrigger!: MatMenuTrigger;
 
-	noneOption = { name: 'None' } as ProgramReference;
+	noneOption = { name: 'None' } as SetReference;
 
 	scriptDefs = this.tmoService.scriptDefs;
 
@@ -91,11 +90,24 @@ export class ScriptTableComponent implements OnDestroy {
 
 	headers: (keyof DefReference)[] = [
 		'name',
-		'programName',
-		'executionDate',
-		'executionEnvironment',
+		'team',
+		'subsystem',
+		'safety',
+		'notes',
+		'statusBy',
+		'statusDate',
+		'latestResult',
+		'latestScriptHealth',
+		'latestPassedCount',
+		'latestFailedCount',
+		'latestScriptAborted',
 		'machineName',
-		'revision',
+		'latestMachineName',
+		'latestElapsedTime',
+		'scheduledMachine',
+		'scheduledTime',
+		'scheduled',
+		'fullScriptName',
 	];
 
 	ngOnDestroy(): void {

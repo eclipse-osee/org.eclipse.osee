@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.testscript.ScriptApi;
 import org.eclipse.osee.testscript.ScriptDefEndpoint;
 import org.eclipse.osee.testscript.ScriptImportEndpoint;
-import org.eclipse.osee.testscript.ScriptProgramEndpoint;
 import org.eclipse.osee.testscript.ScriptResultEndpoint;
+import org.eclipse.osee.testscript.ScriptSetEndpoint;
 import org.eclipse.osee.testscript.TestCaseEndpoint;
 import org.eclipse.osee.testscript.TestPointEndpoint;
 import org.eclipse.osee.testscript.TmoEndpoint;
@@ -42,10 +42,10 @@ public class TmoEndpointImpl implements TmoEndpoint {
    }
 
    @Override
-   @Path("{branch}/program")
+   @Path("{branch}/set")
    @Produces(MediaType.APPLICATION_JSON)
-   public ScriptProgramEndpoint getScriptProgramTypes(@PathParam("branch") BranchId branch) {
-      return new ScriptProgramEndpointImpl(branch, testScriptApi.getScriptProgramApi());
+   public ScriptSetEndpoint getScriptSetTypes(@PathParam("branch") BranchId branch) {
+      return new ScriptSetEndpointImpl(branch, testScriptApi.getScriptProgramApi());
    }
 
    @Override

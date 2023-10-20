@@ -12,26 +12,23 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CiDashboardComponent } from './ci-dashboard.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { tmoServiceMock } from './lib/testing/tmo.service.mock';
-import { TmoService } from './lib/services/tmo.service';
+import { SetDropdownComponent } from './set-dropdown.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('CiDashboardComponent', () => {
-	let component: CiDashboardComponent;
-	let fixture: ComponentFixture<CiDashboardComponent>;
+describe('SetDropdownComponent', () => {
+	let component: SetDropdownComponent;
+	let fixture: ComponentFixture<SetDropdownComponent>;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [
-				CiDashboardComponent,
-				RouterTestingModule,
+				SetDropdownComponent,
+				HttpClientTestingModule,
 				NoopAnimationsModule,
 			],
-			providers: [{ provide: TmoService, useValue: tmoServiceMock }],
 		});
-		fixture = TestBed.createComponent(CiDashboardComponent);
+		fixture = TestBed.createComponent(SetDropdownComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

@@ -12,27 +12,25 @@
  **********************************************************************/
 import {
 	DefReference,
-	ProgramReference,
+	SetReference,
 	ResultReference,
 	TestCaseReference,
 	TestPointReference,
 } from '../types';
 
-export const programsMock: ProgramReference[] = [
+export const setsMock: SetReference[] = [
 	{
-		name: 'Program 1',
-		import: 'url',
+		id: '5555',
+		name: 'Set 1',
 		active: true,
-		startDate: new Date(),
-		endDate: new Date(),
 	},
 ];
 
 export const defReferenceMock: DefReference[] = [
 	{
 		id: '1',
-		name: 'Definition Reference',
-		programName: 'url',
+		name: 'ScriptName',
+		fullScriptName: 'full.ScriptName',
 		executionDate: new Date(),
 		executionEnvironment: 'Environment 1',
 		machineName: 'Machine 1',
@@ -42,10 +40,7 @@ export const defReferenceMock: DefReference[] = [
 		lastAuthor: 'Last Author',
 		lastModified: new Date(),
 		modifiedFlag: '1',
-		repositoryUrl: 'url',
 		user: 'Jim',
-		qualification: 'Level',
-		property: 'Key',
 		notes: 'Hello World',
 		safety: false,
 		scheduled: false,
@@ -53,8 +48,21 @@ export const defReferenceMock: DefReference[] = [
 		scheduledMachine: 'Machine 2',
 		statusBy: 'Jane',
 		statusDate: new Date(),
+		subsystem: 'SBSSTM1',
 		description: 'Script that runs tests',
-		scriptResults: [],
+		latestProcessorId: 'string',
+		latestExecutionDate: new Date(),
+		latestExecutionEnvironment: 'string',
+		latestMachineName: 'string',
+		latestPassedCount: 3,
+		latestFailedCount: 5,
+		latestInteractiveCount: 1,
+		latestScriptAborted: false,
+		latestElapsedTime: 14652346,
+		latestResult: 'string',
+		latestScriptHealth: 2,
+		latestExecutedBy: 'string',
+		latestUserName: 'string',
 	},
 ];
 

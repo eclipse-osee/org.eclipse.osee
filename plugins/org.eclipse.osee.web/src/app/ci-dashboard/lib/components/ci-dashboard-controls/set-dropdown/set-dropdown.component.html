@@ -12,15 +12,15 @@
  -->
 <form>
 	<mat-form-field
-		class="[&>.mat-mdc-form-field-subscript-wrapper]"
+		class="[&>.mat-mdc-form-field-subscript-wrapper]:tw-hidden"
 		subscriptSizing="dynamic"
 		appearance="fill">
-		<mat-label>Select a program</mat-label>
+		<mat-label>Select a set</mat-label>
 		<input
 			type="text"
 			matInput
 			[matAutocomplete]="auto"
-			[ngModel]="(selectedProgram | async)?.name || ''"
+			[ngModel]="(selectedSet | async)?.name || ''"
 			(keyup)="applyFilter($event)"
 			name="autocomplete-text" />
 		<mat-autocomplete
@@ -28,14 +28,14 @@
 			#auto="matAutocomplete">
 			<mat-option
 				[value]="noneOption.name"
-				(click)="selectProgram(noneOption)">
+				(click)="selectSet(noneOption)">
 				{{ noneOption.name }}
 			</mat-option>
-			<ng-container *ngIf="programs | async as _programs">
+			<ng-container *ngIf="sets | async as _sets">
 				<mat-option
-					*ngFor="let option of _programs"
+					*ngFor="let option of _sets"
 					[value]="option.name"
-					(click)="selectProgram(option)">
+					(click)="selectSet(option)">
 					{{ option.name }}
 				</mat-option>
 			</ng-container>

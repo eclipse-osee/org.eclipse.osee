@@ -29,7 +29,7 @@
 			<th
 				mat-header-cell
 				*matHeaderCellDef
-				class="tw-text-primary-600"
+				class="tw-border-x-[1px] tw-border-foreground tw-px-1 tw-py-0 tw-text-center tw-text-sm tw-font-medium tw-text-primary"
 				[matTooltip]="
 					(getTableHeaderByName(header) | async)?.description || ''
 				">
@@ -39,6 +39,7 @@
 			</th>
 			<td
 				mat-cell
+				class="tw-border-[1px] tw-border-foreground tw-px-1 tw-py-0 tw-text-center"
 				*matCellDef="let def">
 				{{ def[header] }}
 			</td>

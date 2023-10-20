@@ -699,7 +699,6 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString InterfacePlatformTypeAnalogAccuracy = osee.createString(3899709087455064788L, "Interface Platform Type Analog Accuracy", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString ImportPath = osee.createString(1152921504606847351L, "Import Path", MediaType.TEXT_PLAIN, "File Path for Imports");
 
    AttributeTypeString InterfaceUnitMeasurement = osee.createString(2478822847543373494L, "Interface Unit Measurement", MediaType.TEXT_PLAIN, "Measurement type of the unit");
 
@@ -849,7 +848,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString ProductLinePreferences = osee.createStringNoTag(582562585958993670L, "Product Line Preferences", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString ProgramName = osee.createString(1152921504606847350L, "Program Name", MediaType.TEXT_PLAIN, "Program Name");
+   AttributeTypeString SetId = osee.createString(1152921504606847350L, "Set Id", MediaType.TEXT_PLAIN, "CI Set Artifact Id");
 
    AttributeTypeString PropertyKey = osee.createString(5139071591277404578L, "Property Key", MediaType.TEXT_PLAIN, "Property Store Key");
 
