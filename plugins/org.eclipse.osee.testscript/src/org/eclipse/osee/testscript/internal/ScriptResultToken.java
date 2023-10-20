@@ -39,6 +39,7 @@ public class ScriptResultToken extends ArtifactAccessorResult {
 
    public static final ScriptResultToken SENTINEL = new ScriptResultToken();
 
+   private String setId;
    private String processorId;
    private Date executionDate;
    private String executionEnvironment;
@@ -80,15 +81,16 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       super(art);
       this.setId(art.getId());
       this.setName(art.getName());
+      this.setSetId(art.getSoleAttributeValue(CoreAttributeTypes.SetId, ""));
       this.setProcessorId(art.getSoleAttributeAsString(CoreAttributeTypes.ProcessorId, ""));
       this.setExecutionDate(art.getSoleAttributeValue(CoreAttributeTypes.ExecutionDate, new Date()));
       this.setExecutionEnvironment(art.getSoleAttributeAsString(CoreAttributeTypes.ExecutionEnvironment, ""));
       this.setMachineName(art.getSoleAttributeAsString(CoreAttributeTypes.MachineName, ""));
-      this.setPassedCount(art.getSoleAttributeValue(CoreAttributeTypes.PassedCount, -1));
-      this.setFailedCount(art.getSoleAttributeValue(CoreAttributeTypes.FailedCount, -1));
-      this.setInteractiveCount(art.getSoleAttributeValue(CoreAttributeTypes.InteractiveCount, -1));
+      this.setPassedCount(art.getSoleAttributeValue(CoreAttributeTypes.PassedCount, 0));
+      this.setFailedCount(art.getSoleAttributeValue(CoreAttributeTypes.FailedCount, 0));
+      this.setInteractiveCount(art.getSoleAttributeValue(CoreAttributeTypes.InteractiveCount, 0));
       this.setScriptAborted(art.getSoleAttributeValue(CoreAttributeTypes.ScriptAborted, false));
-      this.setElapsedTime(art.getSoleAttributeValue(CoreAttributeTypes.ElapsedTime, -1));
+      this.setElapsedTime(art.getSoleAttributeValue(CoreAttributeTypes.ElapsedTime, 0));
       this.setStartDate(art.getSoleAttributeValue(CoreAttributeTypes.StartDate, new Date()));
       this.setEndDate(art.getSoleAttributeValue(CoreAttributeTypes.EndDate, new Date()));
       this.setOsArchitecture(art.getSoleAttributeAsString(CoreAttributeTypes.OsArchitecture, ""));
@@ -99,7 +101,7 @@ public class ScriptResultToken extends ArtifactAccessorResult {
       this.setOseeVersion(art.getSoleAttributeAsString(CoreAttributeTypes.OseeVersion, ""));
       this.setJavaVersion(art.getSoleAttributeAsString(CoreAttributeTypes.JavaVersion, ""));
       this.setResult(art.getSoleAttributeAsString(CoreAttributeTypes.Result, ""));
-      this.setScriptHealth(art.getSoleAttributeValue(CoreAttributeTypes.ScriptHealth, -1));
+      this.setScriptHealth(art.getSoleAttributeValue(CoreAttributeTypes.ScriptHealth, 0));
       this.setQualificationLevel(art.getSoleAttributeAsString(CoreAttributeTypes.QualificationLevel, ""));
       this.setExecutedBy(art.getSoleAttributeAsString(CoreAttributeTypes.ExecutedBy, ""));
       this.setUserId(art.getSoleAttributeAsString(CoreAttributeTypes.UserId, ""));
@@ -128,15 +130,16 @@ public class ScriptResultToken extends ArtifactAccessorResult {
 
    public ScriptResultToken(Long id, String name) {
       super(id, name);
+      this.setSetId("");
       this.setProcessorId("");
       this.setExecutionDate(new Date());
       this.setExecutionEnvironment("");
       this.setMachineName("");
-      this.setPassedCount(-1);
-      this.setFailedCount(-1);
-      this.setInteractiveCount(-1);
+      this.setPassedCount(0);
+      this.setFailedCount(0);
+      this.setInteractiveCount(0);
       this.setScriptAborted(false);
-      this.setElapsedTime(-1);
+      this.setElapsedTime(0);
       this.setStartDate(new Date());
       this.setEndDate(new Date());
       this.setOsArchitecture("");
@@ -167,6 +170,20 @@ public class ScriptResultToken extends ArtifactAccessorResult {
    }
 
    /**
+    * @return the setId
+    */
+   public String getSetId() {
+      return setId;
+   }
+
+   /**
+    * @param set the setId to setId
+    */
+   public void setSetId(String setId) {
+      this.setId = setId;
+   }
+
+   /**
     * @return the processorId
     */
    public String getProcessorId() {
@@ -174,7 +191,7 @@ public class ScriptResultToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @param processorId the processorId to set
+    * @param set the processorId to processorId
     */
    public void setProcessorId(String processorId) {
       this.processorId = processorId;

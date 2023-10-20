@@ -18,39 +18,38 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.testscript.ScriptProgramApi;
-import org.eclipse.osee.testscript.ScriptProgramEndpoint;
+import org.eclipse.osee.testscript.ScriptSetApi;
+import org.eclipse.osee.testscript.ScriptSetEndpoint;
 
 /**
  * @author Stephen J. Molaro
  */
-public class ScriptProgramEndpointImpl implements ScriptProgramEndpoint {
+public class ScriptSetEndpointImpl implements ScriptSetEndpoint {
 
-   private final ScriptProgramApi scriptProgramApi;
+   private final ScriptSetApi scriptSetApi;
    private final BranchId branch;
-   public ScriptProgramEndpointImpl(BranchId branch, ScriptProgramApi scriptProgramApi) {
-      this.scriptProgramApi = scriptProgramApi;
+   public ScriptSetEndpointImpl(BranchId branch, ScriptSetApi scriptProgramApi) {
+      this.scriptSetApi = scriptProgramApi;
       this.branch = branch;
    }
 
    @Override
-   public Collection<ScriptProgramToken> getAllScriptPrograms(String filter, ArtifactId viewId, long pageNum,
-      long pageSize, AttributeTypeToken orderByAttributeType) {
+   public Collection<ScriptSetToken> getAllScriptSets(String filter, ArtifactId viewId, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (Strings.isValid(filter)) {
-         return scriptProgramApi.getAllByFilter(branch, viewId, filter, pageNum, pageSize, orderByAttributeType);
+         return scriptSetApi.getAllByFilter(branch, viewId, filter, pageNum, pageSize, orderByAttributeType);
       }
-      return scriptProgramApi.getAll(branch, viewId, pageNum, pageSize, orderByAttributeType);
+      return scriptSetApi.getAll(branch, viewId, pageNum, pageSize, orderByAttributeType);
    }
 
    @Override
-   public ScriptProgramToken getScriptProgram(ArtifactId ScriptProgramId) {
-      return scriptProgramApi.get(branch, ScriptProgramId);
+   public ScriptSetToken getScriptProgram(ArtifactId ScriptProgramId) {
+      return scriptSetApi.get(branch, ScriptProgramId);
    }
 
    @Override
    public int getCount(String filter, ArtifactId viewId) {
-      return scriptProgramApi.getCountWithFilter(branch, viewId, filter);
+      return scriptSetApi.getCountWithFilter(branch, viewId, filter);
    }
-
 }

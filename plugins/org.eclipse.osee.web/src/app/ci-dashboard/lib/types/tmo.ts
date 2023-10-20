@@ -10,18 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface ProgramReference {
+export interface SetReference {
+	id: string;
 	name: string;
-	import: string;
 	active: boolean;
-	startDate: Date;
-	endDate: Date;
 }
+
+export const setReferenceSentinel: SetReference = {
+	id: '',
+	name: '',
+	active: false,
+};
 
 export interface DefReference {
 	id?: string;
 	name: string;
-	programName: string;
+	fullScriptName: String;
 	executionDate: Date;
 	executionEnvironment: string;
 	machineName: string;
@@ -31,10 +35,7 @@ export interface DefReference {
 	lastAuthor: string;
 	lastModified: Date;
 	modifiedFlag: string;
-	repositoryUrl: string;
 	user: string;
-	qualification: string;
-	property: string;
 	notes: string;
 	safety: boolean;
 	scheduled: boolean;
@@ -42,8 +43,21 @@ export interface DefReference {
 	scheduledMachine: string;
 	statusBy: string;
 	statusDate: Date;
+	subsystem: String;
 	description: string;
-	scriptResults: ResultReference[];
+	latestProcessorId: string;
+	latestExecutionDate: Date;
+	latestExecutionEnvironment: string;
+	latestMachineName: string;
+	latestPassedCount: number;
+	latestFailedCount: number;
+	latestInteractiveCount: number;
+	latestScriptAborted: boolean;
+	latestElapsedTime: number;
+	latestResult: string;
+	latestScriptHealth: number;
+	latestExecutedBy: string;
+	latestUserName: string;
 }
 
 export interface ResultReference {

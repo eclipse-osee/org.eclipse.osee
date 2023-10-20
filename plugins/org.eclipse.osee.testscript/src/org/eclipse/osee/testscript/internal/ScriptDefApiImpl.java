@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -115,6 +116,15 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    }
 
    @Override
+   public Collection<ScriptDefToken> getAll(BranchId branch, Collection<FollowRelation> followRelations, String filter,
+      Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.accessor.getAll(branch, followRelations, filter, attributes, pageCount, pageSize, orderByAttribute,
+         ArtifactId.SENTINEL);
+   }
+
+   @Override
    public Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter) {
       return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter);
    }
@@ -160,6 +170,15 @@ public class ScriptDefApiImpl implements ScriptDefApi {
       } catch (Exception ex) {
          return new LinkedList<ScriptDefToken>();
       }
+   }
+
+   @Override
+   public Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter,
+      Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<AttributeTypeId> followAttributes) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.accessor.getAllByFilter(branch, filter, followRelations, pageCount, pageSize, orderByAttribute,
+         followAttributes, ArtifactId.SENTINEL);
    }
 
    @Override

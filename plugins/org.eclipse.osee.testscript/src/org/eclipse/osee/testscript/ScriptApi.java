@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 public interface ScriptApi {
    OrcsApi getOrcsApi();
 
-   ScriptProgramApi getScriptProgramApi();
+   ScriptSetApi getScriptProgramApi();
 
    ScriptDefApi getScriptDefApi();
 

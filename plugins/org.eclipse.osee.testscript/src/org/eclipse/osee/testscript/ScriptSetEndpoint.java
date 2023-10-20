@@ -23,17 +23,17 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.testscript.internal.ScriptProgramToken;
+import org.eclipse.osee.testscript.internal.ScriptSetToken;
 
 /**
  * @author Stephen J. Molaro
  */
-@Path("def")
+@Path("set")
 @Swagger
-public interface ScriptProgramEndpoint {
+public interface ScriptSetEndpoint {
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<ScriptProgramToken> getAllScriptPrograms(@QueryParam("filter") String filter,
+   Collection<ScriptSetToken> getAllScriptSets(@QueryParam("filter") String filter,
       @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
@@ -51,6 +51,6 @@ public interface ScriptProgramEndpoint {
    /**
     * Gets a specific unit.
     */
-   ScriptProgramToken getScriptProgram(@PathParam("id") ArtifactId scriptProgramId);
+   ScriptSetToken getScriptProgram(@PathParam("id") ArtifactId scriptProgramId);
 
 }

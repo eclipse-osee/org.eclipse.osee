@@ -33,9 +33,17 @@ import org.eclipse.osee.testscript.internal.ScriptDefToken;
 public interface ScriptDefEndpoint {
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<ScriptDefToken> getAllScriptDefTypes(@QueryParam("filter") String filter,
+   Collection<ScriptDefToken> getAllScriptDefs(@QueryParam("filter") String filter,
       @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+
+   @GET()
+   @Path("set/{setId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * @return all Script Def types matching criteria for Set attribute
+    */
+   Collection<ScriptDefToken> getScriptDefBySet(@PathParam("setId") ArtifactId scriptSetId);
 
    @GET()
    @Path("count")
@@ -52,5 +60,4 @@ public interface ScriptDefEndpoint {
     * Gets a specific unit.
     */
    ScriptDefToken getScriptDefType(@PathParam("id") ArtifactId scriptDefTypeId);
-
 }

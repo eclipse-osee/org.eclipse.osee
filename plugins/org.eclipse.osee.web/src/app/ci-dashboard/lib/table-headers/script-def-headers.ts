@@ -20,79 +20,14 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 		humanReadable: 'Script Name',
 	},
 	{
-		header: 'programName',
-		description: '',
-		humanReadable: 'Program Name',
-	},
-	{
-		header: 'executionDate',
-		description: '',
-		humanReadable: 'Execution Date',
-	},
-	{
-		header: 'executionEnvironment',
-		description: '',
-		humanReadable: 'Execution Environment',
-	},
-	{
-		header: 'machineName',
-		description: '',
-		humanReadable: 'Machine',
-	},
-	{
-		header: 'revision',
-		description: '',
-		humanReadable: 'Revision',
-	},
-	{
-		header: 'repositoryType',
-		description: '',
-		humanReadable: 'Repository Type',
-	},
-	{
 		header: 'team',
 		description: '',
 		humanReadable: 'Team Name',
 	},
 	{
-		header: 'lastAuthor',
+		header: 'subsystem',
 		description: '',
-		humanReadable: 'Last Author',
-	},
-	{
-		header: 'lastModified',
-		description: '',
-		humanReadable: 'Last Modified',
-	},
-	{
-		header: 'modifiedFlag',
-		description: '',
-		humanReadable: 'Modified',
-	},
-	{
-		header: 'repositoryUrl',
-		description: '',
-		humanReadable: 'Repository Url',
-	},
-	{
-		header: 'user',
-		description: '',
-		humanReadable: 'User',
-	},
-	{
-		header: 'qualification',
-		description: '',
-		humanReadable: 'Qualification Level',
-	},
-	{
-		header: 'property',
-		description: '',
-		humanReadable: 'Property',
-	},
-	{
-		header: 'notes',
-		description: '',
-		humanReadable: 'Notes',
+		humanReadable: 'Subsystem',
 	},
 	{
 		header: 'safety',
@@ -100,19 +35,9 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 		humanReadable: 'Safety',
 	},
 	{
-		header: 'scheduled',
+		header: 'notes',
 		description: '',
-		humanReadable: 'Scheduled',
-	},
-	{
-		header: 'scheduledTime',
-		description: '',
-		humanReadable: 'Scheduled Time',
-	},
-	{
-		header: 'scheduledMachine',
-		description: '',
-		humanReadable: 'Scheduled Machine',
+		humanReadable: 'Notes',
 	},
 	{
 		header: 'statusBy',
@@ -123,5 +48,66 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 		header: 'statusDate',
 		description: '',
 		humanReadable: 'Status Date',
+	},
+	{
+		header: 'latestResult',
+		description: '',
+		humanReadable: 'Result',
+	},
+	{
+		header: 'latestScriptHealth',
+		description: '',
+		humanReadable: 'Script Health',
+	},
+
+	{
+		header: 'latestPassedCount',
+		description: '',
+		humanReadable: 'Passed Count',
+	},
+	{
+		header: 'latestFailedCount',
+		description: '',
+		humanReadable: 'Failed Count',
+	},
+	{
+		header: 'latestScriptAborted',
+		description: '',
+		humanReadable: 'Script Aborted',
+	},
+	{
+		header: 'machineName',
+		description: '',
+		humanReadable: 'Machine',
+	},
+	{
+		header: 'latestMachineName',
+		description: '',
+		humanReadable: 'Runtime Machine Name',
+	},
+	{
+		header: 'latestElapsedTime',
+		description: '',
+		humanReadable: 'Elapsed Time',
+	},
+	{
+		header: 'scheduledMachine',
+		description: '',
+		humanReadable: 'Scheduled Machine',
+	},
+	{
+		header: 'scheduledTime',
+		description: '',
+		humanReadable: 'Scheduled Time',
+	},
+	{
+		header: 'scheduled',
+		description: '',
+		humanReadable: 'Scheduled',
+	},
+	{
+		header: 'fullScriptName',
+		description: '',
+		humanReadable: 'Full ScriptName',
 	},
 ];

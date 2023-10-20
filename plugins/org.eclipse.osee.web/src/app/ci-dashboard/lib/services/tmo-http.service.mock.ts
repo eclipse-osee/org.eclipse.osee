@@ -14,15 +14,15 @@ import { of } from 'rxjs';
 import { TmoHttpService } from './tmo-http.service';
 import {
 	defReferenceMock,
-	programsMock,
+	setsMock,
 	resultReferenceMock,
 	testCaseReferenceMock,
 	testPointReferenceMock,
 } from '../testing/tmo.response.mock';
 
 export const tmoHttpServiceMock: Partial<TmoHttpService> = {
-	getProgramList() {
-		return of(programsMock);
+	getSetList() {
+		return of(setsMock);
 	},
 
 	getScriptDefList() {

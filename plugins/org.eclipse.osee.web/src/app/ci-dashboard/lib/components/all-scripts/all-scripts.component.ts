@@ -15,14 +15,16 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UiService } from '@osee/shared/services';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ScriptTableComponent } from './lib/components/script-table/script-table.component';
-import { ProgramDropdownComponent } from './lib/components/program-dropdown/program-dropdown.component';
-import { ProgramReference } from './lib/types/tmo';
+import { ScriptTableComponent } from './script-table/script-table.component';
+import { SetReference, setReferenceSentinel } from '../../../lib/types/tmo';
+import { BranchPickerComponent } from '../../../../shared/components/branch-picker/branch-picker/branch-picker.component';
+import { CiDashboardControlsComponent } from '../../../lib/components/ci-dashboard-controls/ci-dashboard-controls.component';
+import { TmoService } from '../../../lib/services/tmo.service';
 
 @Component({
-	selector: 'osee-ci-dashboard',
+	selector: 'osee-all-scripts',
 	standalone: true,
-	templateUrl: './ci-dashboard.component.html',
+	templateUrl: './all-scripts.component.html',
 	imports: [
 		CommonModule,
 		AsyncPipe,
@@ -30,13 +32,17 @@ import { ProgramReference } from './lib/types/tmo';
 		NgIf,
 		RouterLink,
 		ScriptTableComponent,
-		ProgramDropdownComponent,
+		BranchPickerComponent,
+		CiDashboardControlsComponent,
 	],
 })
-export class CiDashboardComponent implements OnInit {
+export class AllScriptsComponent implements OnInit {
+	selectedSet = this.tmoService.setId.value;
+
 	constructor(
 		private route: ActivatedRoute,
-		private routerState: UiService
+		private routerState: UiService,
+		private tmoService: TmoService
 	) {}
 
 	ngOnInit(): void {
@@ -47,8 +53,8 @@ export class CiDashboardComponent implements OnInit {
 		});
 	}
 
-	@Input() program!: ProgramReference;
+	@Input() set: SetReference = setReferenceSentinel;
 	@Input('master') masterName = '';
 }
 
-export default CiDashboardComponent;
+export default AllScriptsComponent;

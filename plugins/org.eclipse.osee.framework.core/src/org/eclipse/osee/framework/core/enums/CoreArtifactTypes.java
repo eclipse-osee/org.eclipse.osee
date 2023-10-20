@@ -840,11 +840,8 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ParameterMultipleSelect = osee.add(osee.artifactType(1937883426323978299L, "ParameterMultipleSelect", false, Parameter));
 
-   ArtifactTypeToken TestProgram = osee.add(osee.artifactType(8756764536L, "Program", false, Artifact)
-      .zeroOrOne(ImportPath)
-      .zeroOrOne(Active)
-      .zeroOrOne(StartDate)
-      .zeroOrOne(EndDate));
+   ArtifactTypeToken ScriptSet = osee.add(osee.artifactType(8756764536L, "Script Set", false, Artifact)
+      .zeroOrOne(Active));
 
    ArtifactTypeToken TestScriptDef = osee.add(osee.artifactType(8756764537L, "Test Script Definition", false, Artifact)
       .exactlyOne(ScriptName)
@@ -870,10 +867,10 @@ public interface CoreArtifactTypes {
       );
 
    ArtifactTypeToken TestScriptResults = osee.add(osee.artifactType(8756764538L, "Test Script Results", false, Artifact)
-      .exactlyOne(ProgramName)
+      .exactlyOne(SetId)
       .exactlyOne(ProcessorId)
       .atLeastOne(RuntimeVersion)
-      .zeroOrOne(ExecutionDate)
+      .exactlyOne(ExecutionDate)
       .zeroOrOne(ExecutionEnvironment)
       .exactlyOne(MachineName)
       .exactlyOne(PassedCount)

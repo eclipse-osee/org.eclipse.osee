@@ -20,10 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
 import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.accessor.types.AttributeQueryElement;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.accessor.types.RelatedArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -714,6 +714,40 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
             relatedId).and(
                attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
                filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      if (followAttributes.size() > 0) {
+         query = query.followSearch(
+            followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter);
+      }
+      if (orderByAttribute != null && orderByAttribute.isValid()) {
+         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
+      }
+      if (pageCount != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageCount, pageSize);
+      }
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      return fetchCollection(query, branch);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllByFilter(branch, filter, followRelations, pageCount, pageSize, orderByAttribute,
+         followAttributes, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes,
+      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(artifactType);
       if (followAttributes.size() > 0) {
          query = query.followSearch(
             followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),

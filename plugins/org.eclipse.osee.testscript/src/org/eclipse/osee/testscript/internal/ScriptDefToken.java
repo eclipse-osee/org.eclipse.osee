@@ -15,6 +15,7 @@ package org.eclipse.osee.testscript.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,7 +40,9 @@ public class ScriptDefToken extends ArtifactAccessorResult {
 
    public static final ScriptDefToken SENTINEL = new ScriptDefToken();
 
-   private String programName;
+   private final Comparator<Date> dateComparator = new DateComparator();
+   private String fullScriptName;
+   private String setId;
    private Date executionDate;
    private String executionEnvironment;
    private String machine;
@@ -60,6 +63,21 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    private Date statusDate;
    private String subsystem;
    private String description;
+   private String latestProcessorId;
+   private Date latestExecutionDate;
+   private String latestExecutionEnvironment;
+   private String latestMachineName;
+   private int latestPassedCount;
+   private int latestFailedCount;
+   private int latestInteractiveCount;
+   private boolean latestScriptAborted;
+   private int latestElapsedTime;
+   private String latestResult;
+   private int latestScriptHealth;
+   private String latestExecutedBy;
+   private String latestUserId;
+   private String latestUserName;
+
    private List<ScriptResultToken> scriptResults;
 
    public ScriptDefToken(ArtifactToken art) {
@@ -68,9 +86,10 @@ public class ScriptDefToken extends ArtifactAccessorResult {
 
    public ScriptDefToken(ArtifactReadable art) {
       super(art);
+
       this.setId(art.getId());
       this.setName(art.getName());
-      this.setProgramName(art.getSoleAttributeValue(CoreAttributeTypes.ProgramName, ""));
+      this.setFullScriptName(art.getSoleAttributeAsString(CoreAttributeTypes.ScriptName, ""));
       this.setExecutionDate(art.getSoleAttributeValue(CoreAttributeTypes.ExecutionDate, new Date()));
       this.setExecutionEnvironment(art.getSoleAttributeAsString(CoreAttributeTypes.ExecutionEnvironment, ""));
       this.setMachineName(art.getSoleAttributeAsString(CoreAttributeTypes.MachineName, ""));
@@ -92,14 +111,34 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setSubsystem(art.getSoleAttributeAsString(CoreAttributeTypes.ScriptSubsystem, ""));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
       this.setScriptResults(
-         art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().filter(
-            a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new ScriptResultToken(a)).collect(
-               Collectors.toList()));
+         art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().sorted(
+            Comparator.comparing(this::getExecutionDateByAttr, dateComparator)).filter(
+               a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new ScriptResultToken(a)).collect(
+                  Collectors.toList()));
+
+      if (!getScriptResults().isEmpty()) {
+         ScriptResultToken resultToken = getScriptResults().get(0);
+         this.setSetId(resultToken.getSetId());
+         this.setLatestProcessorId(resultToken.getProcessorId());
+         this.setLatestExecutionDate(resultToken.getExecutionDate());
+         this.setLatestExecutionEnvironment(resultToken.getExecutionEnvironment());
+         this.setMachineName(resultToken.getMachineName());
+         this.setLatestPassedCount(resultToken.getPassedCount());
+         this.setLatestFailedCount(resultToken.getFailedCount());
+         this.setLatestInteractiveCount(resultToken.getInteractiveCount());
+         this.setLatestScriptAborted(resultToken.getScriptAborted());
+         this.setLatestElapsedTime(resultToken.getElapsedTime());
+         this.setLatestResult(resultToken.getResult());
+         this.setLatestScriptHealth(resultToken.getScriptHealth());
+         this.setLatestExecutedBy(resultToken.getExecutedBy());
+         this.setLatestUserId(resultToken.getUserId());
+         this.setLatestUserName(resultToken.getUserName());
+      }
    }
 
    public ScriptDefToken(Long id, String name) {
       super(id, name);
-      this.setProgramName("");
+      this.setFullScriptName("");
       this.setExecutionDate(new Date());
       this.setExecutionEnvironment("");
       this.setMachineName("");
@@ -121,6 +160,23 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setSubsystem("");
       this.setDescription("");
       this.setScriptResults(new ArrayList<ScriptResultToken>());
+
+      this.setSetId("");
+      this.setLatestProcessorId("");
+      this.setLatestExecutionDate(new Date());
+      this.setLatestExecutionEnvironment("");
+      this.setMachineName("");
+      this.setLatestPassedCount(0);
+      this.setLatestFailedCount(0);
+      this.setLatestInteractiveCount(0);
+      this.setLatestScriptAborted(false);
+      this.setLatestElapsedTime(0);
+      this.setLatestResult("");
+      this.setLatestScriptHealth(0);
+      this.setLatestExecutedBy("");
+      this.setLatestUserId("");
+      this.setLatestUserName("");
+
    }
 
    public ScriptDefToken() {
@@ -128,17 +184,31 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the programName
+    * @return the fullScriptName
     */
-   public String getProgramName() {
-      return programName;
+   public String getFullScriptName() {
+      return fullScriptName;
    }
 
    /**
-    * @param programName the programName to set
+    * @param fullScriptName the fullScriptName to set
     */
-   public void setProgramName(String programName) {
-      this.programName = programName;
+   public void setFullScriptName(String fullScriptName) {
+      this.fullScriptName = fullScriptName;
+   }
+
+   /**
+    * @return the setName
+    */
+   public String getSetId() {
+      return setId;
+   }
+
+   /**
+    * @param setName the programName to set
+    */
+   public void setSetId(String setName) {
+      this.setId = setName;
    }
 
    /**
@@ -416,6 +486,190 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
+    * @return the processorId
+    */
+   public String getLatestProcessorId() {
+      return latestProcessorId;
+   }
+
+   /**
+    * @param processorId the processorId to set
+    */
+   public void setLatestProcessorId(String latestProcessorId) {
+      this.latestProcessorId = latestProcessorId;
+   }
+
+   /**
+    * @return the executionDate
+    */
+   public Date getLatestExecutionDate() {
+      return latestExecutionDate;
+   }
+
+   /**
+    * @param executionDate the executionDate to set
+    */
+   public void setLatestExecutionDate(Date latestExecutionDate) {
+      this.latestExecutionDate = latestExecutionDate;
+   }
+
+   /**
+    * @return the executionEnvironment
+    */
+   public String getLatestExecutionEnvironment() {
+      return latestExecutionEnvironment;
+   }
+
+   /**
+    * @param executionEnvironment the executionEnvironment to set
+    */
+   public void setLatestExecutionEnvironment(String latestExecutionEnvironment) {
+      this.latestExecutionEnvironment = latestExecutionEnvironment;
+   }
+
+   /**
+    * @return the machine
+    */
+   public String getLatestMachineName() {
+      return latestMachineName;
+   }
+
+   /**
+    * @param interfaceMessageWriteAccess the interfaceMessageWriteAccess to set
+    */
+   public void setLatestMachineName(String latestMachine) {
+      this.latestMachineName = latestMachine;
+   }
+
+   /**
+    * @return the passedCount
+    */
+   public int getLatestPassedCount() {
+      return latestPassedCount;
+   }
+
+   /**
+    * @param passedCount the passedCount to set
+    */
+   public void setLatestPassedCount(int latestPassedCount) {
+      this.latestPassedCount = latestPassedCount;
+   }
+
+   /**
+    * @return the failedCount
+    */
+   public int getLatestFailedCount() {
+      return latestFailedCount;
+   }
+
+   /**
+    * @param failedCount the failedCount to set
+    */
+   public void setLatestFailedCount(int latestFailedCount) {
+      this.latestFailedCount = latestFailedCount;
+   }
+
+   /**
+    * @return the interactiveCount
+    */
+   public int getLatestInteractiveCount() {
+      return latestInteractiveCount;
+   }
+
+   /**
+    * @param interactiveCount the interactiveCount to set
+    */
+   public void setLatestInteractiveCount(int latestInteractiveCount) {
+      this.latestInteractiveCount = latestInteractiveCount;
+   }
+
+   /**
+    * @return the scriptAborted
+    */
+   public boolean getLatestScriptAborted() {
+      return latestScriptAborted;
+   }
+
+   /**
+    * @param scriptAborted the scriptAborted to set
+    */
+   public void setLatestScriptAborted(boolean latestScriptAborted) {
+      this.latestScriptAborted = latestScriptAborted;
+   }
+
+   /**
+    * @return the elapsedTime
+    */
+   public int getLatestElapsedTime() {
+      return latestElapsedTime;
+   }
+
+   /**
+    * @param elapsedTime the elapsedTime to set
+    */
+   public void setLatestElapsedTime(int latestElapsedTime) {
+      this.latestElapsedTime = latestElapsedTime;
+   }
+
+   /**
+    * @return the result
+    */
+   public String getLatestResult() {
+      return latestResult;
+   }
+
+   /**
+    * @param result the result to set
+    */
+   public void setLatestResult(String latestResult) {
+      this.latestResult = latestResult;
+   }
+
+   /**
+    * @return the scriptHealth
+    */
+   public int getLatestScriptHealth() {
+      return latestScriptHealth;
+   }
+
+   /**
+    * @param scriptHealth the scriptHealth to set
+    */
+   public void setLatestScriptHealth(int latestScriptHealth) {
+      this.latestScriptHealth = latestScriptHealth;
+   }
+
+   /**
+    * @return the executedBy
+    */
+   public String getLatestExecutedBy() {
+      return latestExecutedBy;
+   }
+
+   /**
+    * @param executedBy the executedBy to set
+    */
+   public void setLatestExecutedBy(String latestExecutedBy) {
+      this.latestExecutedBy = latestExecutedBy;
+   }
+
+   public String getLatestUserId() {
+      return latestUserId;
+   }
+
+   public void setLatestUserId(String latestUserId) {
+      this.latestUserId = latestUserId;
+   }
+
+   public String getLatestUserName() {
+      return latestUserName;
+   }
+
+   public void setLatestUserName(String latestUserName) {
+      this.latestUserName = latestUserName;
+   }
+
+   /**
     * @return the scriptResults
     */
    public List<ScriptResultToken> getScriptResults() {
@@ -423,7 +677,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @param scriptResults the scriptResults to set
+    * @param scriptResult the scriptResults to set
     */
    public void setScriptResults(List<ScriptResultToken> scriptResults) {
       this.scriptResults = scriptResults;
@@ -439,7 +693,6 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       values.put(CoreAttributeTypes.MachineName, this.getMachineName());
       values.put(CoreAttributeTypes.ModifiedFlag, getModified()); // TODO should this be a boolean?
       values.put(CoreAttributeTypes.Notes, this.getNotes());
-      values.put(CoreAttributeTypes.ProgramName, this.getProgramName());
       values.put(CoreAttributeTypes.PropertyKey, this.getProperty()); // There can seemingly be many property tags
       values.put(CoreAttributeTypes.RepositoryType, this.getRepositoryType());
       values.put(CoreAttributeTypes.RepositoryUrl, this.getRepositoryUrl());
@@ -474,6 +727,26 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       art.setkey(key);
 
       return art;
+   }
+
+   public Date getExecutionDateByAttr(ArtifactReadable art) {
+      return art.getSoleAttributeValue(CoreAttributeTypes.ExecutionDate);
+   }
+
+   public class DateComparator implements Comparator<Date> {
+
+      @Override
+      public int compare(Date date1, Date date2) {
+
+         if (date1 == null && date2 == null) {
+            return 0;
+         } else if (date1 == null) {
+            return 1; // obj1 comes after obj2
+         } else if (date2 == null) {
+            return -1; // obj1 comes before obj2
+         }
+         return date1.compareTo(date2);
+      }
    }
 
 }

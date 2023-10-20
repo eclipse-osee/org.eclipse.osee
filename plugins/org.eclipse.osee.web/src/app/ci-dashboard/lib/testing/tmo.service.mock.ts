@@ -14,11 +14,11 @@ import { BehaviorSubject, of } from 'rxjs';
 import { TmoService } from '../services/tmo.service';
 
 export const tmoServiceMock: Partial<TmoService> = {
-	get programId() {
+	get setId() {
 		return new BehaviorSubject<string>('3');
 	},
 
-	set ProgramId(id: string) {},
+	set SetId(id: string) {},
 
 	get filterValue() {
 		return new BehaviorSubject<string>('Definition');
