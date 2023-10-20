@@ -20,3 +20,4 @@ export * from './two-layer-add-button/two-layer-add-button.component';
 export * from './applicability-selector/applicability-selector.component';
 export * from './view-selector/view-selector.component';
 export * from './action-state-button/internal/services/action-state-button.service'; /* still need to find a good place for this to live */
+export * from './animated-expand-button/animated-expand-button.component';

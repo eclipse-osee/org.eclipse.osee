@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 <div
-	class="tw-flex tw-py-1 tw-pl-2"
+	class="tw-flex tw-py-1 tw-pl-4"
 	[ngClass]="isOpen() ? 'tw-bg-background-hover' : ''">
 	<!-- expand icon button -->
 	<button
@@ -29,50 +29,70 @@
 		</mat-icon>
 	</button>
 	<div class="tw-flex tw-items-center">
-		<mat-icon class="tw-pl-2 tw-text-accent-700"> swap_horiz </mat-icon>
+		<div class="tw-pl-2 tw-text-accent-700">
+			<mat-icon> swap_horiz </mat-icon>
+		</div>
 		<div class="tw-pl-2">{{ typeName() }} - [{{ relationSideName() }}]</div>
 	</div>
 </div>
 <ng-container *ngIf="isOpen()">
 	<ng-container *ngFor="let art of artifacts(); trackBy: trackArtifacts">
-		<div class="tw-py-2 tw-pl-4">
-			<div class="tw-flex">
+		<!-- Artifact dropdown button -->
+		<div class="tw-pl-8">
+			<div
+				class="tw-flex tw-py-1"
+				[ngClass]="
+					artifactsOpen().includes(art.id)
+						? 'tw-bg-background-hover'
+						: ''
+				">
 				<button
 					(click)="
 						artifactsOpen().includes(art.id)
 							? removeArtifactsOpen(art.id)
 							: addArtifactsOpen(art.id)
 					"
-					class="tw-flex tw-items-center hover:tw-text-primary">
-					<!-- animated icon -->
-					<mat-icon
-						matListItemIcon
+					class="tw-flex tw-items-center tw-pl-4 hover:tw-text-primary">
+					<!-- Animated icon -->
+					<div
 						[ngClass]="
 							artifactsOpen().includes(art.id)
 								? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
 								: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
 						">
-						chevron_right
-					</mat-icon>
+						<mat-icon matListItemIcon> chevron_right </mat-icon>
+					</div>
 				</button>
 				<button
 					cdkDrag
 					[cdkDragData]="art"
 					class="tw-flex tw-flex-grow tw-items-center hover:tw-text-primary"
 					(click)="addTab(art)">
-					<mat-icon class="tw-ml-4">
-						{{ fetchIcon(art.typeName) }}
-					</mat-icon>
-					<div class="tw-ml-2">
+					<div class="tw-pl-4">
+						<mat-icon>
+							{{ fetchIcon(art.typeName) }}
+						</mat-icon>
+					</div>
+					<div class="tw-pl-2">
 						{{ art.name }}
 					</div>
 				</button>
 			</div>
-			<div class="tw-pl-2">
+		</div>
+
+		<!-- Child artifacts within artifact dropdown -->
+		<div
+			*ngIf="artifactsOpen().includes(art.id)"
+			class="tw-pl-16">
+			<div *ngIf="_paths | async as paths; else noPaths">
 				<osee-artifact-hierarchy
-					*ngIf="artifactsOpen().includes(art.id)"
-					[artifactId]="art.id"></osee-artifact-hierarchy>
+					[artifactId]="art.id"
+					[paths]="paths"></osee-artifact-hierarchy>
 			</div>
+			<ng-template #noPaths>
+				<osee-artifact-hierarchy
+					[artifactId]="art.id"></osee-artifact-hierarchy>
+			</ng-template>
 		</div>
 	</ng-container>
 </ng-container>

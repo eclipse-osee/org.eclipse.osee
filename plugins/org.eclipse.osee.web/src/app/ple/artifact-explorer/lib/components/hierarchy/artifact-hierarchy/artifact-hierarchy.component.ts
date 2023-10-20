@@ -18,17 +18,20 @@ import {
 	signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BranchPickerComponent } from '@osee/shared/components';
+import {
+	AnimatedExpandButtonComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
 import { MatExpansionModule } from '@angular/material/expansion';
 import {
 	BehaviorSubject,
 	combineLatest,
 	filter,
 	map,
+	of,
 	repeat,
 	shareReplay,
 	switchMap,
-	tap,
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
@@ -42,7 +45,6 @@ import {
 	fetchIconFromDictionary,
 } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
-
 @Component({
 	selector: 'osee-artifact-hierarchy',
 	standalone: true,
@@ -54,12 +56,12 @@ import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relat
 		DragDropModule,
 		MatButtonModule,
 		ArtifactHierarchyRelationsComponent,
+		AnimatedExpandButtonComponent,
 	],
 	templateUrl: './artifact-hierarchy.component.html',
 })
 export class ArtifactHierarchyComponent implements OnChanges {
 	@Input() artifactId!: `${number}`;
-
 	private _artifactId = new BehaviorSubject<string>('');
 
 	branchId$ = this.uiService.id;
@@ -148,7 +150,7 @@ export class ArtifactHierarchyComponent implements OnChanges {
 					?.relationSides.find((side) => side.name === 'child')
 					?.artifacts || [];
 
-			// check if branchType is baseline and set editable accordingly
+			// check if branchType is baseline and set editable accordingly (likely not needed anymore with branchType checking)
 			const artfacts = childArtifacts.map((artifact) => ({
 				...artifact,
 				editable: branchType !== 'baseline',
@@ -167,4 +169,33 @@ export class ArtifactHierarchyComponent implements OnChanges {
 	addTab(artifact: artifact) {
 		this.tabService.addArtifact(artifact);
 	}
+
+	@Input() set paths(value: string[][]) {
+		this._paths.next(value);
+	}
+
+	protected _paths = new BehaviorSubject<string[][]>([[]]);
+
+	latestPaths = combineLatest([
+		this._paths.asObservable(),
+		this.artifact$,
+	]).pipe(
+		switchMap(([paths, arts]) => {
+			// Remove path from path array if we are no longer on that path
+			let childPaths = paths
+				.filter((path) => path[path.length - 1] === this.artifactId)
+				.map((path) => path.slice(0, -1));
+
+			// If a child artifact is next on path, open it
+			childPaths.forEach((path) => {
+				arts.find((art) => {
+					if (art.id == path[path.length - 1] && path.length > 1) {
+						this.addArtifactsOpen(art.id);
+					}
+				});
+			});
+			// Update the paths array that we are passing down the hierarchy
+			return of(childPaths);
+		})
+	);
 }

@@ -15,11 +15,12 @@ import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BehaviorSubject } from 'rxjs';
 import { tab } from '../../../types/artifact-explorer.data';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-artifact-info-panel',
 	standalone: true,
-	imports: [CommonModule, MatExpansionModule],
+	imports: [CommonModule, MatExpansionModule, MatIconModule],
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {

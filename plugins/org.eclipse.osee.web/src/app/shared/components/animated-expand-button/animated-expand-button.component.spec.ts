@@ -12,23 +12,17 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ArtifactHierarchyOptionsComponent } from './artifact-hierarchy-options.component';
-import { ActivatedRoute } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AnimatedExpandButtonComponent } from './animated-expand-button.component';
 
-describe('ArtifactHierarchyOptionsComponent', () => {
-	let component: ArtifactHierarchyOptionsComponent;
-	let fixture: ComponentFixture<ArtifactHierarchyOptionsComponent>;
+describe('AnimatedExpandButtonComponent', () => {
+	let component: AnimatedExpandButtonComponent;
+	let fixture: ComponentFixture<AnimatedExpandButtonComponent>;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				ArtifactHierarchyOptionsComponent,
-				HttpClientTestingModule,
-			],
-			providers: [{ provide: ActivatedRoute, useValue: {} }],
+			imports: [AnimatedExpandButtonComponent],
 		});
-		fixture = TestBed.createComponent(ArtifactHierarchyOptionsComponent);
+		fixture = TestBed.createComponent(AnimatedExpandButtonComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

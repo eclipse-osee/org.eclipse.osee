@@ -81,7 +81,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                   String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase();
                   orcsApi.userService().setUserForCurrentThread(loginId);
                }
-            } else if (!exceptionList && authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
+            } else if (authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
                String loginId = authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length()).toLowerCase();
 
                orcsApi.userService().setUserForCurrentThread(loginId);

@@ -24,8 +24,9 @@
 						<ng-container *ngIf="relSide.artifacts.length > 0">
 							<osee-artifact-hierarchy-relation-side
 								[relationSide]="relSide"
-								[typeToken]="
-									rel.relationTypeToken
+								[typeToken]="rel.relationTypeToken"
+								[paths]="
+									paths
 								"></osee-artifact-hierarchy-relation-side>
 						</ng-container>
 					</ng-container>

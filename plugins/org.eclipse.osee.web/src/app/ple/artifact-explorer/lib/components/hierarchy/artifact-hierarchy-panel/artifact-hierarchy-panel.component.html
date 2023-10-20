@@ -12,30 +12,43 @@
  -->
 <mat-expansion-panel
 	[expanded]="panelOpen.value"
-	class="[&>div>div]:tw-px-0">
+	class="tw-w-auto tw-overflow-hidden [&>div>div]:tw-px-0"
+	hideToggle>
 	<mat-expansion-panel-header
 		(click)="togglePanel()"
-		[ngClass]="panelOpen.value ? 'tw-bg-primary' : ''"
-		><mat-panel-title
-			class="tw-font-bold"
-			[ngClass]="panelOpen.value ? 'tw-text-background' : ''">
-			Artifact Hierarchy
-		</mat-panel-title></mat-expansion-panel-header
-	>
+		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
+		class="tw-px-0 hover:tw-bg-background-hover">
+		<mat-panel-title>
+			<mat-icon class="tw-mx-4">
+				{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
+			</mat-icon>
+			<div class="tw-font-bold">Artifact Hierarchy</div>
+		</mat-panel-title>
+	</mat-expansion-panel-header>
 
 	<div class="tw-pt-2">
 		<osee-branch-picker></osee-branch-picker>
-		<div
-			class="tw-flex tw-justify-between tw-pt-4"
-			*ngIf="changedBranchId() && (branchType | async)">
-			<osee-view-selector />
-			<osee-artifact-hierarchy-options />
-		</div>
-		<div
-			cdkDropList
-			class="tw-pt-4">
-			<osee-artifact-hierarchy
-				artifactId="197818"></osee-artifact-hierarchy>
+		<div *ngIf="changedBranchId() && (branchType | async)">
+			<div class="tw-flex tw-justify-between tw-pt-4">
+				<osee-view-selector />
+				<osee-artifact-hierarchy-options />
+			</div>
+			<div class="tw-pt-4">
+				<osee-artifact-search />
+			</div>
+			<div
+				class="tw-pt-4"
+				cdkDropList>
+				<div *ngIf="paths | async as paths; else emptyPath">
+					<osee-artifact-hierarchy
+						[paths]="paths"
+						artifactId="197818"></osee-artifact-hierarchy>
+				</div>
+				<ng-template #emptyPath>
+					<osee-artifact-hierarchy
+						artifactId="197818"></osee-artifact-hierarchy>
+				</ng-template>
+			</div>
 		</div>
 	</div>
 </mat-expansion-panel>

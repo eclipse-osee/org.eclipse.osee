@@ -94,7 +94,7 @@ export class AttributesEditorPanelComponent {
 	}
 
 	// panel open/close state handling
-	panelOpen = new BehaviorSubject<boolean>(false);
+	panelOpen = new BehaviorSubject<boolean>(true);
 	togglePanel() {
 		this.panelOpen.next(!this.panelOpen.value);
 	}

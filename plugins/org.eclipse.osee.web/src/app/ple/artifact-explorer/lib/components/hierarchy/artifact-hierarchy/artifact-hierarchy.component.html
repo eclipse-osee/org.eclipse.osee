@@ -22,35 +22,25 @@
 							? 'tw-bg-background-hover'
 							: ''
 					">
-					<!-- expand icon button -->
-					<button
-						(click)="
+					<osee-animated-expand-button
+						[open]="artifactsOpen().includes(artifact.id)"
+						(openChange)="
 							artifactsOpen().includes(artifact.id)
 								? removeArtifactsOpen(artifact.id)
 								: addArtifactsOpen(artifact.id)
-						"
-						class="tw-flex tw-items-center hover:tw-text-primary">
-						<!-- animated icon -->
-						<mat-icon
-							matListItemIcon
-							[ngClass]="
-								artifactsOpen().includes(artifact.id)
-									? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-									: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-							">
-							chevron_right
-						</mat-icon>
-					</button>
+						" />
 					<!-- artifact icon and name button -->
 					<button
 						cdkDrag
 						[cdkDragData]="artifact"
 						class="tw-flex tw-flex-grow tw-items-center hover:tw-text-primary"
 						(click)="addTab(artifact)">
-						<mat-icon class="tw-ml-4">
-							{{ fetchIcon(artifact.typeName) }}
-						</mat-icon>
-						<div class="tw-ml-2">
+						<div class="tw-pl-4">
+							<mat-icon>
+								{{ fetchIcon(artifact.typeName) }}
+							</mat-icon>
+						</div>
+						<div class="tw-pl-2">
 							{{ artifact.name }}
 						</div>
 					</button>
@@ -59,11 +49,25 @@
 				<div
 					class="tw-pl-8"
 					*ngIf="artifactsOpen().includes(artifact.id)">
-					<osee-artifact-hierarchy [artifactId]="artifact.id" />
+					<div *ngIf="latestPaths | async as paths; else noPaths">
+						<osee-artifact-hierarchy
+							[artifactId]="artifact.id"
+							[paths]="paths" />
+					</div>
+					<ng-template #noPaths>
+						<osee-artifact-hierarchy [artifactId]="artifact.id" />
+					</ng-template>
 				</div>
 			</ng-container>
 			<!-- relations (toggled via option) -->
-			<osee-artifact-hierarchy-relations [relation$]="relation$" />
+			<div *ngIf="latestPaths | async as paths; else noPaths">
+				<osee-artifact-hierarchy-relations
+					[relation$]="relation$"
+					[paths]="paths" />
+			</div>
+			<ng-template #noPaths>
+				<osee-artifact-hierarchy-relations [relation$]="relation$" />
+			</ng-template>
 		</ng-container>
 	</ng-container>
 </ng-container>
