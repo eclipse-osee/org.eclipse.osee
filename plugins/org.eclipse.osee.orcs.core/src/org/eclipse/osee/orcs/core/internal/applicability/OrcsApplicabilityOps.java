@@ -536,16 +536,36 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                addIntroduceTuple2(CoreTupleTypes.ApplicabilityDefinition, featureArt, tx, applicString);
                changes = true;
             }
+            /**
+             * There are some users to have Configurations defined that have no feature apps set and any new features
+             * should not be added. newPLESys and the stream check to see if the view currently has feature based apps
+             * is used to determine whether the new feature should be added to the given view
+             */
 
+            boolean newPLESys = true;
+            if (orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(
+               branch).entrySet().stream().anyMatch(
+                  a -> a.getValue().toString().startsWith("Config =") || a.getValue().toString().equals("Base"))) {
+               newPLESys = false;
+            }
             List<ArtifactToken> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch);
             Collections.sort(branchViews, new NamedComparator(SortOrder.ASCENDING));
             for (ArtifactToken view : branchViews) {
-               Iterable<String> appl = orcsApi.getQueryFactory().tupleQuery().getTuple2(
-                  CoreTupleTypes.ViewApplicability, tx.getBranch(), view);
-               if (!appl.toString().contains(feature.getName() + " = ")) {
-                  String applicString = feature.getName() + " = " + feature.getDefaultValue();
-                  addIntroduceTuple2(CoreTupleTypes.ViewApplicability, view, tx, applicString);
-                  changes = true;
+
+               List<ApplicabilityToken> currentApps =
+                  orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view, tx.getBranch());
+               /**
+                * For each view, check to see if there are any other non-feature applicabilities. If so AND it isn't a
+                * brand new PLE System, then add the new feature; otherwise assume it is one of the configs which should
+                * have only Config = xxx and Base as apps
+                */
+               if (!newPLESys && currentApps.stream().anyMatch(
+                  a -> (!(a.getName().startsWith("Config =") || a.getName().equals("Base"))))) {
+                  if (!currentApps.stream().anyMatch(a -> a.getName().equals(feature.getName() + " = "))) {
+                     String applicString = feature.getName() + " = " + feature.getDefaultValue();
+                     addIntroduceTuple2(CoreTupleTypes.ViewApplicability, view, tx, applicString);
+                     changes = true;
+                  }
                }
             }
 
