@@ -12,23 +12,23 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ArtifactHierarchyOptionsComponent } from './artifact-hierarchy-options.component';
-import { ActivatedRoute } from '@angular/router';
+import { ArtifactSearchComponent } from './artifact-search.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('ArtifactHierarchyOptionsComponent', () => {
-	let component: ArtifactHierarchyOptionsComponent;
-	let fixture: ComponentFixture<ArtifactHierarchyOptionsComponent>;
+describe('ArtifactSearchComponent', () => {
+	let component: ArtifactSearchComponent;
+	let fixture: ComponentFixture<ArtifactSearchComponent>;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [
-				ArtifactHierarchyOptionsComponent,
+				ArtifactSearchComponent,
 				HttpClientTestingModule,
+				BrowserAnimationsModule,
 			],
-			providers: [{ provide: ActivatedRoute, useValue: {} }],
 		});
-		fixture = TestBed.createComponent(ArtifactHierarchyOptionsComponent);
+		fixture = TestBed.createComponent(ArtifactSearchComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

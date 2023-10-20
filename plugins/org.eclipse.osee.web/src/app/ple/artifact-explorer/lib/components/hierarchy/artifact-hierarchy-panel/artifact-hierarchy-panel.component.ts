@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, filter, tap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import {
 	BranchPickerComponent,
 	ViewSelectorComponent,
@@ -23,6 +23,9 @@ import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options
 import { UiService } from '@osee/shared/services';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
+import { ArtifactSearchComponent } from '../artifact-search/artifact-search.component';
+import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
@@ -35,6 +38,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		DragDropModule,
 		ArtifactHierarchyOptionsComponent,
 		ViewSelectorComponent,
+		MatIconModule,
+		ArtifactSearchComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })
@@ -42,6 +47,7 @@ export class ArtifactHierarchyPanelComponent {
 	private uiService = inject(UiService);
 	protected branchType = this.uiService.type;
 	protected branchId = this.uiService.id;
+	protected paths = this.artHierPathService.getPaths();
 
 	_branchId = toSignal(this.branchId, { initialValue: '' });
 	changedBranchId = computed(
@@ -51,7 +57,7 @@ export class ArtifactHierarchyPanelComponent {
 			this._branchId() !== '0'
 	);
 
-	constructor() {}
+	constructor(private artHierPathService: ArtifactHierarchyPathService) {}
 
 	// panel open/close state handling
 	panelOpen = new BehaviorSubject<boolean>(true);

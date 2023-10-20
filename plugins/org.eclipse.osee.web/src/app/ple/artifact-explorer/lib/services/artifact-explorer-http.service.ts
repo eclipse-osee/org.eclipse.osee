@@ -14,7 +14,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
-import { artifactWithDirectRelations } from '../types/artifact-explorer.data';
+import {
+	artifact,
+	artifactWithDirectRelations,
+} from '../types/artifact-explorer.data';
+import { HttpParamsType } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -54,6 +58,62 @@ export class ArtifactExplorerHttpService {
 				'/attribute/' +
 				attributeId +
 				'/enums'
+		);
+	}
+
+	public getArtifactByFilter(
+		branchId: string,
+		filter: string,
+		attributeTypeId: string,
+		artifactTypeId: string,
+		viewId: string
+	): Observable<artifact[]> {
+		let params: HttpParamsType = {};
+		if (branchId && branchId !== '') {
+			params = { ...params, branchId: branchId };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		if (attributeTypeId && attributeTypeId !== '') {
+			params = { ...params, attributeTypeId: attributeTypeId };
+		}
+		if (artifactTypeId && artifactTypeId !== '') {
+			params = { ...params, artifactTypeId: artifactTypeId };
+		}
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		return this.http.get<artifact[]>(
+			apiURL + '/orcs/branch/' + branchId + '/artifact/searchByFilter',
+			{
+				params: params,
+			}
+		);
+	}
+
+	public getPathToArtifact(
+		branchId: string,
+		artifactId: string,
+		viewId: string
+	): Observable<string[][]> {
+		let params: HttpParamsType = {};
+		if (branchId && branchId !== '') {
+			params = { ...params, branchId: branchId };
+		}
+		if (viewId && viewId !== '') {
+			params = { ...params, viewId: viewId };
+		}
+		return this.http.get<string[][]>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/artifact/' +
+				artifactId +
+				'/getPathToArtifact',
+			{
+				params: params,
+			}
 		);
 	}
 }

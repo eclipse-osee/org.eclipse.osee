@@ -14,6 +14,7 @@ import {
 	Component,
 	Input,
 	OnChanges,
+	SimpleChanges,
 	computed,
 	forwardRef,
 	inject,
@@ -31,6 +32,8 @@ import {
 	fetchIconFromDictionary,
 	artifact,
 } from '../../../types/artifact-explorer.data';
+import { BehaviorSubject } from 'rxjs';
+import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',
@@ -101,4 +104,24 @@ export class ArtifactHierarchyRelationSideComponent {
 	trackArtifacts(index: number, item: artifact) {
 		return item.id;
 	}
+
+	@Input() set paths(value: string[][]) {
+		if (value) {
+			if (value.length > 0) {
+				value.forEach((path) => {
+					this.artifacts().find((art) => {
+						if (art.id == path[path.length - 1]) {
+							this.open();
+							if (path.length > 1) {
+								this.addArtifactsOpen(art.id);
+							}
+						}
+					});
+				});
+				// Update the paths array that we are passing down the hierarchy
+				this._paths.next([...value]);
+			}
+		}
+	}
+	protected _paths = new BehaviorSubject<string[][]>([[]]);
 }

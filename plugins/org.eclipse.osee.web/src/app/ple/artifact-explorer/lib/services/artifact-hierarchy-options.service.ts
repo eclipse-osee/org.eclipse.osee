@@ -11,8 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, filter, merge, of, switchMap } from 'rxjs';
 import { artifactHierarchyOptions } from '../types/artifact-explorer.data';
+import { ArtifactHierarchyPathService } from './artifact-hierarchy-path.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -20,10 +21,16 @@ import { artifactHierarchyOptions } from '../types/artifact-explorer.data';
 export class ArtifactHierarchyOptionsService {
 	private optionsSubject: BehaviorSubject<artifactHierarchyOptions> =
 		new BehaviorSubject<artifactHierarchyOptions>({ showRelations: false });
-	public options$: Observable<artifactHierarchyOptions> =
-		this.optionsSubject.asObservable();
 
 	updateOptions(newOptions: artifactHierarchyOptions) {
 		this.optionsSubject.next(newOptions);
 	}
+
+	constructor(private pathService: ArtifactHierarchyPathService) {}
+	private paths = this.pathService.getPaths().pipe(
+		filter((p) => p.length > 0),
+		switchMap(() => of({ showRelations: true }))
+	);
+
+	public options$ = merge(this.optionsSubject, this.paths);
 }

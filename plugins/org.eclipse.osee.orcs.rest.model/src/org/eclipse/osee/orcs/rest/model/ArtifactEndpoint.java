@@ -224,8 +224,8 @@ public interface ArtifactEndpoint {
       @QueryParam("artifactTypeId") ArtifactTypeToken artifactTypeId, @QueryParam("viewId") ArtifactId viewId);
 
    @GET
-   @Path("{artifact}/getPathToArtifact")
+   @Path("{artifactId}/getPathToArtifact")
    @Produces(MediaType.APPLICATION_JSON)
    List<List<ArtifactId>> getPathToArtifact(@PathParam("branch") BranchId branch,
-      @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId);
+      @PathParam("artifactId") ArtifactId artifactId, @QueryParam("viewId") ArtifactId viewId);
 }

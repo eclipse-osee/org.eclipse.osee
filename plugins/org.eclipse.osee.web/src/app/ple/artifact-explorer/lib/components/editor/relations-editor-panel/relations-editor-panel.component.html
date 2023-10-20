@@ -10,17 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-expansion-panel class="[&>div>div]:tw-px-0">
+<mat-expansion-panel
+	class="[&>div>div]:tw-px-0"
+	hideToggle>
 	<mat-expansion-panel-header
 		(click)="togglePanel()"
-		[ngClass]="panelOpen.value ? 'tw-bg-primary' : ''"
-		><mat-panel-title
-			class="tw-font-bold"
-			[ngClass]="panelOpen.value ? 'tw-text-background' : ''">
-			Relations Editor
-		</mat-panel-title></mat-expansion-panel-header
-	>
-	<div class="tw-mt-4">
+		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
+		class="tw-px-0 hover:tw-bg-background-hover">
+		<mat-panel-title class="tw-flex">
+			<div class="tw-px-4">
+				<mat-icon>
+					{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
+				</mat-icon>
+			</div>
+			<div class="tw-font-bold">Relations Editor</div>
+		</mat-panel-title>
+	</mat-expansion-panel-header>
+
+	<div class="tw-pt-4">
 		<ng-container *ngIf="artWithRelation$ | async as art">
 			<ng-container
 				*ngFor="let relation of art.relations; trackBy: relationOpen">
@@ -53,18 +60,20 @@
 							</mat-icon>
 						</button>
 						<!-- relation icon -->
-						<mat-icon
-							class="tw-ml-4"
-							[ngClass]="[
-								relation.relationSides[0].artifacts.length >
-									0 ||
-								relation.relationSides[1].artifacts.length > 0
-									? 'tw-text-accent-700'
-									: 'tw-text-foreground-disabled'
-							]"
-							>swap_horiz</mat-icon
-						>
-						<div class="tw-ml-2">
+						<div class="tw-pl-4">
+							<mat-icon
+								[ngClass]="[
+									relation.relationSides[0].artifacts.length >
+										0 ||
+									relation.relationSides[1].artifacts.length >
+										0
+										? 'tw-text-accent-700'
+										: 'tw-text-foreground-disabled'
+								]"
+								>swap_horiz</mat-icon
+							>
+						</div>
+						<div class="tw-pl-2">
 							{{ relation.relationTypeToken.name }}
 						</div>
 					</div>
@@ -80,7 +89,7 @@
 									relation.relationTypeToken.id
 								)
 							"
-							class="tw-ml-8"
+							class="tw-pl-8"
 							[ngClass]="
 								dropdownsOpen.value.includes(
 									relation.relationTypeToken.id
@@ -114,22 +123,23 @@
 										chevron_right
 									</mat-icon>
 								</button>
-								<mat-icon
-									class="tw-ml-4"
-									[ngClass]="[
-										side.artifacts.length > 0
-											? 'tw-text-accent-700'
-											: 'tw-text-foreground-disabled'
-									]"
-									>swap_horiz</mat-icon
-								>
-								<div class="tw-ml-2">
+								<div class="tw-pl-4">
+									<mat-icon
+										[ngClass]="[
+											side.artifacts.length > 0
+												? 'tw-text-accent-700'
+												: 'tw-text-foreground-disabled'
+										]"
+										>swap_horiz</mat-icon
+									>
+								</div>
+								<div class="tw-pl-2">
 									{{ side.name }}
 								</div>
 							</div>
 							<div
 								*ngIf="dropdownsOpen.value.includes(side.name)"
-								class="tw-ml-14"
+								class="tw-pl-14"
 								[ngClass]="
 									dropdownsOpen.value.includes(side.name)
 										? 'tw-h-auto'
@@ -148,7 +158,7 @@
 														fetchIcon(art.typeName)
 													}}
 												</mat-icon>
-												<div class="tw-ml-2">
+												<div class="tw-pl-2">
 													{{ art.name }}
 												</div>
 												<button

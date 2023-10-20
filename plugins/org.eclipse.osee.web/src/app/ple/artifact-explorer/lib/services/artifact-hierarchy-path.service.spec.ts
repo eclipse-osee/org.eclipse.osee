@@ -12,17 +12,17 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 
-import { ArtifactHierarchyOptionsService } from './artifact-hierarchy-options.service';
+import { ArtifactHierarchyPathService } from './artifact-hierarchy-path.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('ArtifactHierarchyOptionsService', () => {
-	let service: ArtifactHierarchyOptionsService;
+describe('ArtifactHierarchyPathService', () => {
+	let service: ArtifactHierarchyPathService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [HttpClientTestingModule],
 		});
-		service = TestBed.inject(ArtifactHierarchyOptionsService);
+		service = TestBed.inject(ArtifactHierarchyPathService);
 	});
 
 	it('should be created', () => {

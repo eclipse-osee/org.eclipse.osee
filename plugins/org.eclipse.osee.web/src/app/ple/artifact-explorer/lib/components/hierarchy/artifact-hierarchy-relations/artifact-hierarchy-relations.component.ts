@@ -12,13 +12,12 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 import { UiService } from '@osee/shared/services';
 import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-relation-side/artifact-hierarchy-relation-side.component';
-import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
 import { relation, relationSide } from '../../../types/artifact-explorer.data';
 
@@ -37,12 +36,12 @@ import { relation, relationSide } from '../../../types/artifact-explorer.data';
 })
 export class ArtifactHierarchyRelationsComponent {
 	@Input() relation$!: Observable<relation[]>;
+	@Input() paths!: string[][];
 
 	branchId$ = this.uiService.id;
 
 	constructor(
 		private optionsService: ArtifactHierarchyOptionsService,
-		private tabService: ArtifactExplorerTabService,
 		private uiService: UiService
 	) {}
 

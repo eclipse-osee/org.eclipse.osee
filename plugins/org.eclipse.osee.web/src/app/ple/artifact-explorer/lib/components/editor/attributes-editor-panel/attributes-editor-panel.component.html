@@ -10,20 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-expansion-panel class="[&>div>div]:tw-px-0">
+<mat-expansion-panel
+	[expanded]="panelOpen.value"
+	class="[&>div>div]:tw-px-0"
+	hideToggle>
 	<mat-expansion-panel-header
 		(click)="togglePanel()"
-		[ngClass]="panelOpen.value ? 'tw-bg-primary' : ''"
-		><mat-panel-title
-			class="tw-font-bold"
-			[ngClass]="panelOpen.value ? 'tw-text-background' : ''">
-			Attributes Editor
-		</mat-panel-title></mat-expansion-panel-header
-	>
+		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
+		class="tw-px-0 hover:tw-bg-background-hover">
+		<mat-panel-title class="tw-flex">
+			<div class="tw-px-4">
+				<mat-icon>
+					{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
+				</mat-icon>
+			</div>
+			<div class="tw-font-bold">Attributes Editor</div>
+		</mat-panel-title>
+	</mat-expansion-panel-header>
 
-	<div class="tw-mt-4">
+	<div class="tw-pt-4">
 		<div>
-			<div class="tw-mb-4 tw-ml-4 tw-flex">
+			<div class="tw-flex tw-pb-4 tw-pl-4">
 				<button
 					class="tw-mr-auto"
 					(click)="saveChanges()">
@@ -39,10 +46,10 @@
 			<ng-container *ngFor="let attribute of tab.artifact.attributes">
 				<div class="tw-flex tw-justify-between">
 					<div
-						class="tw-ml-4 tw-flex tw-w-1/6 tw-items-center tw-font-bold">
+						class="tw-flex tw-w-1/6 tw-items-center tw-pl-4 tw-font-bold">
 						{{ attribute.name }}:
 					</div>
-					<div class="tw-ml-4 tw-w-5/6">
+					<div class="tw-w-5/6 tw-pl-4">
 						<ng-container [ngSwitch]="attribute.baseType">
 							<ng-container *ngSwitchCase="'ENUM'">
 								<osee-attribute-enums-dropdown
