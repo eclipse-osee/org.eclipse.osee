@@ -66,8 +66,6 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       if (hasAlias(OseeDb.RELATION_TABLE)) {
          if (((List) handlers).get(0).getClass().equals(RelationSqlHandler2.class)) {
             write(", %s.rel_order", getLastAlias(OseeDb.RELATION_TABLE2));
-         } else {
-            write(", %s.rel_link_id", getLastAlias(OseeDb.RELATION_TABLE));
          }
       }
       write(", %s.transaction_id desc", txAlias);
