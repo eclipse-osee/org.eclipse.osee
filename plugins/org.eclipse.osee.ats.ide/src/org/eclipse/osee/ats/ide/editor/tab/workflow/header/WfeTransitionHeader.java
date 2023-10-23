@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.cr.sibling.base.XSiblingActionBar;
+import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionDataUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionResultsUi;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToOperation;
@@ -115,7 +116,7 @@ public class WfeTransitionHeader extends Composite {
 
       });
       transitionLabelLink.setFont(FontManager.getDefaultLabelFont());
-      transitionLabelLink.setToolTipText("Select to transition workflow to the default or selected state");
+      transitionLabelLink.setToolTipText("Select to transition workflow to the default (shown) state");
 
       Label transitionToLabel = editor.getToolkit().createLabel(this, "To");
       transitionToLabel.setLayoutData(new GridData());
@@ -123,6 +124,7 @@ public class WfeTransitionHeader extends Composite {
       String toStateName = getToState() == null ? "<not set>" : getToState().getName();
       stateLabelLink = editor.getToolkit().createHyperlink(this, toStateName, SWT.NONE);
       stateLabelLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      stateLabelLink.setToolTipText("Select to Transition to another state");
       stateLabelLink.addHyperlinkListener(new HyperlinkAdapter() {
          @Override
          public void linkActivated(HyperlinkEvent e) {
@@ -181,6 +183,13 @@ public class WfeTransitionHeader extends Composite {
             }
          }
          if (createSiblingWorkflowEnabled) {
+            for (IAtsWorkItemHook hook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
+               if (hook instanceof IAtsWorkItemHookIde && ((IAtsWorkItemHookIde) hook).createSiblingWidget(workItem,
+                  this, editor)) {
+                  return;
+               }
+            }
+
             createSiblingLink = editor.getToolkit().createHyperlink(this, "Create Sibling Workflow(s)", SWT.NONE);
             createSiblingLink.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             createSiblingLink.setToolTipText("Create new Team Workflows off same Action");

@@ -73,11 +73,16 @@ public interface IAtsWorkItemHook {
       return "";
    }
 
+   /**
+    * @return false if should not, else return true
+    */
    default public boolean createSiblingWorkflowEnabled(IAtsWorkItem workItem) {
       return true;
    }
 
-   default public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, XResultData rd) {
+   default public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType,
+      XResultData rd) {
       return rd;
    }
+
 }

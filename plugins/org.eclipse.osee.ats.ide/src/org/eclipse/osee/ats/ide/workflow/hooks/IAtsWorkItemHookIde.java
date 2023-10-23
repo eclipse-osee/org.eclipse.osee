@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -64,4 +65,12 @@ public interface IAtsWorkItemHookIde extends IAtsWorkItemHook {
    default public Collection<WfeAbstractTab> createTabs(WorkflowEditor wfeEditor, IAtsWorkItem workItem) {
       return Collections.emptyList();
    }
+
+   /**
+    * @return true if this hook created the sibling widget
+    */
+   default public boolean createSiblingWidget(IAtsWorkItem workItem, Composite composite, WorkflowEditor editor) {
+      return false;
+   }
+
 }

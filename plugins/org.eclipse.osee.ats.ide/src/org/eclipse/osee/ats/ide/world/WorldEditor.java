@@ -61,6 +61,10 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       // do nothing
    }
 
+   public static void open(String name, Collection<IAtsWorkItem> workItems) {
+      WorldEditor.open(new WorldEditorSimpleProvider(workItems, name));
+   }
+
    public static void open(final IWorldEditorProvider provider) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
