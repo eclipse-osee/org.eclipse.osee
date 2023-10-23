@@ -82,6 +82,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	}
 
 	workflowFilter = new FormControl('');
+	changeExportFilter = new FormControl('');
 
 	endPointUrl = this.reportService.diffEndpoint.pipe(
 		take(1),
@@ -96,11 +97,18 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 
 	filterValues = {
 		workflowID: '',
+		webExported: '',
 	};
 
 	ngOnInit() {
 		this.workflowFilter.valueChanges.subscribe((workflowID) => {
 			if (workflowID != null) this.filterValues.workflowID = workflowID;
+			this.dataSource.filter = JSON.stringify(this.filterValues);
+		});
+
+		this.changeExportFilter.valueChanges.subscribe((webExported) => {
+			if (webExported != null)
+				this.filterValues.webExported = webExported;
 			this.dataSource.filter = JSON.stringify(this.filterValues);
 		});
 	}
@@ -111,6 +119,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		'build',
 		'state',
 		'title',
+		'change_export',
 		'actions',
 	];
 
@@ -152,7 +161,10 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	filterFunction(data: workflow, filter: string): boolean {
 		let searchTerms = JSON.parse(filter);
 		return (
-			data.workflowID.toLowerCase().indexOf(searchTerms.workflowID) !== -1
+			data.workflowID.toLowerCase().indexOf(searchTerms.workflowID) !==
+				-1 &&
+			data.webExported.toLowerCase().indexOf(searchTerms.webExported) !==
+				-1
 		);
 	}
 

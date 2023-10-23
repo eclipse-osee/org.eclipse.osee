@@ -49,6 +49,17 @@
 		>filter_list</mat-icon
 	></mat-form-field
 >
+<mat-form-field
+	subscriptSizing="dynamic"
+	class="tw-py-4">
+	<input
+		matInput
+		[formControl]="changeExportFilter"
+		placeholder="Filter Changes Exported" /><mat-icon matPrefix
+		>filter_list</mat-icon
+	></mat-form-field
+>
+
 <table
 	mat-table
 	class="report-table mat-elevation-z8"
@@ -74,9 +85,9 @@
 				<ng-container *ngIf="artifact.changeReport">
 					<br />
 					<button
-						mat-raised-button
+						mat-button
 						color="primary"
-						class="tw-mt-4"
+						class="tw-underline"
 						(click)="
 							getChangeReport(_link + '/' + artifact.changeReport)
 						">
@@ -85,9 +96,9 @@
 				</ng-container>
 				<ng-container *ngIf="artifact.icdDiff">
 					<br /><button
-						mat-raised-button
+						mat-button
 						color="primary"
-						class="tw-mt-4"
+						class="tw-underline"
 						(click)="
 							getChangeReport(_link + '/' + artifact.icdDiff)
 						">
@@ -159,6 +170,22 @@
 			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
 			*matCellDef="let artifact">
 			{{ artifact.title }}
+		</td>
+	</ng-container>
+
+	<ng-container matColumnDef="change_export">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			mat-sort-header
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			Changes Exported
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			*matCellDef="let artifact">
+			{{ artifact.webExported }}
 		</td>
 	</ng-container>
 
