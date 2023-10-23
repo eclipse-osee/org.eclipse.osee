@@ -15,6 +15,8 @@ package org.eclipse.osee.ats.ide.world;
 
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -30,6 +32,10 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
    private final String name;
    private Collection<? extends ArtifactId> artifacts;
    private final Artifact expandToArtifact;
+
+   public WorldEditorSimpleProvider(Collection<IAtsWorkItem> collection, String name) {
+      this(name, AtsObjects.getArtifacts(collection), null, TableLoadOption.None);
+   }
 
    public WorldEditorSimpleProvider(String name, Collection<? extends ArtifactId> collection) {
       this(name, collection, null, TableLoadOption.None);

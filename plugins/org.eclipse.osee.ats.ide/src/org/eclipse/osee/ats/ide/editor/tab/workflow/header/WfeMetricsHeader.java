@@ -89,7 +89,7 @@ public class WfeMetricsHeader extends Composite {
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = RemainingHoursColumn.isRemainingHoursValid(workItem);
             if (result.isFalse()) {
-               remainHoursLabel.setText("Error" + result.getText());
+               remainHoursLabel.setText(result.getText());
             } else {
                remainHoursLabel.setText(
                   String.valueOf(AtsUtil.doubleToI18nString(RemainingHoursColumn.getRemainingHours(workItem))));

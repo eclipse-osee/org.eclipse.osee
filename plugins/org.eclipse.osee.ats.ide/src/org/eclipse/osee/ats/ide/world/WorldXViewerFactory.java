@@ -205,6 +205,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
           * These are computed columns where data is in multiple places and must be retrieved/loaded to be displayed
           */
          getColumnServiceColumn(AtsColumnTokens.AtsIdColumn),
+         getColumnServiceColumn(AtsColumnTokens.CrIdColumn),
          getColumnServiceColumn(AtsColumnTokens.DerivedFromAtsIdColumn),
          getColumnServiceColumn(AtsColumnTokens.DerivedFromTeamDefColumn),
          getColumnServiceColumn(AtsColumnTokens.FeatureImpactReferenceColumn),
@@ -212,6 +213,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getColumnServiceColumn(AtsColumnTokens.InsertionActivityColumn),
          getColumnServiceColumn(AtsColumnTokens.InsertionColumn),
          getColumnServiceColumn(AtsColumnTokens.ParentTitleColumn),
+         getColumnServiceColumn(AtsColumnTokens.PrIdColumn),
          getColumnServiceColumn(AtsColumnTokens.TaskPointsColumn),
          getColumnServiceColumn(AtsColumnTokens.TaskRiskFactorsColumn),
 
