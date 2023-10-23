@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<form>
+<form class="tw-flex tw-flex-col">
+	<mat-checkbox
+		[checked]="activeOnly()"
+		(change)="setActiveOnly($event)"
+		>Active Only</mat-checkbox
+	>
 	<mat-form-field
 		class="[&>.mat-mdc-form-field-subscript-wrapper]:tw-hidden"
 		subscriptSizing="dynamic"

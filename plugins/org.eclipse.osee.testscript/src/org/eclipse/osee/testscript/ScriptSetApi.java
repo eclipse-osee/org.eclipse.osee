@@ -38,11 +38,10 @@ public interface ScriptSetApi {
 
    Collection<ScriptSetToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize);
 
-   Collection<ScriptSetToken> getAll(BranchId branch, long pageNum, long pageSize,
-      AttributeTypeId orderByAttribute);
+   Collection<ScriptSetToken> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    Collection<ScriptSetToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
-      AttributeTypeId orderByAttribute);
+      AttributeTypeId orderByAttribute, boolean activeOnly);
 
    Collection<ScriptSetToken> getAllByFilter(BranchId branch, String filter);
 
@@ -62,7 +61,7 @@ public interface ScriptSetApi {
       AttributeTypeId orderByAttribute);
 
    Collection<ScriptSetToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
-      long pageSize, AttributeTypeId orderByAttribute);
+      long pageSize, AttributeTypeId orderByAttribute, boolean activeOnly);
 
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter);
 }

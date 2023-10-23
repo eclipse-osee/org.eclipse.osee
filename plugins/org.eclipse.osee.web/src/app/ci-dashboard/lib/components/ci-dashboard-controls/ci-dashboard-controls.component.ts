@@ -26,6 +26,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class CiDashboardControlsComponent implements OnInit {
 	@Input() branchPicker: boolean = true;
+	@Input() ciSetSelector: boolean = true;
 
 	constructor(
 		private route: ActivatedRoute,

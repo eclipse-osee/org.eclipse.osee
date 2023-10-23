@@ -26,10 +26,6 @@ export class TmoService {
 
 	private _filterValue = new BehaviorSubject<string>('');
 
-	_sets = this.branchId.pipe(
-		switchMap((brid) => this.tmoHttpService.getSetList(brid))
-	);
-
 	scriptDefs = combineLatest([this.branchId, this.setId]).pipe(
 		switchMap(([brid, pid]) =>
 			this.tmoHttpService.getScriptDefList(brid, pid)
@@ -79,9 +75,5 @@ export class TmoService {
 
 	set BranchType(branchType: 'working' | 'baseline' | '') {
 		this.ciDashboardUiService.BranchType = branchType;
-	}
-
-	get sets() {
-		return this._sets;
 	}
 }

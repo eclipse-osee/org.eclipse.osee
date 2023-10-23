@@ -12,25 +12,17 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SetReference } from '../types/tmo';
 import { DefReference } from '../types/tmo';
 import { ResultReference } from '../types/tmo';
 import { TestCaseReference } from '../types/tmo';
 import { TestPointReference } from '../types/tmo';
 import { apiURL } from '@osee/environments';
-import { CIStats } from '../types/ci-stats';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TmoHttpService {
 	constructor(private http: HttpClient) {}
-
-	getSetList(branchId: string | number) {
-		return this.http.get<SetReference[]>(
-			`${apiURL}/script/tmo/${branchId}/set`
-		);
-	}
 
 	getScriptDefList(branchId: string | number, setId: string | number) {
 		return this.http.get<DefReference[]>(
