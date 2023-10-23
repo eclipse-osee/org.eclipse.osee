@@ -35,7 +35,8 @@ public interface ScriptSetEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Collection<ScriptSetToken> getAllScriptSets(@QueryParam("filter") String filter,
       @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
-      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType,
+      @QueryParam("activeOnly") boolean activeOnly);
 
    @GET()
    @Path("count")

@@ -10,14 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { of } from 'rxjs';
+import { setsMock } from '../testing/tmo.response.mock';
+import { CiSetsHttpService } from 'src/app/ci-dashboard/lib/services/ci-sets-http.service';
 
-@Component({
-	selector: 'osee-ci-dashboard-controls',
-	template: '<p>Dummy</p>',
-	standalone: true,
-})
-export class CiDashboardControlsMockComponent {
-	@Input() branchPicker: boolean = true;
-	@Input() ciSetSelector: boolean = true;
-}
+export const ciSetsHttpServiceMock: Partial<CiSetsHttpService> = {
+	getCiSets(branchId, activeOnly) {
+		return of(setsMock);
+	},
+};

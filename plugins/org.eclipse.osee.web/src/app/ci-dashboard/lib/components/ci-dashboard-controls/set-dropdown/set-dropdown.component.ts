@@ -12,11 +12,8 @@
  **********************************************************************/
 import { Component, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import {
@@ -25,17 +22,17 @@ import {
 	from,
 	of,
 	switchMap,
-	take,
-	tap,
 	combineLatest,
 	scan,
 } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { UiService, HeaderService } from '@osee/shared/services';
-import { TmoService } from '../../../services/tmo.service';
 import type { SetReference } from '../../../types/tmo';
+import {
+	MatCheckboxChange,
+	MatCheckboxModule,
+} from '@angular/material/checkbox';
+import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
+import { CiSetsService } from '../../../services/ci-sets.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-set-dropdown',
@@ -45,30 +42,23 @@ import type { SetReference } from '../../../types/tmo';
 		CommonModule,
 		FormsModule,
 		MatAutocompleteModule,
-		MatButtonModule,
-		MatDialogModule,
+		MatCheckboxModule,
 		MatFormFieldModule,
-		MatIconModule,
 		MatInputModule,
-		MatMenuModule,
-		MatTableModule,
-		MatTooltipModule,
 	],
 })
 export class SetDropdownComponent implements OnChanges {
 	@Input() setId: string = '';
 
 	constructor(
-		private tmoService: TmoService,
-		private headerService: HeaderService,
-		private ui: UiService,
-		public dialog: MatDialog
+		private ciSetsService: CiSetsService,
+		private ui: CiDashboardUiService
 	) {}
 
 	filterText = new BehaviorSubject<string>('');
-	noneOption = { name: 'None' } as SetReference;
+	noneOption = { id: '-1', name: 'None' } as SetReference;
 
-	sets = combineLatest([this.tmoService.sets, this.filterText]).pipe(
+	sets = combineLatest([this.ciSetsService.ciSets, this.filterText]).pipe(
 		switchMap(([setRefs, filterText]) =>
 			from(setRefs).pipe(
 				filter((a) =>
@@ -82,15 +72,21 @@ export class SetDropdownComponent implements OnChanges {
 		)
 	);
 
-	selectedSet = combineLatest([this.sets, this.tmoService.setId]).pipe(
+	activeOnly = toSignal(this.ciSetsService.activeOnly);
+
+	selectedSet = combineLatest([this.sets, this.ui.ciSetId]).pipe(
 		switchMap(([sets, setId]) => {
 			const set = sets.find((v) => v.name === setId);
 			return set ? of(set) : of(this.noneOption);
 		})
 	);
 
+	setActiveOnly(event: MatCheckboxChange) {
+		this.ciSetsService.ActiveOnly = event.checked;
+	}
+
 	selectSet(set: SetReference) {
-		this.tmoService.SetId = set.id;
+		this.ui.CiSetId = set.id;
 	}
 
 	applyFilter(text: Event) {
@@ -99,14 +95,6 @@ export class SetDropdownComponent implements OnChanges {
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		this.tmoService.SetId = this.setId;
-	}
-
-	get branchId() {
-		return this.tmoService.branchId;
-	}
-
-	set BranchId(id: string) {
-		this.tmoService.BranchId = id;
+		this.ui.CiSetId = this.setId;
 	}
 }

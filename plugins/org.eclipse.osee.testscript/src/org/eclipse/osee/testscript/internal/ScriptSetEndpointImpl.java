@@ -35,12 +35,13 @@ public class ScriptSetEndpointImpl implements ScriptSetEndpoint {
 
    @Override
    public Collection<ScriptSetToken> getAllScriptSets(String filter, ArtifactId viewId, long pageNum, long pageSize,
-      AttributeTypeToken orderByAttributeType) {
+      AttributeTypeToken orderByAttributeType, boolean activeOnly) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (Strings.isValid(filter)) {
-         return scriptSetApi.getAllByFilter(branch, viewId, filter, pageNum, pageSize, orderByAttributeType);
+         return scriptSetApi.getAllByFilter(branch, viewId, filter, pageNum, pageSize, orderByAttributeType,
+            activeOnly);
       }
-      return scriptSetApi.getAll(branch, viewId, pageNum, pageSize, orderByAttributeType);
+      return scriptSetApi.getAll(branch, viewId, pageNum, pageSize, orderByAttributeType, activeOnly);
    }
 
    @Override

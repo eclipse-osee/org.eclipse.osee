@@ -21,10 +21,6 @@ import {
 } from '../testing/tmo.response.mock';
 
 export const tmoHttpServiceMock: Partial<TmoHttpService> = {
-	getSetList() {
-		return of(setsMock);
-	},
-
 	getScriptDefList() {
 		return of(defReferenceMock);
 	},

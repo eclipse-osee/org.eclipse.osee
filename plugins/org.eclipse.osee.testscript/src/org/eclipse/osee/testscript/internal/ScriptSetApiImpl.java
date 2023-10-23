@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -67,7 +68,7 @@ public class ScriptSetApiImpl implements ScriptSetApi {
 
    @Override
    public Collection<ScriptSetToken> getAll(BranchId branch, ArtifactId viewId, AttributeTypeId orderByAttribute) {
-      return this.getAll(branch, viewId, 0L, 0L, orderByAttribute);
+      return this.getAll(branch, viewId, 0L, 0L, orderByAttribute, false);
    }
 
    @Override
@@ -77,20 +78,24 @@ public class ScriptSetApiImpl implements ScriptSetApi {
 
    @Override
    public Collection<ScriptSetToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize) {
-      return this.getAll(branch, viewId, pageNum, pageSize, AttributeTypeId.SENTINEL);
+      return this.getAll(branch, viewId, pageNum, pageSize, AttributeTypeId.SENTINEL, false);
    }
 
    @Override
    public Collection<ScriptSetToken> getAll(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
-      return this.getAll(branch, ArtifactId.SENTINEL, pageNum, pageSize, orderByAttribute);
+      return this.getAll(branch, ArtifactId.SENTINEL, pageNum, pageSize, orderByAttribute, false);
    }
 
    @Override
    public Collection<ScriptSetToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
-      AttributeTypeId orderByAttribute) {
+      AttributeTypeId orderByAttribute, boolean activeOnly) {
       try {
-         return this.accessor.getAll(branch, pageNum, pageSize, orderByAttribute);
+         Collection<ScriptSetToken> sets = this.accessor.getAll(branch, pageNum, pageSize, orderByAttribute);
+         if (activeOnly) {
+            sets = sets.stream().filter(set -> set.getActive()).collect(Collectors.toList());
+         }
+         return sets;
       } catch (Exception ex) {
          return new LinkedList<ScriptSetToken>();
       }
@@ -107,15 +112,14 @@ public class ScriptSetApiImpl implements ScriptSetApi {
    }
 
    @Override
-   public Collection<ScriptSetToken> getAllByFilter(BranchId branch, String filter,
-      AttributeTypeId orderByAttribute) {
+   public Collection<ScriptSetToken> getAllByFilter(BranchId branch, String filter, AttributeTypeId orderByAttribute) {
       return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter, orderByAttribute);
    }
 
    @Override
    public Collection<ScriptSetToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
       AttributeTypeId orderByAttribute) {
-      return this.getAllByFilter(branch, viewId, filter, 0L, 0L, orderByAttribute);
+      return this.getAllByFilter(branch, viewId, filter, 0L, 0L, orderByAttribute, false);
    }
 
    @Override
@@ -126,20 +130,25 @@ public class ScriptSetApiImpl implements ScriptSetApi {
    @Override
    public Collection<ScriptSetToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
       long pageSize) {
-      return this.getAllByFilter(branch, viewId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
+      return this.getAllByFilter(branch, viewId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL, false);
    }
 
    @Override
    public Collection<ScriptSetToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
-      return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter, pageNum, pageSize, orderByAttribute);
+      return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter, pageNum, pageSize, orderByAttribute, false);
    }
 
    @Override
    public Collection<ScriptSetToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
-      long pageSize, AttributeTypeId orderByAttribute) {
+      long pageSize, AttributeTypeId orderByAttribute, boolean activeOnly) {
       try {
-         return this.accessor.getAllByFilter(branch, filter, attributes, pageNum, pageSize, orderByAttribute);
+         Collection<ScriptSetToken> sets =
+            this.accessor.getAllByFilter(branch, filter, attributes, pageNum, pageSize, orderByAttribute);
+         if (activeOnly) {
+            sets = sets.stream().filter(set -> set.getActive()).collect(Collectors.toList());
+         }
+         return sets;
       } catch (Exception ex) {
          return new LinkedList<ScriptSetToken>();
       }
