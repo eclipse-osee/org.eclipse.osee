@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -146,6 +149,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
       return writer.toHtml(query.andId(artifactId).getResults());
+   }
+
+   @Override
+   public ArtifactReadable getArtifactAsJson(@PathParam("artifactId") ArtifactId artifactId,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view) {
+      return orcsApi.getQueryFactory().fromBranch(branch, view).andId(artifactId).asArtifact();
    }
 
    @Override
@@ -411,52 +420,55 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    };
 
    @Override
-   public List<List<ArtifactId>> getPathToArtifact(BranchId branch, ArtifactId artifact,
-      ArtifactId viewId) {
-      
-      // List of artIds to return from the query 
+   public List<List<ArtifactId>> getPathToArtifact(BranchId branch, ArtifactId artifact, ArtifactId viewId) {
+
+      // List of artIds to return from the query
       List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
       List<ArtifactId> childArtIds = new ArrayList<>();
       Consumer<JdbcStatement> consumer = stmt -> {
-         pairings.add(new Pair<ArtifactId, ArtifactId>(ArtifactId.valueOf(stmt.getLong("b_art_id")), ArtifactId.valueOf(stmt.getLong("a_art_id"))));
+         pairings.add(new Pair<ArtifactId, ArtifactId>(ArtifactId.valueOf(stmt.getLong("b_art_id")),
+            ArtifactId.valueOf(stmt.getLong("a_art_id"))));
          childArtIds.add(ArtifactId.valueOf(stmt.getLong("b_art_id")));
       };
-      
-      String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() + " allRels as (select a_art_id, b_art_id, txs.gamma_id, rel_type "
-         + "from osee_txs txs, osee_relation rel " 
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " 
-         + "union " 
-         + "select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " 
-         + "from osee_txs txs, osee_relation_link rel " 
-         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " 
-         + "cte_query as ( " 
-         + "select b_art_id, a_art_id, rel_type " 
-         + "from allRels " 
-         + "where b_art_id = ? " 
-         + "union all " 
-         + "select e.b_art_id, e.a_art_id, e.rel_type " 
-         + "from allRels e " 
-         + "inner join cte_query c on c.a_art_id = e.b_art_id) "
-         + "select * " 
+
+      String query = "with " + orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse() //
+         + " allRels as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
+         + "from osee_txs txs, osee_relation rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " //
+         + "union " //
+         + "select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
+         + "from osee_txs txs, osee_relation_link rel " //
+         + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " //
+         + "cte_query as ( " //
+         + "select b_art_id, a_art_id, rel_type " //
+         + "from allRels " //
+         + "where b_art_id = ? " //
+         + "union all " //
+         + "select e.b_art_id, e.a_art_id, e.rel_type " //
+         + "from allRels e " //
+         + "inner join cte_query c on c.a_art_id = e.b_art_id) " //
+         + "select * " //
          + "from cte_query;";
-      
+
       // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
       orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifact);
-      
+
       // organize the mixed list of pairs into a list of lists of artIds (list of paths)
-      List<List<ArtifactId>> paths = new ArrayList<>();    
+      List<List<ArtifactId>> paths = new ArrayList<>();
       while (childArtIds.contains(artifact)) {
          paths.add(findPath(artifact, childArtIds, pairings));
          // increment while condition (i.e. one path has been found)
          childArtIds.remove(artifact);
          // remove the pair matching the first two artIds of the path that has just been found to avoid retracing the same path
-         pairings.remove(new Pair<ArtifactId, ArtifactId>(paths.get(paths.size() - 1).get(0), paths.get(paths.size() - 1).get(1)));
+         pairings.remove(
+            new Pair<ArtifactId, ArtifactId>(paths.get(paths.size() - 1).get(0), paths.get(paths.size() - 1).get(1)));
       }
-      
+
       return paths;
    }
-   
-   private static List<ArtifactId> findPath(ArtifactId artId, List<ArtifactId> childArtIds, List<Pair<ArtifactId, ArtifactId>> pairings) {
+
+   private static List<ArtifactId> findPath(ArtifactId artId, List<ArtifactId> childArtIds,
+      List<Pair<ArtifactId, ArtifactId>> pairings) {
       List<ArtifactId> path = new ArrayList<>();
       // loop through the pairs to find a pair that includes the input artId
       for (Pair<ArtifactId, ArtifactId> pair : pairings) {
@@ -465,7 +477,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             // if we are not at the end of the path (i.e. the current parent has a parent)
             if (childArtIds.contains(pair.getSecond())) {
                path.addAll(findPath(pair.getSecond(), childArtIds, pairings));
-            } 
+            }
             // we are at the top of the hierarchy
             else {
                path.add(pair.getSecond());

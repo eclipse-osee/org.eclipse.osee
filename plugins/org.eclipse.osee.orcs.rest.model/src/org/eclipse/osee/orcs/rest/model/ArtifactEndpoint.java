@@ -65,6 +65,13 @@ public interface ArtifactEndpoint {
    String getArtifactAsHtml(@PathParam("artifactId") ArtifactId artifactId);
 
    @GET
+   @Path("{artifactId}/json")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   ArtifactReadable getArtifactAsJson(@PathParam("artifactId") ArtifactId artifactId,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+
+   @GET
    @Path("{artifactId}/token")
    @Produces(MediaType.APPLICATION_JSON)
    ArtifactToken getArtifactToken(@PathParam("artifactId") ArtifactId artifactId);
