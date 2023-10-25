@@ -272,8 +272,6 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       for (ArtifactId aiId : teamDefArt.getRelatedIds(TeamActionableItem_ActionableItem)) {
          teamDef.getAis().add(aiId.getId());
       }
-      teamDef.setHasWorkPackages(
-         teamDefArt.getRelatedIds(AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage).size() > 0);
       return teamDef;
    }
 

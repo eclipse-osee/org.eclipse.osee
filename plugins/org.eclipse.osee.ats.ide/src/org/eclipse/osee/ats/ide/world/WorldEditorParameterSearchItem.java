@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.ide.search.widget.UserSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.UserTypeSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.VersionSearchWidget;
 import org.eclipse.osee.ats.ide.search.widget.WorkItemTypeSearchWidget;
-import org.eclipse.osee.ats.ide.search.widget.WorkPackageSearchWidget;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionLabelProvider;
 import org.eclipse.osee.ats.ide.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
@@ -92,7 +91,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private ProgramSearchWidget program;
    private InsertionSearchWidget insertion;
    private InsertionActivitySearchWidget insertionFeature;
-   private WorkPackageSearchWidget workPackage;
    private UserTypeSearchWidget userType;
    private ReviewTypeSearchWidget reviewType;
    private AttributeValuesSearchWidget attrValues;
@@ -264,9 +262,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
          getInsertionActivity().setup(widget);
          getInsertionActivity().setInsertionWidget(getInsertion());
-      } else if (widget.getLabel().equals(WorkPackageSearchWidget.WORK_PACKAGE)) {
-         getWorkPackage().setup(widget);
-         getWorkPackage().setInsertionActivityWidget(getInsertionActivity());
       } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
          getUser().setup(widget);
       } else if (widget.getLabel().equals(UserTypeSearchWidget.USER_TYPE)) {
@@ -309,8 +304,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       } else if (widget.getLabel().equals(InsertionSearchWidget.INSERTION)) {
          widget.setUseToStringSorter(true);
       } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
-         widget.setUseToStringSorter(true);
-      } else if (widget.getLabel().equals(WorkPackageSearchWidget.WORK_PACKAGE)) {
          widget.setUseToStringSorter(true);
       } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
          widget.setUseToStringSorter(true);
@@ -435,13 +428,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          insertionFeature = new InsertionActivitySearchWidget(this);
       }
       return insertionFeature;
-   }
-
-   public WorkPackageSearchWidget getWorkPackage() {
-      if (workPackage == null) {
-         workPackage = new WorkPackageSearchWidget(this);
-      }
-      return workPackage;
    }
 
    public UserTypeSearchWidget getUserType() {

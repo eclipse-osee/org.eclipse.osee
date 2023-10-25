@@ -232,6 +232,11 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
+   public Collection<ArtifactToken> getArtifactsByAttrFast(AttributeTypeToken attrType, String value) {
+      return getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), attrType, value);
+   }
+
+   @Override
    public Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id) {
       return getArtifactsFromQuery(ATTR_QUERY, atsApi.getAtsBranch(), AtsAttributeTypes.LegacyPcrId, id);
    }

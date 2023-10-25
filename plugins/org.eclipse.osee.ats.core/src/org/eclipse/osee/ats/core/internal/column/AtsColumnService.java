@@ -436,7 +436,6 @@ public class AtsColumnService implements IAtsColumnService {
          legacyIdToId.put("attribute.ats.Review Blocks", AtsAttributeTypes.ReviewBlocks.getName());
          legacyIdToId.put("attribute.ats.Review Formal Type", AtsAttributeTypes.ReviewFormalType.getName());
          legacyIdToId.put("attribute.ats.Start Date", AtsAttributeTypes.StartDate.getName());
-         legacyIdToId.put("attribute.ats.Workflow Definition", AtsAttributeTypes.WorkflowDefinition.getName());
          legacyIdToId.put("ats.column.TestProcedure", CoreArtifactTypes.TestProcedure.getName());
          legacyIdToId.put("ats.column.cancelledReasonDetails", AtsAttributeTypes.CancelledReasonDetails.getName());
          legacyIdToId.put("ats.column.cancelledReason", AtsAttributeTypes.CancelledReason.getName());

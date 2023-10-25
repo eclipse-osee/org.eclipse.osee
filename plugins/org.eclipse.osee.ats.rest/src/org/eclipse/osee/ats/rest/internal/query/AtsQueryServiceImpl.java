@@ -271,9 +271,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeId artifactType,
-      AttributeTypeId attributeType, String attributeValue, BranchId branch) {
-      throw new UnsupportedOperationException("Unsupported on the server");
+   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeToken artifactType,
+      AttributeTypeToken attributeType, String attributeValue, BranchId branch) {
+      return Collections.castAll(
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).and(attributeType,
+            Arrays.asList(attributeValue)).getResults().getList());
    }
 
    @Override

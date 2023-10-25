@@ -29,4 +29,5 @@ public class AtsUserGroups {
       UserGroupArtifactToken.valueOf(11200216L, "ATS Delete Workflow Admin");
    public static IUserGroupArtifactToken peerReviewCreationNotify =
       UserGroupArtifactToken.valueOf(8742803L, "Peer Review Creation");
+
 }

@@ -70,7 +70,9 @@ public class ArtifactIdHandlePromptChange implements IHandlePromptChange {
       ArtifactId value = ArtifactId.valueOf(valueStr);
       for (Artifact artifact : artifacts) {
          artifact.setSoleAttributeValue(attributeType, value);
-         artifact.persist(transaction);
+         if (transaction != null) {
+            artifact.persist(transaction);
+         }
       }
       if (persist) {
          TransactionToken tok = transaction.execute();

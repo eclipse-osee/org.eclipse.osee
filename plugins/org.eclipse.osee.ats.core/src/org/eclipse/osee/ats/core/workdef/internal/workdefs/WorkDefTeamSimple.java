@@ -40,8 +40,10 @@ public class WorkDefTeamSimple extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andHeader() //
-         .andLayout(getChangeTypeComposite()) //
-         .isShowWorkPackageHeader(true) //
+         .andLayout(getChangeTypeComposite(), //
+            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
+            ) //
+         ) //
          .isShowMetricsHeader(false); //
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //

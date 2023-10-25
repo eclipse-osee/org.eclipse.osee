@@ -99,7 +99,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
       changes.execute();
    }
 
-   private void createFacilitiesTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
+   private void createFacilitiesTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam,
+      IAtsConfigTxActionableItem topActionableItem) {
 
       // Facilities Team
       IAtsConfigTxTeamDef facilitiesTeam =
@@ -141,7 +142,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
 
    }
 
-   private void createToolsTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
+   private void createToolsTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam,
+      IAtsConfigTxActionableItem topActionableItem) {
 
       // Tools Team
       IAtsConfigTxTeamDef toolsTeamTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.Tools_Team) //
@@ -175,7 +177,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
 
    }
 
-   private void createSystemSafetyTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
+   private void createSystemSafetyTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam,
+      IAtsConfigTxActionableItem topActionableItem) {
 
       // System Safety Team
       topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.System_Safety_Team) //
@@ -190,7 +193,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
 
    }
 
-   private void createProcessTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
+   private void createProcessTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam,
+      IAtsConfigTxActionableItem topActionableItem) {
 
       // Process Team
       topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.Process_Team) //
@@ -216,7 +220,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andActionable(true);
    }
 
-   private void createSawPlTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
+   private void createSawPlTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam,
+      IAtsConfigTxActionableItem topActionableItem) {
 
       // SAW PL
       IAtsConfigTxTeamDef sawPlTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.SAW_PL_TeamDef) //
@@ -228,6 +233,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
             NextRelease.Next) //
          .andVersion(DemoArtifactToken.SAW_Hardening_Branch, ReleasedOption.UnReleased,
             DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next) //
+         .andWorkPackages("SAW PL Work Packages", "Top Work Package A", "Top Work Package B") //
          .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);
 
       // SAW PL Team Defs
@@ -262,7 +268,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Req) //
-         .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow);
+         .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow) //
+         .andWorkPackages("SAW PL Req Work Packages", "Work Package 1", "Work Package 2");
 
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_SW_Design_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
@@ -361,7 +368,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
 
    }
 
-   private void createSawTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
+   private void createSawTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam,
+      IAtsConfigTxActionableItem topActionableItem) {
 
       // SAW SW
       IAtsConfigTxTeamDef sawSwTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.SAW_SW) //
@@ -521,7 +529,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
 
    }
 
-   private void createCisTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam, IAtsConfigTxActionableItem topActionableItem) {
+   private void createCisTeamConfig(IAtsConfigTx cfgTx, IAtsConfigTxTeamDef topTeam,
+      IAtsConfigTxActionableItem topActionableItem) {
 
       // CIS SW
       IAtsConfigTxTeamDef cisSwTeam = topTeam.createChildTeamDef(topTeam.getTeamDef(), DemoArtifactToken.CIS_SW) //

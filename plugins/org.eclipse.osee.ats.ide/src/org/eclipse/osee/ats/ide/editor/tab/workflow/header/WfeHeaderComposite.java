@@ -78,7 +78,6 @@ public class WfeHeaderComposite extends Composite {
    private WfeTeamAndIdsHeader teamHeader;
    private WfeTargetedVersionHeader versionHeader;
    private WfeAssigneesHeader assigneeHeader;
-   private WfeWorkPackage workPackageHeader;
    private WfeActionableItemReviewHeader aiReviewHeader;
    private WfeBlockedWorkflowHeader blockedWfHeader;
    private WfeHoldWorkflowHeader holdWfHeader;
@@ -118,9 +117,6 @@ public class WfeHeaderComposite extends Composite {
       }
       if (metricsHeader != null) {
          metricsHeader.refresh();
-      }
-      if (workPackageHeader != null) {
-         workPackageHeader.refresh();
       }
       if (stateNotesHeader != null) {
          stateNotesHeader.refresh();
@@ -174,10 +170,6 @@ public class WfeHeaderComposite extends Composite {
             metricsHeader = new WfeMetricsHeader(this, editor.getToolkit(), workItem, editor, managedForm);
          }
 
-         int workPackageNumColumns = 2;
-         if (workItem.getWorkDefinition().getHeaderDef().isShowWorkPackageHeader()) {
-            createWorkPacakageHeader(this, editor.getToolkit(), workPackageNumColumns, editor);
-         }
          int numColumns = 4;
          createWorkDefHeader(this, editor.getToolkit(), workItem, numColumns);
 
@@ -271,19 +263,6 @@ public class WfeHeaderComposite extends Composite {
    public void createStateNotesHeader(Composite comp, IAtsWorkItem workItem, XFormToolkit toolkit, int horizontalSpan,
       String forStateName, WorkflowEditor editor) {
       stateNotesHeader = new WfeStateNotesHeader(comp, SWT.NONE, workItem, null, editor);
-   }
-
-   public void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, int horizontalSpan,
-      WorkflowEditor editor) {
-      boolean show = workItem.isTeamWorkflow() && ((IAtsTeamWorkflow) workItem).getTeamDefinition().hasWorkPackages();
-
-      if (show) {
-         Composite comp = toolkit.createContainer(parent, 6);
-         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         comp.setLayout(ALayout.getZeroMarginLayout(6, false));
-
-         workPackageHeader = new WfeWorkPackage(comp, SWT.NONE, (IAtsTeamWorkflow) workItem, editor);
-      }
    }
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {

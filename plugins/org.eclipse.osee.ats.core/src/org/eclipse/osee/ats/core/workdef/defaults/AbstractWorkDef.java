@@ -46,7 +46,6 @@ public abstract class AbstractWorkDef implements IAtsWorkDefinitionBuilder {
 
       workDefBld.andHeader() //
          .andLayout(getChangeTypeComposite()) //
-         .isShowWorkPackageHeader(false) //
          .isShowMetricsHeader(false); //
    }
 

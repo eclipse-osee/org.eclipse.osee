@@ -51,9 +51,9 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken, DemoArtifactTypes.DemoCodeTeamWorkflow);
 
       bld.andHeader() //
-         .andLayout(getChangeTypeComposite()) //
-         .isShowWorkPackageHeader(true) //
-         .isShowMetricsHeader(false); //
+         .andLayout(getChangeTypeComposite(), //
+            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
+            )).isShowMetricsHeader(false); //
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Cancelled) //

@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,8 +35,11 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -328,4 +333,41 @@ public class XTextFlatDam extends XFlatWidget<String> implements AttributeWidget
          }
       }
    }
+
+   @Override
+   protected Action getMultiLineAction() {
+      if (getAttributeType().isString()) {
+         return new MultiLineEdit();
+      }
+      return null;
+   }
+
+   private final class MultiLineEdit extends Action {
+      public MultiLineEdit() {
+         super();
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
+         setToolTipText("Multi-Line Edit");
+      }
+
+      @Override
+      public void run() {
+         AttributeTypeToken attrType = getAttributeType();
+         StringBuffer sb = new StringBuffer();
+         for (String value : getArtifact().getAttributesToStringList(attrType)) {
+            sb.append(value + "\n");
+         }
+         EntryDialog dialog = new EntryDialog("Enter Values", "Enter Values (one per line)");
+         dialog.setFillVertically(true);
+         dialog.setEntry(sb.toString());
+         if (dialog.open() == Window.OK) {
+            Collection<Object> objs = new ArrayList<>();
+            for (String line : dialog.getEntry().split("\n")) {
+               objs.add(line);
+            }
+            getArtifact().setAttributeFromValues(attrType, objs);
+            getArtifact().persist("Multi-Edit Values");
+         }
+      }
+   }
+
 }

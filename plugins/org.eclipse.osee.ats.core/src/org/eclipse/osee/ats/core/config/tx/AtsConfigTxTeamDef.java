@@ -33,16 +33,21 @@ import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
 import org.eclipse.osee.ats.api.query.NextRelease;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.AccessContextToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -50,6 +55,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTeamDef> implements IAtsConfigTxTeamDef {
 
    private final IAtsTeamDefinition teamDef;
+   private final ArtifactToken workPackageEnumArt = ArtifactToken.SENTINEL;
 
    public AtsConfigTxTeamDef(IAtsObject atsObject, AtsApi atsApi, IAtsChangeSet changes, IAtsConfigTx cfgTx) {
       super(atsObject, atsApi, changes, cfgTx);
@@ -80,7 +86,8 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
+   public IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, BranchToken branch,
+      NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
       IAtsConfigTxVersion version = cfgTx.createVersion(name, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return this;
@@ -99,7 +106,8 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
+   public IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released,
+      BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
       IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return this;
@@ -159,7 +167,8 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
    }
 
    @Override
-   public IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken versionTok, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
+   public IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken versionTok, ReleasedOption released,
+      BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions) {
       IAtsConfigTxVersion version = cfgTx.createVersion(versionTok, released, branch, nextRelease, teamDef);
       handleParallelVersions(version, parallelVersions);
       return version;
@@ -198,6 +207,22 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AtsIdPrefix, atsIdPrefix);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AtsIdSequenceName, seqName);
       changes.addAtsIdSequence(seqName, seqStart);
+      return this;
+   }
+
+   @Override
+   public IAtsConfigTxTeamDef andWorkPackages(String artName, String... workPackageNames) {
+      if (workPackageEnumArt.isInvalid()) {
+         Conditions.assertTrue(Strings.isValid(artName), "Invalid art name");
+         Conditions.assertTrue(workPackageNames.length > 0, "Work Package Names can not be empty");
+         ArtifactToken enumArt = changes.createArtifact(CoreArtifactTypes.OseeTypeEnum, artName);
+         changes.relate(teamDef, CoreRelationTypes.DefaultHierarchical_Child, enumArt);
+         changes.addTag(enumArt, AtsUtil.WORK_PKG_STATIC_ID);
+         for (String workPackage : workPackageNames) {
+            Conditions.assertTrue(Strings.isValid(artName), "Invalid package name");
+            changes.addAttribute(enumArt, CoreAttributeTypes.IdValue, workPackage);
+         }
+      }
       return this;
    }
 

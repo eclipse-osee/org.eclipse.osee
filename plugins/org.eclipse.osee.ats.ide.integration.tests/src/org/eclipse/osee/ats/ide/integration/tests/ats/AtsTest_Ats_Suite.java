@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.column.AtsTest_Column_Suit
 import org.eclipse.osee.ats.ide.integration.tests.ats.config.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.dialog.AtsTest_Dialog_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.editor.AtsTest_Editor_Suite;
-import org.eclipse.osee.ats.ide.integration.tests.ats.ev.AtsTest_EV_TestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.export.AtsTest_Export_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.health.AtsTest_Health_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.navigate.AtsTest_Navigate_Suite;
@@ -50,7 +49,6 @@ import org.junit.runners.Suite;
    AtsTest_Config_Suite.class,
    AtsTest_Dialog_Suite.class,
    AtsTest_Editor_Suite.class,
-   AtsTest_EV_TestSuite.class,
    AtsTest_Export_Suite.class,
    AtsTest_Health_Suite.class,
    AtsTest_Navigate_Suite.class,

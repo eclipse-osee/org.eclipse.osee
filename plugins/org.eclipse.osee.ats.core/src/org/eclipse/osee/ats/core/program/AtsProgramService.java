@@ -43,8 +43,6 @@ import org.eclipse.osee.ats.api.program.ProgramVersions;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -164,11 +162,6 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public IAtsWorkPackage getWorkPackage(Long workPackageId) {
-      return atsApi.getEarnedValueService().getWorkPackage(atsApi.getQueryService().getArtifact(workPackageId));
-   }
-
-   @Override
    public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
       ArtifactId wpArt = atsApi.getQueryService().getArtifact(workPackage.getId());
       Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(wpArt,
@@ -199,22 +192,6 @@ public class AtsProgramService implements IAtsProgramService {
          }
       }
       return null;
-   }
-
-   @Override
-   public void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems, AtsUser asUser) {
-      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Set Work Package", asUser);
-      for (IAtsWorkItem workItem : workItems) {
-         if (workPackage == null) {
-            changes.deleteSoleAttribute(workItem, AtsAttributeTypes.WorkPackageReference);
-         } else {
-            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference,
-               workPackage.getStoreObject());
-         }
-      }
-      if (!changes.isEmpty()) {
-         changes.execute();
-      }
    }
 
    @Override
@@ -469,7 +446,8 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes, IAtsWorkItem workItem) {
+   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes,
+      IAtsWorkItem workItem) {
       if (workTypes.contains(WorkType.All)) {
          throw new OseeArgumentException("Invalid option ALL for getWorkflow");
       }

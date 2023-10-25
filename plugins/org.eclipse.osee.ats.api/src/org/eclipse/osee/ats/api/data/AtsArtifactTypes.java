@@ -39,8 +39,8 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
-import org.eclipse.osee.framework.core.data.MaterialIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.MaterialIcon;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
@@ -123,7 +123,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(TeamUsesVersions)
       .zeroOrOne(TeamWorkflowArtifactType)
       .any(WorkType)
-      .zeroOrOne(WorkflowDefinition)
       .zeroOrOne(WorkflowDefinitionReference));
    ArtifactTypeToken Version = ats.add(ats.artifactType(70L, "Version", false, VERSION, AtsArtifact)
       .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
@@ -142,8 +141,14 @@ public interface AtsArtifactTypes {
       .zeroOrOne(SignalDbSystemId)
       .zeroOrOne(IsDcs)
       .zeroOrOne(LegacyBuildId));
+
    ArtifactTypeToken WorkDefinition = ats.add(ats.artifactType(62L, "Work Definition", false, WORKFLOW_DEFINITION, Artifact)
       .zeroOrOne(DslSheet));
+
+   /**
+    *  This will be removed/purged after all work packages are converted to AtsAttributeTypes.WorkPackage
+    *  (TW24503) and all attribute types and art type is purged
+    */
    ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, new MaterialIcon("cases"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
       .zeroOrOne(ActivityId)
@@ -221,7 +226,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(UnplannedWork)
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
       .zeroOrOne(WorkPackageReference)
-      .zeroOrOne(WorkflowDefinition)
       .zeroOrOne(WorkflowDefinitionReference)
       .zeroOrOne(WorkflowNotes));
 

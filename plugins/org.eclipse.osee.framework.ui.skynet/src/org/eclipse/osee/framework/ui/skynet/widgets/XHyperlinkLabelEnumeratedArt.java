@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -46,7 +47,7 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
 
    protected AttributeTypeToken attributeType;
    protected ArtifactTypeToken artifactType;
-   protected ArtifactToken enumeratedArt;
+   protected ArtifactToken enumeratedArt = null;
    protected List<String> checked = new ArrayList<>();
 
    public XHyperlinkLabelEnumeratedArt() {
@@ -66,10 +67,15 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
    public boolean handleSelection() {
       try {
          String title = "Select " + attributeType.getUnqualifiedName();
+         Collection<String> selectable = getSelectable();
+         if (selectable.isEmpty()) {
+            AWorkbench.popupf("No [%s] options configured for this workflow", label);
+            return false;
+         }
          if (artifactType.getMax(attributeType) != 1) {
             FilteredCheckboxTreeDialog<String> dialog = new FilteredCheckboxTreeDialog<String>(title, title,
                new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
-            dialog.setInput(getSelectable());
+            dialog.setInput(selectable);
             Collection<String> selectedValues = getCurrentSelected();
             if (!selectedValues.isEmpty()) {
                dialog.setInitialSelections(selectedValues);
@@ -82,7 +88,7 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
             }
          } else {
             FilteredListDialog<String> dialog = new FilteredListDialog<String>(title, title);
-            dialog.setInput(getSelectable());
+            dialog.setInput(selectable);
             if (dialog.open() == Window.OK) {
                if (dialog.getSelected() != null) {
                   checked.clear();
@@ -138,8 +144,9 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
    }
 
    public Collection<String> getSelectable() {
-      if (enumeratedArt != null) {
-         Artifact art = ArtifactQuery.getArtifactFromToken(enumeratedArt);
+      ArtifactToken enumArt = getEnumeratedArt();
+      if (enumArt != null && enumArt.isValid()) {
+         Artifact art = ArtifactQuery.getArtifactFromToken(enumArt);
          if (art != null) {
             return art.getAttributesToStringList(CoreAttributeTypes.IdValue);
          }

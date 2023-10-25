@@ -98,11 +98,11 @@ public class WorkDefinition extends AbstractWorkDefItem {
    }
 
    public HeaderDefinition getDefaultHeaderDef() {
-
       HeaderDefinition defaultHeaderDef = new HeaderDefinition(this);
       defaultHeaderDef.setShowMetricsHeader(true);
-      defaultHeaderDef.setShowWorkPackageHeader(true);
-
+      defaultHeaderDef.getLayoutItems().add( //
+         new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam") //
+      );
       return defaultHeaderDef;
    }
 

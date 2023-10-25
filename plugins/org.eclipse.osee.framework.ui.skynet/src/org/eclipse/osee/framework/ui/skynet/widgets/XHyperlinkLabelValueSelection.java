@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
@@ -28,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
@@ -61,6 +63,7 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
       } else {
          comp.setLayoutData(new GridData());
       }
+      comp.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
       if (toolkit != null) {
          toolkit.adapt(comp);
       }
@@ -199,6 +202,16 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
       }
       return Status.OK_STATUS;
+   }
+
+   @Override
+   public void adaptControls(FormToolkit toolkit) {
+      super.adaptControls(toolkit);
+      if (toolkit != null) {
+         if (Widgets.isAccessible(comp)) {
+            toolkit.adapt(comp);
+         }
+      }
    }
 
 }

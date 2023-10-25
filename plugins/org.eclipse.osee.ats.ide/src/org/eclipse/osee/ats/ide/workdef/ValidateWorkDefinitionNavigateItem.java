@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.jdk.core.result.Manipulations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -37,7 +38,7 @@ public class ValidateWorkDefinitionNavigateItem extends XNavigateItem {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData results = AtsApiService.get().getWorkDefinitionService().validateWorkDefinitions();
-      XResultDataUI.report(results, getName());
+      XResultDataUI.report(results, getName(), Manipulations.ALL, Manipulations.ERROR_WARNING_HEADER);
    }
 
    @Override

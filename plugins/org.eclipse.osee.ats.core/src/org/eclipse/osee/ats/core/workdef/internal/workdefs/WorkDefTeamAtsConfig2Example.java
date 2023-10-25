@@ -41,7 +41,6 @@ public class WorkDefTeamAtsConfig2Example extends AbstractWorkDef {
 
       bld.andHeader() //
          .andLayout(getChangeTypeComposite()) //
-         .isShowWorkPackageHeader(true) //
          .isShowMetricsHeader(false); //
 
       bld.andState(1, "Analyze", StateType.Working).isStartState() //

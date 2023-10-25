@@ -55,9 +55,7 @@ import org.eclipse.osee.ats.ide.config.version.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.ide.config.version.ParallelConfigurationView;
 import org.eclipse.osee.ats.ide.config.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.ide.config.wizard.CreateAtsConfiguration;
-import org.eclipse.osee.ats.ide.ev.OpenWorkPackageByIdAction;
 import org.eclipse.osee.ats.ide.ev.WorkPackageConfigReport;
-import org.eclipse.osee.ats.ide.ev.WorkPackageQBDReport;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.health.AtsHealthCheckNavigateItem;
 import org.eclipse.osee.ats.ide.health.OseeProductionTestsNavItem;
@@ -80,7 +78,6 @@ import org.eclipse.osee.ats.ide.world.search.AtsSearchGoalSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTaskSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
-import org.eclipse.osee.ats.ide.world.search.AtsSearchWorkPackageSearchItem;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.ide.world.search.MultipleIdSearchOperation;
 import org.eclipse.osee.ats.ide.world.search.MyFavoritesSearchItem;
@@ -581,14 +578,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       ElapsedTime time = new ElapsedTime("NVI - addUserItems", debug);
       try {
          if (AgileUtil.isEarnedValueUser(AtsApiService.get())) {
-
             items.add(new XNavigateItemFolder("Earned Value", AtsImage.REPORT, ATS_EARNED_VALUE, SUBCAT));
-
-            items.add(
-               new XNavigateItemAction(new OpenWorkPackageByIdAction(), AtsImage.WORK_PACKAGE, ATS_EARNED_VALUE));
             items.add(new WorkPackageConfigReport());
-            items.add(new WorkPackageQBDReport());
-            items.add(new SearchNavigateItem(new AtsSearchWorkPackageSearchItem(), ATS_EARNED_VALUE));
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

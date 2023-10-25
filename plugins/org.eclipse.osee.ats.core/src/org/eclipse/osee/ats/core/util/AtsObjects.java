@@ -173,8 +173,6 @@ public class AtsObjects {
          configObject = atsApi.getProgramService().getInsertionActivityById(artifact);
       } else if (artifact.isOfType(AtsArtifactTypes.Country)) {
          configObject = atsApi.getProgramService().getCountryById(artifact);
-      } else if (artifact.isOfType(AtsArtifactTypes.WorkPackage)) {
-         configObject = atsApi.getEarnedValueService().getWorkPackage(artifact);
       } else {
          throw new OseeArgumentException("Unexpected artifact type [%s]", artifact.getArtifactType());
       }
