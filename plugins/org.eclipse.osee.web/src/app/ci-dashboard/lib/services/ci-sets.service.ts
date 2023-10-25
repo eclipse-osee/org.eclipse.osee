@@ -11,15 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { CiSetsHttpService } from 'src/app/ci-dashboard/lib/services/ci-sets-http.service';
-import { CiDashboardUiService } from 'src/app/ci-dashboard/lib/services/ci-dashboard-ui.service';
+import { CiSetsHttpService } from './ci-sets-http.service';
+import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import {
 	BehaviorSubject,
 	combineLatest,
 	filter,
 	shareReplay,
 	switchMap,
-	take,
 } from 'rxjs';
 
 @Injectable({
@@ -31,7 +30,7 @@ export class CiSetsService {
 		private ui: CiDashboardUiService
 	) {}
 
-	private _activeOnly = new BehaviorSubject<boolean>(true);
+	private _activeOnly = new BehaviorSubject<boolean>(false);
 
 	private _ciSets = combineLatest([this._activeOnly, this.ui.branchId]).pipe(
 		filter(([_, branchId]) => branchId !== '' && branchId !== '-1'),
