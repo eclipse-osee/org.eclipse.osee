@@ -142,10 +142,11 @@ public class TeamsResource extends AbstractConfigResource {
             tx.relate(oseeAdmin, CoreRelationTypes.Users_User, teamLeader.getExactlyOne());
          }
 
-         List<String> attributes2 = artifact.getAttributes(AtsAttributeTypes.WorkflowDefinition.toString());
+         List<String> attributes2 = artifact.getAttributes(AtsAttributeTypes.WorkflowDefinitionReference.toString());
 
          if ((attributes2 != null) && (attributes2.size() > 0)) {
-            tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.WorkflowDefinition, attributes2.get(0));
+            tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.WorkflowDefinitionReference,
+               attributes2.get(0));
          }
 
          tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.TeamUsesVersions, "true");
@@ -332,10 +333,10 @@ public class TeamsResource extends AbstractConfigResource {
                   }
 
                   List<String> attributes2 =
-                     artifact.getAttributes(AtsAttributeTypes.WorkflowDefinition.getIdString());
+                     artifact.getAttributes(AtsAttributeTypes.WorkflowDefinitionReference.getIdString());
 
                   if ((attributes2 != null) && (attributes2.size() > 0)) {
-                     tx.setSoleAttributeFromString(artifactReadable, AtsAttributeTypes.WorkflowDefinition,
+                     tx.setSoleAttributeFromString(artifactReadable, AtsAttributeTypes.WorkflowDefinitionReference,
                         attributes2.get(0));
                   }
 
@@ -399,11 +400,11 @@ public class TeamsResource extends AbstractConfigResource {
                artifactReadable.getGuid()).andIsOfType(AtsArtifactTypes.TeamDefinition).getResults().getExactlyOne();
 
             ResultSet<? extends AttributeReadable<Object>> attributes =
-               artifactReadable.getAttributes(AtsAttributeTypes.WorkflowDefinition);
+               artifactReadable.getAttributes(AtsAttributeTypes.WorkflowDefinitionReference);
 
             if (attributes != null) {
                for (AttributeReadable<Object> attributeReadable : attributes) {
-                  ar.putAttributes(AtsAttributeTypes.WorkflowDefinition.getName(),
+                  ar.putAttributes(AtsAttributeTypes.WorkflowDefinitionReference.getName(),
                      Arrays.asList(attributeReadable.getValue().toString()));
                }
             }

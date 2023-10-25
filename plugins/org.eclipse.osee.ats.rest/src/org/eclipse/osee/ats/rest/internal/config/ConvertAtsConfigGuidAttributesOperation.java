@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,14 +24,12 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -98,33 +95,6 @@ public class ConvertAtsConfigGuidAttributesOperation {
          }
       }
 
-      // convert work packages
-      List<ArtifactId> artIdList2 = new LinkedList<>();
-      artIdList2.addAll(getWorkItemIdsMissingWorkPacakge());
-      List<Collection<ArtifactId>> subDivide2 = Collections.subDivide(artIdList2, 2000);
-      int size2 = subDivide2.size(), count2 = 1;
-      for (Collection<ArtifactId> artIds : subDivide2) {
-         atsApi.getLogger().info(String.format("processing %s / %s", count2++, size2));
-         List<Long> ids = new LinkedList<>();
-         for (ArtifactId art : artIds) {
-            ids.add(art.getId());
-         }
-         Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
-         IAtsChangeSet changes = atsApi.createChangeSet("Update Work Package GUIDs");
-         for (ArtifactToken art : allArtifacts) {
-            convertWorkPackageIfNeeded(changes, art);
-         }
-         TransactionId transaction = changes.executeIfNeeded();
-         if (transaction != null && transaction.isValid()) {
-            atsApi.getLogger().info("================================== > executed");
-         }
-         try {
-            Thread.sleep(5 * 1000);
-         } catch (InterruptedException ex) {
-            // do nothing
-         }
-      }
-
       // Convert Program Team Definition
       IAtsChangeSet changes = atsApi.createChangeSet("Update Program Team Def GUID");
       for (IAtsProgram program : atsApi.getQueryService().createQuery(AtsArtifactTypes.Program).getItems(
@@ -169,47 +139,6 @@ public class ConvertAtsConfigGuidAttributesOperation {
    }
 
    boolean workPackagesLoaded = false;
-
-   private void convertWorkPackageIfNeeded(IAtsChangeSet changes, ArtifactToken workItemArt) {
-      if (!workPackagesLoaded) {
-         for (ArtifactToken workPackageArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(), false,
-            AtsArtifactTypes.WorkPackage)) {
-            IAtsWorkPackage workPkg = atsApi.getEarnedValueService().getWorkPackage(workPackageArt);
-            guidToWorkPackage.put(workPkg.getStoreObject().getGuid(), workPkg);
-         }
-         workPackagesLoaded = true;
-      }
-      // convert guid to id
-      ArtifactId workPackageId = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItemArt,
-         AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
-      if (workPackageId.isInvalid()) {
-         String workPackageGuid = atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, WorkPackageGuid, "");
-         if (Strings.isValid(workPackageGuid)) {
-            IAtsWorkPackage workPackage = guidToWorkPackage.get(workPackageGuid);
-            if (workPackage == null) {
-               atsApi.getLogger().error(String.format("Work Package null for guid %s; deleting attribute for %s",
-                  workPackageGuid, workItemArt.toStringWithId()));
-               changes.deleteAttributes(workItemArt, WorkPackageGuid);
-               return;
-            } else {
-               changes.setSoleAttributeValue(workItemArt, AtsAttributeTypes.WorkPackageReference,
-                  workPackage.getStoreObject());
-            }
-         }
-      }
-      // convert id to guid
-      String workPackageGuid = atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, WorkPackageGuid, "");
-      if (Strings.isInValid(workPackageGuid)) {
-         ArtifactId workPackageArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItemArt,
-            AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
-         ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(workPackageArt);
-         if (artifact != null) {
-            changes.setSoleAttributeValue(workItemArt, WorkPackageGuid, artifact.getGuid());
-         }
-      }
-   }
-
-   java.util.Map<String, IAtsWorkPackage> guidToWorkPackage = new HashMap<>();
 
    public static void convertActionableItemsIfNeeded(IAtsChangeSet changes, ArtifactToken art, AtsApi atsApi) {
       // convert guids to id

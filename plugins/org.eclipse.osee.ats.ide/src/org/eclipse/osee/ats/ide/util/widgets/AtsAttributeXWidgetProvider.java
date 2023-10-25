@@ -54,7 +54,6 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       xFlatAttributeTypes.add(AtsAttributeTypes.JournalSubscriber);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.ActionableItemReference, AtsArtifactTypes.ActionableItem);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.TeamDefinitionReference, AtsArtifactTypes.TeamDefinition);
-      artRefAttrTypeToValidArtType.put(AtsAttributeTypes.WorkPackageReference, AtsArtifactTypes.WorkPackage);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.ProgramId, AtsArtifactTypes.Program);
       artRefAttrTypeToValidArtType.put(AtsAttributeTypes.RelatedPeerWorkflowDefinitionReference,
          AtsArtifactTypes.TeamDefinition);

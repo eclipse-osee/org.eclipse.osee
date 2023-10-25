@@ -50,7 +50,8 @@ public interface IAtsConfigTxTeamDef {
     */
    IAtsConfigTxTeamDef andRelatedTaskWorkflowDefinition(NamedId... taskWorkDefs);
 
-   IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
+   IAtsConfigTxTeamDef andVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease,
+      IAtsVersionArtifactToken... parallelVersions);
 
    IAtsConfigTxTeamDef andParallelVersion(IAtsVersion ver1, IAtsVersion ver2);
 
@@ -60,9 +61,11 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsTeamDefinition getTeamDef();
 
-   IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
+   IAtsConfigTxVersion andVersionTx(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch,
+      NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
-   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
+   IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken version, ReleasedOption released, BranchToken branch,
+      NextRelease nextRelease, IAtsVersionArtifactToken... parallelVersions);
 
    IAtsConfigTxTeamDef andVersion(IAtsVersionArtifactToken... verToks);
 
@@ -83,5 +86,7 @@ public interface IAtsConfigTxTeamDef {
    IAtsConfigTxTeamDef andAccessContexts(AccessContextToken... contextIds);
 
    IAtsConfigTxTeamDef andAtsIdPrefix(String atsIdPrefix, String seqName, String seqStart);
+
+   IAtsConfigTxTeamDef andWorkPackages(String artName, String... workPackageNames);
 
 }

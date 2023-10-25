@@ -118,7 +118,6 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XUserRoleViewer.class);
       register(XValidateReqChangesButton.class);
       register(XVersionList.class);
-      register(XWorkPackageHyperlinkWidget.class);
       register(XWorkingBranchButtonArtifactExplorer.class);
       register(XWorkingBranchButtonChangeReport.class);
       register(XWorkingBranchButtonContextChangeReport.class);
@@ -130,6 +129,42 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XWorkingBranchButtonWordChangeReport.class);
       register(XWorkingBranchLabel.class);
       register(XWorkingBranchUpdate.class);
+      register(XGoalCombo.class);
+      register(ClosureStateMultiChoiceSelect.class);
+      register(VersionMultiChoiceSelect.class);
+      register(XArtifactReferencedAtsObjectAttributeWidget.class);
+      register(XAssigneesListWidget.class);
+      register(XHyperlabelWorkflowApplicabilitySelection.class);
+      register(XOpenSprintBurndownButton.class);
+      register(XOpenSprintBurnupButton.class);
+      register(XOpenSprintDataTableButton.class);
+      register(XOpenSprintSummaryButton.class);
+      register(XOpenStoredSprintReportsButton.class);
+      register(XProgramSelectionWidget.class);
+      register(XStoreSprintReportsButton.class);
+      register(XHyperlinkWorkPackageDam.class);
+      register(XAssigneesHyperlinkWidget.class);
+      register(XActionableItemWidget.class);
+      register(XAgileFeatureHyperlinkWidget.class);
+      register(XAttachmentExampleWidget.class);
+      register(XCheckBoxesWithTaskGenExample.class);
+      register(XCreateEscapeDemoWfXButton.class);
+      register(XDateWithValidateDam.class);
+      register(XEstimatedPointsWidget.class);
+      register(XGitFetchButton.class);
+      register(XHyperlabelVersionSelection.class);
+      register(XHyperlabelFoundInVersionSelection.class);
+      register(XHyperlinkFeatureDam.class);
+      register(XOriginatorHyperlinkWidget.class);
+      register(XSprintHyperlinkWidget.class);
+      register(XTargetedVersionHyperlinkWidget.class);
+      register(XTaskEstDemoWidget.class);
+      register(XTaskEstSiblingWorldDemoWidget.class);
+      register(XAtsProgramComboWidget.class);
+      register(XVersionList.class);
+      register(XHyperlinkWorkDefDam.class);
+      register(XDynamicAttrValuesWidget.class);
+      register(XValidateReqChangesButton.class);
    }
 
    @Override

@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlArtifactUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -116,7 +115,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
             for (TreeItem item : treeItems) {
                artifacts.add((Artifact) item.getData());
             }
-            ArtifactPromptChange.promptChangeAttribute(attributeType, artifacts, false);
+            ArtifactPromptChange.promptChangeAttribute(attributeType, artifacts, true);
             refresh();
             editor.onDirtied();
          } else if (treeColumn.getText().equals(ViewApplicabilityColumn.columnlabel)) {
@@ -158,8 +157,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
             }
             if (attributeType != null) {
                Artifact useArt = (Artifact) treeItem.getData();
-               boolean persist = false;
-               ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist);
+               ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), true);
                refresh();
                editor.onDirtied();
                return true;

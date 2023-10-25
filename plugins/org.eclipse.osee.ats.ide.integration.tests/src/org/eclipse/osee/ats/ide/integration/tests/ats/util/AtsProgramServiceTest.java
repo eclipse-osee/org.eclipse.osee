@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -35,7 +34,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.junit.Assert;
 import org.junit.Before;
@@ -126,17 +124,6 @@ public class AtsProgramServiceTest {
       Long id = activities.iterator().next().getId();
       IAtsInsertionActivity activity2 = programService.getInsertionActivity(id);
       assertEquals(activity2.getId(), id);
-   }
-
-   @Test
-   public void testGetWorkPackage() {
-      IAtsWorkPackage workPackage =
-         (IAtsWorkPackage) AtsApiService.get().getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andAttr(
-            CoreAttributeTypes.Name, "Work Pkg 0B").getConfigObjectResultSet().getExactlyOne();
-
-      if (programService.getInsertionActivity(workPackage) != null) {
-         assertEquals("COMM Page", programService.getInsertionActivity(workPackage).getName());
-      }
    }
 
    @Test

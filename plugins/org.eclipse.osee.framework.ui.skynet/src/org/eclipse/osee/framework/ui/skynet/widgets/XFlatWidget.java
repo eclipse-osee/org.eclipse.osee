@@ -196,6 +196,10 @@ public abstract class XFlatWidget<T> extends XLabel {
       ToolBarManager manager = new ToolBarManager(toolbar);
       manager.add(new Separator());
       manager.add(new AddPage());
+      Action multiLineAction = getMultiLineAction();
+      if (multiLineAction != null) {
+         manager.add(multiLineAction);
+      }
       manager.update(true);
    }
 
@@ -391,4 +395,7 @@ public abstract class XFlatWidget<T> extends XLabel {
       }
    }
 
+   protected Action getMultiLineAction() {
+      return null;
+   }
 }

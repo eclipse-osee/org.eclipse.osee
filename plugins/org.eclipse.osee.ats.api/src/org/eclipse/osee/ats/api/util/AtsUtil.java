@@ -30,6 +30,7 @@ public class AtsUtil {
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl_26_0";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/ID";
    public static final String SINGLE_SERVER_DEPLOYMENT = "single_server_deployment";
+   public static final String WORK_PKG_STATIC_ID = "Work Package Enum Art";
    private static boolean emailEnabled;
 
    public static boolean isInTest() {

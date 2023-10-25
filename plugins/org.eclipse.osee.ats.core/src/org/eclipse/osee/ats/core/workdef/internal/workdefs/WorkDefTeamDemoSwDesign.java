@@ -45,7 +45,6 @@ public class WorkDefTeamDemoSwDesign extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andHeader() //
-         .isShowWorkPackageHeader(false) //
          .isShowSiblingLinks(false) //
          .isShowMetricsHeader(false); //
 

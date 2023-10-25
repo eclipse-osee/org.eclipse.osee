@@ -56,7 +56,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
    }
 
    @Override
-   public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, XResultData results) {
+   public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType,
+      XResultData results) {
       for (IAtsWorkItemHook wiHook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
          wiHook.isModifiableAttribute(artifact, attributeType, results);
          if (results.isErrors()) {
@@ -67,7 +68,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
    }
 
    @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
+   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+      XResultData results) {
       if (isDeletionChecksEnabled()) {
          if (Admin_Only_Relation_Type_Ids.contains(
             relationType.getId()) && !AtsApiService.get().getUserService().isAtsAdmin()) {
@@ -97,14 +99,14 @@ public class AtsArtifactChecks implements ArtifactCheck {
          checkAtsWorkDefinitions(isAtsAdmin, atsApi, allArtifacts, results);
          checkUsers(isAtsAdmin, atsApi, allArtifacts, results);
          checkActions(isAtsAdmin, isAtsDeleteWorkflowAdmin, atsApi, allArtifacts, results);
-         checkWorkPackages(isAtsAdmin, atsApi, allArtifacts, results);
       }
 
       return results;
    }
 
    // Get all artifacts and recurse down default hierarchy
-   private Set<ArtifactToken> getAllArtifacts(AtsApi atsApi, Collection<? extends ArtifactToken> artifacts, Set<ArtifactToken> allArtifacts) {
+   private Set<ArtifactToken> getAllArtifacts(AtsApi atsApi, Collection<? extends ArtifactToken> artifacts,
+      Set<ArtifactToken> allArtifacts) {
       for (ArtifactToken art : artifacts) {
          if (art.getBranch().equals(atsApi.getAtsBranch())) {
             allArtifacts.addAll(atsApi.getStoreService().getDescendants(art));
@@ -113,7 +115,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
       return allArtifacts;
    }
 
-   private void checkActions(boolean isAtsAdmin, boolean isAtsDeleteWorkflowAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkActions(boolean isAtsAdmin, boolean isAtsDeleteWorkflowAdmin, AtsApi atsApi,
+      Collection<ArtifactToken> artifacts, XResultData results) {
       for (ArtifactToken art : artifacts) {
          if ((!isAtsAdmin && !isAtsDeleteWorkflowAdmin) && isWorkflowOrAction(art) && !isTask(art)) {
             results.errorf("Deletion of [%s] is only permitted by ATS Admin or ATS Delete Workflow Admin; %s invalid",
@@ -127,7 +130,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
       }
    }
 
-   private String isWorkflowOrActionPermittedByAnyone(AtsApi atsApi, ArtifactToken art, Collection<ArtifactToken> allArtifacts) {
+   private String isWorkflowOrActionPermittedByAnyone(AtsApi atsApi, ArtifactToken art,
+      Collection<ArtifactToken> allArtifacts) {
       if (art.isOfType(AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow teamWf : atsApi.getWorkItemService().getTeams(art)) {
             if (!allArtifacts.contains(teamWf.getStoreObject())) {
@@ -165,7 +169,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
       return art instanceof IAtsTask;
    }
 
-   private void checkActionableItems(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkActionableItems(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts,
+      XResultData results) {
       Set<ArtifactToken> aiIds = getActionableItemIdsWithRecurse(new HashSet<>(), artifacts, atsApi, results);
       if (!aiIds.isEmpty()) {
          List<ArtifactToken> teamWfsRelatedToAis = atsApi.getQueryService().getArtifactsFromTypeAndAttribute(
@@ -181,7 +186,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
       }
    }
 
-   private Set<ArtifactToken> getActionableItemIdsWithRecurse(HashSet<ArtifactToken> aiIds, Collection<ArtifactToken> artifacts, AtsApi atsApi, XResultData results) {
+   private Set<ArtifactToken> getActionableItemIdsWithRecurse(HashSet<ArtifactToken> aiIds,
+      Collection<ArtifactToken> artifacts, AtsApi atsApi, XResultData results) {
       for (ArtifactToken art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
             IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(art);
@@ -197,7 +203,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
       return aiIds;
    }
 
-   private void checkTeamDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkTeamDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts,
+      XResultData results) {
       List<String> ids = new ArrayList<>();
       for (ArtifactToken art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
@@ -218,25 +225,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
       }
    }
 
-   private void checkWorkPackages(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
-      List<ArtifactToken> ids = new ArrayList<>();
-      for (ArtifactToken art : artifacts) {
-         if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
-            ids.add(art);
-         }
-      }
-      if (!ids.isEmpty()) {
-         List<ArtifactToken> artifactListFromIds = atsApi.getQueryService().getArtifactsFromAttributeValues(
-            AtsAttributeTypes.WorkPackageReference, ids, atsApi.getAtsBranch());
-         if (artifactListFromIds.size() > 0) {
-            results.errorf(
-               "Work Packages [%s] selected to delete have related Work Items; Delete or re-assign Work Packages first.",
-               ids);
-         }
-      }
-   }
-
-   private void checkAtsWorkDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkAtsWorkDefinitions(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts,
+      XResultData results) {
       for (ArtifactToken art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
             List<ArtifactToken> artifactListFromTypeAndAttribute =
@@ -255,7 +245,8 @@ public class AtsArtifactChecks implements ArtifactCheck {
       }
    }
 
-   private void checkUsers(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts, XResultData results) {
+   private void checkUsers(boolean isAtsAdmin, AtsApi atsApi, Collection<ArtifactToken> artifacts,
+      XResultData results) {
       Set<UserToken> users = new HashSet<>();
       for (ArtifactId art : artifacts) {
          if (art instanceof UserToken) {

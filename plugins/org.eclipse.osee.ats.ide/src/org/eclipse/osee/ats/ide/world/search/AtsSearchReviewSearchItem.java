@@ -83,7 +83,6 @@ public class AtsSearchReviewSearchItem extends AtsSearchWorkflowSearchItem {
       getProgram().addWidget(8);
       getInsertion().addWidget();
       getInsertionActivity().addWidget();
-      getWorkPackage().addWidget();
    }
 
 }

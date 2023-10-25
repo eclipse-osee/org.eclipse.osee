@@ -76,6 +76,7 @@ import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.Customize
 import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.TeamWorkFlowArtifact;
 import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.TransferableArtifact;
 import org.eclipse.osee.icteam.common.clientserver.dependent.datamodel.TransferableArtifactsContainer;
+import org.eclipse.osee.icteam.common.clientserver.osee.ats.workdefs.AtsWorkDefinitionICTeamTokens;
 import org.eclipse.osee.icteam.common.clientserver.util.CommentItem;
 import org.eclipse.osee.icteam.common.clientserver.util.CommentType;
 import org.eclipse.osee.icteam.server.access.core.OseeCoreData;
@@ -693,7 +694,8 @@ public class TeamWorkflowResource extends AbstractConfigResource {
                tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.BurnDownData, burnDownData);
                tx.setSoleAttributeValue(childArtifact,
                   AttributeTypeToken.valueOf(Long.parseLong(split[0]), "Attribute"), date);
-               tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.WorkflowDefinition, "WorkDef_ICTeam");
+               tx.setSoleAttributeFromString(childArtifact, AtsAttributeTypes.WorkflowDefinitionReference,
+                  AtsWorkDefinitionICTeamTokens.WorkDef_ICTeam.getIdString());
 
                if (Long.parseLong(AtsAttributeTypes.EstimatedCompletionDate.getIdString()) == Long.parseLong(
                   split[0])) {

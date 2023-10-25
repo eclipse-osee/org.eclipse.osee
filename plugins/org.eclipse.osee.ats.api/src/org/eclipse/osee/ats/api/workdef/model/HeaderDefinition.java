@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.api.workdef.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -25,16 +24,7 @@ public class HeaderDefinition {
    private final List<LayoutItem> layoutItems = new ArrayList<>(5);
    private final WorkDefinition workDefinition;
    private boolean showMetricsHeader = true;
-   private boolean showWorkPackageHeader = true;
    private boolean showSiblingLinks = true;
-
-   public boolean isShowWorkPackageHeader() {
-      return showWorkPackageHeader;
-   }
-
-   public void setShowWorkPackageHeader(boolean showWorkPackageHeader) {
-      this.showWorkPackageHeader = showWorkPackageHeader;
-   }
 
    public HeaderDefinition(WorkDefinition workDefinition) {
       this.workDefinition = workDefinition;

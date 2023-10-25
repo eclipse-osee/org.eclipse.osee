@@ -13,25 +13,10 @@
 
 package org.eclipse.osee.ats.ide.ev.internal;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
-import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
-import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -41,54 +26,6 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
    public AtsEarnedValueImpl(Log logger, AtsApi atsApi) {
       super(logger, atsApi);
-   }
-
-   @Override
-   public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
-      ArtifactId id = ArtifactId.SENTINEL;
-      Artifact artifact = AtsApiService.get().getQueryServiceIde().getArtifact(workItem);
-      Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
-      if (artifact instanceof AbstractWorkflowArtifact) {
-         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-         id = awa.getSoleAttributeValue(AtsAttributeTypes.WorkPackageReference, id);
-      }
-      return id;
-   }
-
-   @Override
-   public void setWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems) {
-      changeWorkPackage(workPackage, workItems, false);
-   }
-
-   @Override
-   public void removeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems) {
-      changeWorkPackage(workPackage, workItems, true);
-   }
-
-   private void changeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems, boolean remove) {
-      JaxWorkPackageData data = new JaxWorkPackageData();
-      data.setAsUserId(atsApi.getUserService().getCurrentUserId());
-      for (IAtsWorkItem workItem : workItems) {
-         data.getWorkItemIds().add(workItem.getId());
-      }
-
-      AtsWorkPackageEndpointApi workPackageEp = AtsApiService.get().getServerEndpoints().getWorkPackageEndpoint();
-      TransactionId transId = TransactionId.SENTINEL;
-      if (remove) {
-         XResultData rd = workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getId(), data);
-         if (rd.isErrors()) {
-            throw new OseeCoreException(rd.toString());
-         }
-         if (Strings.isNumeric(rd.getTxId())) {
-            transId = TransactionId.valueOf(rd.getTxId());
-         }
-      } else {
-         XResultData rd = workPackageEp.setWorkPackage(workPackage.getId(), data);
-         if (rd.isErrors()) {
-            throw new OseeCoreException(rd.toString());
-         }
-      }
-      atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, workItems, transId);
    }
 
    @Override

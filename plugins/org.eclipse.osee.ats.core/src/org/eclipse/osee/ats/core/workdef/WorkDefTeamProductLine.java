@@ -40,9 +40,11 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andHeader() //
-         .andLayout(getChangeTypeComposite()) //
-         .isShowWorkPackageHeader(true) //
-         .isShowMetricsHeader(false); //
+         .andLayout( //
+            getChangeTypeComposite(), //
+            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam" //
+            ) //
+         ).isShowMetricsHeader(false); //
 
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Review, StateToken.Cancelled) //

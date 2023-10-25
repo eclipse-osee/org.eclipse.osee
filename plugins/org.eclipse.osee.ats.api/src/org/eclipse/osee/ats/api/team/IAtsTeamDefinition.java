@@ -79,11 +79,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject {
          }
 
          @Override
-         public boolean hasWorkPackages() {
-            return false;
-         }
-
-         @Override
          public String getProgramId() {
             return null;
          }
@@ -100,8 +95,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject {
    Collection<ActionableItem> getActionableItems();
 
    Collection<TeamDefinition> getChildrenTeamDefs();
-
-   boolean hasWorkPackages();
 
    public String getProgramId();
 

@@ -201,8 +201,8 @@ public interface IAtsQueryService {
 
    ArtifactToken getOrCreateArtifact(ArtifactToken parent, ArtifactToken artifact, IAtsChangeSet changes);
 
-   List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType,
-      String attributeValue, BranchId branch);
+   List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeToken artifactType,
+      AttributeTypeToken attributeType, String attributeValue, BranchId branch);
 
    List<ArtifactToken> getArtifactsFromAttributeValues(AttributeTypeId attributeType,
       Collection<ArtifactToken> attributeValues, BranchId branch);
@@ -256,5 +256,7 @@ public interface IAtsQueryService {
 
    Collection<? extends ArtifactToken> getArtifactsFromName(String title, BranchToken atsBranch,
       DeletionFlag excludeDeleted, QueryOption[] containsMatchOptions);
+
+   Collection<ArtifactToken> getArtifactsByAttrFast(AttributeTypeToken attrType, String value);
 
 }

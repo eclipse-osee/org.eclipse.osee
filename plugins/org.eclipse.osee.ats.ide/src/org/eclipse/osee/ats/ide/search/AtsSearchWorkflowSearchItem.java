@@ -108,7 +108,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          getProgram().addWidget(8);
          getInsertion().addWidget();
          getInsertionActivity().addWidget();
-         getWorkPackage().addWidget();
       }
       getAttrValues().addWidget();
    }
@@ -173,9 +172,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (showWorkPackageWidgets() && getInsertionActivity() != null && getInsertionActivity().get() != null) {
          data.setInsertionActivityId(getInsertionActivity().get().getId());
       }
-      if (showWorkPackageWidgets() && getWorkPackage() != null && getWorkPackage().get() != null) {
-         data.setWorkPackageId(getWorkPackage().get().getId());
-      }
       if (data.getWorkItemTypes().isEmpty()) {
          for (WorkItemType type : WorkItemType.values()) {
             data.getWorkItemTypes().add(type);
@@ -214,7 +210,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
             getProgram().set(data);
             getInsertion().set(data);
             getInsertionActivity().set(data);
-            getWorkPackage().set(data);
          }
          getReviewType().set(data);
          getAttrValues().set(data);

@@ -45,16 +45,6 @@ public class HeaderDefinitionBuilder {
       return this;
    }
 
-   public HeaderDefinitionBuilder isShowWorkPackageHeader() {
-      headerDefinition.setShowWorkPackageHeader(true);
-      return this;
-   }
-
-   public HeaderDefinitionBuilder isShowWorkPackageHeader(boolean show) {
-      headerDefinition.setShowWorkPackageHeader(show);
-      return this;
-   }
-
    public HeaderDefinition getHeaderDefinition() {
       return headerDefinition;
    }

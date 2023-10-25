@@ -355,8 +355,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeId artifactType,
-      AttributeTypeId attributeType, String attributeValue, BranchId branch) {
+   public List<ArtifactToken> getArtifactsFromTypeAndAttribute(ArtifactTypeToken artifactType,
+      AttributeTypeToken attributeType, String attributeValue, BranchId branch) {
       return Collections.castAll(
          ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactType, attributeType, attributeValue, branch));
    }

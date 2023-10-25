@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -274,22 +273,8 @@ public class AtsActionService implements IAtsActionService {
 
          // set work package
          if (Strings.isValid(data.getWorkPackage())) {
-            IAtsWorkPackage workPkg = null;
-            if (Strings.isNumeric(data.getWorkPackage())) {
-               workPkg = atsApi.getEarnedValueService().getWorkPackage(ArtifactId.valueOf(data.getWorkPackage()));
-            } else {
-               ArtifactId art = atsApi.getQueryService().getArtifactByNameOrSentinel(AtsArtifactTypes.WorkPackage,
-                  data.getWorkPackage());
-               if (art.isValid()) {
-                  workPkg = atsApi.getEarnedValueService().getWorkPackage(art);
-               }
-            }
-            if (workPkg != null) {
-               for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-                  atsApi.getEarnedValueService().setWorkPackage(workPkg, teamWf, changes);
-               }
-            } else {
-               result.getResults().errorf("Inavlid Work Package id or name [%s]", data.getWorkPackage());
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+               changes.addAttribute(teamWf, AtsAttributeTypes.WorkPackage, data.getWorkPackage());
             }
          }
 

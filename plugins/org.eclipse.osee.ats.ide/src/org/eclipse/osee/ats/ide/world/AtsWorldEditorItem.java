@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.ide.world.search.AtsSearchGoalSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTaskSearchItem;
 import org.eclipse.osee.ats.ide.world.search.AtsSearchTeamWorkflowSearchItem;
-import org.eclipse.osee.ats.ide.world.search.AtsSearchWorkPackageSearchItem;
 
 /**
  * @author Donald G. Dunne
@@ -40,8 +39,8 @@ public class AtsWorldEditorItem implements IAtsWorldEditorItem {
    @Override
    public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems() {
       return Arrays.asList(new AtsSearchWorkflowSearchItem(), new AtsSearchTeamWorkflowSearchItem(),
-         new AtsSearchTaskSearchItem(), new AtsSearchReviewSearchItem(), new AtsSearchGoalSearchItem(),
-         new AtsSearchWorkPackageSearchItem(), new AtsSearchWorkPackageSearchItem());
+         new AtsSearchTaskSearchItem(), new AtsSearchReviewSearchItem(), new AtsSearchGoalSearchItem());
+
    }
 
 }

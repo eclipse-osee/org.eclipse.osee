@@ -38,7 +38,6 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
    Set<Long> ais = new HashSet<>();
    Set<Long> versions = new HashSet<>();
    Set<Long> children = new HashSet<>();
-   boolean hasWorkPackages = false;
 
    public TeamDefinition() {
       // for jax-rs
@@ -122,19 +121,6 @@ public class TeamDefinition extends JaxAtsConfigObject implements IAtsTeamDefini
 
    public void addAi(ArtifactToken ai) {
       ais.add(ai.getId());
-   }
-
-   @Override
-   public boolean hasWorkPackages() {
-      return hasWorkPackages;
-   }
-
-   public void setHasWorkPackages(boolean hasWorkPackages) {
-      this.hasWorkPackages = hasWorkPackages;
-   }
-
-   public boolean isHasWorkPackages() {
-      return hasWorkPackages;
    }
 
 }

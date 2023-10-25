@@ -44,9 +44,13 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
       WorkDefBuilder bld = new WorkDefBuilder(workDefToken);
 
       bld.andHeader() //
-         .andLayout(getChangeTypeComposite()) //
-         .isShowWorkPackageHeader(true) //
-         .isShowMetricsHeader(false); //
+         .andLayout( //
+            getChangeTypeComposite(), //
+            new WidgetDefinition("Work Package", "XHyperlinkWorkPackageDam") //
+         ) //
+         .isShowMetricsHeader(false) //
+         .andLayout( //
+         ); //
 
       bld.andState(1, "Endorse", StateType.Working).isStartState() //
          .andToStates(StateToken.Analyze, StateToken.Implement, StateToken.Completed, StateToken.Cancelled) //

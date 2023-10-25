@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.config.ConvertToStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertWorkDefinitionsToJava;
+import org.eclipse.osee.ats.rest.internal.config.ConvertWorkPackageArtsToStrAttr;
 import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.CountryResource;
 import org.eclipse.osee.ats.rest.internal.config.InsertionActivityEndpointImpl;
@@ -110,6 +111,7 @@ public class AtsApplication extends Application {
       OseeTemplateTokens.register(registry);
 
       // Register conversions (add new ones to top)
+      atsApiServer.addAtsDatabaseConversion(new ConvertWorkPackageArtsToStrAttr(orcsApi));
       atsApiServer.addAtsDatabaseConversion(new ConvertCompCancelStateAndAssigneeAttributes(atsApiServer));
       atsApiServer.addAtsDatabaseConversion(new ConvertToStateAndAssigneeAttributes(orcsApi));
       atsApiServer.addAtsDatabaseConversion(new ConvertCreateUpdateAtsConfig(orcsApi));
