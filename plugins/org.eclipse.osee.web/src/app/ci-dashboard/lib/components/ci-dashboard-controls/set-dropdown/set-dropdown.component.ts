@@ -23,7 +23,7 @@ import {
 	of,
 	switchMap,
 	combineLatest,
-	scan,
+	reduce,
 } from 'rxjs';
 import type { SetReference } from '../../../types/tmo';
 import {
@@ -56,7 +56,6 @@ export class SetDropdownComponent implements OnChanges {
 	) {}
 
 	filterText = new BehaviorSubject<string>('');
-	noneOption = { id: '-1', name: 'None' } as SetReference;
 
 	sets = combineLatest([this.ciSetsService.ciSets, this.filterText]).pipe(
 		switchMap(([setRefs, filterText]) =>
@@ -64,10 +63,7 @@ export class SetDropdownComponent implements OnChanges {
 				filter((a) =>
 					a.name.toLowerCase().includes(filterText.toLowerCase())
 				),
-				scan((acc, curr) => {
-					acc.push(curr);
-					return acc;
-				}, [] as SetReference[])
+				reduce((acc, curr) => [...acc, curr], [] as SetReference[])
 			)
 		)
 	);
@@ -76,8 +72,15 @@ export class SetDropdownComponent implements OnChanges {
 
 	selectedSet = combineLatest([this.sets, this.ui.ciSetId]).pipe(
 		switchMap(([sets, setId]) => {
-			const set = sets.find((v) => v.name === setId);
-			return set ? of(set) : of(this.noneOption);
+			if (setId === undefined || setId === '' || setId === '-1') {
+				if (sets.length > 0) {
+					this.selectSet(sets[0]);
+					return of(sets[0]);
+				}
+				return of(undefined);
+			}
+			const set = sets.find((v) => v.id === setId);
+			return set ? of(set) : of(undefined);
 		})
 	);
 
@@ -86,7 +89,7 @@ export class SetDropdownComponent implements OnChanges {
 	}
 
 	selectSet(set: SetReference) {
-		this.ui.CiSetId = set.id;
+		this.ui.routeToSet(set.id);
 	}
 
 	applyFilter(text: Event) {

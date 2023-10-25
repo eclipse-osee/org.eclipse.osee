@@ -31,11 +31,6 @@
 		<mat-autocomplete
 			autoActiveFirstOption
 			#auto="matAutocomplete">
-			<mat-option
-				[value]="noneOption.name"
-				(click)="selectSet(noneOption)">
-				{{ noneOption.name }}
-			</mat-option>
 			<ng-container *ngIf="sets | async as _sets">
 				<mat-option
 					*ngFor="let option of _sets"
