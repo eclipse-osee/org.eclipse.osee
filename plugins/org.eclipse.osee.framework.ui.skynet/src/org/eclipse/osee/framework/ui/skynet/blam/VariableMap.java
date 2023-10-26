@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -104,8 +104,8 @@ public class VariableMap {
       return getValue(String.class, parameterName);
    }
 
-   public BranchId getBranch(String parameterName) {
-      return getValue(BranchId.class, parameterName);
+   public BranchToken getBranch(String parameterName) {
+      return getValue(BranchToken.class, parameterName);
    }
 
    public boolean getBoolean(String parameterName) {
