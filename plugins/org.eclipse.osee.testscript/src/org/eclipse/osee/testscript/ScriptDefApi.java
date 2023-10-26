@@ -29,7 +29,7 @@ public interface ScriptDefApi {
 
    ScriptDefToken get(BranchId branch, ArtifactId scriptDefTypeId);
 
-   ScriptDefToken getWithDetailsAndFilter(BranchId branch, ArtifactId scriptDefTypeId, String filter, int pageNum,
+   ScriptDefToken getWithDetailsAndFilter(BranchId branch, ArtifactId scriptDefId, String filter, int pageNum,
       int count);
 
    Collection<ScriptDefToken> getAll(BranchId branch);

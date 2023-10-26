@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<osee-ci-dashboard-controls></osee-ci-dashboard-controls>
+<osee-ci-dashboard-controls [actionButton]="true"></osee-ci-dashboard-controls>
 <ng-container *ngIf="importResult | async"></ng-container>
 <ng-container *ngIf="ciSet | async"></ng-container>
 <div class="tw-p-4">

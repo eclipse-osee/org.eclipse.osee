@@ -1,0 +1,27 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+-->
+<nav class="tw-flex tw-items-center">
+	<ul class="tw-flex tw-gap-4 tw-text-sm">
+		<li *ngFor="let navItem of navItems | async">
+			<a
+				class="tw-p-2"
+				[ngClass]="{
+					'tw-border-b-2 tw-border-primary tw-text-primary':
+						router.url.includes(navItem.routerLink)
+				}"
+				[routerLink]="navItem.routerLink + (routeSuffix | async) || ''"
+				>{{ navItem.label }}</a
+			>
+		</li>
+	</ul>
+</nav>

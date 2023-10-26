@@ -10,15 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Routes } from '@angular/router';
 
-@Component({
-	selector: 'osee-ci-dashboard-controls',
-	template: '<p>Dummy</p>',
-	standalone: true,
-})
-export class CiDashboardControlsMockComponent {
-	@Input() branchPicker: boolean = true;
-	@Input() ciSetSelector: boolean = true;
-	@Input() actionButton: boolean = false;
-}
+export const routes: Routes = [
+	{
+		path: '',
+		loadComponent: () => import('@osee/toolbar/component'),
+		children: [
+			{
+				path: '',
+				loadComponent: () =>
+					import(
+						'./lib/components/ci-nav-header/ci-nav-header.component'
+					),
+				outlet: 'navigationHeader',
+			},
+		],
+	},
+	{
+		path: '**',
+		redirectTo: '',
+	},
+];
+
+export default routes;

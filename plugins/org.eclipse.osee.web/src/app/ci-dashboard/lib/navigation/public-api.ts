@@ -10,15 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
-
-@Component({
-	selector: 'osee-ci-dashboard-controls',
-	template: '<p>Dummy</p>',
-	standalone: true,
-})
-export class CiDashboardControlsMockComponent {
-	@Input() branchPicker: boolean = true;
-	@Input() ciSetSelector: boolean = true;
-	@Input() actionButton: boolean = false;
-}
+export * from './ci-dashboard-navigation-structure';

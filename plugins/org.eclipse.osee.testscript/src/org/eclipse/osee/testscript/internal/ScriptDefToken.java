@@ -110,10 +110,11 @@ public class ScriptDefToken extends ArtifactAccessorResult {
       this.setSubsystem(art.getSoleAttributeAsString(CoreAttributeTypes.ScriptSubsystem, ""));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
       this.setScriptResults(
-         art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().sorted(
-            Comparator.comparing(this::getExecutionDateByAttr, dateComparator)).filter(
-               a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new ScriptResultToken(a)).collect(
-                  Collectors.toList()));
+         art.getRelated(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults).getList().stream().filter(
+            a -> !a.getExistingAttributeTypes().isEmpty()).sorted(
+               Comparator.comparing(this::getExecutionDateByAttr, dateComparator)).filter(
+                  a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new ScriptResultToken(a)).collect(
+                     Collectors.toList()));
 
       if (!getScriptResults().isEmpty()) {
          ScriptResultToken resultToken = getScriptResults().get(0);
