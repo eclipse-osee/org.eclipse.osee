@@ -266,11 +266,13 @@ public class UserAdminImpl implements UserAdmin {
 
    @Override
    public String getSafeUserNameById(ArtifactId userArtifactId) {
-      String name;
-      try {
-         name = getUserNameById(userArtifactId);
-      } catch (Exception ex) {
-         name = String.format("Could not resolve user with artId[%s]", userArtifactId);
+      String name = "unknown";
+      if (userArtifactId != null) {
+         try {
+            name = getUserNameById(userArtifactId);
+         } catch (Exception ex) {
+            name = String.format("Could not resolve user with artId[%s]", userArtifactId);
+         }
       }
       return name;
    }
