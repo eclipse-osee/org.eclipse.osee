@@ -21,8 +21,6 @@ public interface OseeProductionTestProvider {
 
    public void testAtsQuickSearchQueries(XResultData rd);
 
-   public void testPublishing_1(XResultData rd);
-
-   public void testPublishing_2(XResultData rd);
+   public void testPublishing(XResultData rd);
 
 }

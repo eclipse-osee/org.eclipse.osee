@@ -110,8 +110,7 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       testArtifactQueries(rd);
       for (OseeProductionTestProvider provider : providers) {
          provider.testAtsQuickSearchQueries(rd);
-         provider.testPublishing_1(rd);
-         provider.testPublishing_2(rd);
+         provider.testPublishing(rd);
       }
 
       Long ms = time.getTimeSpent();
