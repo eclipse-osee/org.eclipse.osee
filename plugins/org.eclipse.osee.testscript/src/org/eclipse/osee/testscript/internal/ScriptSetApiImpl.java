@@ -43,9 +43,9 @@ public class ScriptSetApiImpl implements ScriptSetApi {
    }
 
    @Override
-   public ScriptSetToken get(BranchId branch, ArtifactId scriptProgramTypeId) {
+   public ScriptSetToken get(BranchId branch, ArtifactId setId) {
       try {
-         return this.accessor.get(branch, scriptProgramTypeId);
+         return this.accessor.get(branch, setId);
       } catch (Exception ex) {
          return new ScriptSetToken();
       }

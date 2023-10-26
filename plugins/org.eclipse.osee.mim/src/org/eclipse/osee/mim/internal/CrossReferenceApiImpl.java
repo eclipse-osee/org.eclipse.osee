@@ -133,25 +133,18 @@ public class CrossReferenceApiImpl implements CrossReferenceApi {
    public int getCount(BranchId branch, ArtifactId connectionId, String filter, ArtifactId viewId) {
       List<AttributeTypeId> attributes = Arrays.asList(CoreAttributeTypes.Name, CoreAttributeTypes.CrossReferenceValue,
          CoreAttributeTypes.CrossReferenceArrayValues);
-      try {
-
-         if (filter.isEmpty() && connectionId.isValid()) {
-            return this.accessor.getAllByRelationAndCount(branch,
-               CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, viewId);
-         } else if (connectionId.isValid()) {
-            return this.accessor.getAllByRelationAndFilterAndCount(branch,
-               CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, filter,
-               attributes, viewId);
-         } else if (filter.isEmpty()) {
-            return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
-         } else {
-            return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
-         }
-      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-         | NoSuchMethodException | SecurityException ex) {
-         //
+      if (filter.isEmpty() && connectionId.isValid()) {
+         return this.accessor.getAllByRelationAndCount(branch,
+            CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, viewId);
+      } else if (connectionId.isValid()) {
+         return this.accessor.getAllByRelationAndFilterAndCount(branch,
+            CoreRelationTypes.InterfaceConnectionCrossReference_InterfaceConnection, connectionId, filter, attributes,
+            viewId);
+      } else if (filter.isEmpty()) {
+         return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
+      } else {
+         return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
       }
-      return 0;
    }
 
 }

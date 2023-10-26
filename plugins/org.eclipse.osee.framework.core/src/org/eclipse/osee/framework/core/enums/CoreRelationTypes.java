@@ -47,7 +47,9 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.LoggingSum
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.MimUserGlobalPreferences;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAssessment;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptBatch;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptLog;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ScriptSet;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.StackTrace;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunctionMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SystemFunctionMsWord;
@@ -261,6 +263,14 @@ public interface CoreRelationTypes {
    RelationTypeToken TestScriptResultsToTestPoint = osee.addNewRelationType(791783734L, "Test Script Results to Test Point", ONE_TO_MANY, UNORDERED, TestScriptResults, "Test Script Results", TestPoint, "Test Point");
    RelationTypeSide TestScriptResultsToTestPoint_TestScriptResults = RelationTypeSide.create(TestScriptResultsToTestPoint, SIDE_A);
    RelationTypeSide TestScriptResultsToTestPoint_TestPoint = RelationTypeSide.create(TestScriptResultsToTestPoint, SIDE_B);
+
+   RelationTypeToken ScriptSetToScriptBatch = osee.addNewRelationType(1270673881224981203L, "Script Set Script Batch", ONE_TO_MANY, UNORDERED, ScriptSet, "Script Set", ScriptBatch, "Script Batch");
+   RelationTypeSide ScriptSetToScriptBatch_ScriptSet = RelationTypeSide.create(ScriptSetToScriptBatch, SIDE_A);
+   RelationTypeSide ScriptSetToScriptBatch_ScriptBatch = RelationTypeSide.create(ScriptSetToScriptBatch, SIDE_B);
+
+   RelationTypeToken ScriptBatchToTestScriptResult = osee.addNewRelationType(1270673881224905241L, "Script Batch to Test Script Result", ONE_TO_MANY, UNORDERED, ScriptBatch, "Script Batch", TestScriptResults, "Test Script Result");
+   RelationTypeSide ScriptBatchToTestScriptResult_ScriptBatch = RelationTypeSide.create(ScriptBatchToTestScriptResult, SIDE_A);
+   RelationTypeSide ScriptBatchToTestScriptResult_TestScriptResults = RelationTypeSide.create(ScriptBatchToTestScriptResult, SIDE_B);
 
    RelationTypeToken TestCaseGroupToTestCase = osee.addNewRelationType(1092384153L, "Test Case to Test Case", ONE_TO_MANY, UNORDERED, TestCase, "Test Case Group", TestCase, "Test Case");
    RelationTypeSide TestCaseToTestCase_TestCaseGroup = RelationTypeSide.create(TestCaseGroupToTestCase, SIDE_A);

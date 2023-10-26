@@ -15,6 +15,7 @@ import { TmoHttpService } from './tmo-http.service';
 import {
 	defReferenceMock,
 	resultReferenceMock,
+	scriptBatchResultMock,
 	testCaseReferenceMock,
 	testPointReferenceMock,
 } from '../testing/tmo.response.mock';
@@ -34,5 +35,32 @@ export const tmoHttpServiceMock: Partial<TmoHttpService> = {
 
 	getTestPointList() {
 		return of(testPointReferenceMock);
+	},
+
+	getBatches(
+		branchId: string,
+		setId: string,
+		filter: string,
+		pageNum: string | number,
+		pageSize: number
+	) {
+		return of(scriptBatchResultMock);
+	},
+
+	getBatchesCount(branchId: string, setId: string, filter: string) {
+		return of(1);
+	},
+
+	getBatchResults(
+		branchId: string,
+		batchId: string,
+		pageNum: string | number,
+		pageSize: number
+	) {
+		return of(resultReferenceMock);
+	},
+
+	getBatchResultsCount(branchId: string, batchId: string) {
+		return of(2);
 	},
 };

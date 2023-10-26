@@ -21,6 +21,7 @@ export * from './ui/messages-ui.service';
 export * from './ui/header.service';
 export * from './ui/enumeration-ui.service';
 export * from './ui/diff-report.service';
+export * from './ui/current-connections.service';
 export * from './ui/current-transport-type.service';
 export * from './ui/current-structure.service';
 export * from './ui/current-structure-single.service';

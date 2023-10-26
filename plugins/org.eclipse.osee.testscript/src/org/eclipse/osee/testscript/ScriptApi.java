@@ -23,6 +23,8 @@ public interface ScriptApi {
 
    ScriptSetApi getScriptProgramApi();
 
+   ScriptBatchApi getScriptBatchApi();
+
    ScriptDefApi getScriptDefApi();
 
    ScriptResultApi getScriptResultApi();

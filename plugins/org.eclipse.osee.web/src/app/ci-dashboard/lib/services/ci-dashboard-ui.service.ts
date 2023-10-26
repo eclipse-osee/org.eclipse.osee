@@ -56,8 +56,8 @@ export class CiDashboardUiService {
 		const formattedSetId = this.ciSetId.getValue().replace('-', '%2D');
 		const formattedId = id.replace('-', '%2D');
 		let url = this.router.url;
-		if (url.endsWith(formattedSetId)) {
-			url = url.replace(formattedSetId, formattedId);
+		if (url.includes(formattedSetId)) {
+			url = url.split(formattedSetId)[0] + formattedId;
 		} else if (url.endsWith(this.branchId.getValue())) {
 			url = url + '/' + formattedId;
 		}

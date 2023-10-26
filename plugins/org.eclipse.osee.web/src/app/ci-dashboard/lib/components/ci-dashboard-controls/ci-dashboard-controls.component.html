@@ -19,6 +19,9 @@
 		<div *ngIf="changedBranchId() && _branchType()">
 			<osee-set-dropdown *ngIf="ciSetSelector" />
 		</div>
+
+		<!-- Any content can be inserted between the CI Set selector and the action controls -->
+		<ng-content></ng-content>
 	</div>
 	<ng-container *ngIf="actionButton">
 		<osee-action-dropdown></osee-action-dropdown>

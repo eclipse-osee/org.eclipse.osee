@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.QueryType;
@@ -670,7 +671,17 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       AttributeTypeId orderByAttribute, ArtifactId viewId) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
       return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes,
-         new LinkedList<FollowRelation>(), 0L, 0L, orderByAttribute, viewId);
+         new LinkedList<FollowRelation>(), pageCount, pageSize, orderByAttribute, viewId);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute, SortOrder orderByAttributeDirection, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes,
+         new LinkedList<FollowRelation>(), pageCount, pageSize, orderByAttribute, orderByAttributeDirection, viewId);
    }
 
    @Override
@@ -689,7 +700,17 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
       return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, pageCount,
-         pageSize, orderByAttribute, new LinkedList<AttributeTypeId>(), viewId);
+         pageSize, orderByAttribute, SortOrder.ASCENDING, new LinkedList<AttributeTypeId>(), viewId);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, SortOrder orderByAttributeDirection, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, pageCount,
+         pageSize, orderByAttribute, orderByAttributeDirection, new LinkedList<AttributeTypeId>(), viewId);
    }
 
    @Override
@@ -699,7 +720,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
       return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, pageCount,
-         pageSize, orderByAttribute, followAttributes, ArtifactId.SENTINEL);
+         pageSize, orderByAttribute, SortOrder.ASCENDING, followAttributes, ArtifactId.SENTINEL);
    }
 
    @Override
@@ -708,19 +729,35 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException {
+      return this.getAllByRelationAndFilter(branch, relation, relatedId, filter, attributes, followRelations, pageCount,
+         pageSize, orderByAttribute, SortOrder.ASCENDING, followAttributes, viewId);
+   }
+
+   @Override
+   public Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, SortOrder orderByAttributeDirection,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andRelatedTo(relation,
-            relatedId).and(
-               attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
-               filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+            relatedId);
+      if (Strings.isValid(filter)) {
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      }
       if (followAttributes.size() > 0) {
          query = query.followSearch(
             followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
             filter);
       }
       if (orderByAttribute != null && orderByAttribute.isValid()) {
-         query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
+         query = query.setOrderByAttribute(
+            orcsApi.tokenService().getAttributeType(orderByAttribute)).setOrderByAttributeDirection(
+               orderByAttributeDirection);
       }
       if (pageCount != 0L && pageSize != 0L) {
          query = query.isOnPage(pageCount, pageSize);
@@ -876,23 +913,21 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
 
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes) throws IllegalArgumentException, SecurityException {
+      String filter, Collection<AttributeTypeId> attributes) {
       return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes,
          ArtifactId.SENTINEL);
    }
 
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId)
-      throws IllegalArgumentException, SecurityException {
+      String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId) {
       return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes,
          new LinkedList<FollowRelation>(), viewId);
    }
 
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations)
-      throws IllegalArgumentException, SecurityException {
+      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations) {
       return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes, followRelations,
          ArtifactId.SENTINEL);
    }
@@ -900,7 +935,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations,
-      ArtifactId viewId) throws IllegalArgumentException, SecurityException {
+      ArtifactId viewId) {
       return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes, followRelations,
          new LinkedList<AttributeTypeId>(), viewId);
    }
@@ -908,7 +943,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations,
-      Collection<AttributeTypeId> followAttributes) throws IllegalArgumentException, SecurityException {
+      Collection<AttributeTypeId> followAttributes) {
       return this.getAllByRelationAndFilterAndCount(branch, relation, relatedId, filter, attributes, followRelations,
          followAttributes, ArtifactId.SENTINEL);
    }
@@ -916,8 +951,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    @Override
    public int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations,
-      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
-      throws IllegalArgumentException, SecurityException {
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andRelatedTo(relation,
@@ -936,14 +970,13 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    }
 
    @Override
-   public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId)
-      throws IllegalArgumentException, SecurityException {
+   public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId) {
       return this.getAllByRelationAndCount(branch, relation, relatedId, ArtifactId.SENTINEL);
    }
 
    @Override
    public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      ArtifactId viewId) throws IllegalArgumentException, SecurityException {
+      ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(

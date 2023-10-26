@@ -49,11 +49,36 @@ public interface ScriptResultEndpoint {
    int getCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
 
    @GET()
+   @Path("batch/{batchId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * @return all Script Results for a batch
+    */
+   Collection<ScriptResultToken> getAllForBatch(@PathParam("batchId") ArtifactId batchId,
+      @QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+
+   @GET()
+   @Path("batch/{batchId}/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getAllForBatchCount(@PathParam("batchId") ArtifactId batchId, @QueryParam("filter") String filter,
+      @QueryParam("viewId") ArtifactId viewId);
+
+   @GET()
    @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
    /**
     * Gets a specific unit.
     */
    ScriptResultToken getScriptResultType(@PathParam("id") ArtifactId scriptResultTypeId);
+
+   @GET()
+   @Path("{id}/details")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * Gets a specific Script Result with paginated test points
+    */
+   ScriptResultToken getScriptResultWithDetails(@PathParam("id") ArtifactId resultId,
+      @QueryParam("filter") String filter, @QueryParam("pageNum") int pageNum, @QueryParam("count") int count);
 
 }

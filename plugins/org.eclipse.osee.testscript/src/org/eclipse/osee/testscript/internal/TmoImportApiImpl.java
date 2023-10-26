@@ -27,7 +27,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,6 +43,7 @@ import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -125,7 +128,7 @@ public class TmoImportApiImpl implements TmoImportApi {
       TransactionResult result = new TransactionResult();
       XResultData resultData = new XResultData();
       result.setResults(resultData);
-      File file = getTempFile(branch, ciSetId);
+      File file = getTempFile(ciSetId);
 
       try {
          Lib.inputStreamToFile(stream, file);
@@ -147,8 +150,10 @@ public class TmoImportApiImpl implements TmoImportApi {
       }
 
       ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
-      File zipPath = new File(getFolderPath(branch,
-         ciSetId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip");
+      String zipPathString =
+         getFolderPath(ciSetId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
+      scriptResult.setFileUrl(zipPathString);
+      File zipPath = new File(zipPathString);
       if (zipPath.exists()) {
          if (file != null && file.exists()) {
             file.delete();
@@ -169,6 +174,9 @@ public class TmoImportApiImpl implements TmoImportApi {
          if (zipPath.exists()) {
             zipPath.delete();
          }
+
+         keyIndex = 0;
+
          return result;
       }
 
@@ -198,7 +206,12 @@ public class TmoImportApiImpl implements TmoImportApi {
 
    @Override
    public TransactionResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId) {
+      boolean isBatch = false;
+      String batchId = System.currentTimeMillis() + (int) (Math.random() * 100) + "";
       List<String> fileNames = new LinkedList<>();
+      Date batchExecutionDate = new Date();
+      String batchMachineName = "";
+      SimpleDateFormat executionDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
       TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi);
       TransactionBuilder tx = null;
       TransactionResult result = new TransactionResult();
@@ -208,11 +221,17 @@ public class TmoImportApiImpl implements TmoImportApi {
       try (ZipInputStream zipStream = new ZipInputStream(stream)) {
          ZipEntry zipEntry = null;
          while ((zipEntry = zipStream.getNextEntry()) != null) {
+            // OTE uses a runId.txt file to specify a batch ID. If this file exists,
+            // assume this is a batched run and create a batch artifact and relations.
+            if (zipEntry.getName().equals("runId.txt")) {
+               isBatch = true;
+               continue;
+            }
             // Skip any non-tmo files
             if (!zipEntry.getName().toLowerCase().endsWith(".tmo")) {
                continue;
             }
-            File file = getTempFile(branch, ciSetId);
+            File file = getTempFile(ciSetId);
 
             try {
                OutputStream outputStream = new FileOutputStream(file);
@@ -236,8 +255,12 @@ public class TmoImportApiImpl implements TmoImportApi {
             }
 
             ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
-            String zipPathString = getFolderPath(branch,
-               ciSetId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
+            File batchFolder = new File(getFolderPath(ciSetId, batchId));
+            if (!batchFolder.exists()) {
+               batchFolder.mkdirs();
+            }
+            String zipPathString = getFolderPath(ciSetId,
+               batchId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
             scriptResult.setFileUrl(zipPathString);
             File zipPath = new File(zipPathString);
             if (zipPath.exists()) {
@@ -274,6 +297,39 @@ public class TmoImportApiImpl implements TmoImportApi {
             } catch (JsonProcessingException ex) {
                resultData.error("Error processing tx json");
             }
+
+            batchExecutionDate = scriptResult.getExecutionDate().before(
+               batchExecutionDate) ? scriptResult.getExecutionDate() : batchExecutionDate;
+            batchMachineName = scriptResult.getMachineName();
+         }
+
+         if (isBatch && tx != null) {
+            TransactionBuilderData batchTxData = new TransactionBuilderData();
+            batchTxData.setBranch(branch.getIdString());
+            batchTxData.setTxComment("TMO Import");
+            batchTxData.setCreateArtifacts(new LinkedList<>());
+            batchTxData.setAddRelations(new LinkedList<>());
+            ScriptBatchToken scriptBatch =
+               new ScriptBatchToken(-1L, executionDateFormat.format(batchExecutionDate) + " - " + batchMachineName);
+            scriptBatch.setExecutionDate(batchExecutionDate);
+            scriptBatch.setMachineName(batchMachineName);
+            scriptBatch.setBatchId(batchId);
+            CreateArtifact batchArt = scriptBatch.createArtifact(getKey());
+            batchTxData.getCreateArtifacts().add(batchArt);
+            List<String> resultIds = tx.getTxDataReadables().stream().filter(
+               art -> art.getArtifactType().equals(CoreArtifactTypes.TestScriptResults)).map(
+                  art -> art.getIdString()).collect(Collectors.toList());
+            for (String id : resultIds) {
+               batchTxData.getAddRelations().add(
+                  createAddRelation(CoreRelationTypes.ScriptBatchToTestScriptResult, batchArt.getKey(), id));
+            }
+            batchTxData.getAddRelations().add(
+               createAddRelation(CoreRelationTypes.ScriptSetToScriptBatch, ciSetId.getIdString(), batchArt.getKey()));
+            try {
+               tx = txBdf.loadFromJson(mapper.writeValueAsString(batchTxData), tx);
+            } catch (JsonProcessingException ex) {
+               resultData.error("Error processing batch tx json");
+            }
          }
 
          if (tx != null) {
@@ -302,9 +358,14 @@ public class TmoImportApiImpl implements TmoImportApi {
       return result;
    }
 
-   private String getFolderPath(BranchId branch, ArtifactId ciSetId) {
+   private String getFolderPath(ArtifactId ciSetId) {
       String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      return basePath + File.separator + "testscripts" + File.separator + branch.getIdString() + File.separator + ciSetId.getIdString() + File.separator;
+      return basePath + File.separator + "testscripts" + File.separator + ciSetId.getIdString() + File.separator;
+   }
+
+   private String getFolderPath(ArtifactId ciSetId, String batchId) {
+      String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      return basePath + File.separator + "testscripts" + File.separator + ciSetId.getIdString() + File.separator + batchId + File.separator;
    }
 
    /**
@@ -313,8 +374,8 @@ public class TmoImportApiImpl implements TmoImportApi {
     *
     * @return
     */
-   private File getTempFile(BranchId branch, ArtifactId ciSetId) {
-      String folderPath = getFolderPath(branch, ciSetId);
+   private File getTempFile(ArtifactId ciSetId) {
+      String folderPath = getFolderPath(ciSetId);
       File ciSetFolder = new File(folderPath);
       if (!ciSetFolder.exists()) {
          ciSetFolder.mkdirs();

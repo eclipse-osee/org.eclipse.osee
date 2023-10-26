@@ -31,6 +31,10 @@ public interface TmoEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptSetEndpoint getScriptSetTypes(@PathParam("branch") BranchId branch);
 
+   @Path("{branch}/batch")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ScriptBatchEndpoint getScriptBatchEndpoint(@PathParam("branch") BranchId branch);
+
    @Path("{branch}/def")
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptDefEndpoint getScriptDefinitionTypes(@PathParam("branch") BranchId branch);

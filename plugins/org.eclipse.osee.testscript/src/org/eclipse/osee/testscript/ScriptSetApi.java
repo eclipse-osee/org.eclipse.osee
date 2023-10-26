@@ -24,7 +24,7 @@ import org.eclipse.osee.testscript.internal.ScriptSetToken;
  */
 public interface ScriptSetApi {
 
-   ScriptSetToken get(BranchId branch, ArtifactId scriptDefTypeId);
+   ScriptSetToken get(BranchId branch, ArtifactId setId);
 
    Collection<ScriptSetToken> getAll(BranchId branch);
 

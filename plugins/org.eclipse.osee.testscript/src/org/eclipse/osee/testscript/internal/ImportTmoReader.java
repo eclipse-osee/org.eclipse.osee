@@ -43,6 +43,7 @@ public class ImportTmoReader {
    private ScriptResultToken currentScriptResult;
    private TestPointToken currentTestPoint;
    private TestPointToken currentCheckPoint;
+   private TestPointToken currentCheckGroup;
 
    private final SimpleDateFormat executionDateFormat =
       new SimpleDateFormat("MMMM dd, yyyy hh:mm:ss a z", Locale.ENGLISH); // August 31, 2023 10:52:01 PM MST
@@ -73,7 +74,7 @@ public class ImportTmoReader {
          System.out.println(ex);
       }
 
-      currentScriptResult.setName(currentScript.getName() + "_" + currentScriptResult.getExecutionDate().getTime());
+      currentScriptResult.setName(currentScript.getName());
 
       return currentScript;
    }
@@ -84,6 +85,7 @@ public class ImportTmoReader {
 
       public TmoHandler() {
          handlers.put("Actual", new ActualHandler());
+         handlers.put("CheckGroup", new CheckGroupHandler());
          handlers.put("CheckPoint", new CheckPointHandler());
          handlers.put("Config", new ConfigHandler());
          handlers.put("CurrentProcessor", new CurrentProcessorHandler());
@@ -92,12 +94,14 @@ public class ImportTmoReader {
          handlers.put("ExecutedBy", new ExecutedByHandler());
          handlers.put("ExecutionDate", new ExecutionDateHandler());
          handlers.put("Expected", new ExpectedHandler());
+         handlers.put("GroupName", new GroupNameHandler());
          handlers.put("isInteractive", new isInteractiveHandler());
          handlers.put("Name", new NameHandler());
          handlers.put("Number", new NumberHandler());
          handlers.put("NumberOfTransmissions", new NumberOfTransmissionsHandler());
          handlers.put("Qualification", new QualificationHandler());
          handlers.put("Result", new ResultHandler());
+         handlers.put("RetryGroup", new CheckGroupHandler());
          handlers.put("ScriptName", new ScriptNameHandler());
          handlers.put("ScriptVersion", new ScriptVersionHandler());
          handlers.put("SystemInfo", new SystemInfoHandler());
@@ -149,6 +153,24 @@ public class ImportTmoReader {
 
       }
 
+      private class CheckGroupHandler extends AbstractTmoHandler {
+
+         @Override
+         public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
+            currentCheckGroup = new TestPointToken();
+            String mode = attributes.getValue("Mode");
+            if (Strings.isValid(mode)) {
+               currentCheckGroup.setGroupOperator(mode);
+            }
+         }
+
+         @Override
+         public void endElementFound(String uri, String localName, String qName, String content) {
+            currentCheckGroup = null;
+         }
+
+      }
+
       private class CheckPointHandler extends AbstractTmoHandler {
 
          @Override
@@ -157,6 +179,10 @@ public class ImportTmoReader {
             currentCheckPoint.setTestNumber(currentTestPoint.getTestNumber());
             currentCheckPoint.setInteractive(currentTestPoint.getInteractive());
             currentCheckPoint.setOverallResult(currentTestPoint.getResult());
+            if (currentCheckGroup != null) {
+               currentCheckPoint.setGroupName(currentCheckGroup.getGroupName());
+               currentCheckPoint.setGroupOperator(currentCheckGroup.getGroupOperator());
+            }
          }
 
          @Override
@@ -279,6 +305,20 @@ public class ImportTmoReader {
             if (Strings.isValid(content)) {
                currentCheckPoint.setExpected(content);
             }
+         }
+
+      }
+
+      private class GroupNameHandler extends AbstractTmoHandler {
+
+         @Override
+         public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
+            // Do nothing
+         }
+
+         @Override
+         public void endElementFound(String uri, String localName, String qName, String content) {
+            currentCheckGroup.setGroupName(content);
          }
 
       }

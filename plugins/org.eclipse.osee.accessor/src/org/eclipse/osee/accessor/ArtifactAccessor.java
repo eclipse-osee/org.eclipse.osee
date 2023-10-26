@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
@@ -235,13 +236,9 @@ public interface ArtifactAccessor<T> {
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
-   int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException;
+   int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId);
 
-   int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, ArtifactId viewId)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException;
+   int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId, ArtifactId viewId);
 
    Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes) throws InstantiationException, IllegalAccessException,
@@ -283,6 +280,12 @@ public interface ArtifactAccessor<T> {
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
    Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute, SortOrder orderByAttributeDirection, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;;
+
+   Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount,
       long pageSize, AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
@@ -290,6 +293,12 @@ public interface ArtifactAccessor<T> {
    Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount,
       long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, SortOrder orderByAttributeDirection, ArtifactId viewId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
@@ -305,6 +314,13 @@ public interface ArtifactAccessor<T> {
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
+   Collection<T> getAllByRelationAndFilter(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
+      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, SortOrder orderByAttributeDirection,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
    Collection<T> getAllByFilter(BranchId branch, String filter, Collection<FollowRelation> followRelations,
       long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
@@ -316,34 +332,25 @@ public interface ArtifactAccessor<T> {
       InvocationTargetException, NoSuchMethodException, SecurityException;
 
    int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes) throws InstantiationException, IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+      String filter, Collection<AttributeTypeId> attributes);
 
    int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException;
+      String filter, Collection<AttributeTypeId> attributes, ArtifactId viewId);
 
    int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
-      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException;
+      String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations);
 
    int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations,
-      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException, NoSuchMethodException, SecurityException;
+      ArtifactId viewId);
 
    int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations,
-      Collection<AttributeTypeId> followAttributes) throws InstantiationException, IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+      Collection<AttributeTypeId> followAttributes);
 
    int getAllByRelationAndFilterAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId,
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations,
-      Collection<AttributeTypeId> followAttributes, ArtifactId viewId)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException;
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
 
    Collection<T> getAllByQuery(BranchId branch, AttributeQuery query)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,

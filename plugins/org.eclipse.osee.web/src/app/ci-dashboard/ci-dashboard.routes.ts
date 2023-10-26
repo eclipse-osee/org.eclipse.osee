@@ -47,6 +47,11 @@ export const routes: Routes = [
 			),
 	},
 	{
+		path: 'results',
+		title: 'CI Dashboard',
+		loadChildren: () => import('./lib/components/results/results.routes'),
+	},
+	{
 		path: 'subsystems',
 		title: 'CI Dashboard',
 		loadChildren: () =>

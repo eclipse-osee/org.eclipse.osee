@@ -29,9 +29,6 @@ public interface ScriptDefApi {
 
    ScriptDefToken get(BranchId branch, ArtifactId scriptDefTypeId);
 
-   ScriptDefToken getWithDetailsAndFilter(BranchId branch, ArtifactId scriptDefId, String filter, int pageNum,
-      int count);
-
    Collection<ScriptDefToken> getAll(BranchId branch);
 
    Collection<ScriptDefToken> getAll(BranchId branch, ArtifactId viewId);
