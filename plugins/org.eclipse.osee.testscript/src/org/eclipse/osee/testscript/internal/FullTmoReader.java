@@ -142,7 +142,6 @@ public class FullTmoReader {
          if (handler != null) {
             handler.startElementFound(uri, localName, qName, attributes);
          } else {
-            //            throw new UnsupportedOperationException(qName + " does not have a handler");
             System.out.println("No handler for: " + qName);
          }
       }
@@ -152,8 +151,6 @@ public class FullTmoReader {
          AbstractTmoHandler handler = handlers.get(qName);
          if (handler != null) {
             handler.endElementFound(uri, localName, qName, this.getContents().trim());
-         } else {
-            //            throw new UnsupportedOperationException(qName + " does not have a handler");
          }
       }
 

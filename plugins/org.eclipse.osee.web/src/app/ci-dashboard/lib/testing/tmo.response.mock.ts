@@ -15,7 +15,8 @@ import {
 	SetReference,
 	ResultReference,
 	TestCaseReference,
-	TestPointReference,
+	TestPoint,
+	ScriptBatch,
 } from '../types';
 
 export const setsMock: SetReference[] = [
@@ -77,6 +78,7 @@ export const resultReferenceMock: ResultReference[] = [
 		machineName: 'Machine 1',
 		passedCount: 32,
 		failedCount: 12,
+		totalTestPoints: 44,
 		interactiveCount: 3,
 		scriptAborted: false,
 		elapsedTime: 4353242,
@@ -97,6 +99,7 @@ export const resultReferenceMock: ResultReference[] = [
 		executedBy: 'Bob',
 		javaVersion: '21',
 		qualificationLevel: 'DEV',
+		testPoints: [],
 	},
 ];
 
@@ -107,9 +110,19 @@ export const testCaseReferenceMock: TestCaseReference[] = [
 	},
 ];
 
-export const testPointReferenceMock: TestPointReference[] = [
+export const testPointReferenceMock: TestPoint[] = [
 	{
 		key: 'key1',
 		value: 'value1',
+	},
+];
+
+export const scriptBatchResultMock: ScriptBatch[] = [
+	{
+		id: '1',
+		name: 'Batch 1',
+		batchId: '123',
+		executionDate: new Date(1234),
+		machineName: 'Machine 1',
 	},
 ];

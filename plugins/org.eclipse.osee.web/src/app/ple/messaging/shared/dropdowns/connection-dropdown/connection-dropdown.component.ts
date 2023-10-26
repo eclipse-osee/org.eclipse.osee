@@ -42,7 +42,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { connection, connectionSentinel } from '@osee/messaging/shared/types';
-import { CurrentConnectionsService } from 'src/app/ple/messaging/shared/services/ui/current-connections.service';
 import {
 	animate,
 	state,
@@ -50,6 +49,7 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
+import { CurrentConnectionsService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-connection-dropdown',

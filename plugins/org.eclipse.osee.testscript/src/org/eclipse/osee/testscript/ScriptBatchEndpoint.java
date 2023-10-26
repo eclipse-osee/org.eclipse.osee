@@ -21,44 +21,41 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.testscript.internal.ScriptDefToken;
+import org.eclipse.osee.testscript.internal.ScriptBatchToken;
 
 /**
- * @author Stephen J. Molaro
+ * @author Ryan T. Baldwin
  */
-@Path("def")
+@Path("batch")
 @Swagger
-public interface ScriptDefEndpoint {
+public interface ScriptBatchEndpoint {
+
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<ScriptDefToken> getAllScriptDefs(@QueryParam("filter") String filter,
-      @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
-      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<ScriptBatchToken> getAll(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
 
    @GET()
    @Path("set/{setId}")
    @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * @return all Script Def types matching criteria for Set attribute
-    */
-   Collection<ScriptDefToken> getScriptDefBySet(@PathParam("setId") ArtifactId scriptSetId);
+   Collection<ScriptBatchToken> getAllForSet(@PathParam("setId") ArtifactId setId, @QueryParam("filter") String filter,
+      @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+
+   @GET()
+   @Path("set/{setId}/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getAllForSetCount(@PathParam("setId") ArtifactId setId, @QueryParam("filter") String filter,
+      @QueryParam("viewId") ArtifactId viewId);
 
    @GET()
    @Path("count")
    @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * @return all Script Def types matching criteria
-    */
    int getCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
 
    @GET()
    @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * Gets a specific Script Definition
-    */
-   ScriptDefToken getScriptDefType(@PathParam("id") ArtifactId scriptDefTypeId);
+   ScriptBatchToken getBatch(@PathParam("id") ArtifactId batchId);
 
 }

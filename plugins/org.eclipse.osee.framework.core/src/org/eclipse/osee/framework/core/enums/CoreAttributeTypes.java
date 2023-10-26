@@ -106,7 +106,7 @@ public interface CoreAttributeTypes {
    AttributeTypeArtifactId BaselinedBy = osee.createArtifactIdNoTag(1152921504606847247L, "Baselined By", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeDate BaselinedTimestamp = osee.createDateNoTag(1152921504606847244L, "Baselined Timestamp", AttributeTypeToken.TEXT_CALENDAR, "");
-
+   AttributeTypeString BatchId = osee.createString(2054979068972550525L, "Batch Id", MediaType.TEXT_PLAIN, "Batch Id");
    AttributeTypeString BranchDiffData = osee.createString(1152921504606847921L, "Branch Diff Data", MediaType.APPLICATION_JSON, "Json results from change report");
 
    CsciAttributeType CSCI = osee.createEnum(new CsciAttributeType());

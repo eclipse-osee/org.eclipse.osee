@@ -13,15 +13,22 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.zip.ZipInputStream;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.testscript.ScriptResultApi;
 
@@ -48,6 +55,84 @@ public class ScriptResultApiImpl implements ScriptResultApi {
       } catch (Exception ex) {
          return new ScriptResultToken();
       }
+   }
+
+   @Override
+   public ScriptResultToken getWithTestPointsAndFilter(BranchId branch, ArtifactId resultId, String filter, int pageNum,
+      int count) {
+      ScriptResultToken resultToken = ScriptResultToken.SENTINEL;
+      try {
+         resultToken = this.accessor.get(branch, resultId);
+      } catch (Exception ex) {
+         System.out.println(ex);
+      }
+      if (resultToken.isValid()) {
+         String url = resultToken.getFileUrl();
+         File f = new File(url);
+         if (!f.exists()) {
+            return resultToken;
+         }
+         FileInputStream fis;
+         try {
+            fis = new FileInputStream(f);
+            ZipInputStream zis = new ZipInputStream(fis);
+            // There should only be one file per zip
+            if (zis.getNextEntry() != null) {
+               ImportTmoReader reader = new ImportTmoReader();
+               ScriptDefToken tmoToken = reader.getScriptDefinition(zis, ArtifactId.SENTINEL);
+               resultToken = tmoToken.getScriptResults().get(0);
+               zis.close();
+               fis.close();
+               resultToken.setId(resultToken.getId());
+               List<TestPointToken> testPoints = resultToken.getTestPoints();
+               if (Strings.isValid(filter)) {
+                  testPoints = testPoints.stream().filter(
+                     tp -> tp.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
+               }
+               resultToken.setTestPoints(testPoints);
+               resultToken.setTotalTestPoints(testPoints.size());
+               if (pageNum > 0 && count > 0) {
+                  int startIndex = (pageNum - 1) * count;
+                  int endIndex = Math.min(testPoints.size(), startIndex + count);
+                  if (startIndex > testPoints.size() - 1) {
+                     resultToken.setTestPoints(new LinkedList<>());
+                  } else {
+                     resultToken.setTestPoints(testPoints.subList(startIndex, endIndex));
+                  }
+               }
+               return resultToken;
+            } else {
+               zis.close();
+               fis.close();
+            }
+         } catch (IOException ex) {
+            System.out.println(ex);
+         }
+      }
+      return resultToken;
+   }
+
+   @Override
+   public Collection<ScriptResultToken> getAllForBatch(BranchId branch, ArtifactId viewId, ArtifactId batchId,
+      String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+      try {
+         return this.accessor.getAllByRelationAndFilter(branch,
+            CoreRelationTypes.ScriptBatchToTestScriptResult_ScriptBatch, batchId, filter, attributes, pageNum, pageSize,
+            orderByAttribute, viewId);
+      } catch (Exception ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
+   public int getAllForBatchCount(BranchId branch, ArtifactId viewId, ArtifactId batchId, String filter) {
+      if (Strings.isValid(filter)) {
+         return this.accessor.getAllByRelationAndFilterAndCount(branch,
+            CoreRelationTypes.ScriptBatchToTestScriptResult_ScriptBatch, batchId, filter, attributes, viewId);
+      }
+      return this.accessor.getAllByRelationAndCount(branch, CoreRelationTypes.ScriptBatchToTestScriptResult_ScriptBatch,
+         batchId, viewId);
    }
 
    @Override

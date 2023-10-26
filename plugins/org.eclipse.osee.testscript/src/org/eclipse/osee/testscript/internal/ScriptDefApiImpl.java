@@ -13,16 +13,11 @@
 
 package org.eclipse.osee.testscript.internal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.zip.ZipInputStream;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -57,64 +52,6 @@ public class ScriptDefApiImpl implements ScriptDefApi {
          System.out.println(ex);
          return new ScriptDefToken();
       }
-   }
-
-   @Override
-   public ScriptDefToken getWithDetailsAndFilter(BranchId branch, ArtifactId scriptDefId, String filter, int pageNum,
-      int count) {
-      ScriptDefToken token = ScriptDefToken.SENTINEL;
-      try {
-         token = this.accessor.get(branch, scriptDefId,
-            FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults));
-      } catch (Exception ex) {
-         System.out.println(ex);
-      }
-      if (!token.getScriptResults().isEmpty()) {
-         ScriptResultToken result = token.getScriptResults().get(0);
-         String url = result.getFileUrl();
-         File f = new File(url);
-         if (!f.exists()) {
-            return token;
-         }
-         FileInputStream fis;
-         try {
-            fis = new FileInputStream(f);
-            ZipInputStream zis = new ZipInputStream(fis);
-            // There should only be one file per zip
-            if (zis.getNextEntry() != null) {
-               ImportTmoReader reader = new ImportTmoReader();
-               ScriptDefToken tmoToken = reader.getScriptDefinition(zis, ArtifactId.SENTINEL);
-               ScriptResultToken tmoResult = tmoToken.getScriptResults().get(0);
-               zis.close();
-               fis.close();
-               tmoToken.setId(token.getId());
-               tmoResult.setId(result.getId());
-               List<TestPointToken> testPoints = tmoResult.getTestPoints();
-               if (!filter.isEmpty()) {
-                  testPoints = testPoints.stream().filter(
-                     tp -> tp.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
-               }
-               tmoResult.setTestPoints(testPoints);
-               tmoResult.setTotalTestPoints(testPoints.size());
-               if (pageNum > 0 && count > 0) {
-                  int startIndex = (pageNum - 1) * count;
-                  int endIndex = Math.min(testPoints.size(), startIndex + count);
-                  if (startIndex > testPoints.size() - 1) {
-                     tmoResult.setTestPoints(new LinkedList<>());
-                  } else {
-                     tmoResult.setTestPoints(testPoints.subList(startIndex, endIndex));
-                  }
-               }
-               return tmoToken;
-            } else {
-               zis.close();
-               fis.close();
-            }
-         } catch (IOException ex) {
-            System.out.println(ex);
-         }
-      }
-      return token;
    }
 
    @Override

@@ -1,0 +1,107 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<ng-container *ngIf="selectedBatch | async"></ng-container>
+<div class="tw-min-w-[350px]">
+	<ng-container
+		*ngIf="{
+			openedState: isOpen | async,
+			filter: filter | async
+		} as autoCompleteState">
+		<mat-form-field
+			subscriptSizing="dynamic"
+			id="batch-selector"
+			class="tw-w-full">
+			<mat-label>Select a run</mat-label>
+			<input
+				type="text"
+				matInput
+				#input
+				[ngModel]="autoCompleteState.filter"
+				id="batches"
+				name="batches"
+				(focusin)="autoCompleteOpened()"
+				(focusout)="close()"
+				(ngModelChange)="updateFilter($event)"
+				#batches="ngModel"
+				[matAutocomplete]="autoBatches" />
+			<mat-icon
+				*ngIf="!autoCompleteState.openedState"
+				matIconSuffix
+				>arrow_drop_down</mat-icon
+			>
+			<mat-icon
+				*ngIf="
+					autoCompleteState.openedState &&
+					autoCompleteState.filter !== ''
+				"
+				class="tw-cursor-pointer"
+				matIconSuffix
+				(mousedown)="updateFilter('')"
+				>close</mat-icon
+			>
+			<mat-autocomplete
+				autoActiveFirstOption="true"
+				autoSelectActiveOption="true"
+				#autoBatches="matAutocomplete"
+				(optionSelected)="updateValue($event.option.value)">
+				<ng-container
+					*ngIf="{
+						options: batchOptions | async,
+						count: count | async
+					} as _batches">
+					<ng-container
+						*ngIf="
+							_batches.options !== null &&
+								_batches.options !== undefined &&
+								_batches.count !== null &&
+								_batches.count !== undefined;
+							else loading
+						">
+						<ng-container
+							*ngIf="_batches.count > 0; else noOptions">
+							<osee-mat-option-loading
+								[data]="_batches.options"
+								objectName="batches"
+								[paginationSize]="pageSize"
+								paginationMode="AUTO"
+								[count]="_batches.count">
+								<ng-template let-option>
+									<mat-option
+										[attr.data-cy]="'option-' + option.name"
+										[value]="option"
+										[id]="option.id">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						</ng-container>
+					</ng-container>
+				</ng-container>
+				<ng-template #loading>
+					<mat-option
+						id="-1"
+						disabled>
+						Loading...
+					</mat-option>
+				</ng-template>
+				<ng-template #noOptions>
+					<mat-option
+						id="-1"
+						disabled>
+						No test runs available for this CI Set
+					</mat-option>
+				</ng-template>
+			</mat-autocomplete>
+		</mat-form-field>
+	</ng-container>
+</div>

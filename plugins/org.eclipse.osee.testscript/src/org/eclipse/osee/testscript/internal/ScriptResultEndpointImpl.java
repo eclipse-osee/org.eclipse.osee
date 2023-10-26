@@ -53,4 +53,22 @@ public class ScriptResultEndpointImpl implements ScriptResultEndpoint {
       return scriptResultTypeApi.getCountWithFilter(branch, viewId, filter);
    }
 
+   @Override
+   public Collection<ScriptResultToken> getAllForBatch(ArtifactId batchId, String filter, ArtifactId viewId,
+      long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
+      return this.scriptResultTypeApi.getAllForBatch(branch, viewId, batchId, filter, pageNum, pageSize,
+         orderByAttributeType);
+   }
+
+   @Override
+   public int getAllForBatchCount(ArtifactId batchId, String filter, ArtifactId viewId) {
+      return this.scriptResultTypeApi.getAllForBatchCount(branch, viewId, batchId, filter);
+   }
+
+   @Override
+   public ScriptResultToken getScriptResultWithDetails(ArtifactId scriptDefTypeId, String filter, int pageNum,
+      int count) {
+      return scriptResultTypeApi.getWithTestPointsAndFilter(branch, scriptDefTypeId, filter, pageNum, count);
+   }
+
 }

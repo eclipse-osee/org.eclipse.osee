@@ -70,6 +70,7 @@ export interface ResultReference {
 	machineName: string;
 	passedCount: number;
 	failedCount: number;
+	totalTestPoints: number;
 	interactiveCount: number;
 	javaVersion: string;
 	scriptAborted: boolean;
@@ -90,6 +91,7 @@ export interface ResultReference {
 	userName: string;
 	email: string;
 	witnesses: string[];
+	testPoints: TestPoint[];
 }
 
 export interface TestCaseReference {
@@ -97,7 +99,23 @@ export interface TestCaseReference {
 	value: string;
 }
 
-export interface TestPointReference {
+export interface TestPoint {
 	key: string;
 	value: string;
 }
+
+export interface ScriptBatch {
+	id: string;
+	name: string;
+	batchId: string;
+	executionDate: Date;
+	machineName: string;
+}
+
+export const scriptBatchSentinel: ScriptBatch = {
+	id: '-1',
+	name: '',
+	batchId: '',
+	executionDate: new Date(),
+	machineName: '',
+};

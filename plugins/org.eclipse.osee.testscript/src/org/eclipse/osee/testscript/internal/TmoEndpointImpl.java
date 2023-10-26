@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.testscript.ScriptApi;
+import org.eclipse.osee.testscript.ScriptBatchEndpoint;
 import org.eclipse.osee.testscript.ScriptDefEndpoint;
 import org.eclipse.osee.testscript.ScriptImportEndpoint;
 import org.eclipse.osee.testscript.ScriptResultEndpoint;
@@ -46,6 +47,13 @@ public class TmoEndpointImpl implements TmoEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptSetEndpoint getScriptSetTypes(@PathParam("branch") BranchId branch) {
       return new ScriptSetEndpointImpl(branch, testScriptApi.getScriptProgramApi());
+   }
+
+   @Override
+   @Path("{branch}/batch")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ScriptBatchEndpoint getScriptBatchEndpoint(@PathParam("branch") BranchId branch) {
+      return new ScriptBatchEndpointImpl(branch, testScriptApi.getScriptBatchApi());
    }
 
    @Override

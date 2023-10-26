@@ -124,4 +124,9 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
       return SqlHandlerPriority.PAGINATION.ordinal();
    }
 
+   @Override
+   public boolean hasPredicates() {
+      return false;
+   }
+
 }

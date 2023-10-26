@@ -183,7 +183,6 @@ public class TestPointToken extends ArtifactAccessorResult {
    /**
     * @return the groupName
     */
-   @JsonIgnore
    public String getGroupName() {
       return groupName;
    }
@@ -213,7 +212,6 @@ public class TestPointToken extends ArtifactAccessorResult {
    /**
     * @return the groupOperator
     */
-   @JsonIgnore
    public String getGroupOperator() {
       return groupOperator;
    }

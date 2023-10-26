@@ -969,6 +969,11 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken Info = osee.add(osee.artifactType(91126474931227736L, "Info", false, Artifact)
       .exactlyOne(Value));
 
+   ArtifactTypeToken ScriptBatch = osee.add(osee.artifactType(2616144796145104213L, "Script Batch", false, Artifact)
+      .exactlyOne(BatchId)
+      .exactlyOne(ExecutionDate)
+      .exactlyOne(MachineName));
+
    ArtifactTypeToken ScriptResultTypes = osee.add(osee.artifactType(8756764540L, "Script Result Types", false, Artifact));
 
    ArtifactTypeToken ResolutionTypes = osee.add(osee.artifactType(8756764541L, "Resolution Types", false, Artifact));

@@ -15,3 +15,4 @@ export * from './functions/undefinedOrNullCheck';
 export * from './pipes/display-truncated-string-with-field-overflow.pipe';
 export * from './pipes/first-letter-lower.pipe';
 export * from './pipes/split-string.pipe';
+export * from './pipes/format-milliseconds.pipe';

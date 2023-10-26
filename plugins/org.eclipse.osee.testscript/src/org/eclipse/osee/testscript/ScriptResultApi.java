@@ -26,7 +26,15 @@ public interface ScriptResultApi {
 
    ScriptResultToken get(BranchId branch, ArtifactId scriptDefTypeId);
 
+   ScriptResultToken getWithTestPointsAndFilter(BranchId branch, ArtifactId resultId, String filter, int pageNum,
+      int count);
+
    Collection<ScriptResultToken> getAll(BranchId branch);
+
+   Collection<ScriptResultToken> getAllForBatch(BranchId branch, ArtifactId viewId, ArtifactId batchId, String filter,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+
+   int getAllForBatchCount(BranchId branch, ArtifactId viewId, ArtifactId batchId, String filter);
 
    Collection<ScriptResultToken> getAll(BranchId branch, ArtifactId viewId);
 
