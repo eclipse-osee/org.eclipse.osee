@@ -42,6 +42,9 @@
 			"@osee/layout/notification": ["src/app/layout/lib/notification"],
 			"@osee/layout/container": ["src/app/layout/lib/containers"],
 			"@osee/layout/routing": ["src/app/layout/lib/routing"],
+			"@osee/ci-dashboard/navigation": [
+				"src/app/ci-dashboard/lib/navigation"
+			],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"
 			],

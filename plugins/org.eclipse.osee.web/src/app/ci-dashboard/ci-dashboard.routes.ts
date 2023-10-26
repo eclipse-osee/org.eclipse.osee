@@ -11,11 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
+import { RoleGuard } from '@osee/auth';
+import { ciNavigationStructure } from '@osee/ci-dashboard/navigation';
+
+const importNav = ciNavigationStructure[0].children.find(
+	(page) => page.routerLink === '/ci/import'
+);
 
 export const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('@osee/toolbar'),
+		loadChildren: () => import('./toolbar.routes'),
 		outlet: 'toolbar',
 	},
 	{
@@ -33,6 +39,8 @@ export const routes: Routes = [
 	{
 		path: 'import',
 		title: 'CI Dashboard',
+		canActivate: [RoleGuard],
+		data: { requiredRoles: importNav?.requiredRoles },
 		loadChildren: () =>
 			import(
 				'./lib/components/ci-dashboard-import/ci-dashboard-import.routes'

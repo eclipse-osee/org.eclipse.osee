@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { ciNavigationStructure } from '@osee/ci-dashboard/navigation';
 import { navigationElement } from '@osee/shared/types';
 import { UserRoles } from '@osee/shared/types/auth';
 
@@ -343,4 +344,5 @@ export const navigationStructure: navigationElement[] = [
 			},
 		],
 	},
+	...ciNavigationStructure,
 ];

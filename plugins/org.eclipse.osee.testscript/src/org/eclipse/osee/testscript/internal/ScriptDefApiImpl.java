@@ -60,11 +60,11 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    }
 
    @Override
-   public ScriptDefToken getWithDetailsAndFilter(BranchId branch, ArtifactId scriptDefTypeId, String filter,
-      int pageNum, int count) {
+   public ScriptDefToken getWithDetailsAndFilter(BranchId branch, ArtifactId scriptDefId, String filter, int pageNum,
+      int count) {
       ScriptDefToken token = ScriptDefToken.SENTINEL;
       try {
-         token = this.accessor.get(branch, scriptDefTypeId,
+         token = this.accessor.get(branch, scriptDefId,
             FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults));
       } catch (Exception ex) {
          System.out.println(ex);

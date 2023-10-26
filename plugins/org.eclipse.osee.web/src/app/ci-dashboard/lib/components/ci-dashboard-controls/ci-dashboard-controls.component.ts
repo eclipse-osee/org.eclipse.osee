@@ -13,7 +13,10 @@
 import { NgIf } from '@angular/common';
 import { Component, Input, OnInit, computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BranchPickerComponent } from '@osee/shared/components';
+import {
+	ActionDropDownComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { SetDropdownComponent } from './set-dropdown/set-dropdown.component';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -21,12 +24,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
 	selector: 'osee-ci-dashboard-controls',
 	standalone: true,
-	imports: [NgIf, BranchPickerComponent, SetDropdownComponent],
+	imports: [
+		NgIf,
+		BranchPickerComponent,
+		SetDropdownComponent,
+		ActionDropDownComponent,
+	],
 	templateUrl: './ci-dashboard-controls.component.html',
 })
 export class CiDashboardControlsComponent implements OnInit {
 	@Input() branchPicker: boolean = true;
 	@Input() ciSetSelector: boolean = true;
+	@Input() actionButton: boolean = false;
 
 	constructor(
 		private route: ActivatedRoute,

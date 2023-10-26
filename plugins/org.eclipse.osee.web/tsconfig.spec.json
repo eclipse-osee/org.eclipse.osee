@@ -38,6 +38,9 @@
 			"@osee/layout/routing": ["src/app/layout/lib/routing"],
 			"@osee/page-not-found": ["src/app/page-not-found"],
 			"@osee/plconfig": ["src/app/ple/plconfig/lib"],
+			"@osee/ci-dashboard/navigation": [
+				"src/app/ci-dashboard/lib/navigation"
+			],
 			"@osee/ci-dashboard/testing": ["src/app/ci-dashboard/lib/testing"],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"
