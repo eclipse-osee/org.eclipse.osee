@@ -466,7 +466,8 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       return attribute;
    }
 
-   private <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value) {
+   @Override
+   public <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.setFromString(value);
       return attribute;

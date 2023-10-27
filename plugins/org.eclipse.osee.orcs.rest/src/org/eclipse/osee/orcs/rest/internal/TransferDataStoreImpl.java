@@ -220,6 +220,7 @@ public class TransferDataStoreImpl {
          ManifestData md = new ManifestData();
          TransactionId uniqueTx = TransactionId.valueOf(Lib.generateUuid());
          String fileName = tx.getIdString() + ".json";
+         System.out.println(String.format("workfing tx %s", tx.getIdString()));
          String path = transferDirectory + branchId + File.separator + fileName;
          if (validTxToProcess) {
             try {

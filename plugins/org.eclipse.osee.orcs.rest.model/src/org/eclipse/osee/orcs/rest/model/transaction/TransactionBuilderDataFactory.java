@@ -126,7 +126,14 @@ public class TransactionBuilderDataFactory {
          tbd.setTxCommitArtId(ArtifactId.SENTINEL.getId());
       }
 
+      if (results.isFailed()) {
+         tbd.setResults("Failed");
+      }
       return tbd;
+   }
+
+   public XResultData getResults() {
+      return results;
    }
 
    public TransactionBuilder loadFromJson(String json) {
@@ -149,7 +156,7 @@ public class TransactionBuilderDataFactory {
       deleteRelations(readTree, tx);
       addRelations(readTree, artifactsByKeys, tx);
       JsonNode commitArtNode = readTree.get("txCommitArtId");
-      if (commitArtNode != null && commitArtNode.isLong()) {
+      if (commitArtNode != null && (commitArtNode.isLong() || commitArtNode.isInt())) {
          Long commitArtId = commitArtNode.asLong();
          ArtifactId commitArt = ArtifactId.valueOf(commitArtId);
          if (commitArt.isValid()) {
@@ -234,6 +241,9 @@ public class TransactionBuilderDataFactory {
             // special case if ignoreType is already on destination - then it will be the modify case not the new
             if (change.getIgnoreType().isAlreadyOnDestination()) {
                artSort = new ArtifactSortContainerModify(art);
+               ModifyArtifact modifiedArt = new ModifyArtifact();
+               modifiedArt.setId(art.getIdString());
+               ((ArtifactSortContainerModify) artSort).setModifyArt(modifiedArt);
                workingArtsById.put(art, artSort);
             } else {
                ArtifactSortContainerCreate artSortCreate = new ArtifactSortContainerCreate(art);
@@ -283,9 +293,15 @@ public class TransactionBuilderDataFactory {
 
    private void addSortContent(TransactionBuilderData tbd, ArtifactSortContainer sortArt) {
       if (sortArt instanceof ArtifactSortContainerCreate) {
-         tbd.getCreateArtifacts().add(((ArtifactSortContainerCreate) sortArt).getCreateArt());
+         List<CreateArtifact> createArts = tbd.getCreateArtifacts();
+         if (createArts != null) {
+            createArts.add(((ArtifactSortContainerCreate) sortArt).getCreateArt());
+         }
       } else if (sortArt instanceof ArtifactSortContainerModify) {
-         tbd.getModifyArtifacts().add(((ArtifactSortContainerModify) sortArt).getModifyArt());
+         List<ModifyArtifact> modArts = tbd.getModifyArtifacts();
+         if (modArts != null) {
+            modArts.add(((ArtifactSortContainerModify) sortArt).getModifyArt());
+         }
       } else {
          results.errorf("default sort container not handled %s", sortArt.getArtifact().getIdString());
       }
@@ -480,7 +496,7 @@ public class TransactionBuilderDataFactory {
       for (ChangeItem change : relationChanges) {
          ChangeVersion current = change.getCurrentVersion();
          ModificationType mt = current.getModType();
-         if (ModificationType.NEW.equals(mt)) {
+         if (ModificationType.NEW.equals(mt) || ModificationType.MODIFIED.equals(mt)) {
             tbd = newRelation(change, tbd);
          } else if (ModificationType.DELETED.equals(mt)) {
             tbd = deleteRelation(change, tbd);
@@ -719,10 +735,10 @@ public class TransactionBuilderDataFactory {
             JsonNode value = attribute.get("value");
             if (value.isArray()) {
                for (JsonNode attrValue : value) {
-                  tx.createAttribute(artifact, attributeType, attrValue);
+                  tx.createAttributeFromString(artifact, attributeType, attrValue.asText());
                }
             } else {
-               tx.createAttribute(artifact, attributeType, value.asText());
+               tx.createAttributeFromString(artifact, attributeType, value.asText());
             }
          }
       }

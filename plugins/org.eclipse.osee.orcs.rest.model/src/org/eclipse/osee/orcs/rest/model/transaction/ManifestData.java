@@ -85,7 +85,7 @@ public class ManifestData {
    }
 
    public String getDirName() {
-      return fileName;
+      return dirName;
    }
 
    public void setDirName(String dirName) {
