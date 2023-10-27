@@ -114,6 +114,8 @@ public interface TransactionBuilder {
 
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, T value);
 
+   <T> AttributeId createAttributeFromString(ArtifactId art, AttributeTypeToken attributeType, String value);
+
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, UserToken userToken, T value);
 
    <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeToken attributeType, T value);

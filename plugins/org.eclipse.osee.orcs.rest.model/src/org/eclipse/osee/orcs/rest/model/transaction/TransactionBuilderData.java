@@ -36,7 +36,23 @@ import java.util.Map;
    "deleteRelations",
    "addRelations"})
 public class TransactionBuilderData {
+   private String results = "N/A";
 
+   public String getResults() {
+      return results;
+   }
+
+   public void setResults(String results) {
+      this.results = results;
+   }
+
+   public boolean isFailed() {
+      if (results.equals("Failed")) {
+         return true;
+      } else {
+         return false;
+      }
+   }
    @JsonProperty("branch")
    private String branch;
    @JsonProperty("txComment")

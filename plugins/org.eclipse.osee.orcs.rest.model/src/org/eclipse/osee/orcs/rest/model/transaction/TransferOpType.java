@@ -23,13 +23,14 @@ public enum TransferOpType {
    PREV_TX(1),
    ADD(2),
    PURGE(3),
-   EMPTY(4);
+   EMPTY(4),
+   CUR_TX(5);
    private final int value;
 
    TransferOpType(int value) {
       this.value = value;
    }
-
+   
    public final int getValue() {
       return value;
    }

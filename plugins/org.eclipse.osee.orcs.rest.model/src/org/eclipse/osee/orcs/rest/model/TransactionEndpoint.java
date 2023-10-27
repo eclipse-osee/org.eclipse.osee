@@ -103,16 +103,6 @@ public interface TransactionEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData generateTransferFile(@QueryParam("exportId") TransactionId exportId);
 
-   @GET
-   @Path("xfer/download")
-   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   Response downloadTransferFile();
-
-   @GET
-   @Path("xfer/download/{currentFlag}")
-   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   Response downloadTransferFile(@PathParam("currentFlag") String flag);
-
    @POST
    @Path("xfer/upload")
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
