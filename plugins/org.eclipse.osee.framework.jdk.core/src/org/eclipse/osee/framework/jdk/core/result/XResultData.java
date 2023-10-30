@@ -127,6 +127,13 @@ public class XResultData {
       logStr(Type.Info, str + "\n");
    }
 
+   /**
+    * logf with html color tag. for use with XResultDataUI or other html result
+    */
+   public void logfColor(String htmlColor, String formatStr, Object... objs) {
+      logStr(Type.Info, AHTML.color(htmlColor, String.format(formatStr, objs)));
+   }
+
    public void logf(String formatStr, Object... objs) {
       logStr(Type.Info, String.format(formatStr, objs));
    }
