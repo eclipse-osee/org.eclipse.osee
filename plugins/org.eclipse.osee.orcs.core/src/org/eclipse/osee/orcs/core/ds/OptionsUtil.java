@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public final class OptionsUtil {
@@ -37,6 +38,7 @@ public final class OptionsUtil {
    private static final String INCLUDE_APPLICABILITY_TOKENS = "include.applicability.tokens";
    private static final String ORDER_BY_MECHANISM = "order.by.mechanism";
    private static final String ORDER_BY_ATTRIBUTE = "order.by.attribute";
+   private static final String ORDER_BY_ATTRIBUTE_DIRECTION = "order.by.attribute.direction";
    private static final String FOLLOW_SEARCH_IN_PROGRESS = "follow.search.in.progress";
    private static final String SINGLE_LEVEL_RELATIONS_SEARCH = "single.level.relations.search";
    private static final String BRANCH_ORDER = "branch.order";
@@ -58,6 +60,7 @@ public final class OptionsUtil {
       reset(options);
       setFollowSearchInProgress(options, false);
       setBranchOrder(options, "id");
+      setOrderByAttributeDirection(options, SortOrder.ASCENDING);
       return options;
    }
 
@@ -72,6 +75,7 @@ public final class OptionsUtil {
       setFromBranchView(options, ArtifactId.SENTINEL);
       setIncludeApplicabilityTokens(options, false);
       setSingleLevelRelationsSearch(options, false);
+      setOrderByAttributeDirection(options, SortOrder.ASCENDING);
    }
 
    public static boolean isCacheIncluded(Options options) {
@@ -215,6 +219,18 @@ public final class OptionsUtil {
 
    public static Long getOrderByAttribute(Options options) {
       return options.getLong(ORDER_BY_ATTRIBUTE);
+   }
+
+   public static void setOrderByAttributeDirection(Options options, SortOrder direction) {
+      options.put(ORDER_BY_ATTRIBUTE_DIRECTION, direction);
+   }
+
+   public static SortOrder getOrderByAttributeDirection(Options options) {
+      Object direction = options.getObject(ORDER_BY_ATTRIBUTE_DIRECTION);
+      if (direction instanceof SortOrder) {
+         return (SortOrder) direction;
+      }
+      return SortOrder.ASCENDING;
    }
 
    public static void setFollowSearchInProgress(Options options, boolean inProgress) {

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 
 /**
  * @author Ryan D. Brooks
@@ -138,6 +139,10 @@ public interface QueryBuilder extends Query {
    QueryBuilder setOrderByAttribute(AttributeTypeToken AttributeTypeToken);
 
    AttributeTypeToken orderByAttribute();
+
+   QueryBuilder setOrderByAttributeDirection(SortOrder direction);
+
+   SortOrder orderByAttributeDirection();
 
    /**
     * Used to set the order mechanism i.e. RELATION, ATTRIBUTE, or RELATION AND ATTRIBUTE It is advisable instead to use
