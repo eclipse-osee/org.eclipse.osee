@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.QueryType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
@@ -946,6 +947,17 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public AttributeTypeToken orderByAttribute() {
       return AttributeTypeToken.valueOf(OptionsUtil.getOrderByAttribute(getOptions()), "");
+   }
+
+   @Override
+   public QueryBuilder setOrderByAttributeDirection(SortOrder direction) {
+      OptionsUtil.setOrderByAttributeDirection(getOptions(), direction);
+      return this;
+   }
+
+   @Override
+   public SortOrder orderByAttributeDirection() {
+      return OptionsUtil.getOrderByAttributeDirection(getOptions());
    }
 
    @Override

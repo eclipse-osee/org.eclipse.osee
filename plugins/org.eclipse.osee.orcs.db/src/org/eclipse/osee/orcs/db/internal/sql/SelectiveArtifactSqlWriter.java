@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OseeDb;
@@ -267,7 +268,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                write("'");
                write(new String(new char[4000]).replace('\0', 'Z'));
                write("'");
-               write("\n" + "END ASC");
+               write("\n" + "END " + (this.rootQueryData.orderByAttributeDirection().equals(
+                  SortOrder.DESCENDING) ? "DESC" : "ASC"));
             }
             if (this.rootQueryData.orderMechanism().equals("RELATION") || this.rootQueryData.orderMechanism().equals(
                "RELATION AND ATTRIBUTE")) {
