@@ -2,9 +2,9 @@ java_library(
     name = "framework_branch_gantt",
 	resources = ["gif_files"],
 	srcs = glob(["**/*.java"]),
-	deps = ["java_deps","//framework_core_packages",
+	deps = ["java_deps","//org.eclipse.osee.org.eclipse.osee.org.eclipse.osee.framework.core.packages",
 		"//:framework_ui_skynet",
-	 	"//:framework_core_model",
+	 	"//:org.eclipse.osee.framework.core_model",
 	 	"//:framework_skynet_core",
 		"//:framework_ui_swt"
 		],

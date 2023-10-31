@@ -1,9 +1,9 @@
 java_library(
-        name = "activity_api",
+        name = "org.eclipse.osee.activity.api",
         srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
-                 "//org.eclipse.osee.framework.core:framework_core", "//org.eclipse.osee.framework.jdk.core:framework_jdk_core",
-                "//org.eclipse.osee.logger:logger"],	
+                 "//org.eclipse.osee.framework.core", "//org.eclipse.osee.framework.jdk.core",
+                "//org.eclipse.osee.logger"],	
 	visibility = ["//visibility:public"]
 )
 

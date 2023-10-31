@@ -1,11 +1,20 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "define_api",
+)
+
+
+
 
 java_library(
-        name = "define_api",
+        name = "org.eclipse.osee.define.api",
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//:jdbc",
-                "//:orcs", "//:framework_core_model",
-                "//:console_admin","//:cache_admin",
-                "//:activity_api"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc",
+                "//org.eclipse.osee.orcs", "//org.eclipse.osee.framework.core.model",
+                "//org.eclipse.osee.console.admin","//org.eclipse.osee.cache.admin",
+                "//org.eclipse.osee.activity.api"],
         visibility = ["//visibility:public"]
 
 )

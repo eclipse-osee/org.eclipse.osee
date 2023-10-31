@@ -1,8 +1,8 @@
 
 java_library(
-        name = "vcast",
+        name = "org.eclipse.osee.vcast",
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages","//:jdbc"],
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc"],
         visibility = ["//org.eclipse.osee.disposition.rest:__pkg__","//org.eclipse.osee.server.p2:__subpackages__"]
         
 )

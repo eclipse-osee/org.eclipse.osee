@@ -4,8 +4,8 @@ java_library(
         resources = ["xsd_files"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
-		"//framework_core_packages",
-		"//:framework_messaging"
+		"//org.eclipse.osee.framework.core.packages",
+		"//org.eclipse.osee.framework.messaging"
 	],
 	visibility = ["//visibility:public"]
 )

@@ -1,5 +1,13 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "framework.jdk.core",
+)
+
+
 java_library(
-	name = "framework_jdk_core",
+	name = "org.eclipse.osee.framework.jdk.core",
 	resources = ["txt_files"],
 	srcs = glob(["**/*.java"]),	
 	deps = ["java_deps"],
@@ -11,7 +19,8 @@ java_library(
 filegroup(
     name = "txt_files",
     srcs =
-        ["src/org/eclipse/osee/framework/jdk/core/util/ReservedCharacters.txt"]
+        ["src/org/eclipse/osee/framework/jdk/core/util/ReservedCharacters.txt",
+	 "META-INF/MANIFEST.MF"]
     ,
 )
 
@@ -26,7 +35,7 @@ java_library(
                 "@maven//:javax_ws_rs_javax_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
-		        "@maven//:org_apache_poi_poi",
-		        "@maven//:org_apache_poi_poi_ooxml"
+		"@maven//:org_apache_poi_poi",
+		"@maven//:org_apache_poi_poi_ooxml"
                 ],
 )

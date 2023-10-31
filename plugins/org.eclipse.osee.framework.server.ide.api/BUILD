@@ -1,10 +1,12 @@
 
 java_library(
-        name = "framework_server_ide_api",
+        name = "org.eclipse.osee.framework.server.ide.api",
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//:jdbc","//:jaxrs","//:orcs","//:orcs_rest",
-                "//:orcs_core","//:framework_core_model","//:framework_core_server","//:activity_api",
-                "//:console_admin","//:framework_resource_management"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.jaxrs",
+		"//org.eclipse.osee.orcs","//org.eclipse.osee.orcs.rest",
+                "//org.eclipse.osee.orcs.core","//org.eclipse.osee.framework.core.model","//org.eclipse.osee.framework.core.server",
+		"//org.eclipse.osee.activity.api",
+                "//org.eclipse.osee.console.admin","//org.eclipse.osee.framework.resource.management"],
         visibility = ["//visibility:public"]
 
 )

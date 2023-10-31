@@ -1,20 +1,20 @@
 
 java_library(
-        name = "framework_server_ide",
+        name = "org.eclipse.osee.framework.server.ide",
         resources = ["xml_files"],
 	srcs = glob(["**/*.java"]),
         deps = ["java_deps",
-		"//framework_core_packages",
-		"//:framework_core_server",
-		"//:framework_core_model",
-                "//:framework_resource_management",
-		"//:jdbc",
-		"//:jaxrs",
-		"//:orcs",
-		"//:orcs_core",
-	        "//:console_admin",
-		"//:activity_api",
-		"//:framework_server_ide_api"
+		"//org.eclipse.osee.framework.core.packages",
+		"//org.eclipse.osee.framework.core.server",
+		"//org.eclipse.osee.framework.core.model",
+                "//org.eclipse.osee.framework.resource.management",
+		"//org.eclipse.osee.jdbc",
+		"//org.eclipse.osee.jaxrs",
+		"//org.eclipse.osee.orcs",
+		"//org.eclipse.osee.orcs.core",
+	        "//org.eclipse.osee.console.admin",
+		"//org.eclipse.osee.activity.api",
+		"//org.eclipse.osee.framework.server.ide.api"
 	],
 	visibility = ["//visibility:public"]
 )

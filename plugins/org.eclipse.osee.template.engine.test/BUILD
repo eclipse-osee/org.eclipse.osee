@@ -2,8 +2,8 @@ java_test(
     name = "OseeTemplateEngineTestSuite",
     resources = ["html_files", "css_files", "xml_files"],
     srcs = glob(["**/*.java"]),
-    deps = ["//:template_engine","@maven//:org_mockito_mockito_core",
-            "//org.eclipse.osee.framework.jdk.core:framework_jdk_core"]
+    deps = ["//org.eclipse.osee.template.engine","@maven//:org_mockito_mockito_core",
+            "//org.eclipse.osee.framework.jdk.core"]
 )
 
 filegroup(

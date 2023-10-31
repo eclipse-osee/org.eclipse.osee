@@ -2,7 +2,7 @@ java_test(
         name = "JdkCoreTestSuite",
        	resources = ["xml_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//org.eclipse.osee.framework.jdk.core:framework_jdk_core"],
+        deps = ["java_deps","//org.eclipse.osee.framework.jdk.core"],
         visibility = ["//visibility:public"]
 )
 

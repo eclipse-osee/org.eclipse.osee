@@ -1,8 +1,8 @@
 
 java_library(
-        name = "disposition_rest_model",
+        name = "org.eclipse.osee.disposition.rest.model",
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages"],
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages"],
         visibility = ["//visibility:public"]
 
 )

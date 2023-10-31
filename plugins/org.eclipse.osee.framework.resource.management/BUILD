@@ -1,9 +1,9 @@
 
 java_library(
-        name = "framework_resource_management",
+        name = "org.eclipse.osee.framework.resource.management",
         resources = ["xml_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages"],
         visibility = ["//visibility:public"]
 
 )

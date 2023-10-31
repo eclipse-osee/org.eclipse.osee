@@ -2,7 +2,7 @@ java_test(
         name = "AllMessagingIntegrationTestSuite",
         resources = ["test_messages"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//:framework_messaging","//framework_core_packages"],
+        deps = ["java_deps","//:framework_messaging","//org.eclipse.osee.framework.core.packages"],
 )
 
 filegroup(
