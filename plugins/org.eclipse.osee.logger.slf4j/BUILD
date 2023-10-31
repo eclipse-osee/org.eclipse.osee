@@ -1,7 +1,7 @@
 java_library(
-        name = "logger_slf4j",
+        name = "org.eclipse.osee.logger.slf4j",
 	srcs = glob(["**/*.java"]),
-	deps = ["java_deps","//:framework_jdk_core","//:logger"],
+	deps = ["java_deps","//org.eclipse.osee.framework.jdk.core","//org.eclipse.osee.logger"],
         visibility = ["//visibility:public"]
 )
 

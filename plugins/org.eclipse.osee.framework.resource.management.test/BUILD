@@ -1,5 +1,5 @@
 java_test(
     name = "ResourceManagementTestSuite",
     srcs = glob(["**/*.java"]),
-    deps = ["//:framework_resource_management", "//framework_core_packages"]
+    deps = ["//org.eclipse.osee.framework.resource.management", "//org.eclipse.osee.framework.core.packages"]
 )

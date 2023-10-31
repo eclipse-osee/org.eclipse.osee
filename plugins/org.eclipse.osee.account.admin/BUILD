@@ -1,10 +1,10 @@
 java_library(
-        name = "account_admin",
+        name = "org.eclipse.osee.account.admin",
         resources = ["x_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages",
-        "//org.eclipse.osee.account.rest.model:account_rest_model",
-        "//org.eclipse.osee.authentication.admin:authentication_admin"],
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages",
+        "//org.eclipse.osee.account.rest.model",
+        "//org.eclipse.osee.authentication.admin"],
         visibility = ["//visibility:public"]
 )
 

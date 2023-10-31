@@ -1,9 +1,9 @@
 
 java_library(
-        name = "account_rest_client",
+        name = "org.eclipse.osee.account.rest.client",
 	resources = ["x_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages", "//org.eclipse.osee.account.rest.model:account_rest_model"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages", "//org.eclipse.osee.account.rest.model"],
         visibility = ["//visibility:public"]
 
 )

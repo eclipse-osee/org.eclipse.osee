@@ -1,8 +1,8 @@
 java_library(
-        name = "authorization_admin",
+        name = "org.eclipse.osee.authorization.admin",
         resources = ["x_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages"],
         visibility = ["//visibility:public"]
 )
 

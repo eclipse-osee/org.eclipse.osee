@@ -1,17 +1,17 @@
 
 java_library(
-        name = "account_rest",
-        resources = ["x_files", "html_files"],
-	    srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages","//org.eclipse.osee.orcs:orcs",
-		        "//org.eclipse.osee.jaxrs:jaxrs", "//org.eclipse.osee.jaxrs.server:jaxrs_server",
-				"//org.eclipse.osee.jdbc:jdbc",
-				"//org.eclipse.osee.account.rest.model:account_rest_model",
-				"//org.eclipse.osee.account.admin:account_admin",
-				"//org.eclipse.osee.authorization.admin:authorization_admin",
-				"//org.eclipse.osee.authentication.admin:authentication_admin",
-				"//org.eclipse.osee.framework.resource.management:framework_resource_management"],
-        visibility = ["//visibility:public"]
+     name = "org.eclipse.osee.account.rest",
+     resources = ["x_files", "html_files"],
+     srcs = glob(["**/*.java"]),
+     deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.orcs",
+	     "//org.eclipse.osee.jaxrs", "//org.eclipse.osee.jaxrs.server",
+	     "//org.eclipse.osee.jdbc",
+	     "//org.eclipse.osee.account.rest.model",
+	     "//org.eclipse.osee.account.admin",
+	     "//org.eclipse.osee.authorization.admin",
+	     "//org.eclipse.osee.authentication.admin",
+	     "//org.eclipse.osee.framework.resource.management"],
+     visibility = ["//visibility:public"]
 
 )
 
@@ -20,7 +20,8 @@ filegroup(
     srcs = 
 	  [
 	   	"OSGI-INF/account.rest.application.xml",
-		"OSGI-INF/jaxrs.authenticator.xml"
+		"OSGI-INF/jaxrs.authenticator.xml",
+		"META-INF/MANIFEST.MF"
 	  ]   
   , 
 )
@@ -37,8 +38,8 @@ filegroup(
 )
 
 java_library(
-        name = "java_deps",
-        exports = [
+     name = "java_deps",
+     exports = [
 			"@maven//:com_fasterxml_jackson_core_jackson_core",
 			"@maven//:com_fasterxml_jackson_core_jackson_databind",
 			"@maven//:com_fasterxml_jackson_core_jackson_annotations",
@@ -68,7 +69,7 @@ java_library(
 			"@maven//:org_antlr_antlr_runtime",
 			"@maven//:com_google_guava_guava",
 			"@maven//:org_apache_poi_poi",
-        	"@maven//:org_apache_poi_poi_ooxml",
+             	        "@maven//:org_apache_poi_poi_ooxml",
 			"@maven//:javax_servlet_javax_servlet_api",
 			"@maven//:org_hsqldb_hsqldb",
 			"@ext_jars//:javax.annotation",

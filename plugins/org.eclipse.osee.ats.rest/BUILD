@@ -1,12 +1,16 @@
 
 java_library(
-        name = "ats_rest",
+        name = "org.eclipse.osee.ats.rest",
 	resources = ["xml_files","etc","html_page"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages","//:jdbc","//:jaxrs","//:ats_api","//:ats_core",
-                "//:framework_resource_management","//:orcs","//:orcs_core","//:orcs_rest_model","//:define",
-                "//:define_api","//:console_admin","//:framework_core_server","//:template_engine",
-                "//:framework_core_model"],
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc",
+		"//org.eclipse.osee.jaxrs","//org.eclipse.osee.ats.api",
+		"//org.eclipse.osee.ats.core",
+                "//org.eclipse.osee.framework.resource.management","//org.eclipse.osee.orcs",
+		"//org.eclipse.osee.orcs.core","//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.define",
+                "//org.eclipse.osee.define.api","//org.eclipse.osee.console.admin",
+		"//org.eclipse.osee.framework.core.server","//org.eclipse.osee.template.engine",
+                "//org.eclipse.osee.framework.core.model"],
         visibility = ["//visibility:public"]
 
 )

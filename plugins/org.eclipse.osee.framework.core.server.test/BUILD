@@ -1,6 +1,6 @@
 java_test(
     name = "CoreServerTestSuite",
     srcs = glob(["**/*.java"]),
-    deps = ["//:framework_core_server", "//framework_core_packages",
-            "//:jdbc", "@maven//:org_mockito_mockito_core",]
+    deps = ["//org.eclipse.osee.framework.core.server", "//org.eclipse.osee.framework.core.packages",
+            "//org.eclipse.osee.jdbc", "@maven//:org_mockito_mockito_core",]
 )

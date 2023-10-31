@@ -1,28 +1,22 @@
 
 java_library(
-        name = "org.eclipse.osee.orcs.db",
-        resources = ["xml_file","xml_files"],
+        name = "org.eclipse.osee.orcs.account.admin",
+        resources = ["xml_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc",
-		"//org.eclipse.osee.jaxrs","//org.eclipse.osee.orcs",
-                "//org.eclipse.osee.framework.core.model","//org.eclipse.osee.framework.resource.management",
-		"//org.eclipse.osee.orcs.core","//org.eclipse.osee.console.admin",
-	        "//org.eclipse.osee.activity.api"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc",
+                "//org.eclipse.osee.orcs", "//org.eclipse.osee.framework.core.model",
+                "//org.eclipse.osee.activity.api","//org.eclipse.osee.console.admin",
+                "//org.eclipse.osee.framework.resource.management",
+	        "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.define.api",
+		"//org.eclipse.osee.account.admin","//org.eclipse.osee.jaxrs.server",
+		"//org.eclipse.osee.account.rest.model"],
         visibility = ["//visibility:public"]
-
-)
-
-filegroup(
-    name = "xml_file",
-    srcs =
-    	[
-		"src/org/eclipse/osee/orcs/db/internal/search/language/pluralToSingularExceptions.xml",
-	]
+        
 )
 
 filegroup(
     name = "xml_files",
-    srcs =  glob(["OSGI-INF/*.xml"]),
+    srcs = glob(["**/*.xml"]),
 )
 
 java_library(
@@ -40,10 +34,5 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		"@ext_jars//:eclipse_equinox_common",
-		"@ext_jars//:eclipse_osgi_services",
-		"@ext_jars//:apache_commons_lang"
                 ],
 )
-
-

@@ -1,6 +1,6 @@
 java_test(
     name = "JaxRsServerTestSuite",
     srcs = glob(["**/*.java"]),
-    deps = ["//:jaxrs", "//:jaxrs_server", "//org.eclipse.osee.framework.jdk.core:framework_jdk_core",
+    deps = ["//org.eclipse.osee.jaxrs", "//org.eclipse.osee.jaxrs.server", "//org.eclipse.osee.framework.jdk.core",
             "@maven//:org_mockito_mockito_core"]
 )

@@ -2,9 +2,10 @@ java_test(
     name = "OrcsDb_JUnit_TestSuite",
     srcs = glob(["**/*.java"]),
     resources = ["test_data"],
-    deps = ["//org.eclipse.osee.orcs.db:orcs_db","//framework_core_packages",
-            "//:framework_core_model", "//:framework_resource_management","//:jdbc",
-            "//:orcs_core", "//:orcs", "@maven//:org_mockito_mockito_core"]
+    deps = ["//org.eclipse.osee.orcs.db","//org.eclipse.osee.framework.core.packages",
+            "//org.eclipse.osee.framework.core.model", "//org.eclipse.osee.framework.resource.management",
+	    "//org.eclipse.osee.jdbc",
+            "//org.eclipse.osee.orcs.core", "//org.eclipse.osee.orcs", "@maven//:org_mockito_mockito_core"]
 )
 
 filegroup(

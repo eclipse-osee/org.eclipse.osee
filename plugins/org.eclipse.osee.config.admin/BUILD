@@ -1,9 +1,9 @@
 java_library(
-        name = "config_admin",
+        name = "org.eclipse.osee.config.admin",
         resources = ["x_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//org.eclipse.osee.framework.jdk.core:framework_jdk_core",
-                "//org.eclipse.osee.framework.core:framework_core", "//org.eclipse.osee.logger:logger"],
+        deps = ["java_deps","//org.eclipse.osee.framework.jdk.core",
+                "//org.eclipse.osee.framework.core", "//org.eclipse.osee.logger"],
         visibility = ["//visibility:public"]
 )
 

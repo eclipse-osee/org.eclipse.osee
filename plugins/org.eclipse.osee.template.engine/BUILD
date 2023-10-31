@@ -1,9 +1,9 @@
 
 java_library(
-        name = "template_engine",
+        name = "org.eclipse.osee.template.engine",
         resources = ["x_files","html_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages","//org.eclipse.osee.jaxrs:jaxrs"],
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jaxrs"],
         visibility = ["//visibility:public"]
 
 )

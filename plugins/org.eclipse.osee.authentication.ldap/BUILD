@@ -1,8 +1,8 @@
 java_library(
-        name = "authentication_ldap",
+        name = "org.eclipse.osee.authentication.ldap",
         resources = ["x_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages","//org.eclipse.osee.authentication.admin:authentication_admin"],
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.authentication.admin"],
         visibility = ["//visibility:public"]
 )
 

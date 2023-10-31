@@ -1,10 +1,10 @@
 
 java_library(
-        name = "disposition_rest",
+        name = "org.eclipse.osee.disposition.rest",
         resources = ["outfile","xml_files"],
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//org.eclipse.osee.disposition.rest.model:disposition_rest_model",
-                "//org.eclipse.osee.vcast:vcast","//:jdbc","//:orcs", "//:ats_api"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.disposition.rest.model",
+                "//org.eclipse.osee.vcast","//org.eclipse.osee.jdbc","//org.eclipse.osee.orcs", "//org.eclipse.osee.ats.api"],
         visibility = ["//visibility:public"]
 )
 

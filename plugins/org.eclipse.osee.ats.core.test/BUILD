@@ -1,12 +1,12 @@
 java_test(
-        name = "AllAtsCoreTestSuite",
-	    srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//:ats_api","//:ats_core","//framework_core_packages"],
+     name = "AllAtsCoreTestSuite",
+     srcs = glob(["**/*.java"]),
+     deps = ["java_deps","//org.eclipse.osee.ats.api","//org.eclipse.osee.ats.core","//org.eclipse.osee.framework.core.packages"],
 )
 
 java_library(
-        name = "java_deps",
-        exports = [
+     name = "java_deps",
+     exports = [
                 "@maven//:com_fasterxml_jackson_core_jackson_core",
                 "@maven//:com_fasterxml_jackson_core_jackson_databind",
                 "@maven//:com_fasterxml_jackson_core_jackson_annotations",
@@ -19,10 +19,10 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
-		        "@maven//:org_mockito_mockito_core",
-		        "@ext_jars//:nebula",
-		        "@ext_jars//:apache_commons_lang",
-		        "@ext_jars//:junit"
+	        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+		"@maven//:org_mockito_mockito_core",
+		"@ext_jars//:nebula",
+		"@ext_jars//:apache_commons_lang",
+		"@ext_jars//:junit"
                 ],
 )

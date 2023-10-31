@@ -1,9 +1,9 @@
 
 java_library(
-        name = "jdbc",
+        name = "org.eclipse.osee.jdbc",
         resources = ["x_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages"],
         visibility = ["//visibility:public"]
 
 )

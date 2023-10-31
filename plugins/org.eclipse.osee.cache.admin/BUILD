@@ -1,8 +1,8 @@
 java_library(
-        name = "cache_admin",
+        name = "org.eclipse.osee.cache.admin",
         srcs =
                 glob(["**/*.java"]),
-                deps = ["java_deps", "//org.eclipse.osee.framework.jdk.core:framework_jdk_core"],
+                deps = ["java_deps", "//org.eclipse.osee.framework.jdk.core"],
                 visibility = ["//visibility:public"]
               )
 

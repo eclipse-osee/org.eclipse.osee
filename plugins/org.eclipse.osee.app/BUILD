@@ -1,10 +1,10 @@
 
 java_library(
-        name = "app",
+        name = "org.eclipse.osee.app",
         resources = ["js_files","applet_files","html_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//org.eclipse.osee.jdbc:jdbc",
-                "//org.eclipse.osee.template.engine:template_engine", "//org.eclipse.osee.orcs:orcs"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc",
+                "//org.eclipse.osee.template.engine", "//org.eclipse.osee.orcs"],
         visibility = ["//visibility:public"]
 
 )

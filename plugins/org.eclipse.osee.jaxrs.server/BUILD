@@ -1,11 +1,11 @@
 
 java_library(
-	name = "jaxrs_server",
+	name = "org.eclipse.osee.jaxrs.server",
 	resources = ["wadl","html_files","xml_files"],
 	srcs = glob(["**/*.java"]),	
-	deps = ["java_deps", "//framework_core_packages",
-	        "//org.eclipse.osee.jaxrs:jaxrs", "//org.eclipse.osee.jdbc:jdbc",
-			"//org.eclipse.osee.account.admin:account_admin", "//org.eclipse.osee.orcs:orcs"],
+	deps = ["java_deps", "//org.eclipse.osee.framework.core.packages",
+	        "//org.eclipse.osee.jaxrs", "//org.eclipse.osee.jdbc",
+		"//org.eclipse.osee.account.admin", "//org.eclipse.osee.orcs"],
 	visibility = ["//visibility:public"]
 
 )

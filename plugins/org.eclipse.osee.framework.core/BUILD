@@ -1,8 +1,8 @@
 java_library(
-        name = "framework_core",
+        name = "org.eclipse.osee.framework.core",
         srcs =glob(["**/*.java"]),
-        deps = ["java_deps","//org.eclipse.osee.framework.jdk.core:framework_jdk_core","//org.eclipse.osee.logger:logger",
-               "//org.eclipse.osee.framework.logging:framework_logging"],
+        deps = ["java_deps","//org.eclipse.osee.framework.jdk.core","//org.eclipse.osee.logger",
+               "//org.eclipse.osee.framework.logging"],
         visibility = ["//visibility:public"]
 )
 

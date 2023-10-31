@@ -1,11 +1,11 @@
 
 java_library(
-        name = "orcs_rest_model",
+        name = "org.eclipse.osee.orcs.rest.model",
 	srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//:orcs",
-                "//:orcs_core","//:jdbc",
-                "//:jaxrs", "//org.eclipse.osee.console.admin:console_admin",
-	"//:activity_api", "//:framework_core_model","//:framework_resource_management"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.orcs",
+                "//org.eclipse.osee.orcs.core","//org.eclipse.osee.jdbc",
+                "//org.eclipse.osee.jaxrs", "//org.eclipse.osee.console.admin",
+	"//org.eclipse.osee.activity.api", "//org.eclipse.osee.framework.core.model","//org.eclipse.osee.framework.resource.management"],
         visibility = ["//visibility:public"]
         
 )
