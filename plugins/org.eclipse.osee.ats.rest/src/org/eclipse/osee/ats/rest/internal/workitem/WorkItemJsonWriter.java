@@ -211,6 +211,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          if (teamWf != null) {
             IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
             writer.writeStringField("TargetedVersion", version == null ? "" : version.getName());
+            writer.writeStringField("TargetedVersionId", version == null ? "" : version.getIdString());
             if (options.contains(WorkItemWriterOptions.WriteRelatedAsTokens)) {
                writer.writeObjectFieldStart("TargetedVersionToken");
                writer.writeStringField("id", version == null ? "" : version.getIdString());
