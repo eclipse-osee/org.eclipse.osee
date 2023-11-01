@@ -298,6 +298,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
          if (!((WidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
             items.addAll(((WidgetDefinition) element).getOptions().getXOptions());
          }
+         if (((WidgetDefinition) element).getEnumeratedArt() != null) {
+            items.add("Enumerated ArtId: " + ((WidgetDefinition) element).getEnumeratedArt().toStringWithId());
+         }
       }
 
       private void getChildrenFromPeerReviewDefinition(Object element, List<Object> items) {

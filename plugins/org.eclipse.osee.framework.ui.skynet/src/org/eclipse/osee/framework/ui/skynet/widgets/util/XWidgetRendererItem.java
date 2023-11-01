@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -66,6 +67,7 @@ public class XWidgetRendererItem implements Cloneable {
    private ISelectableValueProvider valueProvider;
    private Collection<? extends Object> values = new ArrayList<Object>();
    private List<ConditionalRule> conditions = new ArrayList<>();
+   private ArtifactToken enumeratedArt;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -387,6 +389,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setConditions(List<ConditionalRule> conditions) {
       this.conditions = conditions;
+   }
+
+   public ArtifactToken getEnumeratedArt() {
+      return enumeratedArt;
+   }
+
+   public void setEnumeratedArt(ArtifactToken enumeratedArt) {
+      this.enumeratedArt = enumeratedArt;
    }
 
 }

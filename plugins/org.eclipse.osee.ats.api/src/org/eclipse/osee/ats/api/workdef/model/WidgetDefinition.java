@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetOptionHandler;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristic;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
@@ -46,6 +47,7 @@ public class WidgetDefinition extends LayoutItem {
    private String defaultValue;
    private Double min;
    private Double max;
+   private ArtifactToken enumeratedArt;
 
    public WidgetDefinition(String name) {
       this(name, "");
@@ -202,4 +204,18 @@ public class WidgetDefinition extends LayoutItem {
    public void setConditions(List<ConditionalRule> conditions) {
       this.conditions = conditions;
    }
+
+   public WidgetDefinition andEnumeratedArt(ArtifactToken enumeratedArt) {
+      this.enumeratedArt = enumeratedArt;
+      return this;
+   }
+
+   public ArtifactToken getEnumeratedArt() {
+      return enumeratedArt;
+   }
+
+   public void setEnumeratedArt(ArtifactToken enumeratedArt) {
+      this.enumeratedArt = enumeratedArt;
+   }
+
 }

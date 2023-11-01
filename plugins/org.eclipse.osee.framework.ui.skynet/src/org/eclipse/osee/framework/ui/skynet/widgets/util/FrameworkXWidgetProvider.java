@@ -75,6 +75,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArtDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
@@ -135,6 +136,7 @@ public final class FrameworkXWidgetProvider {
       register(XHyperlinkTriStateBooleanDam.class);
       register(XHyperlinkLabelValueStringSel.class);
       register(XHyperlinkLabelValueSelectionDam.class);
+      register(XHyperlinkLabelEnumeratedArtDam.class);
       register(XArtifactSelectWidget.class);
       register(XArtifactSelectWidgetWithSave.class);
       register(XHyperlinkWfdForUser.class);
@@ -205,6 +207,12 @@ public final class FrameworkXWidgetProvider {
             if (xWidget instanceof AttributeTypeWidget) {
                AttributeTypeToken attributeType = getAttributeTypeOrSentinel(xWidgetLayoutData, xWidget, tokenService);
                ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
+            }
+            if (xWidget instanceof XHyperlinkLabelEnumeratedArtDam) {
+               XHyperlinkLabelEnumeratedArtDam widget = (XHyperlinkLabelEnumeratedArtDam) xWidget;
+               if (xWidgetLayoutData.getEnumeratedArt() != null) {
+                  widget.setEnumeratedArt(xWidgetLayoutData.getEnumeratedArt());
+               }
             }
             xWidget.setObject(xWidgetLayoutData.getObject());
          }
@@ -588,6 +596,8 @@ public final class FrameworkXWidgetProvider {
             xWidget = new XLabelValue(name, defaultValue);
          } else if (xWidgetName.equals(XHyperlinkLabelValueSelectionDam.WIDGET_ID)) {
             return new XHyperlinkLabelValueSelectionDam(name);
+         } else if (xWidgetName.equals(XHyperlinkLabelEnumeratedArtDam.WIDGET_ID)) {
+            return new XHyperlinkLabelEnumeratedArtDam(name);
          } else {
             xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
          }
