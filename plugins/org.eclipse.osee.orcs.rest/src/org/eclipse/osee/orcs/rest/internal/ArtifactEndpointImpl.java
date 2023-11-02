@@ -435,16 +435,16 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
          + " allRels (a_art_id, b_art_id, gamma_id, rel_type) as (select a_art_id, b_art_id, txs.gamma_id, rel_type " //
          + "from osee_txs txs, osee_relation rel " //
          + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " //
-         + "union " //
-         + "select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " //
          + "from osee_txs txs, osee_relation_link rel " //
          + "where txs.branch_id = ? and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " //
          + "cte_query (b_art_id, a_art_id, rel_type) as ( " //
          + "select b_art_id, a_art_id, rel_type " //
          + "from allRels " //
          + "where b_art_id = ? " //
-         + "union all " //
-         + "select e.b_art_id, e.a_art_id, e.rel_type " //
+         + orcsApi.getJdbcService().getClient().getDbType().getCteRecursiveUnion() //
+         + " select e.b_art_id, e.a_art_id, e.rel_type " //
          + "from allRels e " //
          + "inner join cte_query c on c.a_art_id = e.b_art_id) " //
          + "select * " //
