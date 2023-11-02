@@ -815,6 +815,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString OseeVersion = osee.createString(1152921504606847290L, "OSEE Version", MediaType.TEXT_PLAIN, "OSEE Version");
 
    AttributeTypeString OseeAppDefinition = osee.createStringNoTag(1152921504606847380L, "Osee App Definition", MediaType.APPLICATION_JSON, "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App");
+   AttributeTypeString TestEnvBatchId = osee.createString(2054979068972801627L, "Test Env Batch Id", MediaType.TEXT_PLAIN, "Batch Id provided by the test environment");
    AttributeTypeString JavaVersion = osee.createStringNoTag(1152921504606849836L, "Java Version", MediaType.APPLICATION_JSON, "Java Version");
    PageOrientationAttributeType PageOrientation = osee.createEnum(new PageOrientationAttributeType());
 

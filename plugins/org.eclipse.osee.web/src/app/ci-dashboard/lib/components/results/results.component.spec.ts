@@ -20,6 +20,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BatchDropdownMockComponent } from './batch-dropdown/batch-dropdown.component.mock';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MatIconModule } from '@angular/material/icon';
 
 describe('ResultsComponent', () => {
 	let component: ResultsComponent;
@@ -34,6 +35,7 @@ describe('ResultsComponent', () => {
 					CiDashboardControlsMockComponent,
 					MatTableModule,
 					MatTooltipModule,
+					MatIconModule,
 					BatchDropdownMockComponent,
 				],
 			},

@@ -22,9 +22,12 @@ import { resultHeaderDetails } from '../../table-headers/restult-headers';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatMillisecondsPipe } from '@osee/shared/utils';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { BehaviorSubject, combineLatest, switchMap, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, combineLatest, switchMap, take, tap } from 'rxjs';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { CiDashboardUiService } from 'src/app/ci-dashboard/lib/services/ci-dashboard-ui.service';
 
 @Component({
 	selector: 'osee-results',
@@ -37,11 +40,14 @@ import { ActivatedRoute } from '@angular/router';
 		MatPaginatorModule,
 		MatTooltipModule,
 		FormatMillisecondsPipe,
+		MatButtonModule,
+		MatIconModule,
 	],
 	templateUrl: './results.component.html',
 })
 export default class ResultsComponent {
 	constructor(
+		private uiService: CiDashboardUiService,
 		private batchService: CiBatchService,
 		private headerService: HeaderService,
 		private route: ActivatedRoute
@@ -53,12 +59,18 @@ export default class ResultsComponent {
 			)
 			.subscribe();
 
-		this.route.paramMap.subscribe(
-			(params) =>
-				(this.batchService.SelectedBatchId =
-					params.get('batchId') || '-1')
-		);
+		this.route.paramMap
+			.pipe(takeUntilDestroyed())
+			.subscribe(
+				(params) =>
+					(this.batchService.SelectedBatchId =
+						params.get('batchId') || '-1')
+			);
 	}
+
+	branchId = toSignal(this.uiService.branchId);
+	setId = toSignal(this.uiService.ciSetId);
+	batchId = toSignal(this.batchService.selectedBatchId);
 
 	currentPage = new BehaviorSubject<number>(0);
 	pageSize = new BehaviorSubject<number>(250);
@@ -88,5 +100,9 @@ export default class ResultsComponent {
 	setPage(event: PageEvent) {
 		this.currentPage.next(event.pageIndex);
 		this.pageSize.next(event.pageSize);
+	}
+
+	downloadBatch() {
+		this.batchService.downloadBatch().pipe(take(1)).subscribe();
 	}
 }

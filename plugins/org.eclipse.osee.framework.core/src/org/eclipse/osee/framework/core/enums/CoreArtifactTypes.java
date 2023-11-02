@@ -971,6 +971,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ScriptBatch = osee.add(osee.artifactType(2616144796145104213L, "Script Batch", false, Artifact)
       .exactlyOne(BatchId)
+      .zeroOrOne(TestEnvBatchId)
       .exactlyOne(ExecutionDate)
       .exactlyOne(MachineName));
 

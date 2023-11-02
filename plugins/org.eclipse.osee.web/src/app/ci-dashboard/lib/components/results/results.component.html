@@ -11,8 +11,21 @@
  *     Boeing - initial API and implementation
  -->
 <osee-ci-dashboard-controls
-	><osee-batch-dropdown></osee-batch-dropdown
-></osee-ci-dashboard-controls>
+	><div class="tw-flex tw-w-full tw-items-end tw-justify-between">
+		<ng-container *ngIf="branchId() && setId()">
+			<osee-batch-dropdown></osee-batch-dropdown>
+		</ng-container>
+		<ng-container *ngIf="batchId() !== '-1'">
+			<button
+				mat-raised-button
+				color="primary"
+				(click)="downloadBatch()">
+				<mat-icon>download</mat-icon
+				><span class="tw-pl-2">Download</span>
+			</button>
+		</ng-container>
+	</div>
+</osee-ci-dashboard-controls>
 <ng-container *ngIf="results | async as _results">
 	<ng-container *ngIf="resultsCount | async as _count">
 		<div class="tw-h-[76vh] tw-overflow-auto">

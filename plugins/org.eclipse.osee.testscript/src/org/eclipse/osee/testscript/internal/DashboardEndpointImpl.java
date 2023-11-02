@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardEndpoint;
@@ -43,8 +45,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<String, CIStatsToken> stats = new HashMap<>();
       CIStatsToken allStats = new CIStatsToken("All");
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAll(branch, viewId,
-         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults));
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByFilter(branch, ciSet.getIdString(),
+         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), 0L, 0L, null,
+         Arrays.asList(CoreAttributeTypes.SetId));
       boolean statsSet = false;
       for (ScriptDefToken def : defs) {
          int pointsPassed = 0;
@@ -125,9 +128,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    public Collection<CIStatsToken> getSubsystemStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       Map<String, CIStatsToken> stats = new HashMap<>();
-      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAll(branch, viewId,
-         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults));
-
+      Collection<ScriptDefToken> defs = this.testScriptApi.getScriptDefApi().getAllByFilter(branch, ciSet.getIdString(),
+         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), 0L, 0L, null,
+         Arrays.asList(CoreAttributeTypes.SetId));
       for (ScriptDefToken def : defs) {
          int pointsPassed = 0;
          int pointsFailed = 0;
@@ -143,9 +146,6 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
             scriptRun = true;
          }
 
-         if (def.getTeam().isEmpty()) {
-            continue;
-         }
          String subsystem = def.getSubsystem().isEmpty() ? "None" : def.getSubsystem();
          CIStatsToken subsystemStats = stats.getOrDefault(subsystem, new CIStatsToken(subsystem));
          if (aborted) {

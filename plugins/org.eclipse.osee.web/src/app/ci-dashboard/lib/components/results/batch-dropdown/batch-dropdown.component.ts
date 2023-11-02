@@ -54,8 +54,7 @@ export class BatchDropdownComponent {
 
 	pageSize = 300;
 
-	selectedBatch = this.batchService.selectedBatchId.pipe(
-		switchMap((batchId) => this.batchService.getBatch(batchId)),
+	selectedBatch = this.batchService.selectedBatch.pipe(
 		tap((batch) => this.updateFilter(batch.name))
 	);
 
@@ -105,5 +104,9 @@ export class BatchDropdownComponent {
 
 	updateFilter(value: string) {
 		this.filter.next(value);
+	}
+
+	downloadBatch() {
+		this.batchService.downloadBatch();
 	}
 }

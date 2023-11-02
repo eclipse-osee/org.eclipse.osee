@@ -192,10 +192,15 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    @Override
    public Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter,
       Collection<FollowRelation> followRelations, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
-      Collection<AttributeTypeId> followAttributes) throws InstantiationException, IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.accessor.getAllByFilter(branch, filter, followRelations, pageCount, pageSize, orderByAttribute,
-         followAttributes, ArtifactId.SENTINEL);
+      Collection<AttributeTypeId> followAttributes) {
+      try {
+         return this.accessor.getAllByFilter(branch, filter, followRelations, pageCount, pageSize, orderByAttribute,
+            followAttributes, ArtifactId.SENTINEL);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
    }
 
    @Override
