@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,8 +38,10 @@ public class ScriptBatchToken extends ArtifactAccessorResult {
    public static final ScriptBatchToken SENTINEL = new ScriptBatchToken();
 
    private String batchId;
+   private String testEnvBatchId;
    private Date executionDate;
    private String machineName;
+   private String folderUrl;
 
    public ScriptBatchToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -47,15 +50,19 @@ public class ScriptBatchToken extends ArtifactAccessorResult {
    public ScriptBatchToken(ArtifactReadable art) {
       super(art);
       this.setBatchId(art.getSoleAttributeAsString(CoreAttributeTypes.BatchId, ""));
+      this.setTestEnvBatchId(art.getSoleAttributeAsString(CoreAttributeTypes.TestEnvBatchId, ""));
       this.setExecutionDate(art.getSoleAttributeValue(CoreAttributeTypes.ExecutionDate, new Date()));
       this.setMachineName(art.getSoleAttributeAsString(CoreAttributeTypes.MachineName, ""));
+      this.setFolderUrl(art.getSoleAttributeAsString(CoreAttributeTypes.ContentUrl, ""));
    }
 
    public ScriptBatchToken(Long id, String name) {
       super(id, name);
       this.setBatchId("");
+      this.setTestEnvBatchId("");
       this.setExecutionDate(new Date());
       this.setMachineName("");
+      this.setFolderUrl("");
    }
 
    public ScriptBatchToken() {
@@ -68,6 +75,14 @@ public class ScriptBatchToken extends ArtifactAccessorResult {
 
    public void setBatchId(String batchId) {
       this.batchId = batchId;
+   }
+
+   public String getTestEnvBatchId() {
+      return testEnvBatchId;
+   }
+
+   public void setTestEnvBatchId(String testEnvBatchId) {
+      this.testEnvBatchId = testEnvBatchId;
    }
 
    public Date getExecutionDate() {
@@ -86,11 +101,22 @@ public class ScriptBatchToken extends ArtifactAccessorResult {
       this.machineName = machineName;
    }
 
+   @JsonIgnore
+   public String getFolderUrl() {
+      return folderUrl;
+   }
+
+   public void setFolderUrl(String folderUrl) {
+      this.folderUrl = folderUrl;
+   }
+
    public CreateArtifact createArtifact(String key) {
       Map<AttributeTypeToken, String> values = new HashMap<>();
       values.put(CoreAttributeTypes.ExecutionDate, this.getExecutionDate().getTime() + "");
       values.put(CoreAttributeTypes.MachineName, this.getMachineName());
       values.put(CoreAttributeTypes.BatchId, this.getBatchId());
+      values.put(CoreAttributeTypes.TestEnvBatchId, this.getTestEnvBatchId());
+      values.put(CoreAttributeTypes.ContentUrl, this.getFolderUrl());
 
       CreateArtifact art = new CreateArtifact();
       art.setName(this.getName());

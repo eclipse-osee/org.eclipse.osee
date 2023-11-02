@@ -124,5 +124,6 @@ export const scriptBatchResultMock: ScriptBatch[] = [
 		batchId: '123',
 		executionDate: new Date(1234),
 		machineName: 'Machine 1',
+		testEnvBatchId: '827345',
 	},
 ];

@@ -12,7 +12,15 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, switchMap, take } from 'rxjs';
+import {
+	BehaviorSubject,
+	combineLatest,
+	filter,
+	map,
+	of,
+	switchMap,
+	take,
+} from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
 
@@ -28,23 +36,39 @@ export class CiBatchService {
 
 	private _selectedBatchId = new BehaviorSubject<string>('-1');
 
-	getBatch(batchId: string) {
-		return this.uiService.branchId.pipe(
-			take(1),
-			switchMap((branchId) => this.tmoHttp.getBatch(branchId, batchId))
-		);
-	}
+	private _selectedBatch = combineLatest([
+		this.uiService.branchId,
+		this._selectedBatchId,
+	]).pipe(
+		filter(
+			([branchId, batchId]) =>
+				branchId !== '' &&
+				branchId !== '-1' &&
+				batchId !== '' &&
+				batchId !== '-1'
+		),
+		switchMap(([branchId, batchId]) =>
+			this.tmoHttp.getBatch(branchId, batchId)
+		)
+	);
 
-	getBatches(pageNum: number | string, pageSize: number, filter: string) {
+	getBatches(pageNum: number | string, pageSize: number, filterText: string) {
 		return combineLatest([
 			this.uiService.branchId,
 			this.uiService.ciSetId,
 		]).pipe(
+			filter(
+				([branchId, setId]) =>
+					branchId !== '' &&
+					branchId !== '-1' &&
+					setId !== '' &&
+					setId !== '-1'
+			),
 			switchMap(([branchId, setId]) =>
 				this.tmoHttp.getBatches(
 					branchId,
 					setId,
-					filter,
+					filterText,
 					pageNum,
 					pageSize
 				)
@@ -52,13 +76,20 @@ export class CiBatchService {
 		);
 	}
 
-	getBatchesCount(filter: string) {
+	getBatchesCount(filterText: string) {
 		return combineLatest([
 			this.uiService.branchId,
 			this.uiService.ciSetId,
 		]).pipe(
+			filter(
+				([branchId, setId]) =>
+					branchId !== '' &&
+					branchId !== '-1' &&
+					setId !== '' &&
+					setId !== '-1'
+			),
 			switchMap(([branchId, setId]) =>
-				this.tmoHttp.getBatchesCount(branchId, setId, filter)
+				this.tmoHttp.getBatchesCount(branchId, setId, filterText)
 			)
 		);
 	}
@@ -118,11 +149,48 @@ export class CiBatchService {
 		this.router.navigateByUrl(url);
 	}
 
+	downloadBatch() {
+		return combineLatest([
+			this.uiService.branchId,
+			this.selectedBatch,
+		]).pipe(
+			switchMap((params) =>
+				of(params).pipe(
+					take(1),
+					switchMap(([branchId, batch]) =>
+						this.tmoHttp.downloadBatch(branchId, batch.id)
+					),
+					map((res) => {
+						if (res.size !== 0) {
+							const blob = new Blob([res], {
+								type: 'application/zip',
+							});
+							const url = URL.createObjectURL(blob);
+							const link = document.createElement('a');
+							link.href = url;
+							link.setAttribute(
+								'download',
+								params[1].testEnvBatchId + '.zip'
+							);
+							document.body.appendChild(link);
+							link.click();
+							link.remove();
+						}
+					})
+				)
+			)
+		);
+	}
+
 	get selectedBatchId() {
 		return this._selectedBatchId;
 	}
 
 	set SelectedBatchId(batchId: string) {
 		this._selectedBatchId.next(batchId);
+	}
+
+	get selectedBatch() {
+		return this._selectedBatch;
 	}
 }

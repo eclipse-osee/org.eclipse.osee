@@ -18,12 +18,16 @@ import { TestCaseReference } from '../types/tmo';
 import { TestPoint } from '../types/tmo';
 import { apiURL } from '@osee/environments';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+import { FilesService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TmoHttpService {
-	constructor(private http: HttpClient) {}
+	constructor(
+		private http: HttpClient,
+		private fileService: FilesService
+	) {}
 
 	getScriptDefList(branchId: string | number, setId: string | number) {
 		return this.http.get<DefReference[]>(
@@ -106,6 +110,24 @@ export class TmoHttpService {
 	getBatchResultsCount(branchId: string, batchId: string) {
 		return this.http.get<number>(
 			`${apiURL}/script/tmo/${branchId}/result/batch/${batchId}/count`
+		);
+	}
+
+	downloadTmo(branchId: string, resultId: string) {
+		return this.http.get(
+			`${apiURL}/script/tmo/${branchId}/download/${resultId}`,
+			{
+				responseType: 'blob',
+			}
+		);
+	}
+
+	downloadBatch(branchId: string, batchId: string) {
+		return this.http.get(
+			`${apiURL}/script/tmo/${branchId}/download/batch/${batchId}`,
+			{
+				responseType: 'blob',
+			}
 		);
 	}
 }

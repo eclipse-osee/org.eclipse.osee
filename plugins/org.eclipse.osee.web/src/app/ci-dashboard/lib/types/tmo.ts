@@ -110,6 +110,7 @@ export interface ScriptBatch {
 	batchId: string;
 	executionDate: Date;
 	machineName: string;
+	testEnvBatchId: string;
 }
 
 export const scriptBatchSentinel: ScriptBatch = {
@@ -118,4 +119,5 @@ export const scriptBatchSentinel: ScriptBatch = {
 	batchId: '',
 	executionDate: new Date(),
 	machineName: '',
+	testEnvBatchId: '',
 };

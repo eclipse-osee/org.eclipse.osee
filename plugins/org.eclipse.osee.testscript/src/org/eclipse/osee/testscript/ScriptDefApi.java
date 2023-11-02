@@ -86,9 +86,7 @@ public interface ScriptDefApi {
       Collection<AttributeTypeId> searchAttributes, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter, Collection<FollowRelation> followRelations,
-      long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException;
+      long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes);
 
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter);
 }

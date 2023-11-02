@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.testscript.ScriptApi;
 import org.eclipse.osee.testscript.ScriptBatchEndpoint;
 import org.eclipse.osee.testscript.ScriptDefEndpoint;
+import org.eclipse.osee.testscript.ScriptDownloadEndpoint;
 import org.eclipse.osee.testscript.ScriptImportEndpoint;
 import org.eclipse.osee.testscript.ScriptResultEndpoint;
 import org.eclipse.osee.testscript.ScriptSetEndpoint;
@@ -89,6 +90,13 @@ public class TmoEndpointImpl implements TmoEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptImportEndpoint getTmoImportEndpoint(@PathParam("branch") BranchId branch) {
       return new ScriptImportEndpointImpl(branch, testScriptApi.getTmoImportApi());
+   }
+
+   @Override
+   @Path("{branch}/download")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ScriptDownloadEndpoint getTmoDownloadEndpoint(@PathParam("branch") BranchId branch) {
+      return new ScriptDownloadEndpointImpl(branch, testScriptApi);
    }
 
 }

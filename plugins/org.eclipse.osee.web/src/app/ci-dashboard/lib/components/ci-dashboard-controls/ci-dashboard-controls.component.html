@@ -10,8 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-items-center tw-justify-between tw-py-4 tw-pl-4 tw-pr-8">
-	<div class="tw-flex tw-flex-row tw-items-end tw-gap-4">
+<div
+	class="tw-flex tw-w-full tw-items-center tw-justify-between tw-py-4 tw-pl-4 tw-pr-8">
+	<div class="tw-flex tw-w-full tw-flex-row tw-items-end tw-gap-4">
 		<osee-branch-picker
 			*ngIf="branchPicker"
 			class="tw-min-w-[350px] tw-max-w-lg"></osee-branch-picker>
@@ -24,6 +25,8 @@
 		<ng-content></ng-content>
 	</div>
 	<ng-container *ngIf="actionButton">
-		<osee-action-dropdown></osee-action-dropdown>
+		<div class="tw-min-w-[210px]">
+			<osee-action-dropdown></osee-action-dropdown>
+		</div>
 	</ng-container>
 </div>

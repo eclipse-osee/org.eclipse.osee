@@ -206,8 +206,8 @@ public class TmoImportApiImpl implements TmoImportApi {
 
    @Override
    public TransactionResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId) {
-      boolean isBatch = false;
       String batchId = System.currentTimeMillis() + (int) (Math.random() * 100) + "";
+      String testEnvBatchId = "";
       List<String> fileNames = new LinkedList<>();
       Date batchExecutionDate = new Date();
       String batchMachineName = "";
@@ -217,6 +217,7 @@ public class TmoImportApiImpl implements TmoImportApi {
       TransactionResult result = new TransactionResult();
       XResultData resultData = new XResultData();
       result.setResults(resultData);
+      String batchFolderPath = getFolderPath(ciSetId, batchId);
       ObjectMapper mapper = new ObjectMapper();
       try (ZipInputStream zipStream = new ZipInputStream(stream)) {
          ZipEntry zipEntry = null;
@@ -224,7 +225,7 @@ public class TmoImportApiImpl implements TmoImportApi {
             // OTE uses a runId.txt file to specify a batch ID. If this file exists,
             // assume this is a batched run and create a batch artifact and relations.
             if (zipEntry.getName().equals("runId.txt")) {
-               isBatch = true;
+               testEnvBatchId = new String(zipStream.readAllBytes()).trim();
                continue;
             }
             // Skip any non-tmo files
@@ -255,12 +256,12 @@ public class TmoImportApiImpl implements TmoImportApi {
             }
 
             ScriptResultToken scriptResult = scriptDef.getScriptResults().get(0);
-            File batchFolder = new File(getFolderPath(ciSetId, batchId));
+            File batchFolder = new File(batchFolderPath);
             if (!batchFolder.exists()) {
                batchFolder.mkdirs();
             }
-            String zipPathString = getFolderPath(ciSetId,
-               batchId) + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
+            String zipPathString =
+               batchFolderPath + scriptDef.getName() + "_" + scriptResult.getExecutionDate().getTime() + ".zip";
             scriptResult.setFileUrl(zipPathString);
             File zipPath = new File(zipPathString);
             if (zipPath.exists()) {
@@ -303,7 +304,7 @@ public class TmoImportApiImpl implements TmoImportApi {
             batchMachineName = scriptResult.getMachineName();
          }
 
-         if (isBatch && tx != null) {
+         if (!testEnvBatchId.isEmpty() && tx != null) {
             TransactionBuilderData batchTxData = new TransactionBuilderData();
             batchTxData.setBranch(branch.getIdString());
             batchTxData.setTxComment("TMO Import");
@@ -314,6 +315,8 @@ public class TmoImportApiImpl implements TmoImportApi {
             scriptBatch.setExecutionDate(batchExecutionDate);
             scriptBatch.setMachineName(batchMachineName);
             scriptBatch.setBatchId(batchId);
+            scriptBatch.setTestEnvBatchId(testEnvBatchId);
+            scriptBatch.setFolderUrl(batchFolderPath);
             CreateArtifact batchArt = scriptBatch.createArtifact(getKey());
             batchTxData.getCreateArtifacts().add(batchArt);
             List<String> resultIds = tx.getTxDataReadables().stream().filter(
