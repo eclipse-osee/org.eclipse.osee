@@ -264,6 +264,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                "RELATION AND ATTRIBUTE")) {
                write(", CASE WHEN " + fieldAlias + ".type_id = ");
                write(this.rootQueryData.orderByAttribute().getIdString());
+               write(" THEN 0 ELSE 1 END ASC");
+               write(", CASE WHEN " + fieldAlias + ".type_id = ");
+               write(this.rootQueryData.orderByAttribute().getIdString());
                write(" THEN " + fieldAlias + ".VALUE ELSE \n");
                write("'");
                write(new String(new char[4000]).replace('\0', 'Z'));
