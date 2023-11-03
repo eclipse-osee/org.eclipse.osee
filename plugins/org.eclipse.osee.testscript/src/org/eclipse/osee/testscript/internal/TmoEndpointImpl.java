@@ -25,6 +25,7 @@ import org.eclipse.osee.testscript.ScriptDefEndpoint;
 import org.eclipse.osee.testscript.ScriptDownloadEndpoint;
 import org.eclipse.osee.testscript.ScriptImportEndpoint;
 import org.eclipse.osee.testscript.ScriptResultEndpoint;
+import org.eclipse.osee.testscript.ScriptSetDiffEndpoint;
 import org.eclipse.osee.testscript.ScriptSetEndpoint;
 import org.eclipse.osee.testscript.TestCaseEndpoint;
 import org.eclipse.osee.testscript.TestPointEndpoint;
@@ -97,6 +98,13 @@ public class TmoEndpointImpl implements TmoEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptDownloadEndpoint getTmoDownloadEndpoint(@PathParam("branch") BranchId branch) {
       return new ScriptDownloadEndpointImpl(branch, testScriptApi);
+   }
+
+   @Override
+   @Path("{branch}/diff")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ScriptSetDiffEndpoint getScriptSetDiffEndpoint(@PathParam("branch") BranchId branch) {
+      return new ScriptSetDiffEndpointImpl(branch, testScriptApi.getScriptResultApi());
    }
 
 }

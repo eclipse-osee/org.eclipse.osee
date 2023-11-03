@@ -52,6 +52,12 @@ export const routes: Routes = [
 		loadChildren: () => import('./lib/components/results/results.routes'),
 	},
 	{
+		path: 'diffs',
+		title: 'CI Dashboard',
+		loadChildren: () =>
+			import('./lib/components/set-diffs/set-diffs.routes'),
+	},
+	{
 		path: 'subsystems',
 		title: 'CI Dashboard',
 		loadChildren: () =>

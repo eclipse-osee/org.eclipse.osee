@@ -113,6 +113,17 @@ public class ScriptResultApiImpl implements ScriptResultApi {
    }
 
    @Override
+   public Collection<ScriptResultToken> getAllForSet(BranchId branch, ArtifactId viewId, ArtifactId setId) {
+      try {
+         return this.accessor.getAllByFilter(branch, setId.getIdString(), Arrays.asList(CoreAttributeTypes.SetId),
+            viewId);
+      } catch (Exception ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
    public Collection<ScriptResultToken> getAllForBatch(BranchId branch, ArtifactId viewId, ArtifactId batchId,
       String filter, long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {

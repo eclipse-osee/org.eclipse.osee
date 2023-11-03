@@ -41,17 +41,11 @@ public interface ScriptSetEndpoint {
    @GET()
    @Path("count")
    @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * @return all Script Def types matching criteria
-    */
    int getCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
 
    @GET()
    @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * Gets a specific unit.
-    */
    ScriptSetToken getScriptProgram(@PathParam("id") ArtifactId scriptProgramId);
 
 }

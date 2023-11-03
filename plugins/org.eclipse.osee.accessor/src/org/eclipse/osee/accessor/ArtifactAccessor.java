@@ -105,6 +105,10 @@ public interface ArtifactAccessor<T> {
       NoSuchMethodException, SecurityException;
 
    Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      ArtifactId viewId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
       Collection<FollowRelation> followRelations) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
