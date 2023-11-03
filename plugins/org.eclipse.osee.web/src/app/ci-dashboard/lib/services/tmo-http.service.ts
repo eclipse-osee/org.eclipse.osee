@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DefReference, ScriptBatch } from '../types/tmo';
+import { DefReference, ScriptBatch, SetDiff } from '../types/tmo';
 import { ResultReference } from '../types/tmo';
 import { TestCaseReference } from '../types/tmo';
 import { TestPoint } from '../types/tmo';
@@ -128,6 +128,13 @@ export class TmoHttpService {
 			{
 				responseType: 'blob',
 			}
+		);
+	}
+
+	getSetDiffs(branchId: string, setIds: string[]) {
+		return this.http.post<SetDiff[]>(
+			`${apiURL}/script/tmo/${branchId}/diff`,
+			setIds
 		);
 	}
 }

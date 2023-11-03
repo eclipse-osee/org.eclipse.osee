@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -49,6 +50,17 @@ public class ScriptSetApiImpl implements ScriptSetApi {
       } catch (Exception ex) {
          return new ScriptSetToken();
       }
+   }
+
+   @Override
+   public Collection<ScriptSetToken> get(BranchId branch, Collection<ArtifactId> setIds) {
+      try {
+         return this.accessor.get(branch, setIds);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
    }
 
    @Override

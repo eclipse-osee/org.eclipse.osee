@@ -83,6 +83,18 @@ export const ciNavigationStructure: navigationElement[] = [
 				children: [],
 			},
 			{
+				label: 'Set Diffs',
+				cypressLabel: 'ci-set-diffs',
+				pageTitle: 'OSEE - Continuous Integration',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/ci/diffs',
+				icon: '',
+				description: '',
+				children: [],
+			},
+			{
 				label: 'Import',
 				cypressLabel: 'ci-import',
 				pageTitle: 'OSEE - Continuous Integration',

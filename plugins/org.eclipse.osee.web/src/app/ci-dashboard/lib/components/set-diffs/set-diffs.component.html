@@ -1,0 +1,103 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<osee-ci-dashboard-controls [ciSetSelector]="false">
+	<osee-set-dropdown-multi></osee-set-dropdown-multi>
+</osee-ci-dashboard-controls>
+<ng-container
+	*ngIf="(setDiffs | async) && ((selectedSets | async) || []).length > 0">
+	<div class="tw-h-[76vh] tw-overflow-auto">
+		<table
+			mat-table
+			[dataSource]="dataSource"
+			class="tw-border-separate tw-border-spacing-0">
+			<ng-container
+				[matColumnDef]="header"
+				*ngFor="let header of groupHeaders()">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					[attr.colspan]="header === ' ' ? 2 : 3"
+					class="tw-border-[1px] tw-border-gray-400 tw-text-primary-600"
+					[ngClass]="{
+						'tw-border-b-0': header === ' '
+					}">
+					<div class="tw-w-full tw-text-center">{{ header }}</div>
+				</th>
+			</ng-container>
+			<ng-container
+				[matColumnDef]="header"
+				*ngFor="let header of headers()">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="tw-border-gray-400 tw-text-primary-600"
+					[ngClass]="{
+						'tw-border-l-[1px]':
+							header.includes('passes') || header === 'name',
+						'tw-border-r-[1px]':
+							header.includes('abort') || header === 'equal',
+						'tw-border-t-0': header === 'name' || header === 'equal'
+					}"
+					[matTooltip]="
+						(getTableHeaderByName(header) | async)?.description ||
+						''
+					">
+					{{
+						(getTableHeaderByName(header) | async)?.humanReadable ||
+							''
+					}}
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let result">
+					<ng-container
+						*ngIf="header === 'name' || header === 'equal'"
+						>{{ result[header] }}</ng-container
+					>
+					<ng-container
+						*ngIf="header !== 'name' && header !== 'equal'">
+						<ng-container
+							*ngIf="header | splitString: '-' as headerSplit">
+							<ng-container
+								*ngIf="result.results[headerSplit[1]]">
+								{{
+									result.results[headerSplit[1]][
+										headerSplit[0]
+									]
+								}}
+							</ng-container>
+						</ng-container>
+					</ng-container>
+				</td>
+			</ng-container>
+			<tr
+				mat-header-row
+				*matHeaderRowDef="groupHeaders(); sticky: true"></tr>
+			<tr
+				mat-header-row
+				*matHeaderRowDef="headers(); sticky: true"></tr>
+			<tr
+				mat-row
+				*matRowDef="let row; columns: headers()"
+				class="odd:tw-bg-selected-button even:tw-bg-background-background"
+				[attr.data-cy]="'results-table-row-' + row.name"></tr>
+		</table>
+	</div>
+</ng-container>
+<mat-paginator
+	[ngClass]="
+		(setDiffs | async) && ((selectedSets | async) || []).length > 0
+			? ''
+			: 'tw-hidden'
+	"
+	[pageSizeOptions]="[50, 100, 250, 500]"></mat-paginator>

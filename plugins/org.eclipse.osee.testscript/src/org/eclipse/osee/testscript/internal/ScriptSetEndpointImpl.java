@@ -53,4 +53,5 @@ public class ScriptSetEndpointImpl implements ScriptSetEndpoint {
    public int getCount(String filter, ArtifactId viewId) {
       return scriptSetApi.getCountWithFilter(branch, viewId, filter);
    }
+
 }

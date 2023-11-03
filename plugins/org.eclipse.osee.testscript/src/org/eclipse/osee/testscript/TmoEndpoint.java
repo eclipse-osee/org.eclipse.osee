@@ -59,4 +59,8 @@ public interface TmoEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptDownloadEndpoint getTmoDownloadEndpoint(@PathParam("branch") BranchId branch);
 
+   @Path("{branch}/diff")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ScriptSetDiffEndpoint getScriptSetDiffEndpoint(@PathParam("branch") BranchId branch);
+
 }

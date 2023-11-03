@@ -18,7 +18,7 @@ import { CiBatchService } from '../../services/ci-batch.service';
 import { CommonModule } from '@angular/common';
 import { ResultReference } from '../../types';
 import { HeaderService } from '@osee/shared/services';
-import { resultHeaderDetails } from '../../table-headers/restult-headers';
+import { resultHeaderDetails } from '../../table-headers/result-headers';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatMillisecondsPipe } from '@osee/shared/utils';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';

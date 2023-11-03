@@ -121,3 +121,15 @@ export const scriptBatchSentinel: ScriptBatch = {
 	machineName: '',
 	testEnvBatchId: '',
 };
+
+export type SetDiff = {
+	name: string;
+	equal: boolean;
+	results: {
+		[key: string]: {
+			passes: number;
+			fails: number;
+			abort: boolean;
+		};
+	};
+};

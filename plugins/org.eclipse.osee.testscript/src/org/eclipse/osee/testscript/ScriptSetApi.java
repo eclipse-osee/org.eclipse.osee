@@ -26,6 +26,8 @@ public interface ScriptSetApi {
 
    ScriptSetToken get(BranchId branch, ArtifactId setId);
 
+   Collection<ScriptSetToken> get(BranchId branch, Collection<ArtifactId> setIds);
+
    Collection<ScriptSetToken> getAll(BranchId branch);
 
    Collection<ScriptSetToken> getAll(BranchId branch, ArtifactId viewId);

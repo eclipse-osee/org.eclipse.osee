@@ -31,6 +31,8 @@ public interface ScriptResultApi {
 
    Collection<ScriptResultToken> getAll(BranchId branch);
 
+   Collection<ScriptResultToken> getAllForSet(BranchId branch, ArtifactId view, ArtifactId setId);
+
    Collection<ScriptResultToken> getAllForBatch(BranchId branch, ArtifactId viewId, ArtifactId batchId, String filter,
       long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
