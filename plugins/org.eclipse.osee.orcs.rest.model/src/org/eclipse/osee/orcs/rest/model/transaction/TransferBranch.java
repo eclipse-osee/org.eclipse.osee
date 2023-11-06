@@ -11,11 +11,12 @@ import org.eclipse.osee.framework.core.data.TransactionId;
  */
 
 public class TransferBranch {
-   public BranchId branchId;
-   public TransactionId prevTx;
-   public TransactionId curTx;
-   public GammaId gammaId;
-   public List<TransferTransaction> txList;
+   private final BranchId branchId;
+   private TransactionId prevTx;
+   private TransactionId uniqueTx;
+   private TransactionId curTx;
+   private GammaId gammaId;
+   private final List<TransferTransaction> txList;
 
    public TransferBranch(BranchId id) {
       this.branchId = id;
@@ -23,19 +24,47 @@ public class TransferBranch {
       this.txList = new ArrayList<>();
    }
 
+   public TransactionId getPrevTx() {
+      return prevTx;
+   }
+
+   public void setPrevTx(TransactionId prevTx) {
+      this.prevTx = prevTx;
+   }
+
+   public TransactionId getUniqueTx() {
+      return uniqueTx;
+   }
+
+   public void setUniqueTx(TransactionId uniqueTx) {
+      this.uniqueTx = uniqueTx;
+   }
+
+   public TransactionId getCurTx() {
+      return curTx;
+   }
+
+   public void setCurTx(TransactionId curTx) {
+      this.curTx = curTx;
+   }
+
+   public GammaId getGammaId() {
+      return gammaId;
+   }
+
+   public void setGammaId(GammaId gammaId) {
+      this.gammaId = gammaId;
+   }
+
    public BranchId getBranchId() {
       return branchId;
    }
 
-   public void setPrevTX(TransactionId prevTx) {
-      this.prevTx = prevTx;
+   public List<TransferTransaction> getTxList() {
+      return txList;
    }
 
-   public void setCurTX(TransactionId curTx) {
-      this.curTx = curTx;
-   }
-
-   public void setGammaID(GammaId gammaId) {
-      this.gammaId = gammaId;
+   public void addTransferTransaction(TransferTransaction toAdd) {
+      txList.add(toAdd);
    }
 }

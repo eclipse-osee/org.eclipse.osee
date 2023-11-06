@@ -14,7 +14,9 @@ package org.eclipse.osee.orcs.rest.model.transaction;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -47,6 +49,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.DataResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -175,7 +178,8 @@ public class TransactionBuilderDataFactory {
          TransactionToken currentTransaction = change.getCurrentVersion().getTransactionToken();
          BranchId changeBranch = currentTransaction.getBranch();
          if (this.currentBranch != changeBranch) {
-            results.errorf("branch switch during creation: was %s is %s", this.currentBranch, changeBranch);
+            // synthetic artifact changes have no branch set in the change, just log it
+            results.logf("branch switch during creation: was %s is %s", this.currentBranch, changeBranch);
          }
       }
       return good;
@@ -391,9 +395,20 @@ public class TransactionBuilderDataFactory {
       if (cv != null && cv.isValid()) {
          String value = cv.getValue();
          String uri = cv.getUri();
-         if (Strings.isValidAndNonBlank(value)) {
+         boolean validValue = Strings.isValidAndNonBlank(value);
+         boolean validURI = Strings.isValidAndNonBlank(uri);
+         //both blank
+         if (!validValue && !validURI) {
+            // check the current change
+            cv = change.getCurrentVersion();
+            value = cv.getValue();
+            uri = cv.getUri();
+            validValue = Strings.isValidAndNonBlank(value);
+            validURI = Strings.isValidAndNonBlank(uri);
+         }
+         if (validValue) {
             item.setValue(Arrays.asList(value));
-         } else if (Strings.isValidAndNonBlank(uri)) {
+         } else if (validURI) {
             if (attrType.isInputStream()) {
                // get the data from the change if possible
                List<String> list = new ArrayList<>();
@@ -402,7 +417,18 @@ public class TransactionBuilderDataFactory {
                list.add(encoder.encodeToString(data));
                item.setValue(list);
             } else {
-               results.errorf("uri %s is not attr type input stream", uri);
+               try {
+                  List<String> list = new ArrayList<>();
+                  byte[] data = resourceManager.acquire(new DataResource("application/zip", "UTF-8", ".zip", uri));
+                  if (data == null) {
+                     throw new OseeCoreException("invalid data for zip: %s", uri.toString());
+                  }
+                  ByteBuffer decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(data)));
+                  list.add(new String(decompressed.array(), "UTF-8"));
+                  item.setValue(list);
+               } catch (IOException ex) {
+                  OseeCoreException.wrapAndThrow(ex);
+               }
             }
          } else {
             results.errorf("change %s has invalid net change", change.toString());
@@ -534,9 +560,9 @@ public class TransactionBuilderDataFactory {
    }
 
    private TransactionBuilderData handleTupleChanges(TransactionBuilderData tbd) {
-      for (ChangeItem change : tupleChanges) {
-         results.errorf("tuple changes not handled for change: %s", change);
-      }
+      //      for (ChangeItem change : tupleChanges) {
+      //         results.errorf("tuple changes not handled for change: %s", change);
+      //      }
       return tbd;
    }
 

@@ -108,6 +108,12 @@ public interface TransactionEndpoint {
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    Response uploadTransferFile(InputStream zip);
 
+   @POST
+   @Path("xfer/apply")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData applyTransferFile(@QueryParam("location") String location);
+
    /**
     * Makes a request to lock down transfers for the given export ID. This will set the lock that identifies the
     * transfer as in progress This is a utility for checking the state of transfers externally, and should not be used

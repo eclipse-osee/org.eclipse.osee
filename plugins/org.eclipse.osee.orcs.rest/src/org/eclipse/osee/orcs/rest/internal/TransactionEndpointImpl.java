@@ -247,11 +247,16 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       return results;
    }
 
-   private XResultData applyTransferFile(String dirName, boolean isTest) {
+   @Override
+   public XResultData applyTransferFile(String location) {
+      return applyTransferFileInternal(location, false);
+   }
+
+   private XResultData applyTransferFileInternal(String dirName, boolean isTest) {
       XResultData results = new XResultData();
 
       TransactionTransferManifest manifest = new TransactionTransferManifest();
-      results = manifest.Parse(dirName, tupleQuery);
+      results = manifest.parse(dirName);
 
       if (results.isFailed()) {
          return results;
@@ -380,7 +385,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          }
       }
 
-      XResultData results = applyTransferFile(transDir, false);
+      XResultData results = applyTransferFileInternal(transDir, false);
       results.log(String.format("The file is extracted to %s.", sourceNameDir));
       if (results.isOK()) {
          return Response.ok().entity(String.format("\nResult: %s", results.toString())).build();

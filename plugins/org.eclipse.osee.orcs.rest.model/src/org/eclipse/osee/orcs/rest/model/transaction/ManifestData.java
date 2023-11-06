@@ -27,6 +27,7 @@ public class ManifestData {
    private String transferDirectoryName;
    private String fileName;
    private String dirName;
+   public String transferOpTypeManifest;
 
    public BranchId getBranchId() {
       return branchId;
@@ -90,6 +91,14 @@ public class ManifestData {
 
    public void setDirName(String dirName) {
       this.dirName = dirName;
+   }
+
+   public String getTransferOpTypeManifest() {
+      return transferOpTypeManifest;
+   }
+
+   public void setTransferOpTypeManifest(String transferOpTypeManifest) {
+      this.transferOpTypeManifest = transferOpTypeManifest;
    }
 
    // Constructor
