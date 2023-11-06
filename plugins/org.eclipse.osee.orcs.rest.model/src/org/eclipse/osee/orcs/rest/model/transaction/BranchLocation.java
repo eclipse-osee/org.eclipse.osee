@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 public class BranchLocation {
    private BranchId branchId;
    private TransactionId baseTxId;
+   private TransactionId uniqueTxId;
 
    public BranchId getBranchId() {
       return branchId;
@@ -34,5 +35,13 @@ public class BranchLocation {
 
    public void setBaseTxId(TransactionId baseTx) {
       this.baseTxId = baseTx;
+   }
+
+   public TransactionId getUniqueTxId() {
+      return uniqueTxId;
+   }
+
+   public void setUniqueTxId(TransactionId baseTx) {
+      this.uniqueTxId = baseTx;
    }
 }

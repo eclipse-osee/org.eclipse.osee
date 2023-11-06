@@ -3,7 +3,6 @@ package org.eclipse.osee.orcs.rest.model.transaction;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -25,7 +24,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class TransactionTransferManifest {
    public TransactionId exportId = null;
    public TransactionId buildId = null;
-   public List<TransferBranch> transferBranchList;
+   private List<TransferBranch> transferBranchList;
    public String path;
    private final XResultData results;
    private final int PURGE_TXS_LIMIT = 100;
@@ -34,7 +33,21 @@ public class TransactionTransferManifest {
       this.results = new XResultData();
    }
 
-   public XResultData Parse(String dirName, TupleQuery tupleQuery) {
+   public List<TransferBranch> getTransferBranches() {
+      if (transferBranchList == null) {
+         transferBranchList = new ArrayList<>();
+      }
+      return transferBranchList;
+   }
+
+   public void addTransferBranch(TransferBranch tb) {
+      if (transferBranchList == null) {
+         transferBranchList = new ArrayList<>();
+      }
+      transferBranchList.add(tb);
+   }
+
+   public XResultData parse(String dirName) {
       transferBranchList = new ArrayList<>();
 
       this.path = dirName;
@@ -42,97 +55,70 @@ public class TransactionTransferManifest {
       try {
          String manifest = Lib.fileToString(manifestFile);
          String[] mdLines = manifest.split("\n");
-         TransferBranch transList = null;
-         TransferTransaction trans = null;
-         boolean noCurTx = false;
-         for (int i = 0; i < mdLines.length; i++) {
-            if (mdLines[i].contains("BuildID")) {
-               this.buildId = TransactionId.valueOf(mdLines[i].split(":")[1].trim());
-               continue;
-            }
-
-            if (mdLines[i].contains("ExportID")) {
-               this.exportId = TransactionId.valueOf(mdLines[i].split(":")[1].trim());
-               continue;
-            }
-
-            if (mdLines[i].contains("PrevTX")) {
-               if (noCurTx) {
-                  transList.setCurTX(trans.sourceTransId);
-                  this.transferBranchList.add(transList);
-               }
-               transList = new TransferBranch(BranchId.valueOf(mdLines[i].split("\\|")[1].trim()));
-               noCurTx = true;
-               transList.setPrevTX(TransactionId.valueOf(mdLines[i].split("\\|")[2].trim()));
-
-               trans = new TransferTransaction(BranchId.valueOf(mdLines[i].split("\\|")[1].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[2].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[3].trim()), TransferOpType.PREV_TX);
-
-               if (transList.txList.contains(trans)) {
-                  results.error(String.format("Transaction %s has a duplication.", trans.sourceTransId.toString()));
-                  break;
-               }
-               transList.txList.add(trans);
-               continue;
-            }
-
-            if (mdLines[i].contains("ADD")) {
-               trans = new TransferTransaction(BranchId.valueOf(mdLines[i].split("\\|")[1].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[2].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[3].trim()), TransferOpType.ADD);
-
-               if (transList.txList.contains(trans)) {
-                  results.error(String.format("Transaction %s has a duplication.", trans.sourceTransId.toString()));
-                  break;
-               }
-               transList.txList.add(trans);
-               continue;
-            }
-
-            if (mdLines[i].contains("EMPTY")) {
-               trans = new TransferTransaction(BranchId.valueOf(mdLines[i].split("\\|")[1].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[2].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[3].trim()), TransferOpType.EMPTY);
-
-               if (transList.txList.contains(trans)) {
-                  results.error(String.format("Transaction %s has a duplication.", trans.sourceTransId.toString()));
-                  break;
-               }
-               transList.txList.add(trans);
-               continue;
-            }
-
-            if (mdLines[i].contains("CurTX")) {
-               trans = new TransferTransaction(BranchId.valueOf(mdLines[i].split("\\|")[1].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[2].trim()),
-                  TransactionId.valueOf(mdLines[i].split("\\|")[3].trim()), TransferOpType.CUR_TX);
-
-               if (transList.txList.contains(trans)) {
-                  results.error(String.format("Transaction %s has a duplication.", trans.sourceTransId.toString()));
-                  break;
-               }
-               transList.txList.add(trans);
-               transList.setCurTX(trans.sourceTransId);
-               this.transferBranchList.add(transList);
-               noCurTx = false;
-               continue;
-            }
-
-            if (mdLines[i].contains("List of Directories")) {
-               break;
-            }
+         if (mdLines[0].toLowerCase().contains("buildid")) {
+            this.buildId = TransactionId.valueOf(mdLines[0].split(":")[1].trim());
+         } else {
+            results.errorf("BuildId not found in: %s", mdLines[0]);
+            return results;
          }
-
-      } catch (IOException e) {
-         results.errorf("%s", String.format("IO Exception while reading manifest. %s", e.getMessage()));
-      }
-
-      if (!results.isFailed()) {
-         Validate(tupleQuery);
+         if (mdLines[1].toLowerCase().contains("exportid")) {
+            this.exportId = TransactionId.valueOf(mdLines[1].split(":")[1].trim());
+         } else {
+            results.errorf("ExportId not found in: %s", mdLines[1]);
+            return results;
+         }
+         // skip lines 3,4 since they should be the table header
+         boolean done = false;
+         int i = 4;
+         TransferBranch transBranch = null;
+         while (!done) {
+            if (mdLines[i].toLowerCase().contains("prev")) {
+               if (transBranch != null) {
+                  // finish off previous branch
+                  this.transferBranchList.add(transBranch);
+               }
+               transBranch = createTransferBranchFromRow(mdLines[i]);
+            } else if (mdLines[i].toLowerCase().contains("cur")) {
+               results.errorf("not accepting this type %s", mdLines[i]);
+            } else if (mdLines[i].toLowerCase().contains("add")) {
+               addRowToTransferBranch(transBranch, mdLines[i], TransferOpType.ADD);
+            } else if (mdLines[i].toLowerCase().contains("empty")) {
+               addRowToTransferBranch(transBranch, mdLines[i], TransferOpType.EMPTY);
+            } else if (mdLines[i].length() < 3) {
+               done = true;
+               this.transferBranchList.add(transBranch);
+            } else {
+               results.errorf("unhandled type in row %s", mdLines);
+               return results;
+            }
+            ++i;
+         }
+         // TODO possibly handle directories/contents
+      } catch (Exception e) {
+         results.errorf("%s",
+            String.format("IO Exception while verifying manifest and transaction files. %s", e.getMessage()));
       }
 
       return results;
+   }
+
+   private TransferBranch createTransferBranchFromRow(String row) {
+      String[] mdCols = row.split("\\|");
+      TransferBranch transBranch = new TransferBranch(BranchId.valueOf(mdCols[1].trim()));
+      transBranch.setPrevTx(TransactionId.valueOf(mdCols[2].trim()));
+
+      TransferTransaction trans = new TransferTransaction(transBranch.getBranchId(), transBranch.getPrevTx(),
+         TransactionId.valueOf(mdCols[3].trim()), TransferOpType.PREV_TX);
+      transBranch.addTransferTransaction(trans);
+      return transBranch;
+   }
+
+   private void addRowToTransferBranch(TransferBranch transBranch, String row, TransferOpType type) {
+      String[] mdCols = row.split("\\|");
+      TransactionId sourceTx = TransactionId.valueOf(mdCols[2].trim());
+      TransactionId uniqueTx = TransactionId.valueOf(mdCols[3].trim());
+      TransferTransaction trans = new TransferTransaction(transBranch.getBranchId(), sourceTx, uniqueTx, type);
+      transBranch.addTransferTransaction(trans);
    }
 
    /*
@@ -142,34 +128,31 @@ public class TransactionTransferManifest {
    public XResultData Validate(TupleQuery tupleQuery) {
       ArrayList<String> dirs = Lib.readListFromDir(path, null);
       try {
-         for (int i = 0; i < transferBranchList.size(); i++) {
-            BranchId branchId = transferBranchList.get(i).branchId;
+         for (TransferBranch tb : transferBranchList) {
+            BranchId branchId = tb.getBranchId();
             //looking for directory
             int index = -1;
             for (int j = 0; j < dirs.size(); j++) {
-               if (transferBranchList.get(i).getBranchId().toString().equals(dirs.get(j))) {
+               if (branchId.toString().equals(dirs.get(j))) {
                   index = j;
                   break;
                }
             }
             if (index == -1) {
-               results.error(String.format("Missing %s directory", transferBranchList.get(i).getBranchId().toString()));
+               results.error(String.format("Missing %s directory", branchId.toString()));
                return results;
             }
             //looking for json files
             ArrayList<String> tempfiles =
                Lib.readListFromDir(String.format("%s%s%s", path, File.separator, dirs.get(index)), null);
-            for (int j = 0; j < transferBranchList.get(i).txList.size(); j++) {
-               if (!tempfiles.contains(transferBranchList.get(i).txList.get(
-                  j).sourceTransId.toString()) && transferBranchList.get(i).txList.get(j).transferOp.equals(
-                     TransferOpType.ADD)) {
-                  results.error(String.format("Missing %s.json under %s",
-                     transferBranchList.get(i).txList.get(j).sourceTransId.toString(),
-                     transferBranchList.get(i).branchId.toString()));
+            for (TransferTransaction transTx : tb.getTxList()) {
+               String fileString = transTx.getSourceTransId().toString();
+               if (!tempfiles.contains(fileString) && transTx.getTransferOp().equals(TransferOpType.ADD)) {
+                  results.errorf("Missing %s.json under %s", fileString, tb.getBranchId().toString());
                   return results;
                }
-            }
 
+            }
             //Verify prevTX, ImportId,
             List<TransactionId> txIds = new ArrayList<>();
             //tupleQuery.getTuple4E3E4FromE1E2(TupleType, branchId, e1, e2, consumer);
@@ -183,12 +166,8 @@ public class TransactionTransferManifest {
                results.errorf("%s", String.format("Can not get Prev_TX of %s from database.", branchId.toString()));
                return results;
             }
-            if (!txIds.get(0).toString().equals(transferBranchList.get(i).prevTx.toString())) {
-               results.errorf("%s",
-                  String.format("Previous Tx %s of %s does not match with current value: %s in database.",
-                     transferBranchList.get(i).prevTx.toString(), branchId.toString(), txIds.get(0).toString()));
-               return results;
-            }
+            // get max tx from tuple table and check to see if it matches the previous tx from the manifest
+            // still TODO
 
             List<GammaId> tuples = new ArrayList<>();
             //tupleQuery.getTuple4GammaFromE1E2(TransferFile, CoreBranches.COMMON, branchId, TransferOpType.PREV_TX, tuples::add);
@@ -199,7 +178,7 @@ public class TransactionTransferManifest {
                //return results; must add it back
                results.log(String.format("Can not get gamma Id from %s.", branchId.toString()));
             } else {
-               transferBranchList.get(i).setGammaID(tuples.get(0));
+               //transferBranchList.get(i).setGammaID(tuples.get(0));
             }
 
             //verify export id
@@ -224,11 +203,12 @@ public class TransactionTransferManifest {
    }
 
    public ArrayList<String> GetAllImportedTransIds() {
-      ArrayList<String> ids = new ArrayList<String>();
-      for (int i = 0; i < transferBranchList.size(); i++) {
-         for (int j = 0; j < transferBranchList.get(i).txList.size(); j++) {
-            if (transferBranchList.get(i).txList.get(j).importedTransId != null) {
-               ids.add(transferBranchList.get(i).txList.get(j).importedTransId.toString());
+      ArrayList<String> ids = new ArrayList<>();
+      for (TransferBranch tb : transferBranchList) {
+         for (TransferTransaction transTx : tb.getTxList()) {
+            TransactionId tx = transTx.getImportedTransId();
+            if (tx != null && tx.isValid()) {
+               ids.add(tx.getIdString());
             }
          }
       }
@@ -267,46 +247,33 @@ public class TransactionTransferManifest {
    public XResultData ImportAllTransactions(OrcsApi orcsApi, IResourceManager resourceManager) {
       //import transactions to branchIds
       try {
-         for (int i = 0; i < transferBranchList.size(); i++) {
-            BranchId branchId = transferBranchList.get(i).branchId;
+         for (TransferBranch tb : transferBranchList) {
+            BranchId branchId = tb.getBranchId();
 
-            int j = 0;
+            String current = "";
             try {
-               for (j = 0; j < transferBranchList.get(i).txList.size(); j++) {
-                  if (transferBranchList.get(i).txList.get(j).transferOp.equals(
-                     TransferOpType.PREV_TX) || transferBranchList.get(i).txList.get(j).transferOp.equals(
-                        TransferOpType.EMPTY)) {
+               for (TransferTransaction transTx : tb.getTxList()) {
+                  TransferOpType op = transTx.getTransferOp();
+                  if (TransferOpType.PREV_TX.equals(op) || TransferOpType.EMPTY.equals(op)) {
                      continue;
                   }
-                  File transFile =
-                     new File(String.format("%s%s%s%s%s.json", this.path, File.separator, branchId.toString(),
-                        File.separator, transferBranchList.get(i).txList.get(j).sourceTransId.toString()));
-                  if (!transFile.exists() && transferBranchList.get(i).txList.get(j).transferOp.equals(
-                     TransferOpType.CUR_TX)) {
-                     continue;
+                  File transFile = new File(String.format("%s%s%s%s%s.json", this.path, File.separator,
+                     branchId.toString(), File.separator, transTx.getSourceTransId().toString()));
+                  if (transFile.exists()) {
+                     current = transFile.getName();
+                     String transStr = Lib.fileToString(transFile);
+                     TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
+                     TransactionBuilder trans = txBdf.loadFromJson(transStr);
+                     TransactionToken token = trans.commit();
+                     if (token.isInvalid()) {
+                        results.errorf("Failed at %s - %s", branchId.toString(), current);
+                        break;
+                     }
+                     transTx.setImportedTransId(token);
                   }
-
-                  String transStr = Lib.fileToString(transFile);
-                  TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
-                  TransactionBuilder trans = txBdf.loadFromJson(transStr);
-
-                  //trans.createArtifact(CoreArtifactTypes.AcronymPlainText, "Test Artifact");
-
-                  //trans.addkeyValueOps(id, name);
-                  //make small change to get the transaction id
-                  TransactionToken token = trans.commit();
-                  if (token.getId() < 1) {
-                     results.errorf("Failed at %s - %s.json: Transaction id was %s.", branchId.toString(),
-                        transferBranchList.get(i).txList.get(j).sourceTransId.toString(), token.getIdString());
-                     break;
-                  }
-                  //transIdList.add(token.getIdString());
-                  transferBranchList.get(i).txList.get(j).setImportedTransId(
-                     TransactionId.valueOf(token.getIdString()));
                }
             } catch (Exception e) {
-               results.errorf("Failed at %s - %s.json: %s.", branchId.toString(),
-                  transferBranchList.get(i).txList.get(j).sourceTransId.toString(), e.getMessage());
+               results.errorf("Failed at %s - %s.json: %s.", branchId.toString(), current, e.getMessage());
             }
 
             if (results.isFailed()) {
@@ -315,7 +282,7 @@ public class TransactionTransferManifest {
          }
 
       } catch (Exception e) {
-         results.errorf("%s", e.getMessage());
+         results.error(e.getMessage());
       }
       return results;
    }
@@ -324,25 +291,18 @@ public class TransactionTransferManifest {
       try {
          TransactionBuilder txDel =
             orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Delete Tuple4 Prev TX");
-         for (int i = 0; i < transferBranchList.size(); i++) {
-            BranchId branchId = transferBranchList.get(i).branchId;
-            GammaId id = transferBranchList.get(i).gammaId;
+         for (TransferBranch tb : transferBranchList) {
+            BranchId branchId = tb.getBranchId();
+            GammaId id = tb.getGammaId();
             if (id != null) {
                txDel.deleteTuple4(id);
             }
          }
          txDel.commit();
-
-         TransactionBuilder txUpdt =
-            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Update Tuple4 Prev TX");
-         for (int i = 0; i < transferBranchList.size(); i++) {
-            if (transferBranchList.get(i).curTx.isValid()) {
-               BranchId branchId = transferBranchList.get(i).branchId;
-               txUpdt.addTuple4(TransferFile, branchId, TransferOpType.PREV_TX, transferBranchList.get(i).curTx,
-                  TransactionId.valueOf(Lib.generateUuid()));
-            }
-         }
-         txUpdt.commit();
+         //         TransferTransaction transTx = null;
+         //         TransactionBuilder txUpdt =
+         //            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Update Tuple4 Prev TX");
+         //         txUpdt.commit();
       } catch (Exception e) {
          results.error(String.format("Error while Updating PrevTX to database %s", e.getMessage()));
       }
