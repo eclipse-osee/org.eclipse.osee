@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -123,7 +124,6 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          orcsApi.getQueryFactory().transactionQuery().andIsHead(branch1).getResults().getExactlyOne();
       TransactionToken destinationTx =
          orcsApi.getQueryFactory().transactionQuery().andIsHead(branch2).getResults().getExactlyOne();
-
       List<ChangeItem> changes = orcsApi.getBranchOps().compareBranch(sourceTx, destinationTx);
 
       // First, add all of the artifact changes to the correct maps. Every diff should have an artifact change.
@@ -142,7 +142,8 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       processConnections(connectionList);
       processMessages(messageList);
       processSubMessages(submessageList);
-      elementList.addAll(processStructures(structureList)); //add moved elements so they show up on diff report
+      //elementList.addAll(processStructures(structureList)); //TODO: add moved elements so they show up on diff report
+      processStructures(structureList);
 
       processElements(elementList, ArtifactId.SENTINEL);
       processPlatformTypes(pTypeList);
@@ -498,8 +499,10 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
       }
 
       Map<ArtifactId, MimChangeSummaryItem> changeMap = new HashMap<>(); // Collection of all change items
-
       for (ChangeReportRowDto change : changes) {
+    	  if (!change.getArtType().getSuperTypes().contains(CoreArtifactTypes.InterfaceArtifact)) {
+    		  continue;
+    	  }
          ArtifactId artId = change.getArtA().getArtifactId();
 
          MimChangeSummaryItem item = changeMap.get(artId);
@@ -511,7 +514,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          if (change.getItemKindType().equals(ChangeType.Attribute)) {
             item.getAttributeChanges().add(change);
          } else if (change.getItemKindType().equals(ChangeType.Relation)) {
-            item.getRelationChanges().add(change);
+        	item.getRelationChanges().add(change);
          } else if (change.getItemKindType().equals(ChangeType.Artifact)) {
             if (change.getChangeType().equals("Applicability")) {
                item.setIsApplic(change.getIsApplic());
