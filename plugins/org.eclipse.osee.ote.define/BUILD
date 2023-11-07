@@ -1,21 +1,21 @@
 java_library(
-    name = "ote_define",
+    name = "org.eclipse.osee.ote.define",
 	resources = ["xml_files", "exsd_files"],
 	srcs = glob(["**/*.java"]),
  	deps = ["java_deps",
-		"//framework_core_packages", "//:framework_core_client",
-	  	"//:framework_plugin_core", "//:framework_ui_swt",
-		"//:activity_api", "//:framework_messaging_event_res",
-	  	"//:framework_server_ide_api", "//:framework_core_server",
-	  	"//:framework_messaging", "//:cache_admin",
-	  	"//:framework_core_model", "//:jaxrs", "//:orcs",
-	  	"//:orcs_rest_model", "//:jdbc", "//:framework_server_ide",
-	  	"//:console_admin", "//:orcs_core", "//:orcs_rest",
-	  	"//:activity", "//:define_api",
-	  	"//:framework_resource_management", "//:account_rest_client",
-	  	"//:account_rest_model", "//:framework_help_ui",
-	  	"//:framework_skynet_core", "//:framework_ui_plugin",
-	  	"//:ats_api", "//:framework_ui_ws"
+		"//org.eclipse.osee.framework.core.packages", "//org.eclipse.osee.framework.core.client",
+	  	"//org.eclipse.osee.framework.plugin.core", "//org.eclipse.osee.framework.ui.swt",
+		"//org.eclipse.osee.activity.api", "//org.eclipse.osee.framework.messaging.event.res",
+	  	"//org.eclipse.osee.framework.server.ide.api", "//org.eclipse.osee.framework.core.server",
+	  	"//org.eclipse.osee.framework.messaging", "//org.eclipse.osee.cache.admin",
+	  	"//org.eclipse.osee.framework.core.model", "//org.eclipse.osee.jaxrs", "//org.eclipse.osee.orcs",
+	  	"//org.eclipse.osee.orcs.rest.model", "//org.eclipse.osee.jdbc", "//org.eclipse.osee.framework.server.ide",
+	  	"//org.eclipse.osee.console.admin", "//org.eclipse.osee.orcs.core", "//org.eclipse.osee.orcs.rest",
+	  	"//org.eclipse.osee.activity", "//org.eclipse.osee.define.api",
+	  	"//org.eclipse.osee.framework.resource.management", "//org.eclipse.osee.account.rest.client",
+	  	"//org.eclipse.osee.account.rest.model", "//org.eclipse.osee.framework.help.ui",
+	  	"//org.eclipse.osee.framework.skynet.core", "//org.eclipse.osee.framework.ui.plugin",
+	        "//org.eclipse.osee.ats.api", "//org.eclipse.osee.framework.ui.ws"
 		],
 	visibility = ["//visibility:public"]
   )
@@ -27,7 +27,7 @@ filegroup(
 
 filegroup(
     name = "exsd_files",
-    srcs = ["OSEE-INF/extensionPts/OutfileParser.exsd"]
+    srcs = ["OSEE-INF/extensionPts/OutfileParser.exsd","META-INF/MANIFEST.MF"]
 )
 
 java_library(
@@ -45,23 +45,23 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-				"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
-				"@maven//:org_apache_cxf_cxf_rt_rs_client",
-				"@maven//:org_eclipse_jgit_org_eclipse_jgit",
-				"@maven//:org_jsoup_jsoup",
-				"@maven//:com_jcraft_jsch",
-				"@maven//:org_eclipse_jdt_org_eclipse_jdt_core",
-				"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
+		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+		"@maven//:org_apache_cxf_cxf_rt_rs_client",
+		"@maven//:org_eclipse_jgit_org_eclipse_jgit",
+		"@maven//:org_jsoup_jsoup",
+		"@maven//:com_jcraft_jsch",
+		"@maven//:org_eclipse_jdt_org_eclipse_jdt_core",
+		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
-				"@maven//:org_mockito_mockito_core",
-				"@maven//:org_hamcrest_hamcrest_core",
-				"@ext_jars//:eclipse_osgi_services",
-				"@ext_jars//:eclipse_ui",
-				"@ext_jars//:swt",
-				"@ext_jars//:jface",
-				"@ext_jars//:eclipse_core",
-				"@ext_jars//:eclipse_equinox_common",
-				"@ext_jars//:apache_commons_lang",
-				"@ext_jars//:nebula"
+		"@maven//:org_mockito_mockito_core",
+		"@maven//:org_hamcrest_hamcrest_core",
+		"@ext_jars//:eclipse_osgi_services",
+		"@ext_jars//:eclipse_ui",
+		"@ext_jars//:swt",
+		"@ext_jars//:jface",
+		"@ext_jars//:eclipse_core",
+		"@ext_jars//:eclipse_equinox_common",
+		"@ext_jars//:apache_commons_lang",
+		"@ext_jars//:nebula"
                 ],
 )

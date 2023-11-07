@@ -1,6 +1,6 @@
 
 java_library(
-        name = "framework_messaging_event_res",
+        name = "org.eclipse.osee.framework.messaging.event.res",
         resources = ["xsd_files"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",

@@ -1,9 +1,9 @@
 
 java_library(
-        name = "framework_ui_swt",
+        name = "org.eclipse.osee.framework.ui.swt",
         srcs = glob(["**/*.java"]),
         deps = ["java_deps",
-		"//framework_core_packages"
+		"//org.eclipse.osee.framework.core.packages"
 	],
         visibility = ["//visibility:public"]
 

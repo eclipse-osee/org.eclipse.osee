@@ -1,31 +1,31 @@
 java_library(
-    name = "framework_ui_plugin",
+    name = "org.eclipse.osee.framework.ui.plugin",
 	resources = ["xml_files", "exsd_files", "img"],
 	srcs = 
 	glob(["**/*.java"]),
 	deps = ["java_deps",
-		"//framework_core_packages",
-	 	"//:framework_core_client",
-	 	"//:framework_plugin_core",
-	 	"//:framework_ui_swt",
-	 	"//:activity_api",
-	 	"//:framework_messaging_event_res",
-	 	"//:framework_server_ide_api",
-	 	"//:framework_core_server",
-	 	"//:framework_messaging",
-	 	"//:cache_admin",
-	 	"//:framework_core_model",
-	 	"//:jaxrs",
-	 	"//:orcs",
-	 	"//:orcs_rest_model",
-	 	"//:jdbc",
-	 	"//:framework_server_ide",
-	 	"//:console_admin",
-	 	"//:orcs_core",
-	 	"//:orcs_rest",
-	 	"//:activity",
-	 	"//:define_api",
-	 	"//:framework_resource_management"
+		"//org.eclipse.osee.framework.core.packages",
+	 	"//org.eclipse.osee.framework.core.client",
+	 	"//org.eclipse.osee.framework.plugin.core",
+	 	"//org.eclipse.osee.framework.ui.swt",
+	 	"//org.eclipse.osee.activity.api",
+	 	"//org.eclipse.osee.framework.messaging.event.res",
+	 	"//org.eclipse.osee.framework.server.ide.api",
+	 	"//org.eclipse.osee.framework.core.server",
+	 	"//org.eclipse.osee.framework.messaging",
+	 	"//org.eclipse.osee.cache.admin",
+	 	"//org.eclipse.osee.framework.core.model",
+	 	"//org.eclipse.osee.jaxrs",
+	 	"//org.eclipse.osee.orcs",
+	 	"//org.eclipse.osee.orcs.rest.model",
+	 	"//org.eclipse.osee.jdbc",
+	 	"//org.eclipse.osee.framework.server.ide",
+	 	"//org.eclipse.osee.console.admin",
+	 	"//org.eclipse.osee.orcs.core",
+	 	"//org.eclipse.osee.orcs.rest",
+	 	"//org.eclipse.osee.activity",
+	 	"//org.eclipse.osee.define.api",
+	 	"//org.eclipse.osee.framework.resource.management"
 		],
 	visibility = ["//visibility:public"]
               )
@@ -44,7 +44,8 @@ filegroup(
           [
             "OSEE-INF/extensionPts/PropertyStoreControl.exsd",
             "OSEE-INF/extensionPts/WorkbenchTargetProvider.exsd",
-	    "OSEE-INF/extensionPts/XNavigateItemProvider.exsd"
+	    "OSEE-INF/extensionPts/XNavigateItemProvider.exsd",
+	    "META-INF/MANIFEST.MF"
            ],
 )
 

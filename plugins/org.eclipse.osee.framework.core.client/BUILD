@@ -1,11 +1,11 @@
 
 java_library(
-        name = "framework_core_client",
+        name = "org.eclipse.osee.framework.core.client",
         resources = ["xml_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//framework_core_packages","//:jdbc","//:jaxrs","//:define_api",
-                "//:cache_admin", "//:framework_messaging","//:orcs_rest_model","//:framework_core_model",
-                "//:framework_plugin_core","//:activity_api","//:framework_server_ide_api"],
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.jaxrs","//org.eclipse.osee.define.api",
+                "//org.eclipse.osee.cache.admin", "//org.eclipse.osee.framework.messaging","//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.framework.core.model",
+                "//org.eclipse.osee.framework.plugin.core","//org.eclipse.osee.activity.api","//org.eclipse.osee.framework.server.ide.api"],
         visibility = ["//visibility:public"]
         
 )
