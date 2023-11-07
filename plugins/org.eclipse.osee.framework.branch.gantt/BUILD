@@ -1,22 +1,23 @@
 java_library(
-    name = "framework_branch_gantt",
+        name = "org.eclipse.osee.framework_branch_gantt",
 	resources = ["gif_files"],
 	srcs = glob(["**/*.java"]),
-	deps = ["java_deps","//org.eclipse.osee.org.eclipse.osee.org.eclipse.osee.framework.core.packages",
-		"//:framework_ui_skynet",
-	 	"//:org.eclipse.osee.framework.core_model",
-	 	"//:framework_skynet_core",
-		"//:framework_ui_swt"
+	deps = ["java_deps","//org.eclipse.osee.framework.core.packages",
+		"//org.eclipse.osee.framework.ui.skynet",
+	 	"//org.eclipse.osee.framework.core.model",
+	 	"//org.eclipse.osee.framework.skynet.core",
+		"//org.eclipse.osee.framework.ui.swt"
 		],
 	visibility = ["//visibility:public"]
-              )
+)
 
 filegroup(
     name = "gif_files",
     srcs =
           [
-	    "OSEE-INF/images/branch.gif",
-	    "OSEE-INF/images/sample.gif"
+	    		"OSEE-INF/images/branch.gif",
+	    		"OSEE-INF/images/sample.gif",
+	    		"META-INF/MANIFEST.MF"
            ],
 )
 
@@ -44,13 +45,13 @@ java_library(
 		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
-		"@maven//:org_hamcrest_hamcrest_core",
+	        "@maven//:org_hamcrest_hamcrest_core",
 		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
 		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_equinox_common",
+	        "@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:nebula"
 	],

@@ -1,27 +1,12 @@
-java_library(
-        name = "org.eclipse.osee.framework.help.ui",
-	resources = ["common_deps"],
+java_test(
+        name = "HelpUiTestSuite",
+#	resources = ["common_deps"],
         srcs = glob(["**/*.java"]),
-	deps = ["java_deps",
-		"mylyn",
-		"//org.eclipse.osee.framework.core.packages"
+	deps = ["java_deps","//org.eclipse.osee.framework.help.ui","//org.eclipse.osee.framework.core.packages"
 	],
 	visibility = ["//visibility:public"]
 )
                         
-filegroup(
-    name = "common_deps",
-    srcs = 
-         glob(["**/*.xml",
-		"**/*.gif",
-	       "**/*.xsl",
-	       "**/*.html",
-	       "**/*.png",
-	       "**/*.css",
-	       "**/*.jpg",
-	       "**/*.MF"
-	 ])
-)
 
 java_library(
         name = "java_deps",
@@ -45,15 +30,3 @@ java_library(
                 ],
 )
 
-java_import(
-        name = "mylyn",
-        jars = [
-                "lib/org.eclipse.mylyn.wikitext.core_1.4.0.I20101018-2300-e3x.jar",
-		"lib/org.eclipse.mylyn.wikitext.confluence.core_1.4.0.I20101018-2300-e3x.jar",
-		"lib/org.eclipse.mylyn.wikitext.mediawiki.core_1.4.0.I20101018-2300-e3x.jar",
-		"lib/org.eclipse.mylyn.wikitext.textile.core_1.4.0.I20101018-2300-e3x.jar",
-                "lib/org.eclipse.mylyn.wikitext.tracwiki.core_1.4.0.I20101018-2300-e3x.jar",
-		"lib/org.eclipse.mylyn.wikitext.twiki.core_1.4.0.I20101018-2300-e3x.jar"
-	
-       ]
-)

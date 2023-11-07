@@ -3,19 +3,19 @@ java_test(
         resources = ["htm_files","xml_files"],
         srcs = glob(["**/*.java"]),
         deps = ["java_deps",
-		"//framework_core_packages",
-		"//:define_api",
-        "//:framework_skynet_core",
-		"//:cache_admin",
-		"//:jdbc",
-		"//:jaxrs",
-		"//:framework_messaging",
-		"//:framework_messaging_event_res",
-		"//:orcs_rest_model",
-		"//:framework_core_model",
-		"//:framework_core_client",
-		"//:framework_plugin_core",
-		"//:activity_api"
+		"//org.eclipse.osee.framework.core.packages",
+		"//org.eclipse.osee.define.api",
+	        "//org.eclipse.osee.framework.skynet.core",
+		"//org.eclipse.osee.cache.admin",
+		"//org.eclipse.osee.jdbc",
+		"//org.eclipse.osee.jaxrs",
+		"//org.eclipse.osee.framework.messaging",
+		"//org.eclipse.osee.framework.messaging.event.res",
+		"//org.eclipse.osee.orcs.rest.model",
+		"//org.eclipse.osee.framework.core.model",
+		"//org.eclipse.osee.framework.core.client",
+		"//org.eclipse.osee.framework.plugin.core",
+		"//org.eclipse.osee.activity.api"
 			],
                 visibility = ["//visibility:public"]
               )
@@ -37,9 +37,9 @@ filegroup(
           [
 	    "src/org/eclipse/osee/framework/skynet/core/importing/parsers/outlineResolutionCausingInput_no_toc_formatted.xml",
 	    "src/org/eclipse/osee/framework/skynet/core/importing/parsers/tableOfContentsHyperlinkTest.xml",
-        "src/org/eclipse/osee/framework/skynet/core/importing/parsers/testNumbering.xml",
-        "src/org/eclipse/osee/framework/skynet/core/importing/ExcelArtifactExtractorTest.xml",
-        "src/org/eclipse/osee/framework/skynet/core/importing/NativeDocumentExtractorTest.xml"
+            "src/org/eclipse/osee/framework/skynet/core/importing/parsers/testNumbering.xml",
+            "src/org/eclipse/osee/framework/skynet/core/importing/ExcelArtifactExtractorTest.xml",
+            "src/org/eclipse/osee/framework/skynet/core/importing/NativeDocumentExtractorTest.xml"
            ],
 )
 
@@ -56,15 +56,15 @@ java_library(
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
                 "@maven//:org_slf4j_slf4j_api",
                 "@maven//:javax_mail_mail",
-		        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		        "@maven//:org_hsqldb_hsqldb",
-		        "@maven//:org_jsoup_jsoup",
+		"@maven//:org_hsqldb_hsqldb",
+		"@maven//:org_jsoup_jsoup",
                 "@maven//:org_mockito_mockito_core",
-		        "@ext_jars//:eclipse_core",
-		        "@ext_jars//:eclipse_equinox_common",
-		        "@ext_jars//:eclipse_osgi_services",
+		"@ext_jars//:eclipse_core",
+		"@ext_jars//:eclipse_equinox_common",
+		"@ext_jars//:eclipse_osgi_services",
                 "@ext_jars//:apache_commons_lang"
                ],
 )

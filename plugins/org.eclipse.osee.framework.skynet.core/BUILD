@@ -1,20 +1,19 @@
 java_library(
-        name = "framework_skynet_core",
+        name = "org.eclipse.osee.framework.skynet.core",
         resources = ["exsd_files","xml_files","xsd_files"],
         srcs = glob(["**/*.java"]),
         deps = ["java_deps",
-		"//framework_core_packages",
-		"//:define_api",
-		"//:cache_admin",
-		"//:jdbc",
-		"//:jaxrs",
-		"//:framework_messaging",
-		"//:framework_messaging_event_res",
-		"//:orcs_rest_model",
-		"//:framework_core_model",
-		"//:framework_core_client",
-		"//:framework_plugin_core",
-		"//:activity_api"
+		"//org.eclipse.osee.framework.core.packages", "//org.eclipse.osee.define.api",
+		"//org.eclipse.osee.cache.admin",
+		"//org.eclipse.osee.jdbc",
+		"//org.eclipse.osee.jaxrs",
+		"//org.eclipse.osee.framework.messaging",
+		"//org.eclipse.osee.framework.messaging.event.res",
+		"//org.eclipse.osee.orcs.rest.model",
+		"//org.eclipse.osee.framework.core.model",
+		"//org.eclipse.osee.framework.core.client",
+		"//org.eclipse.osee.framework.plugin.core",
+		"//org.eclipse.osee.activity.api"
 			],
                 visibility = ["//visibility:public"]
               )
@@ -35,7 +34,8 @@ filegroup(
     srcs =
   	[
     		"OSEE-INF/xsd/export.xsd",
-		"OSEE-INF/xsd/publish.xsd"
+		"OSEE-INF/xsd/publish.xsd",
+		"META-INF/MANIFEST.MF"
   	],	
 )
 

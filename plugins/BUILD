@@ -28,241 +28,241 @@ alias(
 
 alias(
    name = "activity",
-   actual = "//org.eclipse.osee.activity:activity"
+   actual = "//org.eclipse.osee.activity"
 )
 
 alias(
    name = "activity_api",
-   actual = "//org.eclipse.osee.activity.api:activity_api"
+   actual = "//org.eclipse.osee.activity.api"
 )
 
 alias(
    name = "app",
-   actual = "//org.eclipse.osee.app:app"
+   actual = "//org.eclipse.osee.app"
 )
 
 alias(
    name = "ats_api",
-   actual = "//org.eclipse.osee.ats.api:ats_api"
+   actual = "//org.eclipse.osee.ats.api"
 )
 
 alias(
    name = "ats_ide",
-   actual = "//org.eclipse.osee.ats.ide:ats_ide"
+   actual = "//org.eclipse.osee.ats.ide"
 )
 
 alias(
    name = "ats_core",
-   actual = "//org.eclipse.osee.ats.core:ats_core"
+   actual = "//org.eclipse.osee.ats.core"
 )
 
 alias(
    name = "ats_rest",
-   actual = "//org.eclipse.osee.ats.rest:ats_rest"
+   actual = "//org.eclipse.osee.ats.rest"
 )
 
 alias(
    name = "authentication_admin", 
-   actual = "//org.eclipse.osee.authentication.admin:authentication_admin"
+   actual = "//org.eclipse.osee.authentication.admin"
 )
 
 alias(
    name = "authentication_ldap", 
-   actual = "//org.eclipse.osee.authentication.ldap:authentication_ldap"
+   actual = "//org.eclipse.osee.authentication.ldap"
 )
 
 alias(
    name = "authorization_admin", 
-   actual = "//org.eclipse.osee.authorization.admin:authorization_admin"
+   actual = "//org.eclipse.osee.authorization.admin"
 )
 
 alias(
    name = "cache_admin", 
-   actual = "//org.eclipse.osee.cache.admin:cache_admin"
+   actual = "//org.eclipse.osee.cache.admin"
 )
 
 alias(
    name = "config_admin", 
-   actual = "//org.eclipse.osee.config.admin:config_admin"
+   actual = "//org.eclipse.osee.config.admin"
 )
 
 alias(
    name = "console_admin", 
-   actual = "//org.eclipse.osee.console.admin:console_admin"
+   actual = "//org.eclipse.osee.console.admin"
 )
 
 alias(
    name = "define",
-   actual = "//org.eclipse.osee.define:define"
+   actual = "//org.eclipse.osee.define"
 )
 
 alias(
    name = "define_api",
-   actual = "//org.eclipse.osee.define.api:define_api"
+   actual = "//org.eclipse.osee.define.api"
 )
 
 alias(
    name = "define_ide",
-   actual = "//org.eclipse.osee.define.ide:define_ide"
+   actual = "//org.eclipse.osee.define.ide"
 )
 
 alias(
    name = "disposition_rest",
-   actual = "//org.eclipse.osee.disposition.rest:disposition_rest"
+   actual = "//org.eclipse.osee.disposition.rest"
 )
 
 alias(
    name = "disposition_rest_model",
-   actual = "//org.eclipse.osee.disposition.rest.model:disposition_rest_model"
+   actual = "//org.eclipse.osee.disposition.rest.model"
 )
 
 alias(
    name = "framework_core_model",
-   actual = "//org.eclipse.osee.framework.core.model:framework_core_model"
+   actual = "//org.eclipse.osee.framework.core.model"
 )
 
 alias(
    name = "framework_core_client",
-   actual = "//org.eclipse.osee.framework.core.client:framework_core_client"
+   actual = "//org.eclipse.osee.framework.core.client"
 )
 
 alias(
    name = "framework_core_server",
-   actual = "//org.eclipse.osee.framework.core.server:framework_core_server"
+   actual = "//org.eclipse.osee.framework.core.server"
 )
 
 alias(
    name = "framework_jdk_core",
-   actual = "//org.eclipse.osee.framework.jdk.core:framework_jdk_core"
+   actual = "//org.eclipse.osee.framework.jdk.core"
 )
 
 alias(
    name = "framework_messaging",
-   actual = "//org.eclipse.osee.framework.messaging:framework_messaging"
+   actual = "//org.eclipse.osee.framework.messaging"
 )
 
 alias(
    name = "framework_help_ui",
-   actual = "//org.eclipse.osee.framework.help.ui:framework_help_ui"
+   actual = "//org.eclipse.osee.framework.help.ui"
 )
 
 alias(
    name = "framework_messaging_event_res",
-   actual = "//org.eclipse.osee.framework.messaging.event.res:framework_messaging_event_res"
+   actual = "//org.eclipse.osee.framework.messaging.event.res"
 )
 
 alias(
    name = "framework_plugin_core",
-   actual = "//org.eclipse.osee.framework.plugin.core:framework_plugin_core"
+   actual = "//org.eclipse.osee.framework.plugin.core"
 )
 
 alias(
    name = "framework_skynet_core",
-   actual = "//org.eclipse.osee.framework.skynet.core:framework_skynet_core"
+   actual = "//org.eclipse.osee.framework.skynet.core"
 )
 
 alias(
    name = "framework_resource_management",
-   actual = "//org.eclipse.osee.framework.resource.management:framework_resource_management"
+   actual = "//org.eclipse.osee.framework.resource.management"
 )
 
 alias(
    name = "framework_server_ide",
-   actual = "//org.eclipse.osee.framework.server.ide:framework_server_ide"
+   actual = "//org.eclipse.osee.framework.server.ide"
 )
 
 alias(
    name = "framework_server_ide_api",
-   actual = "//org.eclipse.osee.framework.server.ide.api:framework_server_ide_api"
+   actual = "//org.eclipse.osee.framework.server.ide.api"
 )
 
 alias(
    name = "framework_ui_swt",
-   actual = "//org.eclipse.osee.framework.ui.swt:framework_ui_swt"
+   actual = "//org.eclipse.osee.framework.ui.swt"
 )
 
 alias(
    name = "framework_ui_plugin",
-   actual = "//org.eclipse.osee.framework.ui.plugin:framework_ui_plugin"
+   actual = "//org.eclipse.osee.framework.ui.plugin"
 )
 
 alias(
    name = "framework_ui_skynet",
-   actual = "//org.eclipse.osee.framework.ui.skynet:framework_ui_skynet"
+   actual = "//org.eclipse.osee.framework.ui.skynet"
 )
 
 alias(
    name = "framework_ui_ws",
-   actual = "//org.eclipse.osee.framework.ui.ws:framework_ui_ws"
+   actual = "//org.eclipse.osee.framework.ui.ws"
 )
 
 alias(
    name = "jaxrs",
-   actual = "//org.eclipse.osee.jaxrs:jaxrs"
+   actual = "//org.eclipse.osee.jaxrs"
 )
 
 alias(
    name = "jaxrs_server",
-   actual = "//org.eclipse.osee.jaxrs.server:jaxrs_server"
+   actual = "//org.eclipse.osee.jaxrs.server"
 )
 
 alias(
    name = "jdbc",
-   actual = "//org.eclipse.osee.jdbc:jdbc"
+   actual = "//org.eclipse.osee.jdbc"
 )
 
 
 alias(
    name = "logger",
-   actual = "//org.eclipse.osee.logger:logger"
+   actual = "//org.eclipse.osee.logger"
 )
 
 alias(
    name = "logger_slf4j",
-   actual = "//org.eclipse.osee.logger.slf4j:logger_slf4j"
+   actual = "//org.eclipse.osee.logger.slf4j"
 )
 
 alias(
    name = "mim",
-   actual = "//org.eclipse.osee.mim:mim"
+   actual = "//org.eclipse.osee.mim"
 )
 
 alias(
     name = "orcs",
-    actual = "//org.eclipse.osee.orcs:orcs",
+    actual = "//org.eclipse.osee.orcs",
 )
 
 alias(
     name = "orcs_core",
-    actual = "//org.eclipse.osee.orcs.core:orcs_core",
+    actual = "//org.eclipse.osee.orcs.core",
 )
 
 alias(
     name = "orcs_rest",
-    actual = "//org.eclipse.osee.orcs.rest:orcs_rest",
+    actual = "//org.eclipse.osee.orcs.rest",
 )
 
 alias(
     name = "orcs_rest_model",
-    actual = "//org.eclipse.osee.orcs.rest.model:orcs_rest_model",
+    actual = "//org.eclipse.osee.orcs.rest.model",
 )
 
 alias(
     name = "ote_define",
-    actual = "//org.eclipse.osee.ote.define:ote_define",
+    actual = "//org.eclipse.osee.ote.define",
 )
 
 alias(
     name = "ote_ui_define",
-    actual = "//org.eclipse.osee.ote.ui.define:ote_ui_define",
+    actual = "//org.eclipse.osee.ote.ui.define",
 )
 
 alias(
     name = "template_engine",
-    actual = "//org.eclipse.osee.template.engine:template_engine"
+    actual = "//org.eclipse.osee.template.engine"
 )
 
 alias(
     name = "vcast",
-    actual = "//org.eclipse.osee.vcast:vcast"
+    actual = "//org.eclipse.osee.vcast"
 )

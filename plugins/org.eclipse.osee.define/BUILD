@@ -7,13 +7,13 @@ osgi_jar_converter(
 
 java_library(
     name = "org.eclipse.osee.define",
-	 resources = ["xml_files","html_files"],
-	 srcs = glob(["**/*.java"]),
-	 deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.orcs",
+    resources = ["xml_files","html_files"],
+    srcs = glob(["**/*.java"]),
+    deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.orcs",
             "//org.eclipse.osee.jaxrs","//org.eclipse.osee.orcs.core",
             "//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.template.engine",
             "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.define.api",
-	         "//org.eclipse.osee.ats.api","//org.eclipse.osee.activity.api","//org.eclipse.osee.app","//org.eclipse.osee.framework.core.model"],
+	    "//org.eclipse.osee.ats.api","//org.eclipse.osee.activity.api","//org.eclipse.osee.app","//org.eclipse.osee.framework.core.model"],
     visibility = ["//visibility:public"]
 
 )
@@ -21,9 +21,9 @@ java_library(
 filegroup(
     name = "xml_files",
     srcs = [
-		      "OSGI-INF/define.application.impl.xml",
-	         "OSGI-INF/define.operations.impl.xml",
-	         "OSGI-INF/define.attachment.writer.xml",
+	     "OSGI-INF/define.application.impl.xml",
+	     "OSGI-INF/define.operations.impl.xml",
+	     "OSGI-INF/define.attachment.writer.xml",
            ]
   ,
     visibility = ["//visibility:public"]
@@ -50,8 +50,8 @@ filegroup(
             "src/org/eclipse/osee/define/rest/internal/html/dataRightsReport.html",
             "src/org/eclipse/osee/define/rest/internal/html/publishLowHighReport.html",
             "src/org/eclipse/osee/define/rest/internal/html/systemSafetyReport.html",
-	    		"src/ApplicabilityGrammar.tokens",
-	    		"META-INF/MANIFEST.MF"
+	    "src/ApplicabilityGrammar.tokens",
+	    "META-INF/MANIFEST.MF"
 	  ]
   ,
 )
@@ -71,15 +71,15 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-					 "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
-					 "@maven//:org_jsoup_jsoup",
-					 "@maven//:com_jcraft_jsch",
-					 "@maven//:org_eclipse_jgit_org_eclipse_jgit",
-					 "@ext_jars//:eclipse_osgi_services",
-					 "@ext_jars//:nebula",
-					 "@ext_jars//:apache_commons_lang",
-					 "@ext_jars//:rmf",
-					 "@ext_jars//:emf",
-					 "@ext_jars//:jgit"
+		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
+		"@maven//:org_jsoup_jsoup",
+		"@maven//:com_jcraft_jsch",
+		"@maven//:org_eclipse_jgit_org_eclipse_jgit",
+		"@ext_jars//:eclipse_osgi_services",
+		"@ext_jars//:nebula",
+		"@ext_jars//:apache_commons_lang",
+		"@ext_jars//:rmf",
+		"@ext_jars//:emf",
+		"@ext_jars//:jgit"
                 ],
 )

@@ -1,14 +1,22 @@
-java_library(
-	name = "org.eclipse.osee.support.test.util",
+java_test(
+	name = "AtsIdeIntegrationTestSuite",
 	srcs = glob(["**/*.java"]),
+	resources = ["all_files"],
 	deps = ["java_deps",
+        	#"//org.eclipse.osee.ats.ide.help.ui",
 	 	"//org.eclipse.osee.framework.core.model",
 	 	"//org.eclipse.osee.framework.core.client",
 	 	"//org.eclipse.osee.framework.plugin.core",
 	 	"//org.eclipse.osee.framework.ui.swt",
 	 	"//org.eclipse.osee.ote.define",
-                "//org.eclipse.osee.define.ide",
-                "//org.eclipse.osee.framework.database.init",
+	 	"//org.eclipse.osee.ats.ide",
+	        "//org.eclipse.osee.mim",
+	        "//org.eclipse.osee.disposition.rest",
+	        "//org.eclipse.osee.support.test.util",
+	        "//org.eclipse.osee.ats.ide.demo",
+        	"//org.eclipse.osee.ats.core",
+        	"//org.eclipse.osee.define.ide",
+        	"//org.eclipse.osee.framework.database.init",
 	 	"//org.eclipse.osee.define.api",
 	 	"//org.eclipse.osee.ats.api",
 	 	"//org.eclipse.osee.app",
@@ -19,7 +27,9 @@ java_library(
 	 	"//org.eclipse.osee.framework.core.server",
 	 	"//org.eclipse.osee.cache.admin",
 	 	"//org.eclipse.osee.console.admin",
+	        "//org.eclipse.osee.client.test.framework",
 	 	"//org.eclipse.osee.jdbc",
+	 	"//org.eclipse.osee.client.demo",
 	 	"//org.eclipse.osee.orcs.core",
 	 	"//org.eclipse.osee.framework.server.ide.api",
 	 	"//org.eclipse.osee.template.engine",
@@ -39,6 +49,12 @@ java_library(
 	 	"//org.eclipse.osee.framework.core.packages"
 	],
 	visibility = ["//visibility:public"]
+)
+
+filegroup(
+   name = "all_files",
+   srcs = glob(["**/*"])
+
 )
 
 java_library(
@@ -71,6 +87,8 @@ java_library(
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
+		"@ext_jars//:rmf",
+		"@ext_jars//:emf",
 		"@ext_jars//:jface",
 		"@ext_jars//:eclipse_core",
 		"@ext_jars//:eclipse_equinox_common"

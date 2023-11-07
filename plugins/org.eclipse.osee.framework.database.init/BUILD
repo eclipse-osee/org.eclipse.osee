@@ -1,11 +1,12 @@
 java_library(
-        name = "framework_database_init",
+        name = "org.eclipse.osee.framework.database.init",
         resources = ["exsd_files"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps","//framework_core_packages",
-		"//:jdbc","//:jaxrs", "//:cache_admin","//:orcs_rest_model",
-	"//:framework_messaging_event_res","//:framework_skynet_core",
-	"//:framework_core_client","//:framework_core_model","//:framework_plugin_core"],
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages",
+		"//org.eclipse.osee.jdbc","//org.eclipse.osee.jaxrs", "//org.eclipse.osee.cache.admin",
+		"//org.eclipse.osee.orcs.rest.model",
+	        "//org.eclipse.osee.framework.messaging.event.res","//org.eclipse.osee.framework.skynet.core",
+	        "//org.eclipse.osee.framework.core.client","//org.eclipse.osee.framework.core.model","//org.eclipse.osee.framework.plugin.core"],
         visibility = ["//visibility:public"]
 )
 
@@ -14,7 +15,8 @@ filegroup(
     srcs = 	
     	[
 	     "OSEE-INF/extensionPts/DatabaseInitializationConfiguration.exsd",
-	     "OSEE-INF/extensionPts/DatabaseInitializationTask.exsd"
+	     "OSEE-INF/extensionPts/DatabaseInitializationTask.exsd",
+	     "META-INF/MANIFEST.MF"
 	], 
 )
 
