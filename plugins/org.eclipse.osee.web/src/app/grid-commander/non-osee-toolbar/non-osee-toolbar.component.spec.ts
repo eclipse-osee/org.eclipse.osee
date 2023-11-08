@@ -10,31 +10,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpTestingController,
-	HttpClientTestingModule,
-} from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-
 import { NonOseeToolbarComponent } from './non-osee-toolbar.component';
+import { Component, Input } from '@angular/core';
+import { ToolbarComponent } from '@osee/toolbar';
 
-describe('GCToolbarComponent', () => {
+@Component({
+	selector: 'osee-toolbar',
+	template: '<p>Mock Component</p>',
+	standalone: true,
+})
+class MockOseeToolbarComponent {
+	@Input() oseeToolbar = true;
+}
+
+describe('NonOseeToolbarComponent', () => {
 	let component: NonOseeToolbarComponent;
 	let fixture: ComponentFixture<NonOseeToolbarComponent>;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [
-				NonOseeToolbarComponent,
-				HttpClientTestingModule,
-				RouterTestingModule,
-			],
-		}).compileComponents();
+		TestBed.overrideComponent(NonOseeToolbarComponent, {
+			add: {
+				imports: [MockOseeToolbarComponent],
+			},
+			remove: {
+				imports: [ToolbarComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [NonOseeToolbarComponent],
+			})
+			.compileComponents();
 
 		fixture = TestBed.createComponent(NonOseeToolbarComponent);
-		httpTestingController = TestBed.inject(HttpTestingController);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

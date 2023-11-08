@@ -10,10 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import {
 	preferencesUiServiceMock,
@@ -26,6 +23,12 @@ import {
 } from '@osee/shared/components/testing';
 
 import { MessagingControlsComponent } from './messaging-controls.component';
+import {
+	ActionDropDownComponent,
+	BranchPickerComponent,
+	UndoButtonBranchComponent,
+	ViewSelectorComponent,
+} from '@osee/shared/components';
 
 describe('MessagingControlsComponent', () => {
 	let component: MessagingControlsComponent;
@@ -33,27 +36,25 @@ describe('MessagingControlsComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(MessagingControlsComponent, {
-			set: {
+			add: {
 				imports: [
-					CommonModule,
-					RouterLink,
-					MatButtonModule,
 					ActionDropdownStub,
 					BranchPickerStub,
-					UndoButtonBranchMockComponent,
 					ViewSelectorMockComponent,
+					UndoButtonBranchMockComponent,
+				],
+			},
+			remove: {
+				imports: [
+					ActionDropDownComponent,
+					BranchPickerComponent,
+					ViewSelectorComponent,
+					UndoButtonBranchComponent,
 				],
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					MessagingControlsComponent,
-					MatButtonModule,
-					ActionDropdownStub,
-					BranchPickerStub,
-					UndoButtonBranchMockComponent,
-					ViewSelectorMockComponent,
-				],
+				imports: [MessagingControlsComponent],
 				providers: [
 					{
 						provide: PreferencesUIService,

@@ -37,53 +37,64 @@ import {
 	ApplicabilityTableComponent,
 } from '@osee/plconfig';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {
+	ActionDropDownComponent,
+	BranchPickerComponent,
+} from '@osee/shared/components';
 
 describe('PlconfigComponent', () => {
 	let component: PlconfigComponent;
 	let fixture: ComponentFixture<PlconfigComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				HttpClientTestingModule,
-				MatDialogModule,
-				MatMenuModule,
-				MatIconModule,
-				RouterTestingModule,
-				MatTableModule,
-				MatFormFieldModule,
-				FormsModule,
-				MatInputModule,
-				MatSelectModule,
-				MatRadioModule,
-				MatTooltipModule,
-				MatPaginatorModule,
-				MatButtonModule,
-				NoopAnimationsModule,
-				ActionDropdownStub,
-				BranchPickerStub,
-				EditDefinitionsDropdownComponent,
-				ApplicabilityTableComponent,
-				PlconfigComponent,
-			],
-			providers: [
-				{
-					provide: Router,
-					useValue: { navigate: () => {}, events: of() },
-				},
-				{
-					provide: ActivatedRoute,
-					useValue: {
-						paramMap: of(
-							convertToParamMap({
-								branchId: '10',
-								branchType: 'all',
-							})
-						),
+		await TestBed.overrideComponent(PlconfigComponent, {
+			add: {
+				imports: [BranchPickerStub, ActionDropdownStub],
+			},
+			remove: {
+				imports: [BranchPickerComponent, ActionDropDownComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					HttpClientTestingModule,
+					MatDialogModule,
+					MatMenuModule,
+					MatIconModule,
+					RouterTestingModule,
+					MatTableModule,
+					MatFormFieldModule,
+					FormsModule,
+					MatInputModule,
+					MatSelectModule,
+					MatRadioModule,
+					MatTooltipModule,
+					MatPaginatorModule,
+					MatButtonModule,
+					NoopAnimationsModule,
+					EditDefinitionsDropdownComponent,
+					ApplicabilityTableComponent,
+					PlconfigComponent,
+				],
+				providers: [
+					{
+						provide: Router,
+						useValue: { navigate: () => {}, events: of() },
 					},
-				},
-			],
-		}).compileComponents();
+					{
+						provide: ActivatedRoute,
+						useValue: {
+							paramMap: of(
+								convertToParamMap({
+									branchId: '10',
+									branchType: 'all',
+								})
+							),
+						},
+					},
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

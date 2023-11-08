@@ -14,9 +14,10 @@ import { NgIf, AsyncPipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BranchPickerStub } from '@osee/shared/components/testing';
-
 import { ChangeReportComponent } from './change-report.component';
 import { MockChangeReportTableComponent } from './mocks/change-report-table.component.mock';
+import { BranchPickerComponent } from '@osee/shared/components';
+import { ChangeReportTableComponent } from './components/change-report-table/change-report-table.component';
 
 describe('ChangeReportComponent', () => {
 	let component: ChangeReportComponent;
@@ -24,13 +25,16 @@ describe('ChangeReportComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(ChangeReportComponent, {
-			set: {
+			add: {
 				imports: [
 					BranchPickerStub,
 					NgIf,
 					AsyncPipe,
 					MockChangeReportTableComponent,
 				],
+			},
+			remove: {
+				imports: [BranchPickerComponent, ChangeReportTableComponent],
 			},
 		})
 			.configureTestingModule({

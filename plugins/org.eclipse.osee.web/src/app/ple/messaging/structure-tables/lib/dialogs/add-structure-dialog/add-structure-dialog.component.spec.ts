@@ -30,9 +30,20 @@ import { AddStructureDialog } from './add-structure-dialog';
 import { AddStructureDialogComponent } from './add-structure-dialog.component';
 
 import type { structure } from '@osee/messaging/shared/types';
-import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
-import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
+import {
+	MockApplicabilitySelectorComponent,
+	MockMatOptionLoadingComponent,
+} from '@osee/shared/components/testing';
+import {
+	CurrentStateServiceMock,
+	enumsServiceMock,
+} from '@osee/messaging/shared/testing';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import {
+	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
+import { EnumsService } from '@osee/messaging/shared/services';
 
 describe('AddStructureDialogComponent', () => {
 	let component: AddStructureDialogComponent;
@@ -66,12 +77,23 @@ describe('AddStructureDialogComponent', () => {
 	};
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [NoopAnimationsModule],
+		await TestBed.overrideComponent(AddStructureDialogComponent, {
+			add: {
+				imports: [
+					MockMatOptionLoadingComponent,
+					MockApplicabilitySelectorComponent,
+				],
+			},
+			remove: {
+				imports: [
+					MatOptionLoadingComponent,
+					ApplicabilitySelectorComponent,
+				],
+			},
 		})
 			.configureTestingModule({
 				imports: [
-					HttpClientTestingModule,
+					NoopAnimationsModule,
 					MatStepperModule,
 					MatDialogModule,
 					MatButtonModule,
@@ -80,7 +102,6 @@ describe('AddStructureDialogComponent', () => {
 					MatSelectModule,
 					MatInputModule,
 					MatSlideToggleModule,
-					MockMatOptionLoadingComponent,
 				],
 				declarations: [],
 				providers: [
@@ -89,6 +110,10 @@ describe('AddStructureDialogComponent', () => {
 					{
 						provide: STRUCTURE_SERVICE_TOKEN,
 						useValue: CurrentStateServiceMock,
+					},
+					{
+						provide: EnumsService,
+						useValue: enumsServiceMock,
 					},
 				],
 			})

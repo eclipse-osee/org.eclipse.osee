@@ -13,19 +13,35 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactHierarchyPanelComponent } from './artifact-hierarchy-panel.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BranchPickerStub } from '@osee/shared/components/testing';
+import {
+	BranchPickerComponent,
+	ViewSelectorComponent,
+} from '@osee/shared/components';
+import { ViewSelectorMockComponent } from '@osee/messaging/shared/testing';
+import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
+import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hierarchy-path.service.mock';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
 	let fixture: ComponentFixture<ArtifactHierarchyPanelComponent>;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [
-				ArtifactHierarchyPanelComponent,
-				HttpClientTestingModule,
-				BrowserAnimationsModule,
+		TestBed.overrideComponent(ArtifactHierarchyPanelComponent, {
+			add: {
+				imports: [BranchPickerStub, ViewSelectorMockComponent],
+			},
+			remove: {
+				imports: [BranchPickerComponent, ViewSelectorComponent],
+			},
+		}).configureTestingModule({
+			imports: [ArtifactHierarchyPanelComponent, NoopAnimationsModule],
+			providers: [
+				{
+					provide: ArtifactHierarchyPathService,
+					useValue: artifactHierarchyPathServiceMock,
+				},
 			],
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyPanelComponent);

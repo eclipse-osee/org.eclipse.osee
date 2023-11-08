@@ -12,7 +12,6 @@
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -36,7 +35,10 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AddElementDialogComponent } from './add-element-dialog.component';
 
 import { UserDataAccountService } from '@osee/auth';
-import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import {
+	MockApplicabilitySelectorComponent,
+	MockMatOptionLoadingComponent,
+} from '@osee/shared/components/testing';
 import { TransactionBuilderService } from '@osee/shared/transactions';
 import { transactionBuilderMock } from '@osee/shared/transactions/testing';
 import {
@@ -59,6 +61,13 @@ import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { ElementDialog } from '@osee/messaging/shared/types';
+import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
+import {
+	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
+import { MockElementFormComponent } from '../../forms/element-form/element-form.component.mock';
+import { ElementFormComponent } from '../../forms/element-form/element-form.component';
 
 describe('AddElementDialogComponent', () => {
 	let component: AddElementDialogComponent;
@@ -117,12 +126,27 @@ describe('AddElementDialogComponent', () => {
 	let nestedDialog: DebugElement;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [NoopAnimationsModule],
+		await TestBed.overrideComponent(AddElementDialogComponent, {
+			add: {
+				imports: [
+					MockNewTypeFormComponent,
+					MockMatOptionLoadingComponent,
+					MockApplicabilitySelectorComponent,
+					MockElementFormComponent,
+				],
+			},
+			remove: {
+				imports: [
+					NewTypeFormComponent,
+					MatOptionLoadingComponent,
+					ApplicabilitySelectorComponent,
+					ElementFormComponent,
+				],
+			},
 		})
 			.configureTestingModule({
 				imports: [
-					HttpClientTestingModule,
+					NoopAnimationsModule,
 					MatStepperModule,
 					MatDialogModule,
 					MatButtonModule,
@@ -134,10 +158,7 @@ describe('AddElementDialogComponent', () => {
 					MatIconModule,
 					MatDividerModule,
 					MatProgressSpinnerModule,
-					MockMatOptionLoadingComponent,
-					MockNewTypeFormComponent,
 				],
-				declarations: [],
 				providers: [
 					{
 						provide: MatDialogRef,

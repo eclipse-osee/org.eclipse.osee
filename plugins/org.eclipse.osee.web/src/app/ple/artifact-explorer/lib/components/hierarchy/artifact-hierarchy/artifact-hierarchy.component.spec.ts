@@ -11,16 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ArtifactHierarchyComponent } from './artifact-hierarchy.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { BranchPickerStub } from '@osee/shared/components/testing';
+import { BranchPickerComponent } from '@osee/shared/components';
 
 describe('ArtifactHierarchyComponent', () => {
 	let component: ArtifactHierarchyComponent;
 	let fixture: ComponentFixture<ArtifactHierarchyComponent>;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({
+		TestBed.overrideComponent(ArtifactHierarchyComponent, {
+			add: {
+				imports: [BranchPickerStub],
+			},
+			remove: {
+				imports: [BranchPickerComponent],
+			},
+		}).configureTestingModule({
 			imports: [ArtifactHierarchyComponent, HttpClientTestingModule],
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyComponent);

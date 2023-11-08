@@ -10,10 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
@@ -22,23 +18,34 @@ import {
 } from '@osee/shared/components';
 
 import { ParameterBranchComponent } from './parameter-branch.component';
+import {
+	ActionDropdownStub,
+	BranchPickerStub,
+} from '@osee/shared/components/testing';
+import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { parameterDataServiceMock } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service.mock';
 
 describe('ParameterBranchComponent', () => {
 	let component: ParameterBranchComponent;
 	let fixture: ComponentFixture<ParameterBranchComponent>;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				ActionDropDownComponent,
-				BranchPickerComponent,
-				HttpClientTestingModule,
-				NoopAnimationsModule,
-				ParameterBranchComponent,
+		await TestBed.overrideComponent(ParameterBranchComponent, {
+			add: {
+				imports: [BranchPickerStub, ActionDropdownStub],
+			},
+			remove: {
+				imports: [BranchPickerComponent, ActionDropDownComponent],
+			},
+		}).configureTestingModule({
+			imports: [NoopAnimationsModule, ParameterBranchComponent],
+			providers: [
+				{
+					provide: ParameterDataService,
+					useValue: parameterDataServiceMock,
+				},
 			],
 		});
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	beforeEach(() => {

@@ -10,6 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './services/router-state.service';
-export * from './tables/element-table/element-table.component';
-export * from './forms/element-table-search/element-table-search.component';
+import { Component } from '@angular/core';
+
+@Component({
+	selector: 'osee-artifact-hierarchy-panel',
+	template: '<div>Dummy</div>',
+	standalone: true,
+})
+export class ArtifactHeirarchyMockComponent {}

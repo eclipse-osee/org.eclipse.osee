@@ -11,22 +11,26 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ArtifactExplorerComponent } from './artifact-explorer.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ArtifactHeirarchyMockComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-heirarchy-panel.component.mock';
+import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
 
 describe('ArtifactExplorerComponent', () => {
 	let component: ArtifactExplorerComponent;
 	let fixture: ComponentFixture<ArtifactExplorerComponent>;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [
-				ArtifactExplorerComponent,
-				BrowserAnimationsModule,
-				HttpClientTestingModule,
-			],
+		TestBed.overrideComponent(ArtifactExplorerComponent, {
+			add: {
+				imports: [ArtifactHeirarchyMockComponent],
+			},
+			remove: {
+				imports: [ArtifactHierarchyPanelComponent],
+			},
+		}).configureTestingModule({
+			imports: [ArtifactExplorerComponent, NoopAnimationsModule],
+			providers: [],
 		});
 		fixture = TestBed.createComponent(ArtifactExplorerComponent);
 		component = fixture.componentInstance;
