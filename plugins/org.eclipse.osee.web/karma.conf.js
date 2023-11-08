@@ -50,13 +50,12 @@ module.exports = function (config) {
 		colors: true,
 		logLevel: config.LOG_INFO,
 		autoWatch: true,
-		browsers: ['Chrome'],
+		browsers: ['Chrome', 'ChromeHeadlessNoSandbox'],
 		browserConsoleLogOptions: {
 			level: 'log',
 		},
 		singleRun: false,
 		restartOnFileChange: true,
-		browsers: ['ChromeHeadlessNoSandbox'],
 		customLaunchers: {
 			ChromeHeadlessNoSandbox: {
 				base: 'ChromeHeadless',

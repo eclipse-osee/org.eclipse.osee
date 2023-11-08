@@ -26,6 +26,7 @@ import { ResizableSplitPaneCodeComponent } from '../resizable-split-pane-code/re
 import { CurrentTextEditorService } from '../services/current-text-editor.service';
 
 import { AsciidocEditorComponent } from './asciidoc-editor.component';
+import { BranchPickerComponent } from '@osee/shared/components';
 
 describe('AsciidocEditorComponent', () => {
 	let component: AsciidocEditorComponent;
@@ -33,8 +34,11 @@ describe('AsciidocEditorComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(AsciidocEditorComponent, {
-			set: {
+			add: {
 				imports: [BranchPickerStub, ResizableSplitPaneCodeComponent],
+			},
+			remove: {
+				imports: [BranchPickerComponent],
 			},
 		})
 			.configureTestingModule({

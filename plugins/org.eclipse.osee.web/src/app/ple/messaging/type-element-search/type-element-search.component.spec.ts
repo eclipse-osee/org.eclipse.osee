@@ -16,15 +16,16 @@ import { Subject } from 'rxjs';
 
 import { TypeElementSearchComponent } from './type-element-search.component';
 import {
-	ActionDropdownStub,
-	BranchPickerStub,
-} from '@osee/shared/components/testing';
-import { RouterStateService } from '@osee/messaging/type-element-search';
+	ElementTableComponent,
+	ElementTableSearchComponent,
+	RouterStateService,
+} from '@osee/messaging/type-element-search';
 import {
 	MockElementTableComponent,
 	MockElementTableSearchComponent,
 } from '@osee/messaging/type-element-search/testing';
 import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 
 describe('TypeElementSearchComponent', () => {
 	let component: TypeElementSearchComponent;
@@ -35,21 +36,23 @@ describe('TypeElementSearchComponent', () => {
 	beforeEach(async () => {
 		params = new Subject<Params>();
 		await TestBed.overrideComponent(TypeElementSearchComponent, {
-			set: {
+			add: {
 				imports: [
 					MessagingControlsMockComponent,
 					MockElementTableComponent,
 					MockElementTableSearchComponent,
 				],
 			},
+			remove: {
+				imports: [
+					MessagingControlsComponent,
+					ElementTableComponent,
+					ElementTableSearchComponent,
+				],
+			},
 		})
 			.configureTestingModule({
-				imports: [
-					MessagingControlsMockComponent,
-					TypeElementSearchComponent,
-					MockElementTableComponent,
-					MockElementTableSearchComponent,
-				],
+				imports: [TypeElementSearchComponent],
 				providers: [
 					{ provide: ActivatedRoute, useValue: { params: params } },
 				],

@@ -10,6 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './services/router-state.service';
-export * from './tables/element-table/element-table.component';
-export * from './forms/element-table-search/element-table-search.component';
+
+import { of } from 'rxjs';
+import { ArtifactHierarchyPathService } from '../services/artifact-hierarchy-path.service';
+
+export const artifactHierarchyPathServiceMock: Partial<ArtifactHierarchyPathService> =
+	{
+		getPaths() {
+			return of([['testing'], ['path1', 'path2']]);
+		},
+	};

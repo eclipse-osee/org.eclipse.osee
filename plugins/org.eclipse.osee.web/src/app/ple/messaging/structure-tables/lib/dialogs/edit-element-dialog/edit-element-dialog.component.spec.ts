@@ -23,6 +23,7 @@ import { ElementDialog } from '@osee/messaging/shared/types';
 import { MockElementFormComponent } from '../../forms/element-form/element-form.component.mock';
 
 import { EditElementDialogComponent } from './edit-element-dialog.component';
+import { ElementFormComponent } from '../../forms/element-form/element-form.component';
 
 describe('EditElementDialogComponent', () => {
 	let component: EditElementDialogComponent;
@@ -79,16 +80,19 @@ describe('EditElementDialogComponent', () => {
 	};
 	beforeEach(async () => {
 		await TestBed.overrideComponent(EditElementDialogComponent, {
-			set: {
-				imports: [
-					MatDialogModule,
-					MatButtonModule,
-					MockElementFormComponent,
-				],
+			add: {
+				imports: [MockElementFormComponent],
+			},
+			remove: {
+				imports: [ElementFormComponent],
 			},
 		})
 			.configureTestingModule({
-				imports: [NoopAnimationsModule],
+				imports: [
+					NoopAnimationsModule,
+					MatDialogModule,
+					MatButtonModule,
+				],
 				providers: [
 					{
 						provide: MatDialogRef,

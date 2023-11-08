@@ -5,7 +5,11 @@
 		{
 			"files": ["*.ts"],
 			"parserOptions": {
-				"project": ["tsconfig.json", "cypress/tsconfig.json"],
+				"project": [
+					"tsconfig.app.editor.json",
+					"tsconfig.spec.editor.json",
+					"cypress/tsconfig.json"
+				],
 				"createDefaultProgram": true
 			},
 			"extends": [

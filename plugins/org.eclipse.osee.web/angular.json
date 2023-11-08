@@ -22,12 +22,12 @@
 			"prefix": "osee",
 			"architect": {
 				"build": {
-					"builder": "@angular-devkit/build-angular:browser-esbuild",
+					"builder": "@angular-devkit/build-angular:application",
 					"options": {
 						"outputPath": "dist/osee",
 						"index": "src/index.html",
-						"main": "src/main.ts",
-						"polyfills": "src/polyfills.ts",
+						"browser": "src/main.ts",
+						"polyfills": ["src/polyfills.ts"],
 						"tsConfig": "tsconfig.app.json",
 						"assets": ["src/favicon.ico", "src/assets"],
 						"stylePreprocessorOptions": {
@@ -43,32 +43,12 @@
 							"src/icons.css"
 						],
 						"scripts": [],
-						"vendorChunk": true,
 						"extractLicenses": false,
-						"buildOptimizer": false,
 						"sourceMap": true,
 						"optimization": false,
 						"namedChunks": true
 					},
 					"configurations": {
-						"5": {
-							"outputPath": "dist/osee/5_local",
-							"fileReplacements": [
-								{
-									"replace": "/src/environments/proxy.conf.json",
-									"with": "src/environments/proxy.conf.5.json"
-								}
-							]
-						},
-						"8": {
-							"outputPath": "dist/osee/8_local",
-							"fileReplacements": [
-								{
-									"replace": "/src/environments/proxy.conf.json",
-									"with": "src/environments/proxy.conf.8.json"
-								}
-							]
-						},
 						"production": {
 							"outputPath": "dist/osee/production",
 							"baseHref": "/osee/",
@@ -92,8 +72,6 @@
 							"sourceMap": false,
 							"namedChunks": false,
 							"extractLicenses": true,
-							"vendorChunk": false,
-							"buildOptimizer": true,
 							"budgets": [
 								{
 									"type": "initial",
@@ -130,8 +108,6 @@
 							"sourceMap": false,
 							"namedChunks": false,
 							"extractLicenses": true,
-							"vendorChunk": false,
-							"buildOptimizer": true,
 							"budgets": [
 								{
 									"type": "initial",
@@ -151,38 +127,30 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"options": {
-						"browserTarget": "osee-web:build",
-						"proxyConfig": "src/environments/proxy.conf.json"
+						"proxyConfig": "src/environments/proxy.conf.json",
+						"buildTarget": "osee-web:build"
 					},
 					"configurations": {
-						"5": {
-							"browserTarget": "osee-web:build:5",
-							"proxyConfig": "src/environments/proxy.conf.5.json"
-						},
-						"8": {
-							"browserTarget": "osee-web:build:8",
-							"proxyConfig": "src/environments/proxy.conf.8.json"
-						},
 						"production": {
-							"browserTarget": "osee-web:build:production"
+							"buildTarget": "osee-web:build:production"
 						},
 						"demo": {
-							"browserTarget": "osee-web:build:demo",
-							"proxyConfig": "src/environments/proxy.conf.json"
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:demo"
 						}
 					}
 				},
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
-						"browserTarget": "osee-web:build"
+						"buildTarget": "osee-web:build"
 					}
 				},
 				"test": {
 					"builder": "@angular-devkit/build-angular:karma",
 					"options": {
 						"main": "src/test.ts",
-						"polyfills": "src/polyfills.ts",
+						"polyfills": ["src/polyfills.ts"],
 						"tsConfig": "tsconfig.spec.json",
 						"karmaConfig": "karma.conf.js",
 						"codeCoverageExclude": [

@@ -10,6 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './services/router-state.service';
-export * from './tables/element-table/element-table.component';
-export * from './forms/element-table-search/element-table-search.component';
+import { Observable, of } from 'rxjs';
+import { ParameterDataService } from './parameter-data.service';
+import { Parameter } from '../../../../types/grid-commander-types/gc-user-and-contexts-relationships';
+
+export const parameterDataServiceMock: Partial<ParameterDataService> = {
+	get parameter$(): Observable<Parameter> {
+		return of({
+			id: '1',
+			name: 'param',
+			typeAsString: '',
+			attributes: {},
+		});
+	},
+};

@@ -24,6 +24,7 @@ import { ReportsComponent } from './reports.component';
 import { connectionSentinel } from '@osee/messaging/shared/types';
 import { TestScheduler } from 'rxjs/testing';
 import { ValidationService } from '@osee/messaging/shared/services';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 
 describe('ReportsComponent', () => {
 	let component: ReportsComponent;
@@ -31,18 +32,29 @@ describe('ReportsComponent', () => {
 	let scheduler: TestScheduler;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [
-				RouterTestingModule,
-				NoopAnimationsModule,
-				MessagingControlsMockComponent,
-				HttpClientTestingModule,
-				ReportsComponent,
-			],
-			providers: [
-				{ provide: ValidationService, useValue: validationServiceMock },
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(ReportsComponent, {
+			add: {
+				imports: [MessagingControlsMockComponent],
+			},
+			remove: {
+				imports: [MessagingControlsComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [
+					RouterTestingModule,
+					NoopAnimationsModule,
+					HttpClientTestingModule,
+					ReportsComponent,
+				],
+				providers: [
+					{
+						provide: ValidationService,
+						useValue: validationServiceMock,
+					},
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

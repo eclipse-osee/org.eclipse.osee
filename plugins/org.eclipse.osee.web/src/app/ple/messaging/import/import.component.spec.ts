@@ -20,12 +20,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
 import { ImportService } from '@osee/messaging/import';
 import { importServiceMock } from '@osee/messaging/import/testing';
-import {
-	ActionDropdownStub,
-	BranchPickerStub,
-} from '@osee/shared/components/testing';
-
 import { ImportComponent } from './import.component';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 
 describe('ImportComponent', () => {
 	let component: ImportComponent;
@@ -33,7 +29,7 @@ describe('ImportComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(ImportComponent, {
-			set: {
+			add: {
 				imports: [
 					NgIf,
 					NgFor,
@@ -42,9 +38,9 @@ describe('ImportComponent', () => {
 					MatSelectModule,
 					MessagingControlsMockComponent,
 				],
-				providers: [
-					{ provide: ImportService, useValue: importServiceMock },
-				],
+			},
+			remove: {
+				imports: [MessagingControlsComponent],
 			},
 		})
 			.configureTestingModule({
@@ -55,7 +51,6 @@ describe('ImportComponent', () => {
 					NoopAnimationsModule,
 					RouterTestingModule,
 					ImportComponent,
-					MessagingControlsMockComponent,
 				],
 				providers: [
 					{ provide: ImportService, useValue: importServiceMock },
