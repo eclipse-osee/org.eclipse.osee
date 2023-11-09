@@ -244,4 +244,37 @@ public interface IAtsWorkItemService {
 
    void internalClearStateManager(IAtsWorkItem workItem);
 
+   default public String getWorkflowTitle(IAtsWorkItem workItem, String tabName) {
+      String artifactTypeName = workItem.getArtifactTypeName();
+      if (workItem.isChangeRequest()) {
+         artifactTypeName = "CR";
+      } else if (workItem.isTeamWorkflow()) {
+         artifactTypeName = "TW";
+      } else if (workItem.isBacklog()) {
+         artifactTypeName = "BKLG";
+      } else if (workItem.isTask()) {
+         artifactTypeName = "TSK";
+      } else if (workItem.isPeerReview()) {
+         artifactTypeName = "PEER";
+      } else if (workItem.isPeerReview()) {
+         artifactTypeName = "DECISION";
+      } else if (workItem.isSprint()) {
+         artifactTypeName = "SPRINT";
+      }
+
+      String titleString = getTooltipTitle(workItem, tabName, artifactTypeName);
+      String displayableTitle = Strings.escapeAmpersands(titleString);
+      return displayableTitle;
+   }
+
+   default public String getTooltipTitle(IAtsWorkItem workItem, String tabName, String shortType) {
+      String formTitle = (Strings.isValid(tabName) ? tabName + " - " : "");
+      if (workItem.getParentTeamWorkflow() != null) {
+         formTitle += String.format("%s - %s", shortType, workItem.getParentTeamWorkflow().getTeamDefinition());
+      } else {
+         formTitle += String.format("%s", shortType);
+      }
+      return formTitle;
+
+   }
 }
