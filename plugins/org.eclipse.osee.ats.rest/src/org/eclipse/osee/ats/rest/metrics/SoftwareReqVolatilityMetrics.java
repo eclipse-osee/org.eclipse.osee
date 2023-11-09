@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Stephen J. Molaro
@@ -154,16 +155,27 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          return List.of();
       }
       String changeReportData = "";
+      List<ChangeItem> changeItems = new ArrayList<>();
 
       try {
          if (atsApi.getAttributeResolver().getAttributeCount(reqWorkflow, CoreAttributeTypes.BranchDiffData) == 1) {
             changeReportData =
                atsApi.getAttributeResolver().getSoleAttributeValue(reqWorkflow, CoreAttributeTypes.BranchDiffData, "");
+         } else {
+            changeItems = orcsApi.getBranchOps().compareBranch(branch);
+            if (!changeItems.isEmpty()) {
+               changeReportData = JsonUtil.toJson(changeItems);
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(),
+                  "Generate Diff for Requirement Metrics");
+               tx.createAttribute(atsApi.getArtifactResolver().get(reqWorkflow), CoreAttributeTypes.BranchDiffData,
+                  changeReportData);
+               tx.commit();
+            }
          }
       } catch (Exception ex) {
          return List.of();
       }
-      List<ChangeItem> changeItems = new ArrayList<>();
+
       if (changeItems.isEmpty() && !changeReportData.isEmpty()) {
          changeItems = JsonUtil.readValues(changeReportData, ChangeItem.class);
       }
