@@ -124,4 +124,36 @@ public class ServerUtils {
       return response.toString();
    }
 
+   public static String getUrlResultsWithAuth(String urlStr, String auth) {
+      StringBuilder response = new StringBuilder();
+      HttpURLConnection conn = null;
+      try {
+         URL url = new URL(urlStr);
+         conn = (HttpURLConnection) url.openConnection();
+         conn.setDoInput(true);
+         conn.setRequestMethod("GET");
+         conn.setRequestProperty("Connection", "keep-alive");
+         conn.setRequestProperty("Content-Type", "application/json");
+         conn.setRequestProperty("Authorization", "Basic " + auth);
+         conn.setConnectTimeout(5000);
+         conn.setReadTimeout(5000);
+         conn.setDoOutput(true);
+         try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+            String responseLine = null;
+            while ((responseLine = br.readLine()) != null) {
+               response.append(responseLine.trim());
+            }
+            br.close();
+         }
+         conn.getContent();
+         conn.disconnect();
+      } catch (Exception ex) {
+         throw new OseeCoreException("Operation Failed: " + ex.getLocalizedMessage(), ex);
+      } finally {
+         if (conn != null) {
+            conn.disconnect();
+         }
+      }
+      return response.toString();
+   }
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.health.HealthLink;
 import org.eclipse.osee.orcs.health.HealthLinks;
-import org.eclipse.osee.orcs.rest.internal.health.ServerHealthEndpointImpl;
+import org.eclipse.osee.orcs.rest.internal.health.HealthEndpointImpl;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +36,7 @@ public class ServerHealthMain {
    }
 
    public String getHtml() {
-      String mainHtml = OseeInf.getResourceContents("web/health/main.html", ServerHealthEndpointImpl.class);
+      String mainHtml = OseeInf.getResourceContents("web/health/main.html", HealthEndpointImpl.class);
       String dbName = OseeInfo.getCachedValue(jdbcClient, OseeProperties.OSEE_DB);
       if (Strings.isValid(dbName)) {
          mainHtml = mainHtml.replaceAll("OSEE Health", "OSEE " + dbName.toUpperCase() + " Health");
