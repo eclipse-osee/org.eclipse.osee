@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgFor, NgForOf } from '@angular/common';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ReportService } from '../services/report.service';
@@ -20,7 +20,13 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { state, style, trigger } from '@angular/animations';
+import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
 import { MatSortModule } from '@angular/material/sort';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -48,11 +54,16 @@ import { of } from 'rxjs';
 	templateUrl: './diff-table.component.html',
 	animations: [
 		trigger('detailExpand', [
-			state(
-				'collapsed',
-				style({ height: '0px', minHeight: '0', visibility: 'hidden' })
+			state('collapsed, void', style({ height: '0px', minHeight: '0' })),
+			state('expanded', style({ height: '100%' })),
+			transition(
+				'expanded <=> collapsed',
+				animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
 			),
-			state('expanded', style({ height: '*', visibility: 'visible' })),
+			transition(
+				'expanded <=> void',
+				animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+			),
 		]),
 	],
 })
@@ -63,6 +74,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	dataSource: MatTableDataSource<workflow> =
 		new MatTableDataSource<workflow>();
 	selection = new SelectionModel<Artifact>(true, []);
+	allRowsExpanded: boolean = false;
 	isExpansionDetailRow = (i: number, row: Object) =>
 		row.hasOwnProperty('detailRow');
 
@@ -101,6 +113,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	};
 
 	ngOnInit() {
+		this.dataSource.data = [];
 		this.workflowFilter.valueChanges.subscribe((workflowID) => {
 			if (workflowID != null) this.filterValues.workflowID = workflowID;
 			this.dataSource.filter = JSON.stringify(this.filterValues);
@@ -119,7 +132,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		'build',
 		'state',
 		'title',
-		'change_export',
+		'webExported',
 		'actions',
 	];
 
@@ -129,8 +142,6 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		filterValue = filterValue.toLowerCase();
 		this.dataSource.filter = filterValue;
 	}
-
-	queryCount = this.reportService.querySearchCount;
 
 	onArtifactToggled(artifact: Artifact) {
 		this.selection.toggle(artifact);
@@ -168,14 +179,21 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		);
 	}
 
-	allRowsExpanded: boolean = false;
-
 	toggleRow(element: { expanded: boolean }) {
-		element.expanded = !element.expanded;
+		if (!this.allRowsExpanded) {
+			element.expanded = !element.expanded;
+		}
 	}
 
-	manageAllRows(flag: boolean) {
-		this.allRowsExpanded = flag;
+	expandAllRows() {
+		this.allRowsExpanded = true;
+	}
+
+	collapseAllRows() {
+		this.allRowsExpanded = false;
+		this.dataSource.data.forEach((element) => {
+			element.expanded = false;
+		});
 	}
 
 	getChangeReport(report: string) {

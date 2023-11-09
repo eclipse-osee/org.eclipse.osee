@@ -11,17 +11,18 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="artifactData | async as _data"></ng-container>
+
 <div class="tw-flex tw-gap-2">
 	<button
 		mat-raised-button
 		class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
-		(click)="manageAllRows(true)">
+		(click)="expandAllRows()">
 		Expand All
 	</button>
 	<button
 		mat-raised-button
 		class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
-		(click)="manageAllRows(false)">
+		(click)="collapseAllRows()">
 		Collpase All
 	</button>
 	<button
@@ -173,7 +174,7 @@
 		</td>
 	</ng-container>
 
-	<ng-container matColumnDef="change_export">
+	<ng-container matColumnDef="webExported">
 		<th
 			mat-header-cell
 			*matHeaderCellDef
@@ -218,7 +219,7 @@
 			<div
 				class="tw-overflow-hidden"
 				[@detailExpand]="
-					element.expanded || allRowsExpanded
+					allRowsExpanded || element.expanded
 						? 'expanded'
 						: 'collapsed'
 				">
@@ -277,6 +278,7 @@
 <mat-paginator
 	[length]="dataSource.data.length"
 	[pageSizeOptions]="[10, 25, 50, 100, dataSource.data.length]"
+	[pageSize]="1000"
 	showFirstLastButtons
 	[disabled]="false">
 </mat-paginator>
