@@ -201,7 +201,7 @@ public interface AtsAttributeTypes {
    AttributeTypeLong ReviewedBy = ats.createLong(4020478495150345644L, "ats.Reviewed By", MediaType.TEXT_PLAIN, "");
    AttributeTypeString QuantityUnderReview = ats.createString(489717926240421171L, "ats.Quantity Under Review", MediaType.TEXT_PLAIN, "Total Pages, LOCs, Documents, etc Changed");
    AttributeTypeInteger UnplannedPoints = ats.createInteger(284254492767020802L, "ats.Unplanned Points", MediaType.TEXT_PLAIN, "");
-   AttributeTypeBoolean UnplannedWork = ats.createBoolean(2421093774890249189L, "ats.Unplanned Work", MediaType.TEXT_PLAIN, "");
+   AttributeTypeBoolean UnplannedWork = ats.createBoolean(2421093774890249189L, "ats.Unplanned Work", MediaType.TEXT_PLAIN, "", DisplayHint.YesNoBoolean);
    AttributeTypeBoolean UsesResolutionOptions = ats.createBoolean(1152921504606847154L, "ats.Uses Resolution Options", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean ValidationRequired = ats.createBoolean(1152921504606847146L, "ats.Validation Required", MediaType.TEXT_PLAIN, "If selected, originator will be asked to validate the implementation.");
    AttributeTypeString ValidateChangesRanBy = ats.createString(5308411842127935014L, "ats.LBA Validate Changes Ran By", MediaType.TEXT_PLAIN, "");

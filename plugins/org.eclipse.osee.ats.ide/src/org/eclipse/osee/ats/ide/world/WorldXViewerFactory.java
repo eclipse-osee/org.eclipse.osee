@@ -191,6 +191,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getAttributeConfigColumn(AtsColumnTokens.HowToReproduceProblemColumn),
          getAttributeConfigColumn(AtsColumnTokens.ImpactToMissionOrCrewColumn),
          getAttributeConfigColumn(AtsColumnTokens.LegacyPcrIdColumn),
+         getAttributeConfigColumn(AtsColumnTokens.UnPlannedWorkColumn),
          getAttributeConfigColumn(AtsColumnTokens.NonFunctionalProblem),
          getAttributeConfigColumn(AtsColumnTokens.PercentCompleteWorkflowColumn),
          getAttributeConfigColumn(AtsColumnTokens.ProblemFirstObservedColumn),
