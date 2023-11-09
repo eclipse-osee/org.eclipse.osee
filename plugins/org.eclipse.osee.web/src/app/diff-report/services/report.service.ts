@@ -93,45 +93,6 @@ export class ReportService {
 		this._displayTable$.next(display);
 	}
 
-	querySearchCount = combineLatest([
-		this.diffEndpoint,
-		this._searchOptions$,
-	]).pipe(
-		share(),
-		debounceTime(500),
-		distinctUntilChanged(),
-		switchMap(([url, options]) =>
-			this.getCount(
-				options.workflowNum,
-				options.workflowDesc,
-				options.program,
-				options.build,
-				url
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true }),
-		map((result) => Number(result))
-	);
-
-	getCount(
-		workflowNum: string,
-		workflowDesc: string,
-		program: string,
-		build: string,
-		endPointUrl: string
-	): Observable<String> {
-		if (program && build) {
-			return this.http.get<String>(apiURL + endPointUrl + '/count?', {
-				params: {
-					workflowNum: workflowNum,
-					workflowDesc: workflowDesc,
-					build: build,
-					program: program,
-				},
-			});
-		} else return of();
-	}
-
 	artifact = combineLatest([this.diffEndpoint, this._searchOptions$]).pipe(
 		share(),
 		debounceTime(500),

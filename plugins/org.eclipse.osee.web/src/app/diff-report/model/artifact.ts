@@ -29,6 +29,7 @@ export interface workflow {
 	icdDiff: string;
 	webExported: string;
 	requirements: requirement[];
+	expanded: boolean;
 }
 
 export interface requirement {
