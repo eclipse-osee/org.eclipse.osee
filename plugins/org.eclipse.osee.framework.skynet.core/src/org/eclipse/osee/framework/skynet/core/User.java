@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -164,10 +163,6 @@ public class User extends Artifact implements UserToken {
    }
 
    public void saveSettings() {
-      saveSettings(null);
-   }
-
-   public void saveSettings(SkynetTransaction transaction) {
       if (userSettings != null) {
          StringWriter stringWriter = new StringWriter();
          try {
@@ -176,10 +171,8 @@ public class User extends Artifact implements UserToken {
             OseeCoreException.wrapAndThrow(ex);
          }
          setSoleAttributeFromString(CoreAttributeTypes.UserSettings, stringWriter.toString());
-         if (transaction == null) {
+         if (isDirty()) {
             persist("User - Save Settings (IDE)");
-         } else {
-            persist(transaction);
          }
       }
    }
