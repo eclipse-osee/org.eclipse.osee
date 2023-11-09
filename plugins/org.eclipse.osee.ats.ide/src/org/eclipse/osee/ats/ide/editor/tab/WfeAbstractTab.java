@@ -70,34 +70,24 @@ public abstract class WfeAbstractTab extends FormPage {
 
    public void updateTitleBar(IManagedForm managedForm) {
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
-         String titleString = editor.getTitleStr();
-         String displayableTitle = Strings.escapeAmpersands(titleString);
-         managedForm.getForm().setToolTipText(displayableTitle);
-         String artifactTypeName = workItem.getArtifactTypeName();
-         if (workItem.isChangeRequest()) {
-            artifactTypeName = "CR";
-         } else if (workItem.isTeamWorkflow()) {
-            artifactTypeName = "Team Workflow";
-         }
-         String formTitle = getFormTitle(managedForm, artifactTypeName);
-         managedForm.getForm().setText(formTitle);
+         // Form Title
+         String titleString = AtsApiService.get().getWorkItemService().getWorkflowTitle(workItem, tabName);
+         managedForm.getForm().setText(titleString);
+
+         // Tooltip
+         String tooltipTitle = AtsApiService.get().getWorkItemService().getTooltipTitle(workItem, titleString,
+            workItem.getArtifactTypeName());
+         tooltipTitle = Strings.escapeAmpersands(tooltipTitle);
+         managedForm.getForm().setToolTipText(tooltipTitle);
+
          if (AtsApiService.get().getAgileService().isBacklog(workItem)) {
             managedForm.getForm().setImage(
                ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG)));
          } else {
             managedForm.getForm().setImage(ArtifactImageManager.getImage((Artifact) workItem.getStoreObject()));
          }
-      }
-   }
 
-   protected String getFormTitle(IManagedForm managedForm, String artifactTypeName) {
-      String formTitle = (Strings.isValid(tabName) ? tabName + " - " : "");
-      if (workItem.getParentTeamWorkflow() != null) {
-         formTitle += String.format("%s - %s", workItem.getParentTeamWorkflow().getTeamDefinition(), artifactTypeName);
-      } else {
-         formTitle += String.format("%s", artifactTypeName);
       }
-      return formTitle;
    }
 
    @Override

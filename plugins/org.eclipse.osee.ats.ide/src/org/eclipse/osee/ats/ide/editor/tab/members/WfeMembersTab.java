@@ -222,13 +222,6 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       }
    }
 
-   @Override
-   protected String getFormTitle(IManagedForm managedForm, String artifactTypeName) {
-      String formTitle = super.getFormTitle(managedForm, artifactTypeName);
-      formTitle += " - " + editor.getWorkItem().getName();
-      return formTitle;
-   }
-
    /**
     * @return true if created; false if skipped
     */
