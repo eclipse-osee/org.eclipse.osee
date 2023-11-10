@@ -14,9 +14,11 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import static org.eclipse.osee.framework.core.data.RelationalConstants.IS_HISTORICAL_DEFAULT;
+
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 
 /**
  * @author Roberto E. Escobar
@@ -28,7 +30,8 @@ public class VersionDataImpl implements VersionData {
    private GammaId gamma = GammaId.SENTINEL;
    private boolean historical = IS_HISTORICAL_DEFAULT;
    private TransactionId stripeId = TransactionId.SENTINEL;
-
+   private TxCurrent txCurrent = TxCurrent.SENTINEL;
+   
    public VersionDataImpl() {
       super();
    }
@@ -140,10 +143,19 @@ public class VersionDataImpl implements VersionData {
       VersionData copy = new VersionDataImpl();
       copy.setBranch(getBranch());
       copy.setGammaId(getGammaId());
+      copy.setTxCurrent(getTxCurrent());
       copy.setHistorical(isHistorical());
       copy.setStripeId(getStripeId());
       copy.setTransactionId(getTransactionId());
       return copy;
    }
+
+public TxCurrent getTxCurrent() {
+	return txCurrent;
+}
+
+public void setTxCurrent(TxCurrent txCurrent) {
+	this.txCurrent = txCurrent;
+}
 
 }

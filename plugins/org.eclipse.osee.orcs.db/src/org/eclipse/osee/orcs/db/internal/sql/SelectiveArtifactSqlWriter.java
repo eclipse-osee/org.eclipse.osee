@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -417,7 +418,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String txAlias = getMainTableAlias(OseeDb.TXS_TABLE);
       if (relsAlias == null && rels2Alias == null) {
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
-            txAlias, "mod_type");
+            txAlias, "mod_type", txAlias, "tx_current");
          if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
             writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
          }

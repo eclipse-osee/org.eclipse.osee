@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -51,9 +52,10 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
          boolean historical = OptionsUtil.isHistorical(options);
          if (!historical || OptionsUtil.areDeletedArtifactsIncluded(options) || modType != ModificationType.DELETED) {
             GammaId gamma = GammaId.valueOf(chStmt.getLong("gamma_id"));
+            TxCurrent txCurrent = TxCurrent.valueOf(chStmt.getInt("tx_current"));
             TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
-            VersionData version = factory.createVersion(branch, txId, gamma, historical);
+            VersionData version = factory.createVersion(branch, txId, gamma, txCurrent, historical);
 
             if (historical) {
                version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));

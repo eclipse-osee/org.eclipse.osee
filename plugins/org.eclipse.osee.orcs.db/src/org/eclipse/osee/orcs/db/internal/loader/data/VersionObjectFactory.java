@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 
 /**
@@ -25,7 +26,7 @@ public interface VersionObjectFactory extends OrcsDataFactory {
 
    VersionData createDefaultVersionData();
 
-   VersionData createVersion(BranchId branch, TransactionId txId, GammaId gamma, boolean historical);
+   VersionData createVersion(BranchId branch, TransactionId txId, GammaId gamma, TxCurrent txCurrent, boolean historical);
 
    VersionData createCopy(VersionData other);
 

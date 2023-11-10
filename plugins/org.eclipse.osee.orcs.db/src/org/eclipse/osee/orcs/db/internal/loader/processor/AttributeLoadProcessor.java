@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -52,6 +53,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("id2"));
       AttributeId attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
+      TxCurrent txCurrent = TxCurrent.valueOf(chStmt.getInt("tx_current"));
       ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
@@ -63,7 +65,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
          TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
-         VersionData version = factory.createVersion(branch, txId, gammaId, historical);
+         VersionData version = factory.createVersion(branch, txId, gammaId, txCurrent, historical);
          if (historical) {
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
