@@ -1311,20 +1311,26 @@ export abstract class CurrentStructureService {
 			.forEach((header) => {
 				if (
 					allHeaders.includes(header) &&
-					!(
+					(!(
 						allColumns.includes(`${header}:true`) ||
 						allColumns.includes(`${header}:false`)
-					)
+					) ||
+						!(
+							allColumns.includes(`"${header}:true"`) ||
+							allColumns.includes(`"${header}:false"`)
+						))
 				) {
-					allColumns.push(`${header}:true`);
-					columnPrefs.push(`${header}:true`);
+					allColumns.push(`"${header}:true"`);
+					columnPrefs.push(`"${header}:true"`);
 				} else if (
 					!(
 						allColumns.includes(`${header}:true`) ||
 						allColumns.includes(`${header}:false`)
-					)
+					) ||
+					allColumns.includes(`"${header}:true"`) ||
+					allColumns.includes(`"${header}:false"`)
 				) {
-					allColumns.push(`${header}:false`);
+					allColumns.push(`"${header}:false"`);
 				}
 			});
 		return of([columnPrefs, allColumns]);

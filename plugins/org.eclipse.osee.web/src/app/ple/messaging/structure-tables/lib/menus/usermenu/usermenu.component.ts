@@ -151,7 +151,7 @@ export class UsermenuComponent {
 				])
 			)
 		),
-		switchMap((finalHeaders) => of([' ', ...finalHeaders])),
+		switchMap((finalHeaders) => of([...finalHeaders])),
 		share(),
 		shareReplay(1)
 	);
