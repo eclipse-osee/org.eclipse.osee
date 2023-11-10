@@ -76,7 +76,7 @@ public class PublishingServerPreviewTest {
     * Set this flag to <code>true</code> to print the received Word ML documents to <code>stdout</code>.
     */
 
-   private static boolean printDocuments = false;
+   private static boolean printDocuments = true;
 
    /**
     * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.
@@ -773,7 +773,8 @@ public class PublishingServerPreviewTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement, String documentString) {
+   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement,
+      String documentString) {
 
       var error = publishingXmlUtils.getLastError();
 

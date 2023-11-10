@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -59,8 +60,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, boolean historical) {
-      return createVersion(branchId, txId, gamma, historical, TransactionId.SENTINEL);
+   public VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, TxCurrent txCurrent, boolean historical) {
+      return createVersion(branchId, txId, gamma, txCurrent, historical, TransactionId.SENTINEL);
    }
 
    @Override
@@ -70,6 +71,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
          BranchId.SENTINEL,
          TransactionId.SENTINEL,
          GammaId.SENTINEL,
+         TxCurrent.SENTINEL,
          RelationalConstants.IS_HISTORICAL_DEFAULT,
          TransactionId.SENTINEL);
       // @formatter:on
@@ -82,17 +84,19 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
          other.getBranch(),
          other.getTransactionId(),
          other.getGammaId(),
+         other.getTxCurrent(),
          other.isHistorical(),
          other.getStripeId());
       // @formatter:on
    }
 
-   private VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, boolean historical,
+   private VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, TxCurrent txCurrent, boolean historical,
       TransactionId stripeId) {
       VersionData version = new VersionDataImpl();
       version.setBranch(branchId);
       version.setTransactionId(txId);
       version.setGammaId(gamma);
+      version.setTxCurrent(txCurrent);
       version.setHistorical(historical);
       version.setStripeId(stripeId);
       return version;

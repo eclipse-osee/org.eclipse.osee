@@ -45,7 +45,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       String artJoinAlias = getLastAlias(OseeDb.OSEE_JOIN_ID4_TABLE);
 
       writeSelectFields(txAlias, "gamma_id", txAlias, "mod_type", txAlias, "branch_id", txAlias, "transaction_id",
-         txAlias, "app_id");
+         txAlias, "app_id", txAlias, "tx_current");
 
       if (OptionsUtil.isHistorical(getOptions())) {
          writeSelectFields(txAlias, "transaction_id as stripe_transaction_id");

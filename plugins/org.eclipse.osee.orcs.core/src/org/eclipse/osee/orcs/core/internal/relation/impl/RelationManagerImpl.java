@@ -28,6 +28,7 @@ import static org.eclipse.osee.framework.jdk.core.util.Strings.emptyString;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkBranch;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkOnGraph;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkRelateSelf;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -46,6 +49,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -287,15 +291,19 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    private void checkMultiplicityCanAdd(RelationTypeToken type, Artifact aNode, Artifact bNode, TxData txData) {
-      int bSideCount = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData).size();
-      int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
+	   List<Relation> relations = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData);
+	  
+      int bSideCount = relations.stream().filter(a->a.getOrcsData().getVersion().getTxCurrent().equals(TxCurrent.CURRENT)).collect(Collectors.toList()).size();
+      //int bSideCount = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData).size();
 
+      int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
+      
       if (bSideCount >= bSideMax) {
          throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type, SIDE_B,
             aNode.getExceptionString());
       }
 
-      int aSideCount = getRelations(type, bNode, SIDE_B, EXCLUDE_DELETED, txData).size();
+      int aSideCount = getRelations(type, bNode, SIDE_B, EXCLUDE_DELETED, txData).stream().filter(a->a.getOrcsData().getVersion().getTxCurrent().equals(TxCurrent.CURRENT)).collect(Collectors.toList()).size();
       int aSideMax = validity.getMaximumRelationsAllowed(type, aNode.getArtifactType(), SIDE_A);
 
       if (aSideCount >= aSideMax) {
@@ -456,12 +464,12 @@ public class RelationManagerImpl implements RelationManager {
       checkNotNull(type, "relationType");
       checkNotNull(side, "relationSide");
       checkNotNull(node, "node");
-
+      
       GraphData graph = node.getGraph();
       ensureRelationsInitialized(graph, node);
       RelationNodeAdjacencies adjacencies = graph.getAdjacencies(node);
       List<Relation> relations = adjacencies.getList(type, includeDeleted, node, side);
-
+     
       // Remove any deleted relations in txData if this is transaction
       if (txData != null) {
          for (Relation relation : txData.getRelations()) {

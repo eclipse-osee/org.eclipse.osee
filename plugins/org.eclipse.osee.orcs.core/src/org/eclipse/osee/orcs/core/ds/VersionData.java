@@ -16,6 +16,7 @@ package org.eclipse.osee.orcs.core.ds;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 
 /**
  * @author Roberto E. Escobar
@@ -26,6 +27,10 @@ public interface VersionData extends Cloneable {
 
    void setGammaId(GammaId gamma);
 
+   TxCurrent getTxCurrent();
+
+   void setTxCurrent(TxCurrent txCurrent);
+   
    TransactionId getTransactionId();
 
    void setTransactionId(TransactionId txId);

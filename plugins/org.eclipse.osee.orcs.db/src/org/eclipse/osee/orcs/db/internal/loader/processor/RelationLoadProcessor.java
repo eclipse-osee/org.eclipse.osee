@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -54,6 +55,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
       RelationTypeToken relationType = tokenService.getRelationTypeOrCreate(chStmt.getLong("rel_link_type_id"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
+      TxCurrent txCurrent = TxCurrent.valueOf(chStmt.getInt("tx_current"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
       boolean historical = OptionsUtil.isHistorical(options);
@@ -64,7 +66,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
 
          TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
-         VersionData version = factory.createVersion(branch, txId, gammaId, historical);
+         VersionData version = factory.createVersion(branch, txId, gammaId, txCurrent, historical);
          if (historical) {
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }

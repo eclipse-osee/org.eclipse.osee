@@ -13,19 +13,21 @@
 
 package org.eclipse.osee.orcs.db.internal.sql;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.osee.jdbc.ObjectType;
+import org.eclipse.osee.jdbc.SQL3DataType;
+import org.eclipse.osee.jdbc.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
+
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import org.eclipse.osee.jdbc.ObjectType;
-import org.eclipse.osee.jdbc.SQL3DataType;
-import org.eclipse.osee.jdbc.SqlTable;
-import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * @author Roberto E. Escobar
@@ -88,6 +90,8 @@ public enum ObjectField {
    rel_rationale(SQL3DataType.VARCHAR, OseeDb.RELATION_TABLE, "rationale"),
    rel_a_art_id(SQL3DataType.INTEGER, OseeDb.RELATION_TABLE, "a_art_id"),
    rel_b_art_id(SQL3DataType.INTEGER, OseeDb.RELATION_TABLE, "b_art_id"),
+   rel_order(SQL3DataType.INTEGER, OseeDb.RELATION_TABLE2, "rel_order"),
+   rel_art_id(SQL3DataType.INTEGER, OseeDb.RELATION_TABLE2, "rel_art_id"),
    rel_mod_type(SQL3DataType.SMALLINT, OseeDb.TXS_TABLE, "mod_type"),
    rel_tx_id(true, SQL3DataType.INTEGER, OseeDb.TXS_TABLE, "transaction_id"),
    rel_tx_current(SQL3DataType.SMALLINT, OseeDb.TXS_TABLE, "tx_current"),
