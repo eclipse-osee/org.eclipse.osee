@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.core.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -33,6 +33,11 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Megumi Telles
@@ -230,6 +235,15 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          super(Id.SENTINEL, Named.SENTINEL);
       }
 
+      @JsonCreator
+      public static ArtifactReadable create(@JsonProperty("id") Long id, @JsonProperty("name") String name) {
+         ArtifactReadableImpl art = new ArtifactReadableImpl();
+         art.setId(id);
+         art.setName(name);
+         return art;
+         
+      }
+      
       @Override
       public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
          return null;

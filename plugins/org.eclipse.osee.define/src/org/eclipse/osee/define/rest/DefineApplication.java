@@ -16,8 +16,10 @@ package org.eclipse.osee.define.rest;
 
 import java.util.Map;
 import java.util.Set;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppResourceTokens;
 import org.eclipse.osee.define.api.DefineOperations;
@@ -90,7 +92,7 @@ public final class DefineApplication extends Application {
               new DataRightsEndpointImpl(this.defineOperations),
               new DefineBranchEndpointImpl(jdbcClient, orcsApi),
               new ImportEndpointImpl(this.defineOperations),
-              new PublishingEndpointImpl(this.defineOperations),
+              new PublishingEndpointImpl(this.defineOperations, orcsApi),
               new SynchronizationEndpointImpl(this.defineOperations),
               new TemplateManagerEndpointImpl(this.defineOperations),
               new TogglesEndpointImpl(this.defineOperations)

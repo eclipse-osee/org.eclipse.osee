@@ -17,18 +17,19 @@
 package org.eclipse.osee.framework.core.applicability;
 
 import java.util.Set;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 
 public class ApplicabilityUseResultToken {
    private ApplicabilityToken app;
-   private Set<ArtifactToken> arts;
+   private Set<ArtifactReadable> arts;
 
    public ApplicabilityUseResultToken() {
       //Empty constructor is required for json compatibility
    }
 
-   public ApplicabilityUseResultToken(ApplicabilityToken app, Set<ArtifactToken> arts) {
+   public ApplicabilityUseResultToken(ApplicabilityToken app, Set<ArtifactReadable> arts) {
       this.app = app;
       this.arts = arts;
    }
@@ -37,7 +38,7 @@ public class ApplicabilityUseResultToken {
       return app;
    }
 
-   public Set<ArtifactToken> getArts() {
+   public Set<ArtifactReadable> getArts() {
       return arts;
    }
 }
