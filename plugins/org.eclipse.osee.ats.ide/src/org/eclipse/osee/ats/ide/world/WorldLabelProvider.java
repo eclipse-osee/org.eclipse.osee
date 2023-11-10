@@ -17,8 +17,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -51,17 +52,15 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            if (item.isXColumnProvider(xCol)) {
-               Image image = item.getColumnImage(element, xCol, columnIndex);
-               if (image != null) {
-                  return image;
-               }
+            Image image = item.getColumnImage(element, xCol, columnIndex);
+            if (image != null) {
+               return image;
             }
          }
-         if (xCol.getId().equals(AtsColumnTokens.TypeColumn.getId())) {
+         if (xCol.getId().equals(AtsColumnTokensDefault.TypeColumn.getId())) {
             return ArtifactImageManager.getImage(AtsApiService.get().getQueryServiceIde().getArtifact(element));
          }
-         if (xCol.getId().equals(AtsColumnTokens.StateColumn.getId())) {
+         if (xCol.getId().equals(AtsColumnTokensDefault.StateColumn.getId())) {
             if (element instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) element;
                String isBlocked = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem,
@@ -85,18 +84,16 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            if (item.isXColumnProvider(xCol)) {
-               Color color = item.getForeground(element, xCol, columnIndex);
-               if (color != null) {
-                  return color;
-               }
+            Color color = item.getForeground(element, xCol, columnIndex);
+            if (color != null) {
+               return color;
             }
          }
          if (element instanceof IAtsWorkItem) {
             if (((Artifact) ((IAtsWorkItem) element).getStoreObject()).isDeleted()) {
                return null;
             }
-            if (xCol.getId().equals(AtsColumnTokens.StateColumn.getId())) {
+            if (xCol.getId().equals(AtsColumnTokensDefault.StateColumn.getId())) {
                StateDefinition state = ((AbstractWorkflowArtifact) element).getStateDefinition();
                if (state == null) {
                   OseeLog.logf(Activator.class, Level.SEVERE, "State null for %s",
@@ -130,23 +127,15 @@ public class WorldLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
+      String value = "Unhandled Column";
       try {
-         // NOTE: ID, Type, Title are handled by XViewerValueColumn values
-         if (!AtsObjects.isAtsWorkItemOrAction(element)) {
-            return "";
+         if (AtsObjects.isAtsWorkItemOrAction(element)) {
+            value = AtsApiService.get().getColumnService().getColumnText(xCol.getId(), (IAtsObject) element);
          }
-         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            if (item.isXColumnProvider(xCol)) {
-               String text = item.getColumnText(element, xCol, columnIndex);
-               if (text != null) {
-                  return text;
-               }
-            }
-         }
-         return "Unhandled Column";
       } catch (Exception ex) {
-         return LogUtil.getCellExceptionString(ex);
+         value = LogUtil.getCellExceptionString(ex);
       }
+      return value;
    }
 
    @Override

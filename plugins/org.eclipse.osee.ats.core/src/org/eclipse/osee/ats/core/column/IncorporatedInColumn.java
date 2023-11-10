@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 
 /**
@@ -22,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 public class IncorporatedInColumn extends RelationColumn {
 
    public IncorporatedInColumn(AtsApi atsApi) {
-      super(AtsRelationTypes.TeamWorkflowToRelease_Release, atsApi);
+      super(AtsColumnTokensDefault.IncorporatedInColumn, AtsRelationTypes.TeamWorkflowToRelease_Release, atsApi);
    }
 
 }

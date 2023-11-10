@@ -140,7 +140,7 @@
          name="AtsWidgetProvider"
          point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
       <XWidgetProvider
-            classname="org.eclipse.osee.ats.ide.util.widgets.AtsWidgetProvider">
+            classname="org.eclipse.osee.ats.ide.util.widgets.AtsXWidgetProvider">
       </XWidgetProvider>
    </extension>
    <extension

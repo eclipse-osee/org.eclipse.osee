@@ -44,8 +44,8 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTa
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorAction.IOpenNewAtsWorldEditorHandler;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
-import org.eclipse.osee.ats.ide.agile.SprintOrderColumn;
-import org.eclipse.osee.ats.ide.column.GoalOrderColumn;
+import org.eclipse.osee.ats.ide.agile.SprintOrderColumnUI;
+import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -359,13 +359,13 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered,
       Collection<Artifact> sprintMemberReordered) {
       if (!goalMemberReordered.isEmpty()) {
-         XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(GoalOrderColumn.COLUMN_ID);
+         XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(GoalOrderColumnUI.COLUMN_ID);
          if (column != null && column.isShow() == true) {
             getXViewer().refreshColumnsWithPreCompute();
          }
       }
       if (!sprintMemberReordered.isEmpty()) {
-         XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(SprintOrderColumn.COLUMN_ID);
+         XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(SprintOrderColumnUI.COLUMN_ID);
          if (column != null && column.isShow() == true) {
             getXViewer().refreshColumnsWithPreCompute();
          }

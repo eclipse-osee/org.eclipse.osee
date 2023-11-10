@@ -31,6 +31,11 @@ public class XWorkPackageHyperlinkWidget extends XHyperlinkLabelCmdValueSelectio
    IAtsWorkPackage workPackage = null;
    private final IAtsTeamDefinition teamDef;
 
+   public XWorkPackageHyperlinkWidget() {
+      this(null);
+      // For reflection loading
+   }
+
    public XWorkPackageHyperlinkWidget(IAtsTeamDefinition teamDef) {
       super("Work Package", true, 50);
       this.teamDef = teamDef;

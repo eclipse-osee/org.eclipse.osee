@@ -29,6 +29,15 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public class LastModifiedByColumn extends XViewerValueColumn {
 
    public static final String FRAMEWORK_LAST_MOD_BY = "framework.lastModBy";
+   public static LastModifiedByColumn instance = new LastModifiedByColumn();
+
+   public static LastModifiedByColumn getInstance() {
+      return instance;
+   }
+
+   public LastModifiedByColumn() {
+      this(false);
+   }
 
    public LastModifiedByColumn(boolean show) {
       super(FRAMEWORK_LAST_MOD_BY, "Last Modified By", 50, XViewerAlign.Left, show, SortDataType.String, false,

@@ -24,11 +24,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
-import org.eclipse.osee.ats.api.config.AtsAttrValCol;
+import org.eclipse.osee.ats.api.column.AtsColumnUtil;
+import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
@@ -145,7 +146,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public List<AtsAttrValCol> generateAttrTypeViews() throws Exception {
+   public List<AtsCoreAttrTokColumnToken> generateAttrTypeViews() throws Exception {
       Map<String, AttributeTypeToken> idToToken = new HashMap<>();
       for (AttributeTypeToken attrType : orcsApi.tokenService().getAttributeTypes()) {
          idToToken.put(attrType.getName(), attrType);
@@ -155,37 +156,20 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       sortedIds.addAll(idToToken.keySet());
       Collections.sort(sortedIds);
 
-      List<AtsAttrValCol> columns = new LinkedList<>();
+      List<AtsCoreAttrTokColumnToken> columns = new LinkedList<>();
       for (String id : sortedIds) {
          AttributeTypeToken attrType = idToToken.get(id);
-         ColumnAlign columnAlign = ColumnAlign.Left;
-         SortDataType sortDataType = SortDataType.String;
-         int width = 60;
+         ColumnAlign columnAlign = AtsColumnUtil.getColumnAlign(attrType);
+         ColumnType columnType = AtsColumnUtil.getColumnType(attrType);
+         int width = AtsColumnUtil.getColumnWidth(attrType);
 
-         if (attrType.isEnumerated()) {
-            width = 40;
-         } else if (attrType.isBoolean()) {
-            width = 50;
-         } else if (attrType.isInteger()) {
-            width = 45;
-            sortDataType = SortDataType.Integer;
-            columnAlign = ColumnAlign.Center;
-         } else if (attrType.isDouble()) {
-            width = 40;
-            sortDataType = SortDataType.Float;
-            columnAlign = ColumnAlign.Center;
-         } else if (attrType.isDate()) {
-            width = 80;
-            sortDataType = SortDataType.Date;
-         }
-
-         AtsAttrValCol valueColumn = new AtsAttrValCol();
+         AtsCoreAttrTokColumnToken valueColumn = new AtsCoreAttrTokColumnToken();
          valueColumn.setAttrTypeId(attrType.getId());
          valueColumn.setAttrTypeName(attrType.getName());
          valueColumn.setWidth(width);
          valueColumn.setAlign(columnAlign);
          valueColumn.setVisible(true);
-         valueColumn.setSortDataType(sortDataType.name());
+         valueColumn.setColumnType(columnType.name());
          valueColumn.setColumnMultiEdit(true);
          valueColumn.setDescription(attrType.getDescription());
          valueColumn.setNamespace("org.eclipse.osee.ats.WorldXViewer");

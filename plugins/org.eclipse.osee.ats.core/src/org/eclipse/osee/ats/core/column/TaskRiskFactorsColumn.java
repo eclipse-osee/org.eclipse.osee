@@ -19,19 +19,21 @@ import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Vaibhav Y Patel
  */
-public class TaskRiskFactorsColumn extends AbstractServicesColumn {
+public class TaskRiskFactorsColumn extends AtsCoreCodeColumn {
 
    public TaskRiskFactorsColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.TaskRiskFactorsColumn, atsApi);
    }
 
    @Override

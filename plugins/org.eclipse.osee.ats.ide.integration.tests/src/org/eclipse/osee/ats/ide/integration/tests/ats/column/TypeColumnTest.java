@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -37,14 +37,14 @@ public class TypeColumnTest {
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("SAW Requirements Workflow", columnService.getColumnText(AtsColumnTokens.TypeColumn, reqArt));
+      Assert.assertEquals("SAW Requirements Workflow", columnService.getColumnText(AtsColumnTokensDefault.TypeColumn, reqArt));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("SAW Code Workflow", columnService.getColumnText(AtsColumnTokens.TypeColumn, codeArt));
+      Assert.assertEquals("SAW Code Workflow", columnService.getColumnText(AtsColumnTokensDefault.TypeColumn, codeArt));
 
       IAtsAction action = reqArt.getParentAction();
-      Assert.assertEquals("Action", columnService.getColumnText(AtsColumnTokens.TypeColumn, action));
+      Assert.assertEquals("Action", columnService.getColumnText(AtsColumnTokensDefault.TypeColumn, action));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
@@ -24,11 +25,11 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class DerivedFromAtsIdColumn extends AbstractDerivedFromColumn {
 
    public DerivedFromAtsIdColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.DerivedFromAtsIdColumn, atsApi);
    }
 
    @Override
-   String getText(IAtsObject atsObject) throws Exception {
+   protected String getText(IAtsObject atsObject) throws Exception {
       return getDerivedFromAtsId(atsObject, atsApi);
    }
 

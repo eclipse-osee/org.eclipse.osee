@@ -19,16 +19,17 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public class DisplayHint extends NamedIdBase {
 
-   public static DisplayHint SingleLine = new DisplayHint(1L, "Single Line");
-   public static DisplayHint MultiLine = new DisplayHint(2L, "Multiline");
-   public static DisplayHint NoGeneralEdit = new DisplayHint(3L, "No General Edit");
-   public static DisplayHint NoGeneralRender = new DisplayHint(4L, "No General Render");
+   public static final DisplayHint SingleLine = new DisplayHint(1L, "Single Line");
+   public static final DisplayHint MultiLine = new DisplayHint(2L, "Multiline");
+   public static final DisplayHint NoGeneralEdit = new DisplayHint(3L, "No General Edit");
+   public static final DisplayHint NoGeneralRender = new DisplayHint(4L, "No General Render");
    // Stores true/false for boolean but shows Yes/No in display and edit; Not valid for anything but boolean
-   public static DisplayHint YesNoBoolean = new DisplayHint(5L, "Show Yes/No for Boolean Value");
+   public static final DisplayHint YesNoBoolean = new DisplayHint(5L, "Show Yes/No for Boolean Value");
    // Allows for true/false/clear and yes/no/clear in display and edit; Not valid for anything but boolean
-   public static DisplayHint TriStateBoolean = new DisplayHint(6L, "Allow for Clear in Boolean");
-   public static DisplayHint IndexBased = new DisplayHint(7L, "IndexBased Search");
-   private DisplayHint(Long id, String name) {
+   public static final DisplayHint TriStateBoolean = new DisplayHint(6L, "Allow for Clear in Boolean");
+   public static final DisplayHint IndexBased = new DisplayHint(7L, "IndexBased Search");
+
+   protected DisplayHint(Long id, String name) {
       super(id, name);
    }
 }

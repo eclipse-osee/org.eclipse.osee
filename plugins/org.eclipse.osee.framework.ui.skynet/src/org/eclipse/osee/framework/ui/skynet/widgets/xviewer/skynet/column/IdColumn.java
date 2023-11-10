@@ -25,6 +25,16 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
  */
 public class IdColumn extends XViewerValueColumn {
 
+   public static IdColumn instance = new IdColumn();
+
+   public static IdColumn getInstance() {
+      return instance;
+   }
+
+   public IdColumn() {
+      this(false);
+   }
+
    public IdColumn(boolean show) {
       super("framework.uuid", "Uuid", 75, XViewerAlign.Left, show, SortDataType.String, false,
          "Universally Unique Identifier");

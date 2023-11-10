@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
+import org.eclipse.osee.ats.ide.column.RelatedToStateColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -171,7 +171,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                }
             }
          });
-      } else if (xWidget.getLabel().equals(RelatedToStateColumn.RELATED_TO_STATE_SELECTION)) {
+      } else if (xWidget.getLabel().equals(RelatedToStateColumnUI.RELATED_TO_STATE_SELECTION)) {
          stateCombo = (XCombo) xWidget;
          refreshStateCombo();
       }
@@ -180,7 +180,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
 
    private void refreshStateCombo() {
       if (stateCombo != null && teamWf != null) {
-         List<String> names = RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) teamWf);
+         List<String> names = RelatedToStateColumnUI.getValidInWorkStates((TeamWorkFlowArtifact) teamWf);
          stateCombo.setDataStrings(names.toArray(new String[names.size()]));
       }
    }
@@ -192,7 +192,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       buffer.append(
          "<XWidget xwidgetType=\"XText\" fill=\"Vertically\" height=\"80\" displayName=\"" + getTitlesLabel() + "\" toolTip=\"Enter task titles one per line\"/>");
       buffer.append(
-         "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"2\" labelAfter=\"true\" height=\"80\" displayName=\"" + RelatedToStateColumn.RELATED_TO_STATE_SELECTION + "\" />");
+         "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"2\" labelAfter=\"true\" height=\"80\" displayName=\"" + RelatedToStateColumnUI.RELATED_TO_STATE_SELECTION + "\" />");
       buffer.append("<XWidget xwidgetType=\"XHyperlabelMemberSelection\" displayName=\"" + ASSIGNEES + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();

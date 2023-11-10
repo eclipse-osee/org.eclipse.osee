@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
@@ -25,11 +26,11 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class DerivedFromTeamDefColumn extends AbstractDerivedFromColumn {
 
    public DerivedFromTeamDefColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.DerivedFromTeamDefColumn, atsApi);
    }
 
    @Override
-   String getText(IAtsObject atsObject) throws Exception {
+   protected String getText(IAtsObject atsObject) throws Exception {
       return getDerivedFromTeamDef(atsObject, atsApi);
    }
 

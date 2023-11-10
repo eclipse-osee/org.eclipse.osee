@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 
 /**
@@ -22,7 +23,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 public class AgileFeatureGroupColumn extends RelationColumn {
 
    public AgileFeatureGroupColumn(AtsApi atsApi) {
-      super(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup, atsApi);
+      super(AtsColumnTokensDefault.AgileFeatureGroupColumn, AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup,
+         atsApi);
    }
 
 }

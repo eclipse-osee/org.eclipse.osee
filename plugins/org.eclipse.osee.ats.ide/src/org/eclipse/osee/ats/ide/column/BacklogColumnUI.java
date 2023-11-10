@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
  * @author Donald G. Dunne
  * @author David W Miller
  */
-public class BacklogColumnUI extends BaseGoalsColumn {
+public class BacklogColumnUI extends BaseGoalsColumnUI {
 
    private final WorkItemType goalType = WorkItemType.AgileBacklog;
    private final String persistString = "Set Backlogs";

@@ -19,9 +19,11 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.Action;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
@@ -32,12 +34,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Donald G. Dunne
  */
-public class AssigneeColumn extends AbstractServicesColumn {
+public class AssigneeColumn extends AtsCoreCodeColumn {
 
    private static IAtsImplementerService implementStrProvider;
 
    public AssigneeColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.AssigneeColumn, atsApi);
    }
 
    @Override

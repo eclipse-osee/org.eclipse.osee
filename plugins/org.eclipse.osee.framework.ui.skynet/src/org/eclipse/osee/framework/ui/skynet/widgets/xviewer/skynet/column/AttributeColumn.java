@@ -95,4 +95,5 @@ public class AttributeColumn extends XViewerValueColumn implements IAttributeCol
       }
       return null;
    }
+
 }

@@ -16,14 +16,14 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.util;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNote;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
-import org.eclipse.osee.ats.ide.column.DeadlineColumn;
+import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -80,10 +80,10 @@ public class WfePrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-            AtsApiService.get().getColumnService().getColumn(AtsColumnTokens.TeamColumn).getColumnText(sma)),
+            AtsApiService.get().getColumnService().getColumn(AtsColumnTokensDefault.TeamColumn).getColumnText(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, sma)),
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn, sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getCreatedBy().getName()),
          //
@@ -98,7 +98,7 @@ public class WfePrint extends Action {
             ChangeTypeColumn.getChangeTypeStr(sma, AtsApiService.get())),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ",
             sma.getSoleAttributeValue(AtsAttributeTypes.Priority, "")),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumnUI.getDateStr(sma))}));
 
       String computedId = AtsApiService.get().getWorkItemService().getCombinedPcrId(sma);
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
@@ -143,7 +143,7 @@ public class WfePrint extends Action {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getCurrentStateName().replaceAll("(Task|State)", ""),
-               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, art),
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn, art),
                AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(art) + "",
                AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(art) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),

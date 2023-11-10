@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2016 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,22 +15,27 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class TitleColumn extends AbstractServicesColumn {
+public class TitleColumn extends AtsCoreCodeColumn {
+
+   private static TitleColumn instance;
+
+   public static TitleColumn getInstance() {
+      return instance;
+   }
 
    public TitleColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.TitleColumn, atsApi);
    }
 
    @Override
    public String getText(IAtsObject atsObject) {
-      String format = "%s";
-      if (atsApi.getStoreService().isDeleted(atsObject)) {
-         format = "<Deleted> %s";
-      }
-      return String.format(format, atsObject.getName());
+      return atsObject.getName();
    }
+
 }

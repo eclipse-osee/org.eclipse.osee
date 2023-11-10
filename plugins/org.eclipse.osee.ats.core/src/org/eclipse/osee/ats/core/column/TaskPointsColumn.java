@@ -16,17 +16,19 @@ package org.eclipse.osee.ats.core.column;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Vaibhav Y Patel
  */
-public class TaskPointsColumn extends AbstractServicesColumn {
+public class TaskPointsColumn extends AtsCoreCodeColumn {
 
    public TaskPointsColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.TaskPointsColumn, atsApi);
    }
 
    @Override

@@ -26,6 +26,9 @@ public final class AttributeTypeString extends AttributeTypeGeneric<String> {
 
    public AttributeTypeString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, DisplayHint... displayHints) {
       super(id, namespace, name, mediaType, description, taggerType, fileExtension, "", displayHints);
+      for (DisplayHint hint : displayHints) {
+         addDisplayHint(hint);
+      }
    }
 
    @Override

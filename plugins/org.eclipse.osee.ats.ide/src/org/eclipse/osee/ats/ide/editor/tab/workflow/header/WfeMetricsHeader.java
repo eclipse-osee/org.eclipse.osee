@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsUtil;
-import org.eclipse.osee.ats.ide.column.RemainingHoursColumn;
+import org.eclipse.osee.ats.ide.column.RemainingHoursColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -59,7 +59,7 @@ public class WfeMetricsHeader extends Composite {
          hoursSpentLabel = FormsUtil.createLabelValue(toolkit, this, "Total Hours Spent: ", "",
             "Calculation: Sum of all hours spent for all tasks, reviews and in each state");
          remainHoursLabel = FormsUtil.createLabelValue(toolkit, this, "Remaining Hours: ", "",
-            RemainingHoursColumn.getInstance().getDescription());
+            RemainingHoursColumnUI.getInstance().getDescription());
 
          refresh();
       } catch (Exception ex) {
@@ -87,12 +87,12 @@ public class WfeMetricsHeader extends Composite {
                AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(workItem))));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            Result result = RemainingHoursColumn.isRemainingHoursValid(workItem);
+            Result result = RemainingHoursColumnUI.isRemainingHoursValid(workItem);
             if (result.isFalse()) {
                remainHoursLabel.setText(result.getText());
             } else {
                remainHoursLabel.setText(
-                  String.valueOf(AtsUtil.doubleToI18nString(RemainingHoursColumn.getRemainingHours(workItem))));
+                  String.valueOf(AtsUtil.doubleToI18nString(RemainingHoursColumnUI.getRemainingHours(workItem))));
             }
          }
          getParent().layout();

@@ -202,7 +202,6 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       throw new OseeTypeDoesNotExist("Attribute type [%s] is not an enum type.", getName());
    }
 
-
    default public String getStoreType() {
       if (isEnumerated()) {
          return "Enumeration";
@@ -229,4 +228,14 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
    }
 
    Object valueFromStorageString(String storedValue);
+
+   public default boolean hasDisplayHint(DisplayHint... hints) {
+      for (DisplayHint hint : hints) {
+         if (getDisplayHints().contains(hint)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
 }

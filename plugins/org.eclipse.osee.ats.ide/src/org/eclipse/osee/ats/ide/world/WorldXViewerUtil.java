@@ -17,14 +17,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.config.AtsAttrValCol;
+import org.eclipse.osee.ats.api.column.AtsColumnUtil;
+import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttrTokenXColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -77,17 +76,17 @@ public class WorldXViewerUtil {
    }
 
    public static void registerConfigurationsColumns(SkynetXViewerFactory factory) {
-      List<XViewerAtsAttributeValueColumn> configColumns = getConfigurationColumns();
-      for (XViewerAtsAttributeValueColumn col : configColumns) {
+      List<XViewerAtsAttrTokenXColumn> configColumns = getConfigurationColumns();
+      for (XViewerAtsAttrTokenXColumn col : configColumns) {
          factory.registerColumns(col);
       }
    }
 
-   public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
-      List<AtsAttrValCol> columns =
+   public static List<XViewerAtsAttrTokenXColumn> getConfigurationColumns() {
+      List<AtsCoreAttrTokColumnToken> columns =
          AtsApiService.get().getConfigService().getConfigurations().getViews().getAttrColumns();
-      List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
-      for (AtsAttrValCol column : columns) {
+      List<XViewerAtsAttrTokenXColumn> configColumns = new ArrayList<>();
+      for (AtsCoreAttrTokColumnToken column : columns) {
          try {
             AttributeTypeToken attrType = null;
             try {
@@ -95,9 +94,9 @@ public class WorldXViewerUtil {
             } catch (OseeTypeDoesNotExist ex) {
                continue;
             }
-            XViewerAtsAttributeValueColumn valueColumn = new XViewerAtsAttributeValueColumn(attrType, column.getWidth(),
-               AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(),
-               SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(), column.getDescription());
+            XViewerAtsAttrTokenXColumn valueColumn = new XViewerAtsAttrTokenXColumn(attrType, column.getWidth(),
+               AtsColumnUtil.getXViewerAlign(column.getAlign()), column.isVisible(),
+               AtsColumnUtil.getSortDataType(column), column.isColumnMultiEdit(), column.getDescription());
             valueColumn.setBooleanNotSetShow(column.getBooleanNotSetShow());
             valueColumn.setBooleanOnFalseShow(column.getBooleanOnFalseShow());
             valueColumn.setBooleanOnTrueShow(column.getBooleanOnTrueShow());
@@ -112,8 +111,8 @@ public class WorldXViewerUtil {
       return configColumns;
    }
 
-   public static XViewerColumn getConfigColumn(String columnId, List<XViewerAtsAttributeValueColumn> configCols) {
-      for (XViewerAtsAttributeValueColumn col : configCols) {
+   public static XViewerColumn getConfigColumn(String columnId, List<XViewerAtsAttrTokenXColumn> configCols) {
+      for (XViewerAtsAttrTokenXColumn col : configCols) {
          if (col.getId().equals(columnId)) {
             return col;
          }

@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.column.ParentAtsIdColumn;
-import org.eclipse.osee.ats.ide.column.ParentStateColumn;
+import org.eclipse.osee.ats.ide.column.ParentAtsIdColumnUI;
+import org.eclipse.osee.ats.ide.column.ParentStateColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -43,17 +43,17 @@ public class ParentStateAndIdColumnTest {
       IAtsAction actionArt = codeArt.getParentAction();
 
       Assert.assertEquals("",
-         ParentStateColumn.getInstance().getColumnText(codeArt, ParentAtsIdColumn.getInstance(), 0));
-      Assert.assertEquals(actionArt.getAtsId(), ParentAtsIdColumn.getInstance().getValue(codeArt, new HashMap<>()));
+         ParentStateColumnUI.getInstance().getColumnText(codeArt, ParentAtsIdColumnUI.getInstance(), 0));
+      Assert.assertEquals(actionArt.getAtsId(), ParentAtsIdColumnUI.getInstance().getValue(codeArt, new HashMap<>()));
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
       Assert.assertEquals(TeamState.Implement.getName(),
-         ParentStateColumn.getInstance().getColumnText(peerArt, ParentAtsIdColumn.getInstance(), 0));
-      Assert.assertEquals(codeArt.getAtsId(), ParentAtsIdColumn.getInstance().getValue(peerArt, new HashMap<>()));
+         ParentStateColumnUI.getInstance().getColumnText(peerArt, ParentAtsIdColumnUI.getInstance(), 0));
+      Assert.assertEquals(codeArt.getAtsId(), ParentAtsIdColumnUI.getInstance().getValue(peerArt, new HashMap<>()));
 
       Assert.assertEquals("",
-         ParentStateColumn.getInstance().getColumnText(actionArt, ParentAtsIdColumn.getInstance(), 0));
+         ParentStateColumnUI.getInstance().getColumnText(actionArt, ParentAtsIdColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

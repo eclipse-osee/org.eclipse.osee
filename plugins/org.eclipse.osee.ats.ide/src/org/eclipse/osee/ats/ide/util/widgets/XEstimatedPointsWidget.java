@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.column.PointsColumn;
+import org.eclipse.osee.ats.ide.column.PointsColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
@@ -51,7 +51,7 @@ public class XEstimatedPointsWidget extends XHyperlinkLabelCmdValueSelDam implem
 
    @Override
    public boolean handleSelection() {
-      return PointsColumn.promptChangePoints(workItem, getPointsAttrType(), atsApi);
+      return PointsColumnUI.promptChangePoints(workItem, getPointsAttrType(), atsApi);
    }
 
    @Override

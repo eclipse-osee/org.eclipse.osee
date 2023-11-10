@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.workflow.cr.taskest;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
 import org.eclipse.osee.ats.ide.workflow.task.mini.MiniTaskXViewerFactory;
 
 /**
@@ -24,26 +24,31 @@ import org.eclipse.osee.ats.ide.workflow.task.mini.MiniTaskXViewerFactory;
 public class XTaskEstXViewerFactory extends MiniTaskXViewerFactory {
 
    public final static String NAMESPACE = "TaskEstXViewer";
-   public static XViewerColumn Check_Col = new XViewerColumn("ats.taskest.check", "Select", 53, XViewerAlign.Left, true,
-      SortDataType.String, false, "Check and plus to create canned tasks.  Add task to create manual tasks.");
-   public static XViewerColumn Attachments_Col = new XViewerColumn("ats.taskest.attachments", "Attachments", 20,
-      XViewerAlign.Left, true, SortDataType.String, false, "Shows number of attachments.  Double-click to open task.");
-   public static XViewerColumn Related_Wf_Col = new XViewerColumn("ats.taskest.related.wf", "Related Workflow", 200,
-      XViewerAlign.Left, true, SortDataType.String, false, "Show related Team Workflow, if created");
 
    public XTaskEstXViewerFactory() {
       super(NAMESPACE);
    }
 
+   // Return default visible columns in default order.  Override to change defaults.
    @Override
-   protected void addPreColumns(List<XViewerColumn> cols) {
-      cols.add(Check_Col);
-      cols.add(Attachments_Col);
+   public List<AtsCoreColumnToken> getDefaultVisibleColumns() {
+      List<AtsCoreColumnToken> cols = new ArrayList<>();
+      cols.add(AtsColumnTokensDefault.CheckColumn);
+      cols.add(AtsColumnTokensDefault.AttachmentsCountColumn);
+      cols.addAll(super.getDefaultVisibleColumns());
+      cols.add(AtsColumnTokensDefault.NotesColumn);
+      return cols;
    }
 
+   // Return default visible column widths.  Empty list or missing will use default token width.
    @Override
-   protected void addPostColumns(List<XViewerColumn> cols) {
-      cols.add(Related_Wf_Col);
+   public List<Integer> getDefaultColumnWidths() {
+      List<Integer> widths = new ArrayList<>();
+      widths.add(53);
+      widths.add(20);
+      widths.addAll(super.getDefaultColumnWidths());
+      widths.add(200);
+      return widths;
    }
 
 }

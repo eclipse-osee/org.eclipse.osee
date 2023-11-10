@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
-import org.eclipse.osee.ats.ide.column.OriginatorColumn;
+import org.eclipse.osee.ats.ide.column.OriginatorColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -37,11 +37,11 @@ public class OriginatorColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
-         OriginatorColumn.getInstance().getColumnText(reqArt, OriginatorColumn.getInstance(), 0));
+         OriginatorColumnUI.getInstance().getColumnText(reqArt, OriginatorColumnUI.getInstance(), 0));
 
       Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
-         OriginatorColumn.getInstance().getColumnText(actionArt, OriginatorColumn.getInstance(), 0));
+         OriginatorColumnUI.getInstance().getColumnText(actionArt, OriginatorColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

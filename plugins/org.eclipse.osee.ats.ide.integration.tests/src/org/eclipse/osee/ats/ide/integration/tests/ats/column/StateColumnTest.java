@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -38,7 +38,7 @@ public class StateColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(TeamState.Implement.getName(),
-         columnService.getColumnText(AtsColumnTokens.StateColumn, reqArt));
+         columnService.getColumnText(AtsColumnTokensDefault.StateColumn, reqArt));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

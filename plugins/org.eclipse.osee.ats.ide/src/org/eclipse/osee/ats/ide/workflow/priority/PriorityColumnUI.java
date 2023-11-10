@@ -19,12 +19,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
@@ -33,7 +31,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.PriorityColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,7 +45,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class PriorityColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
+public class PriorityColumnUI extends XViewerAtsCoreCodeXColumn {
 
    public static PriorityColumnUI instance = new PriorityColumnUI();
 
@@ -56,7 +54,7 @@ public class PriorityColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
    }
 
    private PriorityColumnUI() {
-      super(AtsColumnTokens.PriorityColumn);
+      super(AtsColumnTokensDefault.PriorityColumn, AtsApiService.get());
    }
 
    /**

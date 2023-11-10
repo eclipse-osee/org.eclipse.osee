@@ -21,9 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -225,26 +223,6 @@ public final class AtsEditors {
 
    public static void openAction(IAtsAction action, AtsOpenOption atsOpenOption) {
       openATSAction(action.getStoreObject(), atsOpenOption);
-   }
-
-   public static XViewerAlign getXViewerAlign(ColumnAlign columnAlign) {
-      if (columnAlign == ColumnAlign.Center) {
-         return XViewerAlign.Center;
-      }
-      if (columnAlign == ColumnAlign.Right) {
-         return XViewerAlign.Right;
-      }
-      return XViewerAlign.Left;
-   }
-
-   public static ColumnAlign getColumnAlign(XViewerAlign xViewerAlign) {
-      if (xViewerAlign == XViewerAlign.Center) {
-         return ColumnAlign.Center;
-      }
-      if (xViewerAlign == XViewerAlign.Right) {
-         return ColumnAlign.Right;
-      }
-      return ColumnAlign.Left;
    }
 
 }

@@ -18,9 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.config.AtsAttrValCol;
+import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
 import org.eclipse.osee.ats.api.config.AtsViews;
-import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -68,9 +67,6 @@ public class UpdateAtsConfiguration {
    private List<String> getViewsJsonStrings() throws Exception {
       List<String> viewsJson = new LinkedList<>();
       viewsJson.add(OseeInf.getResourceContents("atsConfig/views.json", getClass()));
-      for (IAtsConfigurationViewsProvider provider : AtsConfigurationViewsService.getViewsProviders()) {
-         viewsJson.add(provider.getViewsJson());
-      }
       return viewsJson;
    }
 
@@ -80,10 +76,10 @@ public class UpdateAtsConfiguration {
          for (String viewsJson : getViewsJsonStrings()) {
             AtsViews atsViews = jaxRsApi.readValue(viewsJson, AtsViews.class);
             // merge any new default view items to current database view items
-            List<AtsAttrValCol> toAdd = new LinkedList<>();
-            for (AtsAttrValCol defaultView : atsViews.getAttrColumns()) {
+            List<AtsCoreAttrTokColumnToken> toAdd = new LinkedList<>();
+            for (AtsCoreAttrTokColumnToken defaultView : atsViews.getAttrColumns()) {
                boolean found = false;
-               for (AtsAttrValCol dbView : databaseViews.getAttrColumns()) {
+               for (AtsCoreAttrTokColumnToken dbView : databaseViews.getAttrColumns()) {
                   boolean defaultViewNameValid =
                      Strings.isValid(dbView.getName()) && Strings.isValid(defaultView.getName());
                   if (defaultViewNameValid && dbView.getName().equals(defaultView.getName())) {
@@ -138,9 +134,14 @@ public class UpdateAtsConfiguration {
 
    public AtsViews getConfigViews(String viewsStr) {
       AtsViews views = null;
-      if (Strings.isValid(viewsStr)) {
-         views = jaxRsApi.readValue(viewsStr, AtsViews.class);
-      } else {
+      try {
+         if (Strings.isValid(viewsStr)) {
+            views = jaxRsApi.readValue(viewsStr, AtsViews.class);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(UpdateAtsConfiguration.class, Level.SEVERE, "Error reading AtsConfig.views", ex);
+      }
+      if (views == null) {
          views = new AtsViews();
       }
       return views;

@@ -19,12 +19,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -33,7 +31,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.chgtype.ChangeTypeDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -51,7 +49,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
+public class ChangeTypeColumnUI extends XViewerAtsCoreCodeXColumn {
 
    public static ChangeTypeColumnUI instance = new ChangeTypeColumnUI();
 
@@ -60,7 +58,7 @@ public class ChangeTypeColumnUI extends XViewerAtsColumnIdColumn implements IAlt
    }
 
    private ChangeTypeColumnUI() {
-      super(AtsColumnTokens.ChangeTypeColumn);
+      super(AtsColumnTokensDefault.ChangeTypeColumn, AtsApiService.get());
    }
 
    /**

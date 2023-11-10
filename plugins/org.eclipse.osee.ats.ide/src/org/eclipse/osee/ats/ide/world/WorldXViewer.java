@@ -53,13 +53,11 @@ import org.eclipse.osee.ats.ide.actions.IAtsTaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
-import org.eclipse.osee.ats.ide.agile.SprintOrderColumn;
-import org.eclipse.osee.ats.ide.column.GoalOrderColumn;
-import org.eclipse.osee.ats.ide.column.IPersistAltLeftClickProvider;
+import org.eclipse.osee.ats.ide.agile.SprintOrderColumnUI;
+import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XWorldTextFilter;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -101,7 +99,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPersistAltLeftClickProvider, ISelectedTeamWorkflowArtifacts, ISelectedArtifacts, IDirtiableEditor {
+public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, ISelectedTeamWorkflowArtifacts, ISelectedArtifacts, IDirtiableEditor {
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
    public static final String MENU_GROUP_ATS_WORLD_OPEN = "ATS WORLD OPEN";
@@ -253,7 +251,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return;
       }
-      if (!(treeColumn.getData() instanceof IAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
+      if (!(treeColumn.getData() instanceof IAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
          return;
       }
@@ -614,11 +612,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    protected void doUpdateItem(Item item, Object element) {
       if (item instanceof TreeItem) {
          GoalArtifact parentGoalArtifact =
-            GoalOrderColumn.getParentGoalArtifact((TreeItem) item, AtsArtifactTypes.Goal);
+            GoalOrderColumnUI.getParentGoalArtifact((TreeItem) item, AtsArtifactTypes.Goal);
          if (parentGoalArtifact != null) {
             this.parentGoalArtifact = parentGoalArtifact;
          }
-         SprintArtifact parentSprintArtifact1 = SprintOrderColumn.getParentSprintArtifact((TreeItem) item);
+         SprintArtifact parentSprintArtifact1 = SprintOrderColumnUI.getParentSprintArtifact((TreeItem) item);
          if (parentSprintArtifact1 != null) {
             this.parentSprintArtifact = parentSprintArtifact1;
          }
@@ -641,11 +639,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          }
       }
       return artifacts;
-   }
-
-   @Override
-   public boolean isAltLeftClickPersist() {
-      return true;
    }
 
    @Override

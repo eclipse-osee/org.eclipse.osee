@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
@@ -79,26 +78,9 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             } else {
                return "Other";
             }
-         } else if (xViewerColumn.getName().equals("Attachments")) {
-            int count =
-               atsApi.getRelationResolver().getRelatedCount(task, CoreRelationTypes.SupportingInfo_SupportingInfo);
-            if (count > 0) {
-               return String.valueOf(count);
-            } else {
-               return "";
-            }
          } else if (xViewerColumn.getName().equals("Reviewed By")) {
             return XAbstractSignDateAndByButton.getText((Artifact) task.getStoreObject(),
                AtsAttributeTypes.ReviewedByDate, AtsAttributeTypes.ReviewedBy);
-         } else if (xViewerColumn.getName().equals("Related Workflow")) {
-            if (task.isCancelled()) {
-               return "";
-            }
-            IAtsTeamWorkflow teamWf = TaskEstUtil.getWorkflow(task.getParentTeamWorkflow(), task, atsApi);
-            if (teamWf != null) {
-               return teamWf.toStringWithId();
-            }
-            return "Select to Create Workflow";
          }
       }
       String str = super.getColumnText(element, columnIndex);

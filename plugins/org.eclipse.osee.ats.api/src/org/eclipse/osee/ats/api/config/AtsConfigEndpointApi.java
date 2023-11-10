@@ -24,6 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
+import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -99,7 +100,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("genAttrTypeViews")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<AtsAttrValCol> generateAttrTypeViews() throws Exception;
+   public List<AtsCoreAttrTokColumnToken> generateAttrTypeViews() throws Exception;
 
    @GET
    @Path("alive")

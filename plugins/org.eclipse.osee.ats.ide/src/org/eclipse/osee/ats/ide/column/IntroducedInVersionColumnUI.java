@@ -13,19 +13,19 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
  */
-public class IntroducedInVersionColumnUI extends AbstractVersionSelector {
+public class IntroducedInVersionColumnUI extends AbstractVersionSelectorUI {
 
    public static IntroducedInVersionColumnUI instance = new IntroducedInVersionColumnUI();
 
    public IntroducedInVersionColumnUI() {
-      super(AtsColumnTokens.FoundInVersionColumn);
+      super(AtsColumnTokensDefault.FoundInVersionColumn);
    }
 
    public static IntroducedInVersionColumnUI getInstance() {

@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
+import org.eclipse.osee.ats.ide.column.RelatedToStateColumnUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWithFilteredDialog;
 
 /**
@@ -27,7 +27,7 @@ public class XHyperlinkWfdForRelatedState extends XHyperlinkWithFilteredDialog<S
    public XHyperlinkWfdForRelatedState(Collection<String> selectable) {
       super("Related State");
       this.selectable = selectable;
-      setToolTip(RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
+      setToolTip(RelatedToStateColumnUI.RELATED_TO_STATE_SELECTION);
    }
 
    @Override

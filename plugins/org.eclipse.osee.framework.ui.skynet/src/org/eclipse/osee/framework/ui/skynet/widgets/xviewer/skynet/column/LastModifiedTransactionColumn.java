@@ -28,6 +28,15 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public class LastModifiedTransactionColumn extends XViewerValueColumn {
 
    public static final String FRAMEWORK_LAST_MOD_TRANS = "framework.lastModTransaction";
+   public static LastModifiedTransactionColumn instance = new LastModifiedTransactionColumn();
+
+   public static LastModifiedTransactionColumn getInstance() {
+      return instance;
+   }
+
+   public LastModifiedTransactionColumn() {
+      this(false);
+   }
 
    public LastModifiedTransactionColumn(boolean show) {
       super(FRAMEWORK_LAST_MOD_TRANS, "Last Modified Transaction", 50, XViewerAlign.Left, show, SortDataType.Integer,

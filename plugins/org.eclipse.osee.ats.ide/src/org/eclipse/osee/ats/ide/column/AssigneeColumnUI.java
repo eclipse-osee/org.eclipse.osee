@@ -19,12 +19,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -34,7 +32,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -51,7 +49,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AssigneeColumnUI extends XViewerAtsCoreCodeXColumn {
 
    public static AssigneeColumnUI instance = new AssigneeColumnUI();
 
@@ -60,7 +58,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
    }
 
    private AssigneeColumnUI() {
-      super(AtsColumnTokens.AssigneeColumn);
+      super(AtsColumnTokensDefault.AssigneeColumn, AtsApiService.get());
    }
 
    /**
@@ -68,8 +66,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public XViewerAtsColumnIdColumn copy() {
-      XViewerAtsColumnIdColumn newXCol = new AssigneeColumnUI();
+   public XViewerAtsCoreCodeXColumn copy() {
+      AssigneeColumnUI newXCol = new AssigneeColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }

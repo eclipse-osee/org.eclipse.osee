@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.DeadlineManager;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttrTokenXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
@@ -41,7 +41,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColumn {
+public class EstimatedCompletionDateColumn extends XViewerAtsAttrTokenXColumn {
 
    public static EstimatedCompletionDateColumn instance = new EstimatedCompletionDateColumn();
 

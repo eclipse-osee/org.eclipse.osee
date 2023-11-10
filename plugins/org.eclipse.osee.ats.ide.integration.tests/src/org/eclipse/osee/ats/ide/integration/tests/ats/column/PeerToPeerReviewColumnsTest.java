@@ -26,12 +26,12 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.column.ReviewAuthorColumn;
-import org.eclipse.osee.ats.ide.column.ReviewModeratorColumn;
-import org.eclipse.osee.ats.ide.column.ReviewNumIssuesColumn;
-import org.eclipse.osee.ats.ide.column.ReviewNumMajorDefectsColumn;
-import org.eclipse.osee.ats.ide.column.ReviewNumMinorDefectsColumn;
-import org.eclipse.osee.ats.ide.column.ReviewReviewerColumn;
+import org.eclipse.osee.ats.ide.column.ReviewAuthorColumnUI;
+import org.eclipse.osee.ats.ide.column.ReviewModeratorColumnUI;
+import org.eclipse.osee.ats.ide.column.ReviewNumIssuesColumnUI;
+import org.eclipse.osee.ats.ide.column.ReviewNumMajorDefectsColumnUI;
+import org.eclipse.osee.ats.ide.column.ReviewNumMinorDefectsColumnUI;
+import org.eclipse.osee.ats.ide.column.ReviewReviewerColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -71,12 +71,12 @@ public class PeerToPeerReviewColumnsTest {
       changes.add(peerArt);
       changes.execute();
 
-      Assert.assertEquals("0", ReviewNumIssuesColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals("0", ReviewNumMajorDefectsColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals("0", ReviewNumMinorDefectsColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals("", ReviewAuthorColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals("", ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("0", ReviewNumIssuesColumnUI.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("0", ReviewNumMajorDefectsColumnUI.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("0", ReviewNumMinorDefectsColumnUI.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("", ReviewAuthorColumnUI.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("", ReviewModeratorColumnUI.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("", ReviewReviewerColumnUI.getInstance().getColumnText(peerArt, null, 0));
 
       changes = AtsApiService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
       ReviewDefectItem item = new ReviewDefectItem(UserManager.getUser(), Severity.Issue, Disposition.None,
@@ -122,15 +122,15 @@ public class PeerToPeerReviewColumnsTest {
       changes.add(peerArt);
       changes.execute();
 
-      Assert.assertEquals("4", ReviewNumIssuesColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals("1", ReviewNumMajorDefectsColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals("3", ReviewNumMinorDefectsColumn.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("4", ReviewNumIssuesColumnUI.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("1", ReviewNumMajorDefectsColumnUI.getInstance().getColumnText(peerArt, null, 0));
+      Assert.assertEquals("3", ReviewNumMinorDefectsColumnUI.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals(DemoUsers.Alex_Kay.getName(),
-         ReviewAuthorColumn.getInstance().getColumnText(peerArt, null, 0));
+         ReviewAuthorColumnUI.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals(DemoUsers.Jason_Michael.getName(),
-         ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
+         ReviewModeratorColumnUI.getInstance().getColumnText(peerArt, null, 0));
       List<String> results = Arrays.asList(DemoUsers.Kay_Jones_And_Joe_Smith, DemoUsers.Joe_Smith_And_Kay_Jones);
-      Assert.assertTrue(results.contains(ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0)));
+      Assert.assertTrue(results.contains(ReviewReviewerColumnUI.getInstance().getColumnText(peerArt, null, 0)));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

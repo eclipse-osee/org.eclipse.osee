@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.AbstractAtsTaskServiceCore;
 import org.eclipse.osee.ats.core.task.ChangeReportTaskNameProviderService;
 import org.eclipse.osee.ats.core.workflow.Task;
-import org.eclipse.osee.ats.ide.column.RelatedToStateColumn;
+import org.eclipse.osee.ats.ide.column.RelatedToStateColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
@@ -95,16 +95,16 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
          Collection<WorkDefinition> taskWorkDefs = atsApi.getTaskService().calculateTaskWorkDefs(teamWf);
          String comment = "Create New Task";
          if (taskWorkDefs.size() == 0 || taskWorkDefs.size() == 1) {
-            ed = new EntryComboDialog(comment, "Enter Task Title", RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
+            ed = new EntryComboDialog(comment, "Enter Task Title", RelatedToStateColumnUI.RELATED_TO_STATE_SELECTION);
             List<String> validStates =
-               RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());
+               RelatedToStateColumnUI.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());
             ed.setOptions(validStates);
          } else {
             ed2 = new EntryComboComboDialog(comment, "Enter Task Title and Select Task Work Definition",
-               RelatedToStateColumn.RELATED_TO_STATE_SELECTION, "Select Task Work Definition");
+               RelatedToStateColumnUI.RELATED_TO_STATE_SELECTION, "Select Task Work Definition");
             ed = ed2;
             List<String> validStates =
-               RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());
+               RelatedToStateColumnUI.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());
             ed2.setOptions(validStates);
             ed2.setOptions2(taskWorkDefs);
             ed2.setCombo2Required(true);

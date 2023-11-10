@@ -16,19 +16,21 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class ParentTitleColumn extends AbstractServicesColumn {
+public class ParentTitleColumn extends AtsCoreCodeColumn {
 
    public ParentTitleColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.ParentTitleColumn, atsApi);
    }
 
    @Override
-   String getText(IAtsObject atsObject) throws Exception {
+   protected String getText(IAtsObject atsObject) throws Exception {
       String result = null;
       if (atsObject instanceof IAtsWorkItem && !(atsObject instanceof IAtsTeamWorkflow)) {
          IAtsTeamWorkflow parentTeam = ((IAtsWorkItem) atsObject).getParentTeamWorkflow();

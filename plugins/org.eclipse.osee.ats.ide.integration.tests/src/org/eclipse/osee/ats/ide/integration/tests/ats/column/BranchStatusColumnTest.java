@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.column.BranchStatusColumn;
+import org.eclipse.osee.ats.ide.column.BranchStatusColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -34,14 +34,14 @@ public class BranchStatusColumnTest {
 
       IAtsTeamWorkflow reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("Working", BranchStatusColumn.getInstance().getBranchStatus(reqArt));
+      Assert.assertEquals("Working", BranchStatusColumnUI.getInstance().getBranchStatus(reqArt));
 
       IAtsTeamWorkflow testArt = (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
-      Assert.assertEquals("", BranchStatusColumn.getInstance().getBranchStatus(testArt));
+      Assert.assertEquals("", BranchStatusColumnUI.getInstance().getBranchStatus(testArt));
 
       TeamWorkFlowArtifact reqArt2 =
          (TeamWorkFlowArtifact) DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("Needs Commit", BranchStatusColumn.getInstance().getBranchStatus(reqArt2));
+      Assert.assertEquals("Needs Commit", BranchStatusColumnUI.getInstance().getBranchStatus(reqArt2));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

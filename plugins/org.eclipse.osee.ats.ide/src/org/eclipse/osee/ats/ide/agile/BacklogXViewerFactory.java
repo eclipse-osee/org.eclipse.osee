@@ -13,96 +13,64 @@
 
 package org.eclipse.osee.ats.ide.agile;
 
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
-import org.eclipse.osee.ats.ide.column.AbstractMembersOrderColumn;
-import org.eclipse.osee.ats.ide.column.AgileTeamPointsColumnUI;
-import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.ide.column.BacklogOrderColumn;
-import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
-import org.eclipse.osee.ats.ide.column.CreatedDateColumnUI;
-import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
+import org.eclipse.osee.ats.ide.column.AbstractMembersOrderColumnUI;
+import org.eclipse.osee.ats.ide.column.BacklogOrderColumnUI;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
-import org.eclipse.osee.ats.ide.world.WorldXViewerSorter;
-import org.eclipse.osee.ats.ide.world.WorldXViewerUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public class BacklogXViewerFactory extends SkynetXViewerFactory {
+public class BacklogXViewerFactory extends WorldXViewerFactory {
 
    public final static String NAMESPACE = "BacklogXViewer";
 
    public BacklogXViewerFactory(GoalArtifact soleBacklogArtifact, IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
-
-      List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();
-      List<XViewerColumn> backlogCols = new LinkedList<>();
-
-      // Add default Backlog columns
-      WorldXViewerUtil.addColumn(this, BacklogOrderColumn.getInstance(), AbstractMembersOrderColumn.DEFAULT_WIDTH,
-         backlogCols);
-      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn), 300,
-         backlogCols);
-      WorldXViewerUtil.addColumn(this, AgileTeamPointsColumnUI.getInstance(),
-         AtsColumnTokens.AgileTeamPointsColumn.getWidth(), backlogCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), 116,
-         backlogCols);
-      WorldXViewerUtil.addColumn(this, PriorityColumnUI.getInstance(), 20, backlogCols);
-      WorldXViewerUtil.addColumn(this, ChangeTypeColumnUI.getInstance(), 20, backlogCols);
-      WorldXViewerUtil.addColumn(this, AssigneeColumnUI.getInstance(), 113, backlogCols);
-      WorldXViewerUtil.addColumn(this, TargetedVersionColumnUI.getInstance(), 50, backlogCols);
-      WorldXViewerUtil.addColumn(this, SprintColumn.getInstance(), 100, backlogCols);
-      XViewerColumn unPlannedWorkColumn = WorldXViewerUtil.getConfigColumn("ats.Unplanned Work", configCols);
-      if (unPlannedWorkColumn != null) {
-         WorldXViewerUtil.addColumn(this, unPlannedWorkColumn, 20, backlogCols);
-         configCols.remove(unPlannedWorkColumn);
-      }
-      WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, backlogCols);
-      WorldXViewerUtil.addColumn(this, CreatedDateColumnUI.getInstance(), 82, backlogCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow), 50,
-         backlogCols);
-
-      // Add remaining columns from world columns
-      for (XViewerColumn worldCol : WorldXViewerFactory.getWorldViewColumns()) {
-         if (!backlogCols.contains(worldCol)) {
-            XViewerColumn newCol = worldCol.copy();
-            newCol.setShow(false);
-            registerColumns(newCol);
-         }
-      }
-      WorldXViewerUtil.registerAtsAttributeColumns(this);
-      WorldXViewerUtil.registerPluginColumns(this);
-      // Add remaining Configuration Columns
-      for (XViewerAtsAttributeValueColumn col : configCols) {
-         registerColumns(col);
-      }
    }
 
    @Override
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new WorldXViewerSorter(xViewer);
+   public List<AtsCoreColumnToken> getDefaultVisibleColumns() {
+      return Arrays.asList( //
+         AtsColumnTokensDefault.BacklogOrderColumn, //
+         AtsColumnTokensDefault.TitleColumn, //
+         AtsColumnTokensDefault.AgileTeamPointsColumn, //
+         AtsColumnTokensDefault.StateColumn, //
+         AtsColumnTokensDefault.PriorityColumn, //
+         AtsColumnTokensDefault.ChangeTypeColumn, //
+         AtsColumnTokensDefault.AssigneeColumn, //
+         AtsColumnTokensDefault.TargetedVersionColumn, //
+         AtsColumnTokensDefault.SprintColumn, //
+         AtsColumnTokensDefault.UnPlannedWorkColumn, //
+         AtsColumnTokensDefault.AgileFeatureGroupColumn, //
+         AtsColumnTokensDefault.CreatedDateColumn, //
+         AtsColumnTokensDefault.AtsIdColumn, //
+         AtsColumnTokensDefault.NotesColumn //
+      );
+   }
+
+   @Override
+   public List<Integer> getDefaultColumnWidths() {
+      return Arrays.asList(AbstractMembersOrderColumnUI.DEFAULT_WIDTH, 300,
+         AtsColumnTokensDefault.BacklogOrderColumn.getWidth(), 116, 20, 20, 113, 50, 100, 20, 90, 80, 50, 200);
    }
 
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId().equals(BacklogOrderColumn.COLUMN_ID)) {
+         if (xCol.getId().equals(BacklogOrderColumnUI.COLUMN_ID)) {
             xCol.setSortForward(true);
          }
       }
-      customizeData.getSortingData().setSortingNames(BacklogOrderColumn.COLUMN_ID);
+      customizeData.getSortingData().setSortingNames(BacklogOrderColumnUI.COLUMN_ID);
       return customizeData;
    }
 

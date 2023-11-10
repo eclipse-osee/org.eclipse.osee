@@ -18,15 +18,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.core.column.TaskRelatedArtifactTypeColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsColumnIdColumn implements IAtsXViewerPreComputedColumn {
+public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsCoreCodeXColumn implements IAtsXViewerPreComputedColumn {
 
    public static TaskRelatedArtifactTypeColumnUI instance = new TaskRelatedArtifactTypeColumnUI();
 
@@ -35,7 +35,7 @@ public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsColumnIdColumn im
    }
 
    private TaskRelatedArtifactTypeColumnUI() {
-      super(AtsColumnTokens.TaskToRelatedArtifactTypeColumnToken);
+      super(AtsColumnTokensDefault.TaskToRelatedArtifactTypeColumnToken, AtsApiService.get());
    }
 
    /**
@@ -43,23 +43,23 @@ public class TaskRelatedArtifactTypeColumnUI extends XViewerAtsColumnIdColumn im
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public XViewerAtsColumnIdColumn copy() {
-      XViewerAtsColumnIdColumn newXCol = new TaskRelatedArtifactTypeColumnUI();
+   public XViewerAtsCoreCodeXColumn copy() {
+      TaskRelatedArtifactTypeColumnUI newXCol = new TaskRelatedArtifactTypeColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      return AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.TaskToRelatedArtifactTypeColumnToken,
-         (IAtsWorkItem) obj);
+      return AtsApiService.get().getColumnService().getColumnText(
+         AtsColumnTokensDefault.TaskToRelatedArtifactTypeColumnToken, (IAtsWorkItem) obj);
    }
 
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
       TaskRelatedArtifactTypeColumn column =
          (TaskRelatedArtifactTypeColumn) AtsApiService.get().getColumnService().getColumn(
-            AtsColumnTokens.TaskToRelatedArtifactTypeColumnToken);
+            AtsColumnTokensDefault.TaskToRelatedArtifactTypeColumnToken);
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (Object obj : objects) {
          if (obj instanceof IAtsWorkItem) {

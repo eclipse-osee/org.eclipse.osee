@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -84,8 +83,6 @@ public class WfeWorkPackage extends Composite {
                      PromptChangeUtil.promptChangeAttribute(
                         Collections.singleton((AbstractWorkflowArtifact) teamWf.getStoreObject()),
                         AtsAttributeTypes.WorkPackage, true);
-                  } else {
-                     WorkPackageColumnUI.promptChangeActivityId(teamWf, true);
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

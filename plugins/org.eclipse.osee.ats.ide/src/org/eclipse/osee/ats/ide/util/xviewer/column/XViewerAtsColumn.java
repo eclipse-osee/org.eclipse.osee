@@ -22,16 +22,13 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.util.ColorColumn;
-import org.eclipse.osee.ats.ide.column.CancelledDateColumnUI;
 import org.eclipse.osee.ats.ide.column.CompletedCancelledDateColumnUI;
-import org.eclipse.osee.ats.ide.column.CompletedDateColumnUI;
-import org.eclipse.osee.ats.ide.column.CreatedDateColumnUI;
-import org.eclipse.osee.ats.ide.column.IPersistAltLeftClickProvider;
-import org.eclipse.osee.ats.ide.column.ReleaseDateColumn;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -74,6 +71,9 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
          ((XViewerAtsColumn) toXCol).setInheritParent(inheritParent);
          ((XViewerAtsColumn) toXCol).setHasColorColumn(hasColorColumn, colorColumn);
       }
+      if (fromXCol instanceof IAttributeColumn && toXCol instanceof IAttributeColumn) {
+         ((IAttributeColumn) toXCol).setAttributeType(((IAttributeColumn) this).getAttributeType());
+      }
    }
 
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
@@ -102,28 +102,17 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       return null;
    }
 
-   protected boolean isPersistAltLeftClick() {
-      XViewer xViewer = (XViewer) getXViewer();
-      if (xViewer instanceof IPersistAltLeftClickProvider) {
-         return ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
-      }
-      return false;
-   }
-
    /**
     * Returns the backing data object for operations like sorting
     */
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
       XViewerAtsColumn xViewerAtsColumn;
-      if (xCol.getId().equals(AtsColumnTokens.CreatedDateColumn.getId())) {
-         xViewerAtsColumn = CreatedDateColumnUI.getInstance();
-      } else if (xCol.getId().equals(AtsColumnTokens.ReleaseDateColumn.getId())) {
-         xViewerAtsColumn = ReleaseDateColumn.getInstance();
-      } else if (xCol.getId().equals(AtsColumnTokens.CompletedDateColumn.getId())) {
-         xViewerAtsColumn = CompletedDateColumnUI.getInstance();
-      } else if (xCol.getId().equals(AtsColumnTokens.CancelledDateColumn.getId())) {
-         xViewerAtsColumn = CancelledDateColumnUI.getInstance();
-      } else if (xCol.getId().equals(AtsColumnTokens.CompletedCancelledDateColumn.getId())) {
+      if (xCol instanceof IAttributeColumn) {
+         IAttributeColumn attrCol = (IAttributeColumn) xCol;
+         return AtsApiService.get().getColumnService().getColumnDate(attrCol.getAttributeType(),
+            (IAtsWorkItem) element);
+      }
+      if (xCol.getId().equals(AtsColumnTokensDefault.CompletedCancelledDateColumn.getId())) {
          xViewerAtsColumn = CompletedCancelledDateColumnUI.getInstance();
       } else {
          return null;

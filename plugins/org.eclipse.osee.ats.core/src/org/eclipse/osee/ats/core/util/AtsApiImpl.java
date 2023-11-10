@@ -65,7 +65,7 @@ import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.internal.AtsWorkItemMetricsServiceImpl;
-import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
+import org.eclipse.osee.ats.core.internal.column.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;

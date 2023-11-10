@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumnUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
 
 /**
@@ -122,7 +122,7 @@ public abstract class SkynetXViewerFactory extends XViewerFactory {
       }
       Set<String> attrNames = new HashSet<>();
       // Add Name first
-      columns.add(new ArtifactNameColumn(true));
+      columns.add(new ArtifactNameColumnUI(true));
       attrNames.add("Name");
       // Add attribute types used next
       for (AttributeTypeToken attributeType : attrTypesUsed) {
