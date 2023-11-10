@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 /**
  * @author Donald G. Dunne
  */
-public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
+public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColumnUI {
 
    public static EstimatedReleaseDateColumn instance = new EstimatedReleaseDateColumn();
 
@@ -45,11 +45,11 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
    }
 
    public static Date getDateFromWorkflow(Object object) {
-      return AbstractWorkflowVersionDateColumn.getDateFromWorkflow(AtsAttributeTypes.EstimatedReleaseDate, object);
+      return AbstractWorkflowVersionDateColumnUI.getDateFromWorkflow(AtsAttributeTypes.EstimatedReleaseDate, object);
    }
 
    public static Date getDateFromTargetedVersion(Object object) {
-      return AbstractWorkflowVersionDateColumn.getDateFromTargetedVersion(AtsAttributeTypes.EstimatedReleaseDate,
+      return AbstractWorkflowVersionDateColumnUI.getDateFromTargetedVersion(AtsAttributeTypes.EstimatedReleaseDate,
          object);
    }
 

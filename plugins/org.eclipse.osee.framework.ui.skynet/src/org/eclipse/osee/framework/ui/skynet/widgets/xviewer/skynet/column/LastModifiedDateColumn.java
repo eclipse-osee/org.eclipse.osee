@@ -30,6 +30,15 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 public class LastModifiedDateColumn extends XViewerValueColumn {
 
    public static final String FRAMEWORK_LAST_MOD_DATE = "framework.lastModDate";
+   public static LastModifiedDateColumn instance = new LastModifiedDateColumn();
+
+   public static LastModifiedDateColumn getInstance() {
+      return instance;
+   }
+
+   public LastModifiedDateColumn() {
+      this(false);
+   }
 
    public LastModifiedDateColumn(boolean show) {
       super(FRAMEWORK_LAST_MOD_DATE, "Last Modified Date", 50, XViewerAlign.Left, show, SortDataType.Date, false,

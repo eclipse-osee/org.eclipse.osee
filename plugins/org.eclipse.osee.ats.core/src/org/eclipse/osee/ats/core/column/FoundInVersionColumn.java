@@ -18,19 +18,21 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Jeremy A. Midvidy
  */
-public class FoundInVersionColumn extends AbstractServicesColumn {
+public class FoundInVersionColumn extends AtsCoreCodeColumn {
 
    public FoundInVersionColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.FoundInVersionColumn, atsApi);
    }
 
    @Override

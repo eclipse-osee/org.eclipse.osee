@@ -14,14 +14,15 @@
 package org.eclipse.osee.ats.ide.column;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class CompletedCancelledDateColumnUI extends XViewerAtsColumnIdColumn {
+public class CompletedCancelledDateColumnUI extends XViewerAtsCoreCodeXColumn {
 
    public static CompletedCancelledDateColumnUI instance = new CompletedCancelledDateColumnUI();
 
@@ -30,7 +31,7 @@ public class CompletedCancelledDateColumnUI extends XViewerAtsColumnIdColumn {
    }
 
    public CompletedCancelledDateColumnUI() {
-      super(AtsColumnTokens.CompletedCancelledDateColumn);
+      super(AtsColumnTokensDefault.CompletedCancelledDateColumn, AtsApiService.get());
    }
 
    @Override

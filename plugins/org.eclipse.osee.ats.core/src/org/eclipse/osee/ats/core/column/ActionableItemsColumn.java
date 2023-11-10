@@ -18,7 +18,9 @@ import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 
 /**
@@ -26,10 +28,10 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
  *
  * @author Donald G. Dunne
  */
-public class ActionableItemsColumn extends AbstractServicesColumn {
+public class ActionableItemsColumn extends AtsCoreCodeColumn {
 
    public ActionableItemsColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.ActionableItemsColumn, atsApi);
    }
 
    @Override

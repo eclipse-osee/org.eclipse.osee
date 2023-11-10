@@ -18,17 +18,19 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class PercentCompleteTasksColumn extends AbstractServicesColumn {
+public class PercentCompleteTasksColumn extends AtsCoreCodeColumn {
 
    public PercentCompleteTasksColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.PercentCompleteTasksColumn, atsApi);
    }
 
    @Override

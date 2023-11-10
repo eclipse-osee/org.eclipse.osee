@@ -496,9 +496,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public Collection<IAtsTeamWorkflow> getSiblings(IAtsTeamWorkflow teamWf) {
       List<IAtsTeamWorkflow> siblings = new ArrayList<IAtsTeamWorkflow>();
       IAtsAction action = teamWf.getParentAction();
-      for (IAtsTeamWorkflow child : action.getTeamWorkflows()) {
-         if (!child.equals(teamWf)) {
-            siblings.add(child);
+      if (action != null) {
+         for (IAtsTeamWorkflow child : action.getTeamWorkflows()) {
+            if (!child.equals(teamWf)) {
+               siblings.add(child);
+            }
          }
       }
       return siblings;

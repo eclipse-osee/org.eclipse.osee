@@ -15,14 +15,16 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class IdColumn extends AbstractServicesColumn {
+public class IdColumn extends AtsCoreCodeColumn {
 
    public IdColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.IdColumn, atsApi);
    }
 
    @Override

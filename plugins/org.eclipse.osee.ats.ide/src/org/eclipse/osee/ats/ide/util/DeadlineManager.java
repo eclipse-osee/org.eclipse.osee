@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.util;
 
 import java.util.Date;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.ide.column.DeadlineColumn;
+import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
 import org.eclipse.osee.ats.ide.column.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.ide.column.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -39,7 +39,7 @@ public class DeadlineManager {
 
    public static Date getDeadlineDate(AbstractWorkflowArtifact sma) {
       try {
-         return DeadlineColumn.getDate(sma);
+         return DeadlineColumnUI.getDate(sma);
       } catch (Exception ex) {
          // do nothing
       }

@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -34,24 +33,16 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    private final T defaultValue;
    protected final Set<DisplayHint> displayHints = new HashSet<DisplayHint>();
 
-   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, Set<DisplayHint> displayHints) {
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, DisplayHint... hints) {
       super(id, name, description);
       this.namespace = namespace;
       this.mediaType = mediaType;
       this.taggerType = taggerType;
       this.fileExtension = fileExtension;
       this.defaultValue = defaultValue;
-      this.displayHints.addAll(displayHints);
-   }
-
-   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue) {
-      this(id, namespace, name, mediaType, description, taggerType, fileExtension, defaultValue,
-         Collections.emptySet());
-   }
-
-   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, DisplayHint... displayHints) {
-      this(id, namespace, name, mediaType, description, taggerType, fileExtension, defaultValue,
-         org.eclipse.osee.framework.jdk.core.util.Collections.asHashSet(displayHints));
+      for (DisplayHint hint : hints) {
+         this.displayHints.add(hint);
+      }
    }
 
    public T getBaseAttributeTypeDefaultValue() {
@@ -76,6 +67,7 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
     * @param storedValue is the raw String stored in the database
     * @return the attribute value in its native Java representation
     */
+   @Override
    public abstract T valueFromStorageString(String storedValue);
 
    public String storageStringFromValue(T value) {

@@ -55,7 +55,9 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -245,7 +247,14 @@ public class AtsDbConfigBase {
       ArtifactToken atsConfigArt = atsApi.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
       if (atsConfigArt == null) {
          IAtsChangeSet changes = atsApi.createChangeSet("Create AtsConfig");
-         changes.createArtifact(AtsArtifactToken.AtsTopFolder, AtsArtifactToken.AtsConfig);
+         ArtifactToken configArt = changes.createArtifact(AtsArtifactToken.AtsTopFolder, AtsArtifactToken.AtsConfig);
+         File viewsFile = OseeInf.getResourceAsFile("atsConfig/views.json", AtsDbConfigBase.class);
+         try {
+            String json = Lib.fileToString(viewsFile);
+            changes.addAttribute(configArt, CoreAttributeTypes.GeneralStringData, "views=" + json);
+         } catch (Exception ex) {
+            throw new OseeArgumentException("Can't retrieve views.json file");
+         }
          changes.execute();
       }
       return atsConfigArt;

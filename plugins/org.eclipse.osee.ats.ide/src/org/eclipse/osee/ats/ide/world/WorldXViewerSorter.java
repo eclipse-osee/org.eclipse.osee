@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 
@@ -46,9 +46,9 @@ public class WorldXViewerSorter extends XViewerSorter {
 
          if (sortXCol.equals(AssigneeColumnUI.getInstance())) {
             int compareInt = getComparator().compare(
-               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, m1).replaceFirst(
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn, m1).replaceFirst(
                   "\\(", ""),
-               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, m2).replaceFirst(
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn, m2).replaceFirst(
                   "\\(", ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          }

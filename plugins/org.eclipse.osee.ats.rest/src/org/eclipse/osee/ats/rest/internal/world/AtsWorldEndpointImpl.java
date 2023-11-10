@@ -16,8 +16,11 @@ package org.eclipse.osee.ats.rest.internal.world;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -27,8 +30,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnToken;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.api.column.AtsCoreColumn;
+import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -41,6 +45,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -59,6 +64,15 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    public AtsWorldEndpointImpl(AtsApiServer atsApiServer) {
       this.atsApiServer = atsApiServer;
       this.atsApi = atsApiServer;
+   }
+
+   @Override
+   @GET
+   @Path("column")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<AtsCoreColumn> getColumns() {
+      Collection<AtsCoreColumn> columns = atsApi.getColumnService().getColumns();
+      return columns;
    }
 
    @Override
@@ -119,7 +133,8 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    @GET
    @Path("my/{userArtId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   public String getMyWorldUICustomized(@PathParam("userArtId") ArtifactId userArtId, @PathParam("customizeGuid") String customizeGuid) {
+   public String getMyWorldUICustomized(@PathParam("userArtId") ArtifactId userArtId,
+      @PathParam("customizeGuid") String customizeGuid) {
       ArtifactReadable userArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(userArtId);
       AtsUser userById =
          atsApiServer.getUserService().getUserByUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
@@ -178,7 +193,8 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    @GET
    @Path("coll/{collectorId}/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   public String getCollectionUICustomized(@PathParam("collectorId") ArtifactId collectorId, @PathParam("customizeGuid") String customizeGuid) {
+   public String getCollectionUICustomized(@PathParam("collectorId") ArtifactId collectorId,
+      @PathParam("customizeGuid") String customizeGuid) {
 
       CustomizeData customization = atsApiServer.getStoreService().getCustomizationByGuid(customizeGuid);
 
@@ -195,7 +211,8 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       return table;
    }
 
-   public static String getCustomizedTable(AtsApi atsApi, String title, CustomizeData customization, Collection<IAtsWorkItem> workItems) {
+   public static String getCustomizedTable(AtsApi atsApi, String title, CustomizeData customization,
+      Collection<IAtsWorkItem> workItems) {
       Conditions.checkNotNull(customization, "Customization " + customization + " ");
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(2, title));
@@ -240,17 +257,19 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    }
 
    private void getDefaultUiTable(StringBuilder sb, String tableName, Collection<IAtsWorkItem> workItems) {
-      List<AtsColumnToken> columns = Arrays.asList(AtsColumnTokens.TeamColumn, AtsColumnTokens.StateColumn,
-         AtsColumnTokens.PriorityColumn, AtsColumnTokens.ChangeTypeColumn, AtsColumnTokens.AssigneeColumn,
-         AtsColumnTokens.TitleColumn, AtsColumnTokens.ActionableItemsColumn, AtsColumnTokens.CreatedDateColumn,
-         AtsColumnTokens.TargetedVersionColumn, AtsColumnTokens.NotesColumn, AtsColumnTokens.AtsIdColumn);
+      List<AtsCoreColumnToken> columns = Arrays.asList(AtsColumnTokensDefault.TeamColumn,
+         AtsColumnTokensDefault.StateColumn, AtsColumnTokensDefault.PriorityColumn,
+         AtsColumnTokensDefault.ChangeTypeColumn, AtsColumnTokensDefault.AssigneeColumn,
+         AtsColumnTokensDefault.TitleColumn, AtsColumnTokensDefault.ActionableItemsColumn,
+         AtsColumnTokensDefault.CreatedDateColumn, AtsColumnTokensDefault.TargetedVersionColumn,
+         AtsColumnTokensDefault.NotesColumn, AtsColumnTokensDefault.AtsIdColumn);
       sb.append(AHTML.heading(2, tableName));
       sb.append(AHTML.beginMultiColumnTable(97, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Team", "State", "Priority", "Change Type", "Assignee",
          "Title", "AI", "Created", "Targted Version", "Notes", "ID")));
       for (IAtsWorkItem workItem : workItems) {
          List<String> values = new LinkedList<>();
-         for (AtsColumnToken columnId : columns) {
+         for (AtsCoreColumnToken columnId : columns) {
             values.add(atsApiServer.getColumnService().getColumnText(columnId, workItem));
          }
          sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));
@@ -272,4 +291,34 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       ResultRows rows = op.run();
       return rows;
    }
+
+   @Override
+   @GET
+   @Path("custconv")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData getCustomizationsConv() {
+      XResultData rd = new XResultData();
+      Set<String> colIds = new HashSet<>();
+      for (CustomizeData cust : getCustomizationsGlobal()) {
+         if (cust.getNameSpace().contains("WorldXViewer")) {
+            for (XViewerColumn col : cust.getColumnData().getColumns()) {
+               colIds.add(col.getId());
+            }
+         }
+      }
+      for (CustomizeData cust : getCustomizations()) {
+         if (cust.getNameSpace().contains("WorldXViewer")) {
+            for (XViewerColumn col : cust.getColumnData().getColumns()) {
+               colIds.add(col.getId());
+            }
+         }
+      }
+      List<String> sortIds = new ArrayList<>(colIds);
+      sortIds.sort(Comparator.naturalOrder());
+      for (String colId : sortIds) {
+         rd.logf("%s", colId);
+      }
+      return rd;
+   }
+
 }

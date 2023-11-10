@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.column.DeadlineColumn;
+import org.eclipse.osee.ats.ide.column.DeadlineColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -45,13 +45,13 @@ public class DeadlineColumnTest {
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsApiService.get().createChangeSet(DeadlineColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(),
+         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(DeadlineColumnTest.class.getSimpleName(),
             changes).getStoreObject();
       changes.execute();
 
-      Assert.assertNull(DeadlineColumn.getDate(teamArt));
+      Assert.assertNull(DeadlineColumnUI.getDate(teamArt));
 
       Date creationDate = teamArt.getCreatedDate();
       Calendar calendar = DateUtil.getCalendar(creationDate);
@@ -61,9 +61,9 @@ public class DeadlineColumnTest {
       teamArt.setSoleAttributeValue(AtsAttributeTypes.NeedBy, overdueDate);
       teamArt.persist(getClass().getSimpleName());
 
-      Assert.assertEquals(overdueDate, DeadlineColumn.getDate(teamArt));
-      Assert.assertTrue(DeadlineColumn.isDeadlineAlerting(teamArt).isTrue());
-      Assert.assertNotNull(DeadlineColumn.getInstance().getColumnImage(teamArt, DeadlineColumn.getInstance(), 0));
+      Assert.assertEquals(overdueDate, DeadlineColumnUI.getDate(teamArt));
+      Assert.assertTrue(DeadlineColumnUI.isDeadlineAlerting(teamArt).isTrue());
+      Assert.assertNotNull(DeadlineColumnUI.getInstance().getColumnImage(teamArt, DeadlineColumnUI.getInstance(), 0));
 
       calendar = DateUtil.getCalendar(creationDate);
       calendar.add(Calendar.DAY_OF_MONTH, +5);
@@ -72,9 +72,9 @@ public class DeadlineColumnTest {
       teamArt.setSoleAttributeValue(AtsAttributeTypes.NeedBy, futureDate);
       teamArt.persist(getClass().getSimpleName());
 
-      Assert.assertEquals(futureDate, DeadlineColumn.getDate(teamArt));
-      Assert.assertTrue(DeadlineColumn.isDeadlineAlerting(teamArt).isFalse());
-      Assert.assertNull(DeadlineColumn.getInstance().getColumnImage(teamArt, DeadlineColumn.getInstance(), 0));
+      Assert.assertEquals(futureDate, DeadlineColumnUI.getDate(teamArt));
+      Assert.assertTrue(DeadlineColumnUI.isDeadlineAlerting(teamArt).isFalse());
+      Assert.assertNull(DeadlineColumnUI.getInstance().getColumnImage(teamArt, DeadlineColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

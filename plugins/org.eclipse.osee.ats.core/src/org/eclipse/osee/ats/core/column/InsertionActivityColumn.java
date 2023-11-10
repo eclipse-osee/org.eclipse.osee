@@ -17,8 +17,10 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -27,12 +29,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class InsertionActivityColumn extends AbstractServicesColumn {
+public class InsertionActivityColumn extends AtsCoreCodeColumn {
 
    private Map<Object, ArtifactToken> idToInsertionActivity;
 
    public InsertionActivityColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.InsertionActivityColumn, atsApi);
    }
 
    /**
@@ -61,7 +63,8 @@ public class InsertionActivityColumn extends AbstractServicesColumn {
       return getInsertionActivityStr(atsObject, atsApi, util, null);
    }
 
-   public static String getInsertionActivityStr(IAtsObject atsObject, AtsApi atsApi, WorkPackageUtility utilMap, Map<Object, ArtifactToken> idToInsertionActivity) {
+   public static String getInsertionActivityStr(IAtsObject atsObject, AtsApi atsApi, WorkPackageUtility utilMap,
+      Map<Object, ArtifactToken> idToInsertionActivity) {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
          if (idToInsertionActivity != null) {

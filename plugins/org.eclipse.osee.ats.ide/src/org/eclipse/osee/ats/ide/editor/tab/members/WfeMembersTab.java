@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.actions.SprintReportAction;
+import org.eclipse.osee.ats.ide.actions.WorldViewColumnReport;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
@@ -66,6 +67,7 @@ import org.eclipse.osee.ats.ide.world.WorkflowMetricsUI;
 import org.eclipse.osee.ats.ide.world.WorldComposite;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.ats.ide.world.WorldXViewerEventManager;
+import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -227,8 +229,8 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
     */
    private boolean createMembersBody() {
       if (!Widgets.isAccessible(worldComposite)) {
-         worldComposite =
-            new WorldComposite(this, provider.getXViewerFactory(provider.getArtifact()), bodyComp, SWT.BORDER, false);
+         WorldXViewerFactory factory = (WorldXViewerFactory) provider.getXViewerFactory(provider.getArtifact());
+         worldComposite = new WorldComposite(this, factory, bodyComp, SWT.BORDER, false);
          worldComposite.getWorldXViewer().setContentProvider(
             new BacklogContentProvider(worldComposite.getWorldXViewer()));
 
@@ -393,6 +395,8 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
          IAgileSprint sprint = AtsApiService.get().getAgileService().getAgileSprint(workItem.getStoreObject());
          toolBarMgr.add(new SprintReportAction(sprint));
       }
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new WorldViewColumnReport(worldComposite));
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
       if (getWorldXViewer() != null) {

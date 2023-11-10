@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class TargetedVersionColumnUI extends AbstractVersionSelector implements BackgroundLoadingValueProvider, IXViewerPreComputedColumn {
+public class TargetedVersionColumnUI extends AbstractVersionSelectorUI implements BackgroundLoadingValueProviderUI, IXViewerPreComputedColumn {
 
    public static TargetedVersionColumnUI instance = new TargetedVersionColumnUI();
    public AtomicBoolean loading = new AtomicBoolean(false);
@@ -39,7 +39,7 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector implements 
    protected Map<Long, String> idToValueMap = new HashMap<>();
 
    public TargetedVersionColumnUI() {
-      super(AtsColumnTokens.TargetedVersionColumn);
+      super(AtsColumnTokensDefault.TargetedVersionColumn);
    }
 
    public static TargetedVersionColumnUI getInstance() {
@@ -89,19 +89,19 @@ public class TargetedVersionColumnUI extends AbstractVersionSelector implements 
       for (Object obj : objects) {
          this.preComputedValueMap.put(getKey(obj), "loading...");
       }
-      BackgroundLoadingPreComputedColumn.startLoadingThread(getName(), objects, loading, loaded,
+      BackgroundLoadingPreComputedColumnUI.startLoadingThread(getName(), objects, loading, loaded,
          (WorldXViewer) getXViewer(), preComputedValueMap, this);
    }
 
    @Override
    public String getColumnText(Object obj, XViewerColumn column, int columnIndex) {
-      String value = BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap, this);
+      String value = BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
       return value;
    }
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      String value = BackgroundLoadingPreComputedColumn.getColumnText(obj, loading, loaded, preComputedValueMap, this);
+      String value = BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
       return value;
    }
 

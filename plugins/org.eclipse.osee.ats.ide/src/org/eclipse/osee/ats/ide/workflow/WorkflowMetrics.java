@@ -24,8 +24,9 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.ide.column.RemainingHoursColumn;
-import org.eclipse.osee.ats.ide.column.WorkDaysNeededColumn;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.ide.column.RemainingHoursColumnUI;
+import org.eclipse.osee.ats.ide.column.WorkDaysNeededColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
@@ -115,10 +117,10 @@ public class WorkflowMetrics {
       points = 0;
       pointsNumeric = 0;
       for (AbstractWorkflowArtifact team : awas) {
-         hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
-         estHours += EstimatedHoursUtil.getEstimatedHours(team);
+         hrsRemainFromEstimates += RemainingHoursColumnUI.getRemainingHours(team);
+         estHours += getEstimatedHours(team);
          hrsSpent += AtsApiService.get().getWorkItemMetricsService().getHoursSpentTotal(team);
-         manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
+         manDaysNeeded += WorkDaysNeededColumnUI.getWorldViewManDaysNeeded(team);
          cummulativeWorkflowPercentComplete +=
             AtsApiService.get().getWorkItemMetricsService().getPercentCompleteTotal(team);
          String ptsStr = team.getSoleAttributeValue(AtsAttributeTypes.Points, null);
@@ -280,7 +282,7 @@ public class WorkflowMetrics {
    public int getNumNotEstimated() {
       int count = 0;
       for (AbstractWorkflowArtifact awa : awas) {
-         if (EstimatedHoursUtil.getEstimatedHours(awa) == 0) {
+         if (getEstimatedHours(awa) == 0) {
             count++;
          }
       }
@@ -341,6 +343,19 @@ public class WorkflowMetrics {
 
    public <A extends AbstractWorkflowArtifact> Collection<A> getUserToAssignedSmas(AtsUser user) {
       return getUserToAssignedSmas(user, null);
+   }
+
+   public static double getEstimatedHours(Object object) {
+      if (object instanceof AbstractWorkflowArtifact) {
+         return AtsApiService.get().getEarnedValueService().getEstimatedHoursTotal((AbstractWorkflowArtifact) object);
+      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
+         double total = 0;
+         for (IAtsTeamWorkflow team : AtsApiService.get().getWorkItemService().getTeams(object)) {
+            total += getEstimatedHours(team);
+         }
+         return total;
+      }
+      return 0.0;
    }
 
 }

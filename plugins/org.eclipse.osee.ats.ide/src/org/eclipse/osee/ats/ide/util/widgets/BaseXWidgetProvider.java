@@ -45,7 +45,7 @@ public class BaseXWidgetProvider implements IXWidgetProvider {
             widget.setRequiredEntry(rItem.isRequired());
             return widget;
          } catch (Exception ex) {
-            OseeLog.log(AtsWidgetProvider.class, Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(AtsXWidgetProvider.class, Level.SEVERE, ex.toString(), ex);
          }
       }
       return null;

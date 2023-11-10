@@ -21,11 +21,11 @@ import org.eclipse.osee.ats.api.agile.AgileSprintData;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
-import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -53,7 +53,8 @@ public class SprintUtil {
       // utility class
    }
 
-   public static AgileSprintData updateAgileSprintData(AtsApi atsApi, long teamId, long sprintId, AgileSprintData sprintData, XResultData results) {
+   public static AgileSprintData updateAgileSprintData(AtsApi atsApi, long teamId, long sprintId,
+      AgileSprintData sprintData, XResultData results) {
       IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintId);
       if (sprint == null) {
          sprintData.getResults().errorf("Sprint can not be found with id %s", sprintId);
@@ -142,7 +143,7 @@ public class SprintUtil {
          atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.UnplannedWork, false);
       item.setUnPlannedWork(unplanned ? "U" : "");
       item.setNotes(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.WorkflowNotes, ""));
-      item.setCreateDate(CreatedDateColumn.getDateStr(workItem));
+      item.setCreateDate(atsApi.getColumnService().getColumnText(AtsColumnTokensDefault.CreatedDateColumn, workItem));
       item.setCompCancelDate(CompletedCancelledDateColumn.getCompletedCancelledDateStr(workItem));
       item.setLink("/ats/ui/action/" + item.getAtsId());
       return item;

@@ -23,7 +23,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -99,12 +99,12 @@ public class OpenOrphanedTasks extends Action {
                      data.setName("Orphaned Task View");
                      data.setPersonal(true);
                      data.setNameSpace(WorldXViewerFactory.NAMESPACE);
-                     List<String> visibleColIds = Arrays.asList(AtsColumnTokens.TypeColumn.getId(),
-                        AtsColumnTokens.TitleColumn.getId(), AtsColumnTokens.CreatedDateColumn.getId(),
+                     List<String> visibleColIds = Arrays.asList(AtsColumnTokensDefault.TypeColumn.getId(),
+                        AtsColumnTokensDefault.TitleColumn.getId(), AtsColumnTokensDefault.CreatedDateColumn.getId(),
                         LastModifiedByColumn.FRAMEWORK_LAST_MOD_BY, LastModifiedDateColumn.FRAMEWORK_LAST_MOD_DATE);
                      for (String visibleId : visibleColIds) {
                         XViewerColumn visCol = null;
-                        for (XViewerColumn col : WorldXViewerFactory.getWorldViewColumns()) {
+                        for (XViewerColumn col : WorldXViewerFactory.getWorldViewIdeXColumns()) {
                            if (col.getId().equals(visibleId)) {
                               visCol = col.copy();
                               visCol.setShow(true);
@@ -115,7 +115,7 @@ public class OpenOrphanedTasks extends Action {
                            data.getColumnData().getColumns().add(visCol);
                         }
                      }
-                     for (XViewerColumn col : WorldXViewerFactory.getWorldViewColumns()) {
+                     for (XViewerColumn col : WorldXViewerFactory.getWorldViewIdeXColumns()) {
                         if (!visibleColIds.contains(col.getId())) {
                            XViewerColumn cCol = col.copy();
                            cCol.setShow(false);

@@ -340,6 +340,8 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
          items.add(new XNavigateUrlItem("Disciplined Engineering and OSEE",
             "https://git.eclipse.org/c/gerrit/osee/org.eclipse.osee.git/plain/plugins/org.eclipse.osee.support.admin/presentations_publications/Disciplined_Engineering_with_OSEE.pptx",
             true, FrameworkImage.PPTX, UTILITY));
+         items.add(new XNavigateUrlItem("Show Workflow Column Tokens",
+            System.getProperty("osee.application.server") + "/ats/world/column", true, UTILITY));
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

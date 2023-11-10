@@ -15,14 +15,16 @@ package org.eclipse.osee.ats.api.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsViews {
-   private final List<AtsAttrValCol> attrColumns = new ArrayList<>();
 
-   public List<AtsAttrValCol> getAttrColumns() {
+   private final List<AtsCoreAttrTokColumnToken> attrColumns = new ArrayList<>();
+
+   public List<AtsCoreAttrTokColumnToken> getAttrColumns() {
       return attrColumns;
    }
 

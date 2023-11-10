@@ -82,7 +82,6 @@ public class ValidationReportOperation extends AbstractOperation {
             String lastTitle = "";
             int ruleIndex = 1;
             for (AbstractValidationRule rule : rulesSorted) {
-               System.err.println(rule.getClass().getSimpleName());
                checkForCancelledStatus(monitor);
 
                //check to see if we should print a header for sorted (and grouped) rule types

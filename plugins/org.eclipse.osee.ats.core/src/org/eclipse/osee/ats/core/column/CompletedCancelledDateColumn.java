@@ -17,15 +17,17 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class CompletedCancelledDateColumn extends AbstractServicesColumn {
+public class CompletedCancelledDateColumn extends AtsCoreCodeColumn {
 
    public CompletedCancelledDateColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.CompletedCancelledDateColumn, atsApi);
    }
 
    @Override

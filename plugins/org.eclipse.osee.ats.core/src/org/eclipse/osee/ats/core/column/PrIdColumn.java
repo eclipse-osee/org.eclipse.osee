@@ -16,15 +16,17 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class PrIdColumn extends AbstractServicesColumn {
+public class PrIdColumn extends AtsCoreCodeColumn {
 
    public PrIdColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.PrIdColumn, atsApi);
    }
 
    @Override

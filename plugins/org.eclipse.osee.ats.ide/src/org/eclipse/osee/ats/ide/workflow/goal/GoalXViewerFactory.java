@@ -15,97 +15,61 @@ package org.eclipse.osee.ats.ide.workflow.goal;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
-import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
-import org.eclipse.osee.ats.ide.column.CreatedDateColumnUI;
-import org.eclipse.osee.ats.ide.column.GoalOrderColumn;
-import org.eclipse.osee.ats.ide.column.GoalOrderVoteColumn;
-import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
+import org.eclipse.osee.ats.ide.column.AbstractMembersOrderColumnUI;
+import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
+import org.eclipse.osee.ats.ide.column.GoalOrderVoteColumnUI;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
-import org.eclipse.osee.ats.ide.world.WorldXViewerSorter;
-import org.eclipse.osee.ats.ide.world.WorldXViewerUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public class GoalXViewerFactory extends SkynetXViewerFactory {
+public class GoalXViewerFactory extends WorldXViewerFactory {
 
    private final GoalArtifact soleGoalArtifact;
    private final static String NAMESPACE = "GoalXViewer";
 
-   private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
-      List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
-         new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.TypeColumn),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), PriorityColumnUI.getInstance(),
-         ChangeTypeColumnUI.getInstance(), AssigneeColumnUI.getInstance(),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow), new CreatedDateColumnUI(),
-         TargetedVersionColumnUI.getInstance(),
-         WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn));
-      return columns;
-   }
-   private final Integer[] widths = new Integer[] {
-      GoalOrderColumn.DEFAULT_WIDTH,
-      GoalOrderVoteColumn.DEFAULT_WIDTH,
-      250,
-      60,
-      60,
-      20,
-      20,
-      100,
-      50,
-      50,
-      50,
-      80};
-
    public GoalXViewerFactory(GoalArtifact soleGoalArtifact, IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       this.soleGoalArtifact = soleGoalArtifact;
-      int widthIndex = 0;
-      // Create new column from world columns but set show and width for task
-      List<? extends XViewerColumn> goalViewerVisibleColumns = getGoalViewerVisibleColumns();
-      for (XViewerColumn taskCol : goalViewerVisibleColumns) {
-         XViewerColumn newCol = taskCol.copy();
-         newCol.setShow(true);
-         newCol.setWidth(widths[widthIndex++]);
-         registerColumns(newCol);
-      }
-      // Add remaining columns from world columns
-      for (XViewerColumn worldCol : WorldXViewerFactory.getWorldViewColumns()) {
-         if (!goalViewerVisibleColumns.contains(worldCol)) {
-            XViewerColumn newCol = worldCol.copy();
-            newCol.setShow(false);
-            registerColumns(newCol);
-         }
-      }
-      WorldXViewerUtil.registerAtsAttributeColumns(this);
-      WorldXViewerUtil.registerPluginColumns(this);
-      WorldXViewerUtil.registerConfigurationsColumns(this);
    }
 
    @Override
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new WorldXViewerSorter(xViewer);
+   public List<AtsCoreColumnToken> getDefaultVisibleColumns() {
+      return Arrays.asList( //
+         AtsColumnTokensDefault.GoalOrderColumn, //
+         AtsColumnTokensDefault.TitleColumn, //
+         AtsColumnTokensDefault.TypeColumn, //
+         AtsColumnTokensDefault.StateColumn, //
+         AtsColumnTokensDefault.PriorityColumn, //
+         AtsColumnTokensDefault.ChangeTypeColumn, //
+         AtsColumnTokensDefault.AssigneeColumn, //
+         AtsColumnTokensDefault.AtsIdColumn, //
+         AtsColumnTokensDefault.CreatedDateColumn, //
+         AtsColumnTokensDefault.TargetedVersionColumn, //
+         AtsColumnTokensDefault.NotesColumn //
+      );
+   }
+
+   @Override
+   public List<Integer> getDefaultColumnWidths() {
+      return Arrays.asList(AbstractMembersOrderColumnUI.DEFAULT_WIDTH, GoalOrderVoteColumnUI.DEFAULT_WIDTH, 250, 60, 60, 20,
+         20, 100, 50, 50, 50, 80);
    }
 
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId().equals(GoalOrderColumn.COLUMN_ID)) {
+         if (xCol.getId().equals(GoalOrderColumnUI.COLUMN_ID)) {
             xCol.setSortForward(true);
          }
       }
-      customizeData.getSortingData().setSortingNames(GoalOrderColumn.COLUMN_ID);
+      customizeData.getSortingData().setSortingNames(GoalOrderColumnUI.COLUMN_ID);
       return customizeData;
    }
 

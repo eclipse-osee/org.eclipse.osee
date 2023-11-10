@@ -18,6 +18,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsCoreCodeColumnToken;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -25,12 +27,12 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 /**
  * @author Donald G. Dunne
  */
-public class RelationColumn extends AbstractServicesColumn {
+public class RelationColumn extends AtsCoreCodeColumn {
 
    private final RelationTypeSide relationTypeSide;
 
-   public RelationColumn(RelationTypeSide relationTypeSide, AtsApi atsApi) {
-      super(atsApi);
+   public RelationColumn(AtsCoreCodeColumnToken atsValCol, RelationTypeSide relationTypeSide, AtsApi atsApi) {
+      super(atsValCol, atsApi);
       this.relationTypeSide = relationTypeSide;
    }
 

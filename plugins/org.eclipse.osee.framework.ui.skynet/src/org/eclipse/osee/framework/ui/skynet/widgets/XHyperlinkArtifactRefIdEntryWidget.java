@@ -68,8 +68,8 @@ public class XHyperlinkArtifactRefIdEntryWidget extends XHyperlinkLabelCmdValueS
             selected = art;
             return true;
          } else {
-            AWorkbench.popup(String.format("Invalid Artifact Id [%s]\nfor\nBranch [%s]", art.toStringWithId(),
-               branch.toStringWithId()));
+            AWorkbench.popup(
+               String.format("Invalid Artifact Id [%s]\nfor\nBranch [%s]", artIdStr, branch.toStringWithId()));
          }
       }
       return false;

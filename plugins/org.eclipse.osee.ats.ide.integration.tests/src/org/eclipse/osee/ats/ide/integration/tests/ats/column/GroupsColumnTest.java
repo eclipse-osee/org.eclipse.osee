@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
-import org.eclipse.osee.ats.ide.column.GroupsColumn;
+import org.eclipse.osee.ats.ide.column.GroupsColumnUI;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -35,11 +35,11 @@ public class GroupsColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals("Demo Group",
-         GroupsColumn.getInstance().getColumnText(reqArt, GroupsColumn.getInstance(), 0));
+         GroupsColumnUI.getInstance().getColumnText(reqArt, GroupsColumnUI.getInstance(), 0));
 
       Artifact actionArt = (Artifact) reqArt.getParentAction().getStoreObject();
       Assert.assertEquals("Demo Group",
-         GroupsColumn.getInstance().getColumnText(actionArt, GroupsColumn.getInstance(), 0));
+         GroupsColumnUI.getInstance().getColumnText(actionArt, GroupsColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

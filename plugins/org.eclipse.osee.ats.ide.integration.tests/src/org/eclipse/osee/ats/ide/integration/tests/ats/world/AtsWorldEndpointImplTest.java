@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumnUI;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -143,7 +143,7 @@ public class AtsWorldEndpointImplTest {
       CustomizeData cd = new CustomizeData();
       cd.setName(name);
       cd.setNameSpace(namespace);
-      cd.getColumnData().getColumns().add(new ArtifactNameColumn(true));
+      cd.getColumnData().getColumns().add(new ArtifactNameColumnUI(true));
       cd.getColumnData().getColumns().add(ChangeTypeColumnUI.instance);
       PriorityColumnUI priCol = PriorityColumnUI.instance.copy();
       priCol.setShow(false);

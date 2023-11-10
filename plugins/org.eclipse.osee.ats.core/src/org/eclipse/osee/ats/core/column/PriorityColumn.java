@@ -16,19 +16,21 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 
 /**
  * @author Donald G. Dunne
  */
-public class PriorityColumn extends AbstractServicesColumn {
+public class PriorityColumn extends AtsCoreCodeColumn {
 
    public PriorityColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.PriorityColumn, atsApi);
    }
 
    @Override

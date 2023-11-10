@@ -31,12 +31,14 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface IAtsWorldEditorItem {
 
+   /**
+    * Provides code based columns that compute their own value and may add their own editing capabilities. Columns
+    * should NOT be created for simple attribute types, these are handled automatically in AtsAttributeTypes using
+    * AtsDisplayHints. Any code based columns also have to provide their own columns in AtsCoreService so the simple
+    * value can be retrieved by client or server.
+    */
    default public List<XViewerColumn> getXViewerColumns() {
       return Collections.emptyList();
-   }
-
-   default public boolean isXColumnProvider(XViewerColumn xCol) {
-      return getXViewerColumns().contains(xCol);
    }
 
    default public String getColumnText(Object element, XViewerColumn col, int columnIndex) {
@@ -79,4 +81,5 @@ public interface IAtsWorldEditorItem {
    default public Collection<IUserGroupArtifactToken> getUserGroups() {
       return Collections.singleton(CoreUserGroups.Everyone);
    }
+
 }

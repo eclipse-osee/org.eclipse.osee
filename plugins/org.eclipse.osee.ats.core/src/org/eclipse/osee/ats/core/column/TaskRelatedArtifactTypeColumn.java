@@ -25,21 +25,23 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
-public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
+public class TaskRelatedArtifactTypeColumn extends AtsCoreCodeColumn {
 
    public TaskRelatedArtifactTypeColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.TaskToRelatedArtifactTypeColumnToken, atsApi);
    }
 
    @Override
-   String getText(IAtsObject atsObject) throws Exception {
+   protected String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
          ArtifactTypeToken artifactType = artIdToRelatedArtTypeCache.get((IAtsWorkItem) atsObject);
          if (artifactType.isValid()) {

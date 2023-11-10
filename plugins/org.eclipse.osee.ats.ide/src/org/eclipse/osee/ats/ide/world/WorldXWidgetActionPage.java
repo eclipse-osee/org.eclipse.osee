@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
+import org.eclipse.osee.ats.ide.actions.WorldViewColumnReport;
 import org.eclipse.osee.ats.ide.column.ToggleXViewerColumnLoadingDebug;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -541,6 +542,8 @@ public class WorldXWidgetActionPage extends FormPage {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
+      toolBarManager.add(new Separator());
+      toolBarManager.add(new WorldViewColumnReport(worldComposite));
       toolBarManager.add(new Separator());
 
       toolBarManager.add(worldComposite.getXViewer().getCustomizeAction());

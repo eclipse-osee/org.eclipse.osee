@@ -16,16 +16,18 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateColumn extends AbstractServicesColumn {
+public class StateColumn extends AtsCoreCodeColumn {
 
    public StateColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.StateColumn, atsApi);
    }
 
    @Override

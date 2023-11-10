@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.ide.workflow.cr.sibling.taskest;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -38,28 +38,11 @@ public class XTaskEstSiblingLabelProvider extends WorldLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, int columnIndex) {
-      XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
-      if (element instanceof IAtsTeamWorkflow) {
-         IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) element;
-         if (xViewerColumn.getName().equals(XTaskEstSiblingXViewerFactory.Related_Task_Col.getName())) {
-            IAtsTask relatedTask = TaskEstUtil.getTask(teamWf, atsApi);
-            if (relatedTask != null) {
-               return relatedTask.toStringWithId();
-            } else {
-               return "";
-            }
-         }
-      }
-      return super.getColumnText(element, columnIndex);
-   }
-
-   @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
       if (element instanceof IAtsTeamWorkflow) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) element;
-         if (xViewerColumn.getName().equals(XTaskEstSiblingXViewerFactory.Related_Task_Col.getName())) {
+         if (xViewerColumn.getName().equals(AtsColumnTokensDefault.DerivedFromTaskColumn.getId())) {
             IAtsTask relatedTask = TaskEstUtil.getTask(teamWf, atsApi);
             if (relatedTask != null) {
                return ImageManager.getImage(AtsImage.TASK);
@@ -67,7 +50,7 @@ public class XTaskEstSiblingLabelProvider extends WorldLabelProvider {
                return null;
             }
          }
-         if (xViewerColumn.getName().equals(AtsColumnTokens.TypeColumn.getId())) {
+         if (xViewerColumn.getName().equals(AtsColumnTokensDefault.TypeColumn.getId())) {
             return ImageManager.getImage(AtsImage.WORKFLOW);
          }
       }

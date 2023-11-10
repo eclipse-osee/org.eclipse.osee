@@ -16,17 +16,19 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 
 /**
  * Return current list of assignees sorted if in Working state or string of implementors surrounded by ()
  *
  * @author Donald G. Dunne
  */
-public class AtsIdColumn extends AbstractServicesColumn {
+public class AtsIdColumn extends AtsCoreCodeColumn {
 
    public AtsIdColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.AtsIdColumn, atsApi);
    }
 
    @Override

@@ -15,17 +15,19 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault.CoreCodeColumnTokenDefault;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractDerivedFromColumn extends AbstractServicesColumn {
+public abstract class AbstractDerivedFromColumn extends AtsCoreCodeColumn {
 
-   public AbstractDerivedFromColumn(AtsApi atsApi) {
-      super(atsApi);
+   public AbstractDerivedFromColumn(CoreCodeColumnTokenDefault atsValCol, AtsApi atsApi) {
+      super(atsValCol, atsApi);
    }
 
    public ArtifactToken getDerivedFrom(Object obj) {

@@ -219,7 +219,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    private void createMembersTab() throws PartInitException {
       if (workItem instanceof GoalArtifact) {
-         membersTab = new WfeMembersTab(this, new GoalMemberProvider((GoalArtifact) workItem));
+         GoalMemberProvider provider = new GoalMemberProvider((GoalArtifact) workItem);
+         membersTab = new WfeMembersTab(this, provider);
          addPage(membersTab);
       } else if (workItem instanceof SprintArtifact) {
          membersTab = new WfeMembersTab(this, new SprintMemberProvider((SprintArtifact) workItem));

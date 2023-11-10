@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric<T> {
    private final List<T> enumTokens;
 
-   public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, int enumCount) {
-      super(id, namespace, name, mediaType, description, taggerType, "", null);
+   public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, int enumCount, DisplayHint... hints) {
+      super(id, namespace, name, mediaType, description, taggerType, "", null, hints);
       this.enumTokens = new ArrayList<T>(enumCount);
    }
 

@@ -17,18 +17,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumnIdColumn;
+import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -40,7 +38,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AgileTeamPointsColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AgileTeamPointsColumnUI extends XViewerAtsCoreCodeXColumn {
 
    public static AgileTeamPointsColumnUI instance = new AgileTeamPointsColumnUI();
 
@@ -49,7 +47,7 @@ public class AgileTeamPointsColumnUI extends XViewerAtsColumnIdColumn implements
    }
 
    private AgileTeamPointsColumnUI() {
-      super(AtsColumnTokens.AgileTeamPointsColumn);
+      super(AtsColumnTokensDefault.AgileTeamPointsColumn, AtsApiService.get());
    }
 
    /**
@@ -57,8 +55,8 @@ public class AgileTeamPointsColumnUI extends XViewerAtsColumnIdColumn implements
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public XViewerAtsColumnIdColumn copy() {
-      XViewerAtsColumnIdColumn newXCol = new AgileTeamPointsColumnUI();
+   public XViewerAtsCoreCodeXColumn copy() {
+      AgileTeamPointsColumnUI newXCol = new AgileTeamPointsColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }

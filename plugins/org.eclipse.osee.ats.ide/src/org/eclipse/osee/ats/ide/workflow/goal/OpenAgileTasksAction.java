@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.Activator;
@@ -96,17 +96,17 @@ public class OpenAgileTasksAction extends Action {
          card =
             card.replaceFirst("PUT_CHANGE_TYPE_HERE", ChangeTypeColumn.getChangeTypeStr(workItem, AtsApiService.get()));
          card = card.replaceFirst("PUT_PRIORITY_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.PriorityColumn, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.PriorityColumn, workItem));
 
          card = card.replaceFirst("PUT_ASSIGNEES_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AssigneeColumn, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn, workItem));
 
          card = card.replaceFirst("PUT_ATSID_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.AtsIdColumn, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AtsIdColumn, workItem));
          card = card.replaceFirst("PUT_AI_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.ActionableItemsColumn, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.ActionableItemsColumn, workItem));
          card = card.replaceFirst("PUT_VERSION_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokens.TargetedVersionColumn, workItem));
+            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.TargetedVersionColumn, workItem));
       }
       return card;
    }

@@ -231,7 +231,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ApplicableToProgram, ApplicableToProgram.No)
       .zeroOrOne(ApproveRequestedHoursBy)
       .zeroOrOne(ApproveRequestedHoursDate)
-      .zeroOrOne(BaselineBranchId)
       .zeroOrOne(BranchMetrics)
       .zeroOrOne(ChangeType)
       .any(CommitOverride)

@@ -18,10 +18,12 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -29,10 +31,10 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 /**
  * @author Vaibhav Y Patel
  */
-public class FeatureImpactReferenceColumn extends AbstractServicesColumn {
+public class FeatureImpactReferenceColumn extends AtsCoreCodeColumn {
 
    public FeatureImpactReferenceColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.FeatureImpactReferenceColumn, atsApi);
    }
 
    @Override

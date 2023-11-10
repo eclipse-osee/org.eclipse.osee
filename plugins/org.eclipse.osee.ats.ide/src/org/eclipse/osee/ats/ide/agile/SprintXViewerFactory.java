@@ -13,96 +13,48 @@
 
 package org.eclipse.osee.ats.ide.agile;
 
-import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnTokens;
-import org.eclipse.osee.ats.ide.column.AgileTeamPointsColumnUI;
-import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.ide.column.ChangeTypeColumnUI;
-import org.eclipse.osee.ats.ide.column.CreatedDateColumnUI;
-import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
-import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
+import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
 import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
-import org.eclipse.osee.ats.ide.world.WorldXViewerSorter;
-import org.eclipse.osee.ats.ide.world.WorldXViewerUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public class SprintXViewerFactory extends SkynetXViewerFactory {
+public class SprintXViewerFactory extends WorldXViewerFactory {
 
    private final SprintArtifact soleSprintArtifact;
+   private final BacklogXViewerFactory backlogFactory;
    private static String NAMESPACE = "SprintXViewer";
 
    public SprintXViewerFactory(SprintArtifact soleSprintArtifact, IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       this.soleSprintArtifact = soleSprintArtifact;
-
-      List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();
-      List<XViewerColumn> sprintCols = new LinkedList<>();
-
-      // Add default Sprint columns
-      WorldXViewerUtil.addColumn(this, SprintOrderColumn.getInstance(), 45, sprintCols);
-      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.TitleColumn), 339,
-         sprintCols);
-      WorldXViewerUtil.addColumn(this, AgileTeamPointsColumnUI.getInstance(),
-         AtsColumnTokens.AgileTeamPointsColumn.getWidth(), sprintCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.StateColumn), 74,
-         sprintCols);
-      WorldXViewerUtil.addColumn(this, PriorityColumnUI.getInstance(), 20, sprintCols);
-      WorldXViewerUtil.addColumn(this, ChangeTypeColumnUI.getInstance(), 20, sprintCols);
-      WorldXViewerUtil.addColumn(this, AssigneeColumnUI.getInstance(), 113, sprintCols);
-      XViewerColumn unPlannedWorkColumn = WorldXViewerUtil.getConfigColumn("ats.Unplanned Work", configCols);
-      if (unPlannedWorkColumn != null) {
-         WorldXViewerUtil.addColumn(this, unPlannedWorkColumn, 40, sprintCols);
-      } else {
-         WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnTokens.UnPlannedWorkColumn), 40,
-            sprintCols);
-      }
-      WorldXViewerUtil.addColumn(this, TargetedVersionColumnUI.getInstance(), 50, sprintCols);
-      WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, sprintCols);
-      WorldXViewerUtil.addColumn(this, CreatedDateColumnUI.getInstance(), 82, sprintCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnTokens.AtsIdColumnShow), 50,
-         sprintCols);
-
-      // Add remaining columns from world columns
-      for (XViewerColumn worldCol : WorldXViewerFactory.getWorldViewColumns()) {
-         if (!sprintCols.contains(worldCol)) {
-            XViewerColumn newCol = worldCol.copy();
-            newCol.setShow(false);
-            registerColumns(newCol);
-         }
-      }
-      WorldXViewerUtil.registerAtsAttributeColumns(this);
-      WorldXViewerUtil.registerPluginColumns(this);
-      // Add remaining Configuration Columns
-      for (XViewerAtsAttributeValueColumn col : configCols) {
-         registerColumns(col);
-      }
+      this.backlogFactory = new BacklogXViewerFactory(null, reportProvider);
    }
 
    @Override
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new WorldXViewerSorter(xViewer);
+   public List<AtsCoreColumnToken> getDefaultVisibleColumns() {
+      return backlogFactory.getDefaultVisibleColumns();
+   }
+
+   @Override
+   public List<Integer> getDefaultColumnWidths() {
+      return backlogFactory.getDefaultColumnWidths();
    }
 
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId().equals(SprintOrderColumn.getInstance().getId())) {
+         if (xCol.getId().equals(SprintOrderColumnUI.getInstance().getId())) {
             xCol.setSortForward(true);
          }
       }
-      customizeData.getSortingData().setSortingNames(SprintOrderColumn.getInstance().getId());
+      customizeData.getSortingData().setSortingNames(SprintOrderColumnUI.getInstance().getId());
       return customizeData;
    }
 

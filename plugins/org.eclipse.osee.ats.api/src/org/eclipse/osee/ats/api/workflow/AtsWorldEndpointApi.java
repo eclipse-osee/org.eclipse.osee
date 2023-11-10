@@ -23,10 +23,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsCoreColumn;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -44,6 +46,11 @@ public interface AtsWorldEndpointApi {
    @Path("cust")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<CustomizeData> getCustomizations();
+
+   @GET
+   @Path("custconv")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData getCustomizationsConv();
 
    @GET
    @Path("my/{userArtId}")
@@ -91,4 +98,9 @@ public interface AtsWorldEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    ResultRows searchNew(AtsSearchData atsSearchData);
+
+   @GET
+   @Path("column")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<AtsCoreColumn> getColumns();
 }

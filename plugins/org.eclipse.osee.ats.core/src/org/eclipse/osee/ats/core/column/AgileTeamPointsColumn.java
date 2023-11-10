@@ -16,16 +16,18 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 
 /**
  * Display Points as either "ats.Points" or "ats.Points Numeric" as configured on Agile Team artifact
  *
  * @author Donald G. Dunne
  */
-public class AgileTeamPointsColumn extends AbstractServicesColumn {
+public class AgileTeamPointsColumn extends AtsCoreCodeColumn {
 
    public AgileTeamPointsColumn(AtsApi atsApi) {
-      super(atsApi);
+      super(AtsColumnTokensDefault.AgileTeamPointsColumn, atsApi);
    }
 
    @Override

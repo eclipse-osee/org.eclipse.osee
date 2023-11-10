@@ -20,6 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -63,7 +64,7 @@ public abstract class XTaskEstViewer extends TaskXViewer {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xViewerColumn = (XViewerColumn) treeColumn.getData();
-      if (xViewerColumn.getName().equals(XTaskEstXViewerFactory.Check_Col.getName())) {
+      if (xViewerColumn.getName().equals(AtsColumnTokensDefault.CheckColumn.getName())) {
          List<TaskEstDefinition> selected = getSelected();
          if (selected.isEmpty()) {
             return false;
@@ -71,7 +72,7 @@ public abstract class XTaskEstViewer extends TaskXViewer {
          TaskEstDefinition ted = selected.iterator().next();
          ted.setChecked(!ted.isChecked());
          refresh(ted);
-      } else if (xViewerColumn.getName().equals(XTaskEstXViewerFactory.Related_Wf_Col.getName())) {
+      } else if (xViewerColumn.getName().equals(AtsColumnTokensDefault.DerivedWorkflowColumn.getName())) {
          if ((treeItem.getData() instanceof IAtsTask)) {
             IAtsTask task = (IAtsTask) treeItem.getData();
             if (task.isCancelled()) {

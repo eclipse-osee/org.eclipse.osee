@@ -20,4 +20,5 @@ public enum ColumnAlign {
    Left,
    Center,
    Right;
+
 }

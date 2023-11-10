@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.header;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.ide.column.OriginatorColumn;
+import org.eclipse.osee.ats.ide.column.OriginatorColumnUI;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -74,7 +74,7 @@ public class WfeOriginatorHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  OriginatorColumn.promptChangeOriginator(workItem);
+                  OriginatorColumnUI.promptChangeOriginator(workItem);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumn;
+import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -73,7 +73,7 @@ public class XAgileFeatureHyperlinkWidget extends XHyperlinkLabelCmdValueSelecti
          awas.add((AbstractWorkflowArtifact) teamWf);
       }
       FilteredCheckboxTreeDialog<JaxAgileFeatureGroup> dialog =
-         AgileFeatureGroupColumn.openSelectionDialog(agileTeam.getId(), awas);
+         AgileFeatureGroupColumnUI.openSelectionDialog(agileTeam.getId(), awas);
 
       if (dialog != null) {
          features.clear();
