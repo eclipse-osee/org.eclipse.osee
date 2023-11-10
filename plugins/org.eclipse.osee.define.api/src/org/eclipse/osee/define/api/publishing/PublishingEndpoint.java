@@ -15,6 +15,7 @@ package org.eclipse.osee.define.api.publishing;
 
 import java.util.List;
 import java.util.Set;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -25,6 +26,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
@@ -86,6 +89,21 @@ public interface PublishingEndpoint {
             @PathParam("template") ArtifactId template,
             @PathParam("artifact") ArtifactId headArtifact,
             @PathParam("view")     ArtifactId view
+         );
+   //@formatter:on
+   
+   @GET
+   @Path("applicabilityImpact/{branch}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces("application/zip")
+   //@formatter:off
+   Response
+      applicabilityImpact
+         (
+            @PathParam("branch")   BranchId   branch,
+            @QueryParam("publish") @DefaultValue( "false" ) String publish,
+            @QueryParam("artTypes") List<ArtifactTypeToken> artTypes,
+            @QueryParam("attrTypes") List<AttributeTypeToken> attrTypes
          );
    //@formatter:on
 

@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -583,15 +585,15 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       /*
        * Find artifacts which use the applicability; using Set to prevent duplicates
        */
-      Set<ArtifactToken> artSet = new HashSet<>();
+      Set<ArtifactReadable> artSet = new HashSet<>();
       //unfortunately the .and which takes List<AttributeTypeToken> cannot accept a List<AttributeTypeToken>
       List<AttributeTypeToken> attrTypes = attrs.stream().map(a -> (a)).collect(Collectors.toList());
-      artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch, appToken).asArtifactTokens());
+      artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch, appToken).includeApplicabilityTokens().asArtifacts());
       for (String str : searchStrings) {
 
-         artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(arts).and(attrTypes, str,
-            QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT,
-            QueryOption.TOKEN_MATCH_ORDER__MATCH).asArtifactTokens());
+         artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(arts).and(attrTypes, str,
+            QueryOption.TOKEN_COUNT__MATCH, 
+            QueryOption.TOKEN_MATCH_ORDER__MATCH).asArtifacts());
       }
       result.add(new ApplicabilityUseResultToken(appToken, artSet));
    }

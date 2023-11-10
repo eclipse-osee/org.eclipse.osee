@@ -16,11 +16,15 @@ package org.eclipse.osee.define.rest.publishing;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
+
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.api.DefineOperations;
 import org.eclipse.osee.define.api.MsWordPreviewRequestData;
@@ -33,10 +37,12 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * Provides the wrapper methods that expose the Publishing operations methods as REST API end points.
@@ -51,7 +57,7 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    private final DefineOperations defineOperations;
-
+   private final OrcsApi orcsApi;
    /**
     * Creates a new REST API end point implementation for Publishing.
     *
@@ -59,9 +65,10 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     * @throws NullPointerException when the parameter <code>defineOperations</code> is <code>null</code>.
     */
 
-   public PublishingEndpointImpl(DefineOperations defineOperations) {
+   public PublishingEndpointImpl(DefineOperations defineOperations, OrcsApi orcsApi) {
       this.defineOperations = Objects.requireNonNull(defineOperations,
          "PublishingEndpointImpl::new, parameter \"defineOperations\" cannot be null.");
+      this.orcsApi = orcsApi;
    }
 
    /**
@@ -115,6 +122,25 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
             e);
       }
    }
+   
+   public Response applicabilityImpact(BranchId branch, String publish, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
+	      boolean publishUpdates = (publish.equals("true")) ? true : false; 
+	      try {
+	         PublishingPermissions.verifyNonGroup();
+	         Branch branchArt = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+	         StreamingOutput streamingOutput = new FeatureImpactStreamingOutput(branchArt, orcsApi, defineOperations, publishUpdates, artTypes, attrTypes);
+		      ResponseBuilder builder = Response.ok(streamingOutput);
+		      builder.header("Content-Disposition", "attachment; filename=" + branchArt.getName().replaceAll("[^a-zA-Z0-9-]", "_") +".zip");
+		      return builder.build();
+	      } catch (UserNotAuthorizedForPublishingException e) {
+	         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+	      } catch (IllegalArgumentException iae) {
+	         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+	      } catch (Exception e) {
+	         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+	            e);
+	      }
+	   }
 
    /**
     * {@inheritDoc}
