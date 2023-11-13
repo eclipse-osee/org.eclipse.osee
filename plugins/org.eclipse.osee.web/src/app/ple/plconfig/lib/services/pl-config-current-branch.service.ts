@@ -1450,10 +1450,10 @@ export class PlConfigCurrentBranchService {
 					a.deleted && b.deleted
 						? 0
 						: a.deleted && !b.deleted
-						? 1
-						: !a.deleted && b.deleted
-						? -1
-						: 0
+						  ? 1
+						  : !a.deleted && b.deleted
+						    ? -1
+						    : 0
 				)
 			)
 		).pipe(

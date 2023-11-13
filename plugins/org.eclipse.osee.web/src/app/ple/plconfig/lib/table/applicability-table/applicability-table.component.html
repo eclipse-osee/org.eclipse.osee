@@ -72,22 +72,22 @@
 									| async) === true
 								? 'config-group-header applic-table-column-added'
 								: (isDeletedCfgGroup(secondaryHeader.trim())
-										| async) === true
-								? 'config-group-header applic-table-column-deleted'
-								: (hasChangesCfgGroup(secondaryHeader.trim())
-										| async) === true
-								? 'config-group-header applic-table-column-changed'
-								: 'config-group-header'
+											| async) === true
+								  ? 'config-group-header applic-table-column-deleted'
+								  : (hasChangesCfgGroup(secondaryHeader.trim())
+												| async) === true
+								    ? 'config-group-header applic-table-column-changed'
+								    : 'config-group-header'
 							: (isDeletedCfg(secondaryHeader.trim()) | async) ===
-							  true
-							? 'applic-table-column-deleted config-header'
-							: (isAddedCfg(secondaryHeader.trim()) | async) ===
-							  true
-							? 'applic-table-column-added config-header'
-							: (hasChangesCfg(secondaryHeader.trim())
-									| async) === true
-							? 'config-header applic-table-column-changed'
-							: 'config-header'
+							    true
+							  ? 'applic-table-column-deleted config-header'
+							  : (isAddedCfg(secondaryHeader.trim()) | async) ===
+							      true
+							    ? 'applic-table-column-added config-header'
+							    : (hasChangesCfg(secondaryHeader.trim())
+												| async) === true
+							      ? 'config-header applic-table-column-changed'
+							      : 'config-header'
 					">
 					<div class="config-group-header">
 						{{ secondaryHeader }}
@@ -114,24 +114,25 @@
 										| async) === true
 									? 'config-group-header applic-table-column-added'
 									: (isDeletedCfgGroup(
-											displayedColumn.name.trim()
-									  ) | async) === true
-									? 'config-group-header applic-table-column-deleted'
-									: (hasChangesCfgGroup(
-											displayedColumn.name.trim()
-									  ) | async) === true
-									? 'config-group-header applic-table-column-changed'
-									: 'config-group-header'
+												displayedColumn.name.trim()
+									    ) | async) === true
+									  ? 'config-group-header applic-table-column-deleted'
+									  : (hasChangesCfgGroup(
+													displayedColumn.name.trim()
+									      ) | async) === true
+									    ? 'config-group-header applic-table-column-changed'
+									    : 'config-group-header'
 								: (isDeletedCfg(displayedColumn.name.trim())
-										| async) === true
-								? 'applic-table-column-deleted config-header'
-								: (isAddedCfg(displayedColumn.name.trim())
-										| async) === true
-								? 'applic-table-column-added config-header'
-								: (hasChangesCfg(displayedColumn.name.trim())
-										| async) === true
-								? 'config-header applic-table-column-changed'
-								: 'config-header'
+											| async) === true
+								  ? 'applic-table-column-deleted config-header'
+								  : (isAddedCfg(displayedColumn.name.trim())
+												| async) === true
+								    ? 'applic-table-column-added config-header'
+								    : (hasChangesCfg(
+													displayedColumn.name.trim()
+								        ) | async) === true
+								      ? 'config-header applic-table-column-changed'
+								      : 'config-header'
 							: ''
 					">
 					<div
@@ -160,12 +161,12 @@
 								(isACfgGroup(displayedColumn.name) | async)
 									? 'config-group-header'
 									: (isDeletedCfg(displayedColumn.name.trim())
-											| async) === true
-									? 'applic-table-column-deleted config-header'
-									: (isAddedCfg(displayedColumn.name.trim())
-											| async) === true
-									? 'applic-table-column-added config-header'
-									: 'config-header'
+												| async) === true
+									  ? 'applic-table-column-deleted config-header'
+									  : (isAddedCfg(displayedColumn.name.trim())
+													| async) === true
+									    ? 'applic-table-column-added config-header'
+									    : 'config-header'
 							"
 							(click)="
 								openConfigMenu(displayedColumn.name, _editable_)
@@ -218,17 +219,17 @@
 								? element.added
 									? 'applic-table-row-even-added'
 									: element.deleted
-									? 'applic-table-row-even-deleted'
-									: element.changes !== undefined
-									? 'applic-table-row-even-changed'
-									: 'applic-table-row-even'
+									  ? 'applic-table-row-even-deleted'
+									  : element.changes !== undefined
+									    ? 'applic-table-row-even-changed'
+									    : 'applic-table-row-even'
 								: element.added
-								? 'applic-table-row-odd-added'
-								: element.deleted
-								? 'applic-table-row-odd-deleted'
-								: element.changes !== undefined
-								? 'applic-table-row-odd-changed'
-								: 'applic-table-row-odd'
+								  ? 'applic-table-row-odd-added'
+								  : element.deleted
+								    ? 'applic-table-row-odd-deleted'
+								    : element.changes !== undefined
+								      ? 'applic-table-row-odd-changed'
+								      : 'applic-table-row-odd'
 						"
 						(contextmenu)="
 							openContextMenu($event, 'FEATURE', element)
@@ -270,13 +271,13 @@
 								? element.added
 									? 'applic-table-row-even-added'
 									: element.deleted
-									? 'applic-table-row-even-deleted'
-									: 'applic-table-row-even'
+									  ? 'applic-table-row-even-deleted'
+									  : 'applic-table-row-even'
 								: element.added
-								? 'applic-table-row-odd-added'
-								: element.deleted
-								? 'applic-table-row-odd-deleted'
-								: 'applic-table-row-odd'
+								  ? 'applic-table-row-odd-added'
+								  : element.deleted
+								    ? 'applic-table-row-odd-deleted'
+								    : 'applic-table-row-odd'
 						">
 						<ng-container
 							*ngFor="
@@ -312,23 +313,23 @@
 													!element.deleted)
 												? 'selectApplicabilityTableOption applic-table-column-added'
 												: (isDeletedCfg(config.name)
-														| async) === true ||
-												  (isDeletedCfgGroup(
-														config.name
-												  ) | async) === true
-												? 'selectApplicabilityTableOption applic-table-column-deleted'
-												: config.changes !== undefined
-												? 'selectApplicabilityTableOption applicability-changed'
-												: 'selectApplicabilityTableOption'
+															| async) === true ||
+												    (isDeletedCfgGroup(
+															config.name
+												    ) | async) === true
+												  ? 'selectApplicabilityTableOption applic-table-column-deleted'
+												  : config.changes !== undefined
+												    ? 'selectApplicabilityTableOption applicability-changed'
+												    : 'selectApplicabilityTableOption'
 											: (isAddedCfg(config.name)
-													| async) === true
-											? 'applic-table-column-added'
-											: (isDeletedCfg(config.name)
-													| async) === true
-											? 'applic-table-column-deleted'
-											: config.changes !== undefined
-											? 'applicability-changed selectApplicabilityTableOption'
-											: 'selectApplicabilityTableOption'
+														| async) === true
+											  ? 'applic-table-column-added'
+											  : (isDeletedCfg(config.name)
+															| async) === true
+											    ? 'applic-table-column-deleted'
+											    : config.changes !== undefined
+											      ? 'applicability-changed selectApplicabilityTableOption'
+											      : 'selectApplicabilityTableOption'
 									"
 									(contextmenu)="
 										openContextMenu($event, 'VALUE', config)
@@ -360,9 +361,9 @@
 															? 'applicabilityTableMatSelect MatSelectConfig applic-table-column-added-row-even'
 															: 'applicabilityTableMatSelect MatSelectConfig applic-table-column-added-row-odd'
 														: config.changes !==
-														  undefined
-														? 'applicabilityTableMatSelect MatSelectConfig applicability-changed'
-														: 'applicabilityTableMatSelect MatSelectConfig'
+														    undefined
+														  ? 'applicabilityTableMatSelect MatSelectConfig applicability-changed'
+														  : 'applicabilityTableMatSelect MatSelectConfig'
 												"
 												(contextmenu)="
 													openContextMenu(
@@ -380,13 +381,13 @@
 																? 'selectApplicabilityTableOption applic-table-column-added-row-even'
 																: 'selectApplicabilityTableOption applic-table-column-added-row-odd'
 															: (isDeletedCfg(
-																	config.name
-															  ) | async) ===
-															  true
-															? 'selectApplicabilityTableOption applic-table-column-deleted'
-															: config.changes
-															? 'selectApplicabilityTableOption applicability-changed'
-															: 'selectApplicabilityTableOption'
+																		config.name
+															    ) | async) ===
+															    true
+															  ? 'selectApplicabilityTableOption applic-table-column-deleted'
+															  : config.changes
+															    ? 'selectApplicabilityTableOption applicability-changed'
+															    : 'selectApplicabilityTableOption'
 													"
 													id="selectableTableOption"
 													class="full-width">
@@ -473,9 +474,9 @@
 															? 'applicabilityTableMatSelect MatSelectProduct applic-table-column-added-row-even'
 															: 'applicabilityTableMatSelect MatSelectProduct applic-table-column-added-row-odd'
 														: config.changes !==
-														  undefined
-														? 'applicabilityTableMatSelect MatSelectProduct applicability-changed'
-														: 'applicabilityTableMatSelect MatSelectProduct'
+														    undefined
+														  ? 'applicabilityTableMatSelect MatSelectProduct applicability-changed'
+														  : 'applicabilityTableMatSelect MatSelectProduct'
 												"
 												(contextmenu)="
 													openContextMenu(
@@ -493,14 +494,14 @@
 																? 'selectApplicabilityTableOption applic-table-column-added-row-even'
 																: 'selectApplicabilityTableOption applic-table-column-added-row-odd'
 															: (isDeletedCfg(
-																	config.name
-															  ) | async) ===
-															  true
-															? 'selectApplicabilityTableOption applic-table-column-deleted'
-															: config.changes !==
-															  undefined
-															? 'selectApplicabilityTableOption applicability-changed'
-															: 'selectApplicabilityTableOption'
+																		config.name
+															    ) | async) ===
+															    true
+															  ? 'selectApplicabilityTableOption applic-table-column-deleted'
+															  : config.changes !==
+															      undefined
+															    ? 'selectApplicabilityTableOption applicability-changed'
+															    : 'selectApplicabilityTableOption'
 													"
 													id="selectableTableOption"
 													class="full-width">
