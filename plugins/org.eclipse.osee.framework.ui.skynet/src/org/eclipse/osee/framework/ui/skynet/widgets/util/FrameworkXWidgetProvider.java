@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkArtifactRefIdEntryWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
@@ -75,10 +76,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArtDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArtDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
@@ -141,6 +142,7 @@ public final class FrameworkXWidgetProvider {
       register(XArtifactSelectWidgetWithSave.class);
       register(XHyperlinkWfdForUser.class);
       register(XHyperlinkWfdForUserAll.class);
+      register(XHyperlinkArtifactRefIdEntryWidget.class);
       return nameToClass;
    }
 

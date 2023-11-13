@@ -47,6 +47,7 @@ public class XWidgetRendererItem implements Cloneable {
    private String xWidgetName = UNKNOWN;
    private XWidget xWidget;
    private int beginComposite = 0; // If >0, indicates new child composite with columns == value
+   private boolean border = false;
    private int beginGroupComposite = 0; // If >0, indicates new child composite with columns == value
    private boolean endComposite, endGroupComposite; // indicated end of child composite
    private String groupName;
@@ -194,6 +195,11 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setBeginComposite(int beginComposite) {
       this.beginComposite = beginComposite;
+   }
+
+   public void setBeginComposite(int columns, boolean border) {
+      setBeginComposite(columns);
+      this.border = border;
    }
 
    public void setBeginGroupComposite(int beginGroupComposite) {
@@ -397,6 +403,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setEnumeratedArt(ArtifactToken enumeratedArt) {
       this.enumeratedArt = enumeratedArt;
+   }
+
+   public boolean isBorder() {
+      return border;
+   }
+
+   public void setBorder(boolean border) {
+      this.border = border;
    }
 
 }
