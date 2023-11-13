@@ -164,8 +164,8 @@
 								node.data.interfaceNodeBackgroundColor
 									? node.data.interfaceNodeBackgroundColor
 									: node.data.color
-									? node.data.color
-									: ''
+									  ? node.data.color
+									  : ''
 							" />
 					</ng-template>
 					<svg:text
@@ -217,8 +217,8 @@
 								link.data.deleted
 									? 'tw-fill-warn-400'
 									: link.data.added
-									? 'tw-fill-success-400'
-									: ''
+									  ? 'tw-fill-success-400'
+									  : ''
 							">
 							<textPath
 								class="text-path"

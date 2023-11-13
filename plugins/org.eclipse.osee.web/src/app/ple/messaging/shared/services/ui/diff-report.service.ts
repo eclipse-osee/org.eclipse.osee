@@ -825,8 +825,8 @@ export class DiffReportService {
 						action: structure.diffInfo?.added
 							? 'Added'
 							: structure.diffInfo?.deleted
-							? 'Deleted'
-							: 'Edited',
+							  ? 'Deleted'
+							  : 'Edited',
 						name: structure.name,
 						details: [],
 					};
