@@ -38,6 +38,26 @@ public class HealthDetails {
    private final RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
    private final OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
 
+   private final String uri;
+   private final String startTime;
+   private final String upTime;
+   private final String authScheme;
+   private List<String> authSchemeSupported = new ArrayList<>();
+   private final String heapMemAlloc;
+   private final String heapMemMax;
+   private final String heapMemUsed;
+   private final String nonHeapMemAlloc;
+   private final String nonHeapMemMax;
+   private final String nonHeapMemUsed;
+   private final String codeLocation;
+   private final String systemLoad;
+   private List<String> supportedVersions = new ArrayList<>();
+   private final String serverId;
+   private final String binaryDataPath;
+   private final List<String> threadStats = new ArrayList<>();
+   private final List<String> garbageCollectorStats = new ArrayList<>();
+   private final String serverWithLogs;
+
    public HealthDetails(JdbcClient jdbcClient, IApplicationServerManager applicationServerManager, IAuthenticationManager authManager, ActivityLog activityLog) {
       this.uri = applicationServerManager.getServerUri().toString();
 
@@ -85,26 +105,6 @@ public class HealthDetails {
       this.serverWithLogs =
          Strings.isInValid(fetchedServerName) ? "osee.health.curl.server not set in osee_info" : fetchedServerName;
    };
-
-   private final String uri;
-   private final String startTime;
-   private final String upTime;
-   private final String authScheme;
-   private final List<String> authSchemeSupported;
-   private final String heapMemAlloc;
-   private final String heapMemMax;
-   private final String heapMemUsed;
-   private final String nonHeapMemAlloc;
-   private final String nonHeapMemMax;
-   private final String nonHeapMemUsed;
-   private final String codeLocation;
-   private final String systemLoad;
-   private final List<String> supportedVersions;
-   private final String serverId;
-   private final String binaryDataPath;
-   private List<String> threadStats;
-   private final List<String> garbageCollectorStats = new ArrayList<>();
-   private final String serverWithLogs;
 
    public String getUri() {
       return uri;
