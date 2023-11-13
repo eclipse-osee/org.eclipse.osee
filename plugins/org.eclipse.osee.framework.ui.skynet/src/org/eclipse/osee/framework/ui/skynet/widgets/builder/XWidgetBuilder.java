@@ -172,6 +172,12 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andComposite(int columns, boolean border) {
+      Conditions.assertNotNull(currItem, "currItem");
+      currItem.setBeginComposite(columns, border);
+      return this;
+   }
+
    public XWidgetBuilder andHorizLabel() {
       Conditions.assertNotNull(currItem, "currItem");
       currItem.setHorizontalLabel(true);

@@ -88,6 +88,14 @@ public class SwtXWidgetRenderer {
    }
 
    private Composite createComposite(Composite parent, FormToolkit toolkit) {
+      return createComposite(parent, toolkit, false);
+   }
+
+   private Composite createComposite(Composite parent, FormToolkit toolkit, boolean border) {
+      if (border) {
+         return toolkit != null ? toolkit.createComposite(parent, SWT.WRAP | SWT.BORDER) : new Composite(parent,
+            SWT.NONE | SWT.BORDER);
+      }
       return toolkit != null ? toolkit.createComposite(parent, SWT.WRAP) : new Composite(parent, SWT.NONE);
    }
 
@@ -105,8 +113,8 @@ public class SwtXWidgetRenderer {
       return groupComp;
    }
 
-   private Composite buildChildComposite(Composite parent, int numColumns, FormToolkit toolkit) {
-      Composite outComp = createComposite(parent, toolkit);
+   private Composite buildChildComposite(Composite parent, int numColumns, FormToolkit toolkit, boolean border) {
+      Composite outComp = createComposite(parent, toolkit, border);
       GridLayout zeroMarginLayout = ALayout.getZeroMarginLayout(numColumns, false);
       zeroMarginLayout.marginWidth = 4;
       zeroMarginLayout.horizontalSpacing = 8;
@@ -163,7 +171,8 @@ public class SwtXWidgetRenderer {
       }
    }
 
-   public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
+   public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener,
+      boolean isEditable) {
       final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
 
       Composite topLevelComp = createComposite(parent, toolkit);
@@ -214,10 +223,11 @@ public class SwtXWidgetRenderer {
             gd.grabExcessVerticalSpace = true;
          }
 
-         int j = rendererItem.getBeginComposite();
-         if (j > 0) {
+         int columns = rendererItem.getBeginComposite();
+         boolean border = rendererItem.isBorder();
+         if (columns > 0) {
             inChildComposite = true;
-            childComp = buildChildComposite(currentComp, j, toolkit);
+            childComp = buildChildComposite(currentComp, columns, toolkit, border);
          }
 
          if (inChildComposite) {
