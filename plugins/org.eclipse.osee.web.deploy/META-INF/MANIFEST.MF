@@ -13,4 +13,4 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.jdbc,
  org.osgi.service.event
-Osee-JaxRs-Resource: OSEE-INF/web/dist/*;path=/osee
+Osee-JaxRs-Resource: OSEE-INF/web/dist/browser/*;path=/osee
