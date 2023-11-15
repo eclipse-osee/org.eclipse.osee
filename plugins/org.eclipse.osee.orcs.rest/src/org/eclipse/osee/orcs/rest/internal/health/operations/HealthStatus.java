@@ -8,9 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-/**
- * @author Jaden W. Puckett
- */
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
 import java.util.ArrayList;
@@ -18,9 +15,12 @@ import java.util.List;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 
+/**
+ * @author Jaden W. Puckett
+ */
 public class HealthStatus {
    private final JdbcClient jdbcClient;
-   private final String auth;
+   private String auth = "";
 
    public HealthStatus(JdbcClient jdbcClient, OrcsApi orcsApi) {
       this.jdbcClient = jdbcClient;

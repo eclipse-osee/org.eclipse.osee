@@ -13,10 +13,9 @@
 
 package org.eclipse.osee.orcs.rest.internal.health;
 
-import java.io.InputStream;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -30,21 +29,23 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.health.HealthLinks;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthActiveMq;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthBalancers;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthDetails;
-import org.eclipse.osee.orcs.rest.internal.health.operations.HealthLogs;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthJava;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthLog;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthStatus;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthActiveMq;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthBalancers;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthTop;
+import org.eclipse.osee.orcs.rest.internal.health.operations.RemoteHealthDetails;
+import org.eclipse.osee.orcs.rest.internal.health.operations.RemoteHealthLog;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthExec;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthLinks;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthMain;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthOverviewDetails;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthProcesses;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthTypes;
 import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthUsage;
 
@@ -72,31 +73,95 @@ public final class HealthEndpointImpl {
    @GET
    @Path("status")
    @Produces(MediaType.APPLICATION_JSON)
-   public HealthStatus getStatus() {
+   public HealthStatus getHealthStatus() {
       return new HealthStatus(getJdbcClient(), orcsApi);
    }
 
    @GET
    @Path("details")
    @Produces(MediaType.APPLICATION_JSON)
-   public HealthDetails getDetails() {
-      return new HealthDetails(getJdbcClient(), applicationServerManager, authManager, activityLog);
+   public HealthDetails getHealthDetails() {
+      HealthDetails details = new HealthDetails(getJdbcClient(), applicationServerManager, authManager, activityLog);
+      details.setHealthDetails();
+      return details;
    }
 
    @GET
-   @Path("logs")
+   @Path("details/remote")
    @Produces(MediaType.APPLICATION_JSON)
-   public HealthLogs getServerLogs(@QueryParam("appServerDir") String appServerDir,
-      @QueryParam("serverUri") String serverUri) {
-      return new HealthLogs(appServerDir, serverUri);
-
+   public RemoteHealthDetails getRemoteHealthDetails(@QueryParam("remoteServerName") String remoteServerName) {
+      RemoteHealthDetails details = new RemoteHealthDetails(remoteServerName, orcsApi);
+      details.fetchRemoteHealthDetails();
+      return details;
    }
 
    @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String get() {
-      ServerHealthMain main = new ServerHealthMain(orcsApi, getJdbcClient());
-      return main.getHtml();
+   @Path("log")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthLog getHealthLog(@QueryParam("appServerDir") String appServerDir,
+      @QueryParam("serverUri") String serverUri) {
+      HealthLog log = new HealthLog(appServerDir, serverUri);
+      log.setHealthLog();
+      return log;
+   }
+
+   @GET
+   @Path("log/remote")
+   @Produces(MediaType.APPLICATION_JSON)
+   public RemoteHealthLog getRemoteHealthLog(@QueryParam("remoteServerName") String remoteServerName,
+      @QueryParam("appServerDir") String appServerDir, @QueryParam("serverUri") String serverUri) {
+      RemoteHealthLog log = new RemoteHealthLog(remoteServerName, appServerDir, serverUri, orcsApi);
+      log.fetchRemoteHealthLog();
+      return log;
+   }
+
+   @GET
+   @Path("balancers")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthBalancers getHealthBalancers() {
+      return new HealthBalancers(getJdbcClient());
+   }
+
+   @GET
+   @Path("top")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthTop getHealthTop() {
+      return new HealthTop();
+   }
+
+   @GET
+   @Path("java")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthJava getHealthJava() {
+      HealthJava javaInfo = new HealthJava(getJdbcClient());
+      javaInfo.setJavaInfo();
+      return javaInfo;
+   }
+
+   @GET
+   @Path("http/headers")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getHealthHttpHeaders(@Context HttpHeaders headers) {
+      MultivaluedMap<String, String> reqHeaders = headers.getRequestHeaders();
+      Map<String, Object> jsonMap = new HashMap<>();
+      reqHeaders.forEach((key, values) -> {
+         jsonMap.put(key, values.size() == 1 ? values.get(0) : values);
+      });
+      try {
+         ObjectMapper objectMapper = new ObjectMapper();
+         return objectMapper.writeValueAsString(jsonMap);
+      } catch (Exception e) {
+         return e.getMessage();
+      }
+   }
+
+   @GET
+   @Path("activemq")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthActiveMq getHealthActiveMq() {
+      HealthActiveMq activeMqInfo = new HealthActiveMq(getJdbcClient());
+      activeMqInfo.setActiveMqInfo();
+      return activeMqInfo;
    }
 
    @GET
@@ -108,27 +173,18 @@ public final class HealthEndpointImpl {
    }
 
    @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String get() {
+      ServerHealthMain main = new ServerHealthMain(orcsApi, getJdbcClient());
+      return main.getHtml();
+   }
+
+   @GET
    @Path("links")
    @Produces(MediaType.APPLICATION_JSON)
    public HealthLinks getLinks() {
       ServerHealthLinks links = new ServerHealthLinks(orcsApi);
       return links.getLinks();
-   }
-
-   @GET
-   @Path("headers")
-   @Produces(MediaType.TEXT_HTML)
-   public String getAllHeaders(@Context HttpHeaders headers) {
-      MultivaluedMap<String, String> rh = headers.getRequestHeaders();
-      return rh.entrySet().stream().map(e -> e.getKey() + " = " + e.getValue()).collect(Collectors.joining("<br/>"));
-   }
-
-   @GET
-   @Path("activemq")
-   @Produces(MediaType.TEXT_HTML)
-   public String getActiveMq() {
-      ServerHealthActiveMq amq = new ServerHealthActiveMq(applicationServerManager, getJdbcClient());
-      return amq.getHtml();
    }
 
    @Path("overview/details")
@@ -148,39 +204,10 @@ public final class HealthEndpointImpl {
    }
 
    @GET
-   @Path("balancer")
-   @Produces(MediaType.TEXT_HTML)
-   public String getBalancerStatus() {
-      return (new ServerHealthBalancers(getJdbcClient())).getHtml();
-   }
-
-   @GET
    @Path("types")
    @Produces(MediaType.TEXT_HTML)
    public String getServerTypesHealth() {
       return (new ServerHealthTypes(getJdbcClient())).getHtml();
-   }
-
-   @Path("top")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getTop() throws Exception {
-      String results = "";
-      InputStream runtimeStream = null;
-      Scanner s = null;
-      try {
-         runtimeStream = Runtime.getRuntime().exec(new String[] {"bash", "-c", "top -n 1"}).getInputStream();
-         s = new Scanner(runtimeStream).useDelimiter("\\A");
-         results = s.hasNext() ? s.next() : "";
-      } finally {
-         if (s != null) {
-            s.close();
-         }
-         if (runtimeStream != null) {
-            runtimeStream.close();
-         }
-      }
-      return AHTML.simplePage(results);
    }
 
    @Path("exec")
@@ -189,14 +216,6 @@ public final class HealthEndpointImpl {
    public String exec(@Context UriInfo uriInfo) {
       ServerHealthExec exec = new ServerHealthExec(uriInfo);
       return exec.getHtml();
-   }
-
-   @Path("processes")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String serverProcesses() {
-      ServerHealthProcesses proc = new ServerHealthProcesses(getJdbcClient());
-      return proc.getHtml();
    }
 
    private JdbcClient getJdbcClient() {
