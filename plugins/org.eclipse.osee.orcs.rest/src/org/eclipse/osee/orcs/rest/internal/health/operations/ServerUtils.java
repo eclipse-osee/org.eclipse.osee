@@ -15,7 +15,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -49,6 +51,18 @@ public class ServerUtils {
          servers.add(server);
       }
       return servers;
+   }
+
+   public static List<String> getBalancers(JdbcClient jdbcClient) {
+      String serverListString = ServerUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_SERVERS_KEY);
+      String[] serverPortArray = serverListString.split(",");
+      Set<String> uniqueServers = new HashSet<>();
+      for (String entry : serverPortArray) {
+         String[] parts = entry.split(":");
+         String server = parts[0];
+         uniqueServers.add(server);
+      }
+      return new ArrayList<>(uniqueServers);
    }
 
    public static String getImage(String imageName, String url) {

@@ -32,33 +32,52 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
+ * This class is used to deserialize json in RemoteHealthDetails.java
+ *
  * @author Jaden W. Puckett
  */
 public class HealthDetails {
+   private JdbcClient jdbcClient;
+   private IApplicationServerManager applicationServerManager;
+   private IAuthenticationManager authManager;
+   private ActivityLog activityLog;
    private final RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
    private final OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
+   private final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
 
-   private final String uri;
-   private final String startTime;
-   private final String upTime;
-   private final String authScheme;
+   private String uri = "";
+   private String startTime = "";
+   private String upTime = "";
+   private String authScheme = "";
    private List<String> authSchemeSupported = new ArrayList<>();
-   private final String heapMemAlloc;
-   private final String heapMemMax;
-   private final String heapMemUsed;
-   private final String nonHeapMemAlloc;
-   private final String nonHeapMemMax;
-   private final String nonHeapMemUsed;
-   private final String codeLocation;
-   private final String systemLoad;
+   private String heapMemAlloc = "";
+   private String heapMemMax = "";
+   private String heapMemUsed = "";
+   private String nonHeapMemAlloc = "";
+   private String nonHeapMemMax = "";
+   private String nonHeapMemUsed = "";
+   private String codeLocation = "";
+   private String systemLoad = "";
    private List<String> supportedVersions = new ArrayList<>();
-   private final String serverId;
-   private final String binaryDataPath;
+   private String serverId = "";
+   private String binaryDataPath = "";
    private final List<String> threadStats = new ArrayList<>();
    private final List<String> garbageCollectorStats = new ArrayList<>();
-   private final String serverWithLogs;
+   private String serverWithLogs = "";
+
+   // Used for deserialization
+   public HealthDetails() {
+
+   }
 
    public HealthDetails(JdbcClient jdbcClient, IApplicationServerManager applicationServerManager, IAuthenticationManager authManager, ActivityLog activityLog) {
+      this.jdbcClient = jdbcClient;
+      this.applicationServerManager = applicationServerManager;
+      this.authManager = authManager;
+      this.activityLog = activityLog;
+   }
+
+   public void setHealthDetails() {
       this.uri = applicationServerManager.getServerUri().toString();
 
       this.startTime = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(
@@ -72,7 +91,6 @@ public class HealthDetails {
       this.authScheme = authManager.getProtocol();
       this.authSchemeSupported = Arrays.asList(authManager.getProtocols());
 
-      MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
       MemoryUsage heapMem = memoryMXBean.getHeapMemoryUsage();
       this.heapMemAlloc = Lib.toMBytes(heapMem.getCommitted());
       this.heapMemMax = Lib.toMBytes(heapMem.getMax());
@@ -104,7 +122,7 @@ public class HealthDetails {
          jdbcClient.fetch("", "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?", "osee.health.curl.server");
       this.serverWithLogs =
          Strings.isInValid(fetchedServerName) ? "osee.health.curl.server not set in osee_info" : fetchedServerName;
-   };
+   }
 
    public String getUri() {
       return uri;
