@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.skynet.core.validation;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -59,7 +60,8 @@ public class OseeValidator {
    public XResultData validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType,
       Object proposedValue, XResultData rd) {
       if (artifact != null) {
-         for (IOseeValidator validator : loadedObjects.getObjects()) {
+         List<IOseeValidator> objects = loadedObjects.getObjects();
+         for (IOseeValidator validator : objects) {
             if (requiredQualityOfService >= validator.getQualityOfService()) {
                try {
                   if (validator.isApplicable(artifact, attributeType)) {

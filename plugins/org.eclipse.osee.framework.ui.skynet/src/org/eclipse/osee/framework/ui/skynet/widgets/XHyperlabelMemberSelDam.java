@@ -16,6 +16,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
- * Select users and store as single userId attributes
+ * Select users and store as single userId attributes. This is an AUTO_SAVE widget.
  *
  * @author Donald G. Dunne
  */
@@ -107,7 +109,35 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK()) {
+         try {
+            if (getArtifact() != null && getAttributeType() != null) {
+               if (isRequiredEntry() && getSelectedUsers().isEmpty()) {
+                  status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                     "Must Select " + getAttributeType().getUnqualifiedName());
+               }
+            }
+         } catch (OseeCoreException ex) {
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
+         }
+      }
+      return status;
+   }
+
+   @Override
    public void revert() {
       super.setSelectedUsers(getStoredUsers());
+   }
+
+   @Override
+   public boolean handleSelection() {
+      boolean selected = super.handleSelection();
+      if (selected) {
+         saveToArtifact();
+         getArtifact().persist(getClass().getSimpleName());
+      }
+      return selected;
    }
 }
