@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.sql;
 
 import java.util.Properties;
+
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
@@ -88,9 +89,17 @@ public enum OseeSql {
    LOAD_CURRENT_RELATION_ORDER_MINMAX("SELECT min(rel.rel_order) || ',' ||max(rel.rel_order) from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ?"),
 
    SELECT_RELATION_GAMMA_RT_A_ART_B_ART_ORDER_REL_ART("SELECT gamma_id FROM osee_relation WHERE rel_type=? AND a_art_id = ? AND b_art_id = ? and rel_order = ? and rel_art_id = ?"),
-   GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A("select rel_order from osee_relation where rel_type = ? and a_art_id = ? order by rel_order"),
+	GET_ALL_REL_ORDER_FOR_TYPE_AND_ART_A(
+			"select rel_order, gamma_id, b_art_id from osee_relation where rel_type = ? and a_art_id = ? order by rel_order"),
+	GET_REL_ORDER_CONFLICTS("select distinct rel_type, a_art_id from (" + //
+			"select rel_type, a_art_id, rel_order, lead(rel_order) over (partition by rel_type, a_art_id order by rel_order) next_rel_order " + //
+			" from osee_relation rel) t1 where (rel_order + 1) = next_rel_order"),
+	GET_REL_ORDER_CONFLICTS_REL_TYPE_ART_A("select count(*) from (" + //
+			"select rel_type, a_art_id, rel_order, lead(rel_order) over (partition by rel_type, a_art_id order by rel_order) next_rel_order " + //
+			"from osee_relation rel where rel.rel_type = ? and rel.a_art_id = ?) t1 where (rel_order + 1) = next_rel_order"),
    GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A_AND_ART_B("SELECT rel_order from osee_txs tx, osee_relation rel where tx.branch_id = ? and tx.tx_current = 1 and tx.gamma_id = rel.gamma_id and rel.a_art_id = ? and rel.rel_type = ? and rel.b_art_id = ?"),
-   GET_NEXT_AVAILABLE_REL_ORDER_FOR_TYPE_AND_ART_A("SELECT min(rel_order) from osee_relation rel where rel.a_art_id = ? and rel.rel_type = ? and rel.rel_order > ?");
+	UPDATE_REL_ORDER_FOR_TYPE_AND_ART_A(
+			"update osee_relation set rel_order = ? where rel_type = ? and a_art_id = ? and gamma_id = ?");
 
    private final String sql;
    private final String hints;

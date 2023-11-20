@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -190,10 +191,14 @@ public interface TransactionBuilder {
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
-      String insertType, int afterIndex, int beforeIndex);
+			String insertType, ArtifactId afterArtifact);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
       String afterArtifact);
+
+	void validateRelationsAll();
+
+	void validateRelationsRelTypeArtA(RelationTypeToken relType, ArtifactId artA);
 
    void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs);
 
@@ -215,7 +220,7 @@ public interface TransactionBuilder {
       GammaId gammaId);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
-      String insertType, int afterIndex, int beforeIndex, GammaId gammaId);
+			String insertType, ArtifactId afterArtifact, GammaId gammaId);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
       String afterArtifact, GammaId gammaId);

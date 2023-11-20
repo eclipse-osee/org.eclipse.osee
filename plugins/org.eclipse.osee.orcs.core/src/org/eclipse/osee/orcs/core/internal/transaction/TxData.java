@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.SqlTable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchCategoryData;
@@ -206,8 +209,9 @@ public class TxData implements HasSession, HasBranchId {
       return newRelations.containsKey(relType, artA);
    }
 
-   public void addRelationSideA(RelationTypeToken relType, ArtifactId artA, int minOrder, int maxOrder) {
-      newRelations.put(relType, artA, new RelationDataSideA(artA, relType, minOrder, maxOrder));
+	public void addRelationSideA(RelationTypeToken relType, ArtifactId artA,
+			TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+		newRelations.put(relType, artA, new RelationDataSideA(artA, relType, relOrders));
    }
 
    public int calculateHeadInsertionOrderIndex(int currentHeadIndex) {
