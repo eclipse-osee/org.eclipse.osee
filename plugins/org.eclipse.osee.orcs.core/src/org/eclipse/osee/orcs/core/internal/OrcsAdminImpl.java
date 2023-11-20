@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
@@ -30,12 +29,9 @@ import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
-import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -47,8 +43,6 @@ import org.eclipse.osee.orcs.OrcsMetaData;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.internal.admin.FetchDatastoreMetadataCallable;
-import org.eclipse.osee.orcs.health.HealthLinks;
-import org.eclipse.osee.orcs.health.HealthLinksDefault;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -82,26 +76,10 @@ public class OrcsAdminImpl implements OrcsAdmin {
 
          TransactionId transactionId = new CreateSystemBranches(orcsApi).create(superUser);
 
-         createHealthStatusLinks();
-
          return transactionId;
       } finally {
          activityLog.setEnabled(true);
       }
-   }
-
-   private void createHealthStatusLinks() {
-      HealthLinks links = HealthLinksDefault.get();
-      String json = JsonUtil.toJson(links);
-
-      ArtifactToken prefArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         CoreArtifactTokens.GlobalPreferences).getArtifactOrSentinal();
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, "Add Health Status Links");
-      if (prefArt.isInvalid()) {
-         prefArt = tx.createArtifact(CoreArtifactTokens.GlobalPreferences);
-      }
-      tx.createAttribute(prefArt, CoreAttributeTypes.GeneralStringData, "OseeHealthLinks=" + json);
-      tx.commit();
    }
 
    @Override

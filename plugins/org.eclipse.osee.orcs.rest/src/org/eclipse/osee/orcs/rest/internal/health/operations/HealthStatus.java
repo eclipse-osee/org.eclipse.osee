@@ -29,14 +29,14 @@ public class HealthStatus {
 
    public List<HealthServer> getServers() {
       List<HealthServer> servers = new ArrayList<>();
-      List<String> serverStrings = ServerUtils.getServers(jdbcClient);
+      List<String> serverStrings = HealthUtils.getServers(jdbcClient);
 
       for (String server : serverStrings) {
          HealthServer link = new HealthServer(server, false, false);
          // Check server alive
          try {
             String urlStr = String.format("http://%s%s", server, "/ide/versions");
-            String serverRes = ServerUtils.getUrlResultsWithAuth(urlStr, auth);
+            String serverRes = HealthUtils.getUrlResultsWithAuth(urlStr, auth);
             if (serverRes.contains("\"versions\"")) {
                link.setServerAlive(true);
             }
@@ -45,7 +45,7 @@ public class HealthStatus {
          // Check db alive
          try {
             String urlStr = String.format("http://%s%s", server, "/orcs/branches");
-            String dbRes = ServerUtils.getUrlResultsWithAuth(urlStr, auth);
+            String dbRes = HealthUtils.getUrlResultsWithAuth(urlStr, auth);
             if (dbRes.contains("\"System Root Branch\"")) {
                link.setDbAlive(true);
             }

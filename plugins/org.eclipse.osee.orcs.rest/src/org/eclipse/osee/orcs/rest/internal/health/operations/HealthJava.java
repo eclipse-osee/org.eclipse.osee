@@ -63,10 +63,10 @@ public class HealthJava {
          this.processArgs.add(arg);
       }
 
-      if (!Lib.isWindows()) {
+      if (Lib.isWindows()) {
          String psResults = "";
-         if (ServerUtils.isCurlServerSet(jdbcClient)) {
-            psResults = ServerUtils.runCurlExecFromCurlServer("ps%20-ef", jdbcClient);
+         if (HealthUtils.isCurlServerSet(jdbcClient)) {
+            psResults = HealthUtils.runCurlExecFromCurlServer("ps%20-ef", jdbcClient);
          }
          if (Strings.isInValid(psResults)) {
             psResults = "ps -ef command is not available for windows (example below)\n\n" + OseeInf.getResourceContents(

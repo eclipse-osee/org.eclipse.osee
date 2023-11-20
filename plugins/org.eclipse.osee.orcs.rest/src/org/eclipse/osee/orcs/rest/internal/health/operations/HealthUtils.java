@@ -26,7 +26,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 /**
  * @author Donald G. Dunne
  */
-public class ServerUtils {
+public class HealthUtils {
 
    private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
@@ -34,7 +34,7 @@ public class ServerUtils {
    public static final String GREEN_DOT = "greenDot.png";
    public static final String RED_DOT = "redDot.png";
 
-   private ServerUtils() {
+   private HealthUtils() {
    }
 
    public static String getOseeInfoValue(JdbcClient jdbcClient, String key) {
@@ -45,7 +45,7 @@ public class ServerUtils {
    public static List<String> getServers(JdbcClient jdbcClient) {
       List<String> servers = new ArrayList<>();
       // Retrieve servers from OseeInfo
-      String serversStr = ServerUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_SERVERS_KEY);
+      String serversStr = HealthUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_SERVERS_KEY);
       serversStr = serversStr.replaceAll(" ", "");
       for (String server : serversStr.split(",")) {
          servers.add(server);
@@ -54,7 +54,7 @@ public class ServerUtils {
    }
 
    public static List<String> getBalancers(JdbcClient jdbcClient) {
-      String serverListString = ServerUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_SERVERS_KEY);
+      String serverListString = HealthUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_SERVERS_KEY);
       String[] serverPortArray = serverListString.split(",");
       Set<String> uniqueServers = new HashSet<>();
       for (String entry : serverPortArray) {
@@ -71,12 +71,12 @@ public class ServerUtils {
    }
 
    public static boolean isCurlServerSet(JdbcClient jdbcClient) {
-      String curlServer = ServerUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_CURL_SERVER);
+      String curlServer = HealthUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_CURL_SERVER);
       return Strings.isValid(curlServer);
    }
 
    public static String getCurlExecUrl(String cmd, JdbcClient jdbcClient) {
-      String curlServer = ServerUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_CURL_SERVER);
+      String curlServer = HealthUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_CURL_SERVER);
       if (Strings.isInValid(curlServer)) {
          return "osee.health.curl.server not set in osee_info";
       }
@@ -85,7 +85,7 @@ public class ServerUtils {
    }
 
    public static String runCurlExecFromCurlServer(String cmd, JdbcClient jdbcClient) {
-      String curlServer = ServerUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_CURL_SERVER);
+      String curlServer = HealthUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_CURL_SERVER);
       if (Strings.isInValid(curlServer)) {
          return null;
       }

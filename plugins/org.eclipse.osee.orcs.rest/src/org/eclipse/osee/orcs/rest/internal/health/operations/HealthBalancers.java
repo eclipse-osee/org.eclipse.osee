@@ -27,14 +27,14 @@ public class HealthBalancers {
    public List<HealthBalancer> getBalancers() {
       List<HealthBalancer> balancers = new ArrayList<>();
 
-      List<String> balancerNames = ServerUtils.getBalancers(jdbcClient);
+      List<String> balancerNames = HealthUtils.getBalancers(jdbcClient);
       if (balancerNames.size() == 0) {
          balancers.add(new HealthBalancer("No application.servers configured in osee.json file", false));
          return balancers;
       }
       for (String balancerName : balancerNames) {
          try {
-            String results = ServerUtils.getUrlResults("http://" + balancerName + "/balancer-manager");
+            String results = HealthUtils.getUrlResults("http://" + balancerName + "/balancer-manager");
             if (results.contains("Load Balancer Manager")) {
                balancers.add(new HealthBalancer(balancerName, true));
             } else {
