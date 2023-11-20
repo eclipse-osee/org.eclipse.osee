@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2017 Boeing
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -24,7 +24,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -32,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.health.HealthLinks;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthActiveMq;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthBalancers;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthDetails;
@@ -40,17 +38,13 @@ import org.eclipse.osee.orcs.rest.internal.health.operations.HealthJava;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthLog;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthStatus;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthTop;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthUsage;
 import org.eclipse.osee.orcs.rest.internal.health.operations.RemoteHealthDetails;
+import org.eclipse.osee.orcs.rest.internal.health.operations.RemoteHealthJava;
 import org.eclipse.osee.orcs.rest.internal.health.operations.RemoteHealthLog;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthExec;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthLinks;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthMain;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthOverviewDetails;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthTypes;
-import org.eclipse.osee.orcs.rest.internal.health.operations.ServerHealthUsage;
+import org.eclipse.osee.orcs.rest.internal.health.operations.RemoteHealthTop;
 
 /**
- * @author Donald G. Dunne
  * @author Jaden W. Puckett
  */
 @Path("")
@@ -130,11 +124,29 @@ public final class HealthEndpointImpl {
    }
 
    @GET
+   @Path("top/remote")
+   @Produces(MediaType.APPLICATION_JSON)
+   public RemoteHealthTop getRemoteHealthTop(@QueryParam("remoteServerName") String remoteServerName) {
+      RemoteHealthTop top = new RemoteHealthTop(remoteServerName, orcsApi);
+      top.fetchRemoteHealthTop();
+      return top;
+   }
+
+   @GET
    @Path("java")
    @Produces(MediaType.APPLICATION_JSON)
    public HealthJava getHealthJava() {
       HealthJava javaInfo = new HealthJava(getJdbcClient());
       javaInfo.setJavaInfo();
+      return javaInfo;
+   }
+
+   @GET
+   @Path("java/remote")
+   @Produces(MediaType.APPLICATION_JSON)
+   public RemoteHealthJava getRemoteHealthJava(@QueryParam("remoteServerName") String remoteServerName) {
+      RemoteHealthJava javaInfo = new RemoteHealthJava(remoteServerName, orcsApi);
+      javaInfo.fetchRemoteHealthJava();
       return javaInfo;
    }
 
@@ -166,56 +178,11 @@ public final class HealthEndpointImpl {
 
    @GET
    @Path("usage")
-   @Produces(MediaType.TEXT_HTML)
-   public String getUsage(@Context UriInfo uriInfo) {
-      ServerHealthUsage ops = new ServerHealthUsage(uriInfo, orcsApi, getJdbcClient());
-      return ops.getHtml();
-   }
-
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String get() {
-      ServerHealthMain main = new ServerHealthMain(orcsApi, getJdbcClient());
-      return main.getHtml();
-   }
-
-   @GET
-   @Path("links")
    @Produces(MediaType.APPLICATION_JSON)
-   public HealthLinks getLinks() {
-      ServerHealthLinks links = new ServerHealthLinks(orcsApi);
-      return links.getLinks();
-   }
-
-   @Path("overview/details")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getServerHealthDetails() {
-      ServerHealthOverviewDetails details = new ServerHealthOverviewDetails(getJdbcClient(), false);
-      return details.getHtml();
-   }
-
-   @Path("overview/details/all")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getServerHealthDetailsAll() {
-      ServerHealthOverviewDetails detailsAll = new ServerHealthOverviewDetails(getJdbcClient(), true);
-      return detailsAll.getHtml();
-   }
-
-   @GET
-   @Path("types")
-   @Produces(MediaType.TEXT_HTML)
-   public String getServerTypesHealth() {
-      return (new ServerHealthTypes(getJdbcClient())).getHtml();
-   }
-
-   @Path("exec")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String exec(@Context UriInfo uriInfo) {
-      ServerHealthExec exec = new ServerHealthExec(uriInfo);
-      return exec.getHtml();
+   public HealthUsage getUsage() {
+      HealthUsage usage = new HealthUsage(orcsApi, getJdbcClient());
+      usage.calculateUsage();
+      return usage;
    }
 
    private JdbcClient getJdbcClient() {

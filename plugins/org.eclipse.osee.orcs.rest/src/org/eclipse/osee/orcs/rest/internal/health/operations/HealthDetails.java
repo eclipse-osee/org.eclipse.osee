@@ -63,7 +63,7 @@ public class HealthDetails {
    private String binaryDataPath = "";
    private final List<String> threadStats = new ArrayList<>();
    private final List<String> garbageCollectorStats = new ArrayList<>();
-   private String serverWithLogs = "";
+   private String serverWithHealthInfo = "";
 
    // Used for deserialization
    public HealthDetails() {
@@ -120,7 +120,7 @@ public class HealthDetails {
 
       String fetchedServerName =
          jdbcClient.fetch("", "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?", "osee.health.curl.server");
-      this.serverWithLogs =
+      this.serverWithHealthInfo =
          Strings.isInValid(fetchedServerName) ? "osee.health.curl.server not set in osee_info" : fetchedServerName;
    }
 
@@ -196,7 +196,7 @@ public class HealthDetails {
       return garbageCollectorStats;
    }
 
-   public String getServerWithLogs() {
-      return serverWithLogs;
+   public String getServerWithHealthInfo() {
+      return serverWithHealthInfo;
    }
 }

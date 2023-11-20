@@ -13,37 +13,48 @@ package org.eclipse.osee.orcs.rest.internal.health.operations;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
+ * Captures the top for Linux OS
+ *
  * @author Jaden W. Puckett
  */
 public class HealthTop {
+   private String top = "";
 
    public HealthTop() {
 
    }
 
-   public String getTop() {
-      StringBuilder top = new StringBuilder();
-      // Run top in batch mode for single iteration
-      ProcessBuilder pb = new ProcessBuilder("top", "-b", "-n", "1");
-      // Merge error stream with the input stream
-      pb.redirectErrorStream(true);
-      try {
-         Process p = pb.start();
-         try (InputStream is = p.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            int value;
-            while ((value = reader.read()) != -1) {
-               top.append((char) value);
+   public void setTop() {
+      StringBuilder topToBuild = new StringBuilder();
+      if (!Lib.isWindows()) {
+         // Run top in batch mode for single iteration
+         ProcessBuilder pb = new ProcessBuilder("top", "-b", "-n", "1");
+         // Merge error stream with the input stream
+         pb.redirectErrorStream(true);
+         try {
+            Process p = pb.start();
+            try (InputStream is = p.getInputStream();
+               BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+               int value;
+               while ((value = reader.read()) != -1) {
+                  topToBuild.append((char) value);
+               }
+               int exitCode = p.waitFor();
+               topToBuild.append("Top command exited with ").append(exitCode);
             }
-            int exitCode = p.waitFor();
-            top.append("Top command exited with ").append(exitCode);
+         } catch (Exception e) {
+            topToBuild = new StringBuilder(e.getMessage());
          }
-      } catch (Exception e) {
-         top = new StringBuilder(e.getMessage());
+      } else {
+         topToBuild.append("Can not fetch top for Windows OS");
       }
-      return top.toString();
+      top = topToBuild.toString();
    }
 
+   public String getTop() {
+      return top;
+   }
 }
