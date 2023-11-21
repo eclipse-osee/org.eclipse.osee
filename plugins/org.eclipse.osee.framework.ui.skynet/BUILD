@@ -1,6 +1,13 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.ui.skynet",
+)
+
 java_library(
-    name = "org.eclipse.osee.framework.ui.skynet",
-	resources = ["xml_files", "exsd_files", "src_img", "images", "txt_files"],
+        name = "org.eclipse.osee.framework.ui.skynet",
+	resources = ["src-img","manifest","osgi-inf","osee-inf"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
 	 	"//org.eclipse.osee.framework.core.packages",
@@ -34,84 +41,32 @@ java_library(
 		"//org.eclipse.osee.framework.ui.ws"
 		],
 	visibility = ["//visibility:public"]
-              )
+)
 
 filegroup(
-    name = "xml_files",
+    name = "manifest",
     srcs =
           [
-	    "plugin.xml",
-	    "OSGI-INF/access.artifact.lock.topic.artifact.explorer.handler.xml",
-	    "OSGI-INF/access.artifact.lock.topic.handler.xml",
-	    "OSGI-INF/access.artifact.lock.topic.handler2.xml",
-	    "OSGI-INF/access.user.authenticated.topic.artifact.explorer.handler.xml",
-	    "OSGI-INF/default.cm.service.xml",
-	    "OSEE-INF/DeleteInvalidAttributeTypesFromBranchUi.xml",
-	    "OSEE-INF/blamUi/FixTemplateContentArtifactsUi.xml",
-	    "OSEE-INF/blamUi/XWidgetsExampleBlamUi.xml",
 	    "META-INF/MANIFEST.MF"
            ],
 )
 
 filegroup(
-    name = "exsd_files",
+    name = "osee-inf",
     srcs =
-          [
-            "OSEE-INF/extensionPts/ArtifactEditorProvider.exsd",
-	    "OSEE-INF/extensionPts/ArtifactImageProvider.exsd",
-	    "OSEE-INF/extensionPts/ArtifactRenderer.exsd",
-	    "OSEE-INF/extensionPts/ArtifactRendererTemplate.exsd",
-	    "OSEE-INF/extensionPts/AttributeXWidgetProvider.exsd",
-	    "OSEE-INF/extensionPts/BlamOperation.exsd",
-	    "OSEE-INF/extensionPts/DatabaseHealthOperation.exsd",
-	    "OSEE-INF/extensionPts/OseeDictionary.exsd",
-	    "OSEE-INF/extensionPts/SimpleTemplateProviderTemplate.exsd",
-	    "OSEE-INF/extensionPts/TemplateProvider.exsd",
-	    "OSEE-INF/extensionPts/UserNavigateItem.exsd",
-	    "OSEE-INF/extensionPts/WordMlProducer.exsd",
-	    "OSEE-INF/extensionPts/WorkDefinitionProvider.exsd",
-	    "OSEE-INF/extensionPts/XWidgetProvider.exsd"
-           ],
+          glob([
+	    "OSEE-INF/*"
+           ]),
 )
 
 filegroup(
-    name = "src_img",
-    srcs =
-          [
-		"src/org/eclipse/osee/framework/ui/skynet/widgets/checkbox/images/chkbox_checked.gif",
-		"src/org/eclipse/osee/framework/ui/skynet/widgets/checkbox/images/chkbox_disabled.gif",
-		"src/org/eclipse/osee/framework/ui/skynet/widgets/checkbox/images/chkbox_unchecked.gif",
-		"src/org/eclipse/osee/framework/ui/skynet/widgets/checkbox/images/refresh.gif",
-		"src/org/eclipse/osee/framework/ui/skynet/widgets/checkbox/images/report.gif"
-	  ],
+    name = "src-img",
+    srcs = glob(["**/*.gif",]),
 )
 
 filegroup(
-    name = "images",
-    srcs = glob(["OSEE-INF/images/*"])
-)
-
-filegroup(
-    name = "txt_files",
-    srcs = 
-    [
-	    "OSEE-INF/spellCheck/AllWords.txt",
-	    "OSEE-INF/spellCheck/altamer.0",
-	    "OSEE-INF/spellCheck/altamer.1",
-	    "OSEE-INF/spellCheck/altamer.2",
-	    "OSEE-INF/spellCheck/american.0",
-	    "OSEE-INF/spellCheck/american.1",
-	    "OSEE-INF/spellCheck/american.2",
-	    "OSEE-INF/spellCheck/british.0",
-	    "OSEE-INF/spellCheck/british.1",
-	    "OSEE-INF/spellCheck/british.2",
-	    "OSEE-INF/spellCheck/english.0",
-	    "OSEE-INF/spellCheck/english.1",
-	    "OSEE-INF/spellCheck/english.2",
-	    "OSEE-INF/spellCheck/english.3",
-	    "OSEE-INF/spellCheck/README",
-	    "OSEE-INF/spellCheck/README.txt"
-    ],
+    name = "osgi-inf",
+    srcs = glob(["OSGI-INF/*"])
 )
 
 java_library(

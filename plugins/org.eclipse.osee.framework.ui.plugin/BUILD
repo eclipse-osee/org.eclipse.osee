@@ -1,8 +1,14 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.ui.plugin",
+)
+
 java_library(
     name = "org.eclipse.osee.framework.ui.plugin",
 	resources = ["xml_files", "exsd_files", "img"],
-	srcs = 
-	glob(["**/*.java"]),
+	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
 		"//org.eclipse.osee.framework.core.packages",
 	 	"//org.eclipse.osee.framework.core.client",
@@ -28,7 +34,7 @@ java_library(
 	 	"//org.eclipse.osee.framework.resource.management"
 		],
 	visibility = ["//visibility:public"]
-              )
+)
 
 filegroup(
     name = "xml_files",

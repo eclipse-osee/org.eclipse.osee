@@ -1,9 +1,15 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.ats.ide.integration.tests",
+)
+
 java_test(
 	name = "AtsIdeIntegrationTestSuite",
 	srcs = glob(["**/*.java"]),
 	resources = ["all_files"],
 	deps = ["java_deps",
-        	#"//org.eclipse.osee.ats.ide.help.ui",
 	 	"//org.eclipse.osee.framework.core.model",
 	 	"//org.eclipse.osee.framework.core.client",
 	 	"//org.eclipse.osee.framework.plugin.core",

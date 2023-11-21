@@ -1,3 +1,11 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.jdk.core",
+)
+
+
 java_library(
 	name = "org.eclipse.osee.client.demo",
 	resources = ["OSEE-INF","OSGI-INF"],
@@ -49,7 +57,7 @@ filegroup(
 
 filegroup(
     name = "OSGI-INF",
-    srcs = glob(["OSGI-INF/client.demo.type.provider.xml"])
+    srcs = ["OSGI-INF/client.demo.type.provider.xml","META-INF/MANIFEST.MF"],
 )
 
 java_library(

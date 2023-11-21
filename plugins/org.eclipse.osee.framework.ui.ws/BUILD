@@ -1,3 +1,10 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.ui.ws",
+)
+
 java_library(
     name = "org.eclipse.osee.framework.ui.ws",
 	srcs = glob(["**/*.java"]),
@@ -31,6 +38,11 @@ java_library(
 	 	"//org.eclipse.osee.ats.api"
 		],
 	visibility = ["//visibility:public"]
+)
+
+filegroup(
+    name = "manifest",
+    srcs = ["META-INF/MANIFEST.MF"]
 )
 
 java_library(

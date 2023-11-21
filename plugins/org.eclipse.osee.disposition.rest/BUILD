@@ -1,4 +1,11 @@
 
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.disposition.rest",
+)
+
 java_library(
         name = "org.eclipse.osee.disposition.rest",
         resources = ["outfile","xml_files"],
@@ -13,6 +20,7 @@ filegroup(
     srcs =
           [
             "OSEE-INF/outFiles/sampleTmo.tmo",
+	    "META-INF/MANIFEST.MF"
            ]
   ,
     visibility = ["//visibility:public"]

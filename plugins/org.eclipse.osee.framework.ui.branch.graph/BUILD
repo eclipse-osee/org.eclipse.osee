@@ -1,5 +1,12 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.ui.branch.graph",
+)
+
 java_library(
-    name = "org.eclipse.osee.framework.ui.branch.graph",
+        name = "org.eclipse.osee.framework.ui.branch.graph",
 	resources = ["OSEE_INF"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",

@@ -1,3 +1,10 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.account.rest.client",
+)
+
 
 java_library(
         name = "org.eclipse.osee.account.rest.client",
@@ -12,7 +19,8 @@ filegroup(
     name = "x_files",
     srcs =
 	  [
-	    "OSGI-INF/account.rest.client.xml"
+	    "OSGI-INF/account.rest.client.xml",
+	    "META-INF/MANIFEST.MF"
 	   ]   
   , 
 

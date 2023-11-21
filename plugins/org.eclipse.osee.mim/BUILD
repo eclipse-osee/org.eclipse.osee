@@ -1,3 +1,9 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.mim",
+)
 
 java_library(
        name = "org.eclipse.osee.mim",
@@ -19,11 +25,11 @@ java_library(
 filegroup(
     name = "xml_files",
     srcs =
-  [
+    [
 	"OSGI-INF/mim.api.xml",
-	"OSGI-INF/mim.application.xml",	
-  ]
-    ,
+	"OSGI-INF/mim.application.xml",
+	"META-INF/MANIFEST.MF"
+    ],
 )
 
 java_library(

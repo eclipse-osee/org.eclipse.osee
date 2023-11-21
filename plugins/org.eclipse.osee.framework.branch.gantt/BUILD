@@ -1,5 +1,12 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.branch.gantt",
+)
+
 java_library(
-        name = "org.eclipse.osee.framework_branch_gantt",
+        name = "org.eclipse.osee.framework.branch.gantt",
 	resources = ["gif_files"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps","//org.eclipse.osee.framework.core.packages",
@@ -15,10 +22,10 @@ filegroup(
     name = "gif_files",
     srcs =
           [
-	    		"OSEE-INF/images/branch.gif",
-	    		"OSEE-INF/images/sample.gif",
-	    		"META-INF/MANIFEST.MF"
-           ],
+	   "OSEE-INF/images/branch.gif",
+	   "OSEE-INF/images/sample.gif",
+	   "META-INF/MANIFEST.MF"
+          ],
 )
 
 java_library(

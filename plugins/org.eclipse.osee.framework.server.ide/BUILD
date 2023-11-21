@@ -1,3 +1,9 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.server.ide",
+)
 
 java_library(
         name = "org.eclipse.osee.framework.server.ide",
@@ -24,7 +30,8 @@ filegroup(
     srcs =
     	[
 		"OSGI-INF/ide.application.xml",
-		"OSGI-INF/legacy.servlets.xml"
+		"OSGI-INF/legacy.servlets.xml",
+		"META-INF/MANIFEST.MF"
 	]
 )
 

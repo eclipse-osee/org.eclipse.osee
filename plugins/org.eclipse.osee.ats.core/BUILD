@@ -1,3 +1,10 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.ats.core",
+)
+
 java_library(
         name = "org.eclipse.osee.ats.core",
 	resources = ["xml_files","osee_inf_files"],
@@ -26,7 +33,8 @@ filegroup(
 	    "OSEE-INF/images/workflow.gif",
 	    "OSEE-INF/web/agilebl/LineChart.html",
 	    "OSEE-INF/web/agilebl/LineChart.json",
-	    "OSEE-INF/web/agilebl/LineDataset.json"
+	    "OSEE-INF/web/agilebl/LineDataset.json",
+	    "META-INF/MANIFEST.MF"
            ]
   ,
     visibility = ["//visibility:public"]

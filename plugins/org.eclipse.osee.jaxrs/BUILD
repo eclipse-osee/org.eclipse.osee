@@ -1,20 +1,26 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.jaxrs",
+)
+
 java_library(
 	name = "org.eclipse.osee.jaxrs",
 	resources = ["x_file"],
 	srcs = glob(["**/*.java"]),	
-    deps = ["java_deps","//org.eclipse.osee.framework.core.packages",
+        deps = ["java_deps","//org.eclipse.osee.framework.core.packages",
 	        "//org.eclipse.osee.activity.api"],
 	visibility = ["//visibility:public"]
-
 )
 
 filegroup(
     name = "x_file",
     srcs = 
 	  [
-	    "OSGI-INF/jaxrs.api.xml"
-	   ]   
-  , 
+	    "OSGI-INF/jaxrs.api.xml",
+	    "META-INF/MANIFEST.MF"
+	  ], 
     visibility = ["//visibility:public"]
 )
 

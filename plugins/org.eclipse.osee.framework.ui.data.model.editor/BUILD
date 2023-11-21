@@ -1,3 +1,10 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.ui.data.model.editor",
+)
+
 java_library(
 	name = "org.eclipse.osee.framework.ui.data.model.editor",
 	resources = ["OSEE_INF"],

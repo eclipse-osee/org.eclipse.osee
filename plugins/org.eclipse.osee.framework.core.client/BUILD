@@ -1,7 +1,13 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.core.client",
+)
 
 java_library(
         name = "org.eclipse.osee.framework.core.client",
-        resources = ["xml_files"],
+        resources = ["xml_files","manifest"],
         srcs = glob(["**/*.java"]),
         deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.jaxrs","//org.eclipse.osee.define.api",
                 "//org.eclipse.osee.cache.admin", "//org.eclipse.osee.framework.messaging","//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.framework.core.model",
@@ -13,6 +19,11 @@ java_library(
 filegroup(
     name = "xml_files",
     srcs = glob(["OSGI-INF/*.xml"]),
+)
+
+filegroup(
+    name = "manifest",
+    srcs = ["META-INF/MANIFEST.MF"]
 )
 
 java_library(
