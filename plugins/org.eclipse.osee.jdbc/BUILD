@@ -1,4 +1,11 @@
 
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.jdbc",
+)
+
 java_library(
         name = "org.eclipse.osee.jdbc",
         resources = ["x_files"],
@@ -15,6 +22,7 @@ filegroup(
 	  [
 	    "OSGI-INF/jdbc.component.factory.xml",
 	    "OSGI-INF/org.eclipse.osee.jdbc.internal.osgi.JdbcServiceImpl.xml",
+	    "META-INF/MANIFEST.MF"
 	   ]   
   , 
 )

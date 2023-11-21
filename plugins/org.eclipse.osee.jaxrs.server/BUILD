@@ -1,3 +1,9 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.jaxrs.server",
+)
 
 java_library(
 	name = "org.eclipse.osee.jaxrs.server",
@@ -14,7 +20,8 @@ filegroup(
     name = "wadl",
     srcs = 
 	  [
-	    "OSEE-INF/transforms/wadl.xsl"
+	    "OSEE-INF/transforms/wadl.xsl",
+	    "META-INF/MANIFEST.MF"
 	   ]   
   , 
 )

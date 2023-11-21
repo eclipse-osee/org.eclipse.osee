@@ -2,7 +2,7 @@ load("//:osgi.bzl", "osgi_jar_converter")
 
 osgi_jar_converter(
     name = "osgi_jar",
-    arg = "framework.jdk.core",
+    arg = "org.eclipse.osee.framework.jdk.core",
 )
 
 

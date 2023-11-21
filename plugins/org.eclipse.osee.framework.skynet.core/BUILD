@@ -1,3 +1,10 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.skynet.core",
+)
+
 java_library(
         name = "org.eclipse.osee.framework.skynet.core",
         resources = ["exsd_files","xml_files","xsd_files"],
@@ -15,8 +22,8 @@ java_library(
 		"//org.eclipse.osee.framework.plugin.core",
 		"//org.eclipse.osee.activity.api"
 			],
-                visibility = ["//visibility:public"]
-              )
+         visibility = ["//visibility:public"]
+)
 
 filegroup(
     name = "exsd_files",
@@ -25,8 +32,7 @@ filegroup(
 
 filegroup(
     name = "xml_files",
-    srcs =
-            glob(["OSGI-INF/*.xml"]),
+    srcs = glob(["OSGI-INF/*.xml"]),
 )
 
 filegroup(

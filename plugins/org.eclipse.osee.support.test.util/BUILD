@@ -1,5 +1,14 @@
+
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.support.test.util",
+)
+
 java_library(
 	name = "org.eclipse.osee.support.test.util",
+	resources = ["manifest"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
 	 	"//org.eclipse.osee.framework.core.model",
@@ -39,6 +48,11 @@ java_library(
 	 	"//org.eclipse.osee.framework.core.packages"
 	],
 	visibility = ["//visibility:public"]
+)
+
+filegroup(
+    name = "manifest",
+    srcs = ["META-INF/MANIFEST.MF"]
 )
 
 java_library(

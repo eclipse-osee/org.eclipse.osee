@@ -1,3 +1,9 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.framework.messaging.event.res",
+)
 
 java_library(
         name = "org.eclipse.osee.framework.messaging.event.res",
@@ -15,7 +21,8 @@ filegroup(
     srcs =
         [
         "jaxb/resMessages.xsd",
-        "OSGI-INF/osee.core.model.event.service.xml"
+        "OSGI-INF/osee.core.model.event.service.xml",
+	"META-INF/MANIFEST.MF"
         ],
 )
 

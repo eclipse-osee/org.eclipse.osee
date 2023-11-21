@@ -1,6 +1,13 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.define.ide",
+)
+
 java_library(
 	name = "org.eclipse.osee.define.ide",
-	resources = ["xml_files","img"],
+	resources = ["osee-inf","manifest"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
 	 	"//org.eclipse.osee.framework.core.model",
@@ -41,38 +48,14 @@ java_library(
 )
 
 filegroup(
-    name = "xml_files",
-    srcs =
-          [
-	    "plugin.xml",
-	    "OSEE-INF/extensionPts/TraceUnitHandler.exsd",
-	    "OSEE-INF/templates/Work_Instruction_Template.xml",
-	    "META-INF/MANIFEST.MF"
-           ]
+    name = "osee-inf",
+    srcs = glob(["OSEE-INF/*"])
   ,
 )
 
 filegroup(
-    name = "img",
-    srcs =
-          [
-            "OSEE-INF/images/artifact_search.gif",
-	    "OSEE-INF/images/chkbox_disabled.gif",
-	    "OSEE-INF/images/chkbox_enabled.gif",
-	    "OSEE-INF/images/compass.xcf",
-	    "OSEE-INF/images/defineNav.gif",
-	    "OSEE-INF/delete_button.gif",
-	    "OSEE-INF/images/gears.gif",
-	    "OSEE-INF/images/importTrace.gif",
-	    "OSEE-INF/images/laser_16_16.gif",
-	    "OSEE-INF/images/refresh.gif",
-	    "OSEE-INF/images/relate.gif",
-	    "OSEE-INF/images/relateWizard.gif",
-	    "OSEE-INF/images/remove.gif",
-	    "OSEE-INF/images/up.gif",
-	    "OSEE-INF/images/wizard.bmp"
-	  ]
-  ,
+    name = "manifest",
+    srcs = ["META-INF/MANIFEST.MF"]
 )
 
 java_library(

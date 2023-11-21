@@ -1,3 +1,9 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.ats.api",
+)
 
 java_library(
         name = "org.eclipse.osee.ats.api",
@@ -17,6 +23,7 @@ filegroup(
         srcs =
           [
             "OSGI-INF/ats.type.provider.xml",
+	    "META-INF/MANIFEST.MF"
           ]
   ,
 

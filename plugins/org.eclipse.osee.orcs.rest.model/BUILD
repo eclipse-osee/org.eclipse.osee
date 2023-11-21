@@ -1,15 +1,27 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.orcs.rest.model",
+)
 
 java_library(
         name = "org.eclipse.osee.orcs.rest.model",
+	resources = ["manifest"],
 	srcs = glob(["**/*.java"]),
         deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.orcs",
                 "//org.eclipse.osee.orcs.core","//org.eclipse.osee.jdbc",
                 "//org.eclipse.osee.jaxrs", "//org.eclipse.osee.console.admin",
-	"//org.eclipse.osee.activity.api", "//org.eclipse.osee.framework.core.model","//org.eclipse.osee.framework.resource.management"],
+	        "//org.eclipse.osee.activity.api", "//org.eclipse.osee.framework.core.model","//org.eclipse.osee.framework.resource.management"],
         visibility = ["//visibility:public"]
         
 )
 
+
+filegroup(
+    name = "manifest",
+    srcs = ["META-INF/MANIFEST.MF"]
+)
 
 java_library(
         name = "java_deps",

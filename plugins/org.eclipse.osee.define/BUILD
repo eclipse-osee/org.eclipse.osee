@@ -2,7 +2,7 @@ load("//:osgi.bzl", "osgi_jar_converter")
 
 osgi_jar_converter(
     name = "osgi_jar",
-    arg = "define",
+    arg = "org.eclipse.osee.define",
 )
 
 java_library(
@@ -24,8 +24,8 @@ filegroup(
 	     "OSGI-INF/define.application.impl.xml",
 	     "OSGI-INF/define.operations.impl.xml",
 	     "OSGI-INF/define.attachment.writer.xml",
-           ]
-  ,
+	     "META-INF/MANIFEST.MF"
+           ],
     visibility = ["//visibility:public"]
 )
 

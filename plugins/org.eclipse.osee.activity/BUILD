@@ -1,3 +1,9 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.activity",
+)
 
 java_library(
 	name = "org.eclipse.osee.activity",
@@ -17,7 +23,9 @@ filegroup(
 	    "src/org/eclipse/osee/activity/internal/migration/V0.21.0_2015_02_26_0950__Activity.sql",
 	    "OSGI-INF/activity.database.storage.xml",
 	    "OSGI-INF/activity.jaxrs.application.xml",
-	    "OSGI-INF/activity.log.impl.xml"
+	    "OSGI-INF/activity.log.impl.xml",
+	    "META-INF/MANIFEST.MF"
+
 	  ]   
   , 
 )

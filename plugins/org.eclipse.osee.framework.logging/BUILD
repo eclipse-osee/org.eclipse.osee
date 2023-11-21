@@ -1,9 +1,15 @@
 java_library(
 	name = "org.eclipse.osee.framework.logging",
+	resources = ["manifest"],
 	srcs = glob(["**/*.java"]),	
 	deps = ["java_deps","//org.eclipse.osee.framework.jdk.core"],
 	visibility = ["//visibility:public"]
-	)
+)
+
+filegroup(
+    name = "manifest",
+    srcs = ["META-INF/MANIFEST.MF"]
+)
 
 java_library(
         name = "java_deps",
