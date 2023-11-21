@@ -120,7 +120,9 @@ public final class HealthEndpointImpl {
    @Path("top")
    @Produces(MediaType.APPLICATION_JSON)
    public HealthTop getHealthTop() {
-      return new HealthTop();
+      HealthTop top = new HealthTop();
+      top.setTop();
+      return top;
    }
 
    @GET

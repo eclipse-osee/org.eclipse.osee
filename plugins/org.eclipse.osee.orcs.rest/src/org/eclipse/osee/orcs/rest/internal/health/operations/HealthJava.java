@@ -29,7 +29,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 public class HealthJava {
    private final RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
    private final OperatingSystemMXBean osMXBean = ManagementFactory.getOperatingSystemMXBean();
-   private final JdbcClient jdbcClient;
+   private JdbcClient jdbcClient;
 
    private String vmName = "";
    private String vmVendor = "";
@@ -42,6 +42,11 @@ public class HealthJava {
    private String osArch = "";
    private final List<String> processArgs = new ArrayList<>();
    private final List<String> processes = new ArrayList<>();
+
+   // Used for deserialization
+   public HealthJava() {
+
+   }
 
    public HealthJava(JdbcClient jdbcClient) {
       this.jdbcClient = jdbcClient;
