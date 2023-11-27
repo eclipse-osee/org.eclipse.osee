@@ -11,13 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface NewRow {
+	actionId: string;
 	workflowID: string;
 	program: string;
 	build: string;
-	subsystem: string;
-	changeType: string;
 	state: string;
-	enhancement: string;
 	title: string;
 	requirement: string;
 	test: string;

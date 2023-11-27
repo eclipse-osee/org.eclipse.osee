@@ -80,13 +80,11 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 
 	newRow(workflow: workflow): NewRow {
 		return {
+			actionId: workflow.actionId,
 			workflowID: workflow.workflowID,
 			program: workflow.program,
 			build: workflow.build,
-			subsystem: workflow.subsystem,
-			changeType: workflow.changeType,
 			state: workflow.state,
-			enhancement: workflow.enhancement,
 			title: workflow.title,
 			requirement: '',
 			test: '',
@@ -127,6 +125,7 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	}
 
 	displayedColumns = [
+		'actionId',
 		'workflowID',
 		'program',
 		'build',
@@ -241,13 +240,11 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 		let str = '';
 		let column = 'S.No,';
 		let newHeaders = [
+			'Action ID',
 			'WorkFlow ID',
 			'Program',
 			'Build',
-			'Subsystem',
 			'State',
-			'Type',
-			'Enhancement',
 			'Title',
 			'Requirement',
 			'Test',
@@ -314,13 +311,11 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 
 	exportDataAsCsv() {
 		let arrHeader = [
+			'actionId',
 			'workflowID',
 			'program',
 			'build',
-			'subsystem',
 			'state',
-			'changeType',
-			'enhancement',
 			'title',
 			'requirement',
 			'test',
@@ -336,5 +331,31 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 			csvData = resp;
 			this.downloadAsCsvFile(csvData, 'CompleteTraceReport.csv');
 		});
+	}
+
+	downloadChangeReports(url: string) {
+		var rpcrNums = '';
+		var icdDiffs = '';
+		this.dataSource.data.forEach((element) => {
+			if (element.changeReport)
+				rpcrNums = rpcrNums + ',' + element.changeReport;
+			if (element.icdDiff) icdDiffs = icdDiffs + ',' + element.icdDiff;
+		});
+		this.reportService
+			.downloadChangeReports(url, rpcrNums, icdDiffs)
+			.subscribe((data: any) => this.getZipFile(data)),
+			() => console.log('Completed file download.');
+	}
+
+	getZipFile(data: any) {
+		var a: any = document.createElement('a');
+		document.body.appendChild(a);
+		a.style = 'display: none';
+		var blob = new Blob([data], { type: 'application/zip' });
+		var url = window.URL.createObjectURL(blob);
+		a.href = url;
+		a.download = 'changeReports.zip';
+		a.click();
+		window.URL.revokeObjectURL(url);
 	}
 }
