@@ -16,6 +16,7 @@ export interface Artifact {
 }
 
 export interface workflow {
+	actionId: string;
 	workflowID: string;
 	program: string;
 	build: string;

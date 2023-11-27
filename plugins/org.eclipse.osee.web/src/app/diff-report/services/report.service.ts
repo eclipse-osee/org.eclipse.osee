@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, combineLatest, iif, Observable, of } from 'rxjs';
 import {
 	debounceTime,
@@ -154,5 +154,17 @@ export class ReportService {
 			),
 			of(new Blob())
 		);
+	}
+
+	downloadChangeReports(url: string, rpcrNums: string, icdDiff: string): any {
+		if (rpcrNums) {
+			return this.http.get(url + '/download?' + 'rpcrNums=' + rpcrNums, {
+				responseType: 'blob',
+			});
+		} else if (icdDiff) {
+			return this.http.get(url + '/download?' + 'cdbSystem=' + icdDiff, {
+				responseType: 'blob',
+			});
+		} else return of();
 	}
 }

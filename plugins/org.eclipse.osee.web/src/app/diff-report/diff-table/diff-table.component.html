@@ -39,6 +39,14 @@
 			Export All Data to CSV
 		</button>
 	</ng-container>
+	<ng-container *ngIf="link | async as _link">
+		<button
+			mat-raised-button
+			class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
+			(click)="downloadChangeReports(_link)">
+			Download Change Reports
+		</button>
+	</ng-container>
 </div>
 <mat-form-field
 	subscriptSizing="dynamic"
@@ -69,6 +77,22 @@
 	[dataSource]="dataSource"
 	matSort
 	multiTemplateDataRows>
+	<ng-container matColumnDef="actionId">
+		<th
+			mat-header-cell
+			*matHeaderCellDef
+			mat-sort-header
+			class="tw-border-[0.2rem] tw-border-primary tw-text-center">
+			Action ID
+		</th>
+		<td
+			mat-cell
+			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
+			*matCellDef="let artifact">
+			{{ artifact.actionId }}
+		</td>
+	</ng-container>
+
 	<ng-container matColumnDef="workflowID">
 		<th
 			mat-header-cell
@@ -90,7 +114,11 @@
 						color="primary"
 						class="tw-underline"
 						(click)="
-							getChangeReport(_link + '/' + artifact.changeReport)
+							getChangeReport(
+								_link +
+									'/changeReports/' +
+									artifact.changeReport
+							)
 						">
 						REQ
 					</button>
@@ -101,7 +129,9 @@
 						color="primary"
 						class="tw-underline"
 						(click)="
-							getChangeReport(_link + '/' + artifact.icdDiff)
+							getChangeReport(
+								_link + '/cdbDiff/' + artifact.icdDiff
+							)
 						">
 						ICD
 					</button>
