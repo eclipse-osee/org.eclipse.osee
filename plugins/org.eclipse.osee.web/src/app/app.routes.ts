@@ -42,6 +42,10 @@ export const routes: Routes = [
 		path: 'gc',
 		loadChildren: () => import('./grid-commander/grid-commander.routes'),
 	},
+	{
+		path: 'server/health',
+		loadChildren: () => import('./server-health/server-health.routes'),
+	},
 	// {
 	// 	path: '',
 	// 	loadChildren: () => import('@osee/toolbar'),

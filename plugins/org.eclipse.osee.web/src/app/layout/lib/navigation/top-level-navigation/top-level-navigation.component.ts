@@ -1,4 +1,3 @@
-import { RouterLink } from '@angular/router';
 /*********************************************************************
  * Copyright (c) 2022 Boeing
  *
@@ -31,6 +30,7 @@ import { SideNavService } from '@osee/shared/services/layout';
 import { UserDataAccountService } from '@osee/auth';
 import { navigationElement } from '@osee/shared/types';
 import { navigationStructure } from '@osee/layout/routing';
+import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'osee-top-level-navigation',

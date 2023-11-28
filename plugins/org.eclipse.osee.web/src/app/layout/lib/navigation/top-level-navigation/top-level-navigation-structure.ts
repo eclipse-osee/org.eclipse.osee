@@ -31,6 +31,7 @@ export const navigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: '/ple',
 		icon: '',
+		description: '',
 		children: [
 			// Level-2
 			{
@@ -42,6 +43,7 @@ export const navigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: '/ple',
 				icon: '',
+				description: '',
 				children: [],
 			},
 			{
@@ -53,6 +55,7 @@ export const navigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: '/ple/help',
 				icon: '',
+				description: '',
 				children: [
 					{
 						label: 'BAT Tool Help',
@@ -63,6 +66,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/help/bat',
 						icon: 'sports_cricket',
+						description: '',
 						children: [],
 					},
 				],
@@ -76,6 +80,7 @@ export const navigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: '/artifact/explorer',
 				icon: '',
+				description: '',
 				children: [],
 			},
 			{
@@ -87,6 +92,7 @@ export const navigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: '/ple/asciidoc',
 				icon: '',
+				description: '',
 				children: [],
 			},
 			{
@@ -98,6 +104,7 @@ export const navigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: '/ple/messaging',
 				icon: '',
+				description: '',
 				children: [
 					// Level-3
 					{
@@ -109,6 +116,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging',
 						icon: 'home',
+						description: '',
 						children: [],
 					},
 					{
@@ -120,6 +128,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging/connections',
 						icon: 'device_hub',
+						description: '',
 						children: [],
 					},
 					{
@@ -131,6 +140,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging/types',
 						icon: 'view_module',
+						description: '',
 						children: [],
 					},
 					{
@@ -142,6 +152,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging/structureNames',
 						icon: 'line_style',
+						description: '',
 						children: [],
 					},
 					{
@@ -153,6 +164,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging/typeSearch',
 						icon: 'search',
+						description: '',
 						children: [],
 					},
 					{
@@ -164,6 +176,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging/reports',
 						icon: 'insert_drive_file',
+						description: '',
 						children: [],
 					},
 					{
@@ -175,6 +188,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging/crossreference',
 						icon: 'compare_arrows',
+						description: '',
 						children: [],
 					},
 					{
@@ -186,6 +200,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [],
 						routerLink: '/ple/messaging/help',
 						icon: 'help_outline',
+						description: '',
 						children: [],
 					},
 					{
@@ -197,6 +212,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [UserRoles.OSEE_ADMIN],
 						routerLink: '/ple/messaging/transports',
 						icon: 'timeline',
+						description: '',
 						children: [],
 					},
 					{
@@ -208,6 +224,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [UserRoles.OSEE_ADMIN],
 						routerLink: '/ple/messaging/import',
 						icon: 'cloud_upload',
+						description: '',
 						children: [],
 					},
 					{
@@ -219,6 +236,7 @@ export const navigationStructure: navigationElement[] = [
 						requiredRoles: [UserRoles.OSEE_ADMIN],
 						routerLink: '/ple/messaging/lists',
 						icon: 'view_list',
+						description: '',
 						children: [],
 					},
 				],
@@ -232,6 +250,95 @@ export const navigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: '/ple/plconfig',
 				icon: '',
+				description: '',
+				children: [],
+			},
+		],
+	},
+	{
+		label: 'Server Health',
+		cypressLabel: '',
+		pageTitle: '',
+		isDropdown: true,
+		isDropdownOpen: false,
+		requiredRoles: [UserRoles.OSEE_ADMIN],
+		routerLink: '/server/health',
+		icon: '',
+		description: '',
+		children: [
+			{
+				label: 'Server Health Dashboard',
+				cypressLabel: '',
+				pageTitle: '',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/server/health',
+				icon: 'healing',
+				description:
+					'Provides OSEE Server Health Information and Links',
+				children: [],
+			},
+			{
+				label: 'Status',
+				cypressLabel: '',
+				pageTitle: '',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/server/health/status',
+				icon: 'router',
+				description: 'OSEE Server Status',
+				children: [],
+			},
+			{
+				label: 'Balancers',
+				cypressLabel: '',
+				pageTitle: '',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/server/health/balancers',
+				icon: 'router',
+				description: 'OSEE Server Load Balancer Status',
+				children: [],
+			},
+
+			{
+				label: 'Usage',
+				cypressLabel: '',
+				pageTitle: '',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/server/health/usage',
+				icon: 'router',
+				description: 'OSEE Server Usage Report In The Last 1 Month',
+				children: [],
+			},
+			{
+				label: 'ActiveMQ',
+				cypressLabel: '',
+				pageTitle: '',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/server/health/activemq',
+				icon: 'router',
+				description: 'OSEE Server ActiveMQ',
+				children: [],
+			},
+			{
+				label: 'Http Headers',
+				cypressLabel: '',
+				pageTitle: '',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/server/health/headers',
+				icon: 'router',
+				description:
+					'OSEE Server and Web Client Communication Protocols',
 				children: [],
 			},
 		],

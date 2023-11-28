@@ -29,6 +29,7 @@ public class HealthTop {
 
    public void setTop() {
       StringBuilder topToBuild = new StringBuilder();
+      topToBuild.append("cmd [top -b -n 1]\n\n");
       if (!Lib.isWindows()) {
          // Run top in batch mode for single iteration
          ProcessBuilder pb = new ProcessBuilder("top", "-b", "-n", "1");

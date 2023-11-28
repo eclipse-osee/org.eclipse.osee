@@ -27,6 +27,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
+import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -185,6 +186,37 @@ public final class HealthEndpointImpl {
       HealthUsage usage = new HealthUsage(orcsApi, getJdbcClient());
       usage.calculateUsage();
       return usage;
+   }
+
+   @GET
+   @Path("prometheus")
+   @Produces(MediaType.TEXT_PLAIN)
+   public String getPrometheusUrl() {
+      String uri = applicationServerManager.getServerUri().toString();
+      // Remove port number from end of uri
+      int endIndex = uri.indexOf(":", "http://".length());
+      // Return string with prometheus port
+      String url;
+      url = uri.substring(0, endIndex) + ":" + System.getProperty(
+         "prometheus.http.port") + "/graph?g0.expr=jvm_memory_bytes_used{area%3D\"heap\"}&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1h";
+      return url;
+   }
+
+   @GET
+   @Path("servers")
+   @Produces(MediaType.TEXT_PLAIN)
+   public String setServers(@QueryParam("servers") String servers) {
+      if (servers != null) {
+         if (servers.length() > 0) {
+            OseeInfo.setValue(getJdbcClient(), "osee.health.servers", servers);
+         }
+      }
+      try {
+         String updatedServers = OseeInfo.getValue(getJdbcClient(), "osee.health.servers");
+         return "Value for key [osee.health.servers] in table [osee_info]: " + updatedServers;
+      } catch (Exception e) {
+         return "Error: key [osee.health.servers] is NOT SET in table [osee_info]";
+      }
    }
 
    private JdbcClient getJdbcClient() {

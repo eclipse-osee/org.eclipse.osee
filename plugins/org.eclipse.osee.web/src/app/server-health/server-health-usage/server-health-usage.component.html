@@ -1,0 +1,526 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-flex tw-h-full tw-flex-col">
+	<osee-server-health-page-header
+		[icon]="currNavItem.icon"
+		[name]="currNavItem.label"
+		[description]="currNavItem.description" />
+	@if (usage | async; as usage) {
+		<div>
+			<!-- All Users Panel -->
+			<mat-expansion-panel
+				class="hover:tw-bg-background-hover [&>div>div]:tw-p-0">
+				<mat-expansion-panel-header
+					(click)="
+						panelsOpen().includes('All Users')
+							? removeFromPanelsOpen('All Users')
+							: addToPanelsOpen('All Users')
+					"
+					[ngClass]="
+						panelsOpen().includes('All Users')
+							? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+							: ''
+					"
+					class="tw-pl-8 tw-shadow-md">
+					<mat-panel-title>
+						<div class="tw-pr-8 tw-text-lg tw-font-bold">
+							All Users
+						</div>
+						<div>{{ getUsersSize(usage.allUsers) }} Users</div>
+					</mat-panel-title>
+				</mat-expansion-panel-header>
+				<mat-table [dataSource]="getUsersDataSource(usage.allUsers)">
+					<ng-container matColumnDef="name">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Name</mat-header-cell
+						>
+						<mat-cell *matCellDef="let user">{{
+							user.name
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="email">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Email</mat-header-cell
+						>
+						<mat-cell *matCellDef="let user">{{
+							user.email
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="userId">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>User ID</mat-header-cell
+						>
+						<mat-cell *matCellDef="let user">{{
+							user.userId
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="accountId">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Account ID</mat-header-cell
+						>
+						<mat-cell *matCellDef="let user">{{
+							user.accountId
+						}}</mat-cell>
+					</ng-container>
+
+					<mat-header-row
+						*matHeaderRowDef="
+							displayedUserColumns
+						"></mat-header-row>
+					<mat-row
+						*matRowDef="
+							let row;
+							columns: displayedUserColumns
+						"></mat-row>
+				</mat-table>
+			</mat-expansion-panel>
+			<!-- All Sessions Panel -->
+			<mat-expansion-panel
+				class="hover:tw-bg-background-hover [&>div>div]:tw-p-0">
+				<mat-expansion-panel-header
+					(click)="
+						panelsOpen().includes('All Sessions')
+							? removeFromPanelsOpen('All Sessions')
+							: addToPanelsOpen('All Sessions')
+					"
+					[ngClass]="
+						panelsOpen().includes('All Sessions')
+							? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+							: ''
+					"
+					class="tw-pl-8 tw-shadow-md">
+					<mat-panel-title>
+						<div class="tw-pr-8 tw-text-lg tw-font-bold">
+							All Sessions
+						</div>
+						<div>
+							{{ getAllSessionsSize(usage.allSessions) }}
+							Sessions
+						</div>
+					</mat-panel-title>
+				</mat-expansion-panel-header>
+				<mat-table
+					[dataSource]="getAllSessionsDataSource(usage.allSessions)">
+					<ng-container matColumnDef="name">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Name</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.user.name
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="email">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Email</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.user.email
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="userId">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>User ID</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.user.userId
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="accountId">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Account ID</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.user.accountId
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="date">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Date</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.date
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="version">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Version</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.version
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="sessionId">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Session ID</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.sessionId
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="clientAddress">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Client Address</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.clientAddress
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="clientMachineName">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Client Machine Name</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.clientMachineName
+						}}</mat-cell>
+					</ng-container>
+
+					<ng-container matColumnDef="port">
+						<mat-header-cell
+							class="tw-font-bold"
+							*matHeaderCellDef
+							>Port</mat-header-cell
+						>
+						<mat-cell *matCellDef="let session">{{
+							session.port
+						}}</mat-cell>
+					</ng-container>
+
+					<mat-header-row
+						*matHeaderRowDef="
+							displayedSessionColumns
+						"></mat-header-row>
+					<mat-row
+						*matRowDef="
+							let row;
+							columns: displayedSessionColumns
+						"></mat-row>
+				</mat-table>
+			</mat-expansion-panel>
+			<!-- All Users By OSEE Release Version Type Panel -->
+			<mat-expansion-panel
+				class="hover:tw-bg-background-hover [&>div>div]:tw-p-0">
+				<mat-expansion-panel-header
+					(click)="
+						panelsOpen().includes(
+							'All Users By OSEE Release Version Type'
+						)
+							? removeFromPanelsOpen(
+									'All Users By OSEE Release Version Type'
+							  )
+							: addToPanelsOpen(
+									'All Users By OSEE Release Version Type'
+							  )
+					"
+					[ngClass]="
+						panelsOpen().includes(
+							'All Users By OSEE Release Version Type'
+						)
+							? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+							: ''
+					"
+					class="tw-pl-8 tw-shadow-md">
+					<mat-panel-title>
+						<div class="tw-text-lg tw-font-bold">
+							All Users By OSEE Release Version Type
+						</div>
+					</mat-panel-title>
+				</mat-expansion-panel-header>
+				@for (
+					versionType of getVersionMapKeys(usage.versionTypeMap);
+					track versionType
+				) {
+					<mat-expansion-panel
+						class="hover:tw-bg-background-hover [&>div>div]:tw-p-0">
+						<mat-expansion-panel-header
+							(click)="
+								panelsOpen().includes(
+									'All Users By OSEE Release Version Type' +
+										versionType
+								)
+									? removeFromPanelsOpen(
+											'All Users By OSEE Release Version Type' +
+												versionType
+									  )
+									: addToPanelsOpen(
+											'All Users By OSEE Release Version Type' +
+												versionType
+									  )
+							"
+							[ngClass]="
+								panelsOpen().includes(
+									'All Users By OSEE Release Version Type' +
+										versionType
+								)
+									? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+									: ''
+							"
+							class="tw-pl-16 tw-shadow-md">
+							<mat-panel-title>
+								<div class="tw-pr-8 tw-text-lg tw-font-bold">
+									{{ versionType }}
+								</div>
+								<div>
+									{{
+										getUsersSize(
+											usage.versionTypeMap[versionType]
+										)
+									}}
+									Users
+								</div>
+							</mat-panel-title>
+						</mat-expansion-panel-header>
+						<mat-table
+							[dataSource]="
+								getUsersDataSource(
+									usage.versionTypeMap[versionType]
+								)
+							"
+							class="tw-pl-16">
+							<ng-container matColumnDef="name">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>Name</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.name
+								}}</mat-cell>
+							</ng-container>
+
+							<ng-container matColumnDef="email">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>Email</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.email
+								}}</mat-cell>
+							</ng-container>
+
+							<ng-container matColumnDef="userId">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>User ID</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.userId
+								}}</mat-cell>
+							</ng-container>
+
+							<ng-container matColumnDef="accountId">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>Account ID</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.accountId
+								}}</mat-cell>
+							</ng-container>
+
+							<mat-header-row
+								*matHeaderRowDef="
+									displayedUserColumns
+								"></mat-header-row>
+							<mat-row
+								*matRowDef="
+									let row;
+									columns: displayedUserColumns
+								"></mat-row>
+						</mat-table>
+					</mat-expansion-panel>
+				}
+			</mat-expansion-panel>
+			<!-- All Users By OSEE Release Version Name Panel -->
+			<mat-expansion-panel
+				class="hover:tw-bg-background-hover [&>div>div]:tw-p-0">
+				<mat-expansion-panel-header
+					(click)="
+						panelsOpen().includes(
+							'All Users By OSEE Release Version Name'
+						)
+							? removeFromPanelsOpen(
+									'All Users By OSEE Release Version Name'
+							  )
+							: addToPanelsOpen(
+									'All Users By OSEE Release Version Name'
+							  )
+					"
+					[ngClass]="
+						panelsOpen().includes(
+							'All Users By OSEE Release Version Name'
+						)
+							? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+							: ''
+					"
+					class="tw-pl-8 tw-shadow-md">
+					<mat-panel-title>
+						<div class="tw-text-lg tw-font-bold">
+							All Users By OSEE Release Version Name
+						</div>
+					</mat-panel-title>
+				</mat-expansion-panel-header>
+				@for (
+					versionName of getVersionMapKeys(usage.versionNameMap);
+					track versionName
+				) {
+					<mat-expansion-panel
+						class="hover:tw-bg-background-hover [&>div>div]:tw-p-0">
+						<mat-expansion-panel-header
+							(click)="
+								panelsOpen().includes(
+									'All Users By OSEE Release Version Name' +
+										versionName
+								)
+									? removeFromPanelsOpen(
+											'All Users By OSEE Release Version Name' +
+												versionName
+									  )
+									: addToPanelsOpen(
+											'All Users By OSEE Release Version Name' +
+												versionName
+									  )
+							"
+							[ngClass]="
+								panelsOpen().includes(
+									'All Users By OSEE Release Version Name' +
+										versionName
+								)
+									? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+									: ''
+							"
+							class="tw-pl-16 tw-shadow-md">
+							<mat-panel-title>
+								<div class="tw-pr-8 tw-text-lg tw-font-bold">
+									{{ versionName }}
+								</div>
+								<div>
+									{{
+										getUsersSize(
+											usage.versionNameMap[versionName]
+										)
+									}}
+									Users
+								</div>
+							</mat-panel-title>
+						</mat-expansion-panel-header>
+						<mat-table
+							[dataSource]="
+								getUsersDataSource(
+									usage.versionNameMap[versionName]
+								)
+							"
+							class="tw-pl-16">
+							<ng-container matColumnDef="name">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>Name</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.name
+								}}</mat-cell>
+							</ng-container>
+
+							<ng-container matColumnDef="email">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>Email</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.email
+								}}</mat-cell>
+							</ng-container>
+
+							<ng-container matColumnDef="userId">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>User ID</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.userId
+								}}</mat-cell>
+							</ng-container>
+
+							<ng-container matColumnDef="accountId">
+								<mat-header-cell
+									class="tw-font-bold"
+									*matHeaderCellDef
+									>Account ID</mat-header-cell
+								>
+								<mat-cell *matCellDef="let user">{{
+									user.accountId
+								}}</mat-cell>
+							</ng-container>
+
+							<mat-header-row
+								*matHeaderRowDef="
+									displayedUserColumns
+								"></mat-header-row>
+							<mat-row
+								*matRowDef="
+									let row;
+									columns: displayedUserColumns
+								"></mat-row>
+						</mat-table>
+					</mat-expansion-panel>
+				}
+			</mat-expansion-panel>
+		</div>
+	} @else {
+		<div class="tw-flex tw-items-center tw-justify-center tw-p-4">
+			No data
+		</div>
+	}
+</div>

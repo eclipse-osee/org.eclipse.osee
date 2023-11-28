@@ -27,69 +27,90 @@
 <ng-template
 	#recursiveMenu
 	let-elements>
-	<div class="tw-px-2">
-		<mat-nav-list>
+	<div>
+		<mat-nav-list class="tw-py-0">
 			<ng-container *ngFor="let element of elements">
 				<!-- If dropdown -->
-				<a
-					mat-list-item
+				<mat-list-item
 					*ngIf="element.isDropdown"
 					(click)="element.isDropdownOpen = !element.isDropdownOpen"
-					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
 					[ngClass]="{
-						'tw-bg-primary-50 dark:tw-bg-primary-800':
+						'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
+							router.url.includes(element.routerLink) &&
+							!element.isDropdownOpen,
+						'dark:hover:tw-bg-background-disabled-button':
 							router.url.includes(element.routerLink) &&
 							!element.isDropdownOpen
-					}">
-					<mat-icon
-						matListItemIcon
-						*ngIf="element.icon !== ''"
-						class="tw-mr-2"
-						>{{ element.icon }}</mat-icon
-					>
-					{{ element.label }}
-					<div matListItemMeta>
-						<mat-icon *ngIf="!element.isDropdownOpen"
-							>chevron_right</mat-icon
-						>
-						<mat-icon *ngIf="element.isDropdownOpen"
-							>expand_more</mat-icon
-						>
+					}"
+					class="tw-py-8">
+					<div class="tw-flex tw-items-center tw-justify-between">
+						<div class="tw-flex tw-flex-row tw-items-center">
+							<div class="tw-pr-2">
+								<mat-icon
+									matListItemIcon
+									*ngIf="element.icon !== ''"
+									>{{ element.icon }}
+								</mat-icon>
+							</div>
+							<div>
+								{{ element.label }}
+							</div>
+						</div>
+
+						<div class="tw-flex tw-items-center">
+							<mat-icon *ngIf="!element.isDropdownOpen"
+								>chevron_right</mat-icon
+							>
+							<mat-icon *ngIf="element.isDropdownOpen"
+								>expand_more</mat-icon
+							>
+						</div>
 					</div>
-				</a>
+				</mat-list-item>
+
 				<!-- If not a dropdown -->
-				<a
-					mat-list-item
+				<mat-list-item
 					*ngIf="!element.isDropdown"
 					(click)="closeTopLevelNav()"
 					routerLink="{{ element.routerLink }}"
-					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
 					[ngClass]="{
-						'tw-bg-primary-50 dark:tw-bg-primary-800':
-							router.url === element.routerLink
-					}">
-					<mat-icon
-						matListItemIcon
-						*ngIf="element.icon !== ''"
-						class="tw-mr-2"
-						>{{ element.icon }}</mat-icon
-					>
-					{{ element.label }}
-				</a>
+						'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
+							router.url === element.routerLink,
+						'dark:hover:tw-bg-background-disabled-button':
+							router.url !== element.routerLink
+					}"
+					class="tw-py-8">
+					<div class="tw-flex tw-flex-row tw-items-center">
+						<div class="tw-pr-2">
+							<mat-icon
+								matListItemIcon
+								*ngIf="element.icon !== ''"
+								>{{ element.icon }}
+							</mat-icon>
+						</div>
+						<div>
+							{{ element.label }}
+						</div>
+					</div>
+				</mat-list-item>
+
 				<!-- If the element has children and dropdown is open -->
 				<mat-nav-list
-					class="tw-pb-2"
+					class="tw-py-0"
 					*ngIf="element.children && element.isDropdownOpen">
 					<mat-divider></mat-divider>
-					<ng-container
-						*ngTemplateOutlet="
-							recursiveMenu;
-							context: {
-								$implicit:
-									(getElementsWithPermission(element.children)
-									| async)
-							}
-						"></ng-container>
+					<div class="tw-pl-8">
+						<ng-container
+							*ngTemplateOutlet="
+								recursiveMenu;
+								context: {
+									$implicit:
+										(getElementsWithPermission(
+											element.children
+										) | async)
+								}
+							"></ng-container>
+					</div>
 				</mat-nav-list>
 			</ng-container>
 		</mat-nav-list>

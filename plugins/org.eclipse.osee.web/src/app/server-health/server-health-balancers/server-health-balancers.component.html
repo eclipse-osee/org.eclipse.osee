@@ -1,0 +1,94 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-flex tw-h-full tw-flex-col">
+	<osee-server-health-page-header
+		[icon]="currNavItem.icon"
+		[name]="currNavItem.label"
+		[description]="currNavItem.description" />
+	<ng-container
+		*ngIf="balancersAsDataSource | async as dataSource; else noData">
+		<div>
+			<table
+				mat-table
+				multiTemplateDataRows
+				[dataSource]="dataSource">
+				<ng-container matColumnDef="name">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-font-bold">
+						Name
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let balancer"
+						(click)="toggleRow(balancer)">
+						{{ balancer.name }}
+					</td>
+				</ng-container>
+				<ng-container matColumnDef="alive">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-font-bold">
+						Alive
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let balancer"
+						(click)="toggleRow(balancer)"
+						[ngClass]="
+							balancer.alive ? 'tw-bg-success' : 'tw-bg-warning'
+						">
+						{{ balancer.alive ? 'Alive' : 'Not Alive' }}
+					</td>
+				</ng-container>
+				<ng-container matColumnDef="expandedBalancer">
+					<td
+						mat-cell
+						*matCellDef="let balancer"
+						[attr.colspan]="displayedColumns.length"
+						class="tw-p-0">
+						<div
+							class="tw-overflow-hidden tw-bg-white"
+							[@detailExpand]="
+								balancer.expanded ? 'expanded' : 'collapsed'
+							"
+							*ngIf="balancer.expanded && balancer.alive">
+							<iframe
+								class="tw-min-h-[700px] tw-min-w-full"
+								[src]="buildBalancerManagerUrl(balancer.name)"
+								frameborder="0"></iframe>
+						</div>
+					</td>
+				</ng-container>
+
+				<tr
+					mat-header-row
+					*matHeaderRowDef="displayedColumns; sticky: true"></tr>
+				<tr
+					mat-row
+					*matRowDef="let balancer; columns: displayedColumns"
+					class="hover:tw-bg-background-hover"></tr>
+				<tr
+					mat-row
+					*matRowDef="let row; columns: ['expandedBalancer']"
+					class="tw-h-0"></tr>
+			</table>
+		</div>
+	</ng-container>
+</div>
+
+<ng-template #noData>
+	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
+</ng-template>
