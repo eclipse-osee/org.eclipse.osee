@@ -32,11 +32,13 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSpecificationRecord;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRelationshipRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicBranchSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BranchSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.RelationshipSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.demo.DemoChoice;
@@ -54,6 +56,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.EnumFunctionMap;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -191,7 +194,7 @@ public class SynchronizationEndpointTest {
     * Class used to define, and build test artifacts with a test attribute in the local database. Only one attribute per
     * test artifact is setup and used for testing.
     */
-   private static class ArtifactInfoRecord implements BuilderRecord {
+   private static class ArtifactInfoRecord implements ArtifactSpecificationRecord {
       /**
        * A map of {@link Function} methods to get expected descriptions based upon the {@link IdentifiableType}.
        */
@@ -445,7 +448,7 @@ public class SynchronizationEndpointTest {
          this.attributeSpecifications =
             List.of
                (
-                  new BasicAttributeSpecification
+                  new BasicAttributeSpecificationRecord
                          (
                             Objects.requireNonNull( testAttributeType ),
                             Objects.requireNonNull( testAttributeValues ),
@@ -751,7 +754,7 @@ public class SynchronizationEndpointTest {
        */
 
       @Override
-      public List<BuilderRelationshipRecord> getBuilderRelationshipRecords() {
+      public List<RelationshipSpecificationRecord> getRelationshipSpecifications() {
          return null;
       }
 
@@ -789,7 +792,37 @@ public class SynchronizationEndpointTest {
       GregorianCalendar.from(ZonedDateTime.of(1970, 1, 1, 0, 0, 0, 0, SynchronizationEndpointTest.zoneIdZ));
 
    /**
-    * List of {@link ArtifactInfoRecords} describing the test artifacts.
+    * The {@link BranchSpecificationRecord} identifier for the test branch.
+    */
+
+   private static int testBranchSpecificationRecordIdentifier = 1;
+
+   /**
+    * List of {@link BranchSpecificationRecord} implementations describing the branches for the test.
+    * <p>
+    * Branches are created in the list order. Follow the rules:
+    * <ul>
+    * <li>Ensure identifiers are unique.</li>
+    * <li>The identifier 0 is reserved.</li>
+    * <li>Ensure hierarchical parents are at lower list indices.</li>
+    * </ul>
+    */
+
+   //@formatter:off
+   private static final List<BranchSpecificationRecord> branchSpecifications =
+      List.of
+         (
+            new BasicBranchSpecificationRecord
+                   (
+                      SynchronizationEndpointTest.testBranchSpecificationRecordIdentifier, /* BranchSpecificationRecord Identifier */
+                      "ReqIF Test Branch",                                                 /* Branch Name                          */
+                      "Branch for ReqIF Synchronizaion Artifact Testing"                   /* Branch Creation Comment              */
+                   )
+         );
+   //@formatter:on
+
+   /**
+    * MapList of {@link ArtifactInfoRecords} describing the test artifacts for each branch.
     * <p>
     * Artifacts are created in the list order. Follow the rules:
     * <ul>
@@ -803,378 +836,389 @@ public class SynchronizationEndpointTest {
     */
 
    //@formatter:off
-   private static List<ArtifactInfoRecord> artifactInfoRecords =
-      List.of
+   private static MapList<Integer,ArtifactInfoRecord> artifactSpecifications =
+      MapList.ofEntries
          (
-           new ArtifactInfoRecord
-                  (
-                    1,                                            /* Identifier                             (Integer)                               */
-                    0,                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                    "ReqIF Test Specifications",                  /* Artifact Name                          (String)                                */
-                    CoreArtifactTypes.Folder,                     /* Artifact Type                          (ArtifactTypeToken)                     */
-                    CoreAttributeTypes.Description,               /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                    List.of( "Motley folder of test artifacts" ), /* Test Attribute Values                  (List<Object>)                          */
-                    null,                                         /* Test Attribute Default Value           {Object}                                */
-                    "",                                           /* Spec Type Description                  (String)                                */
-                    "ST-",                                        /* Spec Type Identifier Prefix            (String)                                */
-                    "",                                           /* Spec Type Long Name                    (String)                                */
-                    "",                                           /* Attribute Definition Description       (String)                                */
-                    "AD-",                                        /* Attribute Definition Identifier Prefix (String)                                */
-                    "",                                           /* Attribute Definition Long Name         (String)                                */
-                    AttributeDefinitionInteger.class,             /* Attribute Definition Class             (Class<? extends AttributeDefinition)   */
-                    "",                                           /* Datatype Definition Description        (String)                                */
-                    "DD-",                                        /* Datatype Definition Identifier Prefix  (String)                                */
-                    "",                                           /* Datatype Definition Long Name          (String)                                */
-                    DatatypeDefinitionInteger.class,              /* Datatype Definition Class              (Class<? extends DatatypeDefinition)    */
-                    null,                                         /* Datatype Definition Verifier           (Consumer<? super DatatypeDefinition)   */
-                    ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
-                    ( reqifValue ) -> reqifValue
-                  ),
+            /*
+             * Artifacts for the test branch.
+             */
 
-           new ArtifactInfoRecord
-                  (
-                    2,
-                    1,
-                    "ARTIFACT_IDENTIFIER_TESTER",
-                    CoreArtifactTypes.GitCommit,
-                    CoreAttributeTypes.UserArtifactId,
-                    List.of( ArtifactId.valueOf( 1938 ) ),
-                    ArtifactId.valueOf( -1 ),
-                    "OSEE Git Commit Spec Object Type",
-                    "SOT-",
-                    "Git Commit",
-                    "Artifact id of an artifact of type User",
-                    "AD-",
-                    "User Artifact Id",
-                    AttributeDefinitionInteger.class,
-                    "OSEE Artifact Identifier Datatype",
-                    "DD-",
-                    "ARTIFACT_IDENTIFIER",
-                    DatatypeDefinitionInteger.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
-                       Assert.assertEquals( SynchronizationEndpointTest.maxLong, reqifDatatypeDefinitionInteger.getMax() );
-                       Assert.assertEquals( SynchronizationEndpointTest.minLong, reqifDatatypeDefinitionInteger.getMin() );
-                    },
-                    ( attribute, value ) -> ((ArtifactReferenceAttribute) attribute).setValue( (ArtifactId) value ),
-                    ( reqifValue ) -> ArtifactId.valueOf( ((BigInteger) reqifValue).longValueExact() )
-                  ),
+            Map.entry
+               (
+                  SynchronizationEndpointTest.testBranchSpecificationRecordIdentifier,
+                  List.of
+                     (
+                       new ArtifactInfoRecord
+                              (
+                                1,                                            /* Identifier                             (Integer)                               */
+                                0,                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                "ReqIF Test Specifications",                  /* Artifact Name                          (String)                                */
+                                CoreArtifactTypes.Folder,                     /* Artifact Type                          (ArtifactTypeToken)                     */
+                                CoreAttributeTypes.Description,               /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                List.of( "Motley folder of test artifacts" ), /* Test Attribute Values                  (List<Object>)                          */
+                                null,                                         /* Test Attribute Default Value           {Object}                                */
+                                "",                                           /* Spec Type Description                  (String)                                */
+                                "ST-",                                        /* Spec Type Identifier Prefix            (String)                                */
+                                "",                                           /* Spec Type Long Name                    (String)                                */
+                                "",                                           /* Attribute Definition Description       (String)                                */
+                                "AD-",                                        /* Attribute Definition Identifier Prefix (String)                                */
+                                "",                                           /* Attribute Definition Long Name         (String)                                */
+                                AttributeDefinitionInteger.class,             /* Attribute Definition Class             (Class<? extends AttributeDefinition)   */
+                                "",                                           /* Datatype Definition Description        (String)                                */
+                                "DD-",                                        /* Datatype Definition Identifier Prefix  (String)                                */
+                                "",                                           /* Datatype Definition Long Name          (String)                                */
+                                DatatypeDefinitionInteger.class,              /* Datatype Definition Class              (Class<? extends DatatypeDefinition)    */
+                                null,                                         /* Datatype Definition Verifier           (Consumer<? super DatatypeDefinition)   */
+                                ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
+                                ( reqifValue ) -> reqifValue
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    3,
-                    1,
-                    "BOOLEAN_TESTER",
-                    CoreArtifactTypes.User,
-                    CoreAttributeTypes.Active,
-                    List.of( true ),
-                    false,
-                    "OSEE User Spec Object Type",
-                    "SOT-",
-                    "User",
-                    "OSEE Active Attribute Definition",
-                    "AD-",
-                    "Active",
-                    AttributeDefinitionBoolean.class,
-                    "OSEE Boolean Datatype",
-                    "DD-",
-                    "BOOLEAN",
-                    DatatypeDefinitionBoolean.class,
-                    null, /* Nothing else to verify for Boolean types */
-                    ( attribute, value ) -> ((BooleanAttribute) attribute).setValue( (Boolean) value ),
-                    ( reqifValue ) -> reqifValue
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                2,
+                                1,
+                                "ARTIFACT_IDENTIFIER_TESTER",
+                                CoreArtifactTypes.GitCommit,
+                                CoreAttributeTypes.UserArtifactId,
+                                List.of( ArtifactId.valueOf( 1938 ) ),
+                                ArtifactId.valueOf( -1 ),
+                                "OSEE Git Commit Spec Object Type",
+                                "SOT-",
+                                "Git Commit",
+                                "Artifact id of an artifact of type User",
+                                "AD-",
+                                "User Artifact Id",
+                                AttributeDefinitionInteger.class,
+                                "OSEE Artifact Identifier Datatype",
+                                "DD-",
+                                "ARTIFACT_IDENTIFIER",
+                                DatatypeDefinitionInteger.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
+                                   Assert.assertEquals( SynchronizationEndpointTest.maxLong, reqifDatatypeDefinitionInteger.getMax() );
+                                   Assert.assertEquals( SynchronizationEndpointTest.minLong, reqifDatatypeDefinitionInteger.getMin() );
+                                },
+                                ( attribute, value ) -> ((ArtifactReferenceAttribute) attribute).setValue( (ArtifactId) value ),
+                                ( reqifValue ) -> ArtifactId.valueOf( ((BigInteger) reqifValue).longValueExact() )
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    4,
-                    1,
-                    "DATE_TESTER",
-                    CoreArtifactTypes.CertificationBaselineEvent,
-                    CoreAttributeTypes.BaselinedTimestamp,
-                    List.of( SynchronizationEndpointTest.getTestDate() ),
-                    SynchronizationEndpointTest.lastChangeEpoch.getTime(),
-                    "OSEE Certification Baseline Event Spec Object Type",
-                    "SOT-",
-                    "Certification Baseline Event",
-                    "OSEE Baselined Timestamp Attribute Definition",
-                    "AD-",
-                    "Baselined Timestamp",
-                    AttributeDefinitionDate.class,
-                    "OSEE Date Datatype",
-                    "DD-",
-                    "DATE",
-                    DatatypeDefinitionDate.class,
-                    null, /* Nothing else to verify for Boolean types */
-                    ( attribute, value ) -> ((DateAttribute) attribute).setValue( (Date) value ),
-                    ( reqifValue ) -> ((GregorianCalendar) reqifValue).getTime()
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                3,
+                                1,
+                                "BOOLEAN_TESTER",
+                                CoreArtifactTypes.User,
+                                CoreAttributeTypes.Active,
+                                List.of( true ),
+                                false,
+                                "OSEE User Spec Object Type",
+                                "SOT-",
+                                "User",
+                                "OSEE Active Attribute Definition",
+                                "AD-",
+                                "Active",
+                                AttributeDefinitionBoolean.class,
+                                "OSEE Boolean Datatype",
+                                "DD-",
+                                "BOOLEAN",
+                                DatatypeDefinitionBoolean.class,
+                                null, /* Nothing else to verify for Boolean types */
+                                ( attribute, value ) -> ((BooleanAttribute) attribute).setValue( (Boolean) value ),
+                                ( reqifValue ) -> reqifValue
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    5,
-                    1,
-                    "DOUBLE_TESTER",
-                    SynchronizationEndpointTest.getArtifactType( "Work Package" ),
-                    SynchronizationEndpointTest.getAttributeType( "ats.Estimated Hours" ),
-                    List.of( 8.75 ),
-                    0.0,
-                    "OSEE Work Package Spec Object Type",
-                    "SOT-",
-                    "Work Package",
-                    "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.",
-                    "AD-",
-                    "ats.Estimated Hours",
-                    AttributeDefinitionReal.class,
-                    "OSEE Double Datatype",
-                    "DD-",
-                    "DOUBLE",
-                    DatatypeDefinitionReal.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionReal = (DatatypeDefinitionReal) datatypeDefinition;
-                       Assert.assertEquals( SynchronizationEndpointTest.accuracyReal, reqifDatatypeDefinitionReal.getAccuracy() );
-                       Assert.assertEquals( SynchronizationEndpointTest.maxReal, (Double) reqifDatatypeDefinitionReal.getMax() );
-                       Assert.assertEquals( SynchronizationEndpointTest.minReal, (Double) reqifDatatypeDefinitionReal.getMin() );
-                    },
-                    ( attribute, value ) -> ((FloatingPointAttribute) attribute).setValue( (Double) value ),
-                    ( reqifValue ) -> reqifValue
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                4,
+                                1,
+                                "DATE_TESTER",
+                                CoreArtifactTypes.CertificationBaselineEvent,
+                                CoreAttributeTypes.BaselinedTimestamp,
+                                List.of( SynchronizationEndpointTest.getTestDate() ),
+                                SynchronizationEndpointTest.lastChangeEpoch.getTime(),
+                                "OSEE Certification Baseline Event Spec Object Type",
+                                "SOT-",
+                                "Certification Baseline Event",
+                                "OSEE Baselined Timestamp Attribute Definition",
+                                "AD-",
+                                "Baselined Timestamp",
+                                AttributeDefinitionDate.class,
+                                "OSEE Date Datatype",
+                                "DD-",
+                                "DATE",
+                                DatatypeDefinitionDate.class,
+                                null, /* Nothing else to verify for Boolean types */
+                                ( attribute, value ) -> ((DateAttribute) attribute).setValue( (Date) value ),
+                                ( reqifValue ) -> ((GregorianCalendar) reqifValue).getTime()
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    6,
-                    1,
-                    "INTEGER_TESTER",
-                    CoreArtifactTypes.CertificationBaselineEvent,
-                    CoreAttributeTypes.ReviewId,
-                    List.of( 42 ),
-                    0,
-                    "OSEE Certification Baseline Event Spec Object Type",
-                    "SOT-",
-                    "Certification Baseline Event",
-                    "OSEE Review Id Attribute Definition",
-                    "AD-",
-                    "Review Id",
-                    AttributeDefinitionInteger.class,
-                    "OSEE Integer Datatype",
-                    "DD-",
-                    "INTEGER",
-                    DatatypeDefinitionInteger.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
-                       Assert.assertEquals( SynchronizationEndpointTest.maxInteger, reqifDatatypeDefinitionInteger.getMax() );
-                       Assert.assertEquals( SynchronizationEndpointTest.minInteger, reqifDatatypeDefinitionInteger.getMin() );
-                    },
-                    ( attribute, value ) -> ((IntegerAttribute) attribute).setValue( (Integer) value ),
-                    ( reqifValue ) -> ((BigInteger) reqifValue).intValueExact()
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                5,
+                                1,
+                                "DOUBLE_TESTER",
+                                SynchronizationEndpointTest.getArtifactType( "Work Package" ),
+                                SynchronizationEndpointTest.getAttributeType( "ats.Estimated Hours" ),
+                                List.of( 8.75 ),
+                                0.0,
+                                "OSEE Work Package Spec Object Type",
+                                "SOT-",
+                                "Work Package",
+                                "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.",
+                                "AD-",
+                                "ats.Estimated Hours",
+                                AttributeDefinitionReal.class,
+                                "OSEE Double Datatype",
+                                "DD-",
+                                "DOUBLE",
+                                DatatypeDefinitionReal.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionReal = (DatatypeDefinitionReal) datatypeDefinition;
+                                   Assert.assertEquals( SynchronizationEndpointTest.accuracyReal, reqifDatatypeDefinitionReal.getAccuracy() );
+                                   Assert.assertEquals( SynchronizationEndpointTest.maxReal, (Double) reqifDatatypeDefinitionReal.getMax() );
+                                   Assert.assertEquals( SynchronizationEndpointTest.minReal, (Double) reqifDatatypeDefinitionReal.getMin() );
+                                },
+                                ( attribute, value ) -> ((FloatingPointAttribute) attribute).setValue( (Double) value ),
+                                ( reqifValue ) -> reqifValue
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    7,
-                    1,
-                    "LONG_TESTER",
-                    SynchronizationEndpointTest.getArtifactType( "Team Definition" ),
-                    SynchronizationEndpointTest.getAttributeType( "ats.Task Set Id" ),
-                    List.of( 420L ),
-                    0L,
-                    "OSEE Team Definition Spec Object Type",
-                    "SOT-",
-                    "Team Definition",
-                    "OSEE ats.Task Set Id Attribute Definition",
-                    "AD-",
-                    "ats.Task Set Id",
-                    AttributeDefinitionInteger.class,
-                    "OSEE Long Datatype",
-                    "DD-",
-                    "LONG",
-                    DatatypeDefinitionInteger.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
-                       Assert.assertEquals( SynchronizationEndpointTest.maxLong, reqifDatatypeDefinitionInteger.getMax() );
-                       Assert.assertEquals( SynchronizationEndpointTest.minLong, reqifDatatypeDefinitionInteger.getMin() );
-                    },
-                    ( attribute, value ) -> ((LongAttribute) attribute).setValue( (Long) value ),
-                    ( reqifValue ) -> ((BigInteger) reqifValue).longValueExact()
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                6,
+                                1,
+                                "INTEGER_TESTER",
+                                CoreArtifactTypes.CertificationBaselineEvent,
+                                CoreAttributeTypes.ReviewId,
+                                List.of( 42 ),
+                                0,
+                                "OSEE Certification Baseline Event Spec Object Type",
+                                "SOT-",
+                                "Certification Baseline Event",
+                                "OSEE Review Id Attribute Definition",
+                                "AD-",
+                                "Review Id",
+                                AttributeDefinitionInteger.class,
+                                "OSEE Integer Datatype",
+                                "DD-",
+                                "INTEGER",
+                                DatatypeDefinitionInteger.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
+                                   Assert.assertEquals( SynchronizationEndpointTest.maxInteger, reqifDatatypeDefinitionInteger.getMax() );
+                                   Assert.assertEquals( SynchronizationEndpointTest.minInteger, reqifDatatypeDefinitionInteger.getMin() );
+                                },
+                                ( attribute, value ) -> ((IntegerAttribute) attribute).setValue( (Integer) value ),
+                                ( reqifValue ) -> ((BigInteger) reqifValue).intValueExact()
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    8,
-                    1,
-                    "STRING_TESTER",
-                    CoreArtifactTypes.Artifact,
-                    CoreAttributeTypes.Description,
-                    List.of( "Three cats are required for all great software developments." ),
-                    null,
-                    "OSEE Artifact Spec Object Type",
-                    "SOT-",
-                    "Artifact",
-                    "OSEE Description Attribute Definition",
-                    "AD-",
-                    "Description",
-                    AttributeDefinitionString.class,
-                    "OSEE String Datatype",
-                    "DD-",
-                    "STRING",
-                    DatatypeDefinitionString.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionString = (DatatypeDefinitionString) datatypeDefinition;
-                       Assert.assertEquals( SynchronizationEndpointTest.maxLengthString, reqifDatatypeDefinitionString.getMaxLength() );
-                    },
-                    ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
-                    ( reqifValue ) -> reqifValue
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                7,
+                                1,
+                                "LONG_TESTER",
+                                SynchronizationEndpointTest.getArtifactType( "Team Definition" ),
+                                SynchronizationEndpointTest.getAttributeType( "ats.Task Set Id" ),
+                                List.of( 420L ),
+                                0L,
+                                "OSEE Team Definition Spec Object Type",
+                                "SOT-",
+                                "Team Definition",
+                                "OSEE ats.Task Set Id Attribute Definition",
+                                "AD-",
+                                "ats.Task Set Id",
+                                AttributeDefinitionInteger.class,
+                                "OSEE Long Datatype",
+                                "DD-",
+                                "LONG",
+                                DatatypeDefinitionInteger.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionInteger = (DatatypeDefinitionInteger) datatypeDefinition;
+                                   Assert.assertEquals( SynchronizationEndpointTest.maxLong, reqifDatatypeDefinitionInteger.getMax() );
+                                   Assert.assertEquals( SynchronizationEndpointTest.minLong, reqifDatatypeDefinitionInteger.getMin() );
+                                },
+                                ( attribute, value ) -> ((LongAttribute) attribute).setValue( (Long) value ),
+                                ( reqifValue ) -> ((BigInteger) reqifValue).longValueExact()
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    9,
-                    1,
-                    "STRING_WORD_ML_TESTER",
-                    CoreArtifactTypes.MsWordWholeDocument,
-                    CoreAttributeTypes.WholeWordContent,
-                    List.of( "Three cats are required for all great software developments." ),
-                    null,
-                    "OSEE MS Word Whole Document Spec Object Type",
-                    "SOT-",
-                    "MS Word Whole Document",
-                    "value must comply with WordML xml schema",
-                    "AD-",
-                    "Whole Word Content",
-                    AttributeDefinitionXHTML.class,
-                    "OSEE String Word ML Datatype",
-                    "DD-",
-                    "STRING_WORD_ML",
-                    DatatypeDefinitionXHTML.class,
-                    null,
-                    ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
-                    ( reqifValue ) ->
-                    {
-                       var xhtmlContent = (XhtmlContent) reqifValue;
-                       var xhtmlDivType = (XhtmlDivType) xhtmlContent.getXhtml();
-                       var featureMap = xhtmlDivType.getMixed();
-                       var stringValue = featureMap.getValue(0);
-                       return stringValue;
-                    }
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                8,
+                                1,
+                                "STRING_TESTER",
+                                CoreArtifactTypes.Artifact,
+                                CoreAttributeTypes.Description,
+                                List.of( "Three cats are required for all great software developments." ),
+                                null,
+                                "OSEE Artifact Spec Object Type",
+                                "SOT-",
+                                "Artifact",
+                                "OSEE Description Attribute Definition",
+                                "AD-",
+                                "Description",
+                                AttributeDefinitionString.class,
+                                "OSEE String Datatype",
+                                "DD-",
+                                "STRING",
+                                DatatypeDefinitionString.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionString = (DatatypeDefinitionString) datatypeDefinition;
+                                   Assert.assertEquals( SynchronizationEndpointTest.maxLengthString, reqifDatatypeDefinitionString.getMaxLength() );
+                                },
+                                ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
+                                ( reqifValue ) -> reqifValue
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    10,
-                    1,
-                    "URI_TESTER",
-                    CoreArtifactTypes.OseeTypeDefinition,
-                    CoreAttributeTypes.UriGeneralStringData,
-                    List.of( "http://org.eclipse.org" ),
-                    null,
-                    "OSEE Osee Type Definition Spec Object Type",
-                    "SOT-",
-                    "Osee Type Definition",
-                    "OSEE Uri General String Data Attribute Definition",
-                    "AD-",
-                    "Uri General String Data",
-                    AttributeDefinitionString.class,
-                    "OSEE URI Datatype",
-                    "DD-",
-                    "URI",
-                    DatatypeDefinitionString.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionString = (DatatypeDefinitionString) datatypeDefinition;
-                       Assert.assertEquals( SynchronizationEndpointTest.maxLengthStringUri, reqifDatatypeDefinitionString.getMaxLength() );
-                    },
-                    ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
-                    ( reqifValue ) -> reqifValue
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                9,
+                                1,
+                                "STRING_WORD_ML_TESTER",
+                                CoreArtifactTypes.MsWordWholeDocument,
+                                CoreAttributeTypes.WholeWordContent,
+                                List.of( "Three cats are required for all great software developments." ),
+                                null,
+                                "OSEE MS Word Whole Document Spec Object Type",
+                                "SOT-",
+                                "MS Word Whole Document",
+                                "value must comply with WordML xml schema",
+                                "AD-",
+                                "Whole Word Content",
+                                AttributeDefinitionXHTML.class,
+                                "OSEE String Word ML Datatype",
+                                "DD-",
+                                "STRING_WORD_ML",
+                                DatatypeDefinitionXHTML.class,
+                                null,
+                                ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
+                                ( reqifValue ) ->
+                                {
+                                   var xhtmlContent = (XhtmlContent) reqifValue;
+                                   var xhtmlDivType = (XhtmlDivType) xhtmlContent.getXhtml();
+                                   var featureMap = xhtmlDivType.getMixed();
+                                   var stringValue = featureMap.getValue(0);
+                                   return stringValue;
+                                }
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    11,
-                    1,
-                    "ENUM_TESTER",
-                    CoreArtifactTypes.Breaker,
-                    CoreAttributeTypes.FunctionalGrouping,
-                    List.of( "VMS/Flight Control" ),
-                    null,
-                    "OSEE Breaker Spec Object Type",
-                    "SOT-",
-                    "Breaker",
-                    "OSEE Functional Grouping Attribute Definition",
-                    "AD-",
-                    "Functional Grouping",
-                    AttributeDefinition.class,
-                    "OSEE Enumerated Datatype",
-                    "DD-",
-                    "ENUMERATED-1741310787702764470",
-                    DatatypeDefinition.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionEnumeration = (DatatypeDefinitionEnumeration) datatypeDefinition;
-                       var enumMemberMap = reqifDatatypeDefinitionEnumeration.getSpecifiedValues().stream().collect( Collectors.toMap( EnumValue::getLongName, Function.identity() ) );
-                       var ordinalAtomicInteger = new AtomicInteger( 0 );
-                       // Enumeration members must be listed in ordinal order
-                       Arrays.stream( new String[] { "Avionics", "VMS/Flight Control", "Engine/Fuel/Hydraulics", "Electrical" } ).forEach
-                          (
-                             ( enumMemberName ) ->
-                             {
-                                var ordinal = ordinalAtomicInteger.getAndIncrement();
-                                var enumMember = enumMemberMap.get( enumMemberName );
-                                Assert.assertNotNull( enumMember );
-                                Assert.assertEquals( enumMemberName, enumMember.getProperties().getOtherContent() );
-                                Assert.assertEquals( BigInteger.valueOf( ordinal ), enumMember.getProperties().getKey() );
-                             }
-                          );
-                    },
-                    ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
-                    ( reqifValue ) -> SynchronizationEndpointTest.reqifEnumValueLongNameByIdentifierMap.get( ((EnumValue) reqifValue).getIdentifier() ).orElseThrow()
-                  ),
+                       new ArtifactInfoRecord
+                              (
+                                10,
+                                1,
+                                "URI_TESTER",
+                                CoreArtifactTypes.OseeTypeDefinition,
+                                CoreAttributeTypes.UriGeneralStringData,
+                                List.of( "http://org.eclipse.org" ),
+                                null,
+                                "OSEE Osee Type Definition Spec Object Type",
+                                "SOT-",
+                                "Osee Type Definition",
+                                "OSEE Uri General String Data Attribute Definition",
+                                "AD-",
+                                "Uri General String Data",
+                                AttributeDefinitionString.class,
+                                "OSEE URI Datatype",
+                                "DD-",
+                                "URI",
+                                DatatypeDefinitionString.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionString = (DatatypeDefinitionString) datatypeDefinition;
+                                   Assert.assertEquals( SynchronizationEndpointTest.maxLengthStringUri, reqifDatatypeDefinitionString.getMaxLength() );
+                                },
+                                ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
+                                ( reqifValue ) -> reqifValue
+                              ),
 
-           new ArtifactInfoRecord
-                  (
-                    12,
-                    1,
-                    "MULTI_VALUE_ENUM_TESTER",
-                    CoreArtifactTypes.SoftwareRequirementHtml,
-                    CoreAttributeTypes.QualificationMethod,
-                    List.of( "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy", "Design Constraint", "Info", "Exception", "Unspecified"),
-                    null,
-                    "OSEE Software Requirement - HTML Spec Object Type",
-                    "SOT-",
-                    "Software Requirement - HTML",
-                    "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\012\012Test:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\012\012Analysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\012\012Inspection:  The visual examination of CSCI code, documentation, etc.\012\012Special Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\012\012Legacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\012\012Unspecified:  The qualification method has yet to be set.",
-                    "AD-",
-                    "Qualification Method",
-                    AttributeDefinition.class,
-                    "OSEE Enumerated Datatype",
-                    "DD-",
-                    "ENUMERATED-1152921504606847113",
-                    DatatypeDefinition.class,
-                    ( datatypeDefinition ) ->
-                    {
-                       var reqifDatatypeDefinitionEnumeration = (DatatypeDefinitionEnumeration) datatypeDefinition;
-                       var enumMemberMap = reqifDatatypeDefinitionEnumeration.getSpecifiedValues().stream().collect( Collectors.toMap( EnumValue::getLongName, Function.identity() ) );
-                       var ordinalAtomicInteger = new AtomicInteger( 0 );
-                       // Enumeration members must be listed in ordinal order
-                       Arrays.stream( new String[] { "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy", "Design Constraint", "Info", "Exception", "Unspecified" } ).forEach
-                          (
-                             ( enumMemberName ) ->
-                             {
-                                var ordinal = ordinalAtomicInteger.getAndIncrement();
-                                var enumMember = enumMemberMap.get( enumMemberName );
-                                Assert.assertNotNull( enumMember );
-                                Assert.assertEquals( enumMemberName, enumMember.getProperties().getOtherContent() );
-                                Assert.assertEquals( BigInteger.valueOf( ordinal ), enumMember.getProperties().getKey() );
-                             }
-                          );
-                    },
-                    ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
-                    ( reqifValue ) -> SynchronizationEndpointTest.reqifEnumValueLongNameByIdentifierMap.get( ((EnumValue) reqifValue).getIdentifier() ).orElseThrow()
-                  )
+                       new ArtifactInfoRecord
+                              (
+                                11,
+                                1,
+                                "ENUM_TESTER",
+                                CoreArtifactTypes.Breaker,
+                                CoreAttributeTypes.FunctionalGrouping,
+                                List.of( "VMS/Flight Control" ),
+                                null,
+                                "OSEE Breaker Spec Object Type",
+                                "SOT-",
+                                "Breaker",
+                                "OSEE Functional Grouping Attribute Definition",
+                                "AD-",
+                                "Functional Grouping",
+                                AttributeDefinition.class,
+                                "OSEE Enumerated Datatype",
+                                "DD-",
+                                "ENUMERATED-1741310787702764470",
+                                DatatypeDefinition.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionEnumeration = (DatatypeDefinitionEnumeration) datatypeDefinition;
+                                   var enumMemberMap = reqifDatatypeDefinitionEnumeration.getSpecifiedValues().stream().collect( Collectors.toMap( EnumValue::getLongName, Function.identity() ) );
+                                   var ordinalAtomicInteger = new AtomicInteger( 0 );
+                                   // Enumeration members must be listed in ordinal order
+                                   Arrays.stream( new String[] { "Avionics", "VMS/Flight Control", "Engine/Fuel/Hydraulics", "Electrical" } ).forEach
+                                      (
+                                         ( enumMemberName ) ->
+                                         {
+                                            var ordinal = ordinalAtomicInteger.getAndIncrement();
+                                            var enumMember = enumMemberMap.get( enumMemberName );
+                                            Assert.assertNotNull( enumMember );
+                                            Assert.assertEquals( enumMemberName, enumMember.getProperties().getOtherContent() );
+                                            Assert.assertEquals( BigInteger.valueOf( ordinal ), enumMember.getProperties().getKey() );
+                                         }
+                                      );
+                                },
+                                ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
+                                ( reqifValue ) -> SynchronizationEndpointTest.reqifEnumValueLongNameByIdentifierMap.get( ((EnumValue) reqifValue).getIdentifier() ).orElseThrow()
+                              ),
+
+                       new ArtifactInfoRecord
+                              (
+                                12,
+                                1,
+                                "MULTI_VALUE_ENUM_TESTER",
+                                CoreArtifactTypes.SoftwareRequirementHtml,
+                                CoreAttributeTypes.QualificationMethod,
+                                List.of( "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy", "Design Constraint", "Info", "Exception", "Unspecified"),
+                                null,
+                                "OSEE Software Requirement - HTML Spec Object Type",
+                                "SOT-",
+                                "Software Requirement - HTML",
+                                "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\012\012Test:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\012\012Analysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\012\012Inspection:  The visual examination of CSCI code, documentation, etc.\012\012Special Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\012\012Legacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\012\012Unspecified:  The qualification method has yet to be set.",
+                                "AD-",
+                                "Qualification Method",
+                                AttributeDefinition.class,
+                                "OSEE Enumerated Datatype",
+                                "DD-",
+                                "ENUMERATED-1152921504606847113",
+                                DatatypeDefinition.class,
+                                ( datatypeDefinition ) ->
+                                {
+                                   var reqifDatatypeDefinitionEnumeration = (DatatypeDefinitionEnumeration) datatypeDefinition;
+                                   var enumMemberMap = reqifDatatypeDefinitionEnumeration.getSpecifiedValues().stream().collect( Collectors.toMap( EnumValue::getLongName, Function.identity() ) );
+                                   var ordinalAtomicInteger = new AtomicInteger( 0 );
+                                   // Enumeration members must be listed in ordinal order
+                                   Arrays.stream( new String[] { "Demonstration", "Test", "Analysis", "Inspection", "Similarity", "Pass Thru", "Special Qualification", "Legacy", "Design Constraint", "Info", "Exception", "Unspecified" } ).forEach
+                                      (
+                                         ( enumMemberName ) ->
+                                         {
+                                            var ordinal = ordinalAtomicInteger.getAndIncrement();
+                                            var enumMember = enumMemberMap.get( enumMemberName );
+                                            Assert.assertNotNull( enumMember );
+                                            Assert.assertEquals( enumMemberName, enumMember.getProperties().getOtherContent() );
+                                            Assert.assertEquals( BigInteger.valueOf( ordinal ), enumMember.getProperties().getKey() );
+                                         }
+                                      );
+                                },
+                                ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value ),
+                                ( reqifValue ) -> SynchronizationEndpointTest.reqifEnumValueLongNameByIdentifierMap.get( ((EnumValue) reqifValue).getIdentifier() ).orElseThrow()
+                              )
+                     )
+               )
          );
    //@formatter:on
 
@@ -1182,9 +1226,19 @@ public class SynchronizationEndpointTest {
     * A {@link Map} of the {@link ArtifactInfoRecord} objects by identifier.
     */
 
+   //@formatter:off
    private static Map<Integer, ArtifactInfoRecord> artifactInfoRecordsByIdentifierMap =
-      SynchronizationEndpointTest.artifactInfoRecords.stream().collect(
-         Collectors.toMap(ArtifactInfoRecord::getIdentifier, (artifactInfoRecord) -> artifactInfoRecord));
+      SynchronizationEndpointTest.artifactSpecifications
+         .stream( SynchronizationEndpointTest.testBranchSpecificationRecordIdentifier )
+         .collect
+            (
+               Collectors.toMap
+                  (
+                     ArtifactInfoRecord::getIdentifier,
+                     Function.identity()
+                  )
+            );
+   //@formatter:on
 
    /**
     * The number of bits used to represent the Real value.
@@ -1349,18 +1403,6 @@ public class SynchronizationEndpointTest {
    private static SynchronizationArtifactParser synchronizationArtifactParser;
 
    /**
-    * Name used for the OSEE branch holding the test document.
-    */
-
-   private static String testBranchName = "ReqIF Test Branch";
-
-   /**
-    * Creation comment used for the OSEE test branch
-    */
-
-   private static String testBranchCreationComment = "Branch for ReqIF Synchronizaion Artifact Testing";
-
-   /**
     * {@link AttributeValue} subclasses all define a <code>getDefinition</code> method to obtain a reference to the
     * {@link AttributeDefinition} subclass that defines the attribute. Since these methods are defined at the subclass
     * level and this is test code, reflection is used to obtain the {@link AttributeDefintion} associated with the
@@ -1426,8 +1468,7 @@ public class SynchronizationEndpointTest {
     * @throws AssertionError when unable to obtain the referenced {@link DatatypeDefinition}.
     */
 
-   public static DatatypeDefinition getDatatypeDefinitionFromAttributeDefinition(
-      AttributeDefinition reqifAttributeDefinition) {
+   public static DatatypeDefinition getDatatypeDefinitionFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition) {
       try {
          var datatypeDefinition =
             (DatatypeDefinition) reqifAttributeDefinition.getClass().getDeclaredMethod("getType").invoke(
@@ -1481,8 +1522,7 @@ public class SynchronizationEndpointTest {
     * </ul>
     */
 
-   private static void verifyAttributeValue(AttributeValue reqifAttributeValue, ArtifactInfoRecord artifactInfoRecord,
-      Boolean checkDefaultValue) {
+   private static void verifyAttributeValue(AttributeValue reqifAttributeValue, ArtifactInfoRecord artifactInfoRecord, Boolean checkDefaultValue) {
       try {
 
          //@formatter:off
@@ -1535,8 +1575,7 @@ public class SynchronizationEndpointTest {
     * </ul>
     */
 
-   private static void verifyDefaultValueFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition,
-      ArtifactInfoRecord artifactInfoRecord) {
+   private static void verifyDefaultValueFromAttributeDefinition(AttributeDefinition reqifAttributeDefinition, ArtifactInfoRecord artifactInfoRecord) {
       try {
          var defaultValueSet =
             reqifAttributeDefinition.getClass().getDeclaredMethod("isSetDefaultValue").invoke(reqifAttributeDefinition);
@@ -1729,19 +1768,33 @@ public class SynchronizationEndpointTest {
        */
 
       var testDocumentBuilder = new TestDocumentBuilder( SynchronizationEndpointTest.setValues );
+
       testDocumentBuilder.buildDocument
-                             (
-                                (List<BuilderRecord>) (Object) SynchronizationEndpointTest.artifactInfoRecords,
-                                SynchronizationEndpointTest.testBranchName,
-                                SynchronizationEndpointTest.testBranchCreationComment
-                             );
+         (
+            SynchronizationEndpointTest.branchSpecifications,
+            SynchronizationEndpointTest.artifactSpecifications
+         );
 
       /*
        * Save identifiers of test document root
        */
 
-      SynchronizationEndpointTest.rootBranchId = testDocumentBuilder.getRootBranchId();
-      SynchronizationEndpointTest.rootArtifactId = testDocumentBuilder.getRootArtifactId();
+      SynchronizationEndpointTest.rootBranchId =
+         testDocumentBuilder
+            .getBranchIdentifier
+               (
+                  SynchronizationEndpointTest.testBranchSpecificationRecordIdentifier
+               )
+            .get();
+
+      SynchronizationEndpointTest.rootArtifactId =
+         testDocumentBuilder
+            .getArtifactIdentifier
+               (
+                  SynchronizationEndpointTest.testBranchSpecificationRecordIdentifier,
+                  1
+               )
+            .get();
 
       /*
        * Get OSEE Client

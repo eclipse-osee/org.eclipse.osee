@@ -16,10 +16,13 @@ package org.eclipse.osee.ats.ide.integration.tests.define;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactInfoRecord;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicBranchSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BranchSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
@@ -29,13 +32,13 @@ import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -93,7 +96,37 @@ public class RendererEndpointTest {
    private static final String endWordString = "</w:t></w:r></w:p>";
 
    /**
-    * List of {@BuilderRecord}s describing the test artifacts.
+    * The {@link BranchSpecificationRecord} identifier for the test branch.
+    */
+
+   private static final int testBranchSpecificationRecordIdentifier = 1;
+
+   /**
+    * List of {@link BranchSpecificationRecord} implementations describing the branches for the test.
+    * <p>
+    * Branches are created in the list order. Follow the rules:
+    * <ul>
+    * <li>Ensure identifiers are unique.</li>
+    * <li>The identifier 0 is reserved.</li>
+    * <li>Ensure hierarchical parents are at lower list indices.</li>
+    * </ul>
+    */
+
+   //@formatter:off
+   private static final List<BranchSpecificationRecord> branchSpecifications =
+      List.of
+         (
+            new BasicBranchSpecificationRecord
+                   (
+                      RendererEndpointTest.testBranchSpecificationRecordIdentifier, /* BranchSpecificationRecord Identifier */
+                      DemoBranches.SAW_PL_Working_Branch.getName(),                 /* Branch Name                          */
+                      "Branch for RendererEndpointTest"                             /* Branch Creation Comment              */
+                   )
+         );
+   //@formatter:on
+
+   /**
+    * {@link MapList} of {@ArtifactSpecificationRecord}s describing the test artifacts for each branch.
     * <p>
     * Artifacts are created in the list order. Follow the rules:
     * <ul>
@@ -106,131 +139,142 @@ public class RendererEndpointTest {
     */
 
    //@formatter:off
-   private static List<BuilderRecord> artifactInfoRecords =
-      List.of
+   private static MapList<Integer,ArtifactSpecificationRecord> artifactSpecifications =
+      MapList.ofEntries
          (
-            new BasicArtifactInfoRecord
-                   (
-                      1,                                                            /* Identifier                             (Integer)                               */
-                      0,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                      "Software Requirements",                                      /* Artifact Name                          (String)                                */
-                      CoreArtifactTypes.Folder,                                     /* Artifact Type                          (ArtifactTypeToken)                     */
-                      List.of(),                                                    /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                      List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+            /*
+             * Artifacts for the test branch.
+             */
 
-            new BasicArtifactInfoRecord
-                   (
-                      2,                                                            /* Identifier                             (Integer)                               */
-                      1,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                      "Crew Station Requirements",                                  /* Artifact Name                          (String)                                */
-                      CoreArtifactTypes.HeadingMsWord,                              /* Artifact Type                          (ArtifactTypeToken)                     */
-                      List.of(),                                                    /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                      List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-                   ),
+            Map.entry
+               (
+                  RendererEndpointTest.testBranchSpecificationRecordIdentifier,                 /* Test Branch Identifier                 (Integer)                               */
+                  List.of
+                     (
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  1,                                                            /* Identifier                             (Integer)                               */
+                                  0,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Software Requirements",                                      /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                     /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of(),                                                    /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                  List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-                   (
-                      3,                                                            /* Identifier                             (Integer)                               */
-                      2,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                      "Communication Subsystem Crew Interface",                     /* Artifact Name                          (String)                                */
-                      CoreArtifactTypes.SoftwareRequirementMsWord,                  /* Artifact Type                          (ArtifactTypeToken)                     */
-                      List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                         (
-                            new BasicAttributeSpecification
-                                   (
-                                     CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                     List.of                                        /* Test Attribute Values                  (List<Object>)                          */
-                                        (
-                                             beginWordString
-                                           + "This is the list of Communication crew station requirements."
-                                           + endWordString
-                                        ),
-                                     AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                                   )
-                         ),
-                      List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-                   ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  2,                                                            /* Identifier                             (Integer)                               */
+                                  1,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Crew Station Requirements",                                  /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.HeadingMsWord,                              /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of(),                                                    /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                  List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-                   (
-                      4,                                                            /* Identifier                             (Integer)                               */
-                      2,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                      "Navigation Subsystem Crew Interface",                        /* Artifact Name                          (String)                                */
-                      CoreArtifactTypes.SoftwareRequirementMsWord,                  /* Artifact Type                          (ArtifactTypeToken)                     */
-                      List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                         (
-                            new BasicAttributeSpecification
-                                   (
-                                     CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                     List.of                                        /* Test Attribute Values                  (List<Object>)                          */
-                                        (
-                                             beginWordString
-                                           + "This is the list of Navigation crew station requirements."
-                                           + endWordString
-                                        ),
-                                     AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                                )
-                      ),
-                      List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-                   ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  3,                                                            /* Identifier                             (Integer)                               */
+                                  2,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Communication Subsystem Crew Interface",                     /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of                                        /* Test Attribute Values                  (List<Object>)                          */
+                                                    (
+                                                         beginWordString
+                                                       + "This is the list of Communication crew station requirements."
+                                                       + endWordString
+                                                    ),
+                                                 AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-                   (
-                      5,                                                            /* Identifier                             (Integer)                               */
-                      2,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                      "Aircraft Systems Management Subsystem Crew Interface",       /* Artifact Name                          (String)                                */
-                      CoreArtifactTypes.HeadingMsWord,                              /* Artifact Type                          (ArtifactTypeToken)                     */
-                      List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                         (
-                            new BasicAttributeSpecification
-                                   (
-                                      CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                      List.of                                        /* Test Attribute Values                  (List<Object>)                          */
-                                         (
-                                              beginWordString
-                                            + "This is the list of Aircraft Management crew station requirements."
-                                            + endWordString
-                                        ),
-                                      AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                                   )
-                         ),
-                      List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-                   ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  4,                                                            /* Identifier                             (Integer)                               */
+                                  2,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Navigation Subsystem Crew Interface",                        /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of                                        /* Test Attribute Values                  (List<Object>)                          */
+                                                    (
+                                                         beginWordString
+                                                       + "This is the list of Navigation crew station requirements."
+                                                       + endWordString
+                                                    ),
+                                                 AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                            )
+                                  ),
+                                  List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-                   (
-                      6,                                                            /* Identifier                             (Integer)                               */
-                      5,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                      "Aircraft Drawing",                                           /* Artifact Name                          (String)                                */
-                      CoreArtifactTypes.HeadingMsWord,                              /* Artifact Type                          (ArtifactTypeToken)                     */
-                      List.of(),                                                    /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                      List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-                   ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  5,                                                            /* Identifier                             (Integer)                               */
+                                  2,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Aircraft Systems Management Subsystem Crew Interface",       /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.HeadingMsWord,                              /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                  CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                  List.of                                        /* Test Attribute Values                  (List<Object>)                          */
+                                                     (
+                                                          beginWordString
+                                                        + "This is the list of Aircraft Management crew station requirements."
+                                                        + endWordString
+                                                    ),
+                                                  AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-                   (
-                      7,                                                            /* Identifier                             (Integer)                               */
-                      5,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
-                      "Ventilation",                                                /* Artifact Name                          (String)                                */
-                      CoreArtifactTypes.SoftwareRequirementMsWord,                  /* Artifact Type                          (ArtifactTypeToken)                     */
-                      List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                         (
-                            new BasicAttributeSpecification
-                                   (
-                                      CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                      List.of                                        /* Test Attribute Values                  (List<Object>)                          */
-                                         (
-                                              beginWordString
-                                            + "This is the list of Aircraft Management crew station requirements."
-                                            + endWordString
-                                         ),
-                                      AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                                   )
-                         ),
-                      List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-                   )
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  6,                                                            /* Identifier                             (Integer)                               */
+                                  5,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Aircraft Drawing",                                           /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.HeadingMsWord,                              /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of(),                                                    /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                  List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  7,                                                            /* Identifier                             (Integer)                               */
+                                  5,                                                            /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Ventilation",                                                /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                       /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                  CoreAttributeTypes.WordTemplateContent,        /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                  List.of                                        /* Test Attribute Values                  (List<Object>)                          */
+                                                     (
+                                                          beginWordString
+                                                        + "This is the list of Aircraft Management crew station requirements."
+                                                        + endWordString
+                                                     ),
+                                                  AttributeSetters.stringAttributeSetter         /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                     /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               )
+
+                     )
+               )
          );
    //@formatter:on
 
@@ -252,24 +296,6 @@ public class RendererEndpointTest {
 
    private static BranchId rootBranchId;
 
-   /**
-    * Branch token for the test branch.
-    */
-
-   private static final BranchToken testBranch = DemoBranches.SAW_PL_Working_Branch;
-
-   /**
-    * Name used for the OSEE branch holding the test document.
-    */
-
-   private static String testBranchName = RendererEndpointTest.testBranch.getName();
-
-   /**
-    * Creation comment used for the OSEE test branch
-    */
-
-   private static String testBranchCreationComment = "Setup for importing software requirements";
-
    @BeforeClass
    public static void testSetup() {
 
@@ -279,15 +305,17 @@ public class RendererEndpointTest {
 
       var testDocumentBuilder = new TestDocumentBuilder(RendererEndpointTest.setValues);
 
-      testDocumentBuilder.buildDocument(RendererEndpointTest.artifactInfoRecords, RendererEndpointTest.testBranchName,
-         RendererEndpointTest.testBranchCreationComment);
+      testDocumentBuilder.buildDocument(RendererEndpointTest.branchSpecifications,
+         RendererEndpointTest.artifactSpecifications);
 
       /*
        * Save identifiers of test document root
        */
 
-      RendererEndpointTest.rootBranchId = testDocumentBuilder.getRootBranchId();
-      RendererEndpointTest.rootArtifactId = testDocumentBuilder.getRootArtifactId();
+      RendererEndpointTest.rootBranchId =
+         testDocumentBuilder.getBranchIdentifier(RendererEndpointTest.testBranchSpecificationRecordIdentifier).get();
+      RendererEndpointTest.rootArtifactId = ArtifactId.valueOf(testDocumentBuilder.getArtifactIdentifier(
+         RendererEndpointTest.testBranchSpecificationRecordIdentifier, 1).get());
 
       /*
        * Get services

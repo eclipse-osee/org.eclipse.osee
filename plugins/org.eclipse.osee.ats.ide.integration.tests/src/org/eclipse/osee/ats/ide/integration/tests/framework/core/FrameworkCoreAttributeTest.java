@@ -21,10 +21,12 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactInfoRecord;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicBranchSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BranchSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
@@ -39,6 +41,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
@@ -113,10 +117,10 @@ public class FrameworkCoreAttributeTest {
    public TestName testName = new TestName();
 
    /**
-    * Saves a {@link Map} of the artifact identifiers for each artifact associated with each {@link BuilderRecord}.
+    * Saves a {@link Map} of the artifacts associated with each artifact {@link ArtifactSpecificationRecord}.
     */
 
-   private static Map<Integer, Optional<Long>> builderRecordMap;
+   private static Map<Integer, Optional<Artifact>> builderRecordMap;
 
    /**
     * The {@link ArtifactTypeToken} implementation for testing the Date attribute type.
@@ -202,57 +206,98 @@ public class FrameworkCoreAttributeTest {
    private static String testBranchName = "Framework Core Attribute Type Test Branch";
 
    /**
+    * The {@link BranchSpecificationRecord} identifier for the test branch.
+    */
+
+   private static int testBranchSpecificationRecordIdentifier = 1;
+
+   /**
+    * List of {@link BranchSpecificationRecord} implementations describing the branches for the test.
+    * <p>
+    * Branches are created in the list order. Follow the rules:
+    * <ul>
+    * <li>Ensure identifiers are unique.</li>
+    * <li>The identifier 0 is reserved.</li>
+    * <li>Ensure hierarchical parents are at lower list indices.</li>
+    * </ul>
+    */
+
+   //@formatter:off
+   private static final List<BranchSpecificationRecord> branchSpecifications =
+      List.of
+         (
+            new BasicBranchSpecificationRecord
+                   (
+                      FrameworkCoreAttributeTest.testBranchSpecificationRecordIdentifier,
+                      FrameworkCoreAttributeTest.testBranchName,
+                      FrameworkCoreAttributeTest.testBranchCreationComment
+                   )
+         );
+   //@formatter:on
+
+   /**
     * {@link BuilderRecord} objects to define the artifacts to be created on the test branch for the tests.
     */
 
    //@formatter:off
    @SuppressWarnings("deprecation")
-   private static List<BuilderRecord> artifactInfoRecords =
-      List.of
+   private static MapList<Integer,ArtifactSpecificationRecord> artifactSpecifications =
+      MapList.ofEntries
          (
-            new BasicArtifactInfoRecord
-               (
-                  1,                                                                                /* Identifier                             (Integer)                               */
-                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Map Entry Test Artifact",                                                        /* Artifact Name                          (String)                                */
-                  MapEntryTestArtifact,                                                             /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 MapEntryTestAttribute,                                             /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       Map.entry( "text",   "text statement"   ),
-                                       Map.entry( "wordml", "wordml statement" )
-                                    ),
-                                 AttributeSetters.mapEntryAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+            /*
+             * Artifacts for the test branch.
+             */
 
-            new BasicArtifactInfoRecord
+            Map.entry
                (
-                  2,                                                                                /* Identifier                             (Integer)                               */
-                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Date Test Artifact",                                                             /* Artifact Name                          (String)                                */
-                  DateTestArtifact,                                                                 /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  FrameworkCoreAttributeTest.testBranchSpecificationRecordIdentifier,                           /* Test Branch Identifier                 (Integer)                               */
+                  List.of
                      (
-                        new BasicAttributeSpecification
-                               (
-                                 DateTestAttribute,                                                 /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       new Date(-178,1,22)
-                                    ),
-                                 AttributeSetters.dateAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                        new BasicArtifactSpecificationRecord
+                           (
+                              1,                                                                                /* Identifier                             (Integer)                               */
+                              0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Map Entry Test Artifact",                                                        /* Artifact Name                          (String)                                */
+                              MapEntryTestArtifact,                                                             /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             MapEntryTestAttribute,                                             /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   Map.entry( "text",   "text statement"   ),
+                                                   Map.entry( "wordml", "wordml statement" )
+                                                ),
+                                             AttributeSetters.mapEntryAttributeSetter                           /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+
+                        new BasicArtifactSpecificationRecord
+                           (
+                              2,                                                                                /* Identifier                             (Integer)                               */
+                              0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Date Test Artifact",                                                             /* Artifact Name                          (String)                                */
+                              DateTestArtifact,                                                                 /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             DateTestAttribute,                                                 /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   new Date(-178,1,22)
+                                                ),
+                                             AttributeSetters.dateAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           )
+
+                     )
                )
-
          );
    //@formatter:on
 
@@ -289,23 +334,35 @@ public class FrameworkCoreAttributeTest {
       //@formatter:off
       testDocumentBuilder.buildDocument
          (
-            FrameworkCoreAttributeTest.artifactInfoRecords,
-            FrameworkCoreAttributeTest.testBranchName,
-            FrameworkCoreAttributeTest.testBranchCreationComment
+            FrameworkCoreAttributeTest.branchSpecifications,
+            FrameworkCoreAttributeTest.artifactSpecifications
          );
 
-      /*
-       * Save identifiers of test document root
-       */
-
-      FrameworkCoreAttributeTest.rootBranchId   = testDocumentBuilder.getRootBranchId();
-      FrameworkCoreAttributeTest.rootArtifactId = testDocumentBuilder.getRootArtifactId();
+      FrameworkCoreAttributeTest.rootBranchId =
+         testDocumentBuilder
+            .getBranchIdentifier
+               (
+                  FrameworkCoreAttributeTest.testBranchSpecificationRecordIdentifier
+               )
+            .get();
 
       FrameworkCoreAttributeTest.builderRecordMap =
-         FrameworkCoreAttributeTest.artifactInfoRecords.stream()
-            .map( BuilderRecord::getIdentifier )
-            .collect( Collectors.toMap( Function.identity(), testDocumentBuilder::getArtifactIdByBuilderRecordId ) )
-            ;
+         FrameworkCoreAttributeTest
+            .artifactSpecifications
+            .stream( FrameworkCoreAttributeTest.testBranchSpecificationRecordIdentifier )
+            .map( ArtifactSpecificationRecord::getIdentifier )
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        Function.identity(),
+                        ( builderRecordIdentifier ) -> testDocumentBuilder.getArtifact
+                                                     (
+                                                        FrameworkCoreAttributeTest.testBranchSpecificationRecordIdentifier,
+                                                        builderRecordIdentifier
+                                                     )
+                     )
+               );
       //@formatter:on
    }
 

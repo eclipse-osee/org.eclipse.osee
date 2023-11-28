@@ -20,10 +20,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactInfoRecord;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicBranchSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BranchSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
@@ -47,6 +49,7 @@ import org.eclipse.osee.framework.core.xml.publishing.WordParagraphList;
 import org.eclipse.osee.framework.core.xml.publishing.WordSectionList;
 import org.eclipse.osee.framework.core.xml.publishing.WordSubSectionList;
 import org.eclipse.osee.framework.core.xml.publishing.WordTextList;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -118,7 +121,48 @@ public class PublishingServerPreviewTest {
    public TestName testName = new TestName();
 
    /**
-    * List of {@link BuilderRecord}s describing the test artifacts.
+    * The {@link BranchSpecificationRecord} identifier for the test branch.
+    */
+
+   private static int testBranchSpecificationRecordIdentifier = 1;
+
+   /**
+    * The {@link BranchSpecificationRecord} identifier for the common branch.
+    */
+
+   private static int commonBranchSpecificationRecordIdentifier = 2;
+
+   /**
+    * List of {@link BranchSpecificationRecord} implementations describing the branches for the test.
+    * <p>
+    * Branches are created in the list order. Follow the rules:
+    * <ul>
+    * <li>Ensure identifiers are unique.</li>
+    * <li>The identifier 0 is reserved.</li>
+    * <li>Ensure hierarchical parents are at lower list indices.</li>
+    * </ul>
+    */
+
+   //@formatter:off
+   private static final List<BranchSpecificationRecord> branchSpecifications =
+      List.of
+         (
+            new BasicBranchSpecificationRecord
+                   (
+                      PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier,   /* BranchSpecificationRecord Identifier */
+                      "Preview And MultiPreview Test Branch",                                /* Branch Name                          */
+                      "Branch for Preview And MultiPreview Testing"                          /* Branch Creation Comment              */
+                   ),
+            new BasicBranchSpecificationRecord
+                   (
+                      PublishingServerPreviewTest.commonBranchSpecificationRecordIdentifier, /* BranchSpecificationRecord Identifier */
+                      CoreBranches.COMMON                                                    /* BranchToken                          */
+                   )
+         );
+   //@formatter:on
+
+   /**
+    * {@link MapList} of {@link ArtifactSpecificationRecord}s describing the test artifacts for each branch.
     * <p>
     * Artifacts are created in the list order. Follow the rules:
     * <ul>
@@ -131,544 +175,555 @@ public class PublishingServerPreviewTest {
     */
 
    //@formatter:off
-   private static List<BuilderRecord> artifactInfoRecords =
-      List.of
+   private static MapList<Integer,ArtifactSpecificationRecord> artifactSpecifications =
+      MapList.ofEntries
          (
-            new BasicArtifactInfoRecord
+            /*
+             * Artifacts for the test branch.
+             */
+
+            Map.entry
                (
-                  1,                                                                                /* Identifier                             (Integer)                               */
-                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Preview Artifacts Folder",                                                       /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier,                              /* Test Branch Identifier                 (Integer)                               */
+                  List.of
                      (
-                        new BasicAttributeSpecification
+                        new BasicArtifactSpecificationRecord
                                (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "This folder contains artifacts for publishing preview tests." ), /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                  1,                                                                                /* Identifier                             (Integer)                               */
+                                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Preview Artifacts Folder",                                                       /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "This folder contains artifacts for publishing preview tests." ), /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
+
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  2,                                                                                /* Identifier                             (Integer)                               */
+                                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Requirement A",                                                                  /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "This is Requirement A's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               ),
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "<w:p><w:r><w:t>This is Requirement A's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
+
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  3,                                                                                /* Identifier                             (Integer)                               */
+                                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Requirement B",                                                                  /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "This is Requirement B's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               ),
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "<w:p><w:r><w:t>This is Requirement B's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
+
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  4,                                                                                /* Identifier                             (Integer)                               */
+                                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Preview Artifacts Folder With Data Rights",                                      /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "This folder contains artifacts for publishing preview tests." ), /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
+
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  5,                                                                                /* Identifier                             (Integer)                               */
+                                  4,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Requirement A",                                                                  /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "This is Requirement A's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               ),
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "<w:p><w:r><w:t>This is Requirement A's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
+
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  6,                                                                                /* Identifier                             (Integer)                               */
+                                  4,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Requirement B",                                                                  /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "This is Requirement B's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               ),
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "<w:p><w:r><w:t>This is Requirement B's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               ),
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "Restricted Rights" ),                                    /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                                )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                     )
                ),
 
-            new BasicArtifactInfoRecord
-               (
-                  2,                                                                                /* Identifier                             (Integer)                               */
-                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A",                                                                  /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "This is Requirement A's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "<w:p><w:r><w:t>This is Requirement A's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+            /*
+             * Artifacts for the common branch.
+             */
 
-            new BasicArtifactInfoRecord
+            Map.entry
                (
-                  3,                                                                                /* Identifier                             (Integer)                               */
-                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement B",                                                                  /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  PublishingServerPreviewTest.commonBranchSpecificationRecordIdentifier,                            /* Test Branch Identifier                 (Integer)                               */
+                  List.of
                      (
-                        new BasicAttributeSpecification
+                        new BasicArtifactSpecificationRecord
                                (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "This is Requirement B's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                  1,                                                                                /* Identifier                             (Integer)                               */
+                                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "OSEE Configuration",                                                             /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.Description,                                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of( "OSEE Configuration" ),                                      /* Test Attribute Values                  (List<Object>)                          */
+                                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                                ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "<w:p><w:r><w:t>This is Requirement B's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
 
-               new BasicArtifactInfoRecord
-               (
-                  4,                                                                                /* Identifier                             (Integer)                               */
-                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Preview Artifacts Folder With Data Rights",                                      /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
+                        new BasicArtifactSpecificationRecord
                                (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "This folder contains artifacts for publishing preview tests." ), /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                                  2,                                                                                /* Identifier                             (Integer)                               */
+                                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Document Templates",                                                             /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.Description,                                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of( "Publishing Templates" ),                                    /* Test Attribute Values                  (List<Object>)                          */
+                                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-               (
-                  5,                                                                                /* Identifier                             (Integer)                               */
-                  4,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A",                                                                  /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "This is Requirement A's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "<w:p><w:r><w:t>This is Requirement A's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        /*
+                         *  Menu Command:              MS Word Preview (Server)
+                         *  Guide Publishing Template: PreviewAll
+                         */
 
-            new BasicArtifactInfoRecord
-               (
-                  6,                                                                                /* Identifier                             (Integer)                               */
-                  4,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement B",                                                                  /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
+                        new BasicArtifactSpecificationRecord
                                (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "This is Requirement B's Description." ),                 /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                  4,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "SERVER_PREVIEW_TEST_A",                                                          /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "{"                                                  ).append( "\n" )
+                                                       .append( "   \"ElementType\" : \"Artifact\","                 ).append( "\n" )
+                                                       .append( "   \"OutliningOptions\" :"                          ).append( "\n" )
+                                                       .append( "      [ {"                                          ).append( "\n" )
+                                                       .append( "         \"Outlining\" : true,"                     ).append( "\n" )
+                                                       .append( "         \"RecurseChildren\" : false,"              ).append( "\n" )
+                                                       .append( "         \"HeadingAttributeType\" : \"Name\","      ).append( "\n" )
+                                                       .append( "         \"ArtifactName\" : \"Default\","           ).append( "\n" )
+                                                       .append( "         \"OutlineNumber\" : \"\""                  ).append( "\n" )
+                                                       .append( "      } ],"                                         ).append( "\n" )
+                                                       .append( "   \"AttributeOptions\" :"                          ).append( "\n" )
+                                                       .append( "      [ {"                                          ).append( "\n" )
+                                                       .append( "         \"AttrType\" : \"*\","                     ).append( "\n" )
+                                                       .append( "         \"Label\" : \"\","                         ).append( "\n" )
+                                                       .append( "         \"FormatPre\" : \"\","                     ).append( "\n" )
+                                                       .append( "         \"FormatPost\" : \"\""                     ).append( "\n" )
+                                                       .append( "      } ]"                                          ).append( "\n" )
+                                                       .append( "}"                                                  ).append( "\n" )
+                                                       .toString()
+                                                  ),
+                                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
+                                                       .append( "<?mso-application progid=\"Word.Document\"?>" ).append( "\n" )
+                                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
+                                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
+                                                       .append( "  <w:body>" ).append( "\n" )
+                                                       .append( "     <wx:sect>" ).append( "\n" )
+                                                       .append( "        INSERT_ARTIFACT_HERE" ).append( "\n" )
+                                                       .append( "     </wx:sect>" ).append( "\n" )
+                                                       .append( "  </w:body>" ).append( "\n" )
+                                                       .append( "</w:wordDocument>" ).append( "\n" )
+                                                       .toString()
+                                                 ),
+                                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                                ),
-                        new BasicAttributeSpecification
+
+                        /*
+                         *  Menu Command:              MS Word Preview No Attributes (Server)
+                         *  Guide Publishing Template: PREVIEW_ALL_NO_ATTRIBUTES
+                         */
+
+                        new BasicArtifactSpecificationRecord
                                (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "<w:p><w:r><w:t>This is Requirement B's WordTemplateContent.</w:t></w:r></w:p>" ), /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                  3,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "SERVER_PREVIEW_TEST_B",                                                          /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "{"                                                             ).append( "\n" )
+                                                       .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
+                                                       .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"Outlining\":            true,"                      ).append( "\n" )
+                                                       .append( "         \"RecurseChildren\":      false,"                     ).append( "\n" )
+                                                       .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
+                                                       .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
+                                                       .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
+                                                       .append( "      } ],"                                                    ).append( "\n" )
+                                                       .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"AttrType\":             \"Word Template Content\"," ).append( "\n" )
+                                                       .append( "         \"Label\":                \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
+                                                       .append( "      } ]"                                                     ).append( "\n" )
+                                                       .append( "}"                                                             ).append( "\n" )
+                                                       .toString()
+                                                 ),
+                                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
+                                                       .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
+                                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
+                                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
+                                                       .append( "  <w:body>"                                                    ).append( "\n" )
+                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
+                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "  </w:body>"                                                   ).append( "\n" )
+                                                       .append( "</w:wordDocument>"                                             ).append( "\n" )
+                                                       .toString()
+                                                 ),
+                                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                                ),
-                        new BasicAttributeSpecification
+
+                        /*
+                         *  Menu Command:              MS Word Preview With Children (Server)
+                         *  Guide Publishing Template: PREVIEW_ALL_RECURSE
+                         */
+
+                        new BasicArtifactSpecificationRecord
                                (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of( "Restricted Rights" ),                                    /* Test Attribute Values                  (List<Object>)                          */
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                  5,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "SERVER_PREVIEW_TEST_C",                                                          /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "{"                                                             ).append( "\n" )
+                                                       .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
+                                                       .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"Outlining\":            true,"                      ).append( "\n" )
+                                                       .append( "         \"RecurseChildren\":      true,"                      ).append( "\n" )
+                                                       .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
+                                                       .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
+                                                       .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
+                                                       .append( "      } ],"                                                    ).append( "\n" )
+                                                       .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"AttrType\":             \"*\","                     ).append( "\n" )
+                                                       .append( "         \"Label\":                \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
+                                                       .append( "      } ]"                                                     ).append( "\n" )
+                                                       .append( "}"                                                             ).append( "\n" )
+                                                       .toString()
+                                                  ),
+                                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
+                                                       .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
+                                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
+                                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
+                                                       .append( "  <w:body>"                                                    ).append( "\n" )
+                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
+                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "  </w:body>"                                                   ).append( "\n" )
+                                                       .append( "</w:wordDocument>"                                             ).append( "\n" )
+                                                       .toString()
+                                                 ),
+                                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
+
+                        /*
+                         *  Menu Command:              MS Word Preview With Children No Attributes (Server)
+                         *  Guide Publishing Template: PREVIEW_ALL_RECURSE_NO_ATTRIBUTES
+                         */
+
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  6,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "SERVER_PREVIEW_TEST_D",                                                          /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "{"                                                             ).append( "\n" )
+                                                       .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
+                                                       .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"Outlining\":            true,"                      ).append( "\n" )
+                                                       .append( "         \"RecurseChildren\":      true,"                      ).append( "\n" )
+                                                       .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
+                                                       .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
+                                                       .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
+                                                       .append( "      } ],"                                                    ).append( "\n" )
+                                                       .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"AttrType\":             \"Word Template Content\"," ).append( "\n" )
+                                                       .append( "         \"Label\":                \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
+                                                       .append( "      } ]"                                                     ).append( "\n" )
+                                                       .append( "}"                                                             ).append( "\n" )
+                                                       .toString()
+                                                  ),
+                                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
+                                                       .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
+                                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
+                                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
+                                                       .append( "  <w:body>"                                                    ).append( "\n" )
+                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
+                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "  </w:body>"                                                   ).append( "\n" )
+                                                       .append( "</w:wordDocument>"                                             ).append( "\n" )
+                                                       .toString()
+                                                 ),
+                                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
+
+                        /*
+                         *  All Metadata Options
+                         */
+
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  7,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "SERVER_PREVIEW_TEST_METADATAOPTIONS_ALL",                                        /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "{"                                                             ).append( "\n" )
+                                                       .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
+                                                       .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"Outlining\":            true,"                      ).append( "\n" )
+                                                       .append( "         \"RecurseChildren\":      false,"                     ).append( "\n" )
+                                                       .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
+                                                       .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
+                                                       .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
+                                                       .append( "      } ],"                                                    ).append( "\n" )
+                                                       .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
+                                                       .append( "      [ {"                                                     ).append( "\n" )
+                                                       .append( "         \"AttrType\":             \"Word Template Content\"," ).append( "\n" )
+                                                       .append( "         \"Label\":                \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
+                                                       .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
+                                                       .append( "      } ],"                                                    ).append( "\n" )
+                                                       .append( "   \"MetadataOptions\":"                                       ).append( "\n" )
+                                                       .append( "      ["                                                       ).append( "\n" )
+                                                       .append( "        {"                                                     ).append( "\n" )
+                                                       .append( "          \"Type\":                \"Artifact Type\","         ).append( "\n" )
+                                                       .append( "          \"Format\":              \"\","                      ).append( "\n" )
+                                                       .append( "          \"Label\":               \"\""                       ).append( "\n" )
+                                                       .append( "        },"                                                    ).append( "\n" )
+                                                       .append( "        {"                                                     ).append( "\n" )
+                                                       .append( "          \"Type\":                \"Artifact Id\","           ).append( "\n" )
+                                                       .append( "          \"Format\":              \"\","                      ).append( "\n" )
+                                                       .append( "          \"Label\":               \"\""                       ).append( "\n" )
+                                                       .append( "        },"                                                    ).append( "\n" )
+                                                       .append( "        {"                                                     ).append( "\n" )
+                                                       .append( "          \"Type\":                \"Applicability\","         ).append( "\n" )
+                                                       .append( "          \"Format\":              \"\","                      ).append( "\n" )
+                                                       .append( "          \"Label\":               \"\""                       ).append( "\n" )
+                                                       .append( "        }"                                                     ).append( "\n" )
+                                                       .append( "      ]"                                                       ).append( "\n" )
+                                                       .append( "}"                                                             ).append( "\n" )
+                                                       .toString()
+                                                 ),
+                                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                        new BasicAttributeSpecificationRecord
+                                           (
+                                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
+                                                 (
+                                                    new StringBuilder( 1024 )
+                                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
+                                                       .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
+                                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
+                                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
+                                                       .append( "  <w:body>"                                                    ).append( "\n" )
+                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
+                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "  </w:body>"                                                   ).append( "\n" )
+                                                       .append( "</w:wordDocument>"                                             ).append( "\n" )
+                                                       .toString()
+                                                 ),
+                                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
                                )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                     )
                )
-
          );
-
-   /**
-    * A list of the test artifacts to be created on the Common branch.
-    */
-
-   //@formatter:off
-   private static List<BuilderRecord> commonBranchArtifactInfoRecords =
-      List.of
-         (
-            new BasicArtifactInfoRecord
-               (
-                  1,                                                                                /* Identifier                             (Integer)                               */
-                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "OSEE Configuration",                                                             /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.Description,                                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "OSEE Configuration" ),                                      /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                           )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
-
-            new BasicArtifactInfoRecord
-               (
-                  2,                                                                                /* Identifier                             (Integer)                               */
-                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Document Templates",                                                             /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.Description,                                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "Publishing Templates" ),                                    /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                           )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
-
-            /*
-             *  Menu Command:              MS Word Preview (Server)
-             *  Guide Publishing Template: PreviewAll
-             */
-
-            new BasicArtifactInfoRecord
-               (
-                  4,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "SERVER_PREVIEW_TEST_A",                                                          /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "{"                                                  ).append( "\n" )
-                                       .append( "   \"ElementType\" : \"Artifact\","                 ).append( "\n" )
-                                       .append( "   \"OutliningOptions\" :"                          ).append( "\n" )
-                                       .append( "      [ {"                                          ).append( "\n" )
-                                       .append( "         \"Outlining\" : true,"                     ).append( "\n" )
-                                       .append( "         \"RecurseChildren\" : false,"              ).append( "\n" )
-                                       .append( "         \"HeadingAttributeType\" : \"Name\","      ).append( "\n" )
-                                       .append( "         \"ArtifactName\" : \"Default\","           ).append( "\n" )
-                                       .append( "         \"OutlineNumber\" : \"\""                  ).append( "\n" )
-                                       .append( "      } ],"                                         ).append( "\n" )
-                                       .append( "   \"AttributeOptions\" :"                          ).append( "\n" )
-                                       .append( "      [ {"                                          ).append( "\n" )
-                                       .append( "         \"AttrType\" : \"*\","                     ).append( "\n" )
-                                       .append( "         \"Label\" : \"\","                         ).append( "\n" )
-                                       .append( "         \"FormatPre\" : \"\","                     ).append( "\n" )
-                                       .append( "         \"FormatPost\" : \"\""                     ).append( "\n" )
-                                       .append( "      } ]"                                          ).append( "\n" )
-                                       .append( "}"                                                  ).append( "\n" )
-                                       .toString()
-                                  ),
-                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
-                           ),
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
-                                       .append( "<?mso-application progid=\"Word.Document\"?>" ).append( "\n" )
-                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
-                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
-                                       .append( "  <w:body>" ).append( "\n" )
-                                       .append( "     <wx:sect>" ).append( "\n" )
-                                       .append( "        INSERT_ARTIFACT_HERE" ).append( "\n" )
-                                       .append( "     </wx:sect>" ).append( "\n" )
-                                       .append( "  </w:body>" ).append( "\n" )
-                                       .append( "</w:wordDocument>" ).append( "\n" )
-                                       .toString()
-                                 ),
-                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                           )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
-
-               /*
-                *  Menu Command:              MS Word Preview No Attributes (Server)
-                *  Guide Publishing Template: PREVIEW_ALL_NO_ATTRIBUTES
-                */
-
-               new BasicArtifactInfoRecord
-                  (
-                     3,                                                                                /* Identifier                             (Integer)                               */
-                     2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                     "SERVER_PREVIEW_TEST_B",                                                          /* Artifact Name                          (String)                                */
-                     CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                     List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                        (
-                           new BasicAttributeSpecification
-                              (
-                                 CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       new StringBuilder( 1024 )
-                                          .append( "{"                                                             ).append( "\n" )
-                                          .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
-                                          .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
-                                          .append( "      [ {"                                                     ).append( "\n" )
-                                          .append( "         \"Outlining\":            true,"                      ).append( "\n" )
-                                          .append( "         \"RecurseChildren\":      false,"                     ).append( "\n" )
-                                          .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
-                                          .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
-                                          .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
-                                          .append( "      } ],"                                                    ).append( "\n" )
-                                          .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
-                                          .append( "      [ {"                                                     ).append( "\n" )
-                                          .append( "         \"AttrType\":             \"Word Template Content\"," ).append( "\n" )
-                                          .append( "         \"Label\":                \"\","                      ).append( "\n" )
-                                          .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
-                                          .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
-                                          .append( "      } ]"                                                     ).append( "\n" )
-                                          .append( "}"                                                             ).append( "\n" )
-                                          .toString()
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
-                              ),
-                           new BasicAttributeSpecification
-                              (
-                                 CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       new StringBuilder( 1024 )
-                                          .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
-                                          .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
-                                          .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
-                                          .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
-                                          .append( "  <w:body>"                                                    ).append( "\n" )
-                                          .append( "     <wx:sect>"                                                ).append( "\n" )
-                                          .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                          .append( "     </wx:sect>"                                               ).append( "\n" )
-                                          .append( "  </w:body>"                                                   ).append( "\n" )
-                                          .append( "</w:wordDocument>"                                             ).append( "\n" )
-                                          .toString()
-                                    ),
-                                 AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                              )
-                        ),
-                     List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-                  ),
-
-            /*
-             *  Menu Command:              MS Word Preview With Children (Server)
-             *  Guide Publishing Template: PREVIEW_ALL_RECURSE
-             */
-
-            new BasicArtifactInfoRecord
-               (
-                  5,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "SERVER_PREVIEW_TEST_C",                                                          /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "{"                                                             ).append( "\n" )
-                                       .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
-                                       .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
-                                       .append( "      [ {"                                                     ).append( "\n" )
-                                       .append( "         \"Outlining\":            true,"                      ).append( "\n" )
-                                       .append( "         \"RecurseChildren\":      true,"                      ).append( "\n" )
-                                       .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
-                                       .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
-                                       .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
-                                       .append( "      } ],"                                                    ).append( "\n" )
-                                       .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
-                                       .append( "      [ {"                                                     ).append( "\n" )
-                                       .append( "         \"AttrType\":             \"*\","                     ).append( "\n" )
-                                       .append( "         \"Label\":                \"\","                      ).append( "\n" )
-                                       .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
-                                       .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
-                                       .append( "      } ]"                                                     ).append( "\n" )
-                                       .append( "}"                                                             ).append( "\n" )
-                                       .toString()
-                                  ),
-                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
-                           ),
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
-                                       .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
-                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
-                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
-                                       .append( "  <w:body>"                                                    ).append( "\n" )
-                                       .append( "     <wx:sect>"                                                ).append( "\n" )
-                                       .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                       .append( "     </wx:sect>"                                               ).append( "\n" )
-                                       .append( "  </w:body>"                                                   ).append( "\n" )
-                                       .append( "</w:wordDocument>"                                             ).append( "\n" )
-                                       .toString()
-                                 ),
-                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                           )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
-
-            /*
-             *  Menu Command:              MS Word Preview With Children No Attributes (Server)
-             *  Guide Publishing Template: PREVIEW_ALL_RECURSE_NO_ATTRIBUTES
-             */
-
-            new BasicArtifactInfoRecord
-               (
-                  6,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "SERVER_PREVIEW_TEST_D",                                                          /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "{"                                                             ).append( "\n" )
-                                       .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
-                                       .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
-                                       .append( "      [ {"                                                     ).append( "\n" )
-                                       .append( "         \"Outlining\":            true,"                      ).append( "\n" )
-                                       .append( "         \"RecurseChildren\":      true,"                      ).append( "\n" )
-                                       .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
-                                       .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
-                                       .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
-                                       .append( "      } ],"                                                    ).append( "\n" )
-                                       .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
-                                       .append( "      [ {"                                                     ).append( "\n" )
-                                       .append( "         \"AttrType\":             \"Word Template Content\"," ).append( "\n" )
-                                       .append( "         \"Label\":                \"\","                      ).append( "\n" )
-                                       .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
-                                       .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
-                                       .append( "      } ]"                                                     ).append( "\n" )
-                                       .append( "}"                                                             ).append( "\n" )
-                                       .toString()
-                                  ),
-                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
-                           ),
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
-                                       .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
-                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
-                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
-                                       .append( "  <w:body>"                                                    ).append( "\n" )
-                                       .append( "     <wx:sect>"                                                ).append( "\n" )
-                                       .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                       .append( "     </wx:sect>"                                               ).append( "\n" )
-                                       .append( "  </w:body>"                                                   ).append( "\n" )
-                                       .append( "</w:wordDocument>"                                             ).append( "\n" )
-                                       .toString()
-                                 ),
-                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                           )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
-
-            /*
-             *  All Metadata Options
-             */
-
-            new BasicArtifactInfoRecord
-               (
-                  7,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "SERVER_PREVIEW_TEST_METADATAOPTIONS_ALL",                                        /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.RendererTemplateWholeWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.RendererOptions,                                   /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "{"                                                             ).append( "\n" )
-                                       .append( "   \"ElementType\":                \"Artifact\","              ).append( "\n" )
-                                       .append( "   \"OutliningOptions\":"                                      ).append( "\n" )
-                                       .append( "      [ {"                                                     ).append( "\n" )
-                                       .append( "         \"Outlining\":            true,"                      ).append( "\n" )
-                                       .append( "         \"RecurseChildren\":      false,"                     ).append( "\n" )
-                                       .append( "         \"HeadingAttributeType\": \"Name\","                  ).append( "\n" )
-                                       .append( "         \"ArtifactName\":         \"Default\","               ).append( "\n" )
-                                       .append( "         \"OutlineNumber\":        \"\""                       ).append( "\n" )
-                                       .append( "      } ],"                                                    ).append( "\n" )
-                                       .append( "   \"AttributeOptions\":"                                      ).append( "\n" )
-                                       .append( "      [ {"                                                     ).append( "\n" )
-                                       .append( "         \"AttrType\":             \"Word Template Content\"," ).append( "\n" )
-                                       .append( "         \"Label\":                \"\","                      ).append( "\n" )
-                                       .append( "         \"FormatPre\":            \"\","                      ).append( "\n" )
-                                       .append( "         \"FormatPost\":           \"\""                       ).append( "\n" )
-                                       .append( "      } ],"                                                    ).append( "\n" )
-                                       .append( "   \"MetadataOptions\":"                                       ).append( "\n" )
-                                       .append( "      ["                                                       ).append( "\n" )
-                                       .append( "        {"                                                     ).append( "\n" )
-                                       .append( "          \"Type\":                \"Artifact Type\","         ).append( "\n" )
-                                       .append( "          \"Format\":              \"\","                      ).append( "\n" )
-                                       .append( "          \"Label\":               \"\""                       ).append( "\n" )
-                                       .append( "        },"                                                    ).append( "\n" )
-                                       .append( "        {"                                                     ).append( "\n" )
-                                       .append( "          \"Type\":                \"Artifact Id\","           ).append( "\n" )
-                                       .append( "          \"Format\":              \"\","                      ).append( "\n" )
-                                       .append( "          \"Label\":               \"\""                       ).append( "\n" )
-                                       .append( "        },"                                                    ).append( "\n" )
-                                       .append( "        {"                                                     ).append( "\n" )
-                                       .append( "          \"Type\":                \"Applicability\","         ).append( "\n" )
-                                       .append( "          \"Format\":              \"\","                      ).append( "\n" )
-                                       .append( "          \"Label\":               \"\""                       ).append( "\n" )
-                                       .append( "        }"                                                     ).append( "\n" )
-                                       .append( "      ]"                                                       ).append( "\n" )
-                                       .append( "}"                                                             ).append( "\n" )
-                                       .toString()
-                                 ),
-                              AttributeSetters.stringAttributeSetter                                /* AttributeSetter(BiConsumer<Attribute<?>,Object>)       */
-                           ),
-                        new BasicAttributeSpecification
-                           (
-                              CoreAttributeTypes.WholeWordContent,                                  /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of                                                               /* Test Attribute Values                  (List<Object>)                          */
-                                 (
-                                    new StringBuilder( 1024 )
-                                       .append( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" ).append( "\n" )
-                                       .append( "<?mso-application progid=\"Word.Document\"?>"                  ).append( "\n" )
-                                       .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
-                                       .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
-                                       .append( "  <w:body>"                                                    ).append( "\n" )
-                                       .append( "     <wx:sect>"                                                ).append( "\n" )
-                                       .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                       .append( "     </wx:sect>"                                               ).append( "\n" )
-                                       .append( "  </w:body>"                                                   ).append( "\n" )
-                                       .append( "</w:wordDocument>"                                             ).append( "\n" )
-                                       .toString()
-                                 ),
-                              AttributeSetters .stringAttributeSetter                               /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                           )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               )
-
-
-            );
    //@formatter:on
 
    /**
-    * Saves a {@link Map} of the artifact identifiers for each artifact associated with each {@link BuilderRecord}.
+    * Saves a {@link Map} of the artifact identifiers for each artifact associated with each
+    * {@link ArtifactSpecificationRecord}.
     */
 
-   private static Map<Integer, Optional<Long>> builderRecordMap;
+   private static Map<Integer, Optional<ArtifactId>> builderRecordMap;
 
    /**
     * Saves a handle to the Publishing REST API end point.
@@ -715,8 +770,7 @@ public class PublishingServerPreviewTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement,
-      String documentString) {
+   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement, String documentString) {
 
       var error = publishingXmlUtils.getLastError();
 
@@ -1011,31 +1065,53 @@ public class PublishingServerPreviewTest {
 
       var testDocumentBuilder = new TestDocumentBuilder(PublishingServerPreviewTest.setValues);
 
-      testDocumentBuilder.buildDocument(PublishingServerPreviewTest.artifactInfoRecords,
-         PublishingServerPreviewTest.testBranchName, PublishingServerPreviewTest.testBranchCreationComment);
-
-      /*
-       * Create Publishing Templates on the common branch
-       */
-
-      var commonBranchTestDocumentBuilder = new TestDocumentBuilder(PublishingServerPreviewTest.setValues);
-
-      commonBranchTestDocumentBuilder.buildDocument(PublishingServerPreviewTest.commonBranchArtifactInfoRecords,
-         CoreBranches.COMMON.getName(), "Common Should Exist");
+      //@formatter:off
+      testDocumentBuilder.buildDocument
+         (
+            PublishingServerPreviewTest.branchSpecifications,
+            PublishingServerPreviewTest.artifactSpecifications
+         );
 
       /*
        * Save identifiers of test document root
        */
 
-      PublishingServerPreviewTest.rootBranchId = testDocumentBuilder.getRootBranchId();
-      PublishingServerPreviewTest.rootArtifactId = testDocumentBuilder.getRootArtifactId();
-
       //@formatter:off
+      PublishingServerPreviewTest.rootBranchId =
+         testDocumentBuilder
+            .getBranchIdentifier
+               (
+                  PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier
+               )
+            .get();
+
+      PublishingServerPreviewTest.rootArtifactId =
+         testDocumentBuilder
+            .getArtifactIdentifier
+               (
+                  PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier,
+                  1
+               )
+            .get();
+
       PublishingServerPreviewTest.builderRecordMap =
-         PublishingServerPreviewTest.artifactInfoRecords.stream()
-            .map( BuilderRecord::getIdentifier )
-            .collect( Collectors.toMap( Function.identity(), testDocumentBuilder::getArtifactIdByBuilderRecordId ) )
-            ;
+         PublishingServerPreviewTest
+            .artifactSpecifications
+            .stream( PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier )
+            .map( ArtifactSpecificationRecord::getIdentifier )
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        Function.identity(),
+                        ( builderRecordIdentifier ) -> testDocumentBuilder
+                                                          .getArtifactIdentifier
+                                                             (
+                                                                PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier,
+                                                                builderRecordIdentifier
+                                                             )
+                     )
+               );
       //@formatter:on
       /*
        * Get services

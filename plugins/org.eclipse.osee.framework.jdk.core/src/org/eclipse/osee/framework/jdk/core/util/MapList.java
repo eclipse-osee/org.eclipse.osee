@@ -13,26 +13,26 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Interface for an object that maps keys to {@link Set} collections of values. The interface extends the interface for
- * {@link Map}<code>&lt;K,{@link Set}&lt;V&gt;&gt;</code> with additional methods for directly accessing or adding
+ * Interface for an object that maps keys to {@link List} collections of values. The interface extends the interface for
+ * {@link Map}<code>&lt;K,{@link List}&lt;V&gt;&gt;</code> with additional methods for directly accessing or adding
  * values to the collections contained within the map.
  *
  * @author Loren K. Ashley
  * @param <K> the map key type.
- * @param <V> the type of value saved in the {@link Set} collections associated with the map keys.
+ * @param <V> the type of value saved in the {@link List} collections associated with the map keys.
  */
 
-public interface MapSet<K, V> extends MapCollection<K, V, Set<V>> {
+public interface MapList<K, V> extends MapCollection<K, V, List<V>> {
 
    /**
-    * Creates an immutable map of immutable sets from the <code>entries</code>. The {@link Set} implementations in the
-    * <code>entries</code> are copied to new immutable {@link Set}s. So the collections in the returned {@link MapSet}
+    * Creates an immutable map of immutable lists from the <code>entries</code>. The {@link List} implementations in the
+    * <code>entries</code> are copied to new immutable {@link List}s. So the collections in the returned {@link MapList}
     * are independent from the collections provided in <code>entries</code>. Changes to the provided collections will
-    * not be reflected in the returned {@link MapSet}.
+    * not be reflected in the returned {@link MapList}.
     *
     * @param <K> the map key type.
     * @param <V> the type of value saved in the {@link List} collections associated with the map keys.
@@ -41,28 +41,28 @@ public interface MapSet<K, V> extends MapCollection<K, V, Set<V>> {
     */
 
    @SafeVarargs
-   static <K, V> MapSet<K, V> ofEntries(Map.Entry<K, Set<V>>... entries) {
+   static <K, V> MapList<K, V> ofEntries(Map.Entry<K, List<V>>... entries) {
 
       if (entries == null) {
          throw new NullPointerException("MapList::ofEntries, parameter \"entries\" is null");
       }
 
       @SuppressWarnings("unchecked")
-      Map.Entry<K, Set<V>>[] newEntries = new Map.Entry[entries.length];
+      Map.Entry<K, List<V>>[] newEntries = new Map.Entry[entries.length];
 
       var i = 0;
       for (var entry : entries) {
          var key = entry.getKey();
          var value = entry.getValue();
 
-         newEntries[i++] = Map.entry(key, Set.copyOf(value));
+         newEntries[i++] = Map.entry(key, List.copyOf(value));
       }
 
       var map = Map.ofEntries(newEntries);
 
-      var mapSet = new AbstractImmutableMapSet<K, V>(map);
+      var mapList = new AbstractImmutableMapList<K, V>(map);
 
-      return mapSet;
+      return mapList;
    }
 
 }

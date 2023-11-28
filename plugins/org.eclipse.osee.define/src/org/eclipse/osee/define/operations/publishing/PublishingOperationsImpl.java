@@ -34,7 +34,6 @@ import org.eclipse.osee.define.rest.internal.wordupdate.WordMLApplicabilityHandl
 import org.eclipse.osee.define.rest.internal.wordupdate.WordMlLinkHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
-import org.eclipse.osee.define.util.Validation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -46,10 +45,10 @@ import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.core.util.LinkType;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.service.event.EventAdmin;
@@ -174,8 +173,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
     * @return the single {@link PublishingOperationsImpl} object.
     */
 
-   public synchronized static PublishingOperationsImpl create(DefineOperations defineOperations, OrcsApi orcsApi,
-      AtsApi atsApi, Log logger, EventAdmin eventAdmin) {
+   public synchronized static PublishingOperationsImpl create(DefineOperations defineOperations, OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin) {
 
       //@formatter:off
       return
@@ -232,18 +230,100 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder,
-      ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
+   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
 
       Message message = null;
 
       //@formatter:off
-      message = Validation.verifyParameter(branch,         "branch",         message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter(view,           "view",           message, "with an Id less than minus one", (p) -> p.getId() < -1l );
-      message = Validation.verifyParameter(sharedFolder,   "sharedFolder",   message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter(artifactType,   "artifactType",   message, "with an Id less than minus one", (p) -> p.getId() < -1l );
-      message = Validation.verifyParameter(attributeType,  "attributeType",  message, "with an Id less than minus one", (p) -> p.getId() < -1l );
-      message = Validation.verifyParameter(attributeValue, "attributeValue", message, "empty string",                   (p) -> p.isEmpty()     );
+      message =
+         Validation.require
+            (
+               message,
+               branch,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "getSharedPublishingArtifacts",
+               "branch",
+               "cannot be null",
+               Objects::isNull,
+               "branch identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               view,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "getSharedPublishingArtifacts",
+               "view",
+               "cannot be null",
+               Objects::isNull,
+               "view artifact identifier is greater than or equal to minus one",
+               (p) -> p.getId() < -1l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               sharedFolder,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "getSharedPublishingArtifacts",
+               "sharedFolder",
+               "cannot be null",
+               Objects::isNull,
+               "shared folder artifact identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               artifactType,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "getSharedPublishingArtifacts",
+               "artifactType",
+               "cannot be null",
+               Objects::isNull,
+               "artifcat type identifier is greater than or equal to minus one",
+               (p) -> p.getId() < -1l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               attributeType,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "getSharedPublishingArtifacts",
+               "attributeType",
+               "cannot be null",
+               Objects::isNull,
+               "attribute type identifier is greater than or equal to minus one",
+               (p) -> p.getId() < -1l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               attributeValue,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "getSharedPublishingArtifacts",
+               "attributeValue",
+               "cannot be null",
+               Objects::isNull,
+               "cannot be an empty string",
+               String::isEmpty
+            );
 
       if (Objects.nonNull(message)) {
          throw
@@ -317,16 +397,70 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact,
-      ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
 
       Message message = null;
 
       //@formatter:off
-      message = Validation.verifyParameter( branch,             "branch",             message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( templateArtifactId, "templateArtifactId", message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( headArtifact,       "headArtifact",       message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( view,               "view",               message, "with an Id less than minus one", (p) -> p.getId() < -1l );
+      message =
+         Validation.require
+            (
+               message,
+               branch,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordPreview",
+               "branch",
+               "cannot be null",
+               Objects::isNull,
+               "branch identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               templateArtifactId,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordPreview",
+               "templateArtifactId",
+               "cannot be null",
+               Objects::isNull,
+               "publishing template identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               headArtifact,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordPreview",
+               "headArtifact",
+               "cannot be null",
+               Objects::isNull,
+               "head artifact identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               view,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordPreview",
+               "view",
+               "cannot be null",
+               Objects::isNull,
+               "view artifact identifier is greater than or equal to minus one",
+               (p) -> p.getId() < -1l
+            );
 
       if (Objects.nonNull(message)) {
          throw
@@ -376,25 +510,73 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts,
-      ArtifactId view) {
+   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts, ArtifactId view) {
 
       Message message = null;
 
       //@formatter:off
-      message = Validation.verifyParameter( branch,             "branch",             message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( templateArtifactId, "templateArtifactId", message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( view,               "view",               message, "with an Id less than minus one", (p) -> p.getId() < -1l );
+      message =
+         Validation.require
+            (
+               message,
+               branch,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationImpl",
+               "msWordPreview",
+               "branch",
+               "cannot be null",
+               Objects::isNull,
+               "branch identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
 
       message =
-         Validation.verifyParameter
+         Validation.require
             (
-               artifacts,
-               "artifact",
                message,
-               "an empty list, or with an Id entry less than zero",
-               (p) -> p.isEmpty() || p.stream().map( Id::getId ).min( Long::compare ).get() < 0
+               templateArtifactId,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationImpl",
+               "msWordPreview",
+               "templateArtifactId",
+               "cannot be null",
+               Objects::isNull,
+               "publishing template identifier is non-negative",
+               (p) -> p.getId() <  0l
             );
+
+      message =
+         Validation.require
+            (
+               message,
+               artifacts,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationImpl",
+               "msWordPreview",
+               "artifacts",
+               "cannot be null",
+               Objects::isNull,
+               "artifact identifier list is non-empty, all elements are non-null, and all elements are non-negative",
+               Validation.<List<ArtifactId>>predicate( List::isEmpty )
+                  .or( Validation.collectionContainsNull )
+                  .or( Validation.collectionElementPredicate( ( p ) -> p.getId() < 0 ) )
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               view,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationImpl",
+               "msWordPreview",
+               "view",
+               "cannot be null",
+               Objects::isNull,
+               "view artifact identifier is greater than or equal to minus one",
+               (p) -> p.getId() < -1l
+            );
+
 
       if (Objects.nonNull(message)) {
          throw
@@ -440,23 +622,21 @@ public class PublishingOperationsImpl implements PublishingOperations {
    @Override
    public Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
 
-      Message message = null;
-
       //@formatter:off
-      message = Validation.verifyParameter( msWordPreviewRequestData, "msWordPreviewRequestData", message, "is invalid", (p) -> !p.isValid() );
-
-      if (Objects.nonNull(message)) {
-         throw
-            new IllegalArgumentException
-                   (
-                      Validation.buildIllegalArgumentExceptionMessage
-                         (
-                            this.getClass().getSimpleName(),
-                            "msWordPreview",
-                            message
-                         )
-                   );
-      }
+      Validation.require
+         (
+            msWordPreviewRequestData,
+            Validation.ValueType.PARAMETER,
+            "PublishingOperationsImpl",
+            "msWordPreview",
+            "msWordPreviewRequestData",
+            "cannot be null",
+            Objects::isNull,
+            NullPointerException::new,
+            "cannot be invalid",
+            (p) -> !p.isValid(),
+            IllegalArgumentException::new
+         );
 
       return this.msWordPreviewInternal
                 (
@@ -466,8 +646,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
       //@formatter:on
    }
 
-   private Attachment msWordPreviewInternal(MsWordPreviewRequestData msWordPreviewRequestData,
-      boolean folderInclusion) {
+   private Attachment msWordPreviewInternal(MsWordPreviewRequestData msWordPreviewRequestData, boolean folderInclusion) {
 
       //@formatter:off
       var branchId = msWordPreviewRequestData.getBranchId();
@@ -581,16 +760,70 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact,
-      ArtifactId view) {
+   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
 
       Message message = null;
 
       //@formatter:off
-      message = Validation.verifyParameter( branch,             "branch",             message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( templateArtifactId, "templateArtifactId", message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( headArtifact,       "headArtifact",       message, "with an Id less than zero",      (p) -> p.getId() <  0l );
-      message = Validation.verifyParameter( view,               "view",               message, "with an Id less than minus one", (p) -> p.getId() < -1l );
+      message =
+         Validation.require
+            (
+               message,
+               branch,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordTemplatePublish",
+               "branch",
+               "cannot be null",
+               Objects::isNull,
+               "branch identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               templateArtifactId,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordTemplatePublish",
+               "templateArtifactId",
+               "cannot be null",
+               Objects::isNull,
+               "publishing template identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               headArtifact,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordTemplatePublish",
+               "headArtifact",
+               "cannot be null",
+               Objects::isNull,
+               "head artifact identifier is non-negative",
+               (p) -> p.getId() <  0l
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               view,
+               Validation.ValueType.PARAMETER,
+               "PublishingOperationsImpl",
+               "msWordTemplatePublish",
+               "view",
+               "cannot be null",
+               Objects::isNull,
+               "view artifact identifier is greater than or equal to minus one",
+               (p) -> p.getId() < -1l
+            );
 
       if (Objects.nonNull(message)) {
          throw
@@ -726,23 +959,21 @@ public class PublishingOperationsImpl implements PublishingOperations {
    @Override
    public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData wordTemplateContentData) {
 
-      Message message = null;
-
       //@formatter:off
-      message = Validation.verifyParameter( wordTemplateContentData, "wordTemplateContentData", message, "is invalid", (p) -> !p.isValid() );
-
-      if (Objects.nonNull(message)) {
-         throw
-            new IllegalArgumentException
-                   (
-                      Validation.buildIllegalArgumentExceptionMessage
-                         (
-                            this.getClass().getSimpleName(),
-                            "renderWordTemplateContent",
-                            message
-                         )
-                   );
-      }
+      Validation.require
+         (
+            wordTemplateContentData,
+            Validation.ValueType.PARAMETER,
+            "PublishingOperationsImpl",
+            "renderWordTemplateContent",
+            "wordTemplateContentData",
+            "cannot be null",
+            Objects::isNull,
+            NullPointerException::new,
+            "cannot be invalid",
+            (p) -> !p.isValid(),
+            IllegalArgumentException::new
+         );
       //@formatter:on
 
       WordTemplateContentRendererHandler wordRendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
@@ -767,23 +998,21 @@ public class PublishingOperationsImpl implements PublishingOperations {
    @Override
    public WordUpdateChange updateWordArtifacts(WordUpdateData wordUpdateData) {
 
-      Message message = null;
-
       //@formatter:off
-      message = Validation.verifyParameter( wordUpdateData, "wordUpdateData", message, "is invalid", (p) -> !p.isValid() );
-
-      if (Objects.nonNull(message)) {
-         throw
-            new IllegalArgumentException
-                   (
-                      Validation.buildIllegalArgumentExceptionMessage
-                         (
-                            this.getClass().getSimpleName(),
-                            "updateWordArtifacts",
-                            message
-                         )
-                   );
-      }
+      Validation.require
+         (
+            wordUpdateData,
+            Validation.ValueType.PARAMETER,
+            "PublishingOperationsImpl",
+            "updateWordArtifacts",
+            "wordUpdateData",
+            "cannot be null",
+            Objects::isNull,
+            NullPointerException::new,
+            "is invalid",
+            (p) -> !p.isValid(),
+            IllegalArgumentException::new
+         );
       //@formatter:on
 
       WordUpdateArtifact updateArt = new WordUpdateArtifact(logger, orcsApi, eventAdmin);

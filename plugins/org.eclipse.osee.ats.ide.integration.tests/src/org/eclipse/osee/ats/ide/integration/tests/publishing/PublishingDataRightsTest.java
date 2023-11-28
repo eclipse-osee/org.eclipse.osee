@@ -13,16 +13,19 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.publishing;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactInfoRecord;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicBranchSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BranchSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
@@ -40,6 +43,7 @@ import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.orcs.core.util.Artifacts;
 import org.junit.Assert;
@@ -111,7 +115,37 @@ public class PublishingDataRightsTest {
    public TestName testName = new TestName();
 
    /**
-    * List of {@link BuilderRecord}s describing the test artifacts.
+    * The {@link BranchSpecificationRecord} identifier for the test branch.
+    */
+
+   private static int testBranchSpecificationRecordIdentifier = 1;
+
+   /**
+    * List of {@link BranchSpecificationRecord} implementations describing the branches for the test.
+    * <p>
+    * Branches are created in the list order. Follow the rules:
+    * <ul>
+    * <li>Ensure identifiers are unique.</li>
+    * <li>The identifier 0 is reserved.</li>
+    * <li>Ensure hierarchical parents are at lower list indices.</li>
+    * </ul>
+    */
+
+   //@formatter:off
+   private static final List<BranchSpecificationRecord> branchSpecifications =
+      List.of
+         (
+            new BasicBranchSpecificationRecord
+                   (
+                      PublishingDataRightsTest.testBranchSpecificationRecordIdentifier, /* BranchSpecificationRecord Identifier */
+                      "Publishing Server Data Rights Test Branch",                      /* Branch Name                          */
+                      "Branch for Publishing Server Data Rights Testing"                /* Branch Creation Comment              */
+                   )
+         );
+   //@formatter:on
+
+   /**
+    * List of {@link ArtifactSpecificationRecord}s describing the test artifacts.
     * <p>
     * Artifacts are created in the list order. Follow the rules:
     * <ul>
@@ -124,598 +158,609 @@ public class PublishingDataRightsTest {
     */
 
    //@formatter:off
-   private static List<BuilderRecord> artifactInfoRecords =
-      List.of
+   private static MapList<Integer,ArtifactSpecificationRecord> artifactSpecifications =
+      MapList.ofEntries
          (
-            new BasicArtifactInfoRecord
-               (
-                  1,                                                                                /* Identifier                             (Integer)                               */
-                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Data Rights Artifacts Folder",                                                   /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This folder contains artifacts for data rights tests."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+            /*
+             * Artifacts for the test branch.
+             */
 
-            new BasicArtifactInfoRecord
+            Map.entry
                (
-                  2,                                                                                /* Identifier                             (Integer)                               */
-                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Heading A",                                                                      /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                  PublishingDataRightsTest.testBranchSpecificationRecordIdentifier,                             /* Test Branch Identifier                 (Integer)                               */
+                  List.of
                      (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Section A Heading."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>Section A</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Default"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Portrait"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              1,                                                                                /* Identifier                             (Integer)                               */
+                              0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Data Rights Artifacts Folder",                                                   /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This folder contains artifacts for data rights tests."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  3,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-1",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-1."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-1.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Default"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Portrait"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              2,                                                                                /* Identifier                             (Integer)                               */
+                              1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Heading A",                                                                      /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Section A Heading."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>Section A</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Default"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Portrait"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  14,                                                                               /* Identifier                             (Integer)                               */
-                  3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-1-1",                                                              /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-1-1."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-1-1.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Default"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Portrait"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              3,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-1",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-1."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-1.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Default"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Portrait"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  4,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-2",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-2."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-2.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Default"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Portrait"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              14,                                                                               /* Identifier                             (Integer)                               */
+                              3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-1-1",                                                              /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-1-1."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-1-1.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Default"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Portrait"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  5,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-3",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-3."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-3.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of
-                                    (
-                                       "Default"                                                    /* Test Attribute Values                  (List<Object>)                          */
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Portrait"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              4,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-2",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-2."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-2.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Default"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Portrait"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  6,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-4",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-4."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-4.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Restricted Rights"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Portrait"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              5,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-3",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-3."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-3.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of
+                                                (
+                                                   "Default"                                                    /* Test Attribute Values                  (List<Object>)                          */
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Portrait"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  7,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-5",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-5."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-5.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Restricted Rights"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Portrait"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              6,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-4",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-4."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-4.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Restricted Rights"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Portrait"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  8,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-6",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-6."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-6.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Restricted Rights"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Landscape"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              7,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-5",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-5."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-5.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Restricted Rights"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Portrait"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  9,                                                                                /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-7",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-7."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-7.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Restricted Rights"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Landscape"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              8,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-6",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-6."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-6.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Restricted Rights"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Landscape"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  10,                                                                               /* Identifier                             (Integer)                               */
-                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement A-8",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement A-8."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<w:p><w:r><w:t>This is the word content for Requirement A-8.</w:t></w:r></w:p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Restricted Rights"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Landscape"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              9,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-7",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-7."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-7.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Restricted Rights"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Landscape"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  11,                                                                               /* Identifier                             (Integer)                               */
-                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Heading B",                                                                      /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.HeadingHtml,                                                    /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "Section B Heading."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.HtmlContent,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<p><b>Section A</b></p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              10,                                                                               /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement A-8",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement A-8."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<w:p><w:r><w:t>This is the word content for Requirement A-8.</w:t></w:r></w:p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.DataRightsClassification,                       /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Restricted Rights"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.PageOrientation,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Landscape"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  12,                                                                               /* Identifier                             (Integer)                               */
-                  11,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement B-1",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement B-1."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.HtmlContent,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<p>This is the HTML content for Requirement B-1.</p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-               ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              11,                                                                               /* Identifier                             (Integer)                               */
+                              1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Heading B",                                                                      /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingHtml,                                                    /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "Section B Heading."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.HtmlContent,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<p><b>Section A</b></p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
 
-            new BasicArtifactInfoRecord
-               (
-                  13,                                                                               /* Identifier                             (Integer)                               */
-                  11,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
-                  "Requirement B-2",                                                                /* Artifact Name                          (String)                                */
-                  CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
-                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                     (
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "This is Requirement B-2."
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               ),
-                        new BasicAttributeSpecification
-                               (
-                                 CoreAttributeTypes.HtmlContent,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                                 List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
-                                    (
-                                       "<p>This is the HTML content for Requirement B-2.</p>"
-                                    ),
-                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                               )
-                     ),
-                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                        new BasicArtifactSpecificationRecord
+                           (
+                              12,                                                                               /* Identifier                             (Integer)                               */
+                              11,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement B-1",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement B-1."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.HtmlContent,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<p>This is the HTML content for Requirement B-1.</p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+
+                        new BasicArtifactSpecificationRecord
+                           (
+                              13,                                                                               /* Identifier                             (Integer)                               */
+                              11,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Requirement B-2",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "This is Requirement B-2."
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.HtmlContent,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "<p>This is the HTML content for Requirement B-2.</p>"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           )
+                     )
                )
          );
    //@formatter:on
@@ -724,19 +769,20 @@ public class PublishingDataRightsTest {
     * Saves a {@link Map} of the builder record identifier associated with each {@link ArtifactId}.
     */
 
-   private static Map<Long, Integer> artifactIdMap;
+   private static Map<ArtifactId, Integer> artifactIdMap;
 
    /**
-    * Saves a {@link Map} of the {@link BuilderRecord} objects by builder record identifier.
+    * Saves a {@link Map} of the {@link ArtifactSpecificationRecord} objects by builder record identifier.
     */
 
-   private static Map<Integer, BuilderRecord> builderRecordByIdentifierMap;
+   private static Map<Integer, ArtifactSpecificationRecord> builderRecordByIdentifierMap;
 
    /**
-    * Saves a {@link Map} of the artifact identifiers for each artifact associated with each {@link BuilderRecord}.
+    * Saves a {@link Map} of the artifact identifiers for each artifact associated with each
+    * {@link ArtifactSpecificationRecord}.
     */
 
-   private static Map<Integer, Optional<Long>> builderRecordMap;
+   private static Map<Integer, Optional<ArtifactId>> builderRecordMap;
 
    /**
     * Saves a handle to the Data Rights REST API endpoint.
@@ -761,18 +807,6 @@ public class PublishingDataRightsTest {
     */
 
    private static BranchId rootBranchId;
-
-   /**
-    * Name used for the OSEE branch holding the test document.
-    */
-
-   private static String testBranchName = "Publishing Server Data Rights Test Branch";
-
-   /**
-    * Creation comment used for the OSEE test branch
-    */
-
-   private static String testBranchCreationComment = "Branch for Publishing Server Data Rights Testing";
 
    /**
     * Prints the currently running test method name followed by the received REST API call results for the test.
@@ -805,32 +839,80 @@ public class PublishingDataRightsTest {
 
       var testDocumentBuilder = new TestDocumentBuilder(PublishingDataRightsTest.setValues);
 
-      testDocumentBuilder.buildDocument(PublishingDataRightsTest.artifactInfoRecords,
-         PublishingDataRightsTest.testBranchName, PublishingDataRightsTest.testBranchCreationComment);
+      //@formatter:off
+      testDocumentBuilder.buildDocument
+         (
+            PublishingDataRightsTest.branchSpecifications,
+            PublishingDataRightsTest.artifactSpecifications
+         );
+      //@formatter:on
 
       /*
        * Save identifiers of test document root
        */
 
-      PublishingDataRightsTest.rootBranchId = testDocumentBuilder.getRootBranchId();
-      PublishingDataRightsTest.rootArtifactId = testDocumentBuilder.getRootArtifactId();
+      //@formatter:off
+      PublishingDataRightsTest.rootBranchId =
+         testDocumentBuilder
+            .getBranchIdentifier( PublishingDataRightsTest.testBranchSpecificationRecordIdentifier )
+            .get();
+
+      PublishingDataRightsTest.rootArtifactId =
+         testDocumentBuilder
+            .getArtifactIdentifier
+               (
+                  PublishingDataRightsTest.testBranchSpecificationRecordIdentifier,
+                  1
+               )
+            .get();
 
       //@formatter:off
       PublishingDataRightsTest.builderRecordMap =
-         PublishingDataRightsTest.artifactInfoRecords.stream()
-            .map( BuilderRecord::getIdentifier )
-            .collect( Collectors.toMap( Function.identity(), testDocumentBuilder::getArtifactIdByBuilderRecordId ) )
-            ;
+         PublishingDataRightsTest.artifactSpecifications
+            .entrySet()
+            .stream()
+            .map( Map.Entry::getValue )
+            .flatMap( List::stream )
+            .map( ArtifactSpecificationRecord::getIdentifier )
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        Function.identity(),
+                        ( artifactSpecificationIdentifier ) ->
+                           testDocumentBuilder
+                              .getArtifactIdentifier
+                                 (
+                                    PublishingDataRightsTest.testBranchSpecificationRecordIdentifier,
+                                    artifactSpecificationIdentifier
+                                 )
+                     )
+               );
 
       PublishingDataRightsTest.artifactIdMap =
-         PublishingDataRightsTest.builderRecordMap.entrySet().stream()
-            .collect( Collectors.toMap( ( e ) -> e.getValue().get(), ( e ) -> e.getKey() ) )
-            ;
+         PublishingDataRightsTest.builderRecordMap
+            .entrySet()
+            .stream()
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        ( e ) -> e.getValue().get(),
+                        ( e ) -> e.getKey()
+                     )
+               );
 
       PublishingDataRightsTest.builderRecordByIdentifierMap =
-         PublishingDataRightsTest.artifactInfoRecords.stream()
-            .collect( Collectors.toMap( BuilderRecord::getIdentifier, Function.identity() ))
-            ;
+         PublishingDataRightsTest.artifactSpecifications
+            .stream( PublishingDataRightsTest.testBranchSpecificationRecordIdentifier )
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        ArtifactSpecificationRecord::getIdentifier,
+                        Function.identity()
+                     )
+               );
       //@formatter:on
 
       /*
@@ -972,7 +1054,7 @@ public class PublishingDataRightsTest {
                expectedFlags.getIsContinuous()
             );
 
-         var builderRecordIdentifier = PublishingDataRightsTest.artifactIdMap.get( artifactId.getId() );
+         var builderRecordIdentifier = PublishingDataRightsTest.artifactIdMap.get( artifactId );
          var builderRecord           = PublishingDataRightsTest.builderRecordByIdentifierMap.get( builderRecordIdentifier );
 
          var expectedClassification =
@@ -1202,7 +1284,7 @@ public class PublishingDataRightsTest {
                expectedFlags.getIsContinuous()
             );
 
-         var builderRecordIdentifier = PublishingDataRightsTest.artifactIdMap.get( artifactId.getId() );
+         var builderRecordIdentifier = PublishingDataRightsTest.artifactIdMap.get( artifactId );
          var builderRecord           = PublishingDataRightsTest.builderRecordByIdentifierMap.get( builderRecordIdentifier );
 
          var expectedClassification =
@@ -1303,7 +1385,7 @@ public class PublishingDataRightsTest {
                expectedFlags.getIsContinuous()
             );
 
-         var builderRecordIdentifier = PublishingDataRightsTest.artifactIdMap.get( artifactId.getId() );
+         var builderRecordIdentifier = PublishingDataRightsTest.artifactIdMap.get( artifactId );
          var builderRecord           = PublishingDataRightsTest.builderRecordByIdentifierMap.get( builderRecordIdentifier );
 
          var expectedClassification = "Unspecified";
@@ -1470,8 +1552,8 @@ public class PublishingDataRightsTest {
       var expectedMessageRegex =
              new StringBuilder( 1024 )
                     .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-                    .append( "[ \\t]*" ).append( "Parameter \\\"artifactIdentifiers\\\" cannot be null or empty." ).append( "\\R" )
-                    .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\(null\\)" )
+                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed cannot be null test." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\(null\\)" ).append( "\\R" )
                     .toString();
 
 
@@ -1508,14 +1590,149 @@ public class PublishingDataRightsTest {
    }
 
    @Test
+   public void testEmptyArtifactIds() {
+
+      //@formatter:off
+      var expectedMessageRegex =
+             new StringBuilder( 1024 )
+                    .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier test." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\[\\]" ).append( "\\R" )
+                    .toString();
+
+
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "javax.ws.rs.BadRequestException",
+                         "java.lang.IllegalArgumentException",
+                         "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",
+                         expectedMessageRegex
+                      )
+         )
+      {
+
+         try
+         {
+            @SuppressWarnings("unused")
+            var dataRightResult =
+               PublishingDataRightsTest.dataRightsEndpoint.getDataRights
+                  (
+                     PublishingDataRightsTest.rootBranchId,
+                     "Government Purpose Rights",
+                     List.of()
+                  );
+
+            exceptionLogBlocker.assertNoException();
+         }
+         catch( Exception e ) {
+            exceptionLogBlocker.assertExpectedException(e);
+         }
+      }
+      //@formatter:on
+   }
+
+   @Test
+   public void testContainsNullArtifactIds() {
+
+      //@formatter:off
+      var expectedMessageRegex =
+             new StringBuilder( 1024 )
+                    .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier test." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\[null\\]" ).append( "\\R" )
+                    .toString();
+
+
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "javax.ws.rs.BadRequestException",
+                         "java.lang.IllegalArgumentException",
+                         "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",
+                         expectedMessageRegex
+                      )
+         )
+      {
+
+         try
+         {
+            var artifactIds = new ArrayList<ArtifactId>();
+            artifactIds.add( null );
+
+            @SuppressWarnings("unused")
+            var dataRightResult =
+               PublishingDataRightsTest.dataRightsEndpoint.getDataRights
+                  (
+                     PublishingDataRightsTest.rootBranchId,
+                     "Government Purpose Rights",
+                     artifactIds
+                  );
+
+            exceptionLogBlocker.assertNoException();
+         }
+         catch( Exception e ) {
+            exceptionLogBlocker.assertExpectedException(e);
+         }
+      }
+      //@formatter:on
+   }
+
+   @Test
+   public void testContainsSentinelArtifactIds() {
+
+      //@formatter:off
+      var expectedMessageRegex =
+             new StringBuilder( 1024 )
+                    .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier test." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\[-1\\]" ).append( "\\R" )
+                    .toString();
+
+
+      try(
+            var exceptionLogBlocker =
+               new ExceptionLogBlocker
+                      (
+                         "javax.ws.rs.BadRequestException",
+                         "java.lang.IllegalArgumentException",
+                         "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",
+                         expectedMessageRegex
+                      )
+         )
+      {
+
+         try
+         {
+            @SuppressWarnings("unused")
+            var dataRightResult =
+               PublishingDataRightsTest.dataRightsEndpoint.getDataRights
+                  (
+                     PublishingDataRightsTest.rootBranchId,
+                     "Government Purpose Rights",
+                     List.of( ArtifactId.SENTINEL )
+                  );
+
+            exceptionLogBlocker.assertNoException();
+         }
+         catch( Exception e ) {
+            exceptionLogBlocker.assertExpectedException(e);
+         }
+      }
+      //@formatter:on
+   }
+
+   @Test
    public void testSentinelBranchId() {
 
       //@formatter:off
       var expectedMessageRegex =
                new StringBuilder( 1024 )
                   .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-                  .append( "[ \\t]*" ).append( "Parameter \\\"branch\\\" cannot be null or with an Id less than zero." ).append( "\\R" )
-                  .append( "[ \\t]*" ).append( "branch:" ).append( "[ \\t]*" ).append( "-1" )
+                  .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"branch\" failed branch identifier is non-negative test\\." ).append( "\\R" )
+                  .append( "[ \\t]*" ).append( "branch:" ).append( "[ \\t]*" ).append( "-1" ).append( "\\R" )
                   .toString();
 
       var artifactIds =

@@ -100,7 +100,7 @@ public interface DoubleMap<Kp, Ks, V> {
    Optional<Set<Ks>> keySet(Kp primaryKey);
 
    /**
-    * Associates the provide <code>value</code> with the primary and secondary keys. If a secondary map is not
+    * Associates the provided <code>value</code> with the primary and secondary keys. If a secondary map is not
     * associated with the primary key, the secondary map will be created and associated with the primary key.
     *
     * @param primaryKey the key used to select the secondary map.
@@ -111,6 +111,18 @@ public interface DoubleMap<Kp, Ks, V> {
     */
 
    Optional<V> put(Kp primaryKey, Ks secondaryKey, V value);
+
+   /**
+    * Associates the provided <code>secondaryMap</code> with the primary key. If a secondary map is associated with the
+    * primary key, the secondary map will be replaced with the provided <code>secondaryMap</code>.
+    *
+    * @param primaryKey the key used to select the secondary map.
+    * @param secondaryMap the secondary map to associate the primary key.
+    * @return when the primary key maps to a value, an {@link Optional} with the previous secondary map; otherwise, an
+    * empty {@link Optional}.
+    */
+
+   Optional<Map<Ks, V>> put(Kp primaryKey, Map<Ks, V> secondaryMap);
 
    /**
     * Returns the number of mapped values within the map.

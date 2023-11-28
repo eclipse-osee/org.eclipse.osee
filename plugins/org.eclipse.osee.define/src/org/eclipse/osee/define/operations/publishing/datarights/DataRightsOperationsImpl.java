@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.define.api.publishing.datarights.DataRightsOperations;
-import org.eclipse.osee.define.util.Validation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -210,38 +210,46 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
       Message message = null;
 
       //@formatter:off
-      //coverity[var_deref_model : SUPPRESS]
       message =
-         Validation.verifyStreamableParameter
+         Validation.require
             (
-               artifactIdentifiers,
-               List::stream,
-               "artifactIdentifiers",
                message,
-               "empty",
-               List::isEmpty,
-               "null, sentinel, or < 0",
-               ( artifact ) ->    Objects.isNull( artifact )
-                               || ArtifactId.SENTINEL.equals( artifact )
-                               || artifact.getId() < 0l
-            );
-
-      message =
-         Validation.verifyParameter
-            (
                branchIdentifier,
+               Validation.ValueType.PARAMETER,
+               "DataRightsOperationsImpl",
+               "getDataRights",
                "branch",
-               message,
-               "with an Id less than zero",
-               (p) -> p.getId() < 0l
+               "cannot be null",
+               Objects::isNull,
+               "branch identifier is non-negative",
+               (p) -> p.getId() < 0L
             );
 
       message =
-         Validation.verifyParameter
+         Validation.requireNonNull
             (
+               message,
                overrideClassification,
-               "overrideClassification",
-               message
+               "DataRightsOperationsImpl",
+               "getDataRights",
+               "overrideClassification"
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               artifactIdentifiers,
+               Validation.ValueType.PARAMETER,
+               "DataRightsOperationsImpl",
+               "getDataRights",
+               "artifactIdentifiers",
+               "cannot be null",
+               Objects::isNull,
+               "artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier",
+               Validation.<List<ArtifactId>>predicate( List::isEmpty )
+                  .or( Validation.collectionContainsNull )
+                  .or( Validation.collectionElementPredicate( ( p ) -> p.getId() < 0L ) )
             );
 
       if (Objects.nonNull(message)) {
@@ -287,25 +295,63 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers,
-      Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
+   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
 
       Message message = null;
 
       //@formatter:off
-      message = Validation.verifyParameter( artifactIdentifiers,    "artifacts",              message  );
-      message = Validation.verifyParameter( overrideClassification, "overrideClassification", message  );
+      message =
+         Validation.require
+            (
+               message,
+               artifactIdentifiers,
+               Validation.ValueType.PARAMETER,
+               "DataRightsOperationsImpl",
+               "getDataRights",
+               "artifactIdentifiers",
+               "cannot be null",
+               Objects::isNull,
+               "artifact identifier list is not empty, does not contain a null element, and does not contain a negative artifact identifier",
+               Validation.<List<ArtifactId>>predicate( List::isEmpty )
+                  .or( Validation.collectionContainsNull )
+                  .or( Validation.collectionElementPredicate( ( p ) -> p.getId() < 0l ) )
+            );
 
-      for( var artifactIdentifier : artifactIdentifiers ) {
-         message = Validation.verifyParameter
-                      (
-                         artifactIdentifier,
-                         "artifactIdentifier",
-                         message,
-                         "artifactIdentifier on list is invalid",
-                         (p) -> Objects.isNull( p ) || ArtifactId.SENTINEL.equals( p ) || p.getId() < 0l
-                      );
-      }
+      message =
+         Validation.requireNonNull
+            (
+               message,
+               artifactIdentifiers,
+               "DataRightsOperationsImpl",
+               "getDataRights",
+               "artifacts"
+            );
+
+      message =
+         Validation.requireNonNull
+            (
+               message,
+               overrideClassification,
+               "DataRightsOperationsImpl",
+               "getDataRights",
+               "overrideClassification"
+            );
+
+      message =
+         Validation.require
+            (
+               message,
+               artifactMap,
+               Validation.ValueType.PARAMETER,
+               "DataRightsOperationsImpl",
+               "getDataRights",
+               "artifactMap",
+               "cannot be null",
+               Objects::isNull,
+               "",
+               Validation.mapContainsNullKey
+                  .or( Validation.mapContainsNullValue )
+            );
 
       if (Objects.nonNull(message)) {
          throw
@@ -435,8 +481,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @throws OseeCoreException when a failure occurs loading the publishing artifacts from the database.
     */
 
-   private Map<ArtifactId, ArtifactReadable> loadArtifactMap(BranchId branchIdentifier,
-      List<ArtifactId> artifactIdentifiers) {
+   private Map<ArtifactId, ArtifactReadable> loadArtifactMap(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers) {
 
       try {
          return this.queryFactory.fromBranch(branchIdentifier).andIds(artifactIdentifiers).asArtifactMap();
@@ -460,8 +505,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @return a {@link DataRightEntryList}.
     */
 
-   private DataRightEntryList populateRequest(List<ArtifactId> artifactIdentifiers,
-      Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
+   private DataRightEntryList populateRequest(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
 
       try (var dataRightEntryList = new DataRightEntryList(overrideClassification)) {
 

@@ -20,9 +20,9 @@ import org.eclipse.osee.define.api.synchronization.ExportRequest;
 import org.eclipse.osee.define.api.synchronization.ImportRequest;
 import org.eclipse.osee.define.api.synchronization.SynchronizationOperations;
 import org.eclipse.osee.define.util.OsgiUtils;
-import org.eclipse.osee.define.util.Validation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -136,23 +136,21 @@ public class SynchronizationOperationsImpl implements SynchronizationOperations 
    @Override
    public InputStream exporter(ExportRequest exportRequest) {
 
-      Message message = null;
-
       //@formatter:off
-      message = Validation.verifyParameter( exportRequest, "exportRequest", message, "is invalid", (p) -> !p.isValid() );
-
-      if( Objects.nonNull( message ) ) {
-         throw
-            new IllegalArgumentException
-                   (
-                      Validation.buildIllegalArgumentExceptionMessage
-                         (
-                            this.getClass().getSimpleName(),
-                            "exporter",
-                            message
-                         )
-                   );
-      }
+      Validation.require
+         (
+            exportRequest,
+            Validation.ValueType.PARAMETER,
+            "SynchronizationOperationsImpl",
+            "exporter",
+            "exportRequest",
+            "cannot be null",
+            Objects::isNull,
+            NullPointerException::new,
+            "cannot be sentinel",
+            (p) -> !p.isValid(),
+            IllegalArgumentException::new
+         );
       //@formatter:on
 
       RootList rootList;
@@ -191,8 +189,30 @@ public class SynchronizationOperationsImpl implements SynchronizationOperations 
          Message message = null;
 
          //@formatter:off
-         message = Validation.verifyParameter( importRequest, "importRequest", message, "is invalid", (p) -> !p.isValid() );
-         message = Validation.verifyParameter( inputStream,   "inputStream",   message );
+         message =
+            Validation.require
+               (
+                  message,
+                  importRequest,
+                  Validation.ValueType.PARAMETER,
+                  "SynchronizationOperationsImpl",
+                  "importer",
+                  "importRequest",
+                  "cannont be null",
+                  Objects::isNull,
+                  "is invalid",
+                  (p) -> !p.isValid()
+               );
+
+         message =
+            Validation.requireNonNull
+               (
+                  message,
+                  inputStream,
+                  "SynchronizationOperationsImpl",
+                  "importer",
+                  "inputStream"
+               );
 
          if( Objects.nonNull( message ) ) {
             throw

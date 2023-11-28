@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.osee.define.api.synchronization.Root;
-import org.eclipse.osee.define.util.Validation;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
+import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -287,10 +287,45 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
       Message message = null;
 
       //@formatter:off
-      Validation.verifyParameter( this.orcsApi,                        "orcsApi",                        message );
-      Validation.verifyParameter( this.orcsTokenService,               "orcsTokenService",               message );
-      Validation.verifyParameter( this.direction,                      "direction",                      message );
-      Validation.verifyParameter( this.synchronizationArtifactBuilder, "synchronizationArtifactBuilder", message );
+      Validation.requireNonNull
+         (
+            message,
+            this.orcsApi,
+            Validation.ValueType.MEMBER,
+            "RootList",
+            "validate",
+            "orcsApi"
+         );
+
+      Validation.requireNonNull
+         (
+            message,
+            this.orcsTokenService,
+            Validation.ValueType.MEMBER,
+            "RootList",
+            "validate",
+            "orcsTokenService"
+         );
+
+      Validation.requireNonNull
+         (
+            message,
+            this.direction,
+            Validation.ValueType.MEMBER,
+            "RootList",
+            "validate",
+            "direction"
+         );
+
+      Validation.requireNonNull
+         (
+            message,
+            this.synchronizationArtifactBuilder,
+            Validation.ValueType.MEMBER,
+            "RootList",
+            "validate",
+            "synchronizationArtifactBuilder"
+         );
 
       if( Objects.nonNull( message) ) {
          throw
