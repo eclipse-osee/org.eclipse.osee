@@ -52,9 +52,9 @@ public class HealthLog {
             runtime = Runtime.getRuntime().exec(catLogCmd).getInputStream();
             s = new Scanner(runtime).useDelimiter("\\A");
             String results = s.hasNext() ? s.next() : "";
-            this.log = String.format("cmd [%s]\n %s", catLogCmd, results);
+            this.log = String.format("cmd [%s]\n\n %s", catLogCmd, results);
          } catch (Exception ex) {
-            this.log = String.format("cmd [%s]\n Exception: %s", catLogCmd, Lib.exceptionToString(ex));
+            this.log = String.format("cmd [%s]\n\n Exception: %s", catLogCmd, Lib.exceptionToString(ex));
          } finally {
             if (s != null) {
                s.close();

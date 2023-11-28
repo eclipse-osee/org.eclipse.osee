@@ -33,23 +33,20 @@ public class HealthStatus {
 
       for (String server : serverStrings) {
          HealthServer link = new HealthServer(server, false, false);
-         // Check server alive
+         // Check server + db alive
          try {
-            String urlStr = String.format("http://%s%s", server, "/ide/versions");
-            String serverRes = HealthUtils.getUrlResultsWithAuth(urlStr, auth);
-            if (serverRes.contains("\"versions\"")) {
+            String urlStr = String.format("http://%s%s", server, "/orcs/branches?branchUuids=1");
+            String res = HealthUtils.getUrlResultsWithAuth(urlStr, auth);
+            if (res.contains("\"System Root Branch\"")) {
                link.setServerAlive(true);
-            }
-         } catch (Exception ex) {
-         }
-         // Check db alive
-         try {
-            String urlStr = String.format("http://%s%s", server, "/orcs/branches");
-            String dbRes = HealthUtils.getUrlResultsWithAuth(urlStr, auth);
-            if (dbRes.contains("\"System Root Branch\"")) {
                link.setDbAlive(true);
+            } else {
+               link.setServerAlive(true);
+               link.setDbAlive(false);
             }
          } catch (Exception ex) {
+            link.setServerAlive(false);
+            link.setDbAlive(false);
          }
          servers.add(link);
       }

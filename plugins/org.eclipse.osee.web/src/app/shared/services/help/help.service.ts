@@ -50,6 +50,7 @@ export class HelpService {
 			requiredRoles: [],
 			routerLink: 'page/' + helpPage.id,
 			icon: '',
+			description: '',
 			children: helpPage.children.map((c) =>
 				this.helpPageToNavElement(c)
 			),

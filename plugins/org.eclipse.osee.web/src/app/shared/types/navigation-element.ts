@@ -1,5 +1,3 @@
-import { UserRoles } from '@osee/shared/types/auth';
-
 /*********************************************************************
  * Copyright (c) 2023 Boeing
  *
@@ -12,6 +10,7 @@ import { UserRoles } from '@osee/shared/types/auth';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { UserRoles } from '@osee/shared/types/auth';
 export interface navigationElement {
 	label: string;
 	cypressLabel: string;
@@ -21,5 +20,19 @@ export interface navigationElement {
 	requiredRoles: UserRoles[];
 	routerLink: string;
 	icon: string;
+	description: string;
 	children: navigationElement[];
 }
+
+export const defaultNavigationElement: navigationElement = {
+	label: '',
+	cypressLabel: '',
+	pageTitle: '',
+	isDropdown: false,
+	isDropdownOpen: false,
+	requiredRoles: [],
+	routerLink: '',
+	icon: '',
+	description: '',
+	children: [],
+};

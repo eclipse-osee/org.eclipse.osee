@@ -1,0 +1,50 @@
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+import { Routes } from '@angular/router';
+
+const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('@osee/toolbar'),
+		outlet: 'toolbar',
+		pathMatch: 'full',
+	},
+	{ path: '', loadComponent: () => import('./server-health.component') },
+	{
+		path: 'status',
+		loadChildren: () =>
+			import('./server-health-status/server-health-status.routes'),
+	},
+	{
+		path: 'balancers',
+		loadChildren: () =>
+			import('./server-health-balancers/server-health-balancers.routes'),
+	},
+	{
+		path: 'headers',
+		loadChildren: () =>
+			import('./server-health-headers/server-health-headers.routes'),
+	},
+	{
+		path: 'activemq',
+		loadChildren: () =>
+			import('./server-health-activemq/server-health-activemq.routes'),
+	},
+	{
+		path: 'usage',
+		loadChildren: () =>
+			import('./server-health-usage/server-health-usage.routes'),
+	},
+];
+
+export default routes;

@@ -16,6 +16,14 @@
 			"^/ats": ""
 		}
 	},
+	"/health": {
+		"target": "http://localhost:8089",
+		"secure": true,
+		"logLevel": "debug",
+		"pathReWrite": {
+			"^/health": ""
+		}
+	},
 	"/mim": {
 		"target": "http://localhost:8089",
 		"secure": true,

@@ -1,0 +1,29 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-flex tw-h-full tw-flex-col">
+	<osee-server-health-page-header
+		[icon]="currNavItem.icon"
+		[name]="currNavItem.label"
+		[description]="currNavItem.description" />
+	@if (headers | async; as headers) {
+		<div
+			*ngFor="let key of getObjectKeys(headers)"
+			class="tw-pl-8">
+			{{ key }}: {{ headers[key] }}
+		</div>
+	} @else {
+		<div class="tw-flex tw-items-center tw-justify-center tw-p-4">
+			No data
+		</div>
+	}
+</div>

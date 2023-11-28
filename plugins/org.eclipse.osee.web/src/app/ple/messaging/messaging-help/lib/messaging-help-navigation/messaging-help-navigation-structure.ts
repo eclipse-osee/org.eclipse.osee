@@ -26,6 +26,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'overview',
 		icon: 'home',
+		description: '',
 		children: [],
 	},
 	{
@@ -37,6 +38,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'icdrevision',
 		icon: 'edit',
+		description: '',
 		children: [
 			{
 				label: 'Start an ICD Revision',
@@ -47,6 +49,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: 'icdrevision',
 				icon: 'edit',
+				description: '',
 				children: [],
 			},
 			{
@@ -58,6 +61,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: 'edit_structure',
 				icon: 'edit',
+				description: '',
 				children: [],
 			},
 			{
@@ -69,6 +73,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: 'add_element',
 				icon: 'add',
+				description: '',
 				children: [],
 			},
 			{
@@ -80,6 +85,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: 'add_edit_types',
 				icon: 'add',
+				description: '',
 				children: [],
 			},
 			{
@@ -92,6 +98,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: 'add_msg_submsg_struct',
 				icon: 'add',
+				description: '',
 				children: [],
 			},
 			{
@@ -103,6 +110,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				requiredRoles: [],
 				routerLink: 'using_cross_ref_mgr',
 				icon: 'sync_alt',
+				description: '',
 				children: [],
 			},
 		],
@@ -116,6 +124,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'connections',
 		icon: 'device_hub',
+		description: '',
 		children: [],
 	},
 	{
@@ -127,6 +136,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'type_view_page',
 		icon: 'view_module',
+		description: '',
 		children: [],
 	},
 	{
@@ -138,6 +148,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'structures',
 		icon: 'line_style',
+		description: '',
 		children: [],
 	},
 	{
@@ -149,6 +160,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'find_elements_by_type',
 		icon: 'search',
+		description: '',
 		children: [],
 	},
 	{
@@ -160,6 +172,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'reports',
 		icon: 'insert_drive_file',
+		description: '',
 		children: [],
 	},
 	{
@@ -171,6 +184,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'traceability',
 		icon: 'sync_alt',
+		description: '',
 		children: [],
 	},
 	{
@@ -182,6 +196,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		requiredRoles: [],
 		routerLink: 'user_settings',
 		icon: 'settings',
+		description: '',
 		children: [],
 	},
 ];

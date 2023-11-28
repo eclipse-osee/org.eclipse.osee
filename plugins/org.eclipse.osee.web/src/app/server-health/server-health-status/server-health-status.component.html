@@ -1,0 +1,219 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-flex tw-h-full tw-flex-col">
+	<osee-server-health-page-header
+		[icon]="currNavItem.icon"
+		[name]="currNavItem.label"
+		[description]="currNavItem.description" />
+	<ng-container
+		*ngIf="serversAsDataSource | async as dataSource; else noData">
+		<div>
+			<table
+				mat-table
+				multiTemplateDataRows
+				[dataSource]="dataSource">
+				<ng-container matColumnDef="name">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-font-bold">
+						Name
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let server"
+						(click)="toggleRow(server)">
+						{{ server.name }}
+					</td>
+				</ng-container>
+				<ng-container matColumnDef="serverAlive">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-font-bold">
+						Server Alive
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let server"
+						(click)="toggleRow(server)"
+						[ngClass]="
+							server.serverAlive
+								? 'tw-bg-success'
+								: 'tw-bg-warning'
+						">
+						{{ server.serverAlive ? 'Alive' : 'Not Alive' }}
+					</td>
+				</ng-container>
+				<ng-container matColumnDef="dbAlive">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-font-bold">
+						DB Alive
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let server"
+						(click)="toggleRow(server)"
+						[ngClass]="
+							server.dbAlive ? 'tw-bg-success' : 'tw-bg-warning'
+						">
+						{{ server.dbAlive ? 'Alive' : 'Not Alive' }}
+					</td>
+				</ng-container>
+				<ng-container matColumnDef="expandedServer">
+					<td
+						mat-cell
+						*matCellDef="let server"
+						[attr.colspan]="displayedColumns.length"
+						class="tw-p-0">
+						<div
+							class="tw-overflow-hidden"
+							[@detailExpand]="
+								server.expanded ? 'expanded' : 'collapsed'
+							"
+							*ngIf="
+								server.expanded &&
+								server.serverAlive &&
+								server.dbAlive
+							">
+							<mat-expansion-panel class="[&>div>div]:tw-p-0">
+								<mat-expansion-panel-header
+									(click)="
+										panelsOpen().includes(
+											server.name + 'Details'
+										)
+											? removeFromPanelsOpen(
+													server.name + 'Details'
+											  )
+											: addToPanelsOpen(
+													server.name + 'Details'
+											  )
+									"
+									[ngClass]="
+										panelsOpen().includes(
+											server.name + 'Details'
+										)
+											? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+											: ''
+									"
+									class="tw-pl-16 tw-shadow-md">
+									<mat-panel-title> Details </mat-panel-title>
+								</mat-expansion-panel-header>
+								<osee-server-health-details
+									[serverName]="server.name" />
+							</mat-expansion-panel>
+							<mat-expansion-panel class="[&>div>div]:tw-p-0">
+								<mat-expansion-panel-header
+									(click)="
+										panelsOpen().includes(
+											server.name + 'Log'
+										)
+											? removeFromPanelsOpen(
+													server.name + 'Log'
+											  )
+											: addToPanelsOpen(
+													server.name + 'Log'
+											  )
+									"
+									[ngClass]="
+										panelsOpen().includes(
+											server.name + 'Log'
+										)
+											? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+											: ''
+									"
+									class="tw-pl-16 tw-shadow-md">
+									<mat-panel-title> Log </mat-panel-title>
+								</mat-expansion-panel-header>
+								<osee-server-health-log />
+							</mat-expansion-panel>
+							<mat-expansion-panel class="[&>div>div]:tw-p-0">
+								<mat-expansion-panel-header
+									(click)="
+										panelsOpen().includes(
+											server.name + 'Java'
+										)
+											? removeFromPanelsOpen(
+													server.name + 'Java'
+											  )
+											: addToPanelsOpen(
+													server.name + 'Java'
+											  )
+									"
+									[ngClass]="
+										panelsOpen().includes(
+											server.name + 'Java'
+										)
+											? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+											: ''
+									"
+									class="tw-pl-16 tw-shadow-md">
+									<mat-panel-title> Java </mat-panel-title>
+								</mat-expansion-panel-header>
+								<osee-server-health-java />
+							</mat-expansion-panel>
+							<mat-expansion-panel class="[&>div>div]:tw-p-0">
+								<mat-expansion-panel-header
+									(click)="
+										panelsOpen().includes(
+											server.name + 'Top'
+										)
+											? removeFromPanelsOpen(
+													server.name + 'Top'
+											  )
+											: addToPanelsOpen(
+													server.name + 'Top'
+											  )
+									"
+									[ngClass]="
+										panelsOpen().includes(
+											server.name + 'Top'
+										)
+											? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+											: ''
+									"
+									class="tw-pl-16 tw-shadow-md">
+									<mat-panel-title> Top </mat-panel-title>
+								</mat-expansion-panel-header>
+								<osee-server-health-top />
+							</mat-expansion-panel>
+						</div>
+					</td>
+				</ng-container>
+
+				<tr
+					mat-header-row
+					*matHeaderRowDef="displayedColumns; sticky: true"></tr>
+				<tr
+					mat-row
+					*matRowDef="let server; columns: displayedColumns"
+					class="hover:tw-bg-background-hover"
+					[ngClass]="
+						server.expanded
+							? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+							: ''
+					"></tr>
+				<tr
+					mat-row
+					*matRowDef="let row; columns: ['expandedServer']"
+					class="tw-h-0"></tr>
+			</table>
+		</div>
+	</ng-container>
+</div>
+
+<ng-template #noData>
+	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
+</ng-template>
