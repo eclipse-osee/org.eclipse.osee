@@ -85,7 +85,7 @@ public class HashMapHashSet<K, V> extends AbstractMapCollection<K, V, Set<V>> im
       super(() -> new HashMap<>(mapCollection.size()), HashSet::new);
       //@formatter:off
       mapCollection
-         .streamEntries()
+         .streamAllCollectionValuesAsEntries()
          .forEach( mapCollection::putEntry );
       //@formatter:on
    }

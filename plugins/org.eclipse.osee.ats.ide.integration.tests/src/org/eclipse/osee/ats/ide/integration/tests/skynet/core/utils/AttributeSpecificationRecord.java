@@ -15,11 +15,12 @@ package org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
- * Lists of instances of this interface are used to define the attributes to be set for test attributes.
+ * Implementations of this interface are used to define a test attribute.
  *
  * @author Loren K. Ashley
  */
@@ -30,17 +31,19 @@ public interface AttributeSpecificationRecord {
     * Gets the type descriptor for the test attribute.
     *
     * @return the test attribute type descriptor.
+    * @implSpec Implementations shall not return <code>null</code>.
     */
 
-   AttributeTypeGeneric<?> getAttributeType();
+   public @NonNull AttributeTypeGeneric<?> getAttributeType();
 
    /**
     * Gets the attribute's values.
     *
     * @return a {@link List} of {@link Object}s to be assigned as the attribute's values.
+    * @implSpec Implementations shall not return <code>null</code>.
     */
 
-   List<Object> getAttributeValues();
+   public @NonNull List<Object> getAttributeValues();
 
    /**
     * Gets a {@link BiConsumer} functional interface implementation for setting the value of an attribute. The
@@ -48,9 +51,10 @@ public interface AttributeSpecificationRecord {
     * the attribute value to be set.
     *
     * @return the attribute setter functional interface implementation.
+    * @implSpec Implementations shall not return <code>null</code>.
     */
 
-   BiConsumer<Attribute<?>, Object> getAttributeSetter();
+   public @NonNull BiConsumer<Attribute<?>, Object> getAttributeSetter();
 }
 
 /* EOF */

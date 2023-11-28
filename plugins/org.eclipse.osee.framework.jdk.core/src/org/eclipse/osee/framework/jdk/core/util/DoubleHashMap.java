@@ -34,11 +34,36 @@ import java.util.stream.Collectors;
 
 public class DoubleHashMap<Kp, Ks, V> implements DoubleMap<Kp, Ks, V> {
 
+   /**
+    * Default initial capacity for the primary map and secondary maps.
+    */
+
    static final int defaultInitialCapacity = 16;
+
+   /**
+    * Default load factor for the primary map and secondary maps.
+    */
+
    static final float defaultLoadFactor = 0.75f;
 
+   /**
+    * Saves the primary map.
+    */
+
    private final HashMap<Kp, Map<Ks, V>> primaryMap;
+
+   /**
+    * The initial capacity secondary maps will be created with. This member is assigned from constructor parameters or
+    * assigned to defaults.
+    */
+
    private final int secondaryInitialCapacity;
+
+   /**
+    * The initial load factor secondary maps will be created with. This member is assigned from constructor parameters
+    * or assigned to defaults.
+    */
+
    private final float secondaryLoadFactor;
 
    /**
@@ -168,6 +193,20 @@ public class DoubleHashMap<Kp, Ks, V> implements DoubleMap<Kp, Ks, V> {
       var priorValue = secondaryMap.put(secondaryKey, value);
 
       return Optional.ofNullable(priorValue);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Optional<Map<Ks, V>> put(Kp primaryKey, Map<Ks, V> secondaryMap) {
+
+      var priorSecondaryMap = this.primaryMap.get(primaryKey);
+
+      primaryMap.put(primaryKey, secondaryMap);
+
+      return Optional.ofNullable(priorSecondaryMap);
    }
 
    /**

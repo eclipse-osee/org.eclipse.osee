@@ -27,10 +27,10 @@ import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplate
 import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.util.OsgiUtils;
-import org.eclipse.osee.define.util.Validation;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -192,15 +192,21 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
    @Override
    public PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest) {
 
-      Message message = null;
-
       //@formatter:off
-      message = Validation.verifyParameter( publishingTemplateRequest, "publishingTemplateRequest", message, "is invalid", (p) -> !p.isValid() );
-
-      if (Objects.nonNull(message)) {
-         var exceptionMessage = Validation.buildIllegalArgumentExceptionMessage( this.getClass().getSimpleName(), "getPublishingTemplate", message );
-         throw new IllegalArgumentException( exceptionMessage );
-      }
+      Validation.require
+         (
+            publishingTemplateRequest,
+            Validation.ValueType.PARAMETER,
+            "TemplateManagerOperationsImpl",
+            "getPublishingTemplate",
+            "publishingTemplateRequest",
+            "cannot be null",
+            Objects::isNull,
+            NullPointerException::new,
+            "publishing template request is valid",
+            (p) -> !p.isValid(),
+            IllegalArgumentException::new
+         );
       //@formatter:on
 
       boolean isNoTags = Boolean.valueOf(OseeInfo.getValue(this.jdbcService.getClient(), "osee.publish.no.tags"));
@@ -234,8 +240,8 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
       Message message = null;
 
       //@formatter:off
-      message = Validation.verifyParameter( primaryKey,   "primayKey",    message );
-      message = Validation.verifyParameter( secondaryKey, "secondaryKey", message );
+      message = Validation.requireNonNull( message, primaryKey,   "TemplateManagerOperationsImpl", "getPublishingTemplate", "primayKey"    );
+      message = Validation.requireNonNull( message, secondaryKey, "TemplateManagerOperationsImpl", "getPublishingTemplate", "secondaryKey" );
 
       if (Objects.nonNull(message)) {
          var exceptionMessage = Validation.buildIllegalArgumentExceptionMessage( this.getClass().getSimpleName(), "getPublishingTemplate", message );

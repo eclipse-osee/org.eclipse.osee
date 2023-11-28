@@ -184,6 +184,15 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
    Stream<V> stream(K key);
 
    /**
+    * Provides an unordered {@link Stream} of all the values within all the {@link Collection}s in the map. The values
+    * are wrapped in an {@link Map.Entry} with the key the {@link Collection} the value came from is associated with.
+    *
+    * @return a {@link Stream} of {@link Map.Entry}<code>&lt;K,V&gt;</code> objects.
+    */
+
+   Stream<Map.Entry<K, V>> streamAllCollectionValuesAsEntries();
+
+   /**
     * Provides an unordered {@link Stream} of the {@link Collection}s in the map.
     *
     * @return an unordered {@link Stream} of the {@link Collection}s in the map.
@@ -192,13 +201,20 @@ public interface MapCollection<K, V, C extends Collection<V>> extends Map<K, C> 
    Stream<C> streamCollections();
 
    /**
-    * Provides an unordered {@link Stream} of all the values within all the {@link Collection}s in the map. The values
-    * are wrapped in an {@link Map.Entry} with the key the {@link Collection} the value came from is associated with.
+    * Provides an unordered {@link Stream} of the {@link MapCollection} entries as {@link Map.Entry} objects.
     *
-    * @return a {@link Stream} of {@link Map.Entry}<code>&lt;K,V&gt;</code> objects.
+    * @return an unordered {@link Stream} of the {@link MapCollection} entries as {@link Map.Entry} objects.
     */
 
-   Stream<Map.Entry<K, V>> streamEntries();
+   Stream<Map.Entry<K, C>> streamEntries();
+
+   /**
+    * Provides an unordered {@link Stream} of the {@link MapCollection} keys.
+    *
+    * @return an unordered {@link Stream} of the {@link MapCollection} keys.
+    */
+
+   Stream<K> streamKeys();
 }
 
 /* EOF */

@@ -14,12 +14,15 @@
 package org.eclipse.osee.ats.ide.integration.tests.publishing;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactInfoRecord;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecification;
-import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BuilderRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicBranchSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BranchSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ExceptionLogBlocker;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
@@ -35,6 +38,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -75,7 +79,37 @@ public class PublishingSharedArtifactsFolderTest {
    //@formatter:on
 
    /**
-    * List of {@link BuilderRecord}s describing the test artifacts.
+    * The {@link BranchSpecificationRecord} identifier for the test branch.
+    */
+
+   private static int testBranchSpecificationRecordIdentifier = 1;
+
+   /**
+    * List of {@link BranchSpecificationRecord} implementations describing the branches for the test.
+    * <p>
+    * Branches are created in the list order. Follow the rules:
+    * <ul>
+    * <li>Ensure identifiers are unique.</li>
+    * <li>The identifier 0 is reserved.</li>
+    * <li>Ensure hierarchical parents are at lower list indices.</li>
+    * </ul>
+    */
+
+   //@formatter:off
+   private static final List<BranchSpecificationRecord> branchSpecifications =
+      List.of
+         (
+            new BasicBranchSpecificationRecord
+                   (
+                      PublishingSharedArtifactsFolderTest.testBranchSpecificationRecordIdentifier, /* BranchSpecificationRecord Identifier */
+                      "Publishing Shared Artifacts Folder Test Branch",                            /* Branch Name                          */
+                      "Branch for Publishing Shared Artifacts Folder Testing"                      /* Branch Creation Comment              */
+                   )
+         );
+   //@formatter:on
+
+   /**
+    * {@link MapList} of {@link ArtifactSpecificationRecord}s describing the test artifacts for each branch.
     * <p>
     * Artifacts are created in the list order. Follow the rules:
     * <ul>
@@ -88,171 +122,182 @@ public class PublishingSharedArtifactsFolderTest {
     */
 
    //@formatter:off
-   private static List<BuilderRecord> artifactInfoRecords =
-      List.of
+   private static MapList<Integer,ArtifactSpecificationRecord> artifactSpecifications =
+      MapList.ofEntries
          (
-            new BasicArtifactInfoRecord
-            (
-               1,                                                                                /* Identifier                             (Integer)                               */
-               0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "Shared Folder",                                                                  /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "Publishing test shared folder." ),                       /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+            /*
+             * Artifacts for the test branch.
+             */
 
-            new BasicArtifactInfoRecord
-            (
-               2,                                                                                /* Identifier                             (Integer)                               */
-               1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "A",                                                                              /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "Sub-folder A" ),                                         /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+            Map.entry
+               (
+                  PublishingSharedArtifactsFolderTest.testBranchSpecificationRecordIdentifier,                      /* Test Branch Identifier                 (Integer)                               */
+                  List.of
+                     (
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  1,                                                                                /* Identifier                             (Integer)                               */
+                                  0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "Shared Folder",                                                                  /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "Publishing test shared folder." ),                       /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-            (
-               3,                                                                                /* Identifier                             (Integer)                               */
-               1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "B",                                                                              /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "Sub-folder B" ),                                         /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  2,                                                                                /* Identifier                             (Integer)                               */
+                                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "A",                                                                              /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "Sub-folder A" ),                                         /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-            (
-               4,                                                                                /* Identifier                             (Integer)                               */
-               2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "A-0",                                                                            /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  3,                                                                                /* Identifier                             (Integer)                               */
+                                  1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "B",                                                                              /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "Sub-folder B" ),                                         /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-            (
-               5,                                                                                /* Identifier                             (Integer)                               */
-               2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "A-1",                                                                            /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  4,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "A-0",                                                                            /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-            (
-               6,                                                                                /* Identifier                             (Integer)                               */
-               2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "A-2",                                                                            /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  5,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "A-1",                                                                            /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-            (
-               7,                                                                                /* Identifier                             (Integer)                               */
-               3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "B-0",                                                                            /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  6,                                                                                /* Identifier                             (Integer)                               */
+                                  2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "A-2",                                                                            /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-            (
-               8,                                                                                /* Identifier                             (Integer)                               */
-               3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "B-1",                                                                            /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            ),
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  7,                                                                                /* Identifier                             (Integer)                               */
+                                  3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "B-0",                                                                            /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
-            new BasicArtifactInfoRecord
-            (
-               9,                                                                                /* Identifier                             (Integer)                               */
-               3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
-               "B-2",                                                                            /* Artifact Name                          (String)                                */
-               CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
-               List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
-                  (
-                     new BasicAttributeSpecification
-                            (
-                              CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
-                              List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
-                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
-                            )
-                  ),
-               List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
-            )
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  8,                                                                                /* Identifier                             (Integer)                               */
+                                  3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "B-1",                                                                            /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "DOC-1234" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               ),
 
+                        new BasicArtifactSpecificationRecord
+                               (
+                                  9,                                                                                /* Identifier                             (Integer)                               */
+                                  3,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                                  "B-2",                                                                            /* Artifact Name                          (String)                                */
+                                  CoreArtifactTypes.SoftwareRequirementHtml,                                        /* Artifact Type                          (ArtifactTypeToken)                     */
+                                  List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                     (
+                                        new BasicAttributeSpecificationRecord
+                                               (
+                                                 CoreAttributeTypes.Description,                                    /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                                 List.of( "DOC-1235" ),                                             /* Test Attribute Values                  (List<Object>)                          */
+                                                 AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                               )
+                                     ),
+                                  List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                               )
+
+                     )
+               )
          );
    //@formatter:on
 
@@ -274,18 +319,6 @@ public class PublishingSharedArtifactsFolderTest {
 
    private static BranchId rootBranchId;
 
-   /**
-    * Name used for the OSEE branch holding the test document.
-    */
-
-   private static String testBranchName = "Publishing Shared Artifacts Folder Test Branch";
-
-   /**
-    * Creation comment used for the OSEE test branch
-    */
-
-   private static String testBranchCreationComment = "Branch for Publishing Shared Artifacts Folder Testing";
-
    @SuppressWarnings("unchecked")
    @BeforeClass
    public static void testSetup() {
@@ -296,16 +329,35 @@ public class PublishingSharedArtifactsFolderTest {
 
       var testDocumentBuilder = new TestDocumentBuilder(PublishingSharedArtifactsFolderTest.setValues);
 
-      testDocumentBuilder.buildDocument(PublishingSharedArtifactsFolderTest.artifactInfoRecords,
-         PublishingSharedArtifactsFolderTest.testBranchName,
-         PublishingSharedArtifactsFolderTest.testBranchCreationComment);
+      //@formatter:off
+      testDocumentBuilder.buildDocument
+         (
+            PublishingSharedArtifactsFolderTest.branchSpecifications,
+            PublishingSharedArtifactsFolderTest.artifactSpecifications
+         );
+      //@formatter:on
 
       /*
        * Save identifiers of test document root
        */
 
-      PublishingSharedArtifactsFolderTest.rootBranchId = testDocumentBuilder.getRootBranchId();
-      PublishingSharedArtifactsFolderTest.rootArtifactId = testDocumentBuilder.getRootArtifactId();
+      //@formatter:off
+      PublishingSharedArtifactsFolderTest.rootBranchId =
+         testDocumentBuilder
+            .getBranchIdentifier
+                (
+                   PublishingSharedArtifactsFolderTest.testBranchSpecificationRecordIdentifier
+                )
+            .get();
+
+      PublishingSharedArtifactsFolderTest.rootArtifactId =
+         testDocumentBuilder
+            .getArtifactIdentifier
+               (
+                  PublishingSharedArtifactsFolderTest.testBranchSpecificationRecordIdentifier,
+                  1
+               )
+            .get();
 
       /*
        * Get services

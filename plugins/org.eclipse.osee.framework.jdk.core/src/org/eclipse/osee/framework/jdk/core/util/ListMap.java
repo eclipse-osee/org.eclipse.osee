@@ -134,7 +134,7 @@ public class ListMap<K, V> {
     * Implements a view of the {@link ListMap} that implements the {@link List} interface.
     */
 
-   final class ListView implements List<V> {
+   public final class ListView implements List<V> {
 
       /**
        * {@inheritDoc}
@@ -176,7 +176,7 @@ public class ListMap<K, V> {
          var key = ListMap.this.keyExtractor.apply(value);
          var currentValue = ListMap.this.map.get(key);
 
-         if (Objects.isNull(value)) {
+         if (Objects.isNull(currentValue)) {
             ListMap.this.put(key, value);
             return true;
          }
@@ -434,6 +434,16 @@ public class ListMap<K, V> {
       @Override
       public ListIterator<V> listIterator(int index) {
          throw new UnsupportedOperationException();
+      }
+
+      /**
+       * Gets {@link ListMap} implementing the list view.
+       *
+       * @return the implementing {@link ListMap}.
+       */
+
+      public ListMap<K, V> listMapView() {
+         return ListMap.this;
       }
 
       /**
@@ -881,6 +891,16 @@ public class ListMap<K, V> {
       @Override
       public Set<K> keySet() {
          return Collections.unmodifiableSet(ListMap.this.map.keySet());
+      }
+
+      /**
+       * Gets {@link ListMap} implementing the list view.
+       *
+       * @return the implementing {@link ListMap}.
+       */
+
+      public ListMap<K, V> listMapView() {
+         return ListMap.this;
       }
 
       /**

@@ -70,6 +70,39 @@ public final class Collectors {
    //@formatter:on
 
    /**
+    * Returns a {@link Collector} which collects the value extracted with <code>valueMapper</code> and stores it into a
+    * {@link ListMap} using the key extracted with <code>keyMapper</code> for each element being collected.
+    *
+    * @param <T> the type of the elements being collected.
+    * @param <K> the type for the returned {@link ListMap} keys.
+    * @param <V> the type for the returned {@Link ListMap} values.
+    * @param keyMapper a {@link Function} that takes an object of &lt;T&gt; and extracts a value of type &lt;K&gt; to be
+    * used as the {@link ListMap} key to store the associated value.
+    * @param valueMapper a {@link Function} that takes an object of &lt;T&gt; and extracts a value of type &lt;V&gt; to
+    * be stored in the {@link ListMap} with the associated key.
+    * @return a {@link Collector} which collects the value extracted with <code>valueMapper</code> and stores it into a
+    * {@link ListMap} using the key extracted with <code>keyMapper</code> for each element being collected.
+    */
+
+   //@formatter:off
+   public static <T,K,V> java.util.stream.Collector<T,?,ListMap<K,V>>
+      toListMap
+         (
+            Function<? super T, ? extends K> keyMapper,
+            Function<? super T, ? extends V> valueMapper
+         ) {
+
+      return
+         java.util.stream.Collector.of
+                (
+                   ListMap::new,
+                   ( listMap, t ) -> listMap.put( keyMapper.apply( t ), valueMapper.apply( t ) ),
+                   ( a, b) -> { a.putAll( b ); return a; }
+                );
+   }
+   //@formatter:on
+
+   /**
     * Returns a {@link Collector} which collects the values extracted from the elements being collected into a pair of
     * lists. The value extractor {@link Function}s return an {@link Optional} containing the value extracted from the
     * element being collected. The extraction {@link Function}s may return an empty {@link Optional} when the element

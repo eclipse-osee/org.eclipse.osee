@@ -49,9 +49,21 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
    protected final Map<K, C> mapCollection;
 
    /**
+    * Creates a new empty {@link Map} or {@link Collection} objects without a collection supplier for immutable map
+    * collections.
+    *
+    * @param mapCollection the {@link Map} of {@link Collection}s to be encapsulated.
+    */
+
+   public AbstractMapCollection(Map<K, C> mapCollection) {
+      this.collectionSupplier = null;
+      this.mapCollection = mapCollection;
+   }
+
+   /**
     * Creates a new empty {@link Map} of {@link Collection} objects.
     *
-    * @param mapCollectionSupplier a {@link Supplier} that provides an implementation of the {@link Map} interface to be
+    * @param CollectionSupplier a {@link Supplier} that provides an implementation of the {@link Map} interface to be
     * used as the primary {@link Map} of {@link Collection} objects for this object.
     * @param collectionSupplier a {@link Supplier} that provides new empty implementation of the {@link Collection}
     * interface for the collections saved in this object.
@@ -343,16 +355,7 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
     */
 
    @Override
-   public Stream<C> streamCollections() {
-      return this.mapCollection.values().stream();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public Stream<Map.Entry<K, V>> streamEntries() {
+   public Stream<Map.Entry<K, V>> streamAllCollectionValuesAsEntries() {
       //@formatter:off
       return
          this.mapCollection
@@ -366,6 +369,33 @@ public class AbstractMapCollection<K, V, C extends Collection<V>> implements Map
                                 .map( ( value ) -> Map.entry( key,value ) )
                );
       //@formatter:on
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Stream<C> streamCollections() {
+      return this.mapCollection.values().stream();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Stream<Map.Entry<K, C>> streamEntries() {
+      return this.mapCollection.entrySet().stream();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public Stream<K> streamKeys() {
+      return this.mapCollection.keySet().stream();
    }
 
    /**

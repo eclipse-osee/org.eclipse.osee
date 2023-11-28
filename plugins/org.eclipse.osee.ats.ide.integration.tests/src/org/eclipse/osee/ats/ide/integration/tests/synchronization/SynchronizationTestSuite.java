@@ -28,7 +28,7 @@ import org.junit.runners.Suite;
    (
       {
          SynchronizationEndpointTest.class,
-         ReqifRelationships.class,
+         ReqifRelationshipsTest.class,
          Permissions.class
       }
    )
