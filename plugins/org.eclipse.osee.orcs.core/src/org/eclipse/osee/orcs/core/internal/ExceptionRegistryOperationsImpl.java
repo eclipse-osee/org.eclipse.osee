@@ -52,6 +52,15 @@ public class ExceptionRegistryOperationsImpl implements ExceptionRegistryOperati
    }
 
    /**
+    * Nulls the static reference to the {@link ExceptionRegistryOperationsImpl} instance so that it can be garbage
+    * collected.
+    */
+
+   public synchronized static void free() {
+      ExceptionRegistryOperationsImpl.exceptionRegistryOperationsImpl = null;
+   }
+
+   /**
     * Member saves unique {@link ExceptionRegistyEntry} objects.
     */
 

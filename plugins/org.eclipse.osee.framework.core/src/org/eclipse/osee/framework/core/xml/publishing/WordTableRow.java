@@ -35,8 +35,8 @@ public class WordTableRow extends AbstractElement {
     * <code>wordTableRowElement</code> are <code>null</code>.
     */
 
-   WordTableRow(WordTable wordTable, Element wordTableRowElement) {
-      super(wordTable, wordTableRowElement);
+   public WordTableRow(WordTable wordTable, Element wordTableRowElement) {
+      super(wordTable, wordTableRowElement, WordXmlTag.TABLE_ROW);
    }
 
    /**
@@ -45,8 +45,14 @@ public class WordTableRow extends AbstractElement {
     * @return the containing {@link WordTable}.
     */
 
-   public WordTable getWordTable() {
-      return (WordTable) this.getParent();
+   public Optional<WordTable> getWordTable() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         (parent instanceof WordTable)
+            ? Optional.of( (WordTable) parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
    /**

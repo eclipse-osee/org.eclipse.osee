@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.api.ImportEndpoint;
+import org.eclipse.osee.define.rest.api.importing.ImportEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;

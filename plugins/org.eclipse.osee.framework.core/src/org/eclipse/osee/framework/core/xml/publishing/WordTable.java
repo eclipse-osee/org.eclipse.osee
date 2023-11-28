@@ -27,16 +27,14 @@ public class WordTable extends AbstractElement {
    /**
     * Creates a new {@link WordTable}.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param parent the {@link WordElement} implementation that is considered the parent by the parser implementation.
     * @param wordTableElement the {@link org.w3c.dom.Element} with the tag "w:tbl" in the Word ML.
     * @throws NullPointerException when either of the parameters <code>wordBody</code> or <code>wordTableElement</code>
     * are <code>null</code>.
     */
 
-   WordTable(WordElement parent, Element wordTableElement) {
-      super(parent, wordTableElement);
+   public WordTable(WordElement parent, Element wordTableElement) {
+      super(parent, wordTableElement, WordXmlTag.TABLE);
    }
 
    /**

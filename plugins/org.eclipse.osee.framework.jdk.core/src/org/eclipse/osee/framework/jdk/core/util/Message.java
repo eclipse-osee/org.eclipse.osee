@@ -1121,7 +1121,7 @@ public class Message {
       for (var value : valueArray) {
          var displayValue = valueExtractor.apply(value);
          listElementTitle.setLength(0);
-         listElementTitle.append("[").append(i).append("]");
+         listElementTitle.append("[").append(i++).append("]");
          if (value instanceof ToMessage) {
             this.lines.add(new Line(this.indent, listElementTitle));
             ((ToMessage) value).toMessage(this.indent + 1, this);
@@ -1198,8 +1198,7 @@ public class Message {
     * @return this {@link Message}.
     */
 
-   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor,
-      int limit) {
+   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor, int limit) {
 
       this.cachedResult = null;
 

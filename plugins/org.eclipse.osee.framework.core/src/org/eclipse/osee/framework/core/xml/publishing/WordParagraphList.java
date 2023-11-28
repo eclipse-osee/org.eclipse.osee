@@ -19,19 +19,28 @@ package org.eclipse.osee.framework.core.xml.publishing;
  * @author Loren K. Ashley
  */
 
-public class WordParagraphList extends AbstractElementList<WordSubSection, WordParagraph> {
+public class WordParagraphList extends AbstractElementList<AbstractElement, WordParagraph> {
 
    /**
     * Creates a new open and empty list for {@link WordParagraph}s.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param wordSubSection the {@link WordSubSection} for the sub-section of the Word ML document.
     * @throws NullPointerException when the parameter <code>wordSubSection</code> is <code>null</code>.
     */
 
-   WordParagraphList(WordSubSection wordSubSection) {
+   public WordParagraphList(WordSubSection wordSubSection) {
       super(wordSubSection);
+   }
+
+   /**
+    * Creates a new open and empty list for {@link WordParagraph}s.
+    *
+    * @param wordSection the {@link WordSection} for the section of the Word ML document.
+    * @throws NullPointerException when the parameter <code>wordSection</code> is <code>null</code>.
+    */
+
+   public WordParagraphList(WordSection wordSection) {
+      super(wordSection);
    }
 
    /**
@@ -41,7 +50,17 @@ public class WordParagraphList extends AbstractElementList<WordSubSection, WordP
     */
 
    public WordSubSection getWordSubSection() {
-      return this.getParent();
+      return (WordSubSection) this.getParent();
+   }
+
+   /**
+    * Gets the containing (parent) {@link WordSection}.
+    *
+    * @return the containing {@link WordSection}.
+    */
+
+   public WordSection getWordSection() {
+      return (WordSection) this.getParent();
    }
 
 }

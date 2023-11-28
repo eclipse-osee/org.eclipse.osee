@@ -21,14 +21,14 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
-import org.eclipse.osee.define.api.DefineBranchEndpointApi;
-import org.eclipse.osee.define.api.GitEndpoint;
-import org.eclipse.osee.define.api.ImportEndpoint;
-import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
-import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
-import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
-import org.eclipse.osee.define.api.toggles.TogglesEndpoint;
+import org.eclipse.osee.define.rest.api.DefineBranchEndpointApi;
+import org.eclipse.osee.define.rest.api.git.GitEndpoint;
+import org.eclipse.osee.define.rest.api.importing.ImportEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.datarights.DataRightsEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.TemplateManagerEndpoint;
+import org.eclipse.osee.define.rest.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.define.rest.api.toggles.TogglesEndpoint;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.client.OseeClient;
@@ -103,14 +103,12 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    @Override
-   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates,
-      QueryOptions options) {
+   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options) {
       SearchResponse result = performSearch(request, branch, predicates, options);
       return result;
    }
 
-   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates,
-      QueryOptions options) {
+   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates, QueryOptions options) {
       Conditions.checkNotNull(requestType, "RequestType");
       TransactionId fromTx = TransactionId.valueOf(0);
       if (options.isHistorical()) {

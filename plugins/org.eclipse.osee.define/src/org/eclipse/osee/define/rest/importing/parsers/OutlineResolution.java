@@ -15,7 +15,7 @@ package org.eclipse.osee.define.rest.importing.parsers;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.define.api.importing.ReqNumbering;
+import org.eclipse.osee.define.rest.api.importing.ReqNumbering;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 

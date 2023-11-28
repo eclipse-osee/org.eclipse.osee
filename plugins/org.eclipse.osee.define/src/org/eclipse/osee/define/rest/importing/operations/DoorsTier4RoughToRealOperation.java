@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.define.api.importing.ReqNumbering;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.ReqNumbering;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.define.rest.importing.resolvers.RoughArtifactTranslatorImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -62,8 +62,7 @@ public class DoorsTier4RoughToRealOperation {
    public XResultData doWork() {
       setupAllKnownArtifacts();
       String operationComment = String.format("Add or Modify %s", destinationArtifact.getName());
-      TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(branch, operationComment);
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(branch, operationComment);
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          String name = roughArtifact.getName();
          if (name.length() > 32) {

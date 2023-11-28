@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.define.operations.synchronization;
 
-import org.eclipse.osee.define.api.synchronization.Root;
+import org.eclipse.osee.define.rest.api.synchronization.Root;
 
 /**
  * {@link RuntimeException} which is thrown when a document root specified with a {@link Root} object is invalid.

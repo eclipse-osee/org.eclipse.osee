@@ -23,8 +23,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.define.api.MsWordPreviewRequestData;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -256,8 +256,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
-      RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       var rating = MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
       if (!PresentationType.PREVIEW_SERVER.equals(presentationType)) {
          rating--;
@@ -328,8 +327,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact,
-      Collection<? extends AttributeTypeToken> attributeTypes) {
+   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes) {
       throw new UnsupportedOperationException();
    }
 
@@ -423,8 +421,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
-      PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       return new UpdateArtifactOperation(file, artifacts, branch, false);
    }
 
@@ -468,8 +465,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType,
-      WordMLProducer producer, String format, String label, String footer) {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
       throw new UnsupportedOperationException();
    }
 
@@ -480,8 +476,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact,
-      PresentationType presentationType, String defaultValue) {
+   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue) {
       throw new UnsupportedOperationException();
    }
 

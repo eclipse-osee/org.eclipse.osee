@@ -27,16 +27,14 @@ public class WordTableColumn extends AbstractElement {
    /**
     * Creates a new {@link WordTableColumn}.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param wordTableRow the parent {@link WordTableRow}.
     * @param wordTableColumnElement the {@link org.w3c.dom.Element} with the tag "w:tc" in the Word ML.
     * @throws NullPointerException when either of the parameters <code>wordTableRow</code> or
     * <code>wordTableColumnElment</code> are <code>null</code>.
     */
 
-   WordTableColumn(WordTableRow wordTableRow, Element wordTableColumnElement) {
-      super(wordTableRow, wordTableColumnElement);
+   public WordTableColumn(WordTableRow wordTableRow, Element wordTableColumnElement) {
+      super(wordTableRow, wordTableColumnElement, WordXmlTag.TABLE_COLUMN);
    }
 
    /**
@@ -45,8 +43,14 @@ public class WordTableColumn extends AbstractElement {
     * @return the containing {@link WordTableRow}.
     */
 
-   public WordTableRow getWordTableRow() {
-      return (WordTableRow) this.getParent();
+   public Optional<WordTableRow> getWordTableRow() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         (parent instanceof WordTableRow)
+            ? Optional.of( (WordTableRow) parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
    /**

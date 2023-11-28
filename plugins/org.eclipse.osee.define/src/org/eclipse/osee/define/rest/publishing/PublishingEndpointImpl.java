@@ -26,21 +26,25 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.MsWordPreviewRequestData;
-import org.eclipse.osee.define.api.WordUpdateChange;
-import org.eclipse.osee.define.api.WordUpdateData;
-import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
-import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
-import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException;
+import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
+import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateChange;
+import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -81,12 +85,67 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
+   public LinkHandlerResult link(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType) {
+
+      try {
+
+         PublishingPermissions.verifyNonGroup();
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .link
+                  (
+                     branchId,
+                     viewId,
+                     artifactId,
+                     transactionId,
+                     linkType,
+                     presentationType
+                  );
+            //@formatter:on
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (OseeNotFoundException onfe) {
+         throw new NotFoundException(onfe.getMessage(), Response.status(Response.Status.NOT_FOUND).build(), onfe);
+      } catch (Exception e) {
+         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+            e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws NotAuthorizedException when the user is not an active login user that is a member of the publishing group.
+    * @throws BadRequestException when the operation's method indicates any arguments were illegal.
+    * @throws NotFoundException when shared publishing artifacts were not found for the specified parameters.
+    * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
+    */
+
+   @Override
    public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
 
       try {
          PublishingPermissions.verify();
-         return this.defineOperations.getPublishingOperations().getSharedPublishingArtifacts(branch, view, sharedFolder,
-            artifactType, attributeType, attributeValue);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .getSharedPublishingArtifacts
+                  (
+                     branch,
+                     view,
+                     sharedFolder,
+                     artifactType,
+                     attributeType,
+                     attributeValue
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -112,7 +171,19 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getPublishingOperations().msWordPreview(branch, template, headArtifact, view);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .msWordPreview
+                  (
+                     branch,
+                     template,
+                     headArtifact,
+                     view
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -155,7 +226,19 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getPublishingOperations().msWordPreview(branch, template, artifacts, view);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .msWordPreview
+                  (
+                     branch,
+                     template,
+                     artifacts,
+                     view
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -179,7 +262,16 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getPublishingOperations().msWordPreview(msWordPreviewRequestData);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .msWordPreview
+                  (
+                     msWordPreviewRequestData
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -203,12 +295,56 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getPublishingOperations().msWordTemplatePublish(branch, template, headArtifact,
-            view);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .msWordTemplatePublish
+                  (
+                     branch,
+                     template,
+                     headArtifact,
+                     view
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
          throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (Exception e) {
+         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+            e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws NotAuthorizedException when the user is not an active login user that is a member of the publishing group.
+    * @throws BadRequestException when the operation's method indicates any arguments were illegal.
+    * @throws NotFoundException when shared publishing artifacts were not found for the specified parameters.
+    * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
+    */
+
+   @Override
+   public Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog) {
+
+      try {
+         PublishingPermissions.verifyNonGroup();
+         //@formatter:off
+         return
+            this.defineOperations
+            .getPublisherOperations()
+            .getPublishingOperations()
+            .msWordWholeWordContentPublish( branchId, viewId, artifactId, transactionId, linkType, presentationType, includeErrorLog );
+         //@formatter:on
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (OseeNotFoundException onfe) {
+         throw new NotFoundException(onfe.getMessage(), Response.status(Response.Status.NOT_FOUND).build(), onfe);
       } catch (Exception e) {
          throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
             e);
@@ -228,7 +364,90 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getPublishingOperations().renderWordTemplateContent(wordTemplateContentData);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .renderWordTemplateContent
+                  (
+                     wordTemplateContentData
+                  );
+         //@formatter:on
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (Exception e) {
+         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+            e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws NotAuthorizedException when the user is not an active login user that is a member of the publishing group.
+    * @throws BadRequestException when the operation's method indicates any arguments were illegal.
+    * @throws NotFoundException when shared publishing artifacts were not found for the specified parameters.
+    * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
+    */
+
+   @Override
+   public LinkHandlerResult unlink(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType) {
+
+      try {
+
+         PublishingPermissions.verifyNonGroup();
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .unlink
+                  (
+                     branchId,
+                     viewId,
+                     artifactId,
+                     transactionId,
+                     linkType
+                  );
+         //@formatter:on
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (OseeNotFoundException onfe) {
+         throw new NotFoundException(onfe.getMessage(), Response.status(Response.Status.NOT_FOUND).build(), onfe);
+      } catch (Exception e) {
+         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+            e);
+      }
+
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @throws NotAuthorizedException when the user is not an active login user.
+    * @throws BadRequestException when the operation's method indicates any arguments were illegal.
+    * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
+    */
+
+   @Override
+   public String updateLinks(BranchId branchId) {
+
+      try {
+
+         PublishingPermissions.verifyNonGroup();
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .updateLinks(branchId);
+         //@formatter:on
+
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -252,7 +471,16 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getPublishingOperations().updateWordArtifacts(wordUpdateData);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .updateWordArtifacts
+                  (
+                     wordUpdateData
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {

@@ -617,18 +617,26 @@
 
 
    <plugin
-         id="org.eclipse.osee.define.api"
+         id="org.eclipse.osee.define"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.define.rest.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.define"
+         id="org.eclipse.osee.define.operations.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+         
 	<plugin
          id="org.eclipse.osee.accessor"
          download-size="0"

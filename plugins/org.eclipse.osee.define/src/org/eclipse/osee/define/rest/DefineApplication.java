@@ -22,7 +22,7 @@ import javax.ws.rs.core.Application;
 
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppResourceTokens;
-import org.eclipse.osee.define.api.DefineOperations;
+import org.eclipse.osee.define.operations.api.DefineOperations;
 import org.eclipse.osee.define.rest.internal.DataRightsSwReqAndCodeResource;
 import org.eclipse.osee.define.rest.internal.DefineBranchEndpointImpl;
 import org.eclipse.osee.define.rest.internal.SystemSafetyResource;

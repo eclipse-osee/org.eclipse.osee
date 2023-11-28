@@ -16,8 +16,9 @@ package org.eclipse.osee.define.rest.internal.wordupdate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import org.eclipse.osee.define.operations.publishing.PublishingUtils;
-import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
+import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
+import org.eclipse.osee.define.operations.publisher.dataaccess.DataAccessOperationsImpl;
+import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactSpecification;
@@ -50,17 +51,16 @@ public class WordTemplateContentRendererHandler {
 
    private WordMLApplicabilityHandler applicHandler;
    private final QueryFactory queryFactory;
-   private final PublishingUtils publishingUtils;
+   private final DataAccessOperations dataAccessOperations;
 
    public WordTemplateContentRendererHandler(OrcsApi orcsApi, Log logger) {
       this.orcsApi = orcsApi;
       this.queryFactory = orcsApi.getQueryFactory();
       this.logger = logger;
-      this.publishingUtils = new PublishingUtils(orcsApi);
+      this.dataAccessOperations = new DataAccessOperationsImpl(orcsApi);
    }
 
-   public Pair<String, Set<String>> renderWordMLForArtifact(ArtifactReadable artifact,
-      WordTemplateContentData wtcData) {
+   public Pair<String, Set<String>> renderWordMLForArtifact(ArtifactReadable artifact, WordTemplateContentData wtcData) {
 
       CharSequence data =
          artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.EXCLUDE_DELETED, null);
@@ -158,7 +158,7 @@ public class WordTemplateContentRendererHandler {
       //@formatter:off
       return
          ( wtcData.isTxIdValid()
-              ? this.publishingUtils.getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes
+              ? this.dataAccessOperations.getArtifactReadablePossiblyDeletedByIdentifierAndTransactionIdWithDeleteAttributes
                    (
                       new ArtifactSpecification
                              (
@@ -168,7 +168,7 @@ public class WordTemplateContentRendererHandler {
                              ),
                      wtcData.getTxId()                         /* transactionId */
                    )
-              : this.publishingUtils.getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes
+              : this.dataAccessOperations.getArtifactReadablePossiblyDeletedByIdentifierWithDeletedAttributes
                    (
                       new ArtifactSpecification
                              (

@@ -16,8 +16,8 @@ package org.eclipse.osee.define.rest.importing.resolvers;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import org.eclipse.osee.define.api.importing.ReqNumbering;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.ReqNumbering;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -41,8 +41,7 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public ArtifactToken resolve(RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId,
-      ArtifactId rootId) {
+   public ArtifactToken resolve(RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
       ArtifactToken realArtifact = findExistingArtifact(roughArtifact, branch);
 
       if (realArtifact == null) {

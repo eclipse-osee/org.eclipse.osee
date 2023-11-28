@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.util.Optional;
+
 /**
  * Class to encapsulate a list of texts.
  *
@@ -30,7 +32,7 @@ public class WordTextList extends AbstractElementList<AbstractElement, WordText>
     * @throws NullPointerException when the parameter <code>wordTableColumn</code> is <code>null</code>.
     */
 
-   WordTextList(WordTableColumn wordTableColumn) {
+   public WordTextList(WordTableColumn wordTableColumn) {
       super(wordTableColumn);
    }
 
@@ -43,7 +45,7 @@ public class WordTextList extends AbstractElementList<AbstractElement, WordText>
     * @throws NullPointerException when the parameter <code>wordParagraph</code> is <code>null</code>.
     */
 
-   WordTextList(WordParagraph wordParagraph) {
+   public WordTextList(WordParagraph wordParagraph) {
       super(wordParagraph);
    }
 
@@ -53,8 +55,14 @@ public class WordTextList extends AbstractElementList<AbstractElement, WordText>
     * @return the containing {@link WordTableColumn}.
     */
 
-   public WordTableColumn getWordTableColumn() {
-      return (WordTableColumn) this.getParent();
+   public Optional<WordTableColumn> getWordTableColumn() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         ( parent instanceof WordTableColumn )
+            ? Optional.of( (WordTableColumn) parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
    /**
@@ -63,8 +71,14 @@ public class WordTextList extends AbstractElementList<AbstractElement, WordText>
     * @return the containing {@link WordParagraph}.
     */
 
-   public WordParagraph getWordParagraph() {
-      return (WordParagraph) this.getParent();
+   public Optional<WordParagraph> getWordParagraph() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         ( parent instanceof WordParagraph )
+            ? Optional.of( (WordParagraph) parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
 }

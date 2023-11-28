@@ -27,26 +27,31 @@ public class WordBody extends AbstractElement {
    /**
     * Creates a new {@link WordBody}.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param wordDocument the parent {@link WordDocument}.
-    * @param wordBodyElement the {@link org.w3c.dom.Element} with the tag "w:body" in the Word ML.
+    * @param wordBodyElement the {@link org.w3c.dom.Element} for the new {@link WordBody}.
     * @throws NullPointerException when either of the parameters <code>wordDocument</code> or
     * <code>wordBodyElement</code> are <code>null</code>.
     */
 
-   WordBody(WordDocument wordDocument, Element wordBodyElement) {
-      super(wordDocument, wordBodyElement);
+   public WordBody(WordDocument wordDocument, Element wordBodyElement) {
+      super(wordDocument, wordBodyElement, WordXmlTag.BODY);
    }
 
    /**
     * Gets the containing (parent) {@link WordDocument}.
     *
-    * @return the containing {@link WordDocument}.
+    * @return when the {@link WordBody} is contained by a {@link WordDocument} an {@link Optional} containing the
+    * {@link WordDocument}; otherwise, an empty {@link Optional}.
     */
 
-   public WordDocument getWordDocument() {
-      return (WordDocument) this.getParent();
+   public Optional<WordDocument> getWordDocument() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         ( parent instanceof WordDocument )
+            ? Optional.of( (WordDocument) parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
    /**

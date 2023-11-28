@@ -14,7 +14,7 @@
 package org.eclipse.osee.define.operations.toggles;
 
 import java.util.Objects;
-import org.eclipse.osee.define.api.toggles.TogglesOperations;
+import org.eclipse.osee.define.operations.api.toggles.TogglesOperations;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.toggles.ToggleAccessor;
 import org.eclipse.osee.jdbc.JdbcClient;

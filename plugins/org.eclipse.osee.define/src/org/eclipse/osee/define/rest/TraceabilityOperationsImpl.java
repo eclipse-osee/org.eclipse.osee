@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.define.rest;
 
-import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
+import static org.eclipse.osee.define.rest.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CertificationBaselineEvent;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
@@ -33,12 +33,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ws.rs.WebApplicationException;
-import org.eclipse.osee.define.api.CertBaselineData;
-import org.eclipse.osee.define.api.CertFileData;
-import org.eclipse.osee.define.api.CertFileData.BaselineData;
-import org.eclipse.osee.define.api.GitOperations;
-import org.eclipse.osee.define.api.TraceData;
-import org.eclipse.osee.define.api.TraceabilityOperations;
+import org.eclipse.osee.define.operations.api.git.GitOperations;
+import org.eclipse.osee.define.operations.api.traceability.TraceabilityOperations;
+import org.eclipse.osee.define.rest.api.CertBaselineData;
+import org.eclipse.osee.define.rest.api.CertFileData;
+import org.eclipse.osee.define.rest.api.CertFileData.BaselineData;
+import org.eclipse.osee.define.rest.api.traceability.TraceData;
 import org.eclipse.osee.define.rest.internal.TraceReportGenerator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;

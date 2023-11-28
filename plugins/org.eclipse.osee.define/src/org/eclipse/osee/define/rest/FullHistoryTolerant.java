@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.define.rest;
 
-import static org.eclipse.osee.define.api.DefineTupleTypes.GitCommitFile;
-import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
+import static org.eclipse.osee.define.rest.api.DefineTupleTypes.GitCommitFile;
+import static org.eclipse.osee.define.rest.api.DefineTupleTypes.GitLatest;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -191,7 +191,8 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    private boolean isPathRenamed(String path, String newPath) {
-      if (path.contains("/") && newPath.contains("/") && !path.substring(0, path.lastIndexOf("/")).equals(newPath.substring(0, newPath.lastIndexOf("/")))) {
+      if (path.contains("/") && newPath.contains(
+         "/") && !path.substring(0, path.lastIndexOf("/")).equals(newPath.substring(0, newPath.lastIndexOf("/")))) {
          return true;
       }
       return false;

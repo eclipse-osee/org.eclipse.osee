@@ -1596,8 +1596,7 @@ public class WordCoreUtil {
     * @return the provided Word ML with updated table and figure captions.
     */
 
-   public static CharSequence addChapterNumToCaptionAndBookmark(CharSequence input, CharSequence amlBookmarkStart,
-      CharSequence amlBookmarkEnd) {
+   public static CharSequence addChapterNumToCaptionAndBookmark(CharSequence input, CharSequence amlBookmarkStart, CharSequence amlBookmarkEnd) {
 
       //@formatter:off
       var replacerText =
@@ -1705,9 +1704,7 @@ public class WordCoreUtil {
       //@formatter:on
    }
 
-   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch,
-      HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations,
-      Set<String> allValidConfigurationGroups) {
+   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations, Set<String> allValidConfigurationGroups) {
 
       Matcher matcher = FULL_PATTERN.matcher(wordml);
       Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
@@ -2281,8 +2278,7 @@ public class WordCoreUtil {
     * @return a {@link CharSequence} of the updated publishing template.
     */
 
-   public static CharSequence initializePublishingTemplateOutliningNumbers(String outlineNumber, CharSequence template,
-      String outlineType) {
+   public static CharSequence initializePublishingTemplateOutliningNumbers(String outlineNumber, CharSequence template, String outlineType) {
 
       if (Objects.isNull(outlineNumber)) {
          return template;
@@ -2310,8 +2306,7 @@ public class WordCoreUtil {
       return template;
    }
 
-   public static boolean isExpressionInvalid(String expression, BranchId branch,
-      HashCollection<String, String> validFeatureValues) {
+   public static boolean isExpressionInvalid(String expression, BranchId branch, HashCollection<String, String> validFeatureValues) {
       ApplicabilityGrammarLexer lex = new ApplicabilityGrammarLexer(new ANTLRStringStream(expression.toUpperCase()));
       ApplicabilityGrammarParser parser = new ApplicabilityGrammarParser(new CommonTokenStream(lex));
 
@@ -2376,8 +2371,7 @@ public class WordCoreUtil {
       return false;
    }
 
-   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch,
-      HashCollection<String, String> validFeatureValues) {
+   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch, HashCollection<String, String> validFeatureValues) {
 
       if (applicabilityBlock.getType() != ApplicabilityType.Feature) {
          return true;
@@ -2421,8 +2415,7 @@ public class WordCoreUtil {
       return true;
    }
 
-   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup,
-      Set<String> allValidConfigurationGroups) {
+   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup, Set<String> allValidConfigurationGroups) {
       beginConfigGroup = WordCoreUtil.textOnly(beginConfigGroup);
       int start = beginConfigGroup.indexOf("[") + 1;
       int end = beginConfigGroup.indexOf("]");
@@ -2452,8 +2445,7 @@ public class WordCoreUtil {
     * @param tailProcessor a {@link Consumer} used to process the final section of the <code>templateContent</code>.
     */
 
-   public static void processPublishingTemplate(CharSequence templateContent, Consumer<CharSequence> segmentProcessor,
-      Consumer<CharSequence> tailProcessor) {
+   public static void processPublishingTemplate(CharSequence templateContent, Consumer<CharSequence> segmentProcessor, Consumer<CharSequence> tailProcessor) {
 
       var tokenMatcher = WordCoreUtil.TOKEN_PATTERN_PROCESS_PUBLISHING_TEMPLATE.tokenMatcher(templateContent);
       int lastEndIndex = 0;
@@ -2557,8 +2549,7 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, Pattern pattern,
-      Function<Matcher, StringBuilder> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, Pattern pattern, Function<Matcher, StringBuilder> newTextFunction) {
 
       var matcher = pattern.matcher(input);
       var changeSet = new ChangeSet(input);
@@ -2606,8 +2597,7 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, Supplier<Pattern> patternFunction,
-      BiFunction<Matcher, ChangeSet, Boolean> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, Supplier<Pattern> patternFunction, BiFunction<Matcher, ChangeSet, Boolean> newTextFunction) {
 
       var changeSet = new ChangeSet(input);
       var done = false;
@@ -2653,8 +2643,7 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, TokenPattern tokenPattern,
-      Function<TokenMatcher, StringBuilder> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, TokenPattern tokenPattern, Function<TokenMatcher, StringBuilder> newTextFunction) {
 
       var tokenMatcher = tokenPattern.tokenMatcher(input);
       var changeSet = new ChangeSet(input);
@@ -2776,8 +2765,7 @@ public class WordCoreUtil {
     * of the provided <code>text</code>.
     */
 
-   public static CharSequence replaceRendererOptionToken(String labelTemplate, String formatTemplate, CharSequence name,
-      CharSequence value) {
+   public static CharSequence replaceRendererOptionToken(String labelTemplate, String formatTemplate, CharSequence name, CharSequence value) {
 
       //@formatter:off
       int x = labelTemplate.indexOf( WordCoreUtil.RENDERER_OPTION_FORMAT_TOKEN );

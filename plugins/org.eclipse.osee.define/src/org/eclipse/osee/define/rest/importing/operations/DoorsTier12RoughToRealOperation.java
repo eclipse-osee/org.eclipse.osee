@@ -18,9 +18,9 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DefaultHie
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.define.api.importing.DoorsImportFieldTokens;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.DoorsImportFieldTokens;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -54,8 +54,7 @@ public class DoorsTier12RoughToRealOperation {
    public XResultData doWork() {
       setupAllKnownArtifacts();
       String operationComment = String.format("Modify Safety Hazard for %s", destinationArtifact.getName());
-      TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(branch, operationComment);
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(branch, operationComment);
       for (RoughArtifact roughArtifact : rawData.getRoughArtifacts()) {
          String name = roughArtifact.getName();
          if (name.length() > 32) {

@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -44,60 +45,6 @@ import org.xml.sax.SAXException;
  */
 
 public class PublishingXmlUtils {
-
-   /**
-    * XML tag for the "wordDocument" element.
-    */
-
-   public static String WordDocumentTagName = "w:wordDocument";
-
-   /**
-    * XML tag for the Word document body element.
-    */
-
-   public static String BodyTagName = "w:body";
-
-   /**
-    * XML tag for a Word document paragraph element.
-    */
-
-   public static String ParagraphTagName = "w:p";
-
-   /**
-    * XML tag for a Word document table element.
-    */
-
-   public static String SectionTagName = "wx:sect";
-
-   /**
-    * XML tag for a Word document table element.
-    */
-
-   public static String SubSectionTagName = "wx:sub-section";
-
-   /**
-    * XML tag for a Word document table element.
-    */
-
-   public static String TableTagName = "w:tbl";
-
-   /**
-    * XML tag for a Word document table row element.
-    */
-
-   public static String TableRowTagName = "w:tr";
-
-   /**
-    * XML tag for a Word document table column element.
-    */
-
-   public static String TableColumnTagName = "w:tc";
-
-   /**
-    * XML tag for a Word document text element.
-    */
-
-   public static String TextTagName = "w:t";
 
    /**
     * Enumeration of method failure reasons. When a public method of this class fails, a {@link Cause} of the failure is
@@ -174,7 +121,7 @@ public class PublishingXmlUtils {
     * {@link Optional} containing the child {@link org.w3c.dom.Element}; otherwise, an empty {@link Optional}.
     */
 
-   private Optional<Element> findChildElementByTagName(Element parent, String tagName) {
+   public Optional<Element> findChildElementByTagName(Element parent, String tagName) {
 
       for (var node = parent.getFirstChild(); Objects.nonNull(node); node = node.getNextSibling()) {
 
@@ -407,12 +354,12 @@ public class PublishingXmlUtils {
     * @param listFactory a {@link Function} implementation that will create a new list of type <code>L</code>.
     * @param childFactory a {@link Function} implementation that will create the children of type <code>C</code>.
     * @param childTagName the XML tag of the child elements to be found.
-    * @return a possibly empty {@link AbstractElementList} with children representing the first level XML elements with
-    * the specified XML tag.
+    * @return a possibly empty {@link AbstractElementList} with children representing the XML elements with the
+    * specified XML tag.
     */
 
    //@formatter:off
-   private <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
+   public <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
       parseAbstractElementList
          (
             P                       parent,
@@ -463,6 +410,91 @@ public class PublishingXmlUtils {
    }
 
    /**
+    * Finds all the {@link org.w3c.dom.Element}s with the specified XML tag and attributes.
+    *
+    * @param <P> the {@link AbstractElementList} parent type.
+    * @param <L> an {@link AbstractElementList} type with a parent <code>P</code> and child <code>C</code>.
+    * @param <C> the {@link AbstractElementList} child type.
+    * @param parent the hierarchical parent to the list.
+    * @param listFactory a {@link Function} implementation that will create a new list of type <code>L</code>.
+    * @param childFactory a {@link Function} implementation that will create the children of type <code>C</code>.
+    * @param childTagName the XML tag of the child elements to be found.
+    * @param childAttributes a {@link Map} of the expected attribute names and values.
+    * @return a possibly empty {@link AbstractElementList} with children representing the XML elements with the
+    * specified XML tag and attributes.
+    */
+
+   //@formatter:off
+   public <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
+      parseAbstractElementList
+         (
+            P                       parent,
+            Function<P,L>           listFactory,
+            BiFunction<P,Element,C> childFactory,
+            String                  childTagName,
+            Map<String,String>      childAttributes
+         ) {
+   //@formatter:on
+
+      var list = listFactory.apply(parent);
+
+      try {
+
+         /*
+          * Collect all child elements with the specified tag. This will include nested occurrences also.
+          */
+
+         var nodeList = parent.getElement().getElementsByTagName(childTagName);
+
+         var nodeCount = nodeList.getLength();
+
+         if (nodeCount <= 0) {
+
+            return list;
+         }
+
+         for (int i = 0; i < nodeCount; i++) {
+
+            var node = nodeList.item(i);
+
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+               continue;
+            }
+
+            var element = (Element) node;
+
+            var attributeMap = element.getAttributes();
+
+            var attributesFound = true;
+
+            for (var entry : childAttributes.entrySet()) {
+               var attributeNode = attributeMap.getNamedItem(entry.getKey());
+               if (attributeNode == null) {
+                  attributesFound = false;
+                  break;
+               }
+               if (!entry.getValue().equals(attributeNode.getNodeValue())) {
+                  attributesFound = false;
+                  break;
+               }
+            }
+
+            if (attributesFound) {
+               var child = childFactory.apply(parent, element);
+               list.add(child);
+            }
+
+         }
+
+         return list;
+
+      } finally {
+         list.close();
+      }
+
+   }
+
+   /**
     * Finds the first level {@link org.w3c.dom.Element}s with the specified XML tag.
     *
     * @param <P> the {@link AbstractElementList} parent type.
@@ -477,7 +509,7 @@ public class PublishingXmlUtils {
     */
 
    //@formatter:off
-   private <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
+   public <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
       parseNonNestedAbstractElementList
          (
             P                       parent,
@@ -577,8 +609,22 @@ public class PublishingXmlUtils {
 
    }
 
+   /**
+    * Adds the immediate <code>childTagName</code> children of the <code>parent</code> to the
+    * {@link AbstractElementList}.
+    *
+    * @param <P> the {@link AbstractElement} subclass for the parent Word ML element type.
+    * @param <L> the {@link AbstractElementList} subclass for the child Word ML elements.
+    * @param <C> the {@link AbstractElement} subclass for the children.
+    * @param parent the parent Word ML element.
+    * @param listFactory a factory to create the list for the children.
+    * @param childFactory a factory to create the {@link AbstractElement} subclasses for the children elements.
+    * @param childTagName the XML tag name for the children.
+    * @return a subclass of {@link AbstractElementList} containing the immediate children with the
+    * <code>childNameTag</code> of the <code>parent</code>.
+    */
    //@formatter:off
-   private <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
+   public <P extends AbstractElement,L extends AbstractElementList<? super P,? super C>,C extends AbstractElement> L
       parseImmediateChildrenAbstractElementList
          (
             P                       parent,
@@ -637,7 +683,7 @@ public class PublishingXmlUtils {
       try {
 
          var wordBodyElementOptional =
-            this.findChildElementByTagName(wordDocument.getElement(), PublishingXmlUtils.BodyTagName);
+            this.findChildElementByTagName(wordDocument.getElement(), WordXmlTag.BODY.getTagName());
 
          if (wordBodyElementOptional.isEmpty()) {
             this.lastCause.set(Cause.NOT_FOUND);
@@ -676,7 +722,7 @@ public class PublishingXmlUtils {
 
          var rootElement = document.getDocumentElement();
 
-         if (PublishingXmlUtils.WordDocumentTagName.equals(rootElement.getTagName())) {
+         if (WordXmlTag.WORD_DOCUMENT.isTagName(rootElement.getTagName())) {
             var wordDocument = new WordDocument(rootElement);
 
             return Optional.of(wordDocument);
@@ -702,21 +748,42 @@ public class PublishingXmlUtils {
     * an empty {@link Optional}.
     */
 
-   public Optional<WordParagraphList> parseWordParagraphListFromWordSubSection(WordSubSection wordSubSection) {
+   //@formatter:off
+   public <P extends AbstractElement, C extends AbstractElement, CL extends AbstractElementList<? super P,? super C>> Optional<CL>
+      parseChildListFromParent
+         (
+            P                       parent,
+            WordXmlTag              childTag,
+            Function<P,CL>          listFactory,
+            BiFunction<P,Element,C> childFactory
+         ) {
 
       this.startOperation();
 
       try {
-         var wordParagraphList = this.parseNonNestedAbstractElementList(wordSubSection, WordParagraphList::new,
-            WordParagraph::new, PublishingXmlUtils.ParagraphTagName);
-         wordSubSection.setChild(wordParagraphList);
-         return Optional.of(wordParagraphList);
+
+         var childList =
+            this.parseNonNestedAbstractElementList
+               (
+                  parent,
+                  listFactory,
+                  childFactory,
+                  childTag.getTagName()
+               );
+
+         parent.setChild(childList);
+
+         return Optional.of(childList);
+
       } catch (Exception e) {
+
          this.lastCause.set(Cause.ERROR);
          this.lastError.set(e);
          return Optional.empty();
+
       }
    }
+   //@formatter:on
 
    /**
     * Parses the first level immediate children Word paragraphs from a sub-section of a Word ML document. The found
@@ -733,7 +800,7 @@ public class PublishingXmlUtils {
 
       try {
          var wordParagraphList = this.parseImmediateChildrenAbstractElementList(wordSubSection, WordParagraphList::new,
-            WordParagraph::new, PublishingXmlUtils.ParagraphTagName);
+            WordParagraph::new, WordXmlTag.PARAGRAPH.getTagName());
          wordSubSection.setChild(wordParagraphList);
          return Optional.of(wordParagraphList);
       } catch (Exception e) {
@@ -741,149 +808,6 @@ public class PublishingXmlUtils {
          this.lastError.set(e);
          return Optional.empty();
       }
-   }
-
-   /**
-    * Parses the first level Word sections from the body of a Word ML document. The found sections are not necessarily
-    * immediate children of the document body, but are not nested within another section.
-    *
-    * @param wordBody the {@link WordBody} handle to the Word ML document body.
-    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordSectionList}; otherwise, an
-    * empty {@link Optional}.
-    */
-
-   public Optional<WordSectionList> parseWordSectionListFromWordBody(WordBody wordBody) {
-
-      this.startOperation();
-
-      try {
-         var wordSectionList = this.parseNonNestedAbstractElementList(wordBody, WordSectionList::new, WordSection::new,
-            PublishingXmlUtils.SectionTagName);
-         wordBody.setChild(wordSectionList);
-         return Optional.of(wordSectionList);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-         return Optional.empty();
-      }
-   }
-
-   /**
-    * Parses the first level Word sub-sections from a section of a Word ML document. The found sub-sections are not
-    * necessarily immediate children of the section, but are not nested within another sub-section.
-    *
-    * @param wordSection the {@link WordSection} handle to the Word ML section.
-    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordSubSectionList}; otherwise,
-    * an empty {@link Optional}.
-    */
-
-   public Optional<WordSubSectionList> parseWordSubSectionListFromWordSection(WordSection wordSection) {
-
-      this.startOperation();
-
-      try {
-         var wordSubSectionList = this.parseNonNestedAbstractElementList(wordSection, WordSubSectionList::new,
-            WordSubSection::new, PublishingXmlUtils.SubSectionTagName);
-         wordSection.setChild(wordSubSectionList);
-         return Optional.of(wordSubSectionList);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-         return Optional.empty();
-      }
-   }
-
-   public Optional<WordSubSectionList> parseWordSubSectionListFromWordSubSection(WordSubSection wordSubSection) {
-
-      this.startOperation();
-
-      try {
-         var wordSubSectionList = this.parseNonNestedAbstractElementList(wordSubSection, WordSubSectionList::new,
-            WordSubSection::new, PublishingXmlUtils.SubSectionTagName);
-         wordSubSection.setChild(wordSubSectionList);
-         return Optional.of(wordSubSectionList);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-         return Optional.empty();
-      }
-   }
-
-   /**
-    * Parses the first level table columns from a Word table row. The found columns belong to the provided table row and
-    * do not include any table columns from nested tables.
-    *
-    * @param wordTableRow the {@link WordTableRow} handle to the Word ML table row.
-    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordTableRowList}; otherwise,
-    * an empty {@link Optional}.
-    */
-
-   public Optional<WordTableColumnList> parseWordTableColumnListFromWordTableRow(WordTableRow wordTableRow) {
-
-      this.startOperation();
-
-      try {
-         var wordTableColumnList = this.parseNonNestedAbstractElementList(wordTableRow, WordTableColumnList::new,
-            WordTableColumn::new, PublishingXmlUtils.TableColumnTagName);
-         wordTableRow.setChild(wordTableColumnList);
-         return Optional.of(wordTableColumnList);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-         return Optional.empty();
-      }
-
-   }
-
-   /**
-    * Parses the first level Word tables from the body of a Word ML document. The found tables are not necessarily
-    * immediate children of the document body, but are not nested within a table.
-    *
-    * @param wordBody the {@link WordBody} handle to the Word ML document body.
-    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordTableList}; otherwise, an
-    * empty {@link Optional}.
-    */
-
-   public Optional<WordTableList> parseWordTableListFromWordBody(WordBody wordBody) {
-
-      this.startOperation();
-
-      try {
-         var wordTableList = this.parseNonNestedAbstractElementList(wordBody, WordTableList::new, WordTable::new,
-            PublishingXmlUtils.TableTagName);
-         wordBody.setChild(wordTableList);
-         return Optional.of(wordTableList);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-         return Optional.empty();
-      }
-   }
-
-   /**
-    * Parses the first level table rows from a Word table. The found rows belong to the provided word table and do not
-    * include any table rows from nested tables.
-    *
-    * @param wordTable the {@link WordTable} handle to the WordML table.
-    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordTableRowList}; otherwise,
-    * an empty {@link Optional}.
-    */
-
-   public Optional<WordTableRowList> parseWordTableRowListFromWordTable(WordTable wordTable) {
-
-      this.startOperation();
-
-      try {
-         var wordTableRowList = this.parseNonNestedAbstractElementList(wordTable, WordTableRowList::new,
-            WordTableRow::new, PublishingXmlUtils.TableRowTagName);
-         wordTable.setChild(wordTableRowList);
-         return Optional.of(wordTableRowList);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-         return Optional.empty();
-      }
-
    }
 
    /**
@@ -901,34 +825,8 @@ public class PublishingXmlUtils {
 
       try {
          var wordTextList = this.parseAbstractElementList(wordParagraph, WordTextList::new, WordText::new,
-            PublishingXmlUtils.TextTagName);
+            WordXmlTag.TEXT.getTagName());
          wordParagraph.setChild(wordTextList);
-         return Optional.of(wordTextList);
-      } catch (Exception e) {
-         this.lastCause.set(Cause.ERROR);
-         this.lastError.set(e);
-         return Optional.empty();
-      }
-
-   }
-
-   /**
-    * Parses all the Word text elements from a Word table column. This will include text elements from any tables nested
-    * within the Word table column being parsed.
-    *
-    * @param wordTableColumn a {@link WordTableColumn} handle to the the Word ML table column.
-    * @return on successful completion, an {@link Optional} with a possibly empty {@link WordTextList}; otherwise, an
-    * empty {@link Optional}.
-    */
-
-   public Optional<WordTextList> parseWordTextListFromWordTableColumn(WordTableColumn wordTableColumn) {
-
-      this.startOperation();
-
-      try {
-         var wordTextList = this.parseAbstractElementList(wordTableColumn, WordTextList::new, WordText::new,
-            PublishingXmlUtils.TextTagName);
-         wordTableColumn.setChild(wordTextList);
          return Optional.of(wordTextList);
       } catch (Exception e) {
          this.lastCause.set(Cause.ERROR);
@@ -1012,6 +910,7 @@ public class PublishingXmlUtils {
       this.lastCause.remove();
       this.lastError.remove();
    }
+
 }
 
 /* EOF */

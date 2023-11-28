@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.util;
 
 import org.eclipse.osee.ats.api.AtsApiSwaggerGenerator;
-import org.eclipse.osee.define.api.DefineApiSwaggerGenerator;
+import org.eclipse.osee.define.rest.api.DefineApiSwaggerGenerator;
 import org.eclipse.osee.disposition.rest.DispoSwaggerGenerator;
 import org.eclipse.osee.mim.MimSwaggerGenerator;
 import org.eclipse.osee.orcs.rest.OrcsSwaggerGenerator;

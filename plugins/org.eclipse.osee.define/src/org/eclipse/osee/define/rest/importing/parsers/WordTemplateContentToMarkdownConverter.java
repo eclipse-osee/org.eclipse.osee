@@ -20,7 +20,7 @@ import java.io.Reader;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
+import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;

@@ -22,12 +22,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A super class encapsulating the parent and XML Element for part of a Word ML document.
+ * A package prive super class encapsulating the parent and XML Element for part of a Word ML document.
  *
  * @author Loren K. Ashley
  */
 
-class AbstractElement implements WordElement {
+abstract class AbstractElement implements WordElement {
 
    /**
     * A {@link Map} for storing hierarchical children by type. Children maybe stored as {@link AbstractElement} objects
@@ -67,19 +67,43 @@ class AbstractElement implements WordElement {
    private final WordElement parent;
 
    /**
-    * Creates a new {@link AbstaractElement}.
+    * The Word ML XML tag for this element.
+    */
+
+   private final WordXmlTag wordXmlTag;
+
+   /**
+    * Creates a new {@link AbstractElement}.
     *
     * @apiNote This method is package private only sub-classes are intended to be exposed by the package.
     * @param parent the parent {@link org.w3c.dom.Document} or {@link AbstractElement} sub-class of the
     * {@link AbstractElement} being created.
     * @param element the {@link org.w3c.dom.Element} represented by this {@link AbstractElement}.
-    * @throw NullPointerException when either of the parameters <code>parent</code> or <code>element</code> are
-    * <code>null</code>.
+    * @throw NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   AbstractElement(WordElement parent, Element element) {
-      this.parent = parent;
-      this.element = Objects.requireNonNull(element, "AbstractElement::new, parameter \"element\" cannot be null.");
+   AbstractElement(WordElement parent, Element element, WordXmlTag wordXmlTag) {
+      this.parent = Objects.requireNonNull(parent);
+      this.element = Objects.requireNonNull(element);
+      this.wordXmlTag = Objects.requireNonNull(wordXmlTag);
+      this.childMap = new HashMap<>();
+      this.closed = false;
+      this.isLeaf = true;
+      this.isRoot = Objects.isNull(this.parent);
+   }
+
+   /**
+    * Creates a new {@link AbstractElement} for a top level element that does not have a parent.
+    *
+    * @apiNote This method is package private only sub-classes are intended to be exposed by the package.
+    * @param element the {@link org.w3c.dom.Element} represented by this {@link AbstractElement}.
+    * @throw NullPointerException when any of the parameters are <code>null</code>.
+    */
+
+   AbstractElement(Element element, WordXmlTag wordXmlTag) {
+      this.parent = null;
+      this.element = Objects.requireNonNull(element);
+      this.wordXmlTag = Objects.requireNonNull(wordXmlTag);
       this.childMap = new HashMap<>();
       this.closed = false;
       this.isLeaf = true;
@@ -154,6 +178,16 @@ class AbstractElement implements WordElement {
    }
 
    /**
+    * Gets the XML tag name for this element.
+    *
+    * @return the tag name.
+    */
+
+   public String getTag() {
+      return this.wordXmlTag.getTagName();
+   };
+
+   /**
     * {@inheritDoc}
     */
 
@@ -161,6 +195,30 @@ class AbstractElement implements WordElement {
    public String getText() {
       return Objects.requireNonNull(this.element.getTextContent(),
          "AbstractElement::getText, Element text is unexpectedly null.");
+   }
+
+   /**
+    * Gets the value of an element's attribute.
+    *
+    * @param wordXmlAttribute the {@link WordXmlAttribute} representing the attribute of the element to get.
+    * @return when the attribute is present an {@link Optional} containing the attribute value; otherwise, an empty
+    * {@link Optional}.
+    */
+
+   @Override
+   public Optional<String> getAttribute(WordXmlAttribute wordXmlAttribute) {
+
+      if (!this.wordXmlTag.isValidAttribute(wordXmlAttribute)) {
+         return Optional.empty();
+      }
+
+      var attributeNode = this.element.getAttributeNode(wordXmlAttribute.getName());
+
+      if (Objects.isNull(attributeNode)) {
+         return Optional.empty();
+      }
+
+      return Optional.of(attributeNode.getNodeValue());
    }
 
    /**

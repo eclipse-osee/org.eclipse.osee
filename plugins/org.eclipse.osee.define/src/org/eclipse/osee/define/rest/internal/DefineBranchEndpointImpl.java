@@ -19,7 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.define.api.DefineBranchEndpointApi;
+import org.eclipse.osee.define.rest.api.DefineBranchEndpointApi;
 import org.eclipse.osee.define.rest.operations.ValidateBranchOperation;
 import org.eclipse.osee.define.rest.operations.ValidateProcFuncCalls;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;

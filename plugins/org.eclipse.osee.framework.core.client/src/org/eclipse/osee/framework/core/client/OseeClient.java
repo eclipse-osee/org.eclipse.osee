@@ -15,14 +15,14 @@
 package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
-import org.eclipse.osee.define.api.DefineBranchEndpointApi;
-import org.eclipse.osee.define.api.GitEndpoint;
-import org.eclipse.osee.define.api.ImportEndpoint;
-import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
-import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
-import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
-import org.eclipse.osee.define.api.toggles.TogglesEndpoint;
+import org.eclipse.osee.define.rest.api.DefineBranchEndpointApi;
+import org.eclipse.osee.define.rest.api.git.GitEndpoint;
+import org.eclipse.osee.define.rest.api.importing.ImportEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.datarights.DataRightsEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.TemplateManagerEndpoint;
+import org.eclipse.osee.define.rest.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.define.rest.api.toggles.TogglesEndpoint;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
