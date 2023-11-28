@@ -146,29 +146,51 @@ public class WordTemplateCompare extends AbstractWordCompare {
       }
    }
 
-   private void notifyArtifactDeltaError(Exception ex, ArtifactDelta artifactDelta) {
+   private void notifyArtifactDeltaError(Exception e, ArtifactDelta artifactDelta) {
+
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+
+            /*
+             * Both start artifact and end artifact cannot be null.
+             */
+
+            var artifactEnd = "End";
+
             Artifact artifact = artifactDelta.getEndArtifact();
+
             if (artifact == null) {
+               artifactEnd = "Start";
                artifact = artifactDelta.getStartArtifact();
             }
-            String artString = String.format("%s -- %s", artifact.getIdString(), artifact.getName());
+
+            //@formatter:off
+            var message = new Message()
+                                 .title( "Unable to process artifact for comparison." )
+                                 .indentInc()
+                                 .segment( "Artifact Name",       artifact.getName()     )
+                                 .segment( "Artifact Identifier", artifact.getIdString() )
+                                 .segment( "Artifact Delta End",  artifactEnd            )
+                                 .reasonFollowsWithTrace( e )
+                                 .toString();
+            //@formatter:on
+
             if (RenderingUtil.arePopupsAllowed()) {
-               XResultData rd = new XResultData(false);
-               rd.error(String.format("There was a problem when procesing the following artifact for comparison: %s",
-                  artString));
-               rd.addRaw("Stack Trace");
-               for (StackTraceElement element : ex.getStackTrace()) {
-                  rd.addRaw("\n");
-                  rd.addRaw(element.toString());
-               }
-               XResultDataUI.report(rd, "Add to Compare Error");
+
+               var xResultData = new XResultData(false /* Don't log */ );
+
+               xResultData.addRaw(message);
+
+               XResultDataUI.report(xResultData, "Add to Compare Error");
+
             } else {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, message);
+
             }
          }
       });
+
    }
 }
