@@ -76,10 +76,13 @@
 					../../plugins/org.eclipse.osee.app.test
 				</module>
 				<module>
-					../../plugins/org.eclipse.osee.define.api
+					../../plugins/org.eclipse.osee.define
 				</module>
 				<module>
-					../../plugins/org.eclipse.osee.define
+					../../plugins/org.eclipse.osee.define.operations.api
+				</module>
+				<module>
+					../../plugins/org.eclipse.osee.define.rest.api
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.define.rest.test

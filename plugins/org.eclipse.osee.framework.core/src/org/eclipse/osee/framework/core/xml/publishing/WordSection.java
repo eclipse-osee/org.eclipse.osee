@@ -27,16 +27,14 @@ public class WordSection extends AbstractElement {
    /**
     * Creates a new {@link WordSection}.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param parent the {@link WordElement} implementation that is considered the parent by the parser implementation.
     * @param wordSectionElement the {@link org.w3c.dom.Element} with the tag "wx:sect" in the Word ML.
     * @throws NullPointerException when either of the parameters <code>wordBody</code> or
     * <code>wordSectionElement</code> are <code>null</code>.
     */
 
-   WordSection(WordElement parent, Element wordSectionElement) {
-      super(parent, wordSectionElement);
+   public WordSection(WordElement parent, Element wordSectionElement) {
+      super(parent, wordSectionElement, WordXmlTag.SECTION);
    }
 
    /**
@@ -52,7 +50,7 @@ public class WordSection extends AbstractElement {
       //@formatter:off
       return
          (parent instanceof WordBody)
-            ? Optional.of( (WordBody) this.getParent() )
+            ? Optional.of( (WordBody) parent )
             : Optional.empty();
       //@formatter:on
    }

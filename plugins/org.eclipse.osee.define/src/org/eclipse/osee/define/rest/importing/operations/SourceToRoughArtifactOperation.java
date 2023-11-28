@@ -14,10 +14,10 @@
 package org.eclipse.osee.define.rest.importing.operations;
 
 import java.io.File;
-import org.eclipse.osee.define.api.importing.IArtifactExtractor;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.api.importing.RoughArtifactKind;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractor;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;

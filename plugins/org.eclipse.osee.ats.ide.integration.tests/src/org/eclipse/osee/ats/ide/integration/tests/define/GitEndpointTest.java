@@ -26,7 +26,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.api.GitEndpoint;
+import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchToken;

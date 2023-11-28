@@ -18,13 +18,13 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateKeyGroups;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
-import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerEndpoint;
-import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
-import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.rest.DefineApplication;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyGroups;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.TemplateManagerEndpoint;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 
 /**
@@ -66,7 +66,12 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
 
       try {
          PublishingPermissions.verify();
-         this.defineOperations.getTemplateManagerOperations().deleteCache();
+         //@formatter:off
+         this.defineOperations
+            .getPublisherOperations()
+            .getTemplateManagerOperations()
+            .deleteCache();
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (Exception e) {
@@ -88,7 +93,16 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplate(publishingTemplateRequest);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getTemplateManagerOperations()
+               .getPublishingTemplate
+                  (
+                     publishingTemplateRequest
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -112,7 +126,17 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplate(primaryKey, secondaryKey);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getTemplateManagerOperations()
+               .getPublishingTemplate
+                  (
+                     primaryKey,
+                     secondaryKey
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -135,7 +159,13 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.defineOperations.getTemplateManagerOperations().getPublishingTemplateKeyGroups();
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getTemplateManagerOperations()
+               .getPublishingTemplateKeyGroups();
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (Exception e) {

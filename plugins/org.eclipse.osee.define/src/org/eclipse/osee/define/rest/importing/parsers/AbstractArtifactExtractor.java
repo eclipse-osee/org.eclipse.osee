@@ -16,10 +16,10 @@ package org.eclipse.osee.define.rest.importing.parsers;
 import java.net.URI;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.osee.define.api.importing.IArtifactExtractor;
-import org.eclipse.osee.define.api.importing.IArtifactExtractorDelegate;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractor;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractorDelegate;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -39,8 +39,7 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       // Protect Constructor
    }
 
-   protected abstract @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results,
-      @NonNull URI source, RoughArtifactCollector collector) throws Exception;
+   protected abstract @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, @NonNull URI source, RoughArtifactCollector collector) throws Exception;
 
    @Override
    public String toString() {
@@ -74,8 +73,7 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
    }
 
    @Override
-   public final @NonNull XResultData process(OrcsApi orcsApi, @NonNull XResultData results, URI source,
-      RoughArtifactCollector collector) throws Exception {
+   public final @NonNull XResultData process(OrcsApi orcsApi, @NonNull XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
       Objects.requireNonNull(results, "AbstractArtifactExtractor::process, parameter \"results\" cannot be null.");
       checkDelegate();
       delegate.initialize();

@@ -25,9 +25,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.osee.define.api.synchronization.ExportRequest;
-import org.eclipse.osee.define.api.synchronization.Root;
-import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.define.rest.api.synchronization.ExportRequest;
+import org.eclipse.osee.define.rest.api.synchronization.Root;
+import org.eclipse.osee.define.rest.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
@@ -167,9 +167,7 @@ class SynchronizationArtifactParser {
     */
 
    @SuppressWarnings("unchecked")
-   private static void mapIdentifiables(Class<? extends Identifiable> identifiableClass,
-      EList<? extends Identifiable> reqifIdentifiables, RankMap<? extends Identifiable> byIdentifierMap,
-      RankMap<? extends Identifiable> byLongNameMap) {
+   private static void mapIdentifiables(Class<? extends Identifiable> identifiableClass, EList<? extends Identifiable> reqifIdentifiables, RankMap<? extends Identifiable> byIdentifierMap, RankMap<? extends Identifiable> byLongNameMap) {
 
       for (var reqifIdentifiable : reqifIdentifiables) {
 
@@ -380,8 +378,7 @@ class SynchronizationArtifactParser {
     * {@link DatatypeDefinition} objects for enumerated data types to.
     */
 
-   void parseDatatypeDefinitions(RankMap<DatatypeDefinition> byIdentifierMap, RankMap<DatatypeDefinition> byLongNameMap,
-      RankMap<String> enumValueLongNameByIdentifierMap) {
+   void parseDatatypeDefinitions(RankMap<DatatypeDefinition> byIdentifierMap, RankMap<DatatypeDefinition> byLongNameMap, RankMap<String> enumValueLongNameByIdentifierMap) {
 
       Assert.assertNotNull(
          "SynchronizationArtifactParser::parseDatatypeDefinitions, Error ReqIF document has not yet been parsed.",
@@ -438,8 +435,7 @@ class SynchronizationArtifactParser {
     * @param byLongName The {@link Map} to add the {@link SpecType} objects keyed by long name to.
     */
 
-   void parseSpecTypes(Class<? extends SpecType> specTypeClass, RankMap<SpecType> byIdentifierMap,
-      RankMap<SpecType> byLongNameMap) {
+   void parseSpecTypes(Class<? extends SpecType> specTypeClass, RankMap<SpecType> byIdentifierMap, RankMap<SpecType> byLongNameMap) {
 
       Assert.assertNotNull(
          "SynchronizationArtifactParser::parseSpecTypes, Error ReqIF document has not yet been parsed.",

@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;

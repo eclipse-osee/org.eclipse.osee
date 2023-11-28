@@ -19,11 +19,11 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.osee.define.api.importing.IArtifactExtractor;
-import org.eclipse.osee.define.api.importing.IArtifactExtractorDelegate;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.api.importing.RoughArtifactKind;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractor;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractorDelegate;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -113,9 +113,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     */
 
    @Override
-   public final @NonNull XResultData processContent(OrcsApi orcsApi, @NonNull XResultData results,
-      RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber,
-      String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public final @NonNull XResultData processContent(OrcsApi orcsApi, @NonNull XResultData results, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
 
       Objects.requireNonNull("WordOutlineExtractorDelegate::processContent, parameter \"results\" cannot be null.");
 
@@ -156,8 +154,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       return results;
    }
 
-   protected void addChildRoughArtifact(OrcsApi orcsApi, XResultData results, String content,
-      RoughArtifactCollector collector) {
+   protected void addChildRoughArtifact(OrcsApi orcsApi, XResultData results, String content, RoughArtifactCollector collector) {
       // Override with inheriting class if needed
       // Allows child classes to choose to make given content into additional RoughArtifacts
       wordFormattedContent.append(content);
@@ -171,8 +168,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Gets content and attempts to extract outline number and title, if it fails with regular regex, it tries
     * specializedOutlineNumberTitleExtract()
     */
-   private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumberStorage,
-      StringBuilder outlineName, String paragraphStyle) {
+   private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumberStorage, StringBuilder outlineName, String paragraphStyle) {
       Matcher listItemMatcher = LIST_ITEM_REGEX.matcher(content);
       if (listItemMatcher.find()) { // wx:val grab
 
@@ -259,8 +255,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Specializes in extraction of "1.0 scope" type of outline number and names. Outline name can also be spread out
     * over multiple {@code <w:t> } elements.<br/>
     */
-   private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage,
-      StringBuilder outlineTitleStorage, String paragraphStyle) {
+   private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
       StringBuilder wtStorage = new StringBuilder(paragraph.length());
       Matcher wtElementMatcher = WT_ELEMENT_REGEX.matcher(paragraph);
       while (wtElementMatcher.find()) {
@@ -285,8 +280,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    }
 
-   private void processSpecializedOutlineNumberAndTitle(String currentOutlineNumber, String formOfOutlineTitle,
-      StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
+   private void processSpecializedOutlineNumberAndTitle(String currentOutlineNumber, String formOfOutlineTitle, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
       boolean valid = determineIfValid(currentOutlineNumber, paragraphStyle);
       lastDeterminedContentType = valid ? ContentType.OUTLINE_TITLE : ContentType.CONTENT;
 
@@ -336,8 +330,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Checks if another artifact with the same outlineNumber was created
     */
-   private RoughArtifact setUpNewArtifact(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector,
-      String outlineNumber) {
+   private RoughArtifact setUpNewArtifact(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector, String outlineNumber) {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(outlineNumber);
       if (duplicateArtifact == null) {
          RoughArtifact roughArtifact = new RoughArtifact(orcsApi, results, RoughArtifactKind.PRIMARY);

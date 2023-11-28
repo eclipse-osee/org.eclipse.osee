@@ -166,7 +166,7 @@ public class Permissions {
                new ExceptionLogBlocker
                       (
                          "javax.ws.rs.NotAuthorizedException",
-                         "org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException",
+                         "org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException",
                          "java.lang.RuntimeException",
                          "User is not in the publishing group\\."
                       )
@@ -208,7 +208,7 @@ public class Permissions {
                new ExceptionLogBlocker
                       (
                         "javax.ws.rs.NotAuthorizedException",
-                        "org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException",
+                        "org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException",
                         "java.lang.RuntimeException",
                         "User is not an active user\\."
                       )

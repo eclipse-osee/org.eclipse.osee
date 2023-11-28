@@ -19,11 +19,11 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
-import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
-import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.rest.DefineApplication;
+import org.eclipse.osee.define.rest.api.publisher.datarights.DataRightsEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
@@ -68,7 +68,12 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
       try {
          PublishingPermissions.verify();
-         this.defineOperations.getDataRightsOperations().deleteCache();
+         //@formatter:off
+         this.defineOperations
+            .getPublisherOperations()
+            .getDataRightsOperations()
+            .deleteCache();
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (Exception e) {
@@ -90,7 +95,17 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return defineOperations.getDataRightsOperations().getDataRights(branchIdentifier, artifactIdentifiers);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getDataRightsOperations()
+               .getDataRights
+                  (
+                     branchIdentifier,
+                     artifactIdentifiers
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
@@ -114,8 +129,18 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return defineOperations.getDataRightsOperations().getDataRights(branchIdentifier, overrideClassification,
-            artifactIdentifiers);
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getDataRightsOperations()
+               .getDataRights
+                  (
+                     branchIdentifier,
+                     overrideClassification,
+                     artifactIdentifiers
+                  );
+         //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {

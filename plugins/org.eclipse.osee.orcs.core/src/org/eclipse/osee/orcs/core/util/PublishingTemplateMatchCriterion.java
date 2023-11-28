@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.core.util;
 
 import java.util.Objects;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 
 /**
  * Defines a Publishing Template Match Criterion for the creation of a Publishing Template.

@@ -27,16 +27,12 @@ public class WordDocument extends AbstractElement {
    /**
     * Creates a new {@link WordDocument} object.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
-    * @param document The {@link org.w3c.dom.Document} for the Word ML document.
     * @param wordDocumentElement The {@link org.w3c.dom.Element} with the tag "w:wordDocument" in the Word ML document.
-    * @throws NullPointerException when either of the parameters <code>document</code> or
-    * <code>wordDocumentElement</code> are <code>null</code>.
+    * @throws NullPointerException when either of the parameter <code>wordDocumentElement</code> is <code>null</code>.
     */
 
-   WordDocument(Element wordDocumentElement) {
-      super(null, wordDocumentElement);
+   public WordDocument(Element wordDocumentElement) {
+      super(wordDocumentElement, WordXmlTag.WORD_DOCUMENT);
    }
 
    /**

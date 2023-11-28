@@ -24,13 +24,11 @@ public class WordSectionList extends AbstractElementList<WordBody, WordSection> 
    /**
     * Creates a new open and empty list for {@link WordSection}s.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param wordBody the {@link WordBody} for the body of the Word ML document.
     * @throws NullPointerException when the parameter <code>wordBody</code> is <code>null</code>.
     */
 
-   WordSectionList(WordBody wordBody) {
+   public WordSectionList(WordBody wordBody) {
       super(wordBody);
    }
 

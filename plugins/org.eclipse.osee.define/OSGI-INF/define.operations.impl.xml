@@ -26,7 +26,7 @@
 
    <service>
       <provide 
-         interface = "org.eclipse.osee.define.api.DefineOperations" />
+         interface = "org.eclipse.osee.define.operations.api.DefineOperations" />
    </service>
       
    <reference 

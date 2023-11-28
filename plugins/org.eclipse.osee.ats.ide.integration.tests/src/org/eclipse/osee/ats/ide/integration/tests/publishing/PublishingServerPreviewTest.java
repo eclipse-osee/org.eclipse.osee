@@ -31,9 +31,9 @@ import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.api.MsWordPreviewRequestData;
-import org.eclipse.osee.define.api.publishing.PublishingEndpoint;
-import org.eclipse.osee.define.api.publishing.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -46,9 +46,12 @@ import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
 import org.eclipse.osee.framework.core.xml.publishing.WordBody;
 import org.eclipse.osee.framework.core.xml.publishing.WordDocument;
 import org.eclipse.osee.framework.core.xml.publishing.WordParagraphList;
+import org.eclipse.osee.framework.core.xml.publishing.WordSection;
 import org.eclipse.osee.framework.core.xml.publishing.WordSectionList;
+import org.eclipse.osee.framework.core.xml.publishing.WordSubSection;
 import org.eclipse.osee.framework.core.xml.publishing.WordSubSectionList;
 import org.eclipse.osee.framework.core.xml.publishing.WordTextList;
+import org.eclipse.osee.framework.core.xml.publishing.WordXmlTag;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.junit.Assert;
@@ -127,6 +130,18 @@ public class PublishingServerPreviewTest {
    private static int testBranchSpecificationRecordIdentifier = 1;
 
    /**
+    * Name used for the OSEE branch holding the test document.
+    */
+
+   private static String testBranchName = "Publishing Server Preview Test Branch";
+
+   /**
+    * Creation comment used for the OSEE test branch
+    */
+
+   private static String testBranchCreationComment = "Branch for Publishing Server Preview Testing";
+
+   /**
     * The {@link BranchSpecificationRecord} identifier for the common branch.
     */
 
@@ -149,9 +164,9 @@ public class PublishingServerPreviewTest {
          (
             new BasicBranchSpecificationRecord
                    (
-                      PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier,   /* BranchSpecificationRecord Identifier */
-                      "Preview And MultiPreview Test Branch",                                /* Branch Name                          */
-                      "Branch for Preview And MultiPreview Testing"                          /* Branch Creation Comment              */
+                      PublishingServerPreviewTest.testBranchSpecificationRecordIdentifier,
+                      PublishingServerPreviewTest.testBranchName,
+                      PublishingServerPreviewTest.testBranchCreationComment
                    ),
             new BasicBranchSpecificationRecord
                    (
@@ -750,18 +765,6 @@ public class PublishingServerPreviewTest {
    private static BranchId rootBranchId;
 
    /**
-    * Name used for the OSEE branch holding the test document.
-    */
-
-   private static String testBranchName = "Publishing Server Preview Test Branch";
-
-   /**
-    * Creation comment used for the OSEE test branch
-    */
-
-   private static String testBranchCreationComment = "Branch for Publishing Server Preview Testing";
-
-   /**
     * Build a new {@link AssertionError} with error message for a {@link PublishingXmlUtils} method failure.
     *
     * @param publishingXmlUtils reference to the {@link PublishingXmlUtils} object that contains the failure.
@@ -918,7 +921,14 @@ public class PublishingServerPreviewTest {
                );
 
       this.wordSectionList =
-         PublishingServerPreviewTest.publishingXmlUtils.parseWordSectionListFromWordBody( wordBody )
+         PublishingServerPreviewTest.publishingXmlUtils
+            .parseChildListFromParent
+               (
+                  wordBody,
+                  WordXmlTag.SECTION,
+                  WordSectionList::new,
+                  WordSection::new
+               )
             .orElseThrow
                (
                   () -> PublishingServerPreviewTest.buildAssertionError
@@ -937,7 +947,14 @@ public class PublishingServerPreviewTest {
          this.wordSectionList.stream()
             .map
                (
-                  ( wordSection ) -> PublishingServerPreviewTest.publishingXmlUtils.parseWordSubSectionListFromWordSection( wordSection )
+                  ( wordSection ) -> PublishingServerPreviewTest.publishingXmlUtils
+                                        .parseChildListFromParent
+                                           (
+                                              wordSection,
+                                              WordXmlTag.SUBSECTION,
+                                              WordSubSectionList::new,
+                                              WordSubSection::new
+                                           )
                                         .orElseThrow
                                            (
                                              () -> PublishingServerPreviewTest.buildAssertionError
@@ -969,7 +986,14 @@ public class PublishingServerPreviewTest {
             var firstWordSubSection = firstWordSubSectionList.get(0).get();
 
             this.firstWordSubSectionSubSectionList =
-               PublishingServerPreviewTest.publishingXmlUtils.parseWordSubSectionListFromWordSubSection( firstWordSubSection )
+               PublishingServerPreviewTest.publishingXmlUtils
+                  .parseChildListFromParent
+                     (
+                        firstWordSubSection,
+                        WordXmlTag.SUBSECTION,
+                        WordSubSectionList::new,
+                        WordSubSection::new
+                     )
                   .orElseThrow
                      (
                         () -> PublishingServerPreviewTest.buildAssertionError

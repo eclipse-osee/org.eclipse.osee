@@ -46,7 +46,7 @@
 	<reference
 	   bind        = "setDefineApi"
 	   cardinality = "1..1"
-	   interface   = "org.eclipse.osee.define.api.DefineOperations"
+	   interface   = "org.eclipse.osee.define.operations.api.DefineOperations"
 	   name        = "DefineApi"
 	   policy      = "static"/>
 	   

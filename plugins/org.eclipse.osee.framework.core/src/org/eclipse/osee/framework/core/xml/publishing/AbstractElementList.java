@@ -21,7 +21,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-class AbstractElementList<P, C extends AbstractElement> implements Iterable<C> {
+/**
+ * An ordered container for the {@link AbstractElement} objects representing a sequence of Word ML elements.
+ *
+ * @author Loren K. Ashley
+ * @param <P> the {@link AbstractElement} derived class for this element's parent or the {@link org.w3c.dom.Document}
+ * class.
+ * @param <C> the {@link AbstractElement} derived class for this element's children.
+ */
+
+public class AbstractElementList<P, C extends AbstractElement> implements Iterable<C> {
 
    /**
     * The parent {@link org.w3c.dom.Document} or {@link AbstractElement} sub-class.
@@ -50,7 +59,7 @@ class AbstractElementList<P, C extends AbstractElement> implements Iterable<C> {
     * @throw NullPointerException when the parameter <code>parent</code> is <code>null</code>.
     */
 
-   AbstractElementList(P parent) {
+   public AbstractElementList(P parent) {
       this.parent = Objects.requireNonNull(parent, "AbstractElementList::new, parameter \"parent\" cannot be null.");
       this.childList = new ArrayList<>();
       this.closed = false;

@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.datarights.DataRightsEndpoint;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;

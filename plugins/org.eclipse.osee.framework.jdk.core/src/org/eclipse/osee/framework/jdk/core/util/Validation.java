@@ -48,7 +48,7 @@ public class Validation {
          @Override
          <T> Message koPredicateMessage(Message message, T value, String className, String methodName, String valueDescription, String predicateText) {
 
-            var outMessage = this.startTitle(message, className, methodName);
+            var outMessage = Validation.startTitle(message, className, methodName);
 
       //@formatter:off
             outMessage
@@ -81,7 +81,7 @@ public class Validation {
          @Override
          <T> Message koPredicateMessage(Message message, T value, String className, String methodName, String valueDescription, String predicateText) {
 
-            var outMessage = this.startTitle(message, className, methodName);
+            var outMessage = Validation.startTitle(message, className, methodName);
 
       //@formatter:off
             outMessage
@@ -114,7 +114,7 @@ public class Validation {
          @Override
          <T> Message koPredicateMessage(Message message, T value, String className, String methodName, String valueDescription, String predicateText) {
 
-            var outMessage = this.startTitle(message, className, methodName);
+            var outMessage = Validation.startTitle(message, className, methodName);
 
       //@formatter:off
             outMessage
@@ -155,34 +155,14 @@ public class Validation {
 
       abstract <T> Message koPredicateMessage(Message message, T value, String className, String methodName, String valueDescription, String predicateText);
 
-      /**
-       * Generates starting portion of the message title as:
-       * <ul style="list-style: none;">
-       * <li>&lt;class-name&gt; ":" &lt;method-name&gt; ","</li>
-       * </ul>
-       *
-       * @param message when non-<code>null</code> the title prefix is appended to the provided {@link Message};
-       * otherwise, a new {@link Message} is created.
-       * @param className the name of the class the validation is performed in.
-       * @param methodName the name of the method the validation is performed in.
-       * @return a {@link Message} with the starting portion of the title appended.
-       */
-
-      Message startTitle(Message message, String className, String methodName) {
-
-         var outMessage = Objects.nonNull(message) ? message : new Message();
-
-         //@formatter:off
-         outMessage
-            .title( className )
-            .append( "::" )
-            .append( methodName )
-            .append( ", " );
-         //@formatter:on
-
-         return outMessage;
-      }
    }
+
+   /**
+    * This member contains a {@link Predicate} implementation that tests an {@link Array} for the presence of a
+    * <code>null</code> element.
+    */
+
+   public static Predicate<Object[]> arrayContainsNull = Validation::arrayContainsNull;
 
    /**
     * This member contains a {@link Predicate} implementation that tests a {@link Collection} for the presence of a
@@ -207,6 +187,43 @@ public class Validation {
     */
 
    public static Predicate<Map<?, ?>> mapContainsNullValue = Validation::mapContainsNullValue;
+
+   /**
+    * Predicate to determine if an array contains a <code>null</code> entry.
+    *
+    * @param array the array to test.
+    * @return <code>true</code> when <code>array</code> contains a null element or <code>array</code> is
+    * <code>null</code>; otherwise, <code>false</code>.
+    */
+
+   public static <T> boolean arrayContainsNull(T[] array) {
+
+      if (Objects.isNull(array)) {
+         return true;
+      }
+
+      for (var element : array) {
+         if (Objects.isNull(element)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   /**
+    * Method creates a {@link Predicate} implementation that will apply the <code>elementPredicate</code> to the members
+    * of an array in a fail fast manner.
+    *
+    * @param <T> the type of the array elements.
+    * @param elementPredicate the {@link Predicate} to be applied to each member of the array.
+    * @return <code>true</code> when all members of the array pass the <code>elementPredicate</code>; otherwise,
+    * <code>false</code>.
+    */
+
+   public static <T> Predicate<T[]> arrayElementPredicate(Predicate<T> elementPredicate) {
+      return (t) -> testArrayMembers(t, elementPredicate);
+   }
 
    /**
     * Builds the message for an {@link IllegalArgumentException} from the class name, method name, and a detail
@@ -235,8 +252,9 @@ public class Validation {
     * Predicate to determine if a {@link Collection} contains a <code>null</code>.
     *
     * @param collection the {@link Collection} to be searched.
-    * @return <code>true</code> when the {@link Collection} contains a <code>null</code> element; otherwise,
-    * <code>false</code>.
+    * @return <code>true</code> when the {@link Collection} <code>collection</code> contains a <code>null</code>
+    * element, <code>collection</code> is not an instance of {@link Collection}, or <code>collection</code> is
+    * <code>null</code>; otherwise, <code>false</code>.
     * @implNote The method {@link Collection#contains} cannot be relied upon because some implementations will throw a
     * {@link NullPointerException} when searching for a <code>null</code>.
     */
@@ -244,7 +262,7 @@ public class Validation {
    public static <T> boolean collectionContainsNull(T collection) {
 
       if (!(collection instanceof Collection)) {
-         return false;
+         return true;
       }
 
       for (var entry : (Collection<?>) collection) {
@@ -252,6 +270,7 @@ public class Validation {
             return true;
          }
       }
+
       return false;
    }
 
@@ -267,6 +286,35 @@ public class Validation {
 
    public static <T> Predicate<Collection<T>> collectionElementPredicate(Predicate<T> elementPredicate) {
       return (t) -> testCollectionMembers(t, elementPredicate);
+   }
+
+   /**
+    * Generates an exception message for an unexpected switch case and throws the exception produced by the
+    * <code>exceptionFactory</code>.
+    *
+    * @param <T> the type of value that is the switch parameter.
+    * @param value the switch value.
+    * @param className the name of the class the value is being tested in.
+    * @param methodName the name of the method the value is being tested in.
+    * @param valueDescription the parameter, member, or method name for the value being tested.
+    * @param exceptionFactory a {@link Function} that creates a {@link RuntimeException} with an error message.
+    */
+
+   public static <T> RuntimeException invalidCase(T value, String className, String methodName, String valueDescription, Function<String, RuntimeException> exceptionFactory) {
+
+      //@formatter:off
+      var message =
+         Validation.startTitle( null, className, methodName )
+            .append( "Unexpected switch case with parameter \"" )
+            .append( valueDescription )
+            .append( "\"." )
+            .indentInc()
+            .segment( valueDescription, value )
+            .indentDec()
+            .toString();
+      //@formatter:on
+
+      return exceptionFactory.apply(message);
    }
 
    /**
@@ -949,6 +997,56 @@ public class Validation {
       }
 
       return value;
+   }
+
+   /**
+    * Generates starting portion of the message title as:
+    * <ul style="list-style: none;">
+    * <li>&lt;class-name&gt; ":" &lt;method-name&gt; ","</li>
+    * </ul>
+    *
+    * @param message when non-<code>null</code> the title prefix is appended to the provided {@link Message}; otherwise,
+    * a new {@link Message} is created.
+    * @param className the name of the class the validation is performed in.
+    * @param methodName the name of the method the validation is performed in.
+    * @return a {@link Message} with the starting portion of the title appended.
+    */
+
+   private static Message startTitle(Message message, String className, String methodName) {
+
+      var outMessage = Objects.nonNull(message) ? message : new Message();
+
+      //@formatter:off
+      outMessage
+         .title( className )
+         .append( "::" )
+         .append( methodName )
+         .append( ", " );
+      //@formatter:on
+
+      return outMessage;
+   }
+
+   /**
+    * Tests each member of an array with a {@link Predicate} in a fail fast manner.
+    *
+    * @param <T> the type of the array members.
+    * @param array the array to be tested.
+    * @param elementPredicate the {@link Predicate} to test the array members with.
+    * @return <code>true</code> when the {@link Predicate} returns <code>true</code> for the first array member;
+    * otherwise <code>false</code> when the {@link Predicate} returns <code>false</code> for all {@link Collection}
+    * members.
+    */
+
+   private static <T> boolean testArrayMembers(T[] array, Predicate<T> elementPredicate) {
+
+      for (var entry : array) {
+         if (elementPredicate.test(entry)) {
+            return true;
+         }
+      }
+      return false;
+
    }
 
    /**

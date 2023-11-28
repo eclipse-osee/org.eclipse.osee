@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.util.Optional;
+
 /**
  * Class to encapsulate a list of the top level Word tables in the body of a Word ML document.
  *
@@ -30,7 +32,7 @@ public class WordTableList extends AbstractElementList<WordBody, WordTable> {
     * @throws NullPointerException when the parameter <code>wordBody</code> is <code>null</code>.
     */
 
-   WordTableList(WordBody wordBody) {
+   public WordTableList(WordBody wordBody) {
       super(wordBody);
    }
 
@@ -40,8 +42,15 @@ public class WordTableList extends AbstractElementList<WordBody, WordTable> {
     * @return the containing {@link WordBody}.
     */
 
-   public WordBody getWordBody() {
-      return this.getParent();
+   @SuppressWarnings("cast")
+   public Optional<WordBody> getWordBody() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         (parent instanceof WordBody)
+            ? Optional.of( parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
 }

@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.define.rest.importing.parsers;
 
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.api.importing.RoughArtifactKind;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;

@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.define.rest.importing.parsers;
 
-import org.eclipse.osee.define.api.importing.IArtifactExtractor;
-import org.eclipse.osee.define.api.importing.IArtifactExtractorDelegate;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractor;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractorDelegate;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.orcs.OrcsApi;
 

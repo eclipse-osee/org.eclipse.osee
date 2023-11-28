@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.util.Optional;
+
 /**
  * Class to encapsulate an ordered list of the columns in a row of a Word table.
  *
@@ -24,13 +26,11 @@ public class WordTableColumnList extends AbstractElementList<WordTableRow, WordT
    /**
     * Creates a new open and empty list for {@link WordTableColumn}s.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param WordTableRow the {@link WordTableRow} containing the table columns.
     * @throws NullPointerException when the parameter <code>wordTableRow</code> is <code>null</code>.
     */
 
-   WordTableColumnList(WordTableRow wordTableRow) {
+   public WordTableColumnList(WordTableRow wordTableRow) {
       super(wordTableRow);
    }
 
@@ -40,10 +40,16 @@ public class WordTableColumnList extends AbstractElementList<WordTableRow, WordT
     * @return the containing {@link WordTableRow}.
     */
 
-   public WordTableRow getWordTableRow() {
-      return this.getParent();
+   @SuppressWarnings("cast")
+   public Optional<WordTableRow> getWordTableRow() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         (parent instanceof WordTableRow)
+            ? Optional.of(parent)
+            : Optional.empty();
+      //@formatter:off
    }
-
 }
 
 /* EOF */

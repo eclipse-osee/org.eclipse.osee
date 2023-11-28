@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs;
 
+import java.lang.ref.WeakReference;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApi;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -55,6 +56,15 @@ public interface OrcsApi extends OseeApi {
     *
     * @return {@link ExceptionRegistryOperations} service handle.
     */
+
    ExceptionRegistryOperations getExceptionRegistryOperations();
+
+   /**
+    * Gets a weak reference handle to the Resources service.
+    *
+    * @return {@link ResourcesOpeartions} service handle.
+    */
+
+   WeakReference<ResourcesOperations> getResourcesOperations();
 
 }

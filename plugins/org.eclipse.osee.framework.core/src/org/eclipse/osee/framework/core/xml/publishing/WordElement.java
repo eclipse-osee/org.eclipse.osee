@@ -27,6 +27,16 @@ import org.w3c.dom.Element;
 public interface WordElement {
 
    /**
+    * Gets the value of an attribute.
+    *
+    * @param wordXmlAttribute the {@link WordXmlAttribute} representing the XML attribute to get the value of.
+    * @return when the attribute is present an {@link Optional} containing the attribute value; otherwise, an empty
+    * {@link Optional}.
+    */
+
+   Optional<String> getAttribute(WordXmlAttribute wordXmlAttribute);
+
+   /**
     * Gets a hierarchical child by class.
     *
     * @param <C> Scalar children must be a sub-class of {@link AbstractElement} and vector children must be a sub-class

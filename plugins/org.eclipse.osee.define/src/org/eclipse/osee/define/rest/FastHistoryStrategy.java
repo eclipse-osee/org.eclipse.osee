@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.define.rest;
 
-import static org.eclipse.osee.define.api.DefineTupleTypes.GitLatest;
+import static org.eclipse.osee.define.rest.api.DefineTupleTypes.GitLatest;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

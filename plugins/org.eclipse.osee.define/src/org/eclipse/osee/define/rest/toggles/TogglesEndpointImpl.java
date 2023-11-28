@@ -16,8 +16,8 @@ package org.eclipse.osee.define.rest.toggles;
 import java.util.Objects;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.toggles.TogglesEndpoint;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.rest.api.toggles.TogglesEndpoint;
 
 /**
  * Provides the wrapper methods that expose the Toggles operations methods as REST API end points.

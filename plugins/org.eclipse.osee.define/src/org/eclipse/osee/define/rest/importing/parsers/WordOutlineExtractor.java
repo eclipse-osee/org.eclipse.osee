@@ -26,9 +26,9 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.osee.define.api.importing.IArtifactExtractorDelegate;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
+import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractorDelegate;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
@@ -106,8 +106,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, URI source,
-      RoughArtifactCollector collector) throws IOException {
+   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, URI source, RoughArtifactCollector collector) throws IOException {
       Objects.requireNonNull(results, "WordOutlineExtractor::extractFromSource, parameter \"results\" cannot be null.");
 
       Reader reader = null;

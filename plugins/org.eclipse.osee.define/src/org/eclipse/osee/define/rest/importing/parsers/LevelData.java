@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.define.rest.importing.parsers;
 
-import org.eclipse.osee.define.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
 
 /**
  * @author David W. Miller

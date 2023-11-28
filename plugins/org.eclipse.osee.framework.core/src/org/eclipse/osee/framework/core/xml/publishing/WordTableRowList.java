@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.util.Optional;
+
 /**
  * Class to encapsulate an ordered list of the rows in a Word table.
  *
@@ -30,7 +32,7 @@ public class WordTableRowList extends AbstractElementList<WordTable, WordTableRo
     * @throws NullPointerException when the parameter <code>wordTable</code> is <code>null</code>.
     */
 
-   WordTableRowList(WordTable wordTable) {
+   public WordTableRowList(WordTable wordTable) {
       super(wordTable);
    }
 
@@ -40,8 +42,15 @@ public class WordTableRowList extends AbstractElementList<WordTable, WordTableRo
     * @return the containing {@link WordTable}.
     */
 
-   public WordTable getWordTable() {
-      return this.getParent();
+   @SuppressWarnings("cast")
+   public Optional<WordTable> getWordTable() {
+      var parent = this.getParent();
+      //@formatter:off
+      return
+         (parent instanceof WordTable)
+            ? Optional.of( parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
 }

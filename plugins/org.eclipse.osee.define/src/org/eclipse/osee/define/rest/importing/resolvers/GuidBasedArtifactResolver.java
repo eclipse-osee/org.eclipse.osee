@@ -14,7 +14,7 @@
 package org.eclipse.osee.define.rest.importing.resolvers;
 
 import java.util.List;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;

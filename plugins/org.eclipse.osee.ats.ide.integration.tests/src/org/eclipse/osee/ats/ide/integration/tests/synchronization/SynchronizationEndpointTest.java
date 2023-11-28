@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
+import org.eclipse.osee.define.rest.api.synchronization.SynchronizationEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;

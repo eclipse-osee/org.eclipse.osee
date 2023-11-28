@@ -16,7 +16,7 @@ package org.eclipse.osee.define.rest.importing.parsers;
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.eclipse.osee.define.operations.publishing.WordCoreUtilServer;
+import org.eclipse.osee.define.operations.publisher.publishing.WordCoreUtilServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeId;

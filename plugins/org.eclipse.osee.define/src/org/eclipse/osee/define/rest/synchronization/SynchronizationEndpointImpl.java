@@ -19,14 +19,14 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.synchronization.ExportRequest;
-import org.eclipse.osee.define.api.synchronization.ImportRequest;
-import org.eclipse.osee.define.api.synchronization.SynchronizationEndpoint;
-import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
-import org.eclipse.osee.define.operations.publishing.UserNotAuthorizedForPublishingException;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.operations.synchronization.BadDocumentRootException;
 import org.eclipse.osee.define.operations.synchronization.UnknownSynchronizationArtifactTypeException;
+import org.eclipse.osee.define.rest.api.synchronization.ExportRequest;
+import org.eclipse.osee.define.rest.api.synchronization.ImportRequest;
+import org.eclipse.osee.define.rest.api.synchronization.SynchronizationEndpoint;
 
 /**
  * Provides the wrapper methods that expose the Synchronization operations methods as REST API end points.

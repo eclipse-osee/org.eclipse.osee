@@ -18,9 +18,9 @@ import java.io.FileFilter;
 import java.net.URI;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.api.importing.RoughArtifactKind;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -33,8 +33,7 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, @NonNull URI source,
-      RoughArtifactCollector collector) throws Exception {
+   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, @NonNull URI source, RoughArtifactCollector collector) throws Exception {
 
       Objects.requireNonNull(results,
          "WholeWordDocumentExtractor::extractFromSource, parameter \"results\" cannot be null.");

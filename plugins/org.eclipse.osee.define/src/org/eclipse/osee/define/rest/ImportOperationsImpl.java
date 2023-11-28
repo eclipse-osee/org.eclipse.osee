@@ -14,12 +14,11 @@
 package org.eclipse.osee.define.rest;
 
 import java.io.File;
-import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.define.api.ImportOperations;
-import org.eclipse.osee.define.api.importing.IArtifactExtractor;
-import org.eclipse.osee.define.api.importing.RoughArtifact;
-import org.eclipse.osee.define.api.importing.RoughArtifactCollector;
-import org.eclipse.osee.define.api.importing.RoughArtifactKind;
+import org.eclipse.osee.define.operations.api.importing.ImportOperations;
+import org.eclipse.osee.define.rest.api.importing.IArtifactExtractor;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifact;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactCollector;
+import org.eclipse.osee.define.rest.api.importing.RoughArtifactKind;
 import org.eclipse.osee.define.rest.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.define.rest.importing.operations.SourceToRoughArtifactOperation;
 import org.eclipse.osee.define.rest.importing.parsers.WordOutlineExtractor;
@@ -43,12 +42,10 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class ImportOperationsImpl implements ImportOperations {
    private final OrcsApi orcsApi;
-   private final ActivityLog activityLog;
    private static final Integer GRAPHICS_UPDATE = 100;
 
-   public ImportOperationsImpl(OrcsApi orcsApi, ActivityLog activityLog) {
+   public ImportOperationsImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      this.activityLog = activityLog;
    }
 
    @Override

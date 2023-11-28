@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.util.Optional;
+
 /**
  * Class to encapsulate a list of the top level Word sub-sections in a section of a Word ML document.
  *
@@ -24,17 +26,22 @@ public class WordSubSectionList extends AbstractElementList<AbstractElement, Wor
    /**
     * Creates a new open and empty list for {@link WordSubSection}s.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
-    * @param wordSection the {@link WordSection} for the body of the Word ML document.
+    * @param wordSection the {@link WordSection} that contains this {@link WordSubSectionList}.
     * @throws NullPointerException when the parameter <code>wordSection</code> is <code>null</code>.
     */
 
-   WordSubSectionList(WordSection wordSection) {
+   public WordSubSectionList(WordSection wordSection) {
       super(wordSection);
    }
 
-   WordSubSectionList(WordSubSection wordSubSection) {
+   /**
+    * Creates a new open and empty list for {@link WordSubSection}s.
+    *
+    * @param wordSubSection the {@link WordSubSection} that contains this {@link WordSubSectionList}.
+    * @throws NullPointerException when the parameter <code>wordSubSection</code> is <code>null</code>.
+    */
+
+   public WordSubSectionList(WordSubSection wordSubSection) {
       super(wordSubSection);
    }
 
@@ -44,8 +51,32 @@ public class WordSubSectionList extends AbstractElementList<AbstractElement, Wor
     * @return the containing {@link WordSection}.
     */
 
-   public AbstractElement getWordSection() {
-      return this.getParent();
+   public Optional<WordSection> getWordSection() {
+      var parent = this.getParent();
+
+      //@formatter:off
+      return
+         (parent instanceof WordSection)
+            ? Optional.of((WordSection)parent)
+            : Optional.empty();
+      //@formatter:on
+   }
+
+   /**
+    * Gets the containing (parent) {@link WordSubSection}.
+    *
+    * @return the containing {@link WordSubSection}.
+    */
+
+   public Optional<WordSubSection> getWordSubSection() {
+      var parent = this.getParent();
+
+      //@formatter:off
+      return
+         (parent instanceof WordSubSection)
+            ? Optional.of((WordSubSection)parent)
+            : Optional.empty();
+      //@formatter:on
    }
 
 }

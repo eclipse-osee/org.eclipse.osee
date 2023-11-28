@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.define.api.OseeLinkBuilder;
+import org.eclipse.osee.define.rest.api.OseeLinkBuilder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;

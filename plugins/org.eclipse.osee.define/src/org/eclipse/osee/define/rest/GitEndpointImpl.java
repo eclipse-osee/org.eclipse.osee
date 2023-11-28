@@ -15,9 +15,9 @@ package org.eclipse.osee.define.rest;
 
 import java.util.List;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.GitEndpoint;
-import org.eclipse.osee.define.api.GitOperations;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.api.git.GitOperations;
+import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsApi;

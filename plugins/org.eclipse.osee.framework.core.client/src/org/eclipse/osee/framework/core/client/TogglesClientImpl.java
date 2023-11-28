@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.client;
 
 import java.util.Objects;
 import javax.ws.rs.core.Response.Status;
-import org.eclipse.osee.define.api.toggles.TogglesEndpoint;
+import org.eclipse.osee.define.rest.api.toggles.TogglesEndpoint;
 import org.eclipse.osee.framework.core.util.toggles.ToggleAccessor;
 import org.eclipse.osee.framework.core.util.toggles.TogglesFactory;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;

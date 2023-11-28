@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.define.rest;
 
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.ImportEndpoint;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.rest.api.importing.ImportEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -41,12 +41,14 @@ public class ImportEndpointImpl implements ImportEndpoint {
 
    @Override
    public XResultData rectifyWordImport(BranchId branch, String wordURI, ArtifactId parentArtifactId, Integer tier, String doorsIds) {
-      return defineOperations.getImportOperations().rectifyWordImport(branch, wordURI, parentArtifactId, tier, doorsIds);
+      return defineOperations.getImportOperations().rectifyWordImport(branch, wordURI, parentArtifactId, tier,
+         doorsIds);
    }
 
    @Override
    public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch) {
-      return defineOperations.getImportOperations().importSetup(branch, baseDir, startBranch, handleRelations, singleBranch);
+      return defineOperations.getImportOperations().importSetup(branch, baseDir, startBranch, handleRelations,
+         singleBranch);
    }
 
    @Override

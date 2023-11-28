@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.eclipse.osee.define.api.synchronization.Root;
+import org.eclipse.osee.define.rest.api.synchronization.Root;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;

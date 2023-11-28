@@ -27,16 +27,14 @@ public class WordSubSection extends AbstractElement {
    /**
     * Creates a new {@link WordSubSection}.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param parent the {@link WordElement} implementation that is considered the parent by the parser implementation.
     * @param wordSubSectionElement the {@link org.w3c.dom.Element} with the tag "wx:sub-section" in the Word ML.
     * @throws NullPointerException when either of the parameters <code>wordSection</code> or
     * <code>wordSubSectionElement</code> are <code>null</code>.
     */
 
-   WordSubSection(WordElement parent, Element wordSubSectionElement) {
-      super(parent, wordSubSectionElement);
+   public WordSubSection(WordElement parent, Element wordSubSectionElement) {
+      super(parent, wordSubSectionElement, WordXmlTag.SUBSECTION);
    }
 
    /**

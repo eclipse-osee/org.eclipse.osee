@@ -13,21 +13,17 @@
 
 package org.eclipse.osee.define.operations;
 
-import org.eclipse.osee.activity.api.ActivityLog;
+import java.util.Objects;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.define.api.DefineOperations;
-import org.eclipse.osee.define.api.GitOperations;
-import org.eclipse.osee.define.api.ImportOperations;
-import org.eclipse.osee.define.api.TraceabilityOperations;
-import org.eclipse.osee.define.api.publishing.PublishingOperations;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightsOperations;
-import org.eclipse.osee.define.api.publishing.templatemanager.TemplateManagerOperations;
-import org.eclipse.osee.define.api.synchronization.SynchronizationOperations;
-import org.eclipse.osee.define.api.toggles.TogglesOperations;
-import org.eclipse.osee.define.operations.publishing.PublishingOperationsImpl;
-import org.eclipse.osee.define.operations.publishing.PublishingPermissions;
-import org.eclipse.osee.define.operations.publishing.datarights.DataRightsOperationsImpl;
-import org.eclipse.osee.define.operations.publishing.templatemanager.TemplateManagerOperationsImpl;
+import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.api.git.GitOperations;
+import org.eclipse.osee.define.operations.api.importing.ImportOperations;
+import org.eclipse.osee.define.operations.api.publisher.PublisherOperations;
+import org.eclipse.osee.define.operations.api.synchronization.SynchronizationOperations;
+import org.eclipse.osee.define.operations.api.toggles.TogglesOperations;
+import org.eclipse.osee.define.operations.api.traceability.TraceabilityOperations;
+import org.eclipse.osee.define.operations.publisher.PublisherOperationsImpl;
+import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.synchronization.SynchronizationOperationsImpl;
 import org.eclipse.osee.define.operations.toggles.TogglesOperationsImpl;
 import org.eclipse.osee.define.rest.GitOperationsImpl;
@@ -43,22 +39,49 @@ import org.osgi.service.event.EventAdmin;
  */
 public class DefineOperationsImpl implements DefineOperations {
 
-   private ActivityLog activityLog;
    private AtsApi atsApi;
-   private DataRightsOperations dataRightsOperations;
    private EventAdmin eventAdmin;
    private GitOperations gitOperations;
    private ImportOperations importOperations;
    private Log logger;
    private OrcsApi orcsApi;
-   private PublishingOperations publishingOperations;
+   private PublisherOperations publisherOperations;
    private SynchronizationOperations synchronizationOperations;
-   private TemplateManagerOperations templateManagerOperations;
    private TogglesOperations togglesOperations;
    private TraceabilityOperations traceabilityOperations;
 
-   public void setActivityLog(ActivityLog activityLog) {
-      this.activityLog = activityLog;
+   @Override
+   public ImportOperations getImportOperations() {
+      return this.importOperations;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public PublisherOperations getPublisherOperations() {
+      return this.publisherOperations;
+   }
+
+   @Override
+   public SynchronizationOperations getSynchronizationOperations() {
+      return this.synchronizationOperations;
+   }
+
+   @Override
+   public TogglesOperations getTogglesOperations() {
+      return this.togglesOperations;
+   }
+
+   @Override
+   public TraceabilityOperations getTraceabilityOperations() {
+      return this.traceabilityOperations;
+   }
+
+   @Override
+   public GitOperations gitOperations() {
+      return this.gitOperations;
    }
 
    public void setAtsApi(AtsApi atsApi) {
@@ -79,65 +102,53 @@ public class DefineOperationsImpl implements DefineOperations {
 
    public void start() {
 
+      Objects.requireNonNull(this.atsApi);
+      Objects.requireNonNull(this.eventAdmin);
+      Objects.requireNonNull(this.logger);
+      Objects.requireNonNull(this.orcsApi);
+
       PublishingPermissions.create(this.orcsApi);
+
       var jdbcService = this.orcsApi.getJdbcService();
       var systemProperties = this.orcsApi.getSystemProperties();
 
-      //@formatter:off
-      this.dataRightsOperations      = DataRightsOperationsImpl.create(this.orcsApi);
-      this.gitOperations             = new GitOperationsImpl(this.orcsApi, systemProperties);
-      this.importOperations          = new ImportOperationsImpl(this.orcsApi, this.activityLog);
-      this.publishingOperations      = PublishingOperationsImpl.create(this,this.orcsApi, this.atsApi, this.logger, this.eventAdmin);
+      this.gitOperations = new GitOperationsImpl(this.orcsApi, systemProperties);
+      this.importOperations = new ImportOperationsImpl(this.orcsApi);
+
+      this.publisherOperations = PublisherOperationsImpl.create(orcsApi, atsApi, logger, eventAdmin);
+
       this.synchronizationOperations = SynchronizationOperationsImpl.create(this.orcsApi);
-      this.templateManagerOperations = TemplateManagerOperationsImpl.create(jdbcService, this.logger, this.orcsApi);
-      this.togglesOperations         = TogglesOperationsImpl.create(jdbcService);
-      this.traceabilityOperations    = new TraceabilityOperationsImpl(this.orcsApi, this.gitOperations);
-      //@formatter:on
+      this.togglesOperations = TogglesOperationsImpl.create(jdbcService);
+      this.traceabilityOperations = new TraceabilityOperationsImpl(this.orcsApi, this.gitOperations);
+
+      this.atsApi = null;
+      this.eventAdmin = null;
+      this.logger = null;
+      this.orcsApi = null;
    }
 
-   @Override
-   public ActivityLog getActivityLog() {
-      return this.activityLog;
-   }
+   public void stop() {
 
-   @Override
-   public DataRightsOperations getDataRightsOperations() {
-      return this.dataRightsOperations;
-   }
+      this.atsApi = null;
 
-   @Override
-   public ImportOperations getImportOperations() {
-      return this.importOperations;
-   }
+      this.eventAdmin = null;
 
-   @Override
-   public PublishingOperations getPublishingOperations() {
-      return this.publishingOperations;
-   }
+      this.gitOperations = null;
 
-   @Override
-   public SynchronizationOperations getSynchronizationOperations() {
-      return this.synchronizationOperations;
-   }
+      this.importOperations = null;
 
-   @Override
-   public TemplateManagerOperations getTemplateManagerOperations() {
-      return this.templateManagerOperations;
-   }
+      this.logger = null;
 
-   @Override
-   public TogglesOperations getTogglesOperations() {
-      return this.togglesOperations;
-   }
+      this.orcsApi = null;
 
-   @Override
-   public TraceabilityOperations getTraceabilityOperations() {
-      return this.traceabilityOperations;
-   }
+      PublisherOperationsImpl.free();
+      this.publisherOperations = null;
 
-   @Override
-   public GitOperations gitOperations() {
-      return this.gitOperations;
+      this.synchronizationOperations = null;
+
+      this.togglesOperations = null;
+
+      this.traceabilityOperations = null;
    }
 
 }

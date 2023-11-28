@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
-import org.eclipse.osee.define.api.GitEndpoint;
+import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;

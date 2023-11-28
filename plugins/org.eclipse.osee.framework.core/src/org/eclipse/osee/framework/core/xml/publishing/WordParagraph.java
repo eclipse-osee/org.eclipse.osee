@@ -27,16 +27,27 @@ public class WordParagraph extends AbstractElement {
    /**
     * Creates a new {@link WordParagraph}.
     *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
     * @param parent the {@link WordElement} implementation that is considered the parent by the parser implementation.
     * @param wordParagraphElement the {@link org.w3c.dom.Element} with the tag "w:p" in the Word ML.
     * @throws NullPointerException when either of the parameters <code>wordSubSection</code> or
     * <code>wordParagraphElement</code> are <code>null</code>.
     */
 
-   WordParagraph(WordSubSection wordSubSection, Element wordParagraphElement) {
-      super(wordSubSection, wordParagraphElement);
+   public WordParagraph(WordSubSection wordSubSection, Element wordParagraphElement) {
+      super(wordSubSection, wordParagraphElement, WordXmlTag.PARAGRAPH);
+   }
+
+   /**
+    * Creates a new {@link WordParagraph}.
+    *
+    * @param parent the {@link WordElement} implementation that is considered the parent by the parser implementation.
+    * @param wordParagraphElement the {@link org.w3c.dom.Element} with the tag "w:p" in the Word ML.
+    * @throws NullPointerException when either of the parameters <code>wordSubSection</code> or
+    * <code>wordParagraphElement</code> are <code>null</code>.
+    */
+
+   public WordParagraph(WordSection wordSection, Element wordParagraphElement) {
+      super(wordSection, wordParagraphElement, WordXmlTag.PARAGRAPH);
    }
 
    /**
@@ -53,6 +64,24 @@ public class WordParagraph extends AbstractElement {
       return
          (parent instanceof WordSubSection)
             ? Optional.of( (WordSubSection) this.getParent() )
+            : Optional.empty();
+      //@formatter:on
+   }
+
+   /**
+    * For top level Word paragraphs, gets the containing (parent) {@link WordSection}.
+    *
+    * @return when the {@link WordParagraph} is for a top level Word Section, a {@link Optional} containing the parent
+    * {@link WordSection}; otherwise, an empty {@link Optional}.
+    */
+
+   public Optional<WordSection> getWordSection() {
+      var parent = this.getParent();
+
+      //@formatter:off
+      return
+         (parent instanceof WordSection)
+            ? Optional.of( (WordSection) this.getParent() )
             : Optional.empty();
       //@formatter:on
    }

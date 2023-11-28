@@ -14,27 +14,47 @@
 package org.eclipse.osee.framework.core.server;
 
 import java.io.File;
+import java.util.Optional;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
+ * @author Loren K. Ashley
  */
+
 public class OseeServerProperties {
-   private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
-   private static final String OSGI_SECURE_PORT_PROPERTY = "org.osgi.service.http.port.secure";
+
+   /**
+    * System property name for the servers root URL.
+    */
+
+   private static final String OSEE_APPLICATION_SERVER = "OseeApplicationServer";
+
+   /**
+    * System property name for the server's data directory.
+    */
+
+   private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
 
    private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
 
+   private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
+
+   private static final String OSGI_SECURE_PORT_PROPERTY = "org.osgi.service.http.port.secure";
+
    private static boolean wasBinaryDataChecked = false;
 
-   private OseeServerProperties() {
-      super();
-   }
+   /**
+    * Authentication Protocol to use
+    *
+    * @return client/server authentication protocol.
+    */
 
-   private static String internalGetOseeApplicationServerData() {
-      return System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA, System.getProperty("user.home"));
+   public static String getAuthenticationProtocol() {
+      return System.getProperty(OSEE_AUTHENTICATION_PROTOCOL, "");
    }
 
    /**
@@ -42,6 +62,7 @@ public class OseeServerProperties {
     *
     * @return OSEE application server binary data path
     */
+
    public static String getOseeApplicationServerData(Log logger) {
       String toReturn = internalGetOseeApplicationServerData();
       if (toReturn != null) {
@@ -61,10 +82,33 @@ public class OseeServerProperties {
    }
 
    /**
+    * Gets the system property for the OSEE application server URL.
+    *
+    * @return when the property is set an {@link Optional} with the system property value; otherwise, an empty
+    * {@link Optional}.
+    */
+
+   public static Optional<String> getOseeApplicationServer() {
+      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER));
+   }
+
+   /**
+    * Gets the system property for the OSEE application server data directory.
+    *
+    * @return when the property is set an {@link Optional} with the system property value; otherwise, an empty
+    * {@link Optional}.
+    */
+
+   public static Optional<String> getOseeApplicationServerData() {
+      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER_DATA));
+   }
+
+   /**
     * Retrieve the application server port
     *
     * @return the application server port
     */
+
    public static int getOseeApplicationServerPort() {
       int toReturn = Integer.valueOf(System.getProperty(OSGI_SECURE_PORT_PROPERTY, "-1"));
       if (toReturn == -1) {
@@ -78,6 +122,7 @@ public class OseeServerProperties {
     *
     * @return the application server scheme
     */
+
    public static String getOseeApplicationServerScheme() {
       String toReturn = "https";
       if (Integer.valueOf(System.getProperty(OSGI_SECURE_PORT_PROPERTY, "-1")) == -1) {
@@ -91,17 +136,20 @@ public class OseeServerProperties {
     *
     * @return connection info file URI
     */
+
    public static String getOseeConnectionInfoUri() {
       return OseeProperties.getOseeConnectionInfoUri();
    }
 
-   /**
-    * Authentication Protocol to use
-    *
-    * @return client/server authentication protocol.
-    */
-   public static String getAuthenticationProtocol() {
-      return System.getProperty(OSEE_AUTHENTICATION_PROTOCOL, "");
+   private static String internalGetOseeApplicationServerData() {
+      String toReturn = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (toReturn == null) {
+         String userHome = System.getProperty("user.home");
+         if (Strings.isValid(userHome)) {
+            toReturn = userHome;
+         }
+      }
+      return toReturn;
    }
 
    /**
@@ -109,8 +157,13 @@ public class OseeServerProperties {
     *
     * @param client/server authentication protocol.
     */
+
    public static void setAuthenticationProtocol(String protocol) {
       System.setProperty(OSEE_AUTHENTICATION_PROTOCOL, protocol);
+   }
+
+   private OseeServerProperties() {
+      super();
    }
 
 }

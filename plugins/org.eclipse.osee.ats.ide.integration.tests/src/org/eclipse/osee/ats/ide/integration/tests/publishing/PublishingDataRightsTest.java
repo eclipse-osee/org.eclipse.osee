@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.api.publishing.datarights.DataRightsEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.datarights.DataRightsEndpoint;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;

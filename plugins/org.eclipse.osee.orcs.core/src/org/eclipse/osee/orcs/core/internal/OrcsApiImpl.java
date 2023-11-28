@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.core.internal;
 
+import java.lang.ref.WeakReference;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OseeApiBase;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
@@ -32,6 +33,7 @@ import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.ResourcesOperations;
 import org.eclipse.osee.orcs.SystemProperties;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
@@ -91,6 +93,12 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
     */
 
    private ExceptionRegistryOperations exceptionRegistryOperations;
+
+   /**
+    * Saves a weak reference handle to the Resources service implementation.
+    */
+
+   private WeakReference<ResourcesOperations> resourcesOperations;
 
    private UserService userService;
    private ActivityLog activityLog;
@@ -182,8 +190,13 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       indexerModule.start(getSystemSession(), tokenService());
 
       applicability = new OrcsApplicabilityOps(this, logger);
+
       this.exceptionRegistryOperations = ExceptionRegistryOperationsImpl.create();
+
+      this.resourcesOperations = ResourcesOperationsImpl.create();
+
       userService = new UserServiceImpl(this);
+
       accessControlService = new AccessControlServiceImpl(this);
       accessControlService.bindUserService(userService);
    }
@@ -197,7 +210,12 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
       txCallableFactory = null;
       module = null;
       systemSession = null;
+
+      ExceptionRegistryOperationsImpl.free();
       this.exceptionRegistryOperations = null;
+
+      ResourcesOperationsImpl.free();
+      this.resourcesOperations = null;
    }
 
    @Override
@@ -301,4 +319,14 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    public ExceptionRegistryOperations getExceptionRegistryOperations() {
       return this.exceptionRegistryOperations;
    }
+
+   /**
+    * {@inheritDOc}
+    */
+
+   @Override
+   public WeakReference<ResourcesOperations> getResourcesOperations() {
+      return this.resourcesOperations;
+   }
+
 }

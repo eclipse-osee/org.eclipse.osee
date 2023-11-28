@@ -17,11 +17,16 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Validation;
 
 /**
  * A factory class for creating publishing filenames.
@@ -53,6 +58,12 @@ public class FilenameFactory {
    private static final String FILENAME_DATE_TIME_FORMAT = "yyyyMMdd-HHmmss-SSS";
 
    /**
+    * The character used to separate segments of the filename.
+    */
+
+   private static char FILENAME_EXTENSION_SEPARATOR = '.';
+
+   /**
     * The character unsafe characters in a filename are replaced with.
     */
 
@@ -63,12 +74,6 @@ public class FilenameFactory {
     */
 
    private static final int FILENAME_SAFE_LENGTH = 20;
-
-   /**
-    * The character used to separate segments of the filename.
-    */
-
-   private static char FILENAME_EXTENSION_SEPARATOR = '.';
 
    /**
     * The character used to separate segments of the filename.
@@ -112,44 +117,115 @@ public class FilenameFactory {
     * @return the built filename.
     */
 
-   public static String create(CharSequence extension, CharSequence... segments) {
+   public static @NonNull String create(CharSequence extension, CharSequence... segments) {
 
       //@formatter:off
       var dateSegment = FilenameFactory.getDateSegment();
       var randomSegment = FilenameFactory.getRandomSegment();
+
+      return
+         FilenameFactory.create
+            (
+               dateSegment,
+               randomSegment,
+               extension,
+               segments
+            );
+      //@formatter:on
+   }
+
+   /**
+    * Builds a filename as described by {@link #create(CharSequence, CharSequence...)}.
+    *
+    * @param dateSegment the {@link CharSequence} to be used as the filename date segment.
+    * @param randomSegment the {@link CharSequence} to be used as the filename random segment.
+    * @param extension the extension for the filename.
+    * @param segments an array of {@link CharSequence}s to be used as filename segments.
+    * @return the built filename.
+    */
+
+   static @NonNull String create(CharSequence dateSegment, CharSequence randomSegment, CharSequence extension, CharSequence... segments) {
+
+      //@formatter:off
+      var safeDateSegment = FilenameFactory.makeNameSafer(dateSegment);
+      safeDateSegment = safeDateSegment.isEmpty() ? FilenameFactory.getDateSegment() : safeDateSegment;
+      var safeRandomSegment = FilenameFactory.makeNameSafer(randomSegment);
+      safeRandomSegment = safeRandomSegment.isEmpty() ? FilenameFactory.getRandomSegment() : safeRandomSegment;
       var safeExtension = FilenameFactory.makeNameSafer(extension);
 
-      var name = new StringBuilder( 2 * FilenameFactory.WINDOWS_FILENAME_LIMIT );
+      var safeSegments =
+         ( Objects.nonNull( segments) && segments.length > 0 )
+            ? Arrays.stream( segments )
+                 .map( FilenameFactory::makeNameSafer )
+                 .filter( Strings::isValidAndNonBlank )
+                 .collect( Collectors.joining( FilenameFactory.FILENAME_SEGMENT_SEPARATOR ) )
+            : Strings.EMPTY_STRING;
 
-      if( Objects.nonNull( segments) && segments.length > 0 ) {
-
-         Arrays.stream( segments )
-            .map( FilenameFactory::makeNameSafer )
+      var name =
+         Arrays.stream( new String[] { safeSegments, safeDateSegment, safeRandomSegment } )
             .filter( Strings::isValidAndNonBlank )
-            .forEach( (segment) -> { name.append( segment ); name.append(FilenameFactory.FILENAME_SEGMENT_SEPARATOR); } );
-            ;
-      }
+            .collect( Collectors.joining( FilenameFactory.FILENAME_SEGMENT_SEPARATOR ) );
 
-      if (Objects.nonNull(dateSegment)) {
-         name.append(dateSegment);
-         name.append(FilenameFactory.FILENAME_SEGMENT_SEPARATOR);
-      }
-
-      if (Objects.nonNull(randomSegment)) {
-         name.append(randomSegment);
-      }
+      var filename =
+         new StringBuilder( name.length() + safeExtension.length() + 1 )
+                .append( name );
 
       if (Strings.isValidAndNonBlank(safeExtension)) {
 
          if( safeExtension.charAt(0) != FilenameFactory.FILENAME_EXTENSION_SEPARATOR )
          {
-            name.append( FilenameFactory.FILENAME_EXTENSION_SEPARATOR );
+            filename.append( FilenameFactory.FILENAME_EXTENSION_SEPARATOR );
          }
 
-         name.append( safeExtension );
+         filename.append( safeExtension );
       }
 
-      return name.toString();
+      return filename.toString();
+      //@formatter:on
+   }
+
+   /**
+    * Generates a {@link Map} of filenames from a {@link List} of {@link FilenameSpecification}s. Builds the filenames
+    * as described by {@link #create(CharSequence, CharSequence...)}.
+    *
+    * @param filenameSpecifications
+    * @return a {@link Map} of the generated filenames keyed with the keys specified in each
+    * <code>filenameSpecifications</code>.
+    * @throws NullPointerException when <code>filenameSpecifications</code> is <code>null</code> or contains a
+    * <code>null</code> element.
+    */
+
+   public static Map<String, String> create(@NonNull List<@NonNull FilenameSpecification> filenameSpecifications) {
+
+      //@formatter:off
+      Validation.require
+         (
+            filenameSpecifications,
+            Validation.ValueType.PARAMETER,
+            "FilenameFactory",
+            "create",
+            "list of filename specifications",
+            "non-null and no null elements",
+            Validation.collectionContainsNull,
+            NullPointerException::new
+         );
+      //@formatter:on
+
+      var dateSegment = FilenameFactory.getDateSegment();
+      var randomSegment = FilenameFactory.getRandomSegment();
+
+      //@formatter:off
+      return
+         filenameSpecifications
+            .stream()
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        FilenameSpecification::getKey,
+                        ( filenameSpecification ) -> filenameSpecification.build(dateSegment, randomSegment) )
+                     );
+      //@formatter:on
    }
 
    /**
@@ -218,7 +294,7 @@ public class FilenameFactory {
     * @return a clean filename.
     */
 
-   public static String makeNameSafer(CharSequence name) {
+   public static @NonNull String makeNameSafer(CharSequence name) {
 
       //@formatter:off
       var characterCleanName =
