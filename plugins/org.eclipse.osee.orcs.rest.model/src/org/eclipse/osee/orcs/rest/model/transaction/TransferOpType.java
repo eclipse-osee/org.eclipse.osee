@@ -19,18 +19,16 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  * @author David W. Miller
  */
 public enum TransferOpType {
-
    PREV_TX(1),
    ADD(2),
    PURGE(3),
-   EMPTY(4),
-   CUR_TX(5);
+   EMPTY(4);
    private final int value;
 
    TransferOpType(int value) {
       this.value = value;
    }
-   
+
    public final int getValue() {
       return value;
    }
