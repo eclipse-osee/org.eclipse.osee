@@ -179,7 +179,6 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
             data.getTransferDBType());
          tx.addTuple4(TransferFile, branchLoc.getBranchId(), TransferOpType.PREV_TX, branchLoc.getBaseTxId(),
             TransactionId.valueOf(Lib.generateUuid()));
-
       }
       tx.commit();
       //TODO add checks to make sure the transfer data has all necessary values
@@ -249,40 +248,32 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public XResultData applyTransferFile(String location) {
-      return applyTransferFileInternal(location, false);
+      return applyTransferFileInternal(location);
    }
 
-   private XResultData applyTransferFileInternal(String dirName, boolean isTest) {
+   private XResultData applyTransferFileInternal(String dirName) {
       XResultData results = new XResultData();
 
       TransactionTransferManifest manifest = new TransactionTransferManifest();
       results = manifest.parse(dirName);
 
+      if (results.isSuccess()) {
+         results = manifest.validate(tupleQuery);
+      }
+
       if (results.isFailed()) {
          return results;
       }
 
-      // Check to make sure there is a matching destination type init for this DB (or should that be by branch - needs investigation)
-      // Check the PrevTX to make sure the DBs are in alignment using the manifest info
-      // for each transaction, do the orcs/txs create command for the applicable transaction
-      // update the tuple table (the TransferFile one) with the new tx but the same unique transaction id, e.g.:
-      // tx.addTuple4(TransferFile, branch, newTxId, txId for processed JSON file, TransferOpType.ADD);
-      // write an info for the xresult data to tell for all successful transactions
-      // otherwise write errors for unsuccessful transfer transaction and purge all imported transactions.
-
-      results = manifest.ImportAllTransactions(orcsApi, resourceManager);
+      results = manifest.importAllTransactions(orcsApi, resourceManager);
 
       if (results.isFailed()) {
-         manifest.PurgeAllImportedTransaction(orcsApi);
+         manifest.purgeAllImportedTransaction(orcsApi);
       } else {
-         //update prevTX tuple
-         results = manifest.UpdatePrevTXs(orcsApi);
+         results = manifest.addAllImportedTransToTupleTable(orcsApi);
 
-         if (isTest) {
-            manifest.PurgeAllImportedTransaction(orcsApi);
-         }
-         results.log(String.format("Imported succesfully the transaction ids: %s.",
-            manifest.GetAllImportedTransIds().toString()));
+         results.log(String.format("Imported succesfully the transaction ids: %s. ",
+            manifest.getAllImportedTransIds().toString()));
       }
       return results;
 
@@ -362,9 +353,8 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          throw new OseeCoreException(ex, "OSEE Upload Transfer file Failed. ");
       } finally {
          zip.close();
-         outStream.close();
-         zis.closeEntry();
-         zis.close();
+         Lib.close(outStream);
+         Lib.close(zis);
       }
 
       return transDir;
@@ -385,7 +375,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          }
       }
 
-      XResultData results = applyTransferFileInternal(transDir, false);
+      XResultData results = applyTransferFileInternal(transDir);
       results.log(String.format("The file is extracted to %s.", sourceNameDir));
       if (results.isOK()) {
          return Response.ok().entity(String.format("\nResult: %s", results.toString())).build();

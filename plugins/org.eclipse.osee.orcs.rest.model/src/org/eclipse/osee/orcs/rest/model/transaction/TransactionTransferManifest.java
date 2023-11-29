@@ -6,11 +6,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -58,13 +58,13 @@ public class TransactionTransferManifest {
          if (mdLines[0].toLowerCase().contains("buildid")) {
             this.buildId = TransactionId.valueOf(mdLines[0].split(":")[1].trim());
          } else {
-            results.errorf("BuildId not found in: %s", mdLines[0]);
+            results.errorf("BuildId not found in: %s ", mdLines[0]);
             return results;
          }
          if (mdLines[1].toLowerCase().contains("exportid")) {
             this.exportId = TransactionId.valueOf(mdLines[1].split(":")[1].trim());
          } else {
-            results.errorf("ExportId not found in: %s", mdLines[1]);
+            results.errorf("ExportId not found in: %s ", mdLines[1]);
             return results;
          }
          // skip lines 3,4 since they should be the table header
@@ -88,7 +88,7 @@ public class TransactionTransferManifest {
                done = true;
                this.transferBranchList.add(transBranch);
             } else {
-               results.errorf("unhandled type in row %s", mdLines);
+               results.errorf("unhandled type in row : %s ", mdLines[i]);
                return results;
             }
             ++i;
@@ -96,7 +96,7 @@ public class TransactionTransferManifest {
          // TODO possibly handle directories/contents
       } catch (Exception e) {
          results.errorf("%s",
-            String.format("IO Exception while verifying manifest and transaction files. %s", e.getMessage()));
+            String.format("IO Exception while verifying manifest and transaction files. %s ", e.getMessage()));
       }
 
       return results;
@@ -105,7 +105,7 @@ public class TransactionTransferManifest {
    private TransferBranch createTransferBranchFromRow(String row) {
       String[] mdCols = row.split("\\|");
       TransferBranch transBranch = new TransferBranch(BranchId.valueOf(mdCols[1].trim()));
-      transBranch.setPrevTx(TransactionId.valueOf(mdCols[2].trim()));
+      transBranch.setUniqueTx(TransactionId.valueOf(mdCols[3].trim()));
 
       TransferTransaction trans = new TransferTransaction(transBranch.getBranchId(), transBranch.getPrevTx(),
          TransactionId.valueOf(mdCols[3].trim()), TransferOpType.PREV_TX);
@@ -124,10 +124,16 @@ public class TransactionTransferManifest {
    /*
     * verify all add transactions having the json files verify all prevTx are matched with from db.
     */
-
-   public XResultData Validate(TupleQuery tupleQuery) {
+   public XResultData validate(TupleQuery tupleQuery) {
       ArrayList<String> dirs = Lib.readListFromDir(path, null);
       try {
+         //verify exportID
+         if (!isExportIdValid(tupleQuery, this.exportId)) {
+            results.error("The export ID is not matched. ");
+            return results;
+         }
+
+         //verify transactions and the json files
          for (TransferBranch tb : transferBranchList) {
             BranchId branchId = tb.getBranchId();
             //looking for directory
@@ -139,70 +145,40 @@ public class TransactionTransferManifest {
                }
             }
             if (index == -1) {
-               results.error(String.format("Missing %s directory", branchId.toString()));
+               results.error(String.format("Missing %s directory. ", branchId.toString()));
                return results;
             }
-            //looking for json files
+
             ArrayList<String> tempfiles =
                Lib.readListFromDir(String.format("%s%s%s", path, File.separator, dirs.get(index)), null);
             for (TransferTransaction transTx : tb.getTxList()) {
-               String fileString = transTx.getSourceTransId().toString();
-               if (!tempfiles.contains(fileString) && transTx.getTransferOp().equals(TransferOpType.ADD)) {
-                  results.errorf("Missing %s.json under %s", fileString, tb.getBranchId().toString());
-                  return results;
+               if (transTx.getTransferOp().equals(TransferOpType.ADD)) {
+                  String fileString = transTx.getSourceTransId().toString();
+                  if (!tempfiles.contains(fileString)) {
+                     results.errorf("Missing %s.json under %s ", fileString, tb.getBranchId().toString());
+                     return results;
+                  }
                }
-
             }
-            //Verify prevTX, ImportId,
-            List<TransactionId> txIds = new ArrayList<>();
-            //tupleQuery.getTuple4E3E4FromE1E2(TupleType, branchId, e1, e2, consumer);
-            tupleQuery.getTuple4E3E4FromE1E2(TransferFile, CoreBranches.COMMON, branchId, TransferOpType.PREV_TX,
-               (E3, E4) -> {
-                  txIds.add(E3);
-               });
-            if (txIds.isEmpty()) {
-               //if there is no preTx add the new prevTx so that it can pass the validation
-               //txIds.add(TransationId.valueOf(strManBaseTxId));
-               results.errorf("%s", String.format("Can not get Prev_TX of %s from database.", branchId.toString()));
+
+            //Verify prevTX
+            // get max tx from tuple table and check to see if it matches the previous tx from the manifest
+            BranchLocation branchLoc = getMaxTransactionIdFromBranchLocations(tupleQuery, branchId);
+            if (!branchLoc.getUniqueTxId().equals(tb.getUniqueTx())) {
+               results.errorf("PrevTX of branch %s is not matched. ", tb.getBranchId().toString());
                return results;
             }
-            // get max tx from tuple table and check to see if it matches the previous tx from the manifest
-            // still TODO
-
-            List<GammaId> tuples = new ArrayList<>();
-            //tupleQuery.getTuple4GammaFromE1E2(TransferFile, CoreBranches.COMMON, branchId, TransferOpType.PREV_TX, tuples::add);
-            tupleQuery.getTuple4GammaFromE1E2(TransferFile, branchId, branchId, TransferOpType.PREV_TX, tuples::add);
-
-            if (tuples.isEmpty()) {
-               //results.errorf("%s", String.format("Can not get gamma Id from %s and Prev_TX.", branchId.toString()));
-               //return results; must add it back
-               results.log(String.format("Can not get gamma Id from %s.", branchId.toString()));
-            } else {
-               //transferBranchList.get(i).setGammaID(tuples.get(0));
-            }
-
-            //verify export id
-            //get export id should be queried by system level and return only one not for every branch ???
-            txIds.clear();
-            tupleQuery.getTuple4E3E4FromE1E2(ExportedBranch, branchId, exportId, branchId, (E3, E4) -> {
-               txIds.add(E3);
-            });
-
-            if (txIds.isEmpty()) {
-               results.log(String.format("Can not get exportId from database of branch %s.", branchId.toString()));
-               //return results; must add it back
-            }
-
          }
+
       } catch (Exception e) {
          results.errorf("%s",
-            String.format("IO Exception while verifying manifest and transaction files. %s", e.getMessage()));
+            String.format("IO Exception while verifying manifest and transaction files. %s ", e.getMessage()));
       }
 
       return results;
    }
 
-   public ArrayList<String> GetAllImportedTransIds() {
+   public ArrayList<String> getAllImportedTransIds() {
       ArrayList<String> ids = new ArrayList<>();
       for (TransferBranch tb : transferBranchList) {
          for (TransferTransaction transTx : tb.getTxList()) {
@@ -215,15 +191,15 @@ public class TransactionTransferManifest {
       return ids;
    }
 
-   public XResultData PurgeAllImportedTransaction(OrcsApi orcsApi) {
-      ArrayList<String> transIdList = GetAllImportedTransIds();
+   public XResultData purgeAllImportedTransaction(OrcsApi orcsApi) {
+      ArrayList<String> transIdList = getAllImportedTransIds();
       StringBuilder transIds = new StringBuilder("");
       //Purge up to PURGE_TXS_LIMIT
       try {
          for (int i = 0; i < transIdList.size(); i++) {
             if (i % PURGE_TXS_LIMIT == 0 && transIds.length() != 0) {
                orcsApi.getTransactionFactory().purgeTxs(transIds.toString());
-               results.log(String.format("Purged succesfully the transaction ids: %s.", transIds.toString()));
+               results.log(String.format("Purged succesfully the transaction ids: %s. ", transIds.toString()));
                //transIds.setLength(0);
                transIds = new StringBuilder("");
             }
@@ -235,16 +211,16 @@ public class TransactionTransferManifest {
          }
          if (transIds.length() != 0) {
             orcsApi.getTransactionFactory().purgeTxs(transIds.toString()); //for test must be removed
-            results.log(String.format("Purged succesfully the transaction ids: %s.", transIds.toString()));
+            results.log(String.format("Purged succesfully the transaction ids: %s. ", transIds.toString()));
          }
       } catch (Exception e) {
-         results.errorf("%s", String.format("Roll back failed while purging transaction ids %s.", e.getMessage()));
+         results.errorf("%s", String.format("Roll back failed while purging transaction ids %s. ", e.getMessage()));
       }
 
       return results;
    }
 
-   public XResultData ImportAllTransactions(OrcsApi orcsApi, IResourceManager resourceManager) {
+   public XResultData importAllTransactions(OrcsApi orcsApi, IResourceManager resourceManager) {
       //import transactions to branchIds
       try {
          for (TransferBranch tb : transferBranchList) {
@@ -254,26 +230,26 @@ public class TransactionTransferManifest {
             try {
                for (TransferTransaction transTx : tb.getTxList()) {
                   TransferOpType op = transTx.getTransferOp();
-                  if (TransferOpType.PREV_TX.equals(op) || TransferOpType.EMPTY.equals(op)) {
-                     continue;
-                  }
-                  File transFile = new File(String.format("%s%s%s%s%s.json", this.path, File.separator,
-                     branchId.toString(), File.separator, transTx.getSourceTransId().toString()));
-                  if (transFile.exists()) {
-                     current = transFile.getName();
-                     String transStr = Lib.fileToString(transFile);
-                     TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi, resourceManager);
-                     TransactionBuilder trans = txBdf.loadFromJson(transStr);
-                     TransactionToken token = trans.commit();
-                     if (token.isInvalid()) {
-                        results.errorf("Failed at %s - %s", branchId.toString(), current);
-                        break;
+                  if (TransferOpType.ADD.equals(op)) {
+                     File transFile = new File(String.format("%s%s%s%s%s.json", this.path, File.separator,
+                        branchId.toString(), File.separator, transTx.getSourceTransId().toString()));
+                     if (transFile.exists()) {
+                        current = transFile.getName();
+                        String transStr = Lib.fileToString(transFile);
+                        TransactionBuilderDataFactory txBdf =
+                           new TransactionBuilderDataFactory(orcsApi, resourceManager);
+                        TransactionBuilder trans = txBdf.loadFromJson(transStr);
+                        TransactionToken token = trans.commit();
+                        if (token.isInvalid()) {
+                           results.errorf("Failed at %s - %s. ", branchId.toString(), current);
+                           break;
+                        }
+                        transTx.setImportedTransId(token);
                      }
-                     transTx.setImportedTransId(token);
                   }
                }
             } catch (Exception e) {
-               results.errorf("Failed at %s - %s.json: %s.", branchId.toString(), current, e.getMessage());
+               results.errorf("Failed at %s - %s.json: %s. ", branchId.toString(), current, e.getMessage());
             }
 
             if (results.isFailed()) {
@@ -287,24 +263,74 @@ public class TransactionTransferManifest {
       return results;
    }
 
-   public XResultData UpdatePrevTXs(OrcsApi orcsApi) {
-      try {
-         TransactionBuilder txDel =
-            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Delete Tuple4 Prev TX");
-         for (TransferBranch tb : transferBranchList) {
-            BranchId branchId = tb.getBranchId();
-            GammaId id = tb.getGammaId();
-            if (id != null) {
-               txDel.deleteTuple4(id);
+   // Query Branch Base Transaction based off supplied branch given
+   // For the branch configured in the export ID return the maximum base transaction ID for that branch.
+   private final BranchLocation getMaxTransactionIdFromBranchLocations(TupleQuery tupleQuery, BranchId branchid) {
+      Pair<TransactionId, TransactionId> pair = new Pair<>(null, null);
+      List<BranchLocation> fileBranchLocs = new ArrayList<>();
+      tupleQuery.getTuple4E2E3E4FromE1(TransferFile, CoreBranches.COMMON, branchid, (E2, E3, E4) -> {
+         BranchLocation bl = new BranchLocation();
+         bl.setBranchId(branchid);
+         bl.setTransferOp(E2);
+         bl.setBaseTxId(E3);
+         bl.setUniqueTxId(E4);
+         fileBranchLocs.add(bl);
+      });
+
+      for (BranchLocation bl : fileBranchLocs) {
+         if (pair.getFirst() == null) {
+            if (bl.getTransferOp().equals(TransferOpType.PREV_TX)) {
+               pair = new Pair<>(bl.getBaseTxId(), bl.getBaseTxId());
+            } else {
+               pair = new Pair<>(bl.getBaseTxId(), bl.getUniqueTxId());
+            }
+         } else {
+            TransactionId test = pair.getFirst();
+            //in case initial prevtx from source is greater than imported transactions
+            if (test.isLessThan(bl.getBaseTxId()) && !bl.getTransferOp().equals(TransferOpType.PREV_TX)) {
+               pair = new Pair<>(bl.getBaseTxId(), bl.getUniqueTxId());
             }
          }
-         txDel.commit();
-         //         TransferTransaction transTx = null;
-         //         TransactionBuilder txUpdt =
-         //            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Update Tuple4 Prev TX");
-         //         txUpdt.commit();
+      }
+
+      BranchLocation bl = new BranchLocation();
+      bl.setBranchId(branchid);
+      bl.setBaseTxId(pair.getFirst());
+      bl.setUniqueTxId(pair.getSecond());
+
+      return bl;
+   }
+
+   /*
+    * check export id exists in db
+    */
+   private boolean isExportIdValid(TupleQuery tupleQuery, TransactionId exportId) {
+      List<BranchLocation> branchLocations = new ArrayList<>();
+      tupleQuery.getTuple4E2E3E4FromE1(ExportedBranch, CoreBranches.COMMON, exportId, (E2, E3, E4) -> {
+         BranchLocation bl = new BranchLocation();
+         bl.setBranchId(E2);
+         bl.setBaseTxId(E3);
+         bl.setUniqueTxId(E3);
+         branchLocations.add(bl);
+      });
+      return (branchLocations.size() > 0 ? true : false);
+   }
+
+   public XResultData addAllImportedTransToTupleTable(OrcsApi orcsApi) {
+      try {
+         TransactionBuilder txTransTuple =
+            orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Add imported transaction tuples.");
+         for (TransferBranch tb : transferBranchList) {
+            for (TransferTransaction txTrans : tb.getTxList()) {
+               if (TransferOpType.ADD.equals(txTrans.getTransferOp())) {
+                  txTransTuple.addTuple4(TransferFile, tb.getBranchId(), txTrans.getTransferOp(),
+                     txTrans.getImportedTransId(), txTrans.getSourceUniqueTrans());
+               }
+            }
+         }
+         txTransTuple.commit();
       } catch (Exception e) {
-         results.error(String.format("Error while Updating PrevTX to database %s", e.getMessage()));
+         results.error(String.format("Error while Adding transaction tuples to database %s ", e.getMessage()));
       }
       return results;
    }
