@@ -15,7 +15,9 @@ package org.eclipse.osee.define.api;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -119,19 +121,81 @@ public class OseeLinkBuilder {
    }
 
    private String getLinkText(LinkType linkType, ArtifactReadable artifact) {
+
       StringBuilder builder = new StringBuilder();
+
       if (linkType.isParagraphRequired()) {
+
          builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "Undefined"));
+
       }
+
       if (linkType.isArtifactNameRequired()) {
+
          if (builder.length() > 0) {
+
             builder.append(" ");
+
          }
-         builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.Name, DeletionFlag.INCLUDE_DELETED, ""));
+
+         /*
+          * Deleted artifacts will also have deleted attributes
+          */
+
+         //@formatter:off
+         List<String> nameAttributes =
+            artifact
+               .getAttributeValues
+                  (
+                     CoreAttributeTypes.Name,
+                     artifact.isDeleted()
+                        ? DeletionFlag.INCLUDE_DELETED
+                        : DeletionFlag.EXCLUDE_DELETED
+                  );
+
+         switch( nameAttributes.size() ) {
+
+            case 0:
+
+               /*
+                * This case is not expected as all artifacts should have one and only one name attribute.
+                */
+
+               builder.append( "(name not found)" );
+               break;
+
+            case 1:
+
+               /*
+                * This is the normal case.
+                */
+
+               builder.append( nameAttributes.get(0) );
+               break;
+
+            default:
+
+               /*
+                * In the rare case where an artifact winds up with multiple name attributes, all of the name attribute
+                * values will be joined into a comma separated list of names.
+                */
+
+               builder.append
+                  (
+                     nameAttributes
+                        .stream()
+                        .collect( Collectors.joining( ",", "[", "]" ) )
+                  );
+               break;
+         }
+         //@formatter:on
+
+         if (artifact.isDeleted()) {
+            builder.append(" (DELETED)");
+         }
+
       }
-      if (artifact.isDeleted()) {
-         builder.append(" (DELETED)");
-      }
+
       return XmlEncoderDecoder.textToXml(builder).toString();
    }
 
