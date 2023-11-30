@@ -10,13 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 package org.eclipse.osee.orcs.rest.internal;
-
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -51,27 +49,25 @@ import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 public class TransferDataStoreImpl {
-
    private final OrcsApi orcsApi;
    private final TupleQuery tupleQuery;
    private final TransactionEndpointImpl transEndpoint;
    private final TransactionTransferManifest transferManifest = new TransactionTransferManifest();
    private final boolean debug = true;
-
    public TransferDataStoreImpl(TransactionEndpointImpl transEndpoint, OrcsApi orcsApi) {
       this.transEndpoint = transEndpoint;
       this.orcsApi = orcsApi;
       this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
    };
-
    public final XResultData transferTransactions(TransactionId exportId, XResultData results) {
       List<TransactionReadable> txrs = new ArrayList<>();
       List<BranchLocation> branchLocations = branchLocations(exportId);
       String currentTransferDirectory = transferDirectoryHelper();
       int errorCount = results.getErrorCount();
       TransactionId maxTransactionNum = TransactionId.SENTINEL;
-
       if (!branchLocations.isEmpty()) {
          for (BranchLocation branchLoc : branchLocations) {
             BranchId branchId = branchLoc.getBranchId();
@@ -93,7 +89,6 @@ public class TransferDataStoreImpl {
             }
          }
       }
-
       if (errorCount == 0) {
          results.log("Begin attempt to add data to tuple table");
          try {
@@ -113,10 +108,24 @@ public class TransferDataStoreImpl {
             String buildId = "10000";
             // Build Manifest File from ManifestData Container see design doc for additional info
             buildManifestFileHelper(currentTransferDirectory, buildId, exportId, results, maxTransactionNum);
+            
+            try {
+          	  String osee = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + "transfers" + File.separator;
+          	  File directoryPath = new File(currentTransferDirectory);    	  
+          	  Path pathTest = Paths.get(currentTransferDirectory);
+          	  String zipTarget = osee + currentTransferDirectory.replace(osee, "").replace("\\", "") + ".zip";
+          	  results.log("\nAttemtping to compress files to location: " + zipTarget + " File(s)/Directory(ies) from: " +  directoryPath.toString());          	  
+          	  if (Files.exists(pathTest)) {    		      		  
+          		  Lib.compressDirectory(directoryPath, zipTarget, true);
+          		  results.log("\nTransfer file generation content successfully compressed, file location: " + zipTarget + "\nTransfer File Generation Process Completed!");
+          	  }
+            } catch (Exception e) {
+          	  results.error("Transfer file generation content could not be compressed error: " + e.getMessage());
+          	  e.printStackTrace();
+            }
          } catch (Exception ex) {
             results.errorf("%s", "Error in addding tuples exception: ", ex.getMessage());
          }
-
       } else {
          results.log("\nTransfer Failed, please retry again");
          results.setWarningCount(0);
@@ -127,7 +136,6 @@ public class TransferDataStoreImpl {
       }
       return results;
    }
-
    private XResultData applyTransactions(List<TransactionReadable> txrs, BranchLocation branchLoc, XResultData results,
       BranchId branchId, String currentTransferDirectory, TransactionId endTrans) {
       Collections.sort(txrs, new TransactionIdComparator());
@@ -138,10 +146,9 @@ public class TransferDataStoreImpl {
             results.errorf("%s", String.format("Error in JSON Build: ", ex.getMessage()));
          }
       }
-      results.log("\nJSON Files Created for Branch: " + branchId.getIdString() + "\n");
+      results.log("\nJSON Files Created for Branch: " + branchId.getIdString());
       return results;
    }
-
    // Query Branch Base Transaction based off supplied branch given
    // For each branch configured in the export ID return the maximum base transaction ID for that branch.
    private final List<BranchLocation> branchLocations(TransactionId exportId) {
@@ -158,12 +165,10 @@ public class TransferDataStoreImpl {
       });
       return getMaxBranchLocations(branchLocations);
    }
-
    // Set base tx to max
    private final List<BranchLocation> getMaxBranchLocations(List<BranchLocation> branchLocations) {
       List<BranchLocation> bLocs = new ArrayList<>();
       Map<BranchId, Pair<TransactionId, TransactionId>> Hmap = new HashMap<>();
-
       for (BranchLocation branchLoc : branchLocations) {
          // Check each branch and retrieve highest tx
          if (Hmap.containsKey(branchLoc.getBranchId())) {
@@ -205,15 +210,14 @@ public class TransferDataStoreImpl {
       }
       return bLocs;
    }
-
    private boolean verifyValidTransactionToTransferHelper(String transactionComment) {
       String[] commentsToCheckAgainst = {
          "Adding transfer tuples",
          "User - Save Settings (IDE)",
+         "Workflow Editor - Save",
          "Adding exportId to Tuple2Table",
          "Delete tuple",
          "Adding tuple for transfer init"};
-
       for (int i = 0; i <= commentsToCheckAgainst.length - 1; i++) {
          if (commentsToCheckAgainst[i].equalsIgnoreCase(transactionComment.strip())) {
             return false;
@@ -221,7 +225,6 @@ public class TransferDataStoreImpl {
       }
       return true;
    }
-
    private String transferDirectoryHelper() {
       // Transfer File Naming Convention: OSEETransfer-YYYYMMDDhhmmss-#### where #### is a random to make the file unique.
       Random rand = new Random();
@@ -232,23 +235,19 @@ public class TransferDataStoreImpl {
          OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + "transfers" + File.separator;
       return osee + "OSEETransfer-" + formatter.format(transferDateAndTime) + "-" + randomFour + File.separator;
    }
-
    private XResultData buildJSONExportDataHelper(List<TransactionReadable> txrs, BranchLocation branchLoc,
       TransactionId lastTx, BranchId branchId, String transferDirectory, XResultData results)
       throws JsonProcessingException {
       TransactionBuilderData tbd = null;
       String json = null;
-
       TransferBranch tb = new TransferBranch(branchId);
       tb.setPrevTx(branchLoc.getBaseTxId());
       tb.setUniqueTx(branchLoc.getUniqueTxId());
       TransactionId txInProcess = tb.getPrevTx();
-
       for (TransactionReadable tx : txrs) {
          boolean validTxToProcess = verifyValidTransactionToTransferHelper(tx.getComment());
          TransactionId uniqueTx = TransactionId.valueOf(Lib.generateUuid());
-         String fileName = tx.getIdString() + ".json";
-         System.out.println(String.format("workfing tx %s", tx.getIdString()));
+         String fileName = tx.getIdString() + ".json";         
          String path = transferDirectory + branchId + File.separator + fileName;
          if (validTxToProcess) {
             TransferTransaction transTx = new TransferTransaction(branchId, tx, uniqueTx, TransferOpType.EMPTY);
@@ -292,7 +291,6 @@ public class TransferDataStoreImpl {
       transferManifest.addTransferBranch(tb);
       return results;
    }
-
    private XResultData buildManifestFileHelper(String transferDirectory, String buildId, TransactionId exportId,
       XResultData results, TransactionId maxTransaction) {
       Map<String, ArrayList<String>> Hmap = new HashMap<String, ArrayList<String>>();
@@ -340,7 +338,6 @@ public class TransferDataStoreImpl {
             }
          }
          fileOutput.append("\nList of Directories/Contents\n");
-
          for (Map.Entry<String, ArrayList<String>> entry : Hmap.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
                fileOutput.append(newLine).append(" * ").append(entry.getKey()).append(newLine);
@@ -354,7 +351,6 @@ public class TransferDataStoreImpl {
                fileOutput.append(files).append(newLine);
             }
          }
-
          try {
             Path directoryPath = Paths.get(transferDirectory);
             if (!Files.exists(directoryPath)) {
@@ -372,11 +368,10 @@ public class TransferDataStoreImpl {
       }
       if (results.getErrorCount() == 0) {
          results.addRaw(
-            "\nManifest File written, transfer files generated, files generated check database for completion! Directory = " + transferDirectory);
+            "\nManifest File written, transfer files generated, check database tuple tables for confirmation! Transfer directory files located at: " + transferDirectory);
       }
       return results;
-   }
-
+   }  
    private String adjustTransferOpType(String transferOpType) {
       String opTypeForManifest = "";
       switch (transferOpType) {
@@ -398,7 +393,6 @@ public class TransferDataStoreImpl {
       }
       return opTypeForManifest;
    }
-
    private static final class TransactionIdComparator implements Comparator<TransactionId> {
       @Override
       public int compare(TransactionId arg0, TransactionId arg1) {

@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,9 +32,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeClient;
@@ -216,7 +219,8 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
       int errors = results.getErrorCount();
       if (errors == 0) {
-         results.success("%s", String.format("Transfer files successfully generated at: ", dateFormat.format(date)));
+         results.log("Transfer files successfully generated at: " + dateFormat.format(date));
+         results.success("%s", results.toString());
       }
       if (results.isSuccess()) {
          results.clear();
@@ -228,7 +232,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    private XResultData transferActiveHelper(TransactionId exportId, XResultData results) {
       try {
-         results.logf("Checking if transfer currently in progress for exportID:: %s", exportId.getIdString());
+         results.logf("Checking if transfer currently in progress for exportID: %s", exportId.getIdString());
          int warning = results.getWarningCount();
          int error = results.getErrorCount();
          boolean transferActive = TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId());
@@ -237,7 +241,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          } else {
             // Transfer not in progress, begin lock
             TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
-            results.success("Transfer in progress");
+            results.log("\nTransfer file generation will begin...");
          }
       } catch (Exception ex) {
          results.errorf("%s", String.format(
@@ -390,7 +394,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       XResultData results = new XResultData();
       boolean transferLocked = TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
       if (transferLocked) {
-         results.success("Export ID %s locked", exportId.toString());
+         results.logf("\nExport ID locked: %s", exportId.toString());
       } else {
          results.errorf("Export ID %s already locked", exportId.toString());
       }
@@ -402,7 +406,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       XResultData results = new XResultData();
       boolean transferUnLocked = TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
       if (transferUnLocked) {
-         results.success("Export ID %s not locked", exportId.toString());
+         results.logf("\nExport ID unlocked: %s", exportId.toString());
       } else {
          results.errorf("Export ID %s already not locked", exportId.toString());
       }
@@ -414,9 +418,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       XResultData results = new XResultData();
       boolean transferIsLocked = TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId());
       if (transferIsLocked) {
-         results.success("Export ID %s locked", exportId.toString());
+         results.logf("\nExport ID locked: %s", exportId.toString());
       } else {
-         results.success("Export ID %s not locked", exportId.toString());
+         results.logf("\nExport ID %s not locked", exportId.toString());
       }
       return results;
    }

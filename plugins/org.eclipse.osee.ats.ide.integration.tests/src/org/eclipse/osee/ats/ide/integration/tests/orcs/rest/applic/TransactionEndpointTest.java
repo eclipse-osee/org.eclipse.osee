@@ -406,17 +406,17 @@ public class TransactionEndpointTest {
       assertTrue(results.isSuccess());
       results = transactionEndpoint.unlock(export1);
       assertTrue(results.isSuccess());
-      assertTrue(checkResultsString(results, (String.format("%s not locked", export1.toString()))));
+      assertTrue(checkResultsString(results, (String.format("Export ID unlocked: %s", export1.toString()))));
       results = transactionEndpoint.lock(export1);
       assertTrue(results.isSuccess());
       results = transactionEndpoint.lock(export2);
       assertTrue(results.isSuccess());
       results = transactionEndpoint.unlock(export1);
       assertTrue(results.isSuccess());
-      assertTrue(checkResultsString(results, (String.format("%s not locked", export1.toString()))));
+      assertTrue(checkResultsString(results, (String.format("Export ID unlocked: %s", export1.toString()))));
       results = transactionEndpoint.unlock(export2);
       assertTrue(results.isSuccess());
-      assertTrue(checkResultsString(results, (String.format("%s not locked", export2.toString()))));
+      assertTrue(checkResultsString(results, (String.format("Export ID unlocked: %s", export2.toString()))));
       // check is locked
       results = transactionEndpoint.isLocked(export1);
       assertTrue(results.isSuccess());
@@ -424,7 +424,7 @@ public class TransactionEndpointTest {
       results = transactionEndpoint.lock(export1);
       results = transactionEndpoint.isLocked(export1);
       assertTrue(results.isSuccess());
-      assertTrue(checkResultsString(results, (String.format("%s locked", export1.toString()))));
+      assertTrue(checkResultsString(results, (String.format("Export ID locked: %s", export1.toString()))));
 
       // lock while locked
       results = transactionEndpoint.lock(export1);
