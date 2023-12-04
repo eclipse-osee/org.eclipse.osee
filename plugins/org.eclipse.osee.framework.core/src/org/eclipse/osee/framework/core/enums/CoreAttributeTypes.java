@@ -761,19 +761,19 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString LoginId = osee.createString(239475839435799L, "Login Id", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString LogMessage = osee.createString(9053989332404948442L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString LogMessage = osee.createString(9053989332404948442L, "Log Message", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString LogThrowable = osee.createString(3817160350157885150L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString LogThrowable = osee.createString(3817160350157885150L, "Log Throwable", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString LogLevel = osee.createString(4603623669127098982L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString LogLevel = osee.createString(4603623669127098982L, "Log Level", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString Logger = osee.createString(8924196735537621340L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString Logger = osee.createString(8924196735537621340L, "Logger", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeInteger LocationId = osee.createInteger(7167403790289697715L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger LocationId = osee.createInteger(7167403790289697715L, "Location Id", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeInteger LocationTime = osee.createInteger(373826513060316605L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger LocationTime = osee.createInteger(373826513060316605L, "Location Time", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString AttentionMessage = osee.createString(4657673604881393123L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString AttentionMessage = osee.createString(4657673604881393123L, "Attention Message", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString Machine = osee.createString(1152921504606847359L, "Machine", MediaType.TEXT_PLAIN, "Machine");
 
@@ -935,9 +935,9 @@ public interface CoreAttributeTypes {
 
    AttributeTypeInteger ExceptionCount = osee.createInteger(2003086737979123501L, "Exception Count", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString ErrorSeverity = osee.createString(1976422954176720594L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString ErrorSeverity = osee.createString(1976422954176720594L, "Error Severity", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString ErrorVersion = osee.createString(8487464372724189608L, "", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString ErrorVersion = osee.createString(8487464372724189608L, "Error Version", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeInteger ErrorCount = osee.createInteger(1109939132981873357L, "Error Count", MediaType.TEXT_PLAIN, "");
 

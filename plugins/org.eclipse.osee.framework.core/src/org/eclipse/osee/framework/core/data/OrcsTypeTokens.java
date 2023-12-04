@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.SexFunction;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * OSEE type token providers should instantiate a static instance of this class and call the add methods for each type
@@ -180,9 +181,16 @@ public class OrcsTypeTokens {
       return attributeType;
    }
 
+   public void validateString(String value) {
+      if (Strings.isInvalidOrBlank(value)) {
+         throw new OseeArgumentException("Invalid Parameter");
+      }
+   }
+
    public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity,
       RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB,
       String sideBName) {
+      validateString(name);
       return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
          artifactTypeA, sideAName, artifactTypeB, sideBName, ArtifactTypeToken.SENTINEL, true));
    }
@@ -190,6 +198,7 @@ public class OrcsTypeTokens {
    public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity,
       RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB,
       String sideBName, ArtifactTypeToken relationArtifactType) {
+      validateString(name);
       return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
          artifactTypeA, sideAName, artifactTypeB, sideBName, relationArtifactType, true));
    }
@@ -197,6 +206,7 @@ public class OrcsTypeTokens {
    public RelationTypeToken add(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity,
       RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB,
       String sideBName) {
+      validateString(name);
       return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
          artifactTypeA, sideAName, artifactTypeB, sideBName));
    }
@@ -224,6 +234,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType) {
+      validateString(name);
       AttributeTypeArtifactId attrType = attributeTypes.addAndReturn(
          new AttributeTypeArtifactId(id, namespace, name, mediaType, description, taggerType));
       if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
@@ -247,6 +258,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType, DisplayHint... displayHints) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeBoolean(id, namespace, name, mediaType, description, taggerType, displayHints));
    }
@@ -266,6 +278,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeBranchId(id, namespace, name, mediaType, description, taggerType));
    }
@@ -284,6 +297,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeDate(id, namespace, name, mediaType, description, taggerType));
    }
@@ -301,6 +315,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType, DisplayHint... displayHints) {
+      validateString(name);
       AttributeTypeDouble attrType = attributeTypes.addAndReturn(
          new AttributeTypeDouble(id, namespace, name, mediaType, description, taggerType, displayHints));
       if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
@@ -324,6 +339,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType,
       String description, TaggerTypeToken taggerType, String fileExtension) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeInputStream(id, namespace, name, mediaType, description, taggerType, fileExtension));
    }
@@ -355,6 +371,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType) {
+      validateString(name);
       AttributeTypeInteger attrType =
          attributeTypes.addAndReturn(new AttributeTypeInteger(id, namespace, name, mediaType, description, taggerType));
       if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
@@ -376,6 +393,7 @@ public class OrcsTypeTokens {
     */
    public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType) {
+      validateString(name);
       AttributeTypeLong attrType =
          attributeTypes.addAndReturn(new AttributeTypeLong(id, namespace, name, mediaType, description, taggerType));
       if (attrType.getDisplayHints().contains(DisplayHint.MultiLine)) {
@@ -406,6 +424,7 @@ public class OrcsTypeTokens {
 
    public @NonNull DynamicEnumAttributeType createEnum(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          new DynamicEnumAttributeType(id, namespace, name, mediaType, description, taggerType));
    }
@@ -417,6 +436,7 @@ public class OrcsTypeTokens {
    public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(
       AttributeEnumConstructor<T> attributeEnumConstructor, Long identifier, String name, String description,
       String mediaType, NamespaceToken namespaceToken, TaggerTypeToken taggerTypeToken) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          attributeEnumConstructor.apply(identifier, name, description, taggerTypeToken, mediaType, namespaceToken));
    }
@@ -424,6 +444,7 @@ public class OrcsTypeTokens {
    public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(
       AttributeEnumConstructorNoDescription<T> attributeEnumConstructor, Long identifier, String name,
       String mediaType) {
+      validateString(name);
       return attributeTypes.addAndReturn(attributeEnumConstructor.apply(identifier, name,
          OrcsTypeTokens.determineTaggerType(mediaType), mediaType, this.namespace));
    }
@@ -456,6 +477,7 @@ public class OrcsTypeTokens {
 
    public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
       TaggerTypeToken taggerType, String fileExtension, DisplayHint... displayHints) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension, displayHints));
    }
@@ -498,6 +520,7 @@ public class OrcsTypeTokens {
 
    public @NonNull AttributeTypeMapEntry createMapEntry(Long id, String name, String description, String defaultKey,
       String defaultValue) {
+      validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeMapEntry(id, this.namespace, name, description, defaultKey, defaultValue));
    }
@@ -509,6 +532,7 @@ public class OrcsTypeTokens {
    public <T, U extends ComputedCharacteristic<T>> U createComp(
       SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor,
       Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
+      validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.PlainTextTagger, namespace, description, Arrays.asList(typesToCompute)));
    }
@@ -516,6 +540,7 @@ public class OrcsTypeTokens {
    public <T, U extends ComputedCharacteristic<T>> U createCompNoTag(
       SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor,
       Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
+      validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.SENTINEL, namespace, description, Arrays.asList(typesToCompute)));
    }
@@ -523,6 +548,7 @@ public class OrcsTypeTokens {
    public <U extends ComputedCharacteristic<EnumToken>> U createComp(
       SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor,
       Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
+      validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.PlainTextTagger, namespace, description, createEnumList(typesToCompute)));
    }
@@ -530,6 +556,7 @@ public class OrcsTypeTokens {
    public <U extends ComputedCharacteristic<EnumToken>> U createCompNoTag(
       SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor,
       Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
+      validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.SENTINEL, namespace, description, createEnumList(typesToCompute)));
    }
