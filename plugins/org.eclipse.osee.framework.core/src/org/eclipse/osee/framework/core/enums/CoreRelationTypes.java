@@ -295,7 +295,7 @@ public interface CoreRelationTypes {
    RelationTypeSide TraceToTraceArgument_Trace = RelationTypeSide.create(TraceToTraceArgument, SIDE_A);
    RelationTypeSide TraceToTraceArgument_TraceArgument = RelationTypeSide.create(TraceToTraceArgument, SIDE_B);
 
-   RelationTypeToken TraceToScriptLog = osee.addNewRelationType(867274354L, "", ONE_TO_MANY, UNORDERED, Trace, "Trace", ScriptLog, "Script Log");
+   RelationTypeToken TraceToScriptLog = osee.addNewRelationType(867274354L, "Trace To Script Log", ONE_TO_MANY, UNORDERED, Trace, "Trace", ScriptLog, "Script Log");
    RelationTypeSide TraceToScriptLog_Trace = RelationTypeSide.create(TraceToScriptLog, SIDE_A);
    RelationTypeSide TraceToScriptLog_ScriptLog = RelationTypeSide.create(TraceToScriptLog, SIDE_B);
 
