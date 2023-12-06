@@ -25,10 +25,8 @@ import { ServerHealthHttpService } from '../../../shared/services/server-health-
 export class ServerHealthTopComponent {
 	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
 
-	remoteHealthTop = this.serverHealthHttpService
-		.getRemoteTop()
-		.pipe(
-			shareReplay({ bufferSize: 1, refCount: true }),
-			takeUntilDestroyed()
-		);
+	remoteHealthTop = this.serverHealthHttpService.RemoteTop.pipe(
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
 }

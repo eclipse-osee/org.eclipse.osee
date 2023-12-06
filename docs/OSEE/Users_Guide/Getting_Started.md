@@ -354,18 +354,13 @@ and Configuration](#Launch_.26_Configuration "wikilink").
 
 1.  Download PostgreSQL from <http://www.postgresql.org/download>
 2.  Follow PostgreSQL installation instructions
-    1.  Unless required, do not change the default port number (5432)
-3.  By default, the PostgreSQL database server is configured to allow
-    only local connections. If remote connections are to be allowed,
-    edit postgresql.conf and pg_hba.conf to set the necessary
-
-permissions. (To setup an unsecured database instance set
-**listen_addresses = '\***' in the postgresql.conf file and add the
-following line to the pg_hba.conf file: **host all all 0.0.0.0/0
-trust**. You may need to set all METHODs to trust). These two files are
-located in the \\PostgreSQL\\<version>\\data directory.
-
-1.  Configure PostgreSQL for OSEE
+  1.  Unless required, do not change the default port number (5432)
+3.  By default, the PostgreSQL database server is configured to allow only local connections. If remote connections are to be allowed, edit postgresql.conf and pg_hba.conf to set the necessary permissions.
+    1.  To setup an unsecured database instance:
+        1.  Set **listen_addresses = '\*'** in **postgresql.conf** (located in the \PostgreSQL\[version]\data directory)
+        2.  Set **host all all 0.0.0.0/0 trust** in **pg_hba.conf** (located in the \PostgreSQL\[version]\data directory)
+        3.  You may need to set all METHODs to trust
+4.  Configure PostgreSQL for OSEE
     1.  Launch pgAdmin (in windows Start-\>All
         Programs-\>PostgreSQL\*-\>pgAdmin \*)
     2.  Double click on PostgreSQL Database Server (listed under Servers
@@ -410,7 +405,11 @@ located in the \\PostgreSQL\\<version>\\data directory.
                     2.  Owner: osee
             3.  Click 'Save'
             4.  You should now have an "osee" schema under schemas
-    6.  The relational database is now configured. Proceed to OSEE
+    6.  Enable view that provides database statistics
+        1.  Uncomment (Remove '#') and set **shared_preload_libraries = 'pg_stat_statements'** in **postgresql.conf**
+        2.  Run this query against the osee database: **create extension pg_stat_statements;** 
+        3.  Restart the postgres database (e.g. Windows: command prompt navigate to Postgres bin and run      restart command on postgres exe)
+    7.  The relational database is now configured. Proceed to OSEE
         Database Initialization
 
 ## Launch Application Server

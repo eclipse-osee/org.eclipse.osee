@@ -13,7 +13,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ServerHealthStatusComponent } from './server-health-status.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
 import { ServerHealthHttpServiceMock } from '../shared/testing/server-health-http.service.mock';
 

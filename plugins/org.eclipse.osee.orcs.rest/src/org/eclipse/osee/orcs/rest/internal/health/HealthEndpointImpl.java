@@ -65,6 +65,10 @@ public final class HealthEndpointImpl {
       this.activityLog = activityLog;
    }
 
+   private JdbcClient getJdbcClient() {
+      return jdbcServices.values().iterator().next().getClient();
+   }
+
    @GET
    @Path("status")
    @Produces(MediaType.APPLICATION_JSON)
@@ -205,7 +209,7 @@ public final class HealthEndpointImpl {
    @GET
    @Path("servers")
    @Produces(MediaType.TEXT_PLAIN)
-   public String setServers(@QueryParam("servers") String servers) {
+   public String getServers(@QueryParam("servers") String servers) {
       if (servers != null) {
          if (servers.length() > 0) {
             OseeInfo.setValue(getJdbcClient(), "osee.health.servers", servers);
@@ -218,9 +222,4 @@ public final class HealthEndpointImpl {
          return "Error: key [osee.health.servers] is NOT SET in table [osee_info]";
       }
    }
-
-   private JdbcClient getJdbcClient() {
-      return jdbcServices.values().iterator().next().getClient();
-   }
-
 }

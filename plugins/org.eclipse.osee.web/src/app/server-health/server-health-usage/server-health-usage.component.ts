@@ -13,7 +13,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
-import { BehaviorSubject, Observable, map, of, shareReplay, tap } from 'rxjs';
+import { shareReplay } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { navigationStructure } from '@osee/layout/routing';
 import {
@@ -66,12 +66,10 @@ export class ServerHealthUsageComponent {
 		'port',
 	];
 
-	usage = this.serverHealthHttpService
-		.getUsage()
-		.pipe(
-			shareReplay({ bufferSize: 1, refCount: true }),
-			takeUntilDestroyed()
-		);
+	usage = this.serverHealthHttpService.Usage.pipe(
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
 
 	getUsersDataSource(usersArray: user[]) {
 		// Sort user's by name alphabetically

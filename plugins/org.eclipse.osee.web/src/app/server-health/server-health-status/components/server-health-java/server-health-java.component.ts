@@ -29,7 +29,7 @@ export class ServerHealthJavaComponent {
 	displayedColumns: string[] = ['key', 'value'];
 	dataSource = new MatTableDataSource<{ key: string; value: unknown }>([]);
 
-	remoteHealthJava = this.serverHealthHttpService.getRemoteJava().pipe(
+	remoteHealthJava = this.serverHealthHttpService.RemoteJava.pipe(
 		tap((data) => {
 			// Set the dataSource
 			const healthJavaArray = Object.entries(data.healthJava).map(

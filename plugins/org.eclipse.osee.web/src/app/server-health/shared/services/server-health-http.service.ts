@@ -10,16 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-	BehaviorSubject,
-	Observable,
-	combineLatest,
-	filter,
-	switchMap,
-	tap,
-} from 'rxjs';
+import { Observable, combineLatest, filter, switchMap, tap } from 'rxjs';
 import { apiURL } from '@osee/environments';
 import {
 	healthActiveMq,
@@ -43,7 +36,7 @@ export class ServerHealthHttpService {
 		private healthDetailsService: ServerHealthDetailsService
 	) {}
 
-	public getStatus(): Observable<healthStatus> {
+	public get Status(): Observable<healthStatus> {
 		return this.http.get<healthStatus>(apiURL + '/health/status');
 	}
 
@@ -67,7 +60,7 @@ export class ServerHealthHttpService {
 	}
 
 	// Dependent on designated health server name returned by getRemoteDetails
-	public getRemoteLog(): Observable<remoteHealthLog> {
+	public get RemoteLog(): Observable<remoteHealthLog> {
 		return combineLatest([
 			this.healthDetailsService.getRemoteDetails(),
 			this.healthDetailsService.getRemoteServerName(),
@@ -92,7 +85,7 @@ export class ServerHealthHttpService {
 	}
 
 	// Dependent on designated health server name returned by getRemoteDetails
-	public getRemoteJava(): Observable<remoteHealthJava> {
+	public get RemoteJava(): Observable<remoteHealthJava> {
 		return combineLatest([
 			this.healthDetailsService.getRemoteServerName(),
 		]).pipe(
@@ -111,7 +104,7 @@ export class ServerHealthHttpService {
 	}
 
 	// Dependent on designated health server name returned by getRemoteDetails
-	public getRemoteTop(): Observable<remoteHealthTop> {
+	public get RemoteTop(): Observable<remoteHealthTop> {
 		return combineLatest([
 			this.healthDetailsService.getRemoteServerName(),
 		]).pipe(
@@ -126,25 +119,25 @@ export class ServerHealthHttpService {
 		);
 	}
 
-	public getBalancers(): Observable<healthBalancers> {
+	public get Balancers(): Observable<healthBalancers> {
 		return this.http.get<healthBalancers>(apiURL + '/health/balancers');
 	}
 
-	public getPrometheusUrl(): Observable<string> {
+	public get PrometheusUrl(): Observable<string> {
 		return this.http.get(apiURL + '/health/prometheus', {
 			responseType: 'text',
 		});
 	}
 
-	public getHttpHeaders(): Observable<unknownJson> {
+	public get HttpHeaders(): Observable<unknownJson> {
 		return this.http.get<unknownJson>(apiURL + '/health/http/headers');
 	}
 
-	public getActiveMq(): Observable<healthActiveMq> {
+	public get ActiveMq(): Observable<healthActiveMq> {
 		return this.http.get<healthActiveMq>(apiURL + '/health/activemq');
 	}
 
-	public getUsage(): Observable<healthUsage> {
+	public get Usage(): Observable<healthUsage> {
 		return this.http.get<healthUsage>(apiURL + '/health/usage');
 	}
 }

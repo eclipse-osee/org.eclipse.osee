@@ -36,11 +36,6 @@ const routes: Routes = [
 			import('./server-health-headers/server-health-headers.routes'),
 	},
 	{
-		path: 'activemq',
-		loadChildren: () =>
-			import('./server-health-activemq/server-health-activemq.routes'),
-	},
-	{
 		path: 'usage',
 		loadChildren: () =>
 			import('./server-health-usage/server-health-usage.routes'),

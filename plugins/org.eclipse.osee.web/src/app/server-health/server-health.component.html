@@ -19,46 +19,43 @@
 	<div class="tw-flex tw-justify-center">
 		<div class="tw-grid tw-flex-1 tw-grid-cols-4 tw-gap-8 tw-p-8 tw-pt-0">
 			<ng-container *ngFor="let item of importantNavItems">
-				<button
-					[matTooltip]="item.description"
-					[routerLink]="item.routerLink"
-					[disabled]="
-						item.label === 'ActiveMQ' && !(activeMq | async)?.active
-					"
-					class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
-					<div class="tw-flex tw-items-center">
-						<div class="tw-px-4 tw-text-white">
-							<mat-icon>
-								{{ item.icon }}
-							</mat-icon>
-						</div>
-						<div
-							class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
-							{{ item.label }}
-						</div>
-						@if (item.label == 'ActiveMQ') {
-							@if (activeMq | async; as activeMq) {
-								<div class="tw-ml-auto tw-pr-4">
-									@if (activeMq.active) {
-										<div
-											class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-success-600 tw-p-2">
-											<mat-icon class="tw-text-white">
-												check
-											</mat-icon>
-										</div>
-									} @else {
-										<div
-											class="tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-warning-600 tw-p-2">
-											<mat-icon class="tw-text-white">
-												close
-											</mat-icon>
-										</div>
-									}
+				@if (item.label == 'ActiveMQ') {
+					@if (activeMq | async; as activeMq) {
+						<button
+							[matTooltip]="item.description"
+							(click)="openLink(activeMq.activeMqUrl)"
+							class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
+							<div class="tw-flex tw-items-center">
+								<div class="tw-px-4 tw-text-white">
+									<mat-icon>
+										{{ item.icon }}
+									</mat-icon>
 								</div>
-							}
-						}
-					</div>
-				</button>
+								<div
+									class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
+									{{ item.label }}
+								</div>
+							</div>
+						</button>
+					}
+				} @else {
+					<button
+						[matTooltip]="item.description"
+						[routerLink]="item.routerLink"
+						class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
+						<div class="tw-flex tw-items-center">
+							<div class="tw-px-4 tw-text-white">
+								<mat-icon>
+									{{ item.icon }}
+								</mat-icon>
+							</div>
+							<div
+								class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
+								{{ item.label }}
+							</div>
+						</div>
+					</button>
+				}
 			</ng-container>
 		</div>
 	</div>

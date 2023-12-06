@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, SecurityContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { navigationStructure } from '@osee/layout/routing';
 import {
@@ -23,7 +23,8 @@ import { ServerHealthHttpService } from '../shared/services/server-health-http.s
 import { Observable, map } from 'rxjs';
 import { healthBalancer } from '../shared/types/server-health-types';
 import { trigger, state, style } from '@angular/animations';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatIconModule } from '@angular/material/icon';
 const _currNavItem: navigationElement =
 	navigationStructure[1].children.find((c) => c.label === 'Balancers') ||
 	defaultNavigationElement;
@@ -31,7 +32,12 @@ const _currNavItem: navigationElement =
 @Component({
 	selector: 'osee-server-health-balancers',
 	standalone: true,
-	imports: [CommonModule, ServerHealthPageHeaderComponent, MatTableModule],
+	imports: [
+		CommonModule,
+		ServerHealthPageHeaderComponent,
+		MatTableModule,
+		MatIconModule,
+	],
 	templateUrl: './server-health-balancers.component.html',
 	animations: [
 		trigger('detailExpand', [
@@ -54,7 +60,7 @@ export class ServerHealthBalancersComponent {
 
 	private dataSource = new MatTableDataSource<healthBalancer>();
 	balancersAsDataSource: Observable<MatTableDataSource<healthBalancer>> =
-		this.serverHealthHttpService.getBalancers().pipe(
+		this.serverHealthHttpService.Balancers.pipe(
 			map((data) => {
 				const dataSource = this.dataSource;
 				dataSource.data = data.balancers;
@@ -73,6 +79,14 @@ export class ServerHealthBalancersComponent {
 		return this.sanitizer.bypassSecurityTrustResourceUrl(
 			'http://' + name + '/balancer-manager'
 		);
+	}
+
+	openLink(safeUrl: SafeResourceUrl) {
+		const url = this.sanitizer.sanitize(
+			SecurityContext.URL,
+			safeUrl
+		) as string;
+		window.open(url, '_blank');
 	}
 }
 export default ServerHealthBalancersComponent;
