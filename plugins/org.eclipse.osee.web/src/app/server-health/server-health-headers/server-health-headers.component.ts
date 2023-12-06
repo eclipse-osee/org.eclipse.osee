@@ -40,12 +40,10 @@ export class ServerHealthHeadersComponent {
 
 	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
 
-	headers = this.serverHealthHttpService
-		.getHttpHeaders()
-		.pipe(
-			shareReplay({ bufferSize: 1, refCount: true }),
-			takeUntilDestroyed()
-		);
+	headers = this.serverHealthHttpService.HttpHeaders.pipe(
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
 
 	getObjectKeys(obj: unknownJson): string[] {
 		return Object.keys(obj).sort();

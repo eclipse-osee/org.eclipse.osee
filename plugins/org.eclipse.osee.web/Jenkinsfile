@@ -65,8 +65,8 @@ spec:
         container('node') {
           dir('plugins/org.eclipse.osee.web') {
             sh 'npx -p @angular/cli ng lint'
-            sh 'corepack pnpm dlx stylelint "**/*.scss"'
-            sh 'corepack pnpm dlx prettier --check .'
+            sh 'corepack pnpm exec stylelint "**/*.scss"'
+            sh 'corepack pnpm exec prettier --check .'
           }
         }
       }

@@ -70,7 +70,7 @@ export class ServerHealthComponent {
 		private sanitizer: DomSanitizer
 	) {}
 
-	prometheusUrl = this.serverHealthHttpService.getPrometheusUrl().pipe(
+	prometheusUrl = this.serverHealthHttpService.PrometheusUrl.pipe(
 		map((prometheusUrl) => {
 			const urlWithParameters = prometheusUrl;
 			return this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -87,11 +87,9 @@ export class ServerHealthComponent {
 		window.open(url, '_blank');
 	}
 
-	activeMq = this.serverHealthHttpService
-		.getActiveMq()
-		.pipe(
-			shareReplay({ bufferSize: 1, refCount: true }),
-			takeUntilDestroyed()
-		);
+	activeMq = this.serverHealthHttpService.ActiveMq.pipe(
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
 }
 export default ServerHealthComponent;

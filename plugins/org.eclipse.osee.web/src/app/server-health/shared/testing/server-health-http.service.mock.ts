@@ -25,7 +25,7 @@ import {
 } from '../types/server-health-types';
 
 export const ServerHealthHttpServiceMock: Partial<ServerHealthHttpService> = {
-	getStatus(): Observable<healthStatus> {
+	get Status(): Observable<healthStatus> {
 		return of(healthStatusMock);
 	},
 	getRemoteDetails(
@@ -33,28 +33,28 @@ export const ServerHealthHttpServiceMock: Partial<ServerHealthHttpService> = {
 	): Observable<remoteHealthDetails> {
 		return of(remoteHealthDetailsMock);
 	},
-	getRemoteLog(): Observable<remoteHealthLog> {
+	get RemoteLog(): Observable<remoteHealthLog> {
 		return of(remoteHealthLogMock);
 	},
-	getRemoteJava(): Observable<remoteHealthJava> {
+	get RemoteJava(): Observable<remoteHealthJava> {
 		return of(remoteHealthJavaMock);
 	},
-	getRemoteTop(): Observable<remoteHealthTop> {
+	get RemoteTop(): Observable<remoteHealthTop> {
 		return of(remoteHealthTopMock);
 	},
-	getBalancers(): Observable<healthBalancers> {
+	get Balancers(): Observable<healthBalancers> {
 		return of(healthBalancersMock);
 	},
-	getPrometheusUrl(): Observable<string> {
+	get PrometheusUrl(): Observable<string> {
 		return of('');
 	},
-	getHttpHeaders(): Observable<unknownJson> {
+	get HttpHeaders(): Observable<unknownJson> {
 		return of(unknownJsonMock);
 	},
-	getActiveMq(): Observable<healthActiveMq> {
+	get ActiveMq(): Observable<healthActiveMq> {
 		return of(healthActiveMqMock);
 	},
-	getUsage(): Observable<healthUsage> {
+	get Usage(): Observable<healthUsage> {
 		return of(healthUsageMock);
 	},
 };

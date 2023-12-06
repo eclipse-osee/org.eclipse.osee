@@ -26,12 +26,22 @@
 				<ng-container matColumnDef="value">
 					<mat-header-cell *matHeaderCellDef> Value </mat-header-cell>
 					<mat-cell *matCellDef="let element">
-						<ng-container *ngIf="isValueAnArray(element.value)">
-							{{ element.value.join(', ') }}
-						</ng-container>
-						<ng-container *ngIf="!isValueAnArray(element.value)">
-							{{ element.value }}
-						</ng-container>
+						@if (
+							element.key == 'serverWithHealthInfo' &&
+							element.value == ''
+						) {
+							<div class="tw-font-bold">
+								osee.health.curl.server NOT set in osee_info
+							</div>
+						} @else {
+							<ng-container *ngIf="isValueAnArray(element.value)">
+								{{ element.value.join(', ') }}
+							</ng-container>
+							<ng-container
+								*ngIf="!isValueAnArray(element.value)">
+								{{ element.value }}
+							</ng-container>
+						}
 					</mat-cell>
 				</ng-container>
 				<mat-header-row

@@ -14,7 +14,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { trigger, state, style } from '@angular/animations';
 import { ServerHealthPageHeaderComponent } from '../shared/components/server-health-page-header/server-health-page-header.component';
 import { navigationStructure } from '@osee/layout/routing';
@@ -64,7 +64,7 @@ export class ServerHealthStatusComponent {
 
 	private dataSource = new MatTableDataSource<healthServer>();
 	serversAsDataSource: Observable<MatTableDataSource<healthServer>> =
-		this.serverHealthHttpService.getStatus().pipe(
+		this.serverHealthHttpService.Status.pipe(
 			map((data) => {
 				const dataSource = this.dataSource;
 				dataSource.data = data.servers;
@@ -75,17 +75,23 @@ export class ServerHealthStatusComponent {
 	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
 	displayedColumns = ['name', 'serverAlive', 'dbAlive'];
 
-	toggleRow(element: { expanded: boolean }) {
+	toggleRow(element: { expanded: boolean }, serverName: string) {
 		element.expanded = !element.expanded;
+		// Remove all open panels from panelsOpen signal when closing the table row
+		if (!element.expanded) {
+			this.panelsOpen.update((panels) =>
+				panels.filter((v) => !v.includes(serverName))
+			);
+		}
 	}
 
 	// Managing state of open expansion panels (used for styling)
 	protected panelsOpen = signal<string[]>([]);
 	addToPanelsOpen(value: string) {
-		this.panelsOpen.update((rows) => [...rows, value]);
+		this.panelsOpen.update((panels) => [...panels, value]);
 	}
 	removeFromPanelsOpen(value: string) {
-		this.panelsOpen.update((rows) => rows.filter((v) => v !== value));
+		this.panelsOpen.update((panels) => panels.filter((v) => v !== value));
 	}
 }
 export default ServerHealthStatusComponent;

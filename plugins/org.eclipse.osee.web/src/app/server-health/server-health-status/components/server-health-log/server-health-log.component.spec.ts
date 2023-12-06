@@ -13,8 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ServerHealthLogComponent } from './server-health-log.component';
-import { ServerHealthHttpService } from 'src/app/server-health/shared/services/server-health-http.service';
-import { ServerHealthHttpServiceMock } from 'src/app/server-health/shared/testing/server-health-http.service.mock';
+import { ServerHealthHttpService } from '../../../../server-health/shared/services/server-health-http.service';
+import { ServerHealthHttpServiceMock } from '../../../../server-health/shared/testing/server-health-http.service.mock';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 describe('ServerHealthLogComponent', () => {
 	let component: ServerHealthLogComponent;
@@ -22,7 +23,7 @@ describe('ServerHealthLogComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [ServerHealthLogComponent],
+			imports: [ServerHealthLogComponent, ScrollingModule],
 			providers: [
 				{
 					provide: ServerHealthHttpService,
@@ -37,6 +38,7 @@ describe('ServerHealthLogComponent', () => {
 	});
 
 	it('should create', () => {
+		fixture.detectChanges();
 		expect(component).toBeTruthy();
 	});
 });

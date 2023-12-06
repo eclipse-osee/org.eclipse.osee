@@ -69,6 +69,23 @@
 								class="tw-min-h-[700px] tw-min-w-full"
 								[src]="buildBalancerManagerUrl(balancer.name)"
 								frameborder="0"></iframe>
+							<button
+								(click)="
+									openLink(
+										buildBalancerManagerUrl(balancer.name)
+									)
+								"
+								class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
+								<div class="tw-flex tw-items-center">
+									<div class="tw-px-4 tw-text-white">
+										<mat-icon>open_in_new</mat-icon>
+									</div>
+									<div
+										class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
+										Open in New Window
+									</div>
+								</div>
+							</button>
 						</div>
 					</td>
 				</ng-container>
@@ -79,7 +96,12 @@
 				<tr
 					mat-row
 					*matRowDef="let balancer; columns: displayedColumns"
-					class="hover:tw-bg-background-hover"></tr>
+					class="hover:tw-bg-background-hover"
+					[ngClass]="
+						balancer.expanded
+							? 'tw-bg-primary-100 hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+							: ''
+					"></tr>
 				<tr
 					mat-row
 					*matRowDef="let row; columns: ['expandedBalancer']"

@@ -10,11 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="remoteHealthLog | async as remoteHealthLog; else noData">
-	<div class="tw-whitespace-pre-line tw-p-4 tw-pl-16 tw-text-xs">
-		{{ remoteHealthLog.healthLog.log }}
-	</div>
-</ng-container>
+<div
+	class="tw-whitespace-pre-line tw-p-4 tw-pl-16 tw-text-xs"
+	*ngIf="remoteHealthLog | async as remoteHealthLog; else noData">
+	<cdk-virtual-scroll-viewport
+		itemSize="4"
+		[minBufferPx]="getHeightPx(100, remoteHealthLog.length)"
+		[maxBufferPx]="getHeightPx(100, remoteHealthLog.length)"
+		[style.height.px]="getHeightPx(100, remoteHealthLog.length)">
+		<div *cdkVirtualFor="let line of remoteHealthLog">
+			@if (line == '') {
+				<br />
+			} @else {
+				<div>{{ line }}</div>
+			}
+		</div>
+	</cdk-virtual-scroll-viewport>
+</div>
 <ng-template #noData>
 	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
 </ng-template>

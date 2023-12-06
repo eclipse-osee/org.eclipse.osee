@@ -11,7 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
+import { RoleGuard } from '@osee/auth';
+import { navigationStructure } from '@osee/layout/routing';
 
+const serverHealth = navigationStructure[1];
 export const routes: Routes = [
 	{
 		path: '', //todo remove when main app page is made
@@ -44,6 +47,8 @@ export const routes: Routes = [
 	},
 	{
 		path: 'server/health',
+		canActivate: [RoleGuard],
+		data: { requiredRoles: serverHealth?.requiredRoles },
 		loadChildren: () => import('./server-health/server-health.routes'),
 	},
 	// {

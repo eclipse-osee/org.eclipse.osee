@@ -10,31 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-	BehaviorSubject,
-	combineLatest,
-	shareReplay,
-	switchMap,
-	tap,
-} from 'rxjs';
-import { ServerHealthHttpService } from 'src/app/server-health/shared/services/server-health-http.service';
+import { scan, shareReplay, switchMap } from 'rxjs';
+import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
 	selector: 'osee-server-health-log',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, ScrollingModule],
 	templateUrl: './server-health-log.component.html',
 })
 export class ServerHealthLogComponent {
 	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
 
-	remoteHealthLog = this.serverHealthHttpService
-		.getRemoteLog()
-		.pipe(
-			shareReplay({ bufferSize: 1, refCount: true }),
-			takeUntilDestroyed()
-		);
+	remoteHealthLog = this.serverHealthHttpService.RemoteLog.pipe(
+		switchMap((data) => split(data.healthLog.log)),
+		scan((acc, curr) => [...acc, curr], [] as string[]),
+		shareReplay({ bufferSize: 1, refCount: true }),
+		takeUntilDestroyed()
+	);
+
+	trackByLine(index: number, item: string) {
+		return item;
+	}
+
+	getHeightPx(itemSize: number, optLength: number) {
+		return itemSize * Math.min(5, Math.max(optLength, 1));
+	}
+}
+function split(log: string) {
+	return log.split('\n');
 }
