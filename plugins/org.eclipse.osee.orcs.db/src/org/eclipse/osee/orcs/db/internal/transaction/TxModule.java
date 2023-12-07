@@ -34,8 +34,8 @@ import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.LoadArtifactHistory;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
-import org.eclipse.osee.orcs.db.internal.callable.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.orcs.db.internal.callable.SetTransactionTxCallable;
+import org.eclipse.osee.orcs.db.internal.health.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.QueryFactory;
 

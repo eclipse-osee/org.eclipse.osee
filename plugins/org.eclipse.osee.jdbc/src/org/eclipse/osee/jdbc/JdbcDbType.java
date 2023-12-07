@@ -14,8 +14,10 @@
 package org.eclipse.osee.jdbc;
 
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
+
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 
 /**
@@ -107,6 +109,28 @@ public class JdbcDbType extends BaseId {
       }
    }
 
+   public String getRowNum() {
+	   if (matches(postgresql)) {
+		   return "row_number() over ()";
+	   } else {
+		   return "rownum";
+	   }
+   }
+   
+   public String getLimitRowsReturned(int limit) {
+	   if (matches(oracle, hsql)) {
+		   return " and rownum < "+limit;
+	   } else {
+		   return " limit "+limit;
+	   }
+   }
+   public String getExpireDateDays(int expireLengthInDays) {
+	   if (matches(oracle,hsql)) {
+		   return "TRUNC(SYSDATE) - "+expireLengthInDays;
+	   } else {
+		   return "current_timestamp - interval '"+expireLengthInDays+" day'";
+	   }
+   }
    public String getInStringSql(String str, String searchString) {
       if (matches(oracle, hsql)) {
          return "instr(" + str + "," + searchString + ")";
