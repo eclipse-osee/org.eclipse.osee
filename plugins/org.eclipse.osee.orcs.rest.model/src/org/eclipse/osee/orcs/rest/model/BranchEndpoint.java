@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import java.util.Collection;
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -27,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
@@ -263,6 +265,10 @@ public interface BranchEndpoint {
    Response purgeBranch(@PathParam("branch") BranchId branch,
       @DefaultValue("false") @QueryParam("recurse") boolean recurse);
 
+   @DELETE
+   @Path("purgeDeletedBranches")
+   Response purgeDeletedBranches(@QueryParam("expireTimeInDays") @DefaultValue("90") int expireTimeInDays, @QueryParam("branchCount") @DefaultValue("25") int branchCount);
+   
    @DELETE
    @Path("{branch}/associated-artifact")
    Response unassociateBranch(@PathParam("branch") BranchId branch);

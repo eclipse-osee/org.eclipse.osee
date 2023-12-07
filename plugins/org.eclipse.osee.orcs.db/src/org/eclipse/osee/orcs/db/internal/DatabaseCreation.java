@@ -48,6 +48,7 @@ import static org.eclipse.osee.orcs.OseeDb.OSEE_SEQUENCE_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_SERVER_LOOKUP_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_SESSION_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.OSEE_TAG_GAMMA_QUEUE_TABLE;
+import static org.eclipse.osee.orcs.OseeDb.OSEE_VALIDATE_GAMMA_ID;
 import static org.eclipse.osee.orcs.OseeDb.RELATION_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.RELATION_TABLE2;
 import static org.eclipse.osee.orcs.OseeDb.TUPLE2;
@@ -123,6 +124,7 @@ public final class DatabaseCreation {
       jdbcClient.createTable(OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE);
       jdbcClient.createTable(OSEE_OAUTH_AUTHORIZATION_TABLE);
       jdbcClient.createTable(OSEE_OAUTH_TOKEN_TABLE);
+      jdbcClient.createTable(OSEE_VALIDATE_GAMMA_ID);
    }
 
    private void dropTables() {
@@ -182,5 +184,6 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(OSEE_OAUTH_CLIENT_CREDENTIAL_TABLE);
       jdbcClient.dropTable(OSEE_OAUTH_AUTHORIZATION_TABLE);
       jdbcClient.dropTable(OSEE_OAUTH_TOKEN_TABLE);
+      jdbcClient.dropTable(OSEE_VALIDATE_GAMMA_ID);
    }
 }

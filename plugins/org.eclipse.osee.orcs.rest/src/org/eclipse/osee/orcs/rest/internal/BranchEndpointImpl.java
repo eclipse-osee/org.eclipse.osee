@@ -19,7 +19,7 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
-import com.google.common.collect.Lists;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -92,6 +95,8 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -653,7 +658,38 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       return asResponse(modified);
    }
+   
+   @Override
+   public Response purgeDeletedBranches(int expireTimeInDays, int branchCount) {
+	   Response response = asResponse(false);
+	   String DELETED_BRANCHES_OLDER_THAN =
+			      "select branch_id from " //
+			      + "(select row_number() over (order by max_time) rn, branch_id from " //
+			      + "  (select b.branch_name, tx.branch_id, max(tx.time) max_time from osee_branch b, osee_tx_details tx "
+			      + "   where branch_state = " + BranchState.DELETED.getIdIntValue() + " and b.branch_id = tx.branch_id and tx.time < %s and archived = 1 and "
+			      + "         branch_type = " + BranchType.WORKING.getIdIntValue()
+			      + "         and not exists (select null from osee_branch b2 where b2.parent_transaction_id in "
+			      + "  							(select transaction_id from osee_tx_details txd2 where txd2.branch_id = b.branch_id)) "
+			      + "   group by b.branch_name, tx.branch_id"
+			      + "  )"
+			      + ") " + 
+			      "where rn < "+branchCount;
+	   
+	   Set<BranchId> setOfBranchIds = new HashSet<>();
+	   String query = String.format(DELETED_BRANCHES_OLDER_THAN, orcsApi.getJdbcService().getClient().getDbType().getExpireDateDays(expireTimeInDays));
+	   orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query
+	         );
 
+	   for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
+		Response purgeResponse = purgeBranch(branchId, false);
+		if (!purgeResponse.getStatusInfo().equals(Status.OK)) {
+			throw new OseeCoreException("Error purging deleted branch id: "+branchId);
+		}
+		
+	   }  
+	   return response;
+   }
+   
    @Override
    public Response unCommitBranch(BranchId branch, BranchId destinationBranch) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);

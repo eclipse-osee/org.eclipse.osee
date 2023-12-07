@@ -640,6 +640,13 @@ public class OseeDb {
       OSEE_OAUTH_TOKEN_TABLE.createIndex("OSEE_OAUTH_TOKEN__TK_IDX", false, OSEE_OAUTH_TOKEN_TOKEN_KEY);
    }
 
+   public static final SqlTable OSEE_VALIDATE_GAMMA_ID = new SqlTable("osee_validate_gamma_id", "vgi");
+   public static final SqlColumn OSEE_VALIDATE_GAMMA_ID_GAMMA_ID =
+      OSEE_VALIDATE_GAMMA_ID.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   static {
+      OSEE_VALIDATE_GAMMA_ID.setPrimaryKeyConstraint(OSEE_VALIDATE_GAMMA_ID_GAMMA_ID);
+   }
+
    public static SqlTable getTxsTable(boolean isArchived) {
       return isArchived ? TXS_ARCHIVED_TABLE : TXS_TABLE;
    }

@@ -14,13 +14,14 @@
 package org.eclipse.osee.orcs.db.internal.health;
 
 import java.util.Map;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.orcs.db.internal.callable.PurgeUnusedBackingDataAndTransactions;
 
 /**
  * @author Ryan D. Brooks
@@ -48,4 +49,11 @@ public final class DatabaseHealthResource {
       return strB.toString();
    }
 
+   @GET
+   @Path("rel2/validate")
+   @Produces(MediaType.TEXT_HTML)
+   public String validateRel2Table() {
+      new Rel2HealthOperation(jdbcClient);
+      return "<html><div>Relations Valid</div></html>";
+   }
 }
