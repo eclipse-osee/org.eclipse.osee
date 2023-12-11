@@ -111,8 +111,8 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    @Override
-   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir,
-      OperationReport report) {
+   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report,
+      Log logger) {
       vCastDir = filesDir.getAbsolutePath();
       File f = new File(vCastDir + File.separator + "cover.db");
       if (!f.exists()) {
@@ -120,7 +120,7 @@ public class LisFileParser implements DispoImporterApi {
          f = new File(vCastDir + File.separator + "cover.db");
       }
 
-      VCastDataStore dataStore = VCastClient.newDataStore(f.getAbsolutePath());
+      VCastDataStore dataStore = VCastClient.newDataStore(f.getAbsolutePath(), logger);
 
       dataStore.setIsMCDC();
       dataStore.setIsBranch();

@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.vcast.VCastDataStore;
 import org.eclipse.osee.vcast.model.VCastBranchCoverage;
 import org.eclipse.osee.vcast.model.VCastBranchData;
@@ -51,10 +52,12 @@ public class VCastDataStoreImpl implements VCastDataStore {
    private final JdbcClient client;
    private boolean isMCDC;
    private boolean isBranchCoverage;
+   private final Log logger;
 
-   public VCastDataStoreImpl(JdbcClient client) {
+   public VCastDataStoreImpl(JdbcClient client, Log logger) {
       super();
       this.client = client;
+      this.logger = logger;
    }
 
    private JdbcStatement getStatement() {
@@ -611,7 +614,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
                new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, num_conditions));
          }
       } catch (Exception ex) {
-         System.out.println(ex);
+         logger.error(ex.toString());
       } finally {
          stmt.close();
       }
@@ -667,7 +670,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
          }
 
       } catch (Exception ex) {
-         System.out.println(ex);
+         logger.error(ex.toString());
       } finally {
          stmt.close();
       }
@@ -698,7 +701,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
             mcdcCoveragePairRows.add(pairRow);
          }
       } catch (Exception ex) {
-         System.out.println(ex);
+         logger.error(ex.toString());
       } finally {
          rowStmt.close();
       }

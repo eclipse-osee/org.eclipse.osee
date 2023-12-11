@@ -10,6 +10,7 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jdbc,
+ org.eclipse.osee.logger,
  org.sqlite;resolution:=optional
 Export-Package: org.eclipse.osee.vcast,
  org.eclipse.osee.vcast.model

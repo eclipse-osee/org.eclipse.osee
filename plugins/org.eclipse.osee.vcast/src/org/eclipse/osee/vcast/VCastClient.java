@@ -15,6 +15,7 @@ package org.eclipse.osee.vcast;
 
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientBuilder;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.vcast.internal.VCastDataStoreImpl;
 
 /**
@@ -29,11 +30,11 @@ public class VCastClient {
       // Static Factory
    }
 
-   public static VCastDataStore newDataStore(String dbPath) {
+   public static VCastDataStore newDataStore(String dbPath, Log logger) {
       JdbcClient jdbcClient = JdbcClientBuilder.newBuilder()//
          .dbDriver(JDBC_SQLITE_DRIVER)//
          .dbUri(JDBC_SQLITE__CONNECTION_TEMPLATE, dbPath)//
          .build();
-      return new VCastDataStoreImpl(jdbcClient);
+      return new VCastDataStoreImpl(jdbcClient, logger);
    }
 }

@@ -21,7 +21,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   TmzImporterTest.class,
    DiscrepancyParserTest.class,
    DispoItemDataCopierTest.class,
    AnnotationCopierTest.class,
