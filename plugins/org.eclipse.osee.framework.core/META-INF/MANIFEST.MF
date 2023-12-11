@@ -51,7 +51,10 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.logger,
  org.eclipse.osgi.framework.console,
+ org.eclipse.osgi.internal.loader,
+ org.eclipse.osgi.storage,
  org.osgi.framework,
+ org.osgi.framework.launch,
  org.osgi.framework.wiring,
  org.osgi.service.event,
  org.osgi.util.tracker
@@ -83,4 +86,5 @@ Export-Package: org.eclipse.osee.framework.core,
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: javax.activation,
  javax.ws.rs,
- com.fasterxml.jackson.core.jackson-databind
+ com.fasterxml.jackson.core.jackson-databind,
+ org.eclipse.osgi

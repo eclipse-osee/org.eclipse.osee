@@ -17,6 +17,9 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -24,8 +27,11 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.launch.Framework;
+import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -48,6 +54,18 @@ public final class OsgiUtil {
       }
    }
 
+   public static BundleContext createOsgiBundleContext() {
+      FrameworkFactory frameworkFactory = ServiceLoader.load(FrameworkFactory.class).iterator().next();
+      Map<String, String> config = new HashMap<String, String>();
+      Framework framework = frameworkFactory.newFramework(config);
+      try {
+         framework.start();
+      } catch (BundleException ex1) {
+         throw new OseeCoreException("Bundle Exception has occured: "+ex1);
+      }
+      return framework.getBundleContext();
+   }
+   
    public static <T> T getService(Class<?> classFromBundle, Class<T> serviceClass) {
 
       BundleContext context = FrameworkUtil.getBundle(classFromBundle).getBundleContext();

@@ -17,9 +17,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.OrcsTokenServiceImpl;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -29,6 +34,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.launch.Framework;
+import org.osgi.framework.launch.FrameworkFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -53,11 +64,21 @@ public class RelationOrderParser {
       }
    };
    private final OrcsTokenService tokenService;
-
+   
+   
    public RelationOrderParser() {
-      tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
-   }
-
+      if(!System.getenv().toString().contains("bazel-out")) {
+         tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
+      }
+      else {
+         BundleContext context = OsgiUtil.createOsgiBundleContext();
+         ServiceRegistration<OrcsTokenService> servReg = context.registerService(OrcsTokenService.class, new OrcsTokenServiceImpl(), new Hashtable());
+         ServiceReference<OrcsTokenService> servRef = servReg.getReference();
+         tokenService = context.getService(servRef);    
+         
+      }
+   }  
+   
    public synchronized void loadFromXml(RelationOrderData data, String value) {
       if (data == null) {
          throw new OseeArgumentException("RelationOrderData object cannot be null");

@@ -39,7 +39,8 @@ filegroup(
 	    "src/org/eclipse/osee/framework/skynet/core/importing/parsers/tableOfContentsHyperlinkTest.xml",
             "src/org/eclipse/osee/framework/skynet/core/importing/parsers/testNumbering.xml",
             "src/org/eclipse/osee/framework/skynet/core/importing/ExcelArtifactExtractorTest.xml",
-            "src/org/eclipse/osee/framework/skynet/core/importing/NativeDocumentExtractorTest.xml"
+            "src/org/eclipse/osee/framework/skynet/core/importing/NativeDocumentExtractorTest.xml",
+	    "META-INF/MANIFEST.MF"
            ],
 )
 
