@@ -570,6 +570,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
         	  */
 			 validateRelationsRelTypeArtA(relType, artA); 
         	 TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders = getRelationSideAData(relType, artA);
+        	 if (relOrders.size() > 0 ) {
              minOrder = relOrders.firstKey();
              maxOrder = relOrders.lastKey();
 				if (afterArtifact.isValid()) {
@@ -578,6 +579,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 							relType.getId(), afterArtifact);
 					beforeIndex = relOrders.higherKey(afterIndex);
 				}
+        	 }
             txData.addRelationSideA(relType, artA, relOrders);
          }
          if (insertType.equals("start")) {
