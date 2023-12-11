@@ -7,16 +7,21 @@ osgi_jar_converter(
 
 java_library(
         name = "org.eclipse.osee.framework.core",
-        resources = ["manifest"],
+        resources = ["manifest","osgi"],
 	srcs =glob(["**/*.java"]),
         deps = ["java_deps","//org.eclipse.osee.framework.jdk.core","//org.eclipse.osee.logger",
-               "//org.eclipse.osee.framework.logging"],
+                "//org.eclipse.osee.framework.logging"],
         visibility = ["//visibility:public"]
 )
 
 filegroup(
     name = "manifest",
     srcs = ["META-INF/MANIFEST.MF"]
+)
+
+filegroup(
+    name = "osgi",
+    srcs = glob(["OSGI-INF/*"])
 )
 
 java_library(
