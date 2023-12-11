@@ -690,7 +690,7 @@ public class DispoApiImpl implements DispoApi {
             File importFile = new File(setToEdit.getImportPath());
             boolean pathExists = checkIfPathExists(importFile, report);
 
-            List<DispoItem> itemsFromParse = importer.importDirectory(nameToItemMap, importFile, report);
+            List<DispoItem> itemsFromParse = importer.importDirectory(nameToItemMap, importFile, report, logger);
 
             if (pathExists && itemsFromParse.isEmpty()) {
                report.addEntry(setToEdit.getImportPath(), "No file(s) found", DispoSummarySeverity.IGNORE);
