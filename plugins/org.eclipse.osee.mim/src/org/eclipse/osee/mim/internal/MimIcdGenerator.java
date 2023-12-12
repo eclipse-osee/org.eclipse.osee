@@ -29,6 +29,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -1097,8 +1098,6 @@ public class MimIcdGenerator {
       String validRange = "";
       if (dataType.equals("enumeration")) {
          validRange = "see enumerated literals";
-      } else if (dataType.equals("boolean")) {
-         validRange = "0 to 1";
       } else if (platformType != null) {
          if (minVal.equals(maxVal)) {
             validRange = minVal;
