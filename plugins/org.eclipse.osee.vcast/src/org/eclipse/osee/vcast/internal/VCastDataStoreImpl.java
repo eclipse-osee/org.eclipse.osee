@@ -626,6 +626,8 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
       JdbcStatement stmt = getStatement();
 
+      String statementInfo = "";
+
       try {
          // @formatter:off
          String query =
@@ -636,6 +638,12 @@ public class VCastDataStoreImpl implements VCastDataStore {
          // @formatter:on
 
          stmt.runPreparedQuery(query, function.getId());
+
+         statementInfo =
+            String.format("DbInfo: %s\nQuery: %s\nColumns: %d\n", stmt.toString(), query, stmt.getColumnCount());
+         for (int i = 1; i <= stmt.getColumnCount(); i++) {
+            statementInfo = String.format("%sColumn %d: %s\n", statementInfo, i, stmt.getColumnName(i));
+         }
 
          while (stmt.next()) {
             Integer line = stmt.getInt("temp.line");
@@ -670,7 +678,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
          }
 
       } catch (Exception ex) {
-         logger.error(ex.toString());
+         logger.error(String.format("%s\n%s", ex.toString(), statementInfo));
       } finally {
          stmt.close();
       }
