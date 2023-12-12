@@ -626,8 +626,6 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
       JdbcStatement stmt = getStatement();
 
-      String statementInfo = "";
-
       try {
          // @formatter:off
          String query =
@@ -639,23 +637,17 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
          stmt.runPreparedQuery(query, function.getId());
 
-         statementInfo =
-            String.format("DbInfo: %s\nQuery: %s\nColumns: %d\n", stmt.toString(), query, stmt.getColumnCount());
-         for (int i = 1; i <= stmt.getColumnCount(); i++) {
-            statementInfo = String.format("%sColumn %d: %s\n", statementInfo, i, stmt.getColumnName(i));
-         }
-
          while (stmt.next()) {
-            Integer line = stmt.getInt("temp.line");
-            String variable = stmt.getString("mcdc_c.cond_variable");
-            Integer id = stmt.getInt("temp.sc_id");
-            Integer mcdc_id = stmt.getInt("temp.mcdc_id");
-            Integer hit_count = stmt.getInt("temp.hit_count");
-            Integer max_hit_count = stmt.getInt("temp.max_hit_count");
-            String simp_expr = stmt.getString("temp.simplified_expr");
-            Integer num_conditions = stmt.getInt("temp.num_conditions");
-            String cond_expr = stmt.getString("mcdc_c.cond_expr");
-            Integer cond_index = stmt.getInt("mcdc_c.cond_index");
+            Integer line = stmt.getInt("line");
+            String variable = stmt.getString("cond_variable");
+            Integer id = stmt.getInt("sc_id");
+            Integer mcdc_id = stmt.getInt("mcdc_id");
+            Integer hit_count = stmt.getInt("hit_count");
+            Integer max_hit_count = stmt.getInt("max_hit_count");
+            String simp_expr = stmt.getString("simplified_expr");
+            Integer num_conditions = stmt.getInt("num_conditions");
+            String cond_expr = stmt.getString("cond_expr");
+            Integer cond_index = stmt.getInt("cond_index");
 
             String variableFullName;
             boolean isMCDCPair = false;
@@ -678,7 +670,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
          }
 
       } catch (Exception ex) {
-         logger.error(String.format("%s\n%s", ex.toString(), statementInfo));
+         logger.error(ex.toString());
       } finally {
          stmt.close();
       }
