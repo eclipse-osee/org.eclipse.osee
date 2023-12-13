@@ -430,7 +430,7 @@ public class OrcsStorageImpl implements Storage {
       if (aborted != null && !aborted.equals(origItem.getAborted())) {
          tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemAborted, aborted);
       }
-      if (itemNotes != null && !itemNotes.equals(origItem.getItemNotes())) {
+      if (itemNotes != null && origItem.getItemNotes().equals("none") && !itemNotes.equals(origItem.getItemNotes())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
       }
       if (fileNumber != null && !fileNumber.equals(origItem.getFileNumber())) {
@@ -453,8 +453,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoItems(BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag,
-      String operation) {
+   public void updateDispoItems(BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, operation);
       boolean isCommitNeeded = false;
 
