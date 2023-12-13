@@ -171,6 +171,10 @@ public abstract class XCreateEscapeWfXButton extends XButton implements Artifact
       return AtsArtifactTypes.TeamWorkflow;
    }
 
+   public AtsWorkDefinitionToken getOverrideCrWorkDefinitionId(IAtsTeamDefinition teamDef) {
+      return AtsWorkDefinitionTokens.WorkDef_Team_Simple_InWork;
+   }
+
    private class NewEscapeActionListener implements INewActionListener {
       @Override
       public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
@@ -180,7 +184,7 @@ public abstract class XCreateEscapeWfXButton extends XButton implements Artifact
 
       @Override
       public AtsWorkDefinitionToken getOverrideWorkDefinitionId(IAtsTeamDefinition teamDef) {
-         return AtsWorkDefinitionTokens.WorkDef_Team_Simple_InWork;
+         return getOverrideCrWorkDefinitionId(teamDef);
       }
 
       @Override
