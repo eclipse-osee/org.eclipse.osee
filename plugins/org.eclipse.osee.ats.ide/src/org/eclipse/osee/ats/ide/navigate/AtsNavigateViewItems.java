@@ -547,8 +547,19 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
    private void addPleItems() {
       ElapsedTime time = new ElapsedTime("NVI - addPleItems", debug);
       try {
-         String applicationServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, "");
-         applicationServer = applicationServer.replaceFirst("\\.", "-web.");
+         String applicationServer = System.getProperty("osee.web.url", "null");
+
+         if (applicationServer.equals("null")) {
+            applicationServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER, "null");
+
+            if (applicationServer.equals("null")) {
+               OseeLog.log(Activator.class, Level.SEVERE, "osee.application.server property not set!");
+            } else {
+               OseeLog.log(Activator.class, Level.INFO,
+                  "osee.web.url property not set, using default osee.application.server url: " + applicationServer);
+            }
+         }
+
          items.add(new XNavigateItemFolder(PLE.getName(), FrameworkImage.PLE, XNavItemCat.TOP, PLE));
          items.add(new XNavigateUrlItem("Product Line (PL) Dashboard", applicationServer + "/osee/ple", true,
             FrameworkImage.PLE, PLE));
