@@ -28,7 +28,11 @@
 							   <plugin id="swagger-models"/>
                 					   <plugin id="swagger-integration"/>
                 			                   <plugin id="swagger-annotations"/>
-							   <plugin id="swagger-core"/>
+                			                   <plugin id="artifactory-java-client-api"/>
+							   <plugin id="artifactory-java-client-httpClient"/>
+							   <plugin id="artifactory-java-client-services"/>
+							   <plugin id="file-specs-java"/> 
+                                                           <plugin id="swagger-core"/>
 							   <plugin id="jackson-dataformat-yaml"/>
 							   <plugin id="swagger-jaxrs2"/>
 							   <plugin id="org.hsqldb"/>
