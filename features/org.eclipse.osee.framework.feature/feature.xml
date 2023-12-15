@@ -34,58 +34,9 @@
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
    </requires>
 
-  <plugin
-      id="artifactory-java-client-httpClient"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
-
   <plugin	
-      id="org.apache.httpcomponents.httpclient"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
-
-  <plugin	
-      id="artifactory-java-client-services"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
-  
-  <plugin
-         id="file-specs-java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/> 
-  
-  <plugin	
-      id="groovy"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>     
-
-  <plugin	
-      id="org.apache.httpcomponents.httpcore"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
-
-  <plugin
-      id="artifactory-java-client-api"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
-
-  <plugin	
-      id="commons-lang3"
-      download-size="0"
+		id="commons-lang3"
+		download-size="0"
       install-size="0"
       version="0.0.0"
       unpack="false"/>
