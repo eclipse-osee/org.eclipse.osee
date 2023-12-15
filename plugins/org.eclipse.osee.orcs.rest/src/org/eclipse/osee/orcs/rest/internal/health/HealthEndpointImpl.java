@@ -34,9 +34,12 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthActiveMq;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthBalancers;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthDbTablespace;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthDetails;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthJava;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthLog;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthSql;
+import org.eclipse.osee.orcs.rest.internal.health.operations.HealthSqlTableSize;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthStatus;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthTop;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthUsage;
@@ -221,5 +224,47 @@ public final class HealthEndpointImpl {
       } catch (Exception e) {
          return "Error: key [osee.health.servers] is NOT SET in table [osee_info]";
       }
+   }
+
+   @GET
+   @Path("db/sql")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthSql getSqlHealth(@QueryParam("pageNum") long pageNum, @QueryParam("pageSize") long pageSize,
+      @QueryParam("orderByName") String orderByName, @QueryParam("orderByDirection") String orderByDirection) {
+      if (orderByName == null) {
+         orderByName = "";
+      }
+      if (orderByDirection == null) {
+         orderByDirection = "";
+      }
+      pageNum++;
+      HealthSql sql = new HealthSql(orcsApi, pageNum, pageSize, orderByName, orderByDirection);
+      sql.querySqlHealth();
+      return sql;
+   }
+
+   @GET
+   @Path("db/tablespace")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthDbTablespace getDbTablespaceStats(@QueryParam("orderByName") String orderByName,
+      @QueryParam("orderByDirection") String orderByDirection) {
+      if (orderByName == null) {
+         orderByName = "";
+      }
+      if (orderByDirection == null) {
+         orderByDirection = "";
+      }
+      HealthDbTablespace ts = new HealthDbTablespace(orcsApi, orderByName, orderByDirection);
+      ts.queryDbTablespace();
+      return ts;
+   }
+
+   @GET
+   @Path("db/sql/size")
+   @Produces(MediaType.APPLICATION_JSON)
+   public HealthSqlTableSize getSqlHealthTableSize() {
+      HealthSqlTableSize size = new HealthSqlTableSize(orcsApi);
+      size.querySqlHealthTableSize();
+      return size;
    }
 }

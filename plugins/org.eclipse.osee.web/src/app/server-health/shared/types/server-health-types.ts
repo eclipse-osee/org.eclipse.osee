@@ -157,3 +157,38 @@ export interface versionNameMap {
 export interface unknownJson {
 	[key: string]: unknown;
 }
+
+export interface healthSql {
+	errorMsg: string;
+	sqls: sql[];
+}
+
+export interface sql {
+	sqlText: string;
+	elapsedTime: string;
+	executions: string;
+	elapsedTimeAverage: string;
+	percent: string;
+}
+
+export interface healthSqlSize {
+	errorMsg: string;
+	size: number;
+}
+
+export interface healthTablespace {
+	errorMsg: string;
+	tablespaces: tablespace[];
+}
+
+export interface tablespace {
+	tablespaceName: string;
+	maxTsPctUsed: string;
+	autoExtend: string;
+	tsPctUsed: string;
+	tsPctFree: string;
+	usedTsSize: string;
+	freeTsSize: string;
+	currTsSize: string;
+	maxTxSize: string;
+}

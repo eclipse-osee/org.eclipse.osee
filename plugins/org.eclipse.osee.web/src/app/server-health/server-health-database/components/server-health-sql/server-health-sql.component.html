@@ -1,0 +1,105 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div
+	class="tw-flex tw-flex-col tw-bg-primary-100 tw-p-2 tw-pl-6 dark:tw-bg-primary-600">
+	<div class="tw-text-lg tw-font-bold">SQL Statement Table</div>
+	<div class="tw-text-sm">Provides SQL Statement Performance Statistics</div>
+</div>
+@if (sqlDataSource | async; as sqlDataSource) {
+	<mat-table
+		[dataSource]="sqlDataSource"
+		matSort
+		(matSortChange)="updateOrderBy($event)">
+		<ng-container matColumnDef="percent">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="percent">
+				Percent
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.percent }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="sqlText">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="sqlText"
+				class="tw-flex tw-flex-shrink-0 tw-flex-grow-0 tw-basis-1/2">
+				SQL Text
+			</mat-header-cell>
+			<mat-cell
+				*matCellDef="let element"
+				class="tw-flex tw-flex-shrink-0 tw-flex-grow-0 tw-basis-1/2">
+				{{ element.sqlText }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="elapsedTime">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="elapsedTime">
+				Elapsed Time
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.elapsedTime }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="executions">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="executions">
+				Executions
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.executions }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="elapsedTimeAverage">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="elapsedTimeAverage">
+				Elapsed Time Average
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.elapsedTimeAverage }}
+			</mat-cell>
+		</ng-container>
+
+		<mat-header-row
+			*matHeaderRowDef="displayedColumns"
+			class="tw-font-bold"></mat-header-row>
+		<mat-row
+			*matRowDef="
+				let row;
+				let even = even;
+				let odd = odd;
+				columns: displayedColumns
+			"
+			[ngClass]="{
+				'tw-bg-background-hover': even,
+				'tw-bg-background-raised-button': odd
+			}"></mat-row>
+	</mat-table>
+	@if (sqlSize | async; as sqlSize) {
+		<mat-paginator
+			[length]="sqlSize.size"
+			[pageSizeOptions]="[5, 10, 25, 100, sqlSize.size]"
+			[pageIndex]="(pageNum$ | async) || 0"
+			[pageSize]="(pageSize$ | async) || 0"
+			(page)="updatePage($event)"
+			showFirstLastButtons
+			[disabled]="false">
+		</mat-paginator>
+	}
+} @else {
+	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
+}

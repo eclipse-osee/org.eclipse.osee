@@ -19,31 +19,9 @@ const routes: Routes = [
 		outlet: 'toolbar',
 		pathMatch: 'full',
 	},
-	{ path: '', loadComponent: () => import('./server-health.component') },
 	{
-		path: 'status',
-		loadChildren: () =>
-			import('./server-health-status/server-health-status.routes'),
-	},
-	{
-		path: 'balancers',
-		loadChildren: () =>
-			import('./server-health-balancers/server-health-balancers.routes'),
-	},
-	{
-		path: 'headers',
-		loadChildren: () =>
-			import('./server-health-headers/server-health-headers.routes'),
-	},
-	{
-		path: 'usage',
-		loadChildren: () =>
-			import('./server-health-usage/server-health-usage.routes'),
-	},
-	{
-		path: 'database',
-		loadChildren: () =>
-			import('./server-health-database/server-health-database.routes'),
+		path: '',
+		loadComponent: () => import('./server-health-database.component'),
 	},
 ];
 

@@ -17,46 +17,41 @@
 		[description]="currNavItem.description" />
 	<!-- Important Nav Buttons -->
 	<div class="tw-flex tw-justify-center">
-		<div class="tw-grid tw-flex-1 tw-grid-cols-4 tw-gap-8 tw-p-8 tw-pt-0">
+		<div class="tw-grid tw-flex-1 tw-grid-cols-5 tw-gap-8 tw-p-8 tw-pt-0">
 			<ng-container *ngFor="let item of importantNavItems">
-				@if (item.label == 'ActiveMQ') {
-					@if (activeMq | async; as activeMq) {
-						<button
-							[matTooltip]="item.description"
-							(click)="openLink(activeMq.activeMqUrl)"
-							class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
-							<div class="tw-flex tw-items-center">
-								<div class="tw-px-4 tw-text-white">
-									<mat-icon>
-										{{ item.icon }}
-									</mat-icon>
-								</div>
-								<div
-									class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
-									{{ item.label }}
-								</div>
-							</div>
-						</button>
-					}
-				} @else {
-					<button
-						[matTooltip]="item.description"
-						[routerLink]="item.routerLink"
-						class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
-						<div class="tw-flex tw-items-center">
-							<div class="tw-px-4 tw-text-white">
-								<mat-icon>
-									{{ item.icon }}
-								</mat-icon>
-							</div>
-							<div
-								class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
-								{{ item.label }}
-							</div>
+				<button
+					[matTooltip]="item.description"
+					[routerLink]="item.routerLink"
+					class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
+					<div class="tw-flex tw-items-center">
+						<div class="tw-px-4 tw-text-white">
+							<mat-icon>
+								{{ item.icon }}
+							</mat-icon>
 						</div>
-					</button>
-				}
+						<div
+							class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
+							{{ item.label }}
+						</div>
+					</div>
+				</button>
 			</ng-container>
+			@if (activeMq | async; as activeMq) {
+				<button
+					matTooltip="External Link to ActiveMQ Configuration Page"
+					(click)="openLink(activeMq.activeMqUrl)"
+					class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
+					<div class="tw-flex tw-items-center">
+						<div class="tw-px-4 tw-text-white">
+							<mat-icon> flash_on </mat-icon>
+						</div>
+						<div
+							class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
+							ActiveMQ
+						</div>
+					</div>
+				</button>
+			}
 		</div>
 	</div>
 	<!-- Prometheus graph -->
@@ -69,7 +64,7 @@
 				frameborder="0"></iframe>
 			<button
 				(click)="openLink(prometheusUrl)"
-				class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
+				class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
 				<div class="tw-flex tw-items-center">
 					<div class="tw-px-4 tw-text-white">
 						<mat-icon>open_in_new</mat-icon>
@@ -86,12 +81,12 @@
 	</div>
 	<!-- Non-Important Nav Buttons -->
 	<div class="tw-flex tw-justify-center">
-		<div class="tw-grid tw-flex-1 tw-grid-cols-4 tw-gap-8 tw-p-8 tw-pt-0">
+		<div class="tw-grid tw-flex-1 tw-grid-cols-5 tw-gap-8 tw-p-8 tw-pt-0">
 			<ng-container *ngFor="let item of nonImportantNavItems">
 				<button
 					[matTooltip]="item.description"
 					[routerLink]="item.routerLink"
-					class="tw-w-full tw-rounded-md tw-bg-gradient-to-b tw-from-primary tw-to-primary-700 tw-p-4 tw-text-foreground tw-shadow-md">
+					class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
 					<div class="tw-flex tw-items-center">
 						<div class="tw-px-4 tw-text-white">
 							<mat-icon>
