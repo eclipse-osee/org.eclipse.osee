@@ -23,7 +23,13 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 public interface DispoSet extends Identifiable<String> {
 
+   String getIdString();
+
    String getImportPath();
+
+   String getServerImportPath();
+
+   boolean serverImportPathExists();
 
    List<Note> getNotesList();
 
@@ -38,4 +44,5 @@ public interface DispoSet extends Identifiable<String> {
    String getRerunList();
 
    Date getTime();
+
 }

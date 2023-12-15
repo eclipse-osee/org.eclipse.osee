@@ -181,7 +181,7 @@ public class DispoItemEndpoint {
       @Parameter(description = "The Id of the Dispositionable Item to search for", required = true) @PathParam("itemId") String itemId,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response response;
-      boolean wasEdited = dispoApi.deleteDispoItem(branch, itemId, userName);
+      boolean wasEdited = dispoApi.deleteDispoItem(branch, itemId);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {

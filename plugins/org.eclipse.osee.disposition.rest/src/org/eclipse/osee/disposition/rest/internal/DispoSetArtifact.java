@@ -36,6 +36,11 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    }
 
    @Override
+   public String getIdString() {
+      return artifact.getIdString();
+   }
+
+   @Override
    public String getName() {
       return artifact.getName();
    }
@@ -43,6 +48,22 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    @Override
    public String getImportPath() {
       return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoImportPath);
+   }
+
+   @Override
+   public String getServerImportPath() {
+      if (artifact.getAttributeCount(DispoOseeTypes.ServerImportPath) == 1) {
+         return artifact.getSoleAttributeAsString(DispoOseeTypes.ServerImportPath);
+      }
+      return "";
+   }
+
+   @Override
+   public boolean serverImportPathExists() {
+      if (artifact.getAttributeCount(DispoOseeTypes.ServerImportPath) == 1) {
+         return true;
+      }
+      return false;
    }
 
    @Override

@@ -42,6 +42,7 @@ import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgamDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
@@ -73,12 +74,6 @@ public class DispoProgramEndpoint {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.TEXT_PLAIN)
-   @Operation(summary = "Create a new Disposition Set given a DispoSetDescriptor")
-   @Tags(value = {@Tag(name = "create"), @Tag(name = "set")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "OK. Created the Disposition Set"),
-      @ApiResponse(responseCode = "409", description = "Conflict. Tried to create a Disposition Set with same name"),
-      @ApiResponse(responseCode = "400", description = "Bad Request. Did not provide both a Name and a valid Import Path")})
    public Response createProgram(DispoProgamDescriptorData programDescriptor,
       @Parameter(description = "The Username") @QueryParam("userName") String userName) {
       String name = "(DISPO)" + programDescriptor.getName();
@@ -87,7 +82,7 @@ public class DispoProgramEndpoint {
       if (!name.isEmpty()) {
          boolean isUniqueName = dispoApi.isUniqueProgramName(name);
          if (isUniqueName) {
-            long createdProgramId = dispoApi.createDispoProgram(name, userName);
+            long createdProgramId = dispoApi.createDispoProgram(name);
             status = Status.CREATED;
             response = Response.status(status).entity(createdProgramId).build();
          } else {
@@ -211,7 +206,7 @@ public class DispoProgramEndpoint {
       @ApiResponse(responseCode = "415", description = "Unsupported Media Type")})
    public Response importAllDispoSets(String filterState) {
       Response.Status status;
-      dispoApi.importAllDispoPrograms(filterState, "OSEE System Auto-Import (All)");
+      dispoApi.importAllDispoPrograms(filterState);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -239,9 +234,28 @@ public class DispoProgramEndpoint {
       @Parameter(description = "The Branch name", required = true) @FormParam("name") String branchName) {
       BranchToken branch = dispoApi.getDispoProgramIdByName(branchName);
       Response.Status status;
-      dispoApi.importAllDispoSets(branch, filterState, "OSEE System Auto-Import (Branch)");
+      dispoApi.importAllDispoSets(branch, filterState);
       status = Status.OK;
       return Response.status(status).build();
+   }
+
+   @Path("{programName}/set/{setName}/import")
+   @PUT
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response putDispoSetByName(@PathParam("programName") String programName, @PathParam("setName") String setName,
+      String importPath) {
+      programName = String.format("(DISPO)%s", programName);
+      importPath = importPath.replaceAll("\"", "");
+      BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
+      String setId = dispoApi.getDispoSetIdByName(programId, setName);
+      if (setId != null) {
+         dispoApi.importDispoSet(programId, setId, importPath);
+      } else {
+         ArtifactId createdSetId = dispoApi.createSet(programId, importPath, setName);
+         setId = dispoApi.getDispoSetById(programId, ArtifactId.valueOf(createdSetId).getIdString()).getIdString();
+         dispoApi.importDispoSet(programId, setId, importPath);
+      }
+      return Response.status(Status.OK).build();
    }
 
    @Path("{branchId}/set")

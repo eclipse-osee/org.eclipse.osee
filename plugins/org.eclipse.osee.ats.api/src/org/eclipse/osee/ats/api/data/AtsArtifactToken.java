@@ -63,6 +63,10 @@ public final class AtsArtifactToken {
 
    // JIRA
    public static ArtifactToken JiraConfig = ArtifactToken.valueOf(9501446, "JIRA Config", COMMON, CoreArtifactTypes.GeneralData);
+
+   // Artifactory
+   public static ArtifactToken ArtifactoryConfig = ArtifactToken.valueOf(11397386, "Artifactory Config", COMMON, CoreArtifactTypes.GeneralData);
+
    // @formatter:on
 
    private AtsArtifactToken() {

@@ -68,9 +68,11 @@ public interface DispoApi {
    List<String> getCheckedReruns(BranchId branch, String setId);
 
    // Writes
-   Long createDispoProgram(String name, String userName);
+   Long createDispoProgram(String name);
 
-   ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName);
+   ArtifactId createSet(BranchId branch, String importPath, String setName);
+
+   ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor);
 
    String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName,
       boolean isCi);
@@ -84,11 +86,13 @@ public interface DispoApi {
 
    void editDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName);
 
-   void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet, String userName);
+   void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet);
 
-   void importAllDispoSets(BranchId branch, String filterState, String userName);
+   void importDispoSet(BranchId branch, String dispoSetId, String importPath);
 
-   void importAllDispoPrograms(String filterState, String userName);
+   void importAllDispoSets(BranchId branch, String filterState);
+
+   void importAllDispoPrograms(String filterState);
 
    boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName,
       boolean assignUser);
@@ -96,25 +100,24 @@ public interface DispoApi {
    boolean updateAllDispoItems(BranchId branch, String dispoSetId);
 
    boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType,
-      String resolution, String userName);
+      String resolution);
 
-   boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage,
-      String userName);
+   boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage);
 
    boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation,
       String userName, boolean isCi);
 
-   void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params,
-      String userName);
+   void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId,
+      CopySetParams params);
 
    void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId,
-      CopySetParams params, String userName);
+      CopySetParams params);
 
    // Deletes
 
-   boolean deleteDispoSet(BranchId branch, String dispoSetId, String userName);
+   boolean deleteDispoSet(BranchId branch, String dispoSetId);
 
-   boolean deleteDispoItem(BranchId branch, String itemId, String userName);
+   boolean deleteDispoItem(BranchId branch, String itemId);
 
    boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName, boolean isCi);
 
