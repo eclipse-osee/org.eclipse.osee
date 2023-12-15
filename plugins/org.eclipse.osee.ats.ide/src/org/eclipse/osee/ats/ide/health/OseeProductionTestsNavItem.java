@@ -144,14 +144,7 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       datas.add(new StandAloneRestData("ATS Action Endpoint", "/ats/ui/action", "HTML", "ATS UI Endpoint"));
       datas.add(new StandAloneRestData("ATS Action Search", "/ats/ui/action/Search", "HTML", "ATS - Search"));
       datas.add(new StandAloneRestData("ATS Configure Branch", "/ats/config/ui/NewAtsBranchConfig", "HTML", "ATS - Configure Branch"));
-      datas.add(new StandAloneRestData("OSEE Health", "/server/health", "HTML", "OSEE Health"));
-      datas.add(new StandAloneRestData("Active MQ Event Service", "/server/health/activemq", "HTML", "Active MQ Event Service"));
-      datas.add(new StandAloneRestData("Load Balancer Status", "/server/health/balancer", "HTML", "Load Blancer Status"));
-      datas.add(new StandAloneRestData("OSEE Health - Server Health - Overview", "/server/health/overview", "HTML", "OSEE Health - Server Health - Overview"));
-      datas.add(new StandAloneRestData("Server Status", "/server/health/overview/details", "HTML", "Server Status"));
       datas.add(new StandAloneRestData("ORCS Branch", "/orcs/branch", "HTML", "Name"));
-      datas.add(new StandAloneRestData("Server Health Types", "/server/health/types", "HTML", "server Types"));
-      datas.add(new StandAloneRestData("Server Health Usage", "/server/health/usage", "HTML", "Account"));
 
       datas.add(new StandAloneRestData("ATS Health Check", "/ats/health/check", "HTML", "ATS Health Check"));
       datas.add(new StandAloneRestData("ATS Config", "/ats/config", "JSON", "\"views\""));
@@ -163,7 +156,6 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       datas.add(new StandAloneRestData("APPS API", "/apps/api", "JSON", "\"description\""));
       datas.add(new StandAloneRestData("ATS AI Details", "/ats/ai/details", "JSON", "\"Description\""));
       datas.add(new StandAloneRestData("ATS Country Details", "/ats/country/details", "JSON", "\"programs\""));
-      datas.add(new StandAloneRestData("Server Health Status", "/server/health/status", "JSON", "\"threadStats\""));
       datas.add(new StandAloneRestData("ATS Config Validate", "/ats/config/validate", "JSON", "\"numErrorsViaSearch\""));
       datas.add(new StandAloneRestData("ORCS Working Branches", "/orcs/branches/working", "JSON", "\"associatedArtifact\""));
       datas.add(new StandAloneRestData("ORCS Datastore Info", "/orcs/datastore/info", "JSON", "\"properties\""));
