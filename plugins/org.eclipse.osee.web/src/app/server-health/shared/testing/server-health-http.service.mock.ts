@@ -15,12 +15,16 @@ import { ServerHealthHttpService } from '../services/server-health-http.service'
 import {
 	healthActiveMq,
 	healthBalancers,
+	healthSql,
+	healthSqlSize,
 	healthStatus,
+	healthTablespace,
 	healthUsage,
 	remoteHealthDetails,
 	remoteHealthJava,
 	remoteHealthLog,
 	remoteHealthTop,
+	sql,
 	unknownJson,
 } from '../types/server-health-types';
 
@@ -56,6 +60,20 @@ export const ServerHealthHttpServiceMock: Partial<ServerHealthHttpService> = {
 	},
 	get Usage(): Observable<healthUsage> {
 		return of(healthUsageMock);
+	},
+	getSql(
+		pageNum: number,
+		pageSize: number,
+		orderByName: string,
+		orderByDirection: string
+	) {
+		return of(healthSqlMock);
+	},
+	get SqlSize() {
+		return of(healthSqlSizeMock);
+	},
+	getTablespace(orderByName: string, orderByDirection: string) {
+		return of(healthTablespaceMock);
 	},
 };
 
@@ -254,4 +272,39 @@ export const healthUsageMock: healthUsage = {
 export const unknownJsonMock: unknownJson = {
 	headerInfo1: '',
 	headerInfo2: 2,
+};
+
+export const healthSqlMock: healthSql = {
+	errorMsg: '',
+	sqls: [
+		{
+			sqlText: '',
+			elapsedTime: '',
+			executions: '',
+			elapsedTimeAverage: '',
+			percent: '',
+		},
+	],
+};
+
+export const healthSqlSizeMock: healthSqlSize = {
+	errorMsg: '',
+	size: 7,
+};
+
+export const healthTablespaceMock: healthTablespace = {
+	errorMsg: '',
+	tablespaces: [
+		{
+			tablespaceName: '',
+			maxTsPctUsed: '',
+			autoExtend: '',
+			tsPctUsed: '',
+			tsPctFree: '',
+			usedTsSize: '',
+			freeTsSize: '',
+			currTsSize: '',
+			maxTxSize: '',
+		},
+	],
 };

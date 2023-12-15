@@ -17,8 +17,11 @@ import { apiURL } from '@osee/environments';
 import {
 	healthActiveMq,
 	healthBalancers,
+	healthSql,
+	healthSqlSize,
 	healthStatus,
 	healthUsage,
+	healthTablespace,
 	remoteHealthDetails,
 	remoteHealthJava,
 	remoteHealthLog,
@@ -139,5 +142,40 @@ export class ServerHealthHttpService {
 
 	public get Usage(): Observable<healthUsage> {
 		return this.http.get<healthUsage>(apiURL + '/health/usage');
+	}
+
+	public getSql(
+		pageNum: number,
+		pageSize: number,
+		orderByName: string,
+		orderByDirection: string
+	): Observable<healthSql> {
+		return this.http.get<healthSql>(apiURL + '/health/db/sql', {
+			params: {
+				pageNum: pageNum,
+				pageSize: pageSize,
+				orderByName: orderByName,
+				orderByDirection: orderByDirection,
+			},
+		});
+	}
+
+	public get SqlSize(): Observable<healthSqlSize> {
+		return this.http.get<healthSqlSize>(apiURL + '/health/db/sql/size');
+	}
+
+	public getTablespace(
+		orderByName: string,
+		orderByDirection: string
+	): Observable<healthTablespace> {
+		return this.http.get<healthTablespace>(
+			apiURL + '/health/db/tablespace',
+			{
+				params: {
+					orderByName: orderByName,
+					orderByDirection: orderByDirection,
+				},
+			}
+		);
 	}
 }

@@ -1,0 +1,128 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+
+<div
+	class="tw-flex tw-flex-col tw-bg-primary-100 tw-p-2 tw-pl-6 dark:tw-bg-primary-600">
+	<div class="tw-text-lg tw-font-bold">Tablespace Table</div>
+	<div class="tw-text-sm">Provides Tablespace Size and Specifications</div>
+</div>
+@if (tablespaceDatasource | async; as tablespaceDatasource) {
+	<mat-table
+		[dataSource]="tablespaceDatasource"
+		matSort
+		(matSortChange)="updateOrderBy($event)">
+		<ng-container matColumnDef="tablespaceName">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="tablespaceName">
+				Name
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.tablespaceName }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="maxTsPctUsed">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="maxTsPctUsed"
+				class="tw-flex tw-flex-shrink-0 tw-flex-grow-0 tw-basis-[12%]">
+				Max Percent Used (%)
+			</mat-header-cell>
+			<mat-cell
+				*matCellDef="let element; let i = index"
+				class="tw-flex tw-flex-shrink-0 tw-flex-grow-0 tw-basis-[12%]"
+				[ngClass]="getMatPctUsedColor(element.maxTsPctUsed, i)">
+				{{ element.maxTsPctUsed }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="autoExtend">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="autoExtend">
+				Auto Extend?
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.autoExtend }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="tsPctUsed">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="tsPctUsed">
+				Percent Used (%)
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.tsPctUsed }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="tsPctFree">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="tsPctFree">
+				Percent Free (%)
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.tsPctFree }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="usedTsSize">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="usedTsSize">
+				Used Size
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.usedTsSize }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="freeTsSize">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="freeTsSize">
+				Free Size
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.freeTsSize }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="currTsSize">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="currTsSize">
+				Current Size
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.currTsSize }}
+			</mat-cell>
+		</ng-container>
+		<ng-container matColumnDef="maxTxSize">
+			<mat-header-cell
+				*matHeaderCellDef
+				mat-sort-header="maxTxSize">
+				Max Size
+			</mat-header-cell>
+			<mat-cell *matCellDef="let element">
+				{{ element.maxTxSize }}
+			</mat-cell>
+		</ng-container>
+
+		<mat-header-row
+			*matHeaderRowDef="displayedColumns"
+			class="tw-font-bold"></mat-header-row>
+		<mat-row
+			*matRowDef="let row; columns: displayedColumns"
+			class="odd:tw-bg-background-raised-button even:tw-bg-background-hover"></mat-row>
+	</mat-table>
+} @else {
+	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
+}
