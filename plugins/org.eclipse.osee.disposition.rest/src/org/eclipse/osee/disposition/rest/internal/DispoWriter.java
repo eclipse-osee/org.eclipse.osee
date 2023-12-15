@@ -20,7 +20,6 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Angel Avila
@@ -29,7 +28,11 @@ public interface DispoWriter {
 
    Long createDispoProgram(String name);
 
+   ArtifactId createSet(BranchId branch, String importPath, String setName);
+
    ArtifactId createDispoSet(BranchId branch, DispoSet descriptor);
+
+   void updateOrCreateServerImportPath(BranchId branch, DispoSet dispoSetId, String localImportPath);
 
    void updateDispoSet(BranchId branch, String dispoSetId, DispoSet data);
 

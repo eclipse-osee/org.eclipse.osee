@@ -107,4 +107,19 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    public void setTime(Date time) {
       this.time = time;
    }
+
+   @Override
+   public String getIdString() {
+      return null;
+   }
+
+   @Override
+   public String getServerImportPath() {
+      return null;
+   }
+
+   @Override
+   public boolean serverImportPathExists() {
+      return false;
+   }
 }

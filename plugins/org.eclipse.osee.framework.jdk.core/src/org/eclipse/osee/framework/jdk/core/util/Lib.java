@@ -1542,7 +1542,7 @@ public final class Lib {
       }
    }
 
-   public static String decompressStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+   public static String decompressStream(InputStream inputStream, OutputStream outputStream) {
       String zipEntryName = null;
       ZipInputStream zipInputStream = null;
       try {
@@ -1551,6 +1551,8 @@ public final class Lib {
          zipEntryName = entry.getName();
          // Transfer bytes from the ZIP file to the output file
          inputStreamToOutputStream(zipInputStream, outputStream);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to decompress zip stream");
       } finally {
          Lib.close(zipInputStream);
       }
@@ -1601,6 +1603,61 @@ public final class Lib {
          Lib.close(out);
       }
       return out.toByteArray();
+   }
+
+   public static void decompressStream(ZipInputStream zis, byte[] streamBuffer, File unzipLocation) {
+      ZipEntry zipEntry;
+      try {
+         zipEntry = zis.getNextEntry();
+
+         unzipLocation.mkdirs();
+         while (zipEntry != null) {
+            File uploadedDirectory = newFile(unzipLocation, zipEntry);
+            if (zipEntry.isDirectory()) {
+               if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
+                  zis.close();
+                  throw new OseeCoreException("Failed to create directory " + uploadedDirectory);
+               }
+            } else {
+               // fix for Windows-created archives
+               File parent = uploadedDirectory.getParentFile();
+               if (!parent.isDirectory() && !parent.mkdirs()) {
+                  zis.close();
+                  throw new OseeCoreException("Failed to create directory " + parent);
+               }
+               // write file content
+               try (FileOutputStream fos = new FileOutputStream(uploadedDirectory);) {
+                  int len;
+                  while ((len = zis.read(streamBuffer)) > 0) {
+                     fos.write(streamBuffer, 0, len);
+                  }
+               } catch (Exception ex) {
+                  throw new OseeCoreException(ex);
+               }
+            }
+            zipEntry = zis.getNextEntry();
+         }
+         zis.closeEntry();
+         zis.close();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+   }
+
+   private static File newFile(File destinationDir, ZipEntry zipEntry) {
+      File destFile = new File(destinationDir, zipEntry.getName());
+      String destDirPath;
+      try {
+         destDirPath = destinationDir.getCanonicalPath();
+         String destFilePath = destFile.getCanonicalPath();
+
+         if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new OseeCoreException("Entry is outside of the target dir: " + zipEntry.getName());
+         }
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
+      return destFile;
    }
 
    public static String getSortedJavaArrayInitializer(String[] strings) {

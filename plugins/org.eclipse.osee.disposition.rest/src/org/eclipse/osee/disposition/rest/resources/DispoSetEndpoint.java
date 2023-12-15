@@ -91,7 +91,7 @@ public class DispoSetEndpoint {
       if (!name.isEmpty() && !importPath.isEmpty() && !dispoType.isEmpty()) {
          boolean isUniqueSetName = dispoApi.isUniqueSetName(branch, name);
          if (isUniqueSetName) {
-            ArtifactId createdSetId = dispoApi.createDispoSet(branch, descriptor, userName);
+            ArtifactId createdSetId = dispoApi.createDispoSet(branch, descriptor);
             DispoSet createdSet = dispoApi.getDispoSetById(branch, ArtifactId.valueOf(createdSetId).getIdString());
             status = Status.CREATED;
             response = Response.status(status).entity(createdSet).build();
@@ -246,7 +246,7 @@ public class DispoSetEndpoint {
       String setId = dispoApi.getDispoSetIdByName(branch, setName);
       Response.Status status;
       if (setId != null) {
-         dispoApi.editDispoSet(branch, setId, newDispositionSet, "OSEE System Auto-Import (Set)");
+         dispoApi.editDispoSet(branch, setId, newDispositionSet);
       }
       status = Status.OK;
       return Response.status(status).build();
@@ -275,7 +275,7 @@ public class DispoSetEndpoint {
       DispoSetData newDispositionSet,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response.Status status;
-      dispoApi.editDispoSet(branch, setId, newDispositionSet, userName);
+      dispoApi.editDispoSet(branch, setId, newDispositionSet);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -304,7 +304,7 @@ public class DispoSetEndpoint {
       @Parameter(description = "The Resolution", required = true) @QueryParam("resolution") String resolution,
       List<String> itemIds, @QueryParam("userName") String userName) {
       Response.Status status;
-      dispoApi.editMassDispositions(branch, setId, itemIds, resolutionType, resolution, userName);
+      dispoApi.editMassDispositions(branch, setId, itemIds, resolutionType, resolution);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -329,7 +329,7 @@ public class DispoSetEndpoint {
       @Parameter(description = "The Id of the Disposition Set to search for", required = true) @PathParam("setId") String setId,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response.Status status = Status.NOT_FOUND;
-      boolean wasDeleted = dispoApi.deleteDispoSet(branch, setId, userName);
+      boolean wasDeleted = dispoApi.deleteDispoSet(branch, setId);
       if (wasDeleted) {
          status = Status.OK;
       } else {

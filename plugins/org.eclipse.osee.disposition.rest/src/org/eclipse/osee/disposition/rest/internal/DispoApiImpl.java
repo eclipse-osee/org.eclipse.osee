@@ -14,6 +14,12 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -24,6 +30,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.zip.ZipInputStream;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.disposition.model.CiItemData;
 import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.CopySetParams;
@@ -51,12 +60,16 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -76,6 +89,7 @@ public class DispoApiImpl implements DispoApi {
    private DispoResolutionValidator resolutionValidator;
    private DispoImporterFactory importerFactory;
    private OrcsApi orcsApi;
+   private AtsApi atsApi;
 
    private volatile DispoApiConfiguration config;
 
@@ -85,6 +99,10 @@ public class DispoApiImpl implements DispoApi {
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+   }
+
+   public void setAtsApi(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -148,22 +166,24 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public Long createDispoProgram(String name, String userName) {
-      UserId author = getQuery().findUserByName(userName);
+   public Long createDispoProgram(String name) {
       return getWriter().createDispoProgram(name);
    }
 
    @Override
-   public ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName) {
+   public ArtifactId createSet(BranchId branch, String importPath, String setName) {
+      return getWriter().createSet(branch, importPath, setName);
+   }
+
+   @Override
+   public ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor) {
       DispoSetData newSet = dataFactory.creteSetDataFromDescriptor(descriptor);
-      UserId author = getQuery().findUserByName(userName);
       return getWriter().createDispoSet(branch, newSet);
    }
 
-   private void createDispoItems(BranchId branch, String setId, List<DispoItem> dispoItems, String userName) {
+   private void createDispoItems(BranchId branch, String setId, List<DispoItem> dispoItems) {
       DispoSet parentSet = getQuery().findDispoSetsById(branch, setId);
       if (parentSet != null) {
-         UserId author = getQuery().findUserByName(userName);
          getWriter().createDispoItems(branch, parentSet, dispoItems);
       }
    }
@@ -194,21 +214,30 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void editDispoSet(BranchId branch, String setId, DispoSetData newSet, String userName) {
+   public void editDispoSet(BranchId branch, String setId, DispoSetData newSet) {
       DispoSet dispSetToEdit = getQuery().findDispoSetsById(branch, setId);
-
       if (dispSetToEdit != null) {
          if (newSet.getOperation() != null) {
-            runOperation(branch, dispSetToEdit, newSet, userName, false);
+            runOperation(branch, dispSetToEdit, newSet, false);
          } else {
-            UserId author = getQuery().findUserByName(userName);
             getWriter().updateDispoSet(branch, dispSetToEdit.getGuid(), newSet);
          }
       }
    }
 
    @Override
-   public void importAllDispoSets(BranchId branch, String filterState, String userName) {
+   public void importDispoSet(BranchId branch, String dispoSetId, String importPath) {
+      String operation = DispoStrings.Operation_Import;
+      DispoSet dispSetToEdit = getQuery().findDispoSetsById(branch, dispoSetId);
+      DispoSetData newSet = new DispoSetData();
+      newSet.setOperation(operation);
+      if (dispSetToEdit != null) {
+         runOperation(branch, dispSetToEdit, newSet, false);
+      }
+   }
+
+   @Override
+   public void importAllDispoSets(BranchId branch, String filterState) {
       List<DispoSet> dispoSets = new ArrayList<>();
       DispoSetData newSet;
 
@@ -223,9 +252,8 @@ public class DispoApiImpl implements DispoApi {
          newSet.setOperation(DispoStrings.Operation_Import);
          if (filterState.equalsIgnoreCase(DispoStrings.STATE_ALL) || set.getImportState().equalsIgnoreCase(
             filterState)) {
-            runOperation(branch, set, newSet, userName, true);
+            runOperation(branch, set, newSet, true);
          } else {
-            UserId author = getQuery().findUserByName(userName);
             getWriter().updateDispoSet(branch, set.getGuid(), newSet);
          }
       }
@@ -233,29 +261,28 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void importAllDispoPrograms(String filterState, String userName) {
+   public void importAllDispoPrograms(String filterState) {
       List<BranchToken> dispoBranches = new ArrayList<>();
 
       dispoBranches = getDispoPrograms();
 
       for (BranchToken branch : dispoBranches) {
-         importAllDispoSets(branch, filterState, userName);
+         importAllDispoSets(branch, filterState);
       }
    }
 
    @Override
-   public boolean deleteDispoSet(BranchId branch, String setId, String userName) {
-      UserId author = getQuery().findUserByName(userName);
+   public boolean deleteDispoSet(BranchId branch, String setId) {
       return getWriter().deleteDispoSet(branch, setId);
    }
 
    @Override
    public boolean editMassDispositions(BranchId branch, String setId, List<String> ids, String resolutionType,
-      String resolution, String userName) {
+      String resolution) {
       boolean wasUpdated = false;
       List<DispoItem> itemsToEdit = massDisposition(branch, setId, ids, resolutionType, resolution);
       if (itemsToEdit.size() > 0) {
-         editDispoItems(branch, setId, itemsToEdit, true, "Import", userName);
+         editDispoItems(branch, setId, itemsToEdit, true, "Import");
          wasUpdated = true;
       }
       return wasUpdated;
@@ -353,7 +380,7 @@ public class DispoApiImpl implements DispoApi {
       if (set != null) {
          DispoSet dispoSet = getQuery().findDispoSetsById(branch, set.getIdString());
          if (dispoSet != null) {
-            String importPath = dispoSet.getImportPath();
+            String importPath = dispoSet.getServerImportPath();
             String name = dispoItemToEdit.getName().replaceAll(config.getFileExtRegex(), ".LIS");
             return importPath + File.separator + "vcast" + File.separator + name;
          }
@@ -362,8 +389,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String operation,
-      String userName) {
+   public boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String operation) {
       boolean wasUpdated = false;
       Set<DispoItem> dispoItems = new HashSet<>();
       List<DispoItem> itemsFromSet = getDispoItems(branch, setId);
@@ -403,7 +429,7 @@ public class DispoApiImpl implements DispoApi {
                   DispoSummarySeverity.WARNING);
             }
          }
-         editDispoItems(branch, setId, dispoItems, false, operation, userName);
+         editDispoItems(branch, setId, dispoItems, false, operation);
       } else {
          report.addEntry("Womp womp womp",
             "No items were updated. Please check your 'Items' list and make sure it's a comma seperated list of item names",
@@ -411,20 +437,17 @@ public class DispoApiImpl implements DispoApi {
       }
 
       // Generate report
-      UserId author = getQuery().findUserByName(userName);
       getWriter().updateOperationSummary(branch, setId, report);
       return wasUpdated;
    }
 
    private void editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag,
-      String operation, String userName) {
-      UserId author = getQuery().findUserByName(userName);
+      String operation) {
       getWriter().updateDispoItems(branch, dispoItems, resetRerunFlag, operation);
    }
 
    @Override
-   public boolean deleteDispoItem(BranchId branch, String itemId, String userName) {
-      UserId author = getQuery().findUserByName(userName);
+   public boolean deleteDispoItem(BranchId branch, String itemId) {
       return getWriter().deleteDispoItem(branch, itemId);
    }
 
@@ -670,11 +693,9 @@ public class DispoApiImpl implements DispoApi {
       return getQuery().isUniqueSetName(branch, name);
    }
 
-   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, String userName,
-      boolean isIterative) {
+   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, boolean isIterative) {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
-      UserId author = getQuery().findUserByName(userName);
       if (operation.equals(DispoStrings.Operation_Import)) {
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, setToEdit);
@@ -687,10 +708,14 @@ public class DispoApiImpl implements DispoApi {
                importer = importerFactory.createImporter(ImportFormat.TMO, dispoConnector);
             }
 
-            File importFile = new File(setToEdit.getImportPath());
-            boolean pathExists = checkIfPathExists(importFile, report);
-
-            List<DispoItem> itemsFromParse = importer.importDirectory(nameToItemMap, importFile, report, logger);
+            File importDirectory;
+            if (setToEdit.getImportPath().contains("artifactory")) {
+               importDirectory = importData(branch, setToEdit, setToEdit.getImportPath());
+            } else {
+               importDirectory = new File(setToEdit.getImportPath());
+            }
+            boolean pathExists = checkIfPathExists(importDirectory, report);
+            List<DispoItem> itemsFromParse = importer.importDirectory(nameToItemMap, importDirectory, report, logger);
 
             if (pathExists && itemsFromParse.isEmpty()) {
                report.addEntry(setToEdit.getImportPath(), "No file(s) found", DispoSummarySeverity.IGNORE);
@@ -715,10 +740,10 @@ public class DispoApiImpl implements DispoApi {
 
             if (!report.getStatus().isFailed()) {
                if (itemsToCreate.size() > 0) {
-                  createDispoItems(branch, setToEdit.getGuid(), itemsToCreate, userName);
+                  createDispoItems(branch, setToEdit.getGuid(), itemsToCreate);
                }
                if (itemsToEdit.size() > 0) {
-                  editDispoItems(branch, setToEdit.getGuid(), itemsToEdit, true, "Import", userName);
+                  editDispoItems(branch, setToEdit.getGuid(), itemsToEdit, true, "Import");
                }
             }
 
@@ -746,6 +771,95 @@ public class DispoApiImpl implements DispoApi {
 
       //Update Disposition Set
       getWriter().updateDispoSet(branch, setToEdit.getGuid(), newSet);
+   }
+
+   private File importData(BranchId branch, DispoSet setId, String dataSource) {
+      String folderPath = getLocalFolderPath(branch.getIdString(), setId.getIdString());
+      File setFolder = new File(folderPath);
+      File parent = setFolder.getParentFile();
+      if (parent != null && !parent.exists() && !parent.mkdirs()) {
+         throw new OseeStateException("Couldn't create dir: " + parent);
+      }
+      if (!setFolder.exists()) {
+         setFolder.mkdirs();
+      }
+
+      String fullPath = folderPath + getZipFileName(dataSource);
+
+      downloadFile(dataSource, fullPath);
+
+      getWriter().updateOrCreateServerImportPath(branch, setId, fullPath);
+
+      return new File(fullPath);
+   }
+
+   private String getLocalFolderPath(String branchId, String setId) {
+      String basePath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      return basePath + File.separator + "coverage" + File.separator + branchId + File.separator + setId + File.separator;
+   }
+
+   private String getZipFileName(String artifactoryUrl) {
+      int lastSlashIndex = artifactoryUrl.lastIndexOf('/');
+      int dotZipIndex = artifactoryUrl.lastIndexOf(".zip");
+
+      if (lastSlashIndex != -1 && dotZipIndex != -1 && lastSlashIndex < dotZipIndex) {
+         return artifactoryUrl.substring(lastSlashIndex + 1, dotZipIndex);
+      } else {
+         return "";
+      }
+   }
+
+   private StringBuilder downloadFile(String artifactoryUrl, String downloadLocation) {
+      StringBuilder response = new StringBuilder();
+      String personalAccessToken = getPersonalAccessToken();
+
+      HttpURLConnection conn = null;
+
+      try {
+         if (!artifactoryUrl.endsWith(".zip")) {
+            throw new OseeCoreException("Artifactory Item is not a .zip");
+         }
+         URL repositoryUrl = new URL(artifactoryUrl);
+
+         HttpURLConnection connection = (HttpURLConnection) repositoryUrl.openConnection();
+         connection.addRequestProperty("X-JFrog-Art-Api", personalAccessToken);
+         connection.setRequestProperty("Connection", "keep-alive");
+         connection.setRequestMethod("GET");
+         connection.connect();
+
+         InputStream stream = connection.getInputStream();
+
+         OutputStream outStream = null;
+
+         String fileZip = String.format("%s.zip", downloadLocation);
+         File uploadedZip = new File(fileZip);
+         byte[] buffer = stream.readAllBytes();
+         stream.close();
+
+         outStream = new FileOutputStream(uploadedZip);
+         outStream.write(buffer);
+         outStream.close();
+
+         connection.disconnect();
+
+         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+         File unzipLocation = new File(downloadLocation);
+
+         Lib.decompressStream(zis, buffer, unzipLocation);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Artifactory Operation Failed", ex);
+      } finally {
+         if (conn != null) {
+            conn.disconnect();
+         }
+      }
+      return response;
+   }
+
+   private String getPersonalAccessToken() {
+      ArtifactReadable artifactoryConfig = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(
+         AtsArtifactToken.ArtifactoryConfig).asArtifact();
+      return artifactoryConfig.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
    }
 
    private boolean checkIfPathExists(File file, OperationReport report) {
@@ -852,7 +966,7 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch,
-      String destSetId, CopySetParams params, String userName) {
+      String destSetId, CopySetParams params) {
       Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageUuid);
       List<DispoItem> destItems = getDispoItems(destBranch, destSetId);
 
@@ -864,14 +978,14 @@ public class DispoApiImpl implements DispoApi {
       String operation =
          String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageUuid);
       if (!copyData.isEmpty()) {
-         editDispoItems(destBranch, destSetId, copyData, false, operation, userName);
+         editDispoItems(destBranch, destSetId, copyData, false, operation);
          storage.updateOperationSummary(destBranch, destSetId, report);
       }
    }
 
    @Override
    public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId,
-      CopySetParams params, String userName) {
+      CopySetParams params) {
       DispoConfig dispoConfig = getDispoConfig(branch);
       // If the the validResolutions is empty the copyAllDispositions will
       Set<String> validResolutions = new HashSet<>();
@@ -914,7 +1028,7 @@ public class DispoApiImpl implements DispoApi {
 
       String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
       if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
-         editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation, userName);
+         editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation);
          storage.updateOperationSummary(branch, destSetId, report);
       }
       storeRerunData(branch, destSetId, reruns);

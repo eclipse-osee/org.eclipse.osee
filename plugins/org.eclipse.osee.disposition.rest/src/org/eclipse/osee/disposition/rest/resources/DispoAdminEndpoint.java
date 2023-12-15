@@ -227,7 +227,7 @@ public class DispoAdminEndpoint {
       @Parameter(description = "Source Package", required = true) @QueryParam("sourcePackage") Long sourcePackage,
       CopySetParams params, @QueryParam("userName") String userName) {
       Response.Status status;
-      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destinationSet, params, userName);
+      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destinationSet, params);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -247,7 +247,7 @@ public class DispoAdminEndpoint {
       @Parameter(description = "Source Set", required = true) @QueryParam("sourceSet") String sourceSet,
       CopySetParams params,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
-      dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params, userName);
+      dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params);
       Response.Status status = Status.OK;
       return Response.status(status).build();
    }
@@ -265,7 +265,7 @@ public class DispoAdminEndpoint {
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.massEditTeam(branch, params.getSetId(), params.getNamesList(), params.getTeam(),
-         String.format("Mult Item Edit by: %s", params.getUserName()), userName);
+         String.format("Mult Item Edit by: %s", params.getUserName()));
       status = Status.OK;
       return Response.status(status).build();
    }

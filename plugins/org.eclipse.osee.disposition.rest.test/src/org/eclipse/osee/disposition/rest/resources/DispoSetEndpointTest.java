@@ -67,7 +67,7 @@ public class DispoSetEndpointTest {
       expected.setGuid(id1AsString);
       expected.setName(descriptor.getName());
       expected.setImportPath(descriptor.getImportPath());
-      when(dispositionApi.createDispoSet(branch, descriptor, "")).thenReturn(id1);
+      when(dispositionApi.createDispoSet(branch, descriptor)).thenReturn(id1);
       when(dispositionApi.getDispoSetById(branch, id1AsString)).thenReturn(expected);
       when(dispositionApi.isUniqueSetName(branch, descriptor.getName())).thenReturn(true);
 
@@ -169,11 +169,11 @@ public class DispoSetEndpointTest {
    public void testDelete() {
       DispoSetData setToEdt = new DispoSetData();
       setToEdt.setGuid(id1AsString);
-      when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(true);
+      when(dispositionApi.deleteDispoSet(branch, id1AsString)).thenReturn(true);
       try (Response response = resource.deleteDispoSet(id1AsString, "")) {
          assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-         when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(false);
+         when(dispositionApi.deleteDispoSet(branch, id1AsString)).thenReturn(false);
       }
       try (Response response2 = resource.deleteDispoSet(id1AsString, "")) {
          assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response2.getStatus());

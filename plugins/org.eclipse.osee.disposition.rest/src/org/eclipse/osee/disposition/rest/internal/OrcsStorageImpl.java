@@ -30,6 +30,7 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.DispoSetStatus;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
@@ -208,10 +209,29 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public ArtifactId createSet(BranchId branch, String importPath, String setName) {
+      TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
+      ArtifactId creatdArtId = tx.createArtifact(DispoOseeTypes.DispositionSet, setName);
+
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportPath, importPath);
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.ServerImportPath, importPath);
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportState, DispoSetStatus.NONE);
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoConfig, "codeCoverage");
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoNotesJson, JsonUtil.toJson(""));
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoTime, new Date());
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoRerunList, "");
+
+      tx.commit();
+      return creatdArtId;
+   }
+
+   @Override
    public ArtifactId createDispoSet(BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoOseeTypes.DispositionSet, descriptor.getName());
+
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportPath, descriptor.getImportPath());
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.ServerImportPath, descriptor.getImportPath());
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportState, descriptor.getImportState());
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoConfig, descriptor.getDispoType());
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoNotesJson, JsonUtil.toJson(descriptor.getNotesList()));
@@ -252,12 +272,28 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public void updateOrCreateServerImportPath(BranchId branch, DispoSet setId, String localImportPath) {
+      ArtifactReadable dispoSet = findDispoArtifact(branch, setId.getIdString());
+      DispoSetArtifact origSetAs = new DispoSetArtifact(dispoSet);
+      TransactionBuilder tx = getTxFactory().createTransaction(branch, "Update Local Import Path for Coverage Set");
+      if (!setId.serverImportPathExists()) {
+         tx.createAttribute(dispoSet, DispoOseeTypes.ServerImportPath, localImportPath);
+      } else {
+         if (localImportPath != null && !localImportPath.equals(origSetAs.getServerImportPath())) {
+            tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.ServerImportPath, localImportPath);
+         }
+      }
+      tx.commit();
+   }
+
+   @Override
    public void updateDispoSet(BranchId branch, String setId, DispoSet newData) {
       ArtifactReadable dispoSet = findDispoArtifact(branch, setId);
       DispoSetArtifact origSetAs = new DispoSetArtifact(dispoSet);
 
       String name = newData.getName();
       String importPath = newData.getImportPath();
+      String serverImportPath = newData.getServerImportPath();
       String ciSet = newData.getCiSet();
       String rerunList = newData.getRerunList();
       Date time = newData.getTime();
@@ -273,6 +309,7 @@ public class OrcsStorageImpl implements Storage {
       }
       if (importPath != null && !importPath.equals(origSetAs.getImportPath())) {
          tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoImportPath, importPath);
+         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.ServerImportPath, importPath);
       }
       if (notesList != null && !notesList.equals(origSetAs.getNotesList())) {
          tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoNotesJson,

@@ -37,6 +37,7 @@ public interface DispoOseeTypes {
    AttributeTypeDate DispoDateCreated = dispo.createDate(1152921504606847889L, "dispo.Date Created", AttributeTypeToken.TEXT_CALENDAR, "");
    AttributeTypeString DispoDiscrepanciesJson = dispo.createString(1152921504606847879L, "dispo.Discrepancies JSON", MediaType.TEXT_PLAIN, "");
    AttributeTypeString DispoImportPath = dispo.createString(1152921504606847881L, "dispo.Import Path", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString ServerImportPath = dispo.createString(1152921504606847894L, "dispo.Import Url", MediaType.TEXT_PLAIN, "");
    DispoImportStateAttributeType DispoImportState = dispo.createEnum(new DispoImportStateAttributeType());
    AttributeTypeBoolean DispoIsMultiEnv = dispo.createBoolean(3587620131443940337L, "dispo.Is Multi-Env", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean DispoItemAborted = dispo.createBoolean(3458764513820541448L, "dispo.item.Aborted", MediaType.TEXT_PLAIN, "");
@@ -89,6 +90,7 @@ public interface DispoOseeTypes {
       .zeroOrOne(DispoConfig)
       .zeroOrOne(DispoDateCreated)
       .zeroOrOne(DispoImportPath)
+      .zeroOrOne(ServerImportPath)
       .zeroOrOne(DispoImportState, DispoImportState.Unspecified)
       .zeroOrOne(DispoIsMultiEnv)
       .zeroOrOne(DispoMultiEnvSettings)

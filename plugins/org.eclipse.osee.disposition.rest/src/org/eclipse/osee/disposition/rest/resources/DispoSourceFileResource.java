@@ -79,7 +79,7 @@ public class DispoSourceFileResource {
       }
 
       DispoSet set = dispoApi.getDispoSetById(branch, setId);
-      String fullPath = set.getImportPath() + File.separator + "vcast" + File.separator + fileName;
+      String fullPath = set.getServerImportPath() + File.separator + "vcast" + File.separator + fileName;
       if (!(new File(fullPath).exists())) {
          if (fileName.contains(".2.")) {
             String regex = "\\.2\\.";

@@ -302,7 +302,7 @@ public class DispoApiTest {
       when(dataFactory.creteSetDataFromDescriptor(descriptor)).thenReturn(setFromDescriptor);
 
       when(storage.createDispoSet(branch, setFromDescriptor)).thenReturn(mockArtId);
-      ArtifactId createDispoSetId = dispoApi.createDispoSet(branch, descriptor, author.getIdString());
+      ArtifactId createDispoSetId = dispoApi.createDispoSet(branch, descriptor);
       assertEquals(mockArtId, createDispoSetId);
    }
 

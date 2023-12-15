@@ -118,12 +118,12 @@ public class DispoItemEndpointTest {
    public void testDelete() {
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
-      when(dispositionApi.deleteDispoItem(branch, id1.getGuid(), "")).thenReturn(true);
+      when(dispositionApi.deleteDispoItem(branch, id1.getGuid())).thenReturn(true);
       try (Response response = resource.deleteDispoItem(id1.getGuid(), "")) {
          assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
       }
 
-      when(dispositionApi.deleteDispoItem(branch, id1.getGuid(), "")).thenReturn(false);
+      when(dispositionApi.deleteDispoItem(branch, id1.getGuid())).thenReturn(false);
 
       try (Response response2 = resource.deleteDispoItem(id1.getGuid(), "")) {
          String returnedMessage = (String) response2.getEntity();
