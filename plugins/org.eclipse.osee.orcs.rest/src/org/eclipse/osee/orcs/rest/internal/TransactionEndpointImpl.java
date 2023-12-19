@@ -249,38 +249,49 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public XResultData applyTransferFile(String location) {
-      return applyTransferFileInternal(location);
-   }
-
-   private XResultData applyTransferFileInternal(String dirName) {
       XResultData results = new XResultData();
+      TransactionId exportId = TransactionId.SENTINEL;
 
-      TransactionTransferManifest manifest = new TransactionTransferManifest();
-      results = manifest.parse(dirName);
+      try {
+         TransactionTransferManifest manifest = new TransactionTransferManifest();
+         results = manifest.parse(location);
 
-      if (results.isSuccess()) {
-         results = manifest.validate(tupleQuery);
+         if (results.isSuccess()) {
+            results = manifest.validate(tupleQuery);
+         }
+
+         if (results.isFailed()) {
+            return results;
+         }
+
+         exportId = manifest.getExportID();
+         if (TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId())) {
+            results.error("Lock is on; Another upload process is in progress. ");
+         } else {
+            TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+
+            results = manifest.importAllTransactions(orcsApi, resourceManager);
+            if (results.isFailed()) {
+               manifest.purgeAllImportedTransaction(orcsApi);
+            } else {
+               results = manifest.addAllImportedTransToTupleTable(orcsApi);
+
+               results.log(String.format("Imported succesfully the transaction ids: %s. ",
+                  manifest.getAllImportedTransIds().toString()));
+            }
+         }
+      } catch (Exception ex) {
+         results.errorf("%s", String.format("Error during uploading transfer file: ", ex.getMessage()));
+      } finally {
+         if (!exportId.equals(TransactionId.SENTINEL)) {
+            TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
+         }
       }
 
-      if (results.isFailed()) {
-         return results;
-      }
-
-      results = manifest.importAllTransactions(orcsApi, resourceManager);
-
-      if (results.isFailed()) {
-         manifest.purgeAllImportedTransaction(orcsApi);
-      } else {
-         results = manifest.addAllImportedTransToTupleTable(orcsApi);
-
-         results.log(String.format("Imported succesfully the transaction ids: %s. ",
-            manifest.getAllImportedTransIds().toString()));
-      }
       return results;
-
    }
 
-   private String unzipTransferFile(InputStream zip, StringBuilder sourceNameDir) throws IOException {
+   private String unzipTransferFile(InputStream zip) throws IOException {
       String serverDataPath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       if (serverDataPath == null) {
          serverDataPath = System.getProperty("user.home");
@@ -303,11 +314,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       String timedIdDir = String.format("%s%s%s", serverApplicDir.getPath(), File.separator, timedId);
       OutputStream outStream = null;
       ZipInputStream zis = null;
-      String transDir = null;
-      sourceNameDir.append(String.format("%s%ssource", timedIdDir, File.separator));
+      String returnDir = timedIdDir;
       try {
          new File(timedIdDir).mkdir();
-         String fileZip = String.format("%s.zip", sourceNameDir.toString());
+         String fileZip = String.format("%s.zip", timedIdDir);
          File uploadedZip = new File(fileZip);
          byte[] buffer = zip.readAllBytes();
 
@@ -316,13 +326,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
          zis = new ZipInputStream(new FileInputStream(fileZip));
          ZipEntry zipEntry = zis.getNextEntry();
-         File unzipLocation = new File(sourceNameDir.toString());
+         File unzipLocation = new File(timedIdDir);
          unzipLocation.mkdirs();
          while (zipEntry != null) {
             File uploadedDirectory = new File(unzipLocation, zipEntry.getName());
-            if (transDir == null) {
-               transDir = uploadedDirectory.getPath();
-            }
             if (zipEntry.isDirectory()) {
                if (!uploadedDirectory.isDirectory() && !uploadedDirectory.mkdirs()) {
                   zis.close();
@@ -356,15 +363,14 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          Lib.close(zis);
       }
 
-      return transDir;
+      return returnDir;
    }
 
    @Override
    public Response uploadTransferFile(InputStream zip) {
-      StringBuilder sourceNameDir = new StringBuilder("");
       String transDir = "";
       try {
-         transDir = unzipTransferFile(zip, sourceNameDir);
+         transDir = unzipTransferFile(zip);
          zip.close();
       } catch (Exception e) {
          return Response.serverError().build();
@@ -374,8 +380,8 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          }
       }
 
-      XResultData results = applyTransferFileInternal(transDir);
-      results.log(String.format("The file is extracted to %s.", sourceNameDir));
+      XResultData results = applyTransferFile(transDir);
+      results.log(String.format("The file is extracted to %s.", transDir));
       if (results.isOK()) {
          return Response.ok().entity(String.format("\nResult: %s", results.toString())).build();
       } else {

@@ -22,8 +22,8 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 
 public class TransactionTransferManifest {
-   public TransactionId exportId = null;
-   public TransactionId buildId = null;
+   private TransactionId exportId = null;
+   private TransactionId buildId = null;
    private List<TransferBranch> transferBranchList;
    public String path;
    private final XResultData results;
@@ -335,8 +335,16 @@ public class TransactionTransferManifest {
       return results;
    }
 
+   public TransactionId getExportID() {
+      return this.exportId;
+   }
+
    public void setExportID(TransactionId exportId) {
       this.exportId = exportId;
+   }
+
+   public TransactionId getBuildID() {
+      return this.buildId;
    }
 
    public void setBuildID(TransactionId buildId) {
