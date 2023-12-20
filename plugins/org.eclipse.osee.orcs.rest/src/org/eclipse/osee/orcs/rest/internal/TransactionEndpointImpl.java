@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,11 +31,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeClient;
@@ -291,12 +288,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       File serverApplicDir = new File(String.format("%s%sOSSEDataTransferUploads", serverDataPath, File.separator));
       if (!serverApplicDir.exists()) {
          serverApplicDir.mkdirs();
-         try {
-            FileWriter readme =
-               new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));
+         try (FileWriter readme =
+            new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"))) {
             readme.write(
                "This folder contains OSEE data transfer files which were uploaded via rest api and imported into database.");
-            readme.close();
          } catch (IOException e) {
             throw new OseeCoreException(e, "Failed to create directory. ");
          }
