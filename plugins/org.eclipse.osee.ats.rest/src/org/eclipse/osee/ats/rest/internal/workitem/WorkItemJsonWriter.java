@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
@@ -46,6 +47,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
+import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
@@ -229,6 +231,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writeAttachments(atsApi, workItem, writer);
          if (workItem.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
             writeRoles(atsApi, writer, workItem);
+            writeDefects(atsApi, writer, workItem);
          }
       }
 
@@ -373,6 +376,48 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          UserRole userRole = roleMap.get(user.getUserId());
          writer.writeStringField("role", userRole.getRole().getName());
          writer.writeBooleanField("completed", userRole.isCompleted());
+         writer.writeNumberField("hours spent", userRole.getHoursSpent());
+         writer.writeEndObject();
+      }
+
+      writer.writeEndArray();
+   }
+
+   private static void formatUser(AtsUser user, String userFieldName, JsonGenerator writer) throws IOException {
+      writer.writeArrayFieldStart(userFieldName);
+      writer.writeStartObject();
+      writer.writeStringField("id", user.getIdString());
+      writer.writeStringField("name", user.getName());
+      writer.writeStringField("email", user.getEmail());
+      writer.writeEndObject();
+      writer.writeEndArray();
+   }
+
+   private static void writeDefects(AtsApi atsApi, JsonGenerator writer, IAtsWorkItem workItem) throws IOException {
+      writer.writeArrayFieldStart("defects");
+
+      ReviewDefectManager manager = new ReviewDefectManager((IAtsPeerToPeerReview) workItem, atsApi);
+
+      for (ReviewDefectItem defect : manager.getDefectItems()) {
+         writer.writeStartObject();
+         writer.writeNumberField("id", defect.getId());
+         writer.writeStringField("severity", defect.getSeverity().toString());
+         writer.writeStringField("disposition", defect.getDisposition().toString());
+         writer.writeStringField("injection activity", defect.getInjectionActivity().toString());
+         writer.writeStringField("date", defect.getDate().toString());
+         if (Strings.isValidAndNonBlank(defect.getUserId())) {
+            AtsUser user = atsApi.getUserService().getUserByUserId(defect.getUserId());
+            formatUser(user, "user", writer);
+         }
+         writer.writeStringField("description", defect.getDescription());
+         writer.writeStringField("location", defect.getLocation());
+         writer.writeStringField("resolution", defect.getResolution());
+         writer.writeBooleanField("closed", defect.isClosed());
+         writer.writeStringField("notes", defect.getNotes());
+         if (Strings.isValidAndNonBlank(defect.getClosedUserId())) {
+            AtsUser closedUser = atsApi.getUserService().getUserByUserId(defect.getClosedUserId());
+            formatUser(closedUser, "closed user", writer);
+         }
          writer.writeEndObject();
       }
 
