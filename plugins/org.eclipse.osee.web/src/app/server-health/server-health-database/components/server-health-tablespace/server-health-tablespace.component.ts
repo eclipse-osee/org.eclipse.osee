@@ -120,15 +120,15 @@ export class ServerHealthTablespaceComponent implements AfterViewInit {
 						orderByDirection: sort.direction,
 					});
 					break;
-				case 'tsPctFree':
-					this.orderBy$.next({
-						orderByName: 'tsPctFree',
-						orderByDirection: sort.direction,
-					});
-					break;
 				case 'currTsSize':
 					this.orderBy$.next({
 						orderByName: 'currTsSize',
+						orderByDirection: sort.direction,
+					});
+					break;
+				case 'maxTxSize':
+					this.orderBy$.next({
+						orderByName: 'maxTxSize',
 						orderByDirection: sort.direction,
 					});
 					break;

@@ -19,7 +19,7 @@
 	<div class="tw-flex tw-justify-center">
 		<div class="tw-grid tw-flex-1 tw-grid-cols-5 tw-gap-8 tw-p-8 tw-pt-0">
 			<ng-container *ngFor="let item of importantNavItems">
-				<button
+				<a
 					[matTooltip]="item.description"
 					[routerLink]="item.routerLink"
 					class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
@@ -34,10 +34,10 @@
 							{{ item.label }}
 						</div>
 					</div>
-				</button>
+				</a>
 			</ng-container>
 			@if (activeMq | async; as activeMq) {
-				<button
+				<a
 					matTooltip="External Link to ActiveMQ Configuration Page"
 					(click)="openLink(activeMq.activeMqUrl)"
 					class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
@@ -50,7 +50,7 @@
 							ActiveMQ
 						</div>
 					</div>
-				</button>
+				</a>
 			}
 		</div>
 	</div>
@@ -62,7 +62,7 @@
 				[src]="prometheusUrl"
 				class="tw-min-h-[900px] tw-min-w-full"
 				frameborder="0"></iframe>
-			<button
+			<a
 				(click)="openLink(prometheusUrl)"
 				class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
 				<div class="tw-flex tw-items-center">
@@ -74,7 +74,7 @@
 						Open in New Window
 					</div>
 				</div>
-			</button>
+			</a>
 		} @else {
 			No data
 		}
@@ -83,7 +83,7 @@
 	<div class="tw-flex tw-justify-center">
 		<div class="tw-grid tw-flex-1 tw-grid-cols-5 tw-gap-8 tw-p-8 tw-pt-0">
 			<ng-container *ngFor="let item of nonImportantNavItems">
-				<button
+				<a
 					[matTooltip]="item.description"
 					[routerLink]="item.routerLink"
 					class="tw-w-full tw-rounded-md tw-bg-primary-100 tw-p-4 tw-text-foreground tw-shadow-md dark:tw-bg-primary-600">
@@ -98,7 +98,7 @@
 							{{ item.label }}
 						</div>
 					</div>
-				</button>
+				</a>
 			</ng-container>
 		</div>
 	</div>
