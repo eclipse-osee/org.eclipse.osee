@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -55,17 +57,28 @@ public class FilteredTreeDialog extends MessageDialog {
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
    List<Object> selected = new ArrayList<>();
+   private final boolean withClear;
+   private boolean clearSelected = false;
 
    public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
    }
 
+   public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, boolean withClear) {
+      this(dialogTitle, dialogMessage, contentProvider, labelProvider, null, withClear);
+   }
+
    public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerComparator) {
+      this(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerComparator, false);
+   }
+
+   public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerComparator, boolean withClear) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
-         new String[] {"OK", "Cancel"}, 0);
+         (withClear ? new String[] {"OK", "Cancel", "Clear"} : new String[] {"OK", "Cancel"}), 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerComparator = viewerComparator;
+      this.withClear = withClear;
       this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
@@ -217,6 +230,15 @@ public class FilteredTreeDialog extends MessageDialog {
       Control c = super.createButtonBar(parent);
       okButton = getButton(0);
       okButton.setEnabled(false);
+      if (withClear) {
+         Button clearButton = getButton(2);
+         clearButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               clearSelected = true;
+            }
+         });
+      }
       return c;
    }
 
@@ -244,6 +266,10 @@ public class FilteredTreeDialog extends MessageDialog {
 
    public void setComparator(ViewerComparator viewerComparator) {
       this.viewerComparator = viewerComparator;
+   }
+
+   public boolean isClearSelected() {
+      return clearSelected;
    }
 
 }
