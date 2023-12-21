@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
@@ -60,9 +63,10 @@ public abstract class AbstractXHyperlinkWfdSelectedChildDam extends AbstractXHyp
       String title = "Select " + label;
       if (artifact.getArtifactType().getMax(attrType) != 1) {
          FilteredCheckboxTreeDialog<ArtifactToken> dialog = new FilteredCheckboxTreeDialog<ArtifactToken>(title, title,
-            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
+            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator(), true);
          dialog.setInput(selectable);
-         if (dialog.open() == Window.OK) {
+         int result = dialog.open();
+         if (result == Window.OK || dialog.isClearSelected()) {
             List<ArtifactToken> checked = new ArrayList<ArtifactToken>();
             checked.addAll(dialog.getChecked());
             SkynetTransaction transaction = TransactionManager.createTransaction(artifact.getBranch(), "Set " + label);
@@ -79,13 +83,18 @@ public abstract class AbstractXHyperlinkWfdSelectedChildDam extends AbstractXHyp
          }
       } else {
          FilteredTreeDialog dialog =
-            new FilteredTreeDialog(title, title, new ArrayTreeContentProvider(), new ArtifactLabelProvider());
+            new FilteredTreeDialog(title, title, new ArrayTreeContentProvider(), new ArtifactLabelProvider(), true);
          dialog.setInput(selectable);
          dialog.setMultiSelect(false);
-         if (dialog.open() == Window.OK) {
+         int result = dialog.open();
+         if (result == Window.OK || dialog.isClearSelected()) {
             ArtifactToken selected = dialog.getSelectedFirst();
             SkynetTransaction transaction = TransactionManager.createTransaction(artifact.getBranch(), "Set " + label);
-            artifact.setSoleAttributeFromString(attrType, selected.getName());
+            if (dialog.isClearSelected()) {
+               artifact.deleteAttributes(attrType);
+            } else {
+               artifact.setSoleAttributeFromString(attrType, selected.getName());
+            }
             transaction.addArtifact(artifact);
             TransactionToken execute = transaction.execute();
             if (execute.isValid()) {
@@ -138,6 +147,16 @@ public abstract class AbstractXHyperlinkWfdSelectedChildDam extends AbstractXHyp
          value = org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", values);
       }
       return value;
+   }
+
+   @Override
+   public IStatus isValid() {
+      IStatus status = Status.OK_STATUS;
+      List<String> values = artifact.getAttributesToStringList(attributeTypeToken);
+      if (isRequiredEntry() && values.isEmpty()) {
+         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be selected.");
+      }
+      return status;
    }
 
 }

@@ -54,17 +54,24 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
    protected Collection<T> selectables = new ArrayList<>();
+   private boolean withClear;
+   private boolean clearSelected = false;
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
    }
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter) {
+      this(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerSorter, false);
+   }
+
+   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter, boolean withClear) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
-         new String[] {"OK", "Cancel"}, 0);
+         (withClear ? new String[] {"OK", "Cancel", "Clear"} : new String[] {"OK", "Cancel"}), 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerComparator = viewerSorter;
+      this.withClear = withClear;
       this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
@@ -86,11 +93,6 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       // provided for subclass implementation
    }
 
-   /**
-    * Sets the input. Convenience method.
-    *
-    * @param object the input.
-    */
    public void setInput(Object input) {
       this.input = input;
       if (treeViewer != null) {
@@ -98,11 +100,6 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       }
    }
 
-   /**
-    * Sets the initial selection. Convenience method.
-    *
-    * @param object the initial selection.
-    */
    public void setInitialSelections(Collection<T> initialSelections) {
       this.initialSelections = initialSelections;
       if (treeViewer != null) {
@@ -220,6 +217,16 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       Control c = super.createButtonBar(parent);
       okButton = getButton(0);
       okButton.setEnabled(false);
+      if (withClear) {
+         Button clearButton = getButton(2);
+         clearButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               clearSelected = true;
+            }
+         });
+      }
+
       return c;
    }
 
@@ -233,9 +240,6 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       }
    }
 
-   /**
-    * @return the treeViewer
-    */
    public FilteredCheckboxTree getTreeViewer() {
       return treeViewer;
    }
@@ -267,6 +271,10 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
 
    public void setContentProvider(IContentProvider contentProvider) {
       this.contentProvider = contentProvider;
+   }
+
+   public boolean isClearSelected() {
+      return clearSelected;
    }
 
 }
