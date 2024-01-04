@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -58,6 +59,7 @@ import org.eclipse.osee.orcs.rest.model.transaction.TransferDBType;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferFileLockUtil;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferInitData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferOpType;
+import org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -170,6 +172,25 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          example.setResults(results);
          return example;
       }
+
+      //Verify export id. Destination db accepts only on export id
+      if (data.getTransferDBType().equals(TransferDBType.DESTINATION)) {
+         List<TransactionId> exportIdList = new ArrayList<>();
+         int intDbType = TransferDBType.DESTINATION.ordinal();
+         tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
+            Long.valueOf(intDbType), exportIdList::add);
+
+         for (TransactionId id : exportIdList) {
+            if (id.equals(data.getExportId())) {
+               throw new OseeCoreException(
+                  String.format("The export Id %s was initialized.", data.getExportId().toString()));
+            }
+            throw new OseeCoreException(
+               String.format("Another export Id, %s, was initialized. This database does not accept this export id %s.",
+                  id.toString(), data.getExportId().toString()));
+         }
+      }
+
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, "Adding tuple for transfer init");
       List<BranchLocation> branchLocations = data.getBranchLocations();
@@ -299,10 +320,12 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       File serverApplicDir = new File(String.format("%s%sOSSEDataTransferUploads", serverDataPath, File.separator));
       if (!serverApplicDir.exists()) {
          serverApplicDir.mkdirs();
-         try (FileWriter readme =
-            new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"))) {
+         try {
+            FileWriter readme =
+               new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));
             readme.write(
                "This folder contains OSEE data transfer files which were uploaded via rest api and imported into database.");
+            readme.close();
          } catch (IOException e) {
             throw new OseeCoreException(e, "Failed to create directory. ");
          }

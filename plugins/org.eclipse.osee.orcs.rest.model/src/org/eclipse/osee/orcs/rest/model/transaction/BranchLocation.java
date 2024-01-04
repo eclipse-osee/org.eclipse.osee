@@ -20,6 +20,7 @@ public class BranchLocation {
    private BranchId branchId;
    private TransactionId baseTxId;
    private TransactionId uniqueTxId;
+   private TransactionId exportId;
    private TransferOpType transferOp;
 
    public BranchId getBranchId() {
@@ -42,8 +43,16 @@ public class BranchLocation {
       return uniqueTxId;
    }
 
-   public void setUniqueTxId(TransactionId baseTx) {
-      this.uniqueTxId = baseTx;
+   public void setUniqueTxId(TransactionId txId) {
+      this.uniqueTxId = txId;
+   }
+
+   public TransactionId getExportId() {
+      return exportId;
+   }
+
+   public void setExportId(TransactionId exportId) {
+      this.exportId = exportId;
    }
 
    public void setTransferOp(TransferOpType transferOp) {
