@@ -1,3 +1,16 @@
+/*********************************************************************
+ * Copyright (c) 2016 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+
 package org.eclipse.osee.orcs.rest.model.transaction;
 
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
@@ -129,7 +142,7 @@ public class TransactionTransferManifest {
       try {
          //verify exportID
          if (!isExportIdValid(tupleQuery, this.exportId)) {
-            results.error("The export ID is not matched. ");
+            results.error("The export ID is not valid. This id is not matched or there is more than one in db. ");
             return results;
          }
 
@@ -302,18 +315,20 @@ public class TransactionTransferManifest {
    }
 
    /*
-    * check export id exists in db
+    * check only this destination export id exists in db
     */
    private boolean isExportIdValid(TupleQuery tupleQuery, TransactionId exportId) {
-      List<BranchLocation> branchLocations = new ArrayList<>();
-      tupleQuery.getTuple4E2E3E4FromE1(ExportedBranch, CoreBranches.COMMON, exportId, (E2, E3, E4) -> {
-         BranchLocation bl = new BranchLocation();
-         bl.setBranchId(E2);
-         bl.setBaseTxId(E3);
-         bl.setUniqueTxId(E3);
-         branchLocations.add(bl);
-      });
-      return (branchLocations.size() > 0 ? true : false);
+      List<TransactionId> exportIdList = new ArrayList<>();
+      int intDbType = TransferDBType.DESTINATION.ordinal();
+      tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
+         Long.valueOf(intDbType), exportIdList::add);
+
+      for (TransactionId id : exportIdList) {
+         if (!id.equals(exportId)) {
+            return false;
+         }
+      }
+      return (exportIdList.size() == 1 ? true : false);
    }
 
    public XResultData addAllImportedTransToTupleTable(OrcsApi orcsApi) {

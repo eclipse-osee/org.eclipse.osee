@@ -115,7 +115,7 @@ public class TupleQueryImpl implements TupleQuery {
       "SELECT gamma_id FROM osee_tuple2 WHERE tuple_type=? AND e1 = ? AND e2 = ?";
 
    private static final String SELECT_TUPLE2_BY_TUPLE_TYPE =
-      "select distinct e1, e2 from osee_txs txs, osee_tuple2 tp2 where tuple_type = ? and txs.gamma_id = tp2.gamma_id and branch_id = ? and tx_current = 1";
+      "select distinct e1, e2 from osee_txs txs, osee_tuple2 tp2 where tuple_type = ? and txs.gamma_id = tp2.gamma_id and branch_id = ? and tx_current = " + TxCurrent.CURRENT;
 
    private static final String SELECT_TUPLE2_GAMMA_FROM_E1_E2 =
       "select tp2.gamma_id from osee_txs txs, osee_tuple2 tp2 where tuple_type = ? and e1 = ? and e2 = ? and tp2.gamma_id = txs.gamma_id and branch_id = ? and tx_current = " + TxCurrent.CURRENT;
@@ -128,6 +128,9 @@ public class TupleQueryImpl implements TupleQuery {
 
    private static final String SELECT_TUPLE4_E2_E3_E4_FROM_E1 =
       "select e2, e3, e4 from osee_txs txs, osee_tuple4 tp4 where tuple_type = ? and e1 = ? and tp4.gamma_id = txs.gamma_id and branch_id = ? and tx_current = " + TxCurrent.CURRENT;
+
+   private static final String SELECT_TUPLE4_E1_BY_TUPLETYPE =
+      "select distinct e1 from osee_txs txs, osee_tuple4 tp4 where tuple_type = ? and e4 = ? and tp4.gamma_id = txs.gamma_id and tx_current = " + TxCurrent.CURRENT;
 
    private final JdbcClient jdbcClient;
    private final KeyValueStore keyValue;
@@ -364,6 +367,13 @@ public class TupleQueryImpl implements TupleQuery {
          SELECT_TUPLE4_E2_E3_E4_FROM_E1, tupleType, toLong(e1), branchId);
    }
 
+   @Override
+   public <E1, E2, E3, E4> void getTuple4E1FromTupleType(Tuple4Type<E1, E2, E3, E4> tupleType, Long tupleTypeId,
+      Long e4, Consumer<E1> consumer) {
+      jdbcClient.runQuery(stmt -> consumer.accept(e1FromLong(tupleType, stmt)), SELECT_TUPLE4_E1_BY_TUPLETYPE,
+         tupleType, toLong(e4));
+   }
+
    private <E> E fromLong(Function<Long, E> valueOfElement, JdbcStatement stmt, String column) {
       Long rawValue = stmt.getLong(column);
       if (valueOfElement == TupleTypeImpl.KeyedString) {
@@ -403,6 +413,10 @@ public class TupleQueryImpl implements TupleQuery {
 
    private <E1, E2, E3> E3 e3FromLong(Tuple3Type<E1, E2, E3> tupleType, JdbcStatement stmt) {
       return fromLong(tupleType.getValueOfE3(), stmt, "e3");
+   }
+
+   private <E1, E2, E3, E4> E1 e1FromLong(Tuple4Type<E1, E2, E3, E4> tupleType, JdbcStatement stmt) {
+      return fromLong(tupleType.getValueOfE1(), stmt, "e1");
    }
 
    private <E1, E2, E3, E4> E2 e2FromLong(Tuple4Type<E1, E2, E3, E4> tupleType, JdbcStatement stmt) {

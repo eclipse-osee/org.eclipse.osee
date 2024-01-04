@@ -92,6 +92,9 @@ public interface TupleQuery {
    <E1, E2, E3, E4> void getTuple4E2E3E4FromE1(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1,
       TriConsumer<E2, E3, E4> consumer);
 
+   <E1, E2, E3, E4> void getTuple4E1FromTupleType(Tuple4Type<E1, E2, E3, E4> tupleType, Long tupleTypeId, Long e4,
+      Consumer<E1> consumer);
+
    <E1, E2, E3, E4> void getTuple4GammaFromE1E2(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branchId, E1 e1, E2 e2,
       Consumer<GammaId> consumer);
 

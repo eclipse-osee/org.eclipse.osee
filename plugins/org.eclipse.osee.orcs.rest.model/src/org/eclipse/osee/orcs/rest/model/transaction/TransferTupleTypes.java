@@ -24,15 +24,18 @@ import org.eclipse.osee.framework.core.data.Tuple4Type;
 public final class TransferTupleTypes {
    private static final TransferOpType[] transferOpTypes = TransferOpType.values();
    private static final TransferDBType[] transferDBTypes = TransferDBType.values();
+   public static final Long LongTransferDBType = 100L;
+   public static final Long LongExportedDBType = 101L;
+
    // Exported Branch, Transfer Type, Exported Transaction, Unique Common Transaction
    public static final Tuple4Type<BranchId, TransferOpType, TransactionId, TransactionId> TransferFile =
-      Tuple4Type.valueOf(TransferFamily, 100L, BranchId::valueOf, ordinal -> transferOpTypes[ordinal.intValue()],
-         TransactionId::valueOf, TransactionId::valueOf);
+      Tuple4Type.valueOf(TransferFamily, LongTransferDBType, BranchId::valueOf,
+         ordinal -> transferOpTypes[ordinal.intValue()], TransactionId::valueOf, TransactionId::valueOf);
 
    // Exported Transaction ID?, Branch ID, Branch Base Transaction Id, Transfer Type
    public static final Tuple4Type<TransactionId, BranchId, TransactionId, TransferDBType> ExportedBranch =
-      Tuple4Type.valueOf(TransferFamily, 101L, TransactionId::valueOf, BranchId::valueOf, TransactionId::valueOf,
-         ordinal -> transferDBTypes[ordinal.intValue()]);
+      Tuple4Type.valueOf(TransferFamily, LongExportedDBType, TransactionId::valueOf, BranchId::valueOf,
+         TransactionId::valueOf, ordinal -> transferDBTypes[ordinal.intValue()]);
 
    private TransferTupleTypes() {
       /* Constants */
