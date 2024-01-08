@@ -510,7 +510,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken HardwareRequirementMsWord = osee.add(osee.artifactType(33L, "Hardware Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
 
-   ArtifactTypeToken InterfaceArtifact = osee.add(osee.artifactType(54733032508193943L, "Interface Artifact", true, Controlled));
+   ArtifactTypeToken InterfaceArtifact = osee.add(osee.artifactType(54733032508193943L, "Interface Artifact", true, Artifact));
 
    ArtifactTypeToken InterfaceNode = osee.add(osee.artifactType(6039606571486514295L, "Interface Node", false, InterfaceArtifact)
       .zeroOrOne(InterfaceNodeAddress)
@@ -595,12 +595,12 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceMessageTypeEnum = osee.add(osee.artifactType(8893121862470164649L, "Interface Message Type Enum", false, InterfaceArtifact));
 
-   ArtifactTypeToken CrossReference = osee.add(osee.artifactType(5198407772394384771L, "Cross Reference", false, Controlled)
+   ArtifactTypeToken CrossReference = osee.add(osee.artifactType(5198407772394384771L, "Cross Reference", false, Artifact)
       .exactlyOne(CrossReferenceValue)
       .zeroOrOne(CrossReferenceArrayValues)
       .zeroOrOne(CrossReferenceAdditionalContent));
 
-   ArtifactTypeToken TransportType = osee.add(osee.artifactType(6663383168705248989L, "Transport Type", false, Controlled)
+   ArtifactTypeToken TransportType = osee.add(osee.artifactType(6663383168705248989L, "Transport Type", false, Artifact)
       .exactlyOne(ByteAlignValidation)
       .zeroOrOne(ByteAlignValidationSize)
       .exactlyOne(MessageGeneration)
@@ -640,12 +640,12 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
 
-   ArtifactTypeToken MimImport = osee.add(osee.artifactType(2807814791345263165L, "MIM Import", false, Controlled)
+   ArtifactTypeToken MimImport = osee.add(osee.artifactType(2807814791345263165L, "MIM Import", false, Artifact)
       .zeroOrOne(ImportTransportType)
       .exactlyOne(EndpointUrl)
       .exactlyOne(ConnectionRequired));
 
-   ArtifactTypeToken DiffReportEndPoint = osee.add(osee.artifactType(8247460208362207697L, "DIFF Report End Point", false, Controlled)
+   ArtifactTypeToken DiffReportEndPoint = osee.add(osee.artifactType(8247460208362207697L, "DIFF Report End Point", false, Artifact)
       .exactlyOne(EndpointUrl));
 
    ArtifactTypeToken ProductType = osee.add(osee.artifactType(7274800616985881194L, "Product Type", false, Artifact));
@@ -822,7 +822,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ExecutedCommandHistory = osee.add(osee.artifactType(3102324341367389724L, "ExecutedCommand History", false, Artifact));
 
-   ArtifactTypeToken Parameter = osee.add(osee.artifactType(5334063606392099440L, "Parameter", true, Controlled)
+   ArtifactTypeToken Parameter = osee.add(osee.artifactType(5334063606392099440L, "Parameter", true, Artifact)
       .zeroOrOne(DefaultValue)
       .zeroOrOne(Description, "", "A description of valid parameter inputs")
       .zeroOrOne(UseValidator, false, "Is a validator used for this parameter")
