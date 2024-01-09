@@ -1015,7 +1015,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString UnderTest = osee.createString(5925046570190903466L, "Under Test", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString WebPreferences = osee.createString(1152921504606847386L, "Web Preferences", MediaType.TEXT_PLAIN, "", XML.getFileExtension());
+   AttributeTypeString WebPreferences = osee.createString(1152921504606847386L, "Web Preferences", MediaType.TEXT_PLAIN, "", XML.getFileExtension(), DisplayHint.MultiLine);
 
    AttributeTypeString Website = osee.createString(1152921504606847084L, "Website", AttributeTypeToken.TEXT_URI_LIST, "");
 
