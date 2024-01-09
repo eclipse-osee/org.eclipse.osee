@@ -277,4 +277,6 @@ public interface IAtsWorkItemService {
       return formTitle;
 
    }
+
+   boolean isAllowSiblingCreation(IAtsWorkItem workItem);
 }

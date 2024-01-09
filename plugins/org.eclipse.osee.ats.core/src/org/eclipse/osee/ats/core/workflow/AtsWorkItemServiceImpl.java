@@ -827,4 +827,17 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       idToStateMgr.remove(workItem.getId());
    }
 
+   @Override
+   public boolean isAllowSiblingCreation(IAtsWorkItem workItem) {
+      if (!workItem.getWorkDefinition().getHeaderDef().isShowSiblingLinks()) {
+         return false;
+      }
+      for (IAtsWorkItemHook hook : getWorkItemHooks()) {
+         if (!hook.createSiblingWorkflowEnabled(workItem)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
 }

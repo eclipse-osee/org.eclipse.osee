@@ -84,7 +84,8 @@ public class WfeTransitionHeader extends Composite {
 
       workItem = editor.getWorkItem();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      GridLayout layout = new GridLayout(editor.getWorkFlowTab().getHeader().isShowTargetedVersion() ? 7 : 5, false);
+      GridLayout layout =
+         new GridLayout(AtsApiService.get().getWorkItemService().isAllowSiblingCreation(workItem) ? 7 : 5, false);
       layout.verticalSpacing = 0;
       layout.marginWidth = 0;
       layout.marginHeight = 0;
@@ -175,13 +176,8 @@ public class WfeTransitionHeader extends Composite {
       transitionAssigneesLabel.setToolTipText("Select to change assignee(s) upon transition to next state.");
 
       if (workItem.isTeamWorkflow()) {
-         boolean createSiblingWorkflowEnabled = true;
-         for (IAtsWorkItemHook hook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
-            if (!hook.createSiblingWorkflowEnabled(workItem)) {
-               createSiblingWorkflowEnabled = false;
-               break;
-            }
-         }
+         boolean createSiblingWorkflowEnabled =
+            AtsApiService.get().getWorkItemService().isAllowSiblingCreation(workItem);
          if (createSiblingWorkflowEnabled) {
             for (IAtsWorkItemHook hook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
                if (hook instanceof IAtsWorkItemHookIde && ((IAtsWorkItemHookIde) hook).createSiblingWidget(workItem,
