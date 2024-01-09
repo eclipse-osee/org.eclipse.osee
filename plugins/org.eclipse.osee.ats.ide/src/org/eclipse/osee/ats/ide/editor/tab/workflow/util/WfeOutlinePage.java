@@ -374,7 +374,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
          try {
             items.add("Show Metrics Header: " + headerDef.isShowMetricsHeader());
             items.add("Show Work Package Header: " + headerDef.isShowWorkPackageHeader());
-            items.add("Show Sibling Links: " + headerDef.isShowSiblingLinks());
+            items.add("Show Sibling Links (WorkDef Only): " + headerDef.isShowSiblingLinks());
          } catch (OseeStateException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
