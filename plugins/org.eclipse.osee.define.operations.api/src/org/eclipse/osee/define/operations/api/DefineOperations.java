@@ -19,6 +19,7 @@ import org.eclipse.osee.define.operations.api.publisher.PublisherOperations;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
+import org.eclipse.osee.define.operations.api.reports.ReportsOperations;
 import org.eclipse.osee.define.operations.api.synchronization.SynchronizationOperations;
 import org.eclipse.osee.define.operations.api.toggles.TogglesOperations;
 import org.eclipse.osee.define.operations.api.traceability.TraceabilityOperations;
@@ -46,6 +47,8 @@ public interface DefineOperations {
     */
 
    PublisherOperations getPublisherOperations();
+
+   ReportsOperations getReportsOperations();
 
    SynchronizationOperations getSynchronizationOperations();
 

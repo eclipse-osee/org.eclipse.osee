@@ -33,7 +33,10 @@ import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
+ * Interface for server methods for publishing documents.
+ *
  * @author Morgan E. Cook
+ * @author Loren K. Ashley
  */
 public interface PublishingOperations {
 
@@ -79,8 +82,10 @@ public interface PublishingOperations {
 
    public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue);
 
+   @Deprecated
    public Attachment msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
 
+   @Deprecated
    public Attachment msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view);
 
    public Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequest);

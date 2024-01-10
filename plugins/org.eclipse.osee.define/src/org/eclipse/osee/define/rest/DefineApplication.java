@@ -16,10 +16,8 @@ package org.eclipse.osee.define.rest;
 
 import java.util.Map;
 import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.app.OseeAppResourceTokens;
 import org.eclipse.osee.define.operations.api.DefineOperations;
@@ -29,6 +27,7 @@ import org.eclipse.osee.define.rest.internal.SystemSafetyResource;
 import org.eclipse.osee.define.rest.publishing.PublishingEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.datarights.DataRightsEndpointImpl;
 import org.eclipse.osee.define.rest.publishing.templatemanager.TemplateManagerEndpointImpl;
+import org.eclipse.osee.define.rest.reports.ReportsEndpointImpl;
 import org.eclipse.osee.define.rest.synchronization.SynchronizationEndpointImpl;
 import org.eclipse.osee.define.rest.toggles.TogglesEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -92,7 +91,8 @@ public final class DefineApplication extends Application {
               new DataRightsEndpointImpl(this.defineOperations),
               new DefineBranchEndpointImpl(jdbcClient, orcsApi),
               new ImportEndpointImpl(this.defineOperations),
-              new PublishingEndpointImpl(this.defineOperations, orcsApi),
+              new PublishingEndpointImpl(this.defineOperations),
+              new ReportsEndpointImpl(this.defineOperations,orcsApi),
               new SynchronizationEndpointImpl(this.defineOperations),
               new TemplateManagerEndpointImpl(this.defineOperations),
               new TogglesEndpointImpl(this.defineOperations)

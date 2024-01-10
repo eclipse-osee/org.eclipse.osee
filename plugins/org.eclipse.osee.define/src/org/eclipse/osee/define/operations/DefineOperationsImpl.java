@@ -19,11 +19,13 @@ import org.eclipse.osee.define.operations.api.DefineOperations;
 import org.eclipse.osee.define.operations.api.git.GitOperations;
 import org.eclipse.osee.define.operations.api.importing.ImportOperations;
 import org.eclipse.osee.define.operations.api.publisher.PublisherOperations;
+import org.eclipse.osee.define.operations.api.reports.ReportsOperations;
 import org.eclipse.osee.define.operations.api.synchronization.SynchronizationOperations;
 import org.eclipse.osee.define.operations.api.toggles.TogglesOperations;
 import org.eclipse.osee.define.operations.api.traceability.TraceabilityOperations;
 import org.eclipse.osee.define.operations.publisher.PublisherOperationsImpl;
 import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
+import org.eclipse.osee.define.operations.reports.ReportsOperationsImpl;
 import org.eclipse.osee.define.operations.synchronization.SynchronizationOperationsImpl;
 import org.eclipse.osee.define.operations.toggles.TogglesOperationsImpl;
 import org.eclipse.osee.define.rest.GitOperationsImpl;
@@ -47,6 +49,7 @@ public class DefineOperationsImpl implements DefineOperations {
    private OrcsApi orcsApi;
    private PublisherOperations publisherOperations;
    private SynchronizationOperations synchronizationOperations;
+   private ReportsOperations reportsOperations;
    private TogglesOperations togglesOperations;
    private TraceabilityOperations traceabilityOperations;
 
@@ -62,6 +65,11 @@ public class DefineOperationsImpl implements DefineOperations {
    @Override
    public PublisherOperations getPublisherOperations() {
       return this.publisherOperations;
+   }
+
+   @Override
+   public ReportsOperations getReportsOperations() {
+      return this.reportsOperations;
    }
 
    @Override
@@ -113,12 +121,17 @@ public class DefineOperationsImpl implements DefineOperations {
       var systemProperties = this.orcsApi.getSystemProperties();
 
       this.gitOperations = new GitOperationsImpl(this.orcsApi, systemProperties);
+
       this.importOperations = new ImportOperationsImpl(this.orcsApi);
 
       this.publisherOperations = PublisherOperationsImpl.create(orcsApi, atsApi, logger, eventAdmin);
 
+      this.reportsOperations = ReportsOperationsImpl.create(orcsApi, this);
+
       this.synchronizationOperations = SynchronizationOperationsImpl.create(this.orcsApi);
+
       this.togglesOperations = TogglesOperationsImpl.create(jdbcService);
+
       this.traceabilityOperations = new TraceabilityOperationsImpl(this.orcsApi, this.gitOperations);
 
       this.atsApi = null;
@@ -143,6 +156,9 @@ public class DefineOperationsImpl implements DefineOperations {
 
       PublisherOperationsImpl.free();
       this.publisherOperations = null;
+
+      ReportsOperationsImpl.free();
+      this.reportsOperations = null;
 
       this.synchronizationOperations = null;
 

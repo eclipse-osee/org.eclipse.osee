@@ -126,6 +126,7 @@ public interface PublishingEndpoint {
    @Path("msWordPreview/{branch}/{template}/{artifact}/{view}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
+   @Deprecated
    //@formatter:off
    Attachment
       msWordPreview
@@ -141,6 +142,7 @@ public interface PublishingEndpoint {
    @Path("msWordPreview/{branch}/{template}/{view}/artifacts")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML})
+   @Deprecated
    //@formatter:off
    Attachment
       msWordPreview

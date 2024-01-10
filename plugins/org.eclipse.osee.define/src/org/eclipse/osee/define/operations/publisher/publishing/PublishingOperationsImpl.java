@@ -435,6 +435,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
     * </dl>
     */
 
+   @Deprecated
    @Override
    public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
 
@@ -548,6 +549,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
     * </dl>
     */
 
+   @Deprecated
    @Override
    public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts, ArtifactId view) {
 
