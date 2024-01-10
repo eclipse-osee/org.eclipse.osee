@@ -10,11 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.define.rest.publishing;
+package org.eclipse.osee.define.operations.reports;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -28,8 +27,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.io.IOUtils;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
+import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -37,9 +38,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -52,9 +53,13 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public final class FeatureImpactStreamingOutput implements StreamingOutput {
 
+   private static final String rendererIdentifier = "org.eclipse.osee.define.operation.reports.featureimpact";
+   private static final PublishingTemplateRequest publishingTemplateRequest = new PublishingTemplateRequest(
+      FeatureImpactStreamingOutput.rendererIdentifier, null, PresentationType.PREVIEW.name(), null);
+
    private final Branch branchId;
    private final OrcsApi orcsApi;
-   private final DefineOperations defineOperations;
+   private final PublishingOperations publishingOperations;
    private final boolean publishUpdatedDocs;
    private final List<ArtifactTypeToken> artTypes;
    private final List<AttributeTypeToken> attrTypes;
@@ -62,17 +67,18 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
    public FeatureImpactStreamingOutput(Branch branch, OrcsApi orcsApi, DefineOperations defineOperations, boolean publishUpdatedDocs, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
       this.branchId = branch;
       this.orcsApi = orcsApi;
-      this.defineOperations = defineOperations;
+      this.publishingOperations = defineOperations.getPublisherOperations().getPublishingOperations();
       this.publishUpdatedDocs = publishUpdatedDocs;
       this.artTypes = artTypes;
       this.attrTypes = attrTypes;
-
    }
 
    @Override
    public void write(OutputStream output) {
-      Branch branch =
+
+      final Branch branch =
          orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+      final BranchId parentBranchIdentifier = branch.getParentBranch();
 
       ZipOutputStream zipOut = new ZipOutputStream(output);
 
@@ -136,25 +142,25 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
             }
             summary.flush();
             zipOut.closeEntry();
-
             if (publishUpdatedDocs) {
-
                for (Entry<String, Pair<ArtifactReadable, ArtifactToken>> viewEntry : artViewsToCompare.entrySet()) {
-                  ArtifactToken template = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-                     CoreArtifactTypes.RendererTemplateWholeWord).andNameEquals(
-                        "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES").asArtifactToken();
-                  Attachment workingDoc =
-                     defineOperations.getPublisherOperations().getPublishingOperations().msWordPreview(branch, template,
-                        viewEntry.getValue().getFirst(), viewEntry.getValue().getSecond());
-                  Attachment baselineDoc =
-                     defineOperations.getPublisherOperations().getPublishingOperations().msWordPreview(
-                        branch.getParentBranch(), template, viewEntry.getValue().getFirst(),
-                        viewEntry.getValue().getSecond());
-                  InputStream workingDocStream = workingDoc.getDataHandler().getInputStream();
+                  final var previewHeadArtifactIdentifier = viewEntry.getValue().getFirst();
+                  final var previewViewArtifactIdentifier = viewEntry.getValue().getSecond();
+                  final var workingDocBranchWithView = BranchId.create(branch.getId(), previewViewArtifactIdentifier);
+                  final var baselineDocBranchWithView =
+                     BranchId.create(parentBranchIdentifier.getId(), previewViewArtifactIdentifier);
+                  final var workingDocMsWordPreviewRequestData =
+                     new MsWordPreviewRequestData(FeatureImpactStreamingOutput.publishingTemplateRequest,
+                        workingDocBranchWithView, List.of(previewHeadArtifactIdentifier));
+                  final var baselineDocMsWordPreviewRequestData =
+                     new MsWordPreviewRequestData(FeatureImpactStreamingOutput.publishingTemplateRequest,
+                        baselineDocBranchWithView, List.of(previewHeadArtifactIdentifier));
+                  final var workingDocStream = this.publishingOperations.msWordPreview(
+                     workingDocMsWordPreviewRequestData).getDataHandler().getInputStream();
+                  final var baselineDocStream = this.publishingOperations.msWordPreview(
+                     baselineDocMsWordPreviewRequestData).getDataHandler().getInputStream();
                   workingDocStream.mark(0);
-                  InputStream baselineDocStream = baselineDoc.getDataHandler().getInputStream();
                   boolean equal = IOUtils.contentEquals(workingDocStream, baselineDocStream);
-
                   baselineDocStream.close();
                   if (!equal) {
                      PrintWriter docWriter = new PrintWriter(writer);

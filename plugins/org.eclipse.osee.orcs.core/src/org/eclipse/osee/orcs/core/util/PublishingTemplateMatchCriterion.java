@@ -108,7 +108,7 @@ public class PublishingTemplateMatchCriterion {
          new PublishingTemplateRequest
                 (
                    this.rendererIdentifier,
-                   "",
+                   null,
                    this.presentationType,
                    this.option
                 );
