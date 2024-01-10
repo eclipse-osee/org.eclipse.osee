@@ -8,15 +8,16 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.rest.api,
+ org.eclipse.osee.define.rest.api.git,
  org.eclipse.osee.define.rest.api.importing,
  org.eclipse.osee.define.rest.api.publisher,
  org.eclipse.osee.define.rest.api.publisher.datarights,
  org.eclipse.osee.define.rest.api.publisher.publishing,
  org.eclipse.osee.define.rest.api.publisher.templatemanager,
+ org.eclipse.osee.define.rest.api.reports,
  org.eclipse.osee.define.rest.api.synchronization,
  org.eclipse.osee.define.rest.api.toggles,
- org.eclipse.osee.define.rest.api.traceability,
- org.eclipse.osee.define.rest.api.git
+ org.eclipse.osee.define.rest.api.traceability
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,

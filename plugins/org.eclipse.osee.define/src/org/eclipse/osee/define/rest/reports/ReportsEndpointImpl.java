@@ -25,6 +25,7 @@ import org.eclipse.osee.define.operations.api.DefineOperations;
 import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.operations.reports.FeatureImpactStreamingOutput;
+import org.eclipse.osee.define.rest.api.reports.ReportsEndpoint;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -37,7 +38,7 @@ import org.eclipse.osee.orcs.OrcsApi;
  * @author Loren K. Ashley
  */
 
-public class ReportsEndpointImpl {
+public class ReportsEndpointImpl implements ReportsEndpoint {
 
    /**
     * Saves a handle to the Define Operations.

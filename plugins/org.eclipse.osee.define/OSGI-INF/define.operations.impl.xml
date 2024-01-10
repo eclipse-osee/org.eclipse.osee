@@ -51,13 +51,6 @@
       policy      = "static"/>
       
    <reference 
-      bind        = "setActivityLog"
-      cardinality = "1..1"
-      interface   = "org.eclipse.osee.activity.api.ActivityLog"
-      name        = "ActivityLog"
-      policy      = "static"/>
-      
-   <reference 
       bind        = "setEventAdmin"
       cardinality = "1..1"
       interface   = "org.osgi.service.event.EventAdmin"
