@@ -403,7 +403,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    private void updateSingleItem(ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx,
-      boolean resetRerunFlag) {
+      boolean resetRerunFlag, boolean isImport) {
       Date lastUpdate = newItemData.getLastUpdate();
       String name = newItemData.getName();
       Map<String, Discrepancy> newDiscrepancies = newItemData.getDiscrepanciesList();
@@ -467,7 +467,9 @@ public class OrcsStorageImpl implements Storage {
       if (aborted != null && !aborted.equals(origItem.getAborted())) {
          tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemAborted, aborted);
       }
-      if (itemNotes != null && origItem.getItemNotes().equals("none") && !itemNotes.equals(origItem.getItemNotes())) {
+      if (!isImport && itemNotes != null && !itemNotes.equals(origItem.getItemNotes())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
+      } else if (isImport && (origItem.getItemNotes().equals("none") || origItem.getItemNotes().isEmpty())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
       }
       if (fileNumber != null && !fileNumber.equals(origItem.getFileNumber())) {
@@ -485,13 +487,17 @@ public class OrcsStorageImpl implements Storage {
    public void updateDispoItem(BranchId branch, String dispoItemId, DispoItem data) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Update Dispo Item");
       ArtifactReadable dispoItemArt = findDispoArtifact(branch, dispoItemId);
-      updateSingleItem(dispoItemArt, data, tx, false);
+      updateSingleItem(dispoItemArt, data, tx, false, false);
       tx.commit();
    }
 
    @Override
    public void updateDispoItems(BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, operation);
+      boolean isImport = false;
+      if (operation.equals("Import")) {
+         isImport = true;
+      }
       boolean isCommitNeeded = false;
 
       for (DispoItem newItem : data) {
@@ -499,7 +505,7 @@ public class OrcsStorageImpl implements Storage {
          if (Strings.isValid(itemId)) {
             isCommitNeeded = true;
             ArtifactReadable dispoItemArt = findDispoArtifact(branch, newItem.getGuid());
-            updateSingleItem(dispoItemArt, newItem, tx, resetRerunFlag);
+            updateSingleItem(dispoItemArt, newItem, tx, resetRerunFlag, isImport);
          }
       }
 
