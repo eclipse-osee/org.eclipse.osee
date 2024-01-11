@@ -697,12 +697,14 @@ public class DispoApiImpl implements DispoApi {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
       if (operation.equals(DispoStrings.Operation_Import)) {
+         logger.info("Beginning Coverage Import on branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, setToEdit);
 
             DispoImporterApi importer;
 
             if (setToEdit.getDispoType().equalsIgnoreCase(DispoStrings.CODE_COVERAGE)) {
+               logger.info("Importing LIS files...");
                importer = importerFactory.createImporter(ImportFormat.LIS, dispoConnector);
             } else {
                importer = importerFactory.createImporter(ImportFormat.TMO, dispoConnector);
@@ -710,6 +712,7 @@ public class DispoApiImpl implements DispoApi {
 
             File importDirectory;
             if (setToEdit.getImportPath().contains("artifactory")) {
+               logger.info("Beginning Import...");
                importDirectory = importData(branch, setToEdit, setToEdit.getImportPath());
             } else {
                importDirectory = new File(setToEdit.getImportPath());
@@ -728,6 +731,7 @@ public class DispoApiImpl implements DispoApi {
             List<DispoItem> itemsToCreate = new ArrayList<>();
             List<DispoItem> itemsToEdit = new ArrayList<>();
 
+            logger.info("Determining Items to Create/Update...");
             for (DispoItem item : itemsFromParse) {
                // if the ID is non-empty then we are updating an item instead of creating a new one
                if (item.getGuid() == null) {
@@ -738,6 +742,7 @@ public class DispoApiImpl implements DispoApi {
                }
             }
 
+            logger.info("Creating/Updating Items...");
             if (!report.getStatus().isFailed()) {
                if (itemsToCreate.size() > 0) {
                   createDispoItems(branch, setToEdit.getGuid(), itemsToCreate);
@@ -747,6 +752,8 @@ public class DispoApiImpl implements DispoApi {
                }
             }
 
+            logger.info("Updating Coverage Status for Items on branch [%s] set [%s]", branch.toString(),
+               setToEdit.getIdString());
             updateAllDispoItems(branch, setToEdit.getGuid());
 
          } catch (Exception ex) {
@@ -755,8 +762,11 @@ public class DispoApiImpl implements DispoApi {
             }
             throw new OseeCoreException(ex);
          }
+         logger.info("Finishing Coverage Import on branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
       }
 
+      logger.info("Generating Note for Operation Documentation for branch [%s] set [%s]", branch.toString(),
+         setToEdit.getIdString());
       // Create the Note to document the Operation
       List<Note> notesList = setToEdit.getNotesList();
       Note genOpNotes = generateOperationNotes(operation);
@@ -767,10 +777,15 @@ public class DispoApiImpl implements DispoApi {
       newSet.setTime(newDate);
 
       // Generate report
+      logger.info("Generating Coverage Report for branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
       getWriter().updateOperationSummary(branch, setToEdit.getGuid(), report);
 
       //Update Disposition Set
+      logger.info("Updating Coverage Set Status for branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
       getWriter().updateDispoSet(branch, setToEdit.getGuid(), newSet);
+
+      logger.info("Finished Updating Coverage for branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
+
    }
 
    private File importData(BranchId branch, DispoSet setId, String dataSource) {
