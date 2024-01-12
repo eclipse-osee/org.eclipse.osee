@@ -8,7 +8,7 @@
         "Image:OseeScreenShotAddRepository.png")
 5.  Click **Archive...**
 6.  Locate the ZIP file downloaded with
-    \<[these](/docs/OSEE/DownloadInstallAndConfigureOsee/Download_Current_Version_of_OSEE.md "wikilink")\>
+    {[these](/docs/OSEE/DownloadInstallAndConfigureOsee/Download_Current_Version_of_OSEE.md "wikilink")}
     instructions and click Open
 7.  Click OK
 8.  Check the **osee_client ...** entry. Note that this will
@@ -33,4 +33,4 @@
     "Image:Restart_dialog.png")
     It is important to shutdown Eclipse and that you don't restart
     Eclipse until you have completed the database initialization
-    [<HERE>](/docs/OSEE/Users_Guide/Getting_Started.md#Server_Installation "wikilink").
+    [{HERE}](/docs/OSEE/Users_Guide/Getting_Started.md#Server_Installation "wikilink").

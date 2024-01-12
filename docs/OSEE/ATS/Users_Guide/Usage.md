@@ -1,7 +1,6 @@
 # Creating a new ATS action
 
-![3-createatsaction-vert.png](/docs/images/3-createatsaction-vert.png
-"3-createatsaction-vert.png")
+![3-createatsaction-vert.png](/docs/images/3-createatsaction-vert.png "3-createatsaction-vert.png")
 
   - Page One
       - Title - This text will be the title for the action being
@@ -41,8 +40,7 @@
 
 # Editing your Action with the Workflow Editor
 
-![image:workfloweditor.png](/docs/images/workfloweditor.png
-"image:workfloweditor.png")
+![image:workfloweditor.png](/docs/images/workfloweditor.png "image:workfloweditor.png")
 
 After creation of the action, ATS will open the Workflow Editor. This
 allows you to change the Originator, Assignees, Target a version/build
@@ -76,8 +74,7 @@ There are multiple different ways to search for your ATS work items. The
 ATS Navigator provides an ATS Search editor with basic fields to search
 by. These searches can be saved to "Saved Searches".
 
-![image:atsnavigatortop2016.jpg](/docs/images/atsnavigatortop2016.jpg
-"image:atsnavigatortop2016.jpg")
+![image:atsnavigatortop2016.jpg](/docs/images/atsnavigatortop2016.jpg "image:atsnavigatortop2016.jpg")
 
 ![image:atssearch2016.jpg](/docs/images/atssearch2016.jpg "image:atssearch2016.jpg")
 
@@ -96,8 +93,7 @@ Also from the ATS Navigator, you can search via
   - Task Search - Search for tasks
   - Team Workflow Search - Search for only Team Workflows
 
-![image:atsnavigatorbottom2016.png](/docs/images/atsnavigatorbottom2016.png
-"image:atsnavigatorbottom2016.png")
+![image:atsnavigatorbottom2016.png](/docs/images/atsnavigatorbottom2016.png "image:atsnavigatorbottom2016.png")
 
 In addition, at the bottom of the ATS Navigator is the ATS Quick Search
 that will search the main fields of the actions and return matches. By
@@ -162,8 +158,7 @@ continuing until the review is completed.
 
 ### State Machine
 
-![image:peertopeerreviewstatemachine.jpg](/docs/images/peertopeerreviewstatemachine.jpg
-"image:peertopeerreviewstatemachine.jpg")
+![image:peertopeerreviewstatemachine.jpg](/docs/images/peertopeerreviewstatemachine.jpg "image:peertopeerreviewstatemachine.jpg")
 
 ### How to do it
 
@@ -179,8 +174,7 @@ continuing until the review is completed.
 
 ### Prepare State
 
-![image:peertopeerrevieweditorprepare.jpg](/docs/images/peertopeerrevieweditorprepare.jpg
-"image:peertopeerrevieweditorprepare.jpg")
+![image:peertopeerrevieweditorprepare.jpg](/docs/images/peertopeerrevieweditorprepare.jpg "image:peertopeerrevieweditorprepare.jpg")
 
 This state allows the user to create the peer to peer review. Enter the
 required information and transition to Review to start the review. All
@@ -204,10 +198,8 @@ As of 0.24.0 release, the peer review defects table has been moved to
 it's own tab in the editor (see Defects image below). This is to improve
 performance and usability.
 
-![image:peertopeerrevieweditorreview.jpg](/docs/images/peertopeerrevieweditorreview.jpg
-"image:peertopeerrevieweditorreview.jpg")
-![image:peertopeerrevieweditordefects.jpg](/docs/images/peertopeerrevieweditordefects.jpg
-"image:peertopeerrevieweditordefects.jpg")
+![image:peertopeerrevieweditorreview.jpg](/docs/images/peertopeerrevieweditorreview.jpg "image:peertopeerrevieweditorreview.jpg")
+![image:peertopeerrevieweditordefects.jpg](/docs/images/peertopeerrevieweditordefects.jpg "image:peertopeerrevieweditordefects.jpg")
 
 | Field         | Description                                                                                                                |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -227,8 +219,7 @@ during a workflow.
 
 ### State Machine
 
-![image:decisionreview.jpg](/docs/images/decisionreview.jpg
-"image:decisionreview.jpg")
+![image:decisionreview.jpg](/docs/images/decisionreview.jpg "image:decisionreview.jpg")
 
 ### How to do it
 
@@ -239,8 +230,7 @@ necessary information required for this review.
 
 ### Prepare State
 
-![image:decisionreviewprepare.jpg](/docs/images/decisionreviewprepare.jpg
-"image:decisionreviewprepare.jpg")
+![image:decisionreviewprepare.jpg](/docs/images/decisionreviewprepare.jpg "image:decisionreviewprepare.jpg")
 
 This state allows the user to create the decision review. Enter the
 required information and transition to Decision to start the review. All
@@ -260,11 +250,11 @@ transitioned to assignees will be required to perform the review.
 </tr>
 <tr class="even">
 <td><p>Decision Review Options</p></td>
-<td><p>Enter all the options that are available for selection. Each line is a single decision option in the format <code>answer;state;</code><userId>, where</p>
+<td><p>Enter all the options that are available for selection. Each line is a single decision option in the format <code>answer;state;</code>{userId}, where</p>
 <ul>
 <li><code>answer</code> = Yes, No, Maybe, ...</li>
 <li><code>state</code> = Followup or Completed (this will be the state to transition to if the answer is chosen)</li>
-<li><code>userId</code> = userId of the user to assign the state to transition to. UserIds are only valid for Followup state, as the Completed state has no assignees. (Note that multiple users can be specified as follows: <userId1><userId2>)</li>
+<li><code>userId</code> = userId of the user to assign the state to transition to. UserIds are only valid for Followup state, as the Completed state has no assignees. (Note that multiple users can be specified as follows: {userId1}{userId2})</li>
 </ul></td>
 </tr>
 <tr class="odd">
@@ -284,8 +274,7 @@ transitioned to assignees will be required to perform the review.
 
 ### Decision State
 
-![image:decisionreviewdecision.jpg](/docs/images/decisionreviewdecision.jpg
-"image:decisionreviewdecision.jpg")
+![image:decisionreviewdecision.jpg](/docs/images/decisionreviewdecision.jpg "image:decisionreviewdecision.jpg")
 
 This state allows the user to review the description or materials and
 choose their decision.
@@ -591,7 +580,7 @@ ATS uses four main artifacts to configure a workflow for use by a Team.
         Workflow Definition with the Artifact Editor. "Transition" is a
         multi-valued attribute which is used to define the available
         transitions between states. Transitions take the form
-        \<SourceState\>;\<Transition\>;\<DestinationState\>
+        {SourceState};{Transition};{DestinationState}
       - Available transitions are:
           - ToPage
           - ToPageAsDefault
@@ -602,7 +591,7 @@ ATS uses four main artifacts to configure a workflow for use by a Team.
         it.
       - States in the transition list must exist as Work Pages named
         with the following syntax:
-        <WorkflowDefinitionName>.<NameOfState>
+        {WorkflowDefinitionName}.{NameOfState}
           - e.g. osee.ats.CustReqWorkflow contains a transition
             "Endorse;ToPage;Cancelled" so Work Pages
             osee.ats.CustReqWorkflow.Endorse and
@@ -678,8 +667,7 @@ ATS Versions can be converted to OSEE Agile Sprints.
 
 ## Getting Started with OSEE Agile
 
-![image:agilenavigator2016.png](/docs/images/agilenavigator2016.png
-"image:agilenavigator2016.png")
+![image:agilenavigator2016.png](/docs/images/agilenavigator2016.png "image:agilenavigator2016.png")
 
 ### Create new Agile Team
 
@@ -718,11 +706,10 @@ completed you can transition your sprint to completed and it will not be
 shown as an option in the Sprint Column.
 
 Recommendation: A good naming convention for sprints is
-<short team name> Sprint <xx>. Where xx is 01..99. This allows dialogs
+{short team name} Sprint {xx}. Where xx is 01..99. This allows dialogs
 and such to sort and attempt to show later sprints first. It also allows
 for quick search of sprints for just one team.
-![image:agilesprint2016.png](/docs/images/agilesprint2016.png
-"image:agilesprint2016.png")
+![image:agilesprint2016.png](/docs/images/agilesprint2016.png "image:agilesprint2016.png")
 
 #### Adding ATS Objects to Backlogs, Springs and Goals
 
@@ -734,8 +721,7 @@ As of the 0.25.0 release, you can also right-click in any Goal, Backlog
 or Sprint and select "Create New Action" menu option. This also
 automatically adds the item at the location you selected.
 
-![image:agilenewaction2016.png](/docs/images/agilenewaction2016.png
-"image:agilenewaction2016.png")
+![image:agilenewaction2016.png](/docs/images/agilenewaction2016.png "image:agilenewaction2016.png")
 
 #### Converting over existing items in to new sprints
 
@@ -755,8 +741,7 @@ In the ATS Navigator \> expand the Agile section \> Select Create new
 Agile Feature Group \> enter the name and press Ok. The Feature Group
 will be placed under your Agile Team on the Common Branch.
 
-![image:agilefeaturegroup2016.png](/docs/images/agilefeaturegroup2016.png
-"image:agilefeaturegroup2016.png")
+![image:agilefeaturegroup2016.png](/docs/images/agilefeaturegroup2016.png "image:agilefeaturegroup2016.png")
 
 To set the feature group on your items \> Open in the World View \> Add
 the Feature Group column \> select the item(s) you wish to set \>
@@ -868,7 +853,7 @@ the reports.
 1.  Store Snapshot of Sprint Reports - This will create a snapshot of
     all the report as HTML and store it in OSEE. These can be seen in
     the Artifact Explorer \> Common Branch \> Agile Team \> Sprints \>
-    under <Your Sprint Name>. Double-clicking or right-click \> Edit
+    under {Your Sprint Name}. Double-clicking or right-click \> Edit
     with Preview will open these reports.
 2.  Open Stored Sprint Reports - This will open all Sprint Reports
     externally.
@@ -880,8 +865,7 @@ Reports \> Open Agile Stored Sprint Reports.
 
 ![sprint_summary.png](/docs/images/sprint_summary.png "sprint_summary.png")
 
-![sprint_data_table.png](/docs/images/sprint_data_table.png
-"sprint_data_table.png")
+![sprint_data_table.png](/docs/images/sprint_data_table.png "sprint_data_table.png")
 
 ![sprint_burndown.png](/docs/images/sprint_burndown.png "sprint_burndown.png")
 

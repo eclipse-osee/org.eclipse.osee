@@ -40,8 +40,7 @@
     Eclipse. It is important that you don't restart Eclipse until you
     have completed the database initialization steps below.
 
-![image:restart_dialog.png](/docs/images/restart_dialog.png
-"image:restart_dialog.png")
+![image:restart_dialog.png](/docs/images/restart_dialog.png "image:restart_dialog.png")
 
 1.  Before you can use OSEE you will need to install a relational
     database. Follow the instructions at [Supported
@@ -61,8 +60,7 @@
 
 <td valign="top">
 
-![image:open_perspective.png](/docs/images/open_perspective.png
-"image:open_perspective.png")
+![image:open_perspective.png](/docs/images/open_perspective.png "image:open_perspective.png")
 
 </td>
 

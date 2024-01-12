@@ -96,8 +96,7 @@ string data `"Y"`. These two artifact instances are related via the
 default hierarchy relation type. Artifact 1 is Artifact 2's parent
 artifact.
 
-![image:basic artifact.png](/docs/images/basic_artifact.png
-"image:basic artifact.png")
+![image:basic artifact.png](/docs/images/basic_artifact.png "image:basic artifact.png")
 
 Now that we have a basic understanding of the model, lets take a closer
 look at attributes and how they are defined.
@@ -145,7 +144,7 @@ OSEE can be configured by setting certain Java system properties when
 launching Eclipse and by setting various attribute values on the Global
 Preferences artifact in the datastore. Java system properties are
 key/value pairs and can be passed as launch arguments in the form of
-`-D`<key>`=`<value> (*i.e. `-Dosee.authentication.protocol=trustAll`*).
+`-D`{key}`=`{value} (*i.e. `-Dosee.authentication.protocol=trustAll`*).
 These `-D` options can be specified directly in the command to launch
 Eclipse or in the corresponding .ini file for the eclipse executable
 used. Server-side OSGI properties are specified in an JSON file
@@ -179,7 +178,7 @@ each one.
 | System Property Name           | Values                        | Default                         | Description                                                                                                                                                                                                                                                      |
 | ------------------------------ | ----------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | osee.connection.info.uri       | `[FILE SYSTEM PATH]`          |                                 | File system path or uri containing custom database connection information.                                                                                                                                                                                       |
-| osee.db.connection.id          | <db identifier>               | Default from db.connection file | Specifies which database OSEE should connect to. This id references connection information specified in the ...db.connection.xml file. Refer to the [Database Connection Information](#Database_Connection_Information "wikilink") section for more information. |
+| osee.db.connection.id          | {db identifier}               | Default from db.connection file | Specifies which database OSEE should connect to. This id references connection information specified in the ...db.connection.xml file. Refer to the [Database Connection Information](#Database_Connection_Information "wikilink") section for more information. |
 | osee.jini.forced.reggie.search | `true, false`                 | `false`                         | If true, adds the lookupList to the global lookup list such that a refresh will try to locate the service again                                                                                                                                                  |
 | osee.jini.lookup.groups        | user defined group name       |                                 | the Jini Group that all OSEE provided Jini services will register with                                                                                                                                                                                           |
 | osee.log.default               | `FINE, INFO, WARNING, SEVERE` | `WARNING`                       | the default logging level for all loggers                                                                                                                                                                                                                        |
@@ -211,9 +210,7 @@ each one.
 </tr>
 <tr class="odd">
 <td><p>osee.db.embedded.server</p></td>
-<td><p><code>[</p>
-<address>
-<p>:<port>]</code></p></td>
+<td><p><code>[{address}:{port}]</code></p></td>
 <td></td>
 <td><p>When specified, this system property sets the URL used to launch an embedded database server.</p></td>
 </tr>
@@ -246,17 +243,13 @@ each one.
 <tbody>
 <tr class="odd">
 <td><p>osee.application.server</p></td>
-<td><p><code>[<a href="http://">http://</a></p>
-<address>
-<p>:<port>]</code></p></td>
+<td><p><code>[<a href="http://">http://</a>{address}:{port}]</code></p></td>
 <td></td>
 <td><p>When specified, this system property sets the URL used to reference the application server and arbitration is bypassed.</p></td>
 </tr>
 <tr class="even">
 <td><p>osee.arbitration.server</p></td>
-<td><p><code>[<a href="http://">http://</a></p>
-<address>
-<p>:<port>]</code></p></td>
+<td><p><code>[<a href="http://">http://</a>{address}:{port}]</code></p></td>
 <td></td>
 <td><p>The arbitration server address and port to use. This system property must be specified for the system to gain access to OSEE data. If the application server property is set then that address takes precedence and arbitration is bypassed.</p></td>
 </tr>
@@ -298,7 +291,7 @@ each one.
 </tr>
 <tr class="odd">
 <td><p>osee.local.http.worker.port</p></td>
-<td><p><port></p></td>
+<td><p>{port}</p></td>
 <td><p><code>Port Scan starting from 18000</code></p></td>
 <td><p>Port to use for local worker server.</p></td>
 </tr>
@@ -451,26 +444,22 @@ keyword is used.
 
 **Example of the OSEE Types Editor**
 
-![<file:osee_types_sheet_example.png>](/docs/images/osee_types_sheet_example.png
-"file:osee_types_sheet_example.png")
+![<file:osee_types_sheet_example.png>](/docs/images/osee_types_sheet_example.png "file:osee_types_sheet_example.png")
 
 **Command Completion Example**
 
-![<file:osee_command_completion_example.png>](/docs/images/osee_command_completion_example.png
-"file:osee_command_completion_example.png")
+![<file:osee_command_completion_example.png>](/docs/images/osee_command_completion_example.png "file:osee_command_completion_example.png")
 
 **Error Handling Example**
 
-![<file:osee_editor_error_example.png>](/docs/images/osee_editor_error_example.png
-"file:osee_editor_error_example.png")
+![<file:osee_editor_error_example.png>](/docs/images/osee_editor_error_example.png "file:osee_editor_error_example.png")
 
 The OSEE types definitions are stored in artifacts and cached during
 startup. They are edited in OSEE like any other artifact. Simply select
 the artifact \> right-click \> open with \> OSEE DSL Editor. Convention
 is to root them off the Common Branch default hierarchy.
 
-![<file:osee_types_sheet_artifacts.png>](/docs/images/osee_types_sheet_artifacts.png
-"file:osee_types_sheet_artifacts.png")
+![<file:osee_types_sheet_artifacts.png>](/docs/images/osee_types_sheet_artifacts.png "file:osee_types_sheet_artifacts.png")
 
 ### Artifact Definitions
 
@@ -579,8 +568,7 @@ the relation. You can also specify the multiplicity.
 As described above, you can use command completion to see the valid
 values. An example is "multiplicity".
 
-![<file:osee_multiplicity_options_example.png>](/docs/images/osee_multiplicity_options_example.png
-"file:osee_multiplicity_options_example.png")
+![<file:osee_multiplicity_options_example.png>](/docs/images/osee_multiplicity_options_example.png "file:osee_multiplicity_options_example.png")
 
 ### Making Types Changes in Production
 
@@ -594,8 +582,8 @@ values. An example is "multiplicity".
     1.  You should be prompted to update caches upon save. Select Yes
         for a single-server deployment.
     2.  POST to server urls
-        <SERVER_ADDRESS>/orcs/types/invalidate-caches
-    3.  curl -X POST <SERVER_ADDRESS>/orcs/types/invalidate-caches
+        {SERVER_ADDRESS}/orcs/types/invalidate-caches
+    3.  curl -X POST {SERVER_ADDRESS}/orcs/types/invalidate-caches
     4.  A server restart will also reload the new types, but is not
         required
 7.  If the code needs a new version of the types sheets (eg: Type sheet
@@ -627,7 +615,7 @@ tuple entries for the new version of the types sheet(s).
     to next number
   - Update the tuple table to point to new OSEE Types Sheets gamma ids
     using OSEE_TYPE_VERSION number from last step at the web page
-    <SERVER_ADDRESS>/orcs/types/config/ui/main.html
+    {SERVER_ADDRESS}/orcs/types/config/ui/main.html
       - NOTE: This MUST be done for each instance of OSEE database even
         if types didn't update
   - While both production and developmental types sheets are in play,
@@ -670,7 +658,7 @@ Git](http://wiki.eclipse.org/OSEE/Workspace_Setup#Working_with_Git)
 2.  Run the atside test suite that coincides with changes
     1.  If fails, run again
     2.  If fails twice, stop the server then delete db files
-    3.  Also remove \<osee_client\>\\demo
+    3.  Also remove {osee_client}\\demo
 3.  git status
     1.  In red, changes listed
     2.  Verify they are what is expected
@@ -679,7 +667,7 @@ Git](http://wiki.eclipse.org/OSEE/Workspace_Setup#Working_with_Git)
 
 1.  gitk
     1.  review changes
-2.  git commit --m "\<feature/refinement/..\>: Description" -a -s
+2.  git commit --m "{feature/refinement/..}: Description" -a -s
     1.  e.g. git commit --m "feature: Web Config" -a -s
         1.  \-s only if you are not a committer
         2.  \-a means all (if you don't want all you omit the -a and
@@ -692,12 +680,12 @@ Git](http://wiki.eclipse.org/OSEE/Workspace_Setup#Working_with_Git)
         1.  locate commit that you want to revert. Highlight/Write down
             version prior (and current version if you want to re-use)
         2.  e.g. $ git lg -10
-        3.  git reset <paste version>
+        3.  git reset {paste version}
             1.  e.g. git reset 35bce46
 2.  git status
     1.  should show previously committed changes in red
 3.  Do git co of files you didn't intend to change (or remove)
-4.  git commit -c <previous id> -a
+4.  git commit -c {previous id} -a
     1.  Commits changes again, using previous id (don't use -m)
 
 ### When making multiple commits that need to look one
@@ -756,7 +744,7 @@ Git](http://wiki.eclipse.org/OSEE/Workspace_Setup#Working_with_Git)
 3.  Click on the Download drop-down to the right and copy the link for
     CherryPick
 4.  then do
-    1.  . <paste command>
+    1.  . {paste command}
         1.  e.g. git fetch
             <https://git.eclipse.org/r/osee/org.eclipse.osee>
             refs/changes/79/148379/1 && git cherry-pick FETCH_HEAD
@@ -769,7 +757,7 @@ Git](http://wiki.eclipse.org/OSEE/Workspace_Setup#Working_with_Git)
 ### purging a branch- USE WITH CAUTION
 
   - powershell
-  - telnet \<server_url\> \<port\>
+  - telnet {server_url} {port}
   - oseehelp
   - DO NOT ENTER THE WORD: "exit" OR "quit"
 
@@ -782,9 +770,9 @@ Git](http://wiki.eclipse.org/OSEE/Workspace_Setup#Working_with_Git)
 
 1.  git pull --rebase
 2.  git status
-3.  git add <path>
+3.  git add {path}
 4.  git commit
-5.  git commit --append <path>
+5.  git commit --append {path}
 6.  git push review_dev
 7.  git clean -fdx (before doing this be sure you have NO uncommitted
     changes)
@@ -841,7 +829,7 @@ Bundles](http://wiki.eclipse.org/OSEE/Workspace_Setup#Locations_of_all_OSEE_bund
 
 1.  From the source application server's osgi console: export_branch
     myExportFolder
-2.  The results will be placed in <user home>\\Exchange\\myExportFolder
+2.  The results will be placed in {user home}\\Exchange\\myExportFolder
 3.  Zip the resulting folder and save it for possible reuse
 4.  Run database initialization on destination database
 
@@ -851,7 +839,7 @@ Bundles](http://wiki.eclipse.org/OSEE/Workspace_Setup#Locations_of_all_OSEE_bund
 
 1.  Import any custom types into the destination database
 2.  From the destination application server's osgi console:
-    import_branch <user home>\\Exchange\\myExportFolder
+    import_branch {user home}\\Exchange\\myExportFolder
 3.  From the application server run `tag_all`
 4.  Restart destination application server
 5.  Start corresponding OSEE client
@@ -1225,7 +1213,7 @@ to their own particular context.
 ![image:testworkflow.png](/docs/images/testworkflow.png "image:testworkflow.png")
 
 **1. Write a class that extends AbstractCoverageBlam**
-
+```
     public class MyCoverageImportBlam extends AbstractCoverageBlam {
        public static String COVERAGE_IMPORT_DIR = "Coverage Import Directory";
        public static String NAMESPACE = "Code Namespace";
@@ -1287,6 +1275,7 @@ to their own particular context.
        }
 
     }
+```
 
 **2. Define a class that implements ICoverageImporter**
 
@@ -1316,7 +1305,7 @@ to their own particular context.
     }
 
 **3. Add extension point declaration to package's plugin.xml**
-
+```
     <?xml version="1.0" encoding="UTF-8"?>
     <?eclipse version="3.4"?>
     <plugin>
@@ -1327,7 +1316,7 @@ to their own particular context.
           </Operation>
        </extension>
     </plugin>
-
+```
 
 
 ## Using and Updating Swagger
@@ -1339,8 +1328,8 @@ instructions on using and updating the tool.
 ### Browsing/Utilizing The Swagger Web Application
 
 The Swagger web application is located here:
-**http://\<host\>/swagger/index.html**, where **<host>** is the
-top-level domain of your organization, or **http://localhost:\<port\>**
+**http://{host}/swagger/index.html**, where **{host}** is the
+top-level domain of your organization, or **http://localhost:{port}**
 when running a local server on a development machine.
 
 ### Multiple Definitions
@@ -1383,7 +1372,7 @@ parent SwaggerGenerator application located under
 2.  Observe the Console for any errors during generation.
 3.  The newly generated or updated files will be located under
     **org.eclipse.osee.web.ui/src/swagger/definitions** in this format:
-    **<reformatted package name>.json**
+    **{reformatted package name}.json**
 
 ### Adding New Endpoints To An Existing Swagger Annotated Class
 
@@ -1446,7 +1435,7 @@ documentation tags implemented yet***.
     class **in a single commit.***
 
 <!-- end list -->
-
+```
     public class DefineApiSwaggerGenerator {
        private static final String definitionPath = "../org.eclipse.osee.web.ui/src/swagger/definitions/";
        // Only one period in the definition file name is supported
@@ -1539,7 +1528,7 @@ documentation tags implemented yet***.
           return pathItem;
        }
     }
-
+```
 Here is an example of a class with ***no generic tagging implemented***.
 All of the enpoint classes under this particular package, for which the
 generator class is handling ***have Swagger documentation tagging
@@ -1548,7 +1537,7 @@ tagging takes better advantage of Swagger's capabilities, however takes
 more work documenting each endpoint. For classes under packages that
 have not been documented yet, generic tagging may be used in the
 meantime.
-
+```
     public class DispoSwaggerGenerator {
 
        private static final String definitionPath = "../org.eclipse.osee.web.ui/src/swagger/definitions/";
@@ -1589,9 +1578,9 @@ meantime.
           System.out.println("");
        }
     }
-
+```
 **1. Add the new class to the parent SwaggerGenerator.java class:**
-
+```
     public class SwaggerGenerator {
 
        public static void main(String[] args) {
@@ -1603,13 +1592,13 @@ meantime.
           // Add new Swagger Generator class here
        }
     }
-
+```
 **2. Add the new definition file reference URL to the
 swagger-initializer.js file under
 org.eclipse.osee.web.ui/src/swagger/node_modules/swagger-ui-dist/ Make
 sure it is placed in alphabetical order based on its "name" attribute in
 the "urls" array:**
-
+```
     window.onload = function() {
       //<editor-fold desc="Changeable Configuration Block">
 
@@ -1653,7 +1642,7 @@ the "urls" array:**
 
       //</editor-fold>
     };
-
+```
 **3. For any classes to picked up by the Swagger web application for
 this new definition, the @Swagger annotation must be added to any
 relevant classes at the class level, and any relevant endpoint needs to

@@ -13,7 +13,7 @@ time.
 First, open the Workflow, or any Workflow relating to the Action. Then,
 ensure that the "Action view" view is open.
 
-<Want an image here>
+{Want an image here}
 
 Right-click on either the Workflow you want to change the title of, or
 the Action, and select "Open in Artifact Editor".

@@ -14,11 +14,12 @@
 package org.eclipse.osee.framework.help.ui;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.util.Set;
+import org.eclipse.osee.framework.help.ui.util.BookParser;
 import org.eclipse.osee.framework.help.ui.util.HelpTestUtil;
 import org.eclipse.osee.framework.help.ui.util.HtmlParser;
-import org.eclipse.osee.framework.help.ui.util.TocParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,17 +30,22 @@ public class HelpTableOfContentTest {
 
    private static final String PLUGIN_ID = "org.eclipse.osee.framework.help.ui";
 
-   private static TocParser parser;
+   private static BookParser bookParser;
+   private static Set<String> bookParserEntries;
 
    @BeforeClass
    public static void setUp() throws Exception {
-      parser = new TocParser("toc.xml");
-      parser.parse();
+      bookParser = new BookParser("book.xml");
+      bookParser.parse();
+      bookParserEntries = bookParser.getEntries();
    }
 
    @Test
    public void testAllTocReferencesExist() throws Exception {
-      for (String reference : parser.getEntries()) {
+
+      assertTrue("There were no entries found in the table of contents!", bookParserEntries.size() > 0);
+
+      for (String reference : bookParserEntries) {
          URL url = HelpTestUtil.getResource(reference);
          assertNotNull(String.format("[%s] was not valid", reference), url);
       }
@@ -49,7 +55,7 @@ public class HelpTableOfContentTest {
    public void testTocReferencesValid() throws Exception {
       HtmlParser htmlParser = new HtmlParser(PLUGIN_ID);
 
-      for (String reference : parser.getEntries()) {
+      for (String reference : bookParserEntries) {
          URL url = HelpTestUtil.getResource(reference);
 
          Set<String> entries = htmlParser.parse(url);

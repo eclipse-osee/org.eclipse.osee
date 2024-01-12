@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.help.ui.AtsHelpContext;
+import org.eclipse.osee.ats.ide.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.actions.MyFavoritesAction;
 import org.eclipse.osee.ats.ide.actions.MyWorldAction;
 import org.eclipse.osee.ats.ide.actions.NewAction;

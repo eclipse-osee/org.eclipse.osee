@@ -2,46 +2,66 @@
 <project name="org.eclipse.osee.ats.ide.help.ui" basedir="."
 	default="all">
 	<property name="osee.base.help.plugin" value="../org.eclipse.osee.framework.help.ui" />
-	<property name="ant.file.imported" value="${osee.base.help.plugin}/scripts" />
-	<import file="${ant.file.imported}/help-build-common.xml" />
+	<property name="scripts.dir" value="${osee.base.help.plugin}/scripts" />
 
-	<description>
-		Generate Eclipse help content for the OSEE ATS user guide
-	</description>
+	<taskdef resource="org/eclipse/mylyn/wikitext/ant/tasks.properties"/>
 
-	<property name="osee.help.doc.url.base" value="https://wiki.eclipse.org" />
+	<description>Generate Eclipse Help Content For The OSEE ATS User Guide</description>
 
 	<target name="all"
-		description="Generate Eclipse help content for the OSEE ATS user guide">
+		description="Generate Eclipse Help Content For The OSEE ATS User Guide">
 		<sequential>
 			<delete failonerror="false">
-				<fileset dir="OSEE" />
-				<fileset dir="images" />
+				<fileset dir="docs" />
 			</delete>
 
-			<mediawiki-to-eclipse-help wikiBaseUrl="${osee.help.doc.url.base}"
-				validate="true" failonvalidationerror="true" prependImagePrefix="images"
-				formatoutput="true" defaultAbsoluteLinkTarget="osee_external" dest="${basedir}"
-				navigationimages="true" title="OSEE ATS User's Guide"
-				generateUnifiedToc="true">
-				<path name="OSEE/ATS/Users_Guide/Intro" title="Getting Started" />
-				<path name="OSEE/ATS/Users_Guide/Views" title="Views and Editors" />
-				<path name="OSEE/ATS/Users_Guide/Usage" title="Using ATS" />
-				<path name="OSEE/ATS/Users_Guide/Tips" title="Tips and Tricks" />
-				<path name="OSEE/ATS/Users_Guide/New" title="What's New" />
+			<echo message="basedir=${basedir}" />
+			<property name="repo-base" location="${basedir}/../../" />
+			<pathconvert targetos="unix" property="repo-base-unix">
+    			<path location="${repo-base}"/>
+			</pathconvert>
+
+			<mkdir dir="docs/images" />
+
+			<copy todir="docs">
+				<fileset dir="${repo-base-unix}/docs/OSEE/ATS/Users_Guide">
+    				<include name="Intro.md"/>
+					<include name="Views.md"/>
+					<include name="Usage.md"/>
+					<include name="Tips.md"/>
+					<include name="New.md"/>
+				</fileset>
+			</copy>
+
+			<wikitext-to-eclipse-help markupLanguage="Markdown"
+				validate="true" failonvalidationerror="true"
+				formatoutput="true" defaultAbsoluteLinkTarget="osee_external"
+				navigationimages="true" multipleOutputFiles="true"
+				helpPrefix="docs">
+
+				<fileset dir="docs">
+    				<include name="Intro.md"/>
+					<include name="Views.md"/>
+					<include name="Usage.md"/>
+					<include name="Tips.md"/>
+					<include name="New.md"/>
+				</fileset>
 
 				<stylesheet url="book.css" />
-				<pageAppendum>
+			</wikitext-to-eclipse-help>
 
-					= Updating This Document =
+			<!-- Copy Referenced Images And Replace Image Source -->
+			<property name="bin.dir" value="${basedir}/bin"/>
 
-					This document is maintained in a collaborative wiki. If you wish to
-					update or modify this document please visit
-					{url}</pageAppendum>
-			</mediawiki-to-eclipse-help>
-			<mkdir dir="images" />
-			<copy todir="${basedir}/images" overwrite="true">
-				<fileset dir="${ant.file.imported}/commonImages" />
+			<java classname="org.eclipse.osee.ats.ide.help.ui.ImageExtractor" fork="true">
+				<classpath>
+					<pathelement location="${bin.dir}"/>
+				</classpath>
+			</java>
+
+			<!-- Copy Common Images -->
+			<copy todir="${basedir}/docs/images" overwrite="true">
+				<fileset dir="${scripts.dir}/commonImages" />
 			</copy>
 		</sequential>
 	</target>

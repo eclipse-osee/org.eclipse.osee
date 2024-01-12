@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<toc topic="docs/Getting_Started.html" label="OSEE User's Guide">
+    <topic label="Getting Started">
+        <link toc="docs/Getting_Started-toc.xml"/>
+    </topic>
+    <topic label="Concepts">
+        <link toc="docs/Concepts-toc.xml"/>
+    </topic>
+	<topic label="Features">
+        <link toc="docs/Features-toc.xml"/>
+    </topic>
+	<topic label="Tips">
+        <link toc="docs/Tips-toc.xml"/>
+    </topic>
+	<topic label="New">
+        <link toc="docs/New-toc.xml"/>
+    </topic>
+</toc>

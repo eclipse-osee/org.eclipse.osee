@@ -1,39 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project name="org.eclipse.osee.framework.dev.help.ui" basedir="."
 	default="all">
 	<property name="osee.base.help.plugin" value="../org.eclipse.osee.framework.help.ui" />
-	<property name="ant.file.imported" value="${osee.base.help.plugin}/scripts" />
-	<import file="${ant.file.imported}/help-build-common.xml" />
+	<property name="scripts.dir" value="${osee.base.help.plugin}/scripts" />
 
-	<description>Generate Eclipse help content for developers</description>
+	<taskdef resource="org/eclipse/mylyn/wikitext/ant/tasks.properties"/>
 
-	<property name="osee.help.doc.url.base" value="https://wiki.eclipse.org" />
+	<description>Generate Eclipse Help Content For The OSEE Developers' Guide</description>
 
 	<target name="all"
-		description="Generate Eclipse help content for the OSEE Developers' guide">
+		description="Generate Eclipse Help Content For The OSEE Developers' Guide">
 		<sequential>
 			<delete failonerror="false">
-				<fileset dir="OSEE" />
-				<fileset dir="images" />
+				<fileset dir="docs" />
 			</delete>
 
-			<mediawiki-to-eclipse-help wikiBaseUrl="${osee.help.doc.url.base}"
-				validate="true" failonvalidationerror="true" prependImagePrefix="images"
-				formatoutput="true" defaultAbsoluteLinkTarget="osee_external" dest="${basedir}"
-				navigationimages="true" title="OSEE Developer's Guide"
-				generateUnifiedToc="true">
-				<path name="OSEE/Developers_Guide" title="Developers' Guide" />
+			<echo message="basedir=${basedir}" />
+			<property name="repo-base" location="${basedir}/../../" />
+			<pathconvert targetos="unix" property="repo-base-unix">
+    			<path location="${repo-base}"/>
+			</pathconvert>
+
+			<mkdir dir="docs/images" />
+
+			<copy todir="docs">
+				<fileset dir="${repo-base-unix}/docs/OSEE">
+    				<include name="Developers_Guide.md"/>
+				</fileset>
+			</copy>
+
+			<wikitext-to-eclipse-help markupLanguage="Markdown"
+				validate="true" failonvalidationerror="true"
+				formatoutput="true" defaultAbsoluteLinkTarget="osee_external"
+				navigationimages="true" multipleOutputFiles="true"
+				helpPrefix="docs">
+
+				<fileset dir="docs">
+    				<include name="Developers_Guide.md"/>
+				</fileset>
+
 				<stylesheet url="book.css" />
-				<pageAppendum>
+			</wikitext-to-eclipse-help>
 
-					= Updating This Document =
+			<!-- Copy Referenced Images And Replace Image Source -->
+			<property name="bin.dir" value="${basedir}/bin"/>
 
-					This document is maintained in a collaborative wiki. If you wish to
-					update or modify this document please visit
-					{url}</pageAppendum>
-			</mediawiki-to-eclipse-help>
-			<mkdir dir="images" />
-			<copy todir="${basedir}/images" overwrite="true">
-				<fileset dir="${ant.file.imported}/commonImages" />
+			<java classname="org.eclipse.osee.framework.dev.help.ui.ImageExtractor" fork="true">
+				<classpath>
+					<pathelement location="${bin.dir}"/>
+				</classpath>
+			</java>
+
+			<!-- Copy Common Images -->
+			<copy todir="${basedir}/docs/images" overwrite="true">
+				<fileset dir="${scripts.dir}/commonImages" />
 			</copy>
 		</sequential>
 	</target>

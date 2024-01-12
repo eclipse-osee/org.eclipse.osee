@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<toc topic="docs/Intro.html" label="OSEE ATS User's Guide">
+    <topic label="Introduction">
+        <link toc="docs/Intro-toc.xml"/>
+    </topic>
+    <topic label="Views and Editors">
+        <link toc="docs/Views-toc.xml"/>
+    </topic>
+	<topic label="Using ATS">
+        <link toc="docs/Usage-toc.xml"/>
+    </topic>
+	<topic label="Tips and Tricks">
+        <link toc="docs/Tips-toc.xml"/>
+    </topic>
+	<topic label="What's New">
+        <link toc="docs/New-toc.xml"/>
+    </topic>
+</toc>

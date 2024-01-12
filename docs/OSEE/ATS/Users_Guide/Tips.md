@@ -127,8 +127,7 @@ set.
 
 ## How do I save ATS Searches?
 
-![image:atssearchsavetoolbar.png](/docs/images/atssearchsavetoolbar.png
-"image:atssearchsavetoolbar.png")
+![image:atssearchsavetoolbar.png](/docs/images/atssearchsavetoolbar.png "image:atssearchsavetoolbar.png")
 
   - Open an ATS Search, Team Workflow Search, Task Search or any other
     search

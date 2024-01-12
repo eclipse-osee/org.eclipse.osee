@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-	<extension
-	         id="org.eclipse.osee.framework.dev.help.ui.docs"
-	         name="OSEE Developers&apos; Guide"
-	         point="org.eclipse.help.toc">
-	      <toc
-             category="OSEE"
-             file="toc.xml"
-             primary="true">
-	      </toc>
-	</extension>
+    <extension point="org.eclipse.help.toc">
+        <toc
+            category="OSEE"
+            file="book.xml"
+            primary="true">
+        </toc>
+    </extension>
+    <extension point="org.eclipse.help.toc">
+        <toc
+            category="OSEE"
+            file="docs/Developers_Guide-toc.xml">
+        </toc>
+    </extension>
 </plugin>

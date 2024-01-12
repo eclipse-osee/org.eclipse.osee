@@ -118,16 +118,11 @@ action and be tracked similar to the PCRs.
 
 # Usage
 
-OSEE is currently used internal to Boeing. In addition, the OSEE Framework and some of it
-applications are in use by the Bosch company for their world-wide
-operations.
+OSEE is currently used internal to Boeing. In addition, the OSEE Framework and some of its applications are in use by the Bosch company for their world-wide operations.
 
 # Maturity
 
-Different portions of OSEE are in different stages of maturity. In addition, all
-mentioned programs/companies can and have provided new features/fixes to
-the OSEE code-base. This is done through both the external eclipse.org
-development processes and the internal OSEE-team development processes.
+Different portions of OSEE are in different stages of maturity. In addition, all mentioned programs/companies can and have provided new features/fixes to the OSEE code-base. This is done through both the external eclipse.org development processes and the internal OSEE-team development processes.
 
 # Contact
 

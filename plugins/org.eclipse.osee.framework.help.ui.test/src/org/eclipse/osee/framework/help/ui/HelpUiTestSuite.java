@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Angel Avila
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({HelpTableOfContentTest.class, HelpTableOfContentTest.class})
+@Suite.SuiteClasses({HelpTableOfContentTest.class, HelpContextTest.class})
 public class HelpUiTestSuite {
    // Test Suite
 }

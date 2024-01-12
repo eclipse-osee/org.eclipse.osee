@@ -47,12 +47,19 @@ public class HelpContextTest {
 
    @Test
    public void testAdd() throws Exception {
-      assertEquals(24, contexts.size());
+      assertEquals(23, contexts.size());
    }
 
    @Test
    public void testContextsXml() throws Exception {
       assertEquals(contexts.size(), parser.getEntries().size());
+
+      System.out.println("###############################");
+      System.out.println("OseeHelpContext");
+      System.out.println(contexts.keySet());
+      System.out.println("###############################");
+      System.out.println("context.xml");
+      System.out.println(parser.getIds());
 
       Assert.assertFalse(Compare.isDifferent(contexts.keySet(), parser.getIds()));
       for (HelpContext context : contexts.values()) {

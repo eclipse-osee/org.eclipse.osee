@@ -155,8 +155,7 @@ from the Artifact Explorer you choose.
 In Office 2007, the Options command which was located on the **Tools**
 menu has been moved under the **Office Button**
 ![image:officebutton.jpg](/docs/images/officebutton.jpg "image:officebutton.jpg").
-Click the **Office Button** ![image:officebutton.jpg](/docs/images/officebutton.jpg
-"image:officebutton.jpg") to open the **Options Dialog**. This dialog is
+Click the **Office Button** ![image:officebutton.jpg](/docs/images/officebutton.jpg "image:officebutton.jpg") to open the **Options Dialog**. This dialog is
 similar to the sub-menu located under the **File** menu in Office 2003.
 To open the user preference dialog, you have to click on the **Word
 Options** button located on the lower left corner of the **Office Button

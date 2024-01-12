@@ -50,10 +50,8 @@ Value column. This will copy the ![Image:OSEE green
 s.gif](OSEE_green_s.gif "Image:OSEE green s.gif") icon and the value
 displayed in the Source Value column into the Merged Value Column. In
 order to use the Destination Value the user may left click on
-the ![image:osee blue d.gif](/docs/images/osee_blue_d.gif
-"image:osee blue d.gif") icon in the Destination Value column. This
-will copy the ![image:osee blue d.gif](/docs/images/osee_blue_d.gif
-"image:osee blue d.gif") icon and the value displayed in the Source
+the ![image:osee blue d.gif](/docs/images/osee_blue_d.gif "image:osee blue d.gif") icon in the Destination Value column. This
+will copy the ![image:osee blue d.gif](/docs/images/osee_blue_d.gif "image:osee blue d.gif") icon and the value displayed in the Source
 Value column into the Merged Value Column. Both of these options are
 also available from the Merge Wizard (Left click on the icon in the
 Merge Value column) with the "Load Source Data" and "Load Destination
@@ -61,13 +59,11 @@ Value" buttons. In order to modify the value to some combination the
 user must bring up the Merge Wizard which has an embedded editor
 specific to the attribute that needs to be modified. Once the value is
 accurately entered in the editor the user may than select "Finish" This
-will place a ![image:osee yellow m.gif](/docs/images/osee_yellow_m.gif
-"image:osee yellow m.gif") icon in the Merged Value column along with
+will place a ![image:osee yellow m.gif](/docs/images/osee_yellow_m.gif "image:osee yellow m.gif") icon in the Merged Value column along with
 the new value. The user then right clicks on the ![Image:OSEE chkbox
 disabled.gif](OSEE_chkbox_disabled.gif
 "Image:OSEE chkbox disabled.gif") in the Conflict Status Column so that
-the ![image:osee accept.gif](/docs/images/osee_accept.gif
-"image:osee accept.gif") icon is displayed. The conflict is resolved
+the ![image:osee accept.gif](/docs/images/osee_accept.gif "image:osee accept.gif") icon is displayed. The conflict is resolved
 and will allow the Source Branch to be committed.
 
 
@@ -123,10 +119,8 @@ Upon identifying the branch that has the most changes the user should
 then set the Merge Artifact to contain that branches value. This is done
 by either selecting "Populate with Source Data" or "Populate with
 Destination Data" from the Merge Wizard or left clicking on
-the ![image:osee_green_s.gif](/docs/images/osee_green_s.gif
-"image:osee_green_s.gif") icon or
-the ![image:osee_blue_d.gif](/docs/images/osee_blue_d.gif
-"image:osee_blue_d.gif") icon in the Source and Destination Value
+the ![image:osee_green_s.gif](/docs/images/osee_green_s.gif "image:osee_green_s.gif") icon or
+the ![image:osee_blue_d.gif](/docs/images/osee_blue_d.gif "image:osee_blue_d.gif") icon in the Source and Destination Value
 columns in the Merge Manager GUI. The user can then bring up the Merge
 Artifact for editing by clicking on "Edit Merge Artifact" in the Merge
 Wizard or in the right click menu. The Document that comes up contains
@@ -141,10 +135,8 @@ Destination version of the Artifact need to be omitted on the Merge
 Artifact.
 
 The user then right clicks on
-the ![image:osee_chkbox_disabled.gif](/docs/images/osee_chkbox_disabled.gif
-"image:osee_chkbox_disabled.gif") in the Conflict Status Column so that
-the ![image:osee_accept.gif](/docs/images/osee_accept.gif
-"image:osee_accept.gif") icon is displayed. The conflict is resolved
+the ![image:osee_chkbox_disabled.gif](/docs/images/osee_chkbox_disabled.gif "image:osee_chkbox_disabled.gif") in the Conflict Status Column so that
+the ![image:osee_accept.gif](/docs/images/osee_accept.gif "image:osee_accept.gif") icon is displayed. The conflict is resolved
 and will allow the Source Branch to be committed.
 
 

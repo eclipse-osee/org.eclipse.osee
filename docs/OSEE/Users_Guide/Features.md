@@ -463,14 +463,12 @@ controls to specify workflow parameters.
 The resource history view allows users to view the detailed changes to
 an aritfact.
 
-![image:resourcehistoryview.jpg](/docs/images/resourcehistoryview.jpg
-"image:resourcehistoryview.jpg")
+![image:resourcehistoryview.jpg](/docs/images/resourcehistoryview.jpg "image:resourcehistoryview.jpg")
 
 In addition, the view also provides the user with the ability to select
 and compare artifacts.
 
-![image:resourcehistoryviewmenu2.jpg](/docs/images/resourcehistoryviewmenu2.jpg
-"image:resourcehistoryviewmenu2.jpg")
+![image:resourcehistoryviewmenu2.jpg](/docs/images/resourcehistoryviewmenu2.jpg "image:resourcehistoryviewmenu2.jpg")
 
 ## Mass Artifact Editor
 
@@ -501,11 +499,9 @@ The Quick Search view allows users to perform searches for information
 that is contained *inside* artifacts in a selected branch or search for
 artifacts by their GUID. The view is opened by default in the Define
 Perspective. It can also be opened by clicking on the Artifact Explorer
-tool bar's ![image:artifact_search.jpg](/docs/images/artifact_search.jpg
-"image:artifact_search.jpg") icon.
+tool bar's ![image:artifact_search.jpg](/docs/images/artifact_search.jpg "image:artifact_search.jpg") icon.
 
-![image:quicksearchview.png](/docs/images/quicksearchview.png
-"image:quicksearchview.png")
+![image:quicksearchview.png](/docs/images/quicksearchview.png "image:quicksearchview.png")
 
 To find all artifacts that contain a particular set of keywords:
 
@@ -623,8 +619,7 @@ On the Transactions tab, OSEE will show all the transactions that were
 made on the branch. Author and timestamp show who and when and admins
 have the ability to purge a transaction.
 
-![changereporteditor.png](/docs/images/changereporteditor.png
-"changereporteditor.png")
+![changereporteditor.png](/docs/images/changereporteditor.png "changereporteditor.png")
 
 ### Toolbar buttons
 
@@ -667,8 +662,7 @@ The Define Navigator, shown by default in the Define Perspective,
 provides a central location to launch frequently used define operations.
 To quickly find a define operation to execute, enter text into the
 filter box. This will filter out all navigation items that contains the
-entered text. Select the clear action (![image:clear.gif](/docs/images/clear.gif
-"image:clear.gif")) to clear out the text and restore all navigation
+entered text. Select the clear action (![image:clear.gif](/docs/images/clear.gif "image:clear.gif")) to clear out the text and restore all navigation
 items. To execute the operation, double-click on any of the navigation
 item.
 
@@ -1080,8 +1074,7 @@ The user then right clicks on the in the Conflict Status Column so that
 the icon is displayed. The conflict is resolved and will allow the
 Source Branch to be committed.
 
-![word_formatted_content_merge_wizard.jpg](/docs/images/word_formatted_content_merge_wizard.jpg
-"word_formatted_content_merge_wizard.jpg")
+![word_formatted_content_merge_wizard.jpg](/docs/images/word_formatted_content_merge_wizard.jpg "word_formatted_content_merge_wizard.jpg")
 
 ### Additional Features
 
@@ -1165,8 +1158,7 @@ store.
 
 ## Advanced Artifact Search
 
-![image:artifact_search_page.gif](/docs/images/artifact_search_page.gif
-"image:artifact_search_page.gif")
+![image:artifact_search_page.gif](/docs/images/artifact_search_page.gif "image:artifact_search_page.gif")
 
 What it is The search page in the Eclipse Search window for finding
 artifacts on the default branch. How to use it
@@ -1297,8 +1289,7 @@ The XViewer has been incorporated into the Nebula project.
 
 ### Table Customizations
 
-![image:xviewer_customize.png](/docs/images/xviewer_customize.png
-"image:xviewer_customize.png")
+![image:xviewer_customize.png](/docs/images/xviewer_customize.png "image:xviewer_customize.png")
 
   - Provides **Table Customization** dialog to allow selection of
     visible columns, as well as the specification of their widths and
@@ -1316,8 +1307,7 @@ The XViewer has been incorporated into the Nebula project.
 
 ### Sorting and Filtering
 
-![image:xviewer_sortfilter.png](/docs/images/xviewer_sortfilter.png
-"image:xviewer_sortfilter.png")
+![image:xviewer_sortfilter.png](/docs/images/xviewer_sortfilter.png "image:xviewer_sortfilter.png")
 
 #### Sorting
 
@@ -1367,6 +1357,5 @@ The XViewer has been incorporated into the Nebula project.
 
 ### HTML Report and CSV Export
 
-![image:xviewer_reportexport.png](/docs/images/xviewer_reportexport.png
-"image:xviewer_reportexport.png")
+![image:xviewer_reportexport.png](/docs/images/xviewer_reportexport.png "image:xviewer_reportexport.png")
 

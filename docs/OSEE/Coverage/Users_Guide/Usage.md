@@ -19,7 +19,7 @@ be used to disposition coverage items. Their are 4 default Coverage
 Methods. In Coverage Navigator, select "Configure Coverage Methods",
 select the Branch and choose the Coverage Package to configure. An XML
 representation will show of the current coverage methods. New methods
-can be created by adding a new <option> item. Deleting one can be
+can be created by adding a new {option} item. Deleting one can be
 performed the same way. NOTE: Existing Coverage Items that have a
 deleted Coverage Method will remain unchanged until the user changes
 them.
@@ -33,8 +33,7 @@ results from an external coverage tool such as VectorCast. Upon select,
 the input parameters will be requested and the Blam can be run by
 selecting "Run BLAM in Job". Upon completion, this will provide the user
 with 3 new Tabs that will help in the import/merging of new coverage
-results. ![image:testworkflow.png](/docs/images/testworkflow.png
-"image:testworkflow.png") ![Image:ContextUnitTestCategories
+results. ![image:testworkflow.png](/docs/images/testworkflow.png "image:testworkflow.png") ![Image:ContextUnitTestCategories
 2.png](ContextUnitTestCategories_2.png
 "Image:ContextUnitTestCategories 2.png")
 

@@ -56,16 +56,16 @@
     global.zip](Gitconfig_global.zip "File:Gitconfig global.zip")
     1.  Open the zip file and copy the gitconfig_global file into the
         Tools Folder
-    2.  Execute the following command, replacing <user> with your user
+    2.  Execute the following command, replacing {user} with your user
         directory
-          - cp C:/Tools/gitconfig_global C:/Users/<user>/.gitconfig
+          - cp C:/Tools/gitconfig_global C:/Users/{user}/.gitconfig
           - Edit the .gitconfig and replace your name and email (Edit in
             text editor such as Notepad++)
 4.  Open Git Bash from the Start Menu
 5.  Execute the following commands
     1.  cd C:/Tools/git_main
     2.  git clone
-        <https://><your_gerrit_username>@git.eclipse.org/r/osee/org.eclipse.osee.git
+        <https://>{your_gerrit_username}@git.eclipse.org/r/osee/org.eclipse.osee.git
     3.  cd org.eclipse.osee
     4.  git checkout dev
 6.  Setup Local_hooks by downloading ![<File:Local>
@@ -125,10 +125,10 @@
       - Switch back to the Java Perspective, then File-\>Import, in the
         import wizard, select General-\>Preferences and click Next
       - In the From preference file: input box, enter the path to the
-        preferences (substitute your directory for <git dir>) in the
+        preferences (substitute your directory for {git dir}) in the
         From preference file:
       - Browse to
-        <git dir>\\org.eclipse.osee\\plugins\\org.eclipse.osee.support.config
+        {git dir}\\org.eclipse.osee\\plugins\\org.eclipse.osee.support.config
         then select the preference file: osee_team_preferences.epf and
         click Open.
       - Leave "Import All" checked and Choose Finish. Accept the prompt
@@ -279,7 +279,7 @@ The OSEE Git repository contains the following main branches:
 <tr class="odd">
 <td><p><strong>Stash</strong></p></td>
 <td><p>Stores changes into a stack</p></td>
-<td><p><code>git stash save </code><message><br />
+<td><p><code>git stash save </code>{message}<br />
 <code>git stash list</code><br />
 <code>git stash show -p stash@{0}</code><br />
 <code>git stash drop stash@{0}</code><br />
@@ -308,7 +308,7 @@ The OSEE Git repository contains the following main branches:
 <td><p><code>git rebase -i HEAD~5</code><br />
 <code>git reset --hard HEAD</code><br />
 <code>git reset --hard HEAD~3</code><br />
-<code>git reset --hard </code><specific_commit_id></p></td>
+<code>git reset --hard </code>{specific_commit_id}</p></td>
 </tr>
 <tr class="even">
 <td><p><strong>Show Commit File Differences</strong></p></td>
@@ -372,8 +372,8 @@ The OSEE Git repository contains the following main branches:
 <tr class="odd">
 <td><p><strong>Sharing a local work branch with others</strong></p></td>
 <td><p>Switch to working branch, Push working branch to remote</p></td>
-<td><p><code>git checkout </code><working_branch_name><br />
-<code>git push origin </code><working_branch_name><code>:refs/heads/</code><working_branch_name></p></td>
+<td><p><code>git checkout </code>{working_branch_name}<br />
+<code>git push origin </code>{working_branch_name}<code>:refs/heads/</code>{working_branch_name}</p></td>
 </tr>
 <tr class="even">
 <td><p><strong>Merge onto current branch</strong></p></td>
@@ -383,7 +383,7 @@ The OSEE Git repository contains the following main branches:
 <tr class="odd">
 <td><p><strong>Branching and Merging</strong></p></td>
 <td><p>To replace with incoming file so you can re-make your changes (or abandon them)</p></td>
-<td><p><code>git checkout --[theirs|our] </code><path></p></td>
+<td><p><code>git checkout --[theirs|our] </code>{path}</p></td>
 </tr>
 <tr class="even">
 <td><p><strong>Merging Again</strong></p></td>
@@ -439,7 +439,7 @@ The OSEE Git repository contains the following main branches:
 <tr class="even">
 <td><p><strong>Tagging a Build</strong></p></td>
 <td><p>Create, and Push a Tag</p></td>
-<td><p><code>git tag -a -m "0.9.6.v201009271203 Release Candidate" 0.9.6.v201009271203_RC </code><COMMIT_ID TO TAG><br />
+<td><p><code>git tag -a -m "0.9.6.v201009271203 Release Candidate" 0.9.6.v201009271203_RC </code>{COMMIT_ID TO TAG}<br />
 <code>git push origin 0.9.6.v201009271203_RC</code></p></td>
 </tr>
 <tr class="odd">
@@ -464,7 +464,7 @@ The OSEE Git repository contains the following main branches:
 <td><p><code>git symbolic-ref HEAD refs/heads/newbranch</code><br />
 <code>rm .git/index</code><br />
 <code>git clean -fdx</code><br />
-<do work><br />
+{do work}<br />
 <code>git add your files</code><br />
 <code>git commit -m 'Initial commit'</code></p></td>
 </tr>
@@ -485,11 +485,11 @@ The OSEE Git repository contains the following main branches:
 <td><p><strong>Create Git Repo using SSH</strong></p></td>
 <td><p>Use SSH to host remote Repo for personal use</p></td>
 <td><p><code>on the remote host:</code><br />
-<code>git init --bare --shared=0600 /</code><path><code>/user.git</code><br />
-<code>chmod 700 /</code><path><code>/user.git</code></p>
+<code>git init --bare --shared=0600 /</code>{path}<code>/user.git</code><br />
+<code>chmod 700 /</code>{path}<code>/user.git</code></p>
 <p><code>on local machine:</code><br />
 <code>cd /c/Tools/git</code><br />
-<code>git clone </code><a href="ssh://"><code>ssh://</code></a><user_name><code>@</code><host><code>/</code><path><code>/user.git</code><br />
+<code>git clone </code><a href="ssh://"><code>ssh://</code></a>{user_name}<code>@</code>{host}<code>/</code>{path}<code>/user.git</code><br />
 <code>cd user</code><br />
 <code>copy your files in</code><br />
 <code>git add -A</code><br />
