@@ -11,7 +11,7 @@ The scripts are located at `plugins/org.eclipse.osee.support.dev/validationScrip
 Navigate to the root of this repository and run the following:
 
 ```
-python plugins/org.eclipse.osee.support.dev/validationScripts/validateFiles.py <keywords> <files>
+python plugins/org.eclipse.osee.support.dev/validationScripts/validateFiles.py {keywords} {files}
 ```
 
 - keywords is a semicolon-delimited list of keywords to search for in the given files.
@@ -30,7 +30,7 @@ Alternatively, you can navigate to the script location and run from there.
 There is a script called `validateAllFiles.py` in the validationScripts folder that will check every file in the repository for keywords in the file names, file contents, and will look for missing distribution statements.
 
 ```
-python plugins/org.eclipse.osee.support.dev/validationScripts/validateAllFiles.py <keywords>
+python plugins/org.eclipse.osee.support.dev/validationScripts/validateAllFiles.py {keywords}
 ```
 
 ### Add Missing Distribution Statements

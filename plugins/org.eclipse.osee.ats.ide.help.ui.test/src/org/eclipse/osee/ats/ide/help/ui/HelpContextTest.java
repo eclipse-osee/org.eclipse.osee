@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.help.ui.AtsHelpContext;
+import org.eclipse.osee.ats.ide.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.ide.help.ui.util.ContextParser;
 import org.eclipse.osee.ats.ide.help.ui.util.ContextParser.ContextEntry;
 import org.eclipse.osee.ats.ide.help.ui.util.HelpTestUtil;

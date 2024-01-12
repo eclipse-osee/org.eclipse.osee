@@ -111,8 +111,7 @@ the scripts against can be specified.
 The Overview page of Test Manager allows for some brief overview
 information related to the configuration of the Test Manager.
 
-![testmanageroverviewpage.jpg](/docs/images/testmanageroverviewpage.jpg
-"testmanageroverviewpage.jpg")
+![testmanageroverviewpage.jpg](/docs/images/testmanageroverviewpage.jpg "testmanageroverviewpage.jpg")
 
 ### Hosts Page
 
@@ -124,15 +123,13 @@ before the user is connected. A user can connect a test server from this
 page. This table is an XViewer Table which allows the user to employ
 column sorting.
 
-![testmanagerhostspage1.jpg](/docs/images/testmanagerhostspage1.jpg
-"testmanagerhostspage1.jpg")
+![testmanagerhostspage1.jpg](/docs/images/testmanagerhostspage1.jpg "testmanagerhostspage1.jpg")
 
 Below is the same example after a user named osee has connected to the
 test server. Notice the lightning bolt in the left column of the server
 entry in the table and the user's name in the User column.
 
-![testmanagerhostspage2.jpg](/docs/images/testmanagerhostspage2.jpg
-"testmanagerhostspage2.jpg")
+![testmanagerhostspage2.jpg](/docs/images/testmanagerhostspage2.jpg "testmanagerhostspage2.jpg")
 
 ### Scripts Page
 
@@ -146,8 +143,7 @@ a test server connection widget. The running and aborting widgets are
 there as well, though they are grayed out since the user is not
 connected to a test server yet.
 
-![testmanagerscriptspage1.jpg](/docs/images/testmanagerscriptspage1.jpg
-"testmanagerscriptspage1.jpg")
+![testmanagerscriptspage1.jpg](/docs/images/testmanagerscriptspage1.jpg "testmanagerscriptspage1.jpg")
 
 Below, the user has put some test scripts in the Script page. The check
 box to the left is for determining if the script will be run when the
@@ -157,8 +153,7 @@ the test script, and they all show NOT_CONNECTED when the Test Manager
 is not connected to a test server. The location of the test script is
 also shown.
 
-![testmanagerscriptspage2.jpg](/docs/images/testmanagerscriptspage2.jpg
-"testmanagerscriptspage2.jpg")
+![testmanagerscriptspage2.jpg](/docs/images/testmanagerscriptspage2.jpg "testmanagerscriptspage2.jpg")
 
 In this shot, the Test Manager has now connected to a test server. The
 status of the scripts is shown as READY, and the test server connection
@@ -166,8 +161,7 @@ widget is now shown as a lightning bolt. Also, notice that the green
 play button is not grayed out anymore. It can be selected to start the
 running of the selected test scripts.
 
-![testmanagerscriptspage3.jpg](/docs/images/testmanagerscriptspage3.jpg
-"testmanagerscriptspage3.jpg")
+![testmanagerscriptspage3.jpg](/docs/images/testmanagerscriptspage3.jpg "testmanagerscriptspage3.jpg")
 
 Below, the test script run is in progress. Notice the first script is
 completed and there is a checkmark in the Output File column. That
@@ -178,8 +172,7 @@ results while in progress. The first script passed all 721 test point.
 The 2nd script is still running and has failed 1 of the 9 test points so
 far.
 
-![testmanagerscriptspage4.jpg](/docs/images/testmanagerscriptspage4.jpg
-"testmanagerscriptspage4.jpg")
+![testmanagerscriptspage4.jpg](/docs/images/testmanagerscriptspage4.jpg "testmanagerscriptspage4.jpg")
 
 ### Advanced Page
 
@@ -188,8 +181,7 @@ options can be set. This page can be tailored to the individual needs of
 the project that is employing the Test Manager. In the example shown,
 the term OFP is the name for the code that is being tested.
 
-![testmanageradvancedpage.jpg](/docs/images/testmanageradvancedpage.jpg
-"testmanageradvancedpage.jpg")
+![testmanageradvancedpage.jpg](/docs/images/testmanageradvancedpage.jpg "testmanageradvancedpage.jpg")
 
 ### Source Page
 
@@ -197,8 +189,7 @@ The Source page of Test Manager allows the user to enter source code
 location to run against. It also contains the location to place the
 Description information that shows up on the Overview Page.
 
-![testmanagersourcepage.jpg](/docs/images/testmanagersourcepage.jpg
-"testmanagersourcepage.jpg")
+![testmanagersourcepage.jpg](/docs/images/testmanagersourcepage.jpg "testmanagersourcepage.jpg")
 
 ## Message View
 
@@ -279,8 +270,7 @@ the desired element or message, and choose Delete. Alternatively, select
 the desired item and click the single X, or to remove all items select
 the double X.
 
-![messagewatchremove.png](/docs/images/messagewatchremove.png
-"messagewatchremove.png")
+![messagewatchremove.png](/docs/images/messagewatchremove.png "messagewatchremove.png")
 
 ### Setting Elements
 
@@ -303,8 +293,7 @@ the messages are currently readers. Right click on a message in the
 Message Watch table, and choose "Reader/Writer Buffer" from the menu.
 Select the desired state.
 
-![messagewatchreadwrite.png](/docs/images/messagewatchreadwrite.png
-"messagewatchreadwrite.png")
+![messagewatchreadwrite.png](/docs/images/messagewatchreadwrite.png "messagewatchreadwrite.png")
 
 ### Sort
 

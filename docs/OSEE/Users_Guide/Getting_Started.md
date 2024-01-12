@@ -15,8 +15,7 @@
       - Website for download: [Git - Downloading
         Package](https://git-scm.com/download/win)
 
-![image:1_-_git_windows_download.png](/docs/images/1_-_git_windows_download.png
-"image:1_-_git_windows_download.png")
+![image:1_-_git_windows_download.png](/docs/images/1_-_git_windows_download.png "image:1_-_git_windows_download.png")
 
   - Run the git executable
       - Adjusting your PATH environment
@@ -37,9 +36,9 @@
 `    $  cd /c/Code/`
 `    $  mkdir git_main`
 `    $  cd git_main`
-`    $  git clone `<https://><username>`@git.eclipse.org/r/osee/org.eclipse.osee.git --branch dev --depth 1`
+`    $  git clone `<https://>{username}`@git.eclipse.org/r/osee/org.eclipse.osee.git --branch dev --depth 1`
 
-  - Note: Replace <username> with your eclipse username
+  - Note: Replace {username} with your eclipse username
   - Download and install the org.eclipse version of OSEE from the OSEE
     site
       - Website for download: [Eclipse Nightly Build
@@ -48,8 +47,7 @@
         Windows OS, choose the download similar to the picture just
         below:
 
-![image:updatedimageeclipsedownloads.png](/docs/images/updatedimageeclipsedownloads.png
-"image:updatedimageeclipsedownloads.png")
+![image:updatedimageeclipsedownloads.png](/docs/images/updatedimageeclipsedownloads.png "image:updatedimageeclipsedownloads.png")
 
   - Make an Eclipse folder
       - For example: /c/Code/Eclipse
@@ -71,34 +69,28 @@
         ‘/c/Code/Eclipse/workspaces/first_git_main’
   - Select the directory of your first workspace and launch
 
-![image:3_-_directory_of_first_workspace.png](/docs/images/3_-_directory_of_first_workspace.png
-"image:3_-_directory_of_first_workspace.png")
+![image:3_-_directory_of_first_workspace.png](/docs/images/3_-_directory_of_first_workspace.png "image:3_-_directory_of_first_workspace.png")
 
   - Close the welcome window
 
-![image:4_-_welcome_window.png](/docs/images/4_-_welcome_window.png
-"image:4_-_welcome_window.png")
+![image:4_-_welcome_window.png](/docs/images/4_-_welcome_window.png "image:4_-_welcome_window.png")
 
   - Switch to the Git Perspective
 
-![image:5_-_switch_to_git_perspective.png](/docs/images/5_-_switch_to_git_perspective.png
-"image:5_-_switch_to_git_perspective.png")
+![image:5_-_switch_to_git_perspective.png](/docs/images/5_-_switch_to_git_perspective.png "image:5_-_switch_to_git_perspective.png")
 
   - Add an existing local Git repository
 
-![image:6_-_add_an_existing_local_git_repo.png](/docs/images/6_-_add_an_existing_local_git_repo.png
-"image:6_-_add_an_existing_local_git_repo.png")
+![image:6_-_add_an_existing_local_git_repo.png](/docs/images/6_-_add_an_existing_local_git_repo.png "image:6_-_add_an_existing_local_git_repo.png")
 
   - Search, select, and add the org.eclipse.osee Git repository
 
-![image:7_-_select_and_add_the_org.eclipse.osee_git_repo.png](/docs/images/7_-_select_and_add_the_org.eclipse.osee_git_repo.png
-"image:7_-_select_and_add_the_org.eclipse.osee_git_repo.png")
+![image:7_-_select_and_add_the_org.eclipse.osee_git_repo.png](/docs/images/7_-_select_and_add_the_org.eclipse.osee_git_repo.png "image:7_-_select_and_add_the_org.eclipse.osee_git_repo.png")
 
   - Right click on the imported Git repository and select ‘Import
     Projects…
 
-![image:8_-_import_projects.png](/docs/images/8_-_import_projects.png
-"image:8_-_import_projects.png")
+![image:8_-_import_projects.png](/docs/images/8_-_import_projects.png "image:8_-_import_projects.png")
 
   - Uncheck these folders (click ‘Finish’ upon completion):
       - org.eclipse.osee
@@ -106,8 +98,7 @@
           - \\\*.icteam
           - \\\*.doors
 
-![image:9_-_deselect_folders.png](/docs/images/9_-_deselect_folders.png
-"image:9_-_deselect_folders.png")
+![image:9_-_deselect_folders.png](/docs/images/9_-_deselect_folders.png "image:9_-_deselect_folders.png")
 
 ## Running the Application Server
 
@@ -115,42 +106,35 @@
   - Click on the dropdown arrow next to the debug icon
   - Click 'Debug Configurations…'
 
-![image:10_-_debug_config_dropdown.png](/docs/images/10_-_debug_config_dropdown.png
-"image:10_-_debug_config_dropdown.png")
+![image:10_-_debug_config_dropdown.png](/docs/images/10_-_debug_config_dropdown.png "image:10_-_debug_config_dropdown.png")
 
   - Double-click 'OSEE_Application_Server_\[HSQLDB\]'
 
-![image:11_-_application_server.png](/docs/images/11_-_application_server.png
-"image:11_-_application_server.png")
+![image:11_-_application_server.png](/docs/images/11_-_application_server.png "image:11_-_application_server.png")
 
   - Wait until the console produces this output:
 
-![image:12_-_application_server_output.png](/docs/images/12_-_application_server_output.png
-"image:12_-_application_server_output.png")
+![image:12_-_application_server_output.png](/docs/images/12_-_application_server_output.png "image:12_-_application_server_output.png")
 
   - Open 'Debug Configurations…' (again)
   - Double-click 'AtsIde_Integration_TestSuite'
 
-![image:atstestschoice.png](/docs/images/atstestschoice.png
-"image:atstestschoice.png")
+![image:atstestschoice.png](/docs/images/atstestschoice.png "image:atstestschoice.png")
 
   - Wait until the JUnit test completes
       - If the ‘Runs’ reach a stopping point, terminate the test by
         pressing the red square icon.
 
-![image:14_-_test_suite_expected_output.png](/docs/images/14_-_test_suite_expected_output.png
-"image:14_-_test_suite_expected_output.png")
+![image:14_-_test_suite_expected_output.png](/docs/images/14_-_test_suite_expected_output.png "image:14_-_test_suite_expected_output.png")
 
   - Open 'Debug Configurations…' (again)
   - Double-click 'OSEE_IDE_\[localhost\]'
 
-![image:15_-_eclipse_client.png](/docs/images/15_-_eclipse_client.png
-"image:15_-_eclipse_client.png")
+![image:15_-_eclipse_client.png](/docs/images/15_-_eclipse_client.png "image:15_-_eclipse_client.png")
 
   - You should expect an application that appears as such:
 
-![image:16_-_expected_client.png](/docs/images/16_-_expected_client.png
-"image:16_-_expected_client.png")
+![image:16_-_expected_client.png](/docs/images/16_-_expected_client.png "image:16_-_expected_client.png")
 
 ## Quick Start Complete
 
@@ -271,8 +255,7 @@ Eclipse plugin.
     Eclipse. It is important that you don't restart Eclipse until you
     have completed the database initialization steps below.
 
-![image:restart_dialog.png](/docs/images/restart_dialog.png
-"image:restart_dialog.png") If you are using the default demo database
+![image:restart_dialog.png](/docs/images/restart_dialog.png "image:restart_dialog.png") If you are using the default demo database
 and did the server quick start above, you just need to make one change
 to the eclipse eclipse.ini file - add the line
 
@@ -309,8 +292,7 @@ Your installation is complete.
 
 <td valign="top">
 
-![image:open_perspective.png](/docs/images/open_perspective.png
-"image:open_perspective.png")
+![image:open_perspective.png](/docs/images/open_perspective.png "image:open_perspective.png")
 
 </td>
 
@@ -407,7 +389,7 @@ and Configuration](#Launch_.26_Configuration "wikilink").
             4.  You should now have an "osee" schema under schemas
     6.  Enable view that provides database statistics
         1.  Uncomment (Remove '#') and set **shared_preload_libraries = 'pg_stat_statements'** in **postgresql.conf**
-        2.  Run this query against the osee database: **create extension pg_stat_statements;** 
+        2.  Run this query against the osee database: **create extension pg_stat_statements;**
         3.  Restart the postgres database (e.g. Windows: command prompt navigate to Postgres bin and run      restart command on postgres exe)
     7.  The relational database is now configured. Proceed to OSEE
         Database Initialization
@@ -430,7 +412,7 @@ and Configuration](#Launch_.26_Configuration "wikilink").
         server installation. Unzip the files into the server
         installation and add org.postgresql.driver@start to the bundles
         in config.ini. In addition, add the
-        org.postgresql.driver_<version>.jar file to the plugins
+        org.postgresql.driver_{version}.jar file to the plugins
         directory in the Eclipse installation.
   - Wait until server finishes the startup procedure - **do not close
     the console**
@@ -516,7 +498,7 @@ General instructions on how to start ActiveMQ are
 To direct the OSEE client to use this service, in your launcher ini
 file, include the following Java system property:
 
-    -Dosee.default.broker.uri=tcp://<localhost_or_your_server>:61616
+    -Dosee.default.broker.uri=tcp://{localhost_or_your_server}:61616
 
 ## Launch & Configuration
 
@@ -538,7 +520,7 @@ following examples will work.
 
 |                                                                                                                                                                                                          |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| java -Dorg.osgi.service.http.port=8089 -Dosee.check.tag.queue.on.startup=true -Dosee.db.connection.id=\<ConnectionId\> -jar plugins/org.eclipse.equinox.launcher_\<VersionForYourEclipse\>.jar -console |
+| java -Dorg.osgi.service.http.port=8089 -Dosee.check.tag.queue.on.startup=true -Dosee.db.connection.id={ConnectionId} -jar plugins/org.eclipse.equinox.launcher_{VersionForYourEclipse}.jar -console |
 
 
 For PostgreSQL:

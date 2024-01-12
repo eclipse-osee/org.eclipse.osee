@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<toc topic="docs/Developers_Guide.html" label="OSEE Developer's Guide">
+    <topic label="Developer's Guide">
+        <link toc="docs/Developers_Guide-toc.xml"/>
+    </topic>
+</toc>

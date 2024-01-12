@@ -99,26 +99,26 @@ some cases we launch an embedded broker.
     'OSEE.OTE.station.global.statusRequest', contains configuration and
     state information of a test server
 
-##### topic:OSEE.OTE.station.<station_name>.<station_id>.status
+##### topic:OSEE.OTE.station.{station_name}.{station_id}.status
 
   - subscribers: connected-oteTestClients
   - publishers: specific-oteTestServers
   - purpose: update of current state, errors, test point, current
     command, etc...
 
-##### topic:OSEE.OTE.station.<station_name>.<station_id>.command
+##### topic:OSEE.OTE.station.{station_name}.{station_id}.command
 
   - subscribers: specific-oteTestServers
   - publishers: connected-oteTestClients
   - purpose: command the ote environment to do something
 
-##### topic:OSEE.OTE.station.<station_name>.<station_id>.<model>.command
+##### topic:OSEE.OTE.station.{station_name}.{station_id}.{model}.command
 
   - subscribers: specific-oteTestServers
   - publishers: connected-oteTestClients
   - purpose: command a model to do something
 
-##### topic:OSEE.OTE.station.<station_name>.<station_id>.<model>.status
+##### topic:OSEE.OTE.station.{station_name}.{station_id}.{model}.status
 
   - subscribers: connected-oteTestClients
   - publishers: specific-oteTestServers

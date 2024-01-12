@@ -65,8 +65,6 @@ resolved, the user can select **Ok** to finish committing the branch.
 
 ## Artifact Import Wizard
 
-![image:artifact_import_selection.jpg](/docs/images/artifact_import_selection.jpg
-"image:artifact_import_selection.jpg")
-![image:artifact_import_wizard.jpg](/docs/images/artifact_import_wizard.jpg
-"image:artifact_import_wizard.jpg")
+![image:artifact_import_selection.jpg](/docs/images/artifact_import_selection.jpg "image:artifact_import_selection.jpg")
+![image:artifact_import_wizard.jpg](/docs/images/artifact_import_wizard.jpg "image:artifact_import_wizard.jpg")
 

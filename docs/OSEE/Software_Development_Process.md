@@ -109,8 +109,7 @@ software, updating test software, verifying changes through unit tests
 and system level tests, committing changes into version control, making
 local builds and submitting changes for review.
 
-![image:software_implementation_workflow.png](/docs/images/software_implementation_workflow.png
-"image:software_implementation_workflow.png")
+![image:software_implementation_workflow.png](/docs/images/software_implementation_workflow.png "image:software_implementation_workflow.png")
 
 `TODO: Add Implementation Process Diagram`
 `TODO: Add customer review block as part of implementation cycle`
@@ -321,13 +320,13 @@ Followup changes during and after a release
 
   - If changes are necessary during a release, such as table conversion
     or converting database attributes, you will need to create a ATS
-    action labeled "During <release id> work". Then add a task in the
+    action labeled "During {release id} work". Then add a task in the
     task tab that explains what work needs to be done and references the
     Action that it's being done for. Provide enough detail that any OSEE
     developer can perform the task.
   - If changes are necessary after a release, such as cleaning up
     deactivated or compatibility code, create a ATS action labeled "Post
-    <release id> work". Then add a task in the task tab that explains
+    {release id} work". Then add a task in the task tab that explains
     what work needs to be done and references the Action that it's being
     done for. Provide enough detail that any OSEE developer can perform
     the task.

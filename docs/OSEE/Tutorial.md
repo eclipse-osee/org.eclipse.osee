@@ -188,10 +188,8 @@ Workflow and wants to transition to analysis.
 
 ### Analyze
 
-![7-actionableitemslink.png](/docs/images/7-actionableitemslink.png
-"7-actionableitemslink.png")
-![6-impactedactionableitems.png](/docs/images/6-impactedactionableitems.png
-"6-impactedactionableitems.png") Here, Joe (as the Requirements
+![7-actionableitemslink.png](/docs/images/7-actionableitemslink.png "7-actionableitemslink.png")
+![6-impactedactionableitems.png](/docs/images/6-impactedactionableitems.png "6-impactedactionableitems.png") Here, Joe (as the Requirements
 Developer) wants to analyze the action.
 
   - Input "Fix It" as the **Proposed Resolution**
@@ -255,11 +253,8 @@ able to transition to the next state.
 
 ## Implementing a Change
 
-![10-selectworkingbranch.png](/docs/images/10-selectworkingbranch.png
-"10-selectworkingbranch.png") ![11-mswordedit.png](/docs/images/11-mswordedit.png
-"11-mswordedit.png")
-![13-viewwordchangereport.png](/docs/images/13-viewwordchangereport.png
-"13-viewwordchangereport.png")
+![10-selectworkingbranch.png](/docs/images/10-selectworkingbranch.png "10-selectworkingbranch.png") ![11-mswordedit.png](/docs/images/11-mswordedit.png "11-mswordedit.png")
+![13-viewwordchangereport.png](/docs/images/13-viewwordchangereport.png "13-viewwordchangereport.png")
 
   - From the Implement State, select the **Create Working Branch** icon
     (![Image:9-CreateWorkingBranchIcon.Png](9-CreateWorkingBranchIcon.Png
@@ -386,9 +381,7 @@ in the lifecycle of the workflows.
 
 "What this place needs is some metrics\!" Alex Kay, as Manager, needs a
 status report.
-![16-redisplayasworkflows.png](/docs/images/16-redisplayasworkflows.png
-"16-redisplayasworkflows.png") ![17-metrics.png](/docs/images/17-metrics.png
-"17-metrics.png")
+![16-redisplayasworkflows.png](/docs/images/16-redisplayasworkflows.png "16-redisplayasworkflows.png") ![17-metrics.png](/docs/images/17-metrics.png "17-metrics.png")
 
   - From the **ATS Navigator**, select "My World".
   - Click the rightmost icon on the toolbar to bring up a context menu.

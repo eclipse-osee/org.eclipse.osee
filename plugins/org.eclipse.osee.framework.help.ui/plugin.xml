@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-	<extension
-         id="org.eclipse.osee.framework.help.ui.docs"
-         name="OSEE User&apos;s Guide"
-         point="org.eclipse.help.toc">
-      <toc
-            category="OSEE"
-            file="toc.xml"
-            primary="true">
-      </toc>
-   </extension>
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
+      <extension point="org.eclipse.help.toc">
+            <toc
+                  category="OSEE"
+                  file="book.xml"
+                  primary="true">
+            </toc>
+      </extension>
+      <extension point="org.eclipse.help.toc">
+            <toc
+                  category="OSEE"
+                  file="docs/Getting_Started-toc.xml">
+            </toc>
+            <toc
+                  category="OSEE"
+                  file="docs/Concepts-toc.xml">
+            </toc>
+            <toc
+                  category="OSEE"
+                  file="docs/Features-toc.xml">
+            </toc>
+            <toc
+                  category="OSEE"
+                  file="docs/Tips-toc.xml">
+            </toc>
+            <toc
+                  category="OSEE"
+                  file="docs/New-toc.xml">
+            </toc>
+      </extension>
+      <extension
+            point="org.eclipse.ui.intro.configExtension">
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
             content="$nl$/intro/overviewExtensionContent.xml">
@@ -25,11 +44,11 @@
             configId="org.eclipse.ui.intro.universalConfig"
             content="$nl$/intro/tutorialsExtensionContent.xml">
       </configExtension>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
+      </extension>
+      <extension
+            point="org.eclipse.help.contexts">
       <contexts
             file="contexts/contexts.xml">
       </contexts>
-   </extension>
+      </extension>
 </plugin>

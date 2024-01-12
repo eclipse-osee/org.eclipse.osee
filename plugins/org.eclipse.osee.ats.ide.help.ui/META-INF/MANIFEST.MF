@@ -7,4 +7,4 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.osee.framework.core.data
-Export-Package: org.eclipse.osee.ats.help.ui
+Export-Package: org.eclipse.osee.ats.ide.help.ui

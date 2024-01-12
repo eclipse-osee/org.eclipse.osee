@@ -25,8 +25,7 @@ of the components work together to help an organization achieve lean
 objectives by reducing management activities, eliminating data
 duplication, reducing cycle-time through streamlined processes, and
 improving overall product quality through work flow standardization and
-early defect detection. ![oseesystemcontext.png](/docs/images/oseesystemcontext.png
-"oseesystemcontext.png") OSEE is customizable to meet the needs of the
+early defect detection. ![oseesystemcontext.png](/docs/images/oseesystemcontext.png "oseesystemcontext.png") OSEE is customizable to meet the needs of the
 project. The teams working on the project, the roles they perform, and
 the processes they follow are all configurable within OSEE. Traceability
 is maintained from requirements through acceptance testing. The OSEE
@@ -228,7 +227,7 @@ which is summarized below:
 ### OSGi Bundle Diagnostics Console Commands
 
   - lb or ss - to list bundles and their states
-  - bundle <bundleId> -
+  - bundle {bundleId} -
   - diag (try with no arguments)
   - help
 
@@ -238,11 +237,11 @@ which is summarized below:
 
 `[bundle.id]   org.eclipse.osee.framework.resource.management.ResourceManager  enabled`
 `[component.id] [unsatisfied reference]`
-`info <component.id>`
+`info {component.id}`
 
-  - list \<bundle.id\>
-  - list | grep \<component.name\>
-  - info \<component.id\>
+  - list {bundle.id}
+  - list | grep {component.name}
+  - info {component.id}
   - inspect capability service
   - services
 
@@ -272,8 +271,7 @@ Action Tracking System (ATS), Define, Coverage, and Open System
 Engineering Test Environment (OTE). The User Management component, which
 allows for user authentication, verification and role based access
 control (RBAC), is used by all of the OSEE components.
-![oseecomponentdiagram.png](/docs/images/oseecomponentdiagram.png
-"oseecomponentdiagram.png") OSEE is built on top of
+![oseecomponentdiagram.png](/docs/images/oseecomponentdiagram.png "oseecomponentdiagram.png") OSEE is built on top of
 [Eclipse](http://wiki.eclipse.org/Main_Page), and utilizes the [OSGi
 framework](http://www.osgi.org/Technology/WhatIsOSGi) to manage the
 component bundles. Capabilities provided by 3rd party libraries and
@@ -352,8 +350,7 @@ consists of:
     the multiplicity between the two types to be specified as: 1..1,
     1..\*, \*..1, \*..\*
 
-![osee_artifactattribute.png](/docs/images/osee_artifactattribute.png
-"osee_artifactattribute.png")
+![osee_artifactattribute.png](/docs/images/osee_artifactattribute.png "osee_artifactattribute.png")
 
 #### Version Management
 
@@ -387,27 +384,23 @@ A project can specify a work hierarchy for the different kinds of work
 tasks that need to be performed and tracked. Each defined work category
 is referred to as an Actionable Item (AI). An Action can be composed of
 a single or multiple AIs.
-![osee_ats_aihierarchy.png](/docs/images/osee_ats_aihierarchy.png
-"osee_ats_aihierarchy.png")
+![osee_ats_aihierarchy.png](/docs/images/osee_ats_aihierarchy.png "osee_ats_aihierarchy.png")
 
 A team can be assigned to work on an AI. The team definition is similar
 to an organization chart, or a logical grouping of teams that perform
 certain types of work.
-![osee_ats_teamdefinition.png](/docs/images/osee_ats_teamdefinition.png
-"osee_ats_teamdefinition.png")
+![osee_ats_teamdefinition.png](/docs/images/osee_ats_teamdefinition.png "osee_ats_teamdefinition.png")
 
 Each Team Definition has a Workflow Definition (or state machine) that
 defines the process that team uses to track and complete the work. Each
 state of the workflow can have configured conditions or fields that are
 required to transition. A Review can be attached to a state and can
 block the transition until successfully completed.
-![osee_ats_workflowdefinition.png](/docs/images/osee_ats_workflowdefinition.png
-"osee_ats_workflowdefinition.png") A Task is the lowest level of work,
+![osee_ats_workflowdefinition.png](/docs/images/osee_ats_workflowdefinition.png "osee_ats_workflowdefinition.png") A Task is the lowest level of work,
 and is used to allocate the work to individuals. A Task can be
 associated with a particular state or a state can have multiple tasks
 that need completing before the workflow can advance to the next state.
-![osee_ats_taskdefinition.png](/docs/images/osee_ats_taskdefinition.png
-"osee_ats_taskdefinition.png")
+![osee_ats_taskdefinition.png](/docs/images/osee_ats_taskdefinition.png "osee_ats_taskdefinition.png")
 
 A Version is used to group a set of Actions together into a "build",
 "release", "edition", etc. A common set of actions can apply to more
@@ -505,8 +498,7 @@ three cases that are important to understand.
 This is the default deployment if you download OSEE from the web. The
 embedded HSQL database will be automatically created when the server is
 run in a command shell. The client is configured to connect to the local
-server by default. ![oseesingleuser.png](/docs/images/oseesingleuser.png
-"oseesingleuser.png")
+server by default. ![oseesingleuser.png](/docs/images/oseesingleuser.png "oseesingleuser.png")
 
 ### Multi-User, Single Application Server Deployment
 
@@ -533,8 +525,7 @@ balancing, and do not require the client to connect to a specific
 application server, and do not maintain lists of the clients they
 service. The load balancer is allowed to distribute client requests
 according to its configured distribution scheme.
-![oseenetworkdiagram.png](/docs/images/oseenetworkdiagram.png
-"oseenetworkdiagram.png")
+![oseenetworkdiagram.png](/docs/images/oseenetworkdiagram.png "oseenetworkdiagram.png")
 
 ## Links
 

@@ -39,9 +39,9 @@ __NOTOC__
           - $ mkdir git_main
           - $ cd git_main
           - $ git clone
-            https://\<username\>@git.eclipse.org/r/osee/org.eclipse.osee.git
+            https://{username}@git.eclipse.org/r/osee/org.eclipse.osee.git
             --branch dev --depth 1
-              - **Note:** Replace <username> with your eclipse username
+              - **Note:** Replace {username} with your eclipse username
 
 <!-- end list -->
 

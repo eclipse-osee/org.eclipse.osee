@@ -59,7 +59,7 @@ support from both the EGit plugin and the original command-line `git`.
         2.  Enter the following:
               -
                 Variable name: **HOME**
-                Variable value: **C:\\Documents and Settings\\<User>**
+                Variable value: **C:\\Documents and Settings\{User}**
         3.  Click **OK**
         4.  Click **OK**
 5.  Launch Git Bash Shell by clicking on the Git desktop shortcut
@@ -278,8 +278,7 @@ workstation (i.e.: a non-development workstation).
 5.  Click Debug (if you get an error "Errors exist in require
     project(s)" try clicking Proceed)
 
-![image:oseedebugconfigsshot.png](/docs/images/oseedebugconfigsshot.png
-"image:oseedebugconfigsshot.png") The preceding instructions for running
+![image:oseedebugconfigsshot.png](/docs/images/oseedebugconfigsshot.png "image:oseedebugconfigsshot.png") The preceding instructions for running
 will not display the OSEE logo splash screen. Instead the default
 Eclipse splash screen will be displayed.
 
@@ -302,13 +301,13 @@ development branch. You only need to perform this step at the beginning
 of the development cycle and when you are first cloning your branches.
 
 To create a tracking development branch: **` git checkout -b
- `<branch>`  origin/ `<branch>**
+ `{branch}`  origin/ `{branch}**
 
 ### Make Change
 
 1.  Keep development branch up-to-date
     1.  Switch to the target build development branch: **` git checkout
-         `<branch>**
+         `{branch}**
     2.  Update local development branch with remote changes before any
         changes are made: **`git pull`**
     3.  Optionally, you can inspect the changes pulled in: **`git log`**
@@ -316,9 +315,9 @@ To create a tracking development branch: **` git checkout -b
     making the changes directly on the development branch or creating a
     local feature/bug branches to encapsulate the work.
       - To create a local branch: **` git checkout -b
-        [Bug|Feature|Refactor]_[ID]_description  `<branch>**
+        [Bug|Feature|Refactor]_[ID]_description  `{branch}**
       - Check state (index and working tree): **`git status`**
-      - Add a new untracked file: **` git add  `<file_path>**
+      - Add a new untracked file: **` git add  `{file_path}**
       - Add all untracked and modified files: **`git add -A`**
       - Commit a change - *[See comment conventions
         below](#Comment_Conventions "wikilink")*: **`git commit -a -m
@@ -327,17 +326,17 @@ To create a tracking development branch: **` git checkout -b
       - Rebase against the remote branch frequently to prevent branch
         from diverging:
     <!-- end list -->
-    1.  **` git pull --rebase  `<branch>**
+    1.  **` git pull --rebase  `{branch}**
     <!-- end list -->
       -
         <span style="font-variant:small-caps">Tip: By default `git pull`
         performs a merge, you can skip **--rebase** option by running
-        `git config branch.`<branch>`.rebase true` to [persist the
+        `git config branch.`{branch}`.rebase true` to [persist the
         rebase
         setting.](http://www.kernel.org/pub/software/scm/git/docs/git-pull.html#_options_related_to_merging)</span>
     <!-- end list -->
-    1.  **`git checkout <Bug|Feature|Refactor Branch>`**
-    2.  **` git rebase  `<branch>**
+    1.  **`git checkout {Bug|Feature|Refactor Branch}`**
+    2.  **` git rebase  `{branch}**
 
 <!-- end list -->
 
@@ -352,12 +351,12 @@ To create a tracking development branch: **` git checkout -b
     **`git pull --rebase origin 0.9.6_dev`**
 2.  Switch to development branch: **`git checkout 0.9.6_dev`**
 3.  Merge work branch into development: **` git merge
-     `<working_branch_name>`  --no-ff
+     `{working_branch_name}`  --no-ff
     ( `[`--ff`](http://www.kernel.org/pub/software/scm/git/docs/git-merge.html#_fast_forward_merge)`
     is usually the default) `**
 4.  (Optional) - Once work has been pushed to remote you can delete your
     local development branch: **` git branch -d
-     `<working_branch_name>**
+     `{working_branch_name}**
 
 ## Push local Development changes to remote Development branch
 
@@ -468,7 +467,7 @@ Collection of Useful Git Commands
 <tr class="odd">
 <td><p><strong>Stash</strong></p></td>
 <td><p>Stores changes into a stack</p></td>
-<td><p><code>git stash save </code><message><br />
+<td><p><code>git stash save </code>{message}<br />
 <code>git stash list</code><br />
 <code>git stash show -p stash@{0}</code><br />
 <code>git stash drop stash@{0}</code><br />
@@ -497,7 +496,7 @@ Collection of Useful Git Commands
 <td><p><code>git rebase -i HEAD~5</code><br />
 <code>git reset --hard HEAD</code><br />
 <code>git reset --hard HEAD~3</code><br />
-<code>git reset --hard </code><specific_commit_id></p></td>
+<code>git reset --hard </code>{specific_commit_id}</p></td>
 </tr>
 <tr class="even">
 <td><p><strong>Show Commit File Differences</strong></p></td>
@@ -561,8 +560,8 @@ Collection of Useful Git Commands
 <tr class="odd">
 <td><p><strong>Sharing a local work branch with others</strong></p></td>
 <td><p>Switch to working branch, Push working branch to remote</p></td>
-<td><p><code>git checkout </code><working_branch_name><br />
-<code>git push origin </code><working_branch_name><code>:refs/heads/</code><working_branch_name></p></td>
+<td><p><code>git checkout </code>{working_branch_name}<br />
+<code>git push origin </code>{working_branch_name}<code>:refs/heads/</code>{working_branch_name}</p></td>
 </tr>
 <tr class="even">
 <td><p><strong>Merge onto current branch</strong></p></td>
@@ -572,7 +571,7 @@ Collection of Useful Git Commands
 <tr class="odd">
 <td><p><strong>Branching and Merging</strong></p></td>
 <td><p>To replace with incoming file so you can re-make your changes (or abandon them)</p></td>
-<td><p><code>git checkout --[theirs|our] </code><path></p></td>
+<td><p><code>git checkout --[theirs|our] </code>{path}</p></td>
 </tr>
 <tr class="even">
 <td><p><strong>Merging Again</strong></p></td>
@@ -628,7 +627,7 @@ Collection of Useful Git Commands
 <tr class="even">
 <td><p><strong>Tagging a Build</strong></p></td>
 <td><p>Create, and Push a Tag</p></td>
-<td><p><code>git tag -a -m "0.9.6.v201009271203 Release Candidate" 0.9.6.v201009271203_RC </code><COMMIT_ID TO TAG><br />
+<td><p><code>git tag -a -m "0.9.6.v201009271203 Release Candidate" 0.9.6.v201009271203_RC </code>{COMMIT_ID TO TAG}<br />
 <code>git push origin 0.9.6.v201009271203_RC</code></p></td>
 </tr>
 <tr class="odd">
@@ -653,7 +652,7 @@ Collection of Useful Git Commands
 <td><p><code>git symbolic-ref HEAD refs/heads/newbranch</code><br />
 <code>rm .git/index</code><br />
 <code>git clean -fdx</code><br />
-<do work><br />
+{do work}<br />
 <code>git add your files</code><br />
 <code>git commit -m 'Initial commit'</code></p></td>
 </tr>
@@ -674,11 +673,11 @@ Collection of Useful Git Commands
 <td><p><strong>Create Git Repo using SSH</strong></p></td>
 <td><p>Use SSH to host remote Repo for personal use</p></td>
 <td><p><code>on the remote host:</code><br />
-<code>git init --bare --shared=0600 /</code><path><code>/user.git</code><br />
-<code>chmod 700 /</code><path><code>/user.git</code></p>
+<code>git init --bare --shared=0600 /</code>{path}<code>/user.git</code><br />
+<code>chmod 700 /</code>{path}<code>/user.git</code></p>
 <p><code>on local machine:</code><br />
 <code>cd /c/UserData/git</code><br />
-<code>git clone </code><a href="ssh://"><code>ssh://</code></a><user_name><code>@</code><host><code>/</code><path><code>/user.git</code><br />
+<code>git clone </code><a href="ssh://"><code>ssh://</code></a>{user_name}<code>@</code>{host}<code>/</code>{path}<code>/user.git</code><br />
 <code>cd user</code><br />
 <code>copy your files in</code><br />
 <code>git add -A</code><br />
@@ -727,7 +726,7 @@ Collection of Useful Git Commands
 
 `git checkout 0.9.7_dev`
 `git pull --rebase`
-`git rebase -i `<commit id of masters head>
+`git rebase -i `{commit id of masters head}
 `open git-rebase-todo in text editor`
 `git rebase --committer-date-is-author-date 148d414`
 `git checkout master`
@@ -869,7 +868,7 @@ The basic steps for updating:
 6.  Commit changes to your local git
 7.  Push to your GitHub fork (see below)
     1.  git push origin master with github
-    2.  username: \<email you used for GitHub\> eg: dondunne@gmail.com
+    2.  username: {email you used for GitHub} eg: dondunne@gmail.com
     3.  password: Personal Access Token created on GitHub [Creating A
         Personal Access
         Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
@@ -901,9 +900,9 @@ The basic steps for updating:
 4.  Clone to your local machine
     1.  Open Git Bash
     2.  Go to your repository directly, i.e. C:/Tools/git_main
-    3.  Run the following command replacing <repo> with the https repo
+    3.  Run the following command replacing {repo} with the https repo
         link
-        1.  <b>git clone \<repo\></b>
+        1.  <b>git clone {repo}</b>
     4.  Open OSEE, Git Perspective,
     5.  Add the nebula repo to your Git Repositories
     6.  Expand nebula \> Working Tree \> widgets \> select xviewer
@@ -950,7 +949,7 @@ The basic steps for updating:
 7.  Click <b>Create Pull Request</b>
 8.  Select <b>Compare Across Forks</b>
     1.  Base Repo - <b>eclipse/nebula</b>, base - <b>master</b>
-    2.  Head Repo - <b>\<your username\>/nebula</b>, base - <b>master</b>
+    2.  Head Repo - <b>{your username}/nebula</b>, base - <b>master</b>
 9.  Create Pull Request
 10. Wait for build and all checks to pass
 11. Ask Don Dunne to merge the pull request

@@ -430,8 +430,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @link <link_to_class_under_test>
- * @author <you>
+ * @link {link_to_class_under_test}
+ * @author {you}
  */
 public final class MySuperbTest {
 
@@ -555,13 +555,13 @@ Two alternative learning sources:
 ## Unix Commands
 
 ``` bash
-find <filename> -type f -exec chown <new_owner> {} \; -exec chmod 664 {} \;
+find {filename} -type f -exec chown {new_owner} {} \; -exec chmod 664 {} \;
 du -hs *
 tail -f /var/tmp/my.log
 netstat -an
 vi find and replace: s/pattern1/pattern2/g
 find . -exec grep -l pattern {} \;
-finger -wpsf <user>
+finger -wpsf {user}
 ```
 
 ## SQL Examples
@@ -569,13 +569,13 @@ finger -wpsf <user>
 ### How to create a new table on OSEE production database
 
 ``` sql
-GRANT DELETE ON "OSEE"."<table_name>" TO "OSEE_CLIENT";
-GRANT INSERT ON "OSEE"."<table_name>" TO "OSEE_CLIENT";
-GRANT SELECT ON "OSEE"."<table_name>" TO "OSEE_CLIENT";
-GRANT SELECT ON "OSEE"."<table_name>" TO PUBLIC;
-GRANT UPDATE ON "OSEE"."<table_name>" TO "OSEE_CLIENT";
+GRANT DELETE ON "OSEE"."{table_name}" TO "OSEE_CLIENT";
+GRANT INSERT ON "OSEE"."{table_name}" TO "OSEE_CLIENT";
+GRANT SELECT ON "OSEE"."{table_name}" TO "OSEE_CLIENT";
+GRANT SELECT ON "OSEE"."{table_name}" TO PUBLIC;
+GRANT UPDATE ON "OSEE"."{table_name}" TO "OSEE_CLIENT";
 
-create public synonym <synonym_name> for <table_name> ;
+create public synonym {synonym_name} for {table_name} ;
 ```
 
 ``` sql
@@ -614,7 +614,7 @@ ORDER BY t1.human_readable_id;
 -- In the below example, the COUNT function does not need to retrieve all fields from the osee attribute table
 -- as it would if you used the COUNT(*) syntax. It will merely retrieve the numeric value of 1 for each record
 -- that meets your criteria)
-SELECT count(1) from osee_attribute where value like ?, where ? == '%<value>%'
+SELECT count(1) from osee_attribute where value like ?, where ? == '%{value}%'
 
 -- retrieve the number of commit comments with the specified value:
 SELECT count(1) from osee_tx_details where osee_comment like ?, where ? == '%value>%'
@@ -627,12 +627,12 @@ SELECT *
 FROM osee_artifact_version arv,
   osee_txs txs,
   osee_tx_details txd
-WHERE art_id = <value>
+WHERE art_id = {value}
  AND arv.gamma_id = txs.gamma_id
  AND txs.transaction_id = txd.transaction_id
 
 -- retrieve all data from the osee artifact table for the specified artifact
-SELECT * from osee_artifact where art_id=<value>
+SELECT * from osee_artifact where art_id={value}
 
 -- list execution plans
 select distinct 'explain plan set statement_id = ' || sql_id || ' for ' || sql_text || ';' as ex from v$sql where lower(sql_text) like 'select%osee_relation_link%' and sql_text not like '%DS_SVC%' and sql_text not like '%SYS.DUAL%' and parsing_schema_name = 'OSEE_CLIENT' order by ex;
@@ -689,7 +689,7 @@ select * from plan_table;
         To see the work layout before you using Git version 2.19.0 or
         newer
           -
-            git range-diff origin/<previous_stable_version> origin/dev
+            git range-diff origin/{previous_stable_version} origin/dev
             dev
         ensure any Eclipse workspace associated with the repository is
         closed
@@ -697,7 +697,7 @@ select * from plan_table;
         git reset --hard origin/dev
         remove any untracked files
         git rebase -i --onto origin/master
-        <one commit prior to first commit on dev>
+        {one commit prior to first commit on dev}
         mark for edit the first commit "refactor: Update build numbers
         to 0.x.0
 
@@ -738,7 +738,7 @@ select * from plan_table;
         use git rebase -i for second pass of rebase
         move each FIXUP commit to just after the commit it corrects and
         combine with fixup command
-        git diff <previously_noted_hash> head to ensure no unintentional
+        git diff {previously_noted_hash} head to ensure no unintentional
         changes
 
 <!-- end list -->
@@ -786,7 +786,7 @@ select * from plan_table;
 
 :\* no activator
 
-:\* Bundle Id: \<my.plugin\>
+:\* Bundle Id: {my.plugin}
 
 :\* Bundle-Version: 10.5.1.1_qualifier
 
@@ -795,105 +795,105 @@ select * from plan_table;
 :\* Provider: %bundleProvider
 
   - delete .settings folder
-  - create folder \<my.plugin\>/source-bundle
-  - create folder \<my.plugin\>/source-bundle/META-INF
-  - create file \<my.plugin\>/source-bundle/META-INF/MANIFEST.MF
+  - create folder {my.plugin}/source-bundle
+  - create folder {my.plugin}/source-bundle/META-INF
+  - create file {my.plugin}/source-bundle/META-INF/MANIFEST.MF
 
-:\* Bundle Id: \<my.plugin\>.source
+:\* Bundle Id: {my.plugin}.source
 
-:\* Eclipse-SourceBundle: \<my.plugin\>
+:\* Eclipse-SourceBundle: {my.plugin}
 
-  - create file \<my.plugin\>/readme.txt
-  - copy plugin.properties to \<my.plugin\>/plugin.properties
+  - create file {my.plugin}/readme.txt
+  - copy plugin.properties to {my.plugin}/plugin.properties
 
 :\* update bundleName
 
-  - copy \<my.plugin\>/plugin.properties to
-    \<my.plugin\>/source-bundle/plugin.properties
-  - copy about.html to \<my.plugin\>/about.html
-  - create folder \<my.plugin\>/about_files
+  - copy {my.plugin}/plugin.properties to
+    {my.plugin}/source-bundle/plugin.properties
+  - copy about.html to {my.plugin}/about.html
+  - create folder {my.plugin}/about_files
 
 :\* copy licensing text files here
 
-  - extract content of binary jar file into root of \<my.plugin\> (do
+  - extract content of binary jar file into root of {my.plugin} (do
     not over-write MANIFEST.MF)
 
 :\* select project in workspace -\> context menu -\> Refresh
 
   - Manifest editor -\> Build tab
 
-:\* check \<my.plugin\>/about.html under both your Binary Build and
+:\* check {my.plugin}/about.html under both your Binary Build and
 Source Build
 
-:\* check \<my.plugin\>/about_files under both your Binary Build and
+:\* check {my.plugin}/about_files under both your Binary Build and
 Source Build
 
-:\* check \<my.plugin\>/plugin.properties
+:\* check {my.plugin}/plugin.properties
 
-:\* check \<my.plugin\>/<class folder>
+:\* check {my.plugin}/{class folder}
 
-  - copy \<my.plugin\>/about.html to
-    \<my.plugin\>/source-bundle/about.html
-  - copy \<my.plugin\>/about_files to
-    \<my.plugin\>/source-bundle/about_files
+  - copy {my.plugin}/about.html to
+    {my.plugin}/source-bundle/about.html
+  - copy {my.plugin}/about_files to
+    {my.plugin}/source-bundle/about_files
 
 <!-- end list -->
 
-  - context menu on \<my.plugin\> -\> Properties -\> Java Build Path
+  - context menu on {my.plugin} -\> Properties -\> Java Build Path
 
 :\* Source Tab -\> remove all source folders
 
 :\* Libraries -\> Add class Folder ... -\> select root project
 
 ::\* expand newly added class folder and select source attachment -\>
-Edit... -\> Workspace... -\> /\<my.plugin\>/source-bundle
+Edit... -\> Workspace... -\> /{my.plugin}/source-bundle
 
 :\* Order and Export -\> ensure libraries and class folders are marked
 exported
 
-  - edit \<my.plugin\>/.project
+  - edit {my.plugin}/.project
 
 :\* add a space and then the 3 part version number to the project name
 
-  - edit \<my.plugin\>/build.properties
+  - edit {my.plugin}/build.properties
 
 :\* ensure exists: output.. = . and remove source.. = .
 
-  - edit \<my.plugin\>/META-INF/MANIFEST.MF:
+  - edit {my.plugin}/META-INF/MANIFEST.MF:
 
 :\* add line: Bundle-Localization: plugin
 
-  - copy source to \<my.plugin\>/source-bundle/
-  - copy \<my.plugin\>/build.properties to
-    \<my.plugin\>/source-bundle/build.properties
+  - copy source to {my.plugin}/source-bundle/
+  - copy {my.plugin}/build.properties to
+    {my.plugin}/source-bundle/build.properties
 
 :\* add to bin.includes the root directory of the source (i.e. org, com,
 etc.)
 
 :\* Note: the source bundle's build.properties entries must be relative
-to \<my.plugin\>/source-bundle/ (rather than just \<my.plugin\>/)
+to {my.plugin}/source-bundle/ (rather than just {my.plugin}/)
 
-  - context menu on \<my.plugin\> -\> Team -\> Share Project... -\> CVS
+  - context menu on {my.plugin} -\> Team -\> Share Project... -\> CVS
     -\> "dev.eclipse.org/cvsroot/tools"
 
-:\* Use specified module name -\> org.eclipse.orbit/\<my.plugin\>
+:\* Use specified module name -\> org.eclipse.orbit/{my.plugin}
 
 :\* uncheck Launch the Commit wizard
 
-  - context menu on \<my.plugin\>/readme.txt and \<my.plugin\>/.project
+  - context menu on {my.plugin}/readme.txt and {my.plugin}/.project
     -\> Team -\> Commit... -\> "initial project creation"
 
 <!-- end list -->
 
   - select project in workspace -\> context menu -\> Team \> Branch...
 
-:\* "v<version number>" where <version number> original libraries
+:\* "v{version number}" where {version number} original libraries
 version with '.' s replaced with '_' . (i.e. version is 2.3 would go in
 the v2_3 branch)
 
 :\* check "Work with this branch"
 
-  - delete \<my.plugin\>/readme.txt
+  - delete {my.plugin}/readme.txt
 
 <!-- end list -->
 
@@ -917,8 +917,8 @@ plugin@org.apache.derby.net.source,10.5.1=CVS,tag=v200910011000,cvsRoot=:pserver
 then update the map file's tag also (so the updated version will be
 used)
 
-  - context menu on \<my.plugin\> -\> Team -\> Commit...
-  - context menu on \<my.plugin\> -\> Team -\> Tag as Version... use the
+  - context menu on {my.plugin} -\> Team -\> Commit...
+  - context menu on {my.plugin} -\> Team -\> Tag as Version... use the
     CVS tag you put in the map file
   - context menu on org.eclipse.orbit.build.feature.set1 -\> Team -\>
     Tag as Version... (if you changed it)

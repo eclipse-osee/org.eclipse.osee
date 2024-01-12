@@ -103,7 +103,7 @@ for a match_id
   -
 
       -
-        Tuple3Type\<RankTypeId, Long, String\> RankType =
+        Tuple3Type{RankTypeId, Long, String} RankType =
         Tuple3Type.valueOf(SearchFamily, 12L); // rank_type, rank
         (larger is higher), rank
           -
@@ -378,7 +378,7 @@ String.format(msg_format, msg_args);
     maintained)
   - When an exception is thrown, it is logged as a child of the parent
     corresponding to the current thread. If no mapping is found in
-    ConcurrentHashMap\<Thread, Pair\<Long, Long\>\>()
+    ConcurrentHashMap{Thread, Pair{Long, Long}}()
 
 <!-- end list -->
 

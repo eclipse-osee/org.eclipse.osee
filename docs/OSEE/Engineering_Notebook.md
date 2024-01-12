@@ -31,7 +31,7 @@ It serves the following purposes:
     ------------------------
     -- GIT repos/workspaces
     ------------------------
-    - Note: <repo> - <branch> - <what doing in each; blank if clean>
+    - Note: {repo} - {branch} - {what doing in each; blank if clean}
     - ws_fix/workspace_fix - 0.26.1 - Fixes to Next Release 0.26.1
     - ws_try/workspace_try - dev -
     - ws_try/workspace_one - dev - Refactoring ATS to server

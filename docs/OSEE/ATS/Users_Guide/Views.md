@@ -54,8 +54,7 @@ Results
 Select ![image:email.gif](/docs/images/email.gif "image:email.gif") to email the ATS
 Results to an OSEE user
 
-Select ![image:export_table.gif](/docs/images/export_table.gif
-"image:export_table.gif") to export the ATS Results to CSV file
+Select ![image:export_table.gif](/docs/images/export_table.gif "image:export_table.gif") to export the ATS Results to CSV file
 
 Select ![image:bug.gif](/docs/images/bug.gif "image:bug.gif") to report a bug.
 
@@ -69,8 +68,7 @@ user can create an Action against
 
 # ATS Navigator
 
-![image:atsnavigator2016.png](/docs/images/atsnavigator2016.png
-"image:atsnavigator2016.png")
+![image:atsnavigator2016.png](/docs/images/atsnavigator2016.png "image:atsnavigator2016.png")
 
 The **ATS Navigator** is the central location for locating ATS objects.
 Double clicking a navigation item will open it in the appropriate viewer
@@ -81,8 +79,7 @@ include completed and cancelled items in the search.
 
 # ATS Action View
 
-![image:ats_action_view.jpg](/docs/images/ats_action_view.jpg
-"image:ats_action_view.jpg")
+![image:ats_action_view.jpg](/docs/images/ats_action_view.jpg "image:ats_action_view.jpg")
 
 The **ATS Action View** shows a graphical representation of the
 currently open Action or Team Workflow. The Action View will show the
@@ -95,8 +92,7 @@ state, its assignees, and work to be done.
 
 # ATS World View
 
-![image:ats_world_view.jpg](/docs/images/ats_world_view.jpg
-"image:ats_world_view.jpg")
+![image:ats_world_view.jpg](/docs/images/ats_world_view.jpg "image:ats_world_view.jpg")
 
 ## Purpose
 
@@ -133,8 +129,7 @@ the sorts and filters that are enabled.
 ## Top Status Line
 
 The top status line will show the name of the search that populated the
-ATS World View. A warning icon (![image:warn.gif](/docs/images/warn.gif
-"image:warn.gif")) will show if the search returned no objects to show.
+ATS World View. A warning icon (![image:warn.gif](/docs/images/warn.gif "image:warn.gif")) will show if the search returned no objects to show.
 
 ## Filtering
 
@@ -203,8 +198,7 @@ Workflow, Tasks, and Metrics.
 
 ## Workflow Tab
 
-![image:ats_workflow_editor_workflow_tab.jpg](/docs/images/ats_workflow_editor_workflow_tab.jpg
-"image:ats_workflow_editor_workflow_tab.jpg")
+![image:ats_workflow_editor_workflow_tab.jpg](/docs/images/ats_workflow_editor_workflow_tab.jpg "image:ats_workflow_editor_workflow_tab.jpg")
 
 The **Workflow Tab** is the default tab of the Workflow Editor. It shows
 the states of the workflow and allows modification of information
@@ -213,8 +207,7 @@ bar and is the only state open by default.
 
 ## Task Tab
 
-![image:ats_workflow_editor_task_tab.jpg](/docs/images/ats_workflow_editor_task_tab.jpg
-"image:ats_workflow_editor_task_tab.jpg")
+![image:ats_workflow_editor_task_tab.jpg](/docs/images/ats_workflow_editor_task_tab.jpg "image:ats_workflow_editor_task_tab.jpg")
 
 The **Task Tab** shows tasks associated with the current state.
 Double-clicking a task will open it in the ATS Workflow Editor for
@@ -253,8 +246,7 @@ This widget allows creation and manipulation of the working branch
 configured in a Team Workflow. The following options can be performed
 using this widget.
 
-![image:workingbranchwidget.gif](/docs/images/workingbranchwidget.gif
-"image:workingbranchwidget.gif")
+![image:workingbranchwidget.gif](/docs/images/workingbranchwidget.gif "image:workingbranchwidget.gif")
 
 1.  Working Branch to be created by selecting the "Create Working
     Branch" icon
@@ -270,8 +262,7 @@ using this widget.
 This widget allows commit for Working Branch configured in a Team
 Workflow. The following options can be performed using this widget.
 
-![image:commitmanagerwidget.gif](/docs/images/commitmanagerwidget.gif
-"image:commitmanagerwidget.gif")
+![image:commitmanagerwidget.gif](/docs/images/commitmanagerwidget.gif "image:commitmanagerwidget.gif")
 
 Double-click to perform action listed. These include:
 
@@ -303,7 +294,7 @@ the selected state.
     associated workflow will be opened.
   - New Workflow Configuration: File -\> New -\> Other -\> OSEE ATS -\>
     Workflow Configuration; enter unique namespace for this workflow
-    configuration. (eg: org.<company>.code). This creates a simple
+    configuration. (eg: org.{company}.code). This creates a simple
     workflow to use as a starting place.
   - Create states:
       - Add necessary states to diagram to represent workflow. Note:
@@ -356,7 +347,7 @@ the Workflow Configuration Editor (OSEE 0.6.0 Release and beyond).
 On the Common branch in the Artifact Editor, Expand "Action Tracking
 System" and right-click on "Work Flows", select New Child -\> Work Flow
 Definition. Enter a unique namespace name for this workflow (eg:
-org.<company>.code). In the Artifact Editor, add and set the attributes
+org.{company}.code). In the Artifact Editor, add and set the attributes
 and relations as below.
 
   - Attributes
@@ -470,7 +461,7 @@ the following attributes and relations accordingly.
         as below.
       - osee.wi.Work Description:Simple description explaining what rule
         does.
-      - osee.wi.Work <Data:Key/Value> pares of information used by rule.
+      - osee.wi.Work {Data:Key/Value} pares of information used by rule.
   - Relations
       - Work Item.Parent: Relate to any Team Definition or Work Page
         Definition artifacts as appropriate.

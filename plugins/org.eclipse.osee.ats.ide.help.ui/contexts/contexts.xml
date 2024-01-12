@@ -1,85 +1,85 @@
 <contexts>
 	<context id="atsActionView" title="ATS Action View">
 		<description>Show graphical representation of Action and its children Team Workflows.</description>
-		<topic href="OSEE/ATS/Users_Guide/Views/ATS-Action-View.html" label="ATS Action View"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
-		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>
+		<topic href="docs/ATS-Action-View.html" label="ATS Action View"/>
+		<topic href="docs/Views.html" label="ATS Icons"/>
+		<topic href="docs/Intro.html" label="ATS Overview"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="atsNavigator" title="ATS Navigator View">
 		<description>Perform ATS navigation capabilities.</description>
-		<topic href="OSEE/ATS/Users_Guide/Views/ATS-Navigator.html" label="ATS Navigator View"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
-		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>
+		<topic href="docs/ATS-Navigator.html" label="ATS Navigator View"/>
+		<topic href="docs/Views.html" label="ATS Icons"/>
+		<topic href="docs/Intro.html" label="ATS Overview"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="atsConfigureWorkflow">
 	   <description>Configure Workflow for use by Team Definition.</description>
-	   <topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Configuration-Editor.html" label="Workflow Configuration Editor"/>
-	   <topic href="OSEE/ATS/Users_Guide/Views/Work-Page-Definition-Artifact.html" label="Work Page Definition"/>
-	   <topic href="OSEE/ATS/Users_Guide/Views/Work-Rule-Definition-Artifact.html" label="Work Rule Definition"/>
-	   <topic href="OSEE/ATS/Users_Guide/Views/Work-Rule-Widget-Artifact.html" label="Work Widget Definition"/>
-	   <topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>
+	   <topic href="docs/ATS-Workflow-Configuration-Editor.html" label="Workflow Configuration Editor"/>
+	   <topic href="docs/Work-Page-Definition-Artifact.html" label="Work Page Definition"/>
+	   <topic href="docs/Work-Rule-Definition-Artifact.html" label="Work Rule Definition"/>
+	   <topic href="docs/Work-Rule-Widget-Artifact.html" label="Work Widget Definition"/>
+	   <topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="atsPriority" title="ATS Priorities">
 		<description>Priorities for classifying Actions in ATS.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/Priorities-for-classifying-problems.html" label="ATS Priorities"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
-		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/Priorities-for-classifying-problems.html" label="ATS Priorities"/>
+		<topic href="docs/Views.html" label="ATS Icons"/>
+		<topic href="docs/Intro.html" label="ATS Overview"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="atsReportABug" title="Report a Bug">
 		<description>Instructions on using the Bug icons for reporting OSEE bugs.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/Report-a-Bug.html" label="Reporting a bug in OSEE"/>
-		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/Report-a-Bug.html" label="Reporting a bug in OSEE"/>
+		<topic href="docs/Intro.html" label="ATS Overview"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="atsWorldView" title="ATS World View">
 		<description>Show loaded Action, Team Workflows, Tasks and Reviews.</description>
-		<topic href="OSEE/ATS/Users_Guide/Views/ATS-World-View.html" label="ATS World View"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Table-Customization.html" label="Table Customization"/>
-		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/ATS-World-View.html" label="ATS World View"/>
+		<topic href="docs/Table-Customization.html" label="Table Customization"/>
+		<topic href="docs/Intro.html" label="ATS Overview"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="atsWorkflowEditorWorkflowTab" title="ATS Workflow Editor: Workflow Tab">
 		<description>Shows states of workflow, allows entry in current state and provides services to perform actions, see metrics and research information about workflow.</description>
-		<topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
-		<topic href="OSEE/ATS/Users_Guide/Usage/Priorities-for-classifying-problems.html" label="ATS Priorities"/>		
-		<topic href="OSEE/ATS/Users_Guide/Usage/OSEE-Spell-Checking.html" label="ATS Spell Checking"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
-		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
+		<topic href="docs/Priorities-for-classifying-problems.html" label="ATS Priorities"/>
+		<topic href="docs/OSEE-Spell-Checking.html" label="ATS Spell Checking"/>
+		<topic href="docs/Views.html" label="ATS Icons"/>
+		<topic href="docs/Intro.html" label="ATS Overview"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="atsWorkflowEditorTaskTab" title="ATS Workflow Editor: Task Tab">
 		<description>Shows tasks associated with workflow states.  Allows quick editing of task information and allows a quick jump (double-click) to open task in ATS Workflow Editor.</description>
-   	<topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Editor.html#Task_Tab" label="ATS Workflow Editor: Task Tab"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Table-Customization.html" label="Table Customization"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
-		<topic href="OSEE/ATS/Users_Guide/Intro/Intro.html" label="ATS Overview"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+   	<topic href="docs/ATS-Workflow-Editor.html#Task_Tab" label="ATS Workflow Editor: Task Tab"/>
+		<topic href="docs/Table-Customization.html" label="Table Customization"/>
+		<topic href="docs/Views.html" label="ATS Icons"/>
+		<topic href="docs/Intro.html" label="ATS Overview"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="decisionReview" title="Decision Review Workflow">
 		<description>Provides description of the Decision review.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/OSEE-Review.html" label="Decision Review Workflow"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/OSEE-Review.html" label="Decision Review Workflow"/>
+		<topic href="docs/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
+		<topic href="docs/Views.html" label="ATS Icons"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="peerToPeerReview" title="Peer To Peer Review Workflow">
 		<description>Provides description of the Peer to Peer review.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/OSEE-Review.html" label="Peer To Peer Review Workflow"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
-		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/OSEE-Review.html" label="Peer To Peer Review Workflow"/>
+		<topic href="docs/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
+		<topic href="docs/Views.html" label="ATS Icons"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="new_action_wizard_page_1" title="New Action Wizard">
 		<description>Initiates a new Action.  Specify the Title and Impacted Items.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/Usage.html#Part_One" label="Create Action - Page 1"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/Usage.html#Part_One" label="Create Action - Page 1"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 	<context id="new_action_wizard_page_2" title="New Action Wizard">
 		<description>Provides details for the new action.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/Usage.html#Part_Two" label="Create Action - Page 2"/>
-		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
+		<topic href="docs/Usage.html#Part_Two" label="Create Action - Page 2"/>
+		<topic href="docs/Tips.html" label="ATS Tips"/>
 	</context>
 </contexts>

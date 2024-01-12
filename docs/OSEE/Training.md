@@ -113,8 +113,7 @@ Sort and filter Branch Manager as you wish \> Select Table Customization
 First" \> Select saved customization on left \> select "Set as Default"
 \> Select Ok in dialog.
 
-![branchmanager_baselinebranchfirst.png](/docs/images/branchmanager_baselinebranchfirst.png
-"branchmanager_baselinebranchfirst.png")
+![branchmanager_baselinebranchfirst.png](/docs/images/branchmanager_baselinebranchfirst.png "branchmanager_baselinebranchfirst.png")
 
 # Artifact Explorer - How do I...
 
@@ -126,8 +125,7 @@ the white pulldown to select items you want to show. If you want to save
 these selections for future Artifact Explorers, just select "Store Label
 Settings".
 
-![artifactexplorer_showmoreinfo.png](/docs/images/artifactexplorer_showmoreinfo.png
-"artifactexplorer_showmoreinfo.png")
+![artifactexplorer_showmoreinfo.png](/docs/images/artifactexplorer_showmoreinfo.png "artifactexplorer_showmoreinfo.png")
 
 ## quickly open a new Artifact Explorer?
 
@@ -135,8 +133,7 @@ You can open a new Artifact Explorer using the "Open Artifact Explorer"
 button on the top right of the Artifact Explorer. It will open the new
 Explorer to the same branch as the one open.
 
-![artifactexplorer_opennewexplorer.png](/docs/images/artifactexplorer_opennewexplorer.png
-"artifactexplorer_opennewexplorer.png")
+![artifactexplorer_opennewexplorer.png](/docs/images/artifactexplorer_opennewexplorer.png "artifactexplorer_opennewexplorer.png")
 
 ## open the Action associated to the selected branch?
 
@@ -145,8 +142,7 @@ Action" button will open those Actions in ATS. If a branch was created
 manually by a user, it will show a dialog of the user that created the
 branch.
 
-![artifactexplorer_openassociatedaction.png](/docs/images/artifactexplorer_openassociatedaction.png
-"artifactexplorer_openassociatedaction.png")
+![artifactexplorer_openassociatedaction.png](/docs/images/artifactexplorer_openassociatedaction.png "artifactexplorer_openassociatedaction.png")
 
 ## open the selected artifact in another branch?
 
@@ -154,8 +150,7 @@ There is an easy way to open the selected artifact on another branch.
 Select that artifact \> right-click \> Reveal on Another Branch. This
 will open another Branch Manager and reveal the artifact on that branch.
 
-![artifactexplorer_revealonanotherbranch.png](/docs/images/artifactexplorer_revealonanotherbranch.png
-"artifactexplorer_revealonanotherbranch.png")
+![artifactexplorer_revealonanotherbranch.png](/docs/images/artifactexplorer_revealonanotherbranch.png "artifactexplorer_revealonanotherbranch.png")
 
 ## quickly search the currently selected branch?
 
@@ -163,8 +158,7 @@ Select the "Open Quick Search View" button. This will open the Quick
 Search view, set the selected branch to the same as the Artifact
 Explorer and place your cursor in the Search text box.
 
-![artifactexplorer_quick_search.png](/docs/images/artifactexplorer_quick_search.png
-"artifactexplorer_quick_search.png")
+![artifactexplorer_quick_search.png](/docs/images/artifactexplorer_quick_search.png "artifactexplorer_quick_search.png")
 
 ## show other relations
 
@@ -175,11 +169,9 @@ can do this anytime by selecting the white triangle pulldown on the
 Artifact Explorer \> select "Show Relations". You will now see all
 relations that the artifact has.
 
-![image:artifactexplorer_show_relations_menu2016.png](/docs/images/artifactexplorer_show_relations_menu2016.png
-"image:artifactexplorer_show_relations_menu2016.png")
+![image:artifactexplorer_show_relations_menu2016.png](/docs/images/artifactexplorer_show_relations_menu2016.png "image:artifactexplorer_show_relations_menu2016.png")
 
-![image:artifactexplorer_show_relations2016.png](/docs/images/artifactexplorer_show_relations2016.png
-"image:artifactexplorer_show_relations2016.png")
+![image:artifactexplorer_show_relations2016.png](/docs/images/artifactexplorer_show_relations2016.png "image:artifactexplorer_show_relations2016.png")
 
 ## create other related artifacts
 
@@ -189,16 +181,14 @@ the artifact to add a related artifact to \> right-click \> select New
 Related. This will pop-up a dialog showing valid relations for this
 artifact. Follow the prompts to add a newly related artifact.
 
-![image:artifactexplorer_new_related_fromartifact2016.png](/docs/images/artifactexplorer_new_related_fromartifact2016.png
-"image:artifactexplorer_new_related_fromartifact2016.png")
+![image:artifactexplorer_new_related_fromartifact2016.png](/docs/images/artifactexplorer_new_related_fromartifact2016.png "image:artifactexplorer_new_related_fromartifact2016.png")
 
 If you want to add a new artifact to an existing relation. Select the
 relation to add the artifact to \> right-click \> select New Related.
 This will pop-up a dialog showing valid relations for this artifact.
 Follow the prompts to add a newly related artifact.
 
-![image:artifactexplorer_new_related_fromrelation2016.png](/docs/images/artifactexplorer_new_related_fromrelation2016.png
-"image:artifactexplorer_new_related_fromrelation2016.png")
+![image:artifactexplorer_new_related_fromrelation2016.png](/docs/images/artifactexplorer_new_related_fromrelation2016.png "image:artifactexplorer_new_related_fromrelation2016.png")
 
 # Change Report - How do I...
 
@@ -313,8 +303,7 @@ Goal artifact in the ATS Editor \> Select the "Workflow" tab \> Expand
 the "Relations" section \> Drag your AI or Team Definition to the
 "AutoAddActionToGoal" relation. \> Save
 
-![ats_auto_add_action_to_goal.png](/docs/images/ats_auto_add_action_to_goal.png
-"ats_auto_add_action_to_goal.png")
+![ats_auto_add_action_to_goal.png](/docs/images/ats_auto_add_action_to_goal.png "ats_auto_add_action_to_goal.png")
 
 ## visit recently opened ATS Actions
 
@@ -502,9 +491,7 @@ In the ATS Workflow Editor, select the "Action View" icon at the top of
 the editor. This will open a graphical representation of the "Action",
 "Team Workflows", "Reviews" and "Tasks"
 
-![ats_actionviewicon.png](/docs/images/ats_actionviewicon.png
-"ats_actionviewicon.png") ![ats_actionview.png](/docs/images/ats_actionview.png
-"ats_actionview.png")
+![ats_actionviewicon.png](/docs/images/ats_actionviewicon.png "ats_actionviewicon.png") ![ats_actionview.png](/docs/images/ats_actionview.png "ats_actionview.png")
 
 # ATS Workflow Editor - How do I...
 
@@ -515,8 +502,7 @@ hyperlink at the top of the ATS Editor. On the right pane, select the
 other Actionable Items that are impacted. New Team Workflows will be
 created as needed.
 
-![ats_actionableitemshyperlink.png](/docs/images/ats_actionableitemshyperlink.png
-"ats_actionableitemshyperlink.png")
+![ats_actionableitemshyperlink.png](/docs/images/ats_actionableitemshyperlink.png "ats_actionableitemshyperlink.png")
 
 ## show a hierarchical representation of Action, Workflows, Tasks and Reviews
 
@@ -524,9 +510,7 @@ In the ATS Editor, select the "Open in World Editor". This will open the
 object starting at the "Action". Expand-all will show all items in the
 hierarchy.
 
-![ats_openworldbutton.png](/docs/images/ats_openworldbutton.png
-"ats_openworldbutton.png")![ats_showhierarchical.png](/docs/images/ats_showhierarchical.png
-"ats_showhierarchical.png")
+![ats_openworldbutton.png](/docs/images/ats_openworldbutton.png "ats_openworldbutton.png")![ats_showhierarchical.png](/docs/images/ats_showhierarchical.png "ats_showhierarchical.png")
 
 # ATS World and Task Editors - How do I...
 
@@ -535,16 +519,14 @@ hierarchy.
 Select the pulldown-menu next to the gear and select "Filter Out
 Completed/Cancelled". You can also use the Ctrl-F hotkey.
 
-![ats_filtercanceledcompletedassignee.png](/docs/images/ats_filtercanceledcompletedassignee.png
-"ats_filtercanceledcompletedassignee.png")
+![ats_filtercanceledcompletedassignee.png](/docs/images/ats_filtercanceledcompletedassignee.png "ats_filtercanceledcompletedassignee.png")
 
 ## only show items assigned to you
 
 Select the pulldown-menu next to the gear and select "Filter My
 Assignee". You can also use the Ctrl-G hotkey.
 
-![ats_filterassignee.png](/docs/images/ats_filterassignee.png
-"ats_filterassignee.png")
+![ats_filterassignee.png](/docs/images/ats_filterassignee.png "ats_filterassignee.png")
 
 ## open selected ATS items in a new ATS World or Task View
 
@@ -572,15 +554,13 @@ things you can do to help view this data easier.
 2.  Make the table larger. Select the gray line under the table and drag
     down to show more rows.
 
-![peer_make_table_larger.jpg](/docs/images/peer_make_table_larger.jpg
-"peer_make_table_larger.jpg")
+![peer_make_table_larger.jpg](/docs/images/peer_make_table_larger.jpg "peer_make_table_larger.jpg")
 
 1.  View the entire table with wrapped columns. Right-click anywhere in
     the table \> select "View Table Report". This shows in an HTML
     format that wraps all the columns.
 
-![peer_show_defects.jpg](/docs/images/peer_show_defects.jpg
-"peer_show_defects.jpg")
+![peer_show_defects.jpg](/docs/images/peer_show_defects.jpg "peer_show_defects.jpg")
 
 # Java Editor - How do I...
 
@@ -590,8 +570,7 @@ Open Java File \> Ctrl-F (search) \> Select "Incremental" checkbox \>
 Enter text to search. This will highlight the first occurrence of what
 you type as you type.
 
-![javaeditor_incremental_search.jpg](/docs/images/javaeditor_incremental_search.jpg
-"javaeditor_incremental_search.jpg")
+![javaeditor_incremental_search.jpg](/docs/images/javaeditor_incremental_search.jpg "javaeditor_incremental_search.jpg")
 
 # XViewer - Advanced Tree/Table Widget - How do I
 
@@ -638,8 +617,7 @@ access these versions to restore these changes. This includes a file or
 directory that was deleted. Select the file or folder in the Package
 Explorer \> right-click \> Restore from local history.
 
-![editor_restore_from_local_history.jpg](/docs/images/editor_restore_from_local_history.jpg
-"editor_restore_from_local_history.jpg")
+![editor_restore_from_local_history.jpg](/docs/images/editor_restore_from_local_history.jpg "editor_restore_from_local_history.jpg")
 
 ## prevent multiple editors from cluttering up your workbench
 
@@ -649,8 +627,7 @@ automatically. Select Window pulldown menu \> Preferences \> General \>
 Editors \> select "Close editors automatically" \> enter number of
 editors open before auto-close.
 
-![editor_close_editors_automatically.jpg](/docs/images/editor_close_editors_automatically.jpg
-"editor_close_editors_automatically.jpg")
+![editor_close_editors_automatically.jpg](/docs/images/editor_close_editors_automatically.jpg "editor_close_editors_automatically.jpg")
 
 # Quick Search- How do I...
 
@@ -692,11 +669,9 @@ You can also easily open the Transaction tab of the Change Report Editor
 by selecing a branch off the Branch Manager View \> right-click \>
 Branch Transaction Report
 
-![image:branchtransactionmenu2016.png](/docs/images/branchtransactionmenu2016.png
-"image:branchtransactionmenu2016.png")
+![image:branchtransactionmenu2016.png](/docs/images/branchtransactionmenu2016.png "image:branchtransactionmenu2016.png")
 
-![image:branchtransactioneditor2016.png](/docs/images/branchtransactioneditor2016.png
-"image:branchtransactioneditor2016.png")
+![image:branchtransactioneditor2016.png](/docs/images/branchtransactioneditor2016.png "image:branchtransactioneditor2016.png")
 
 # OSEE and Earned Value Managment (EVM)
 

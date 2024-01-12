@@ -8,8 +8,7 @@ To also help in understanding of a OSEE branches, sample scenario
 
 A branch in OSEE is represented by an entry in OSEE_BRANCH table.
 
-![image:osee_branch_intro1.png](/docs/images/osee_branch_intro1.png
-"image:osee_branch_intro1.png")
+![image:osee_branch_intro1.png](/docs/images/osee_branch_intro1.png "image:osee_branch_intro1.png")
 
 |                    |              |                           |                       |                     |          |            |               |                    |                         |
 | ------------------ | ------------ | ------------------------- | --------------------- | ------------------- | -------- | ---------- | ------------- | ------------------ | ----------------------- |
@@ -31,8 +30,7 @@ A branch in OSEE is represented by an entry in OSEE_BRANCH table.
 
 Creating a child branch CIS_child_branch from CIS_Bld_1.
 
-![image:osee_branch_adding_a_branch.png](/docs/images/osee_branch_adding_a_branch.png
-"image:osee_branch_adding_a_branch.png")
+![image:osee_branch_adding_a_branch.png](/docs/images/osee_branch_adding_a_branch.png "image:osee_branch_adding_a_branch.png")
 
 OSEE_BRANCH Table:
 
