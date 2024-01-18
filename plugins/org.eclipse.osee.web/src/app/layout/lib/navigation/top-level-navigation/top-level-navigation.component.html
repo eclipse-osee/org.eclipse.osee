@@ -42,7 +42,7 @@
 							router.url.includes(element.routerLink) &&
 							!element.isDropdownOpen
 					}"
-					class="tw-py-8">
+					class="tw-py-6">
 					<div class="tw-flex tw-items-center tw-justify-between">
 						<div class="tw-flex tw-flex-row tw-items-center">
 							<div class="tw-pr-2">
@@ -72,15 +72,16 @@
 				<mat-list-item
 					*ngIf="!element.isDropdown"
 					(click)="closeTopLevelNav()"
-					routerLink="{{ element.routerLink }}"
 					[ngClass]="{
 						'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
 							router.url === element.routerLink,
 						'dark:hover:tw-bg-background-disabled-button':
 							router.url !== element.routerLink
 					}"
-					class="tw-py-8">
-					<div class="tw-flex tw-flex-row tw-items-center">
+					class="tw-py-6">
+					<a
+						class="tw-flex tw-flex-row tw-items-center"
+						routerLink="{{ element.routerLink }}">
 						<div class="tw-pr-2">
 							<mat-icon
 								matListItemIcon
@@ -91,7 +92,7 @@
 						<div>
 							{{ element.label }}
 						</div>
-					</div>
+					</a>
 				</mat-list-item>
 
 				<!-- If the element has children and dropdown is open -->
@@ -99,7 +100,7 @@
 					class="tw-py-0"
 					*ngIf="element.children && element.isDropdownOpen">
 					<mat-divider></mat-divider>
-					<div class="tw-pl-8">
+					<div class="tw-pl-4">
 						<ng-container
 							*ngTemplateOutlet="
 								recursiveMenu;
