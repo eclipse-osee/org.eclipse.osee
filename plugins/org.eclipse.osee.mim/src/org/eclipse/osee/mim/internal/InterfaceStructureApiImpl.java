@@ -549,7 +549,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
       // Create elements
       List<InterfaceStructureElementToken> elements = new LinkedList<>();
-      PlatformTypeToken doubleType = new PlatformTypeToken(0L, "DOUBLE", "double", "64", "0.0", "604800.00", "seconds");
+      PlatformTypeToken doubleType = new PlatformTypeToken(0L, "DOUBLE", "double", "64", "0.0", "604800.0", "seconds");
       PlatformTypeToken messageNumberType =
          new PlatformTypeToken(0L, "UINTEGER", "unsigned integer", "32", messageNumber, messageNumber, "");
 
