@@ -87,6 +87,7 @@ public abstract class XWidget {
    private Collection<? extends Object> values = new ArrayList<Object>();
    private List<ConditionalRule> conditions = new ArrayList<>();
    private ArtifactId teamId = ArtifactId.SENTINEL;
+   private List<WidgetHint> widgetHints = new ArrayList<>();
 
    public XWidget(String label) {
       this.label = label;
@@ -553,6 +554,18 @@ public abstract class XWidget {
 
    public void setTeamId(ArtifactId teamId) {
       this.teamId = teamId;
+   }
+
+   public List<WidgetHint> getWidgetHints() {
+      return widgetHints;
+   }
+
+   public void setWidgetHints(List<WidgetHint> widgetHints) {
+      this.widgetHints = widgetHints;
+   }
+
+   public boolean hasWidgetHint(WidgetHint widgetHint) {
+      return this.widgetHints.contains(widgetHint);
    }
 
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.WidgetHint;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkWfdForEnum;
@@ -390,6 +391,13 @@ public class XWidgetBuilder {
 
    public XWidgetBuilder andTeamId(ArtifactId id) {
       currItem.setTeamId(id);
+      return this;
+   }
+
+   public XWidgetBuilder andWidgetHint(WidgetHint... widgetHints) {
+      for (WidgetHint hint : widgetHints) {
+         currItem.addWidgetHint(hint);
+      }
       return this;
    }
 

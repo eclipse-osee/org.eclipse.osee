@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
+import org.eclipse.osee.framework.ui.skynet.widgets.WidgetHint;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.checkbox.CheckBoxStateTreeLabelProvider;
@@ -83,7 +84,7 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean handleSelection() {
       try {
-         AiLabelProvider labelProvider = new AiLabelProvider(null);
+         AiLabelProvider labelProvider = new AiLabelProvider(null, hasWidgetHint(WidgetHint.EnableAll));
          CheckBoxStateFilteredTreeDialog<IAtsActionableItem> dialog =
             new CheckBoxStateFilteredTreeDialog<IAtsActionableItem>("Select Actionable Item(s)",
                "Select Actionable Item(s)", new ActionableItemTreeContentProvider(Active.Both), labelProvider,
@@ -101,7 +102,9 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
          if (result == 0) {
             selectedAis.clear();
             for (IAtsActionableItem ai : dialog.getChecked()) {
-               if (ai.isActive() && ai.isActionable()) {
+               if (ai.isActive() && hasWidgetHint(WidgetHint.EnableAll)) {
+                  selectedAis.add(ai);
+               } else if (ai.isActive() && ai.isActionable()) {
                   selectedAis.add(ai);
                }
             }
@@ -120,15 +123,24 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
    }
 
    public static class AiLabelProvider extends CheckBoxStateTreeLabelProvider {
+      private final boolean enableAll;
+
       public AiLabelProvider(ICheckBoxStateTreeViewer treeViewer) {
+         this(treeViewer, false);
+      }
+
+      public AiLabelProvider(ICheckBoxStateTreeViewer treeViewer, boolean enableAll) {
          super(treeViewer);
+         this.enableAll = enableAll;
       }
 
       @Override
       protected boolean isEnabled(Object element) {
+         if (enableAll) {
+            return true;
+         }
          return ((IAtsActionableItem) element).isActive() && ((IAtsActionableItem) element).isActionable();
       }
-
    }
 
    @Override
