@@ -198,15 +198,18 @@ public final class HealthEndpointImpl {
    @GET
    @Path("prometheus")
    @Produces(MediaType.TEXT_PLAIN)
-   public String getPrometheusUrl() {
-      String uri = applicationServerManager.getServerUri().toString();
-      // Remove port number from end of uri
-      int endIndex = uri.indexOf(":", "http://".length());
-      // Return string with prometheus port
-      String url;
-      url = uri.substring(0, endIndex) + ":" + System.getProperty(
-         "prometheus.http.port") + "/graph?g0.expr=jvm_memory_bytes_used{area%3D\"heap\"}&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1h";
-      return url;
+   public String getPrometheusUrl(@QueryParam("url") String url) {
+      if (url != null) {
+         if (url.length() > 0) {
+            OseeInfo.setValue(getJdbcClient(), "osee.health.prometheus.url", url);
+         }
+      }
+      try {
+         String updatedUrl = OseeInfo.getValue(getJdbcClient(), "osee.health.prometheus.url");
+         return updatedUrl + "/graph?g0.expr=jvm_memory_bytes_used{area%3D%22heap%22}&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1h";
+      } catch (Exception e) {
+         return "Error: key [osee.health.prometheus.url] is NOT SET in table [osee_info]";
+      }
    }
 
    @GET
