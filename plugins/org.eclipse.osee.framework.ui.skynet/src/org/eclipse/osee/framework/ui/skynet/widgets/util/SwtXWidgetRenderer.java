@@ -251,6 +251,7 @@ public class SwtXWidgetRenderer {
          if (rendererItem.getObject() != null) {
             xWidget.setObject(rendererItem.getObject());
          }
+         xWidget.getWidgetHints().addAll(rendererItem.getWidgetHints());
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);

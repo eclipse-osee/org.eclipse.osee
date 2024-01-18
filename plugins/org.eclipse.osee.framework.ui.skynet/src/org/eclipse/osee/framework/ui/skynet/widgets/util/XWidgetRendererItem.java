@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.WidgetHint;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -72,6 +73,7 @@ public class XWidgetRendererItem implements Cloneable {
    private List<ConditionalRule> conditions = new ArrayList<>();
    private ArtifactToken enumeratedArt;
    private ArtifactId teamId = ArtifactId.SENTINEL;
+   private List<WidgetHint> widgetHints = new ArrayList<>();
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -430,6 +432,18 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setTeamId(ArtifactId teamId) {
       this.teamId = teamId;
+   }
+
+   public void addWidgetHint(WidgetHint hint) {
+      widgetHints.add(hint);
+   }
+
+   public List<WidgetHint> getWidgetHints() {
+      return widgetHints;
+   }
+
+   public void setWidgetHints(List<WidgetHint> widgetHints) {
+      this.widgetHints = widgetHints;
    }
 
 }
