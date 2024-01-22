@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 public class AtsColumnUtil {
 
+   public static final String COLUMN_NAMESPACE = "ats.column";
+
    private AtsColumnUtil() {
       // Utility class
    }

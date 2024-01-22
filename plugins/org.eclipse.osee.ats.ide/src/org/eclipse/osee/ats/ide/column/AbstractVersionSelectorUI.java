@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
+import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -221,6 +222,11 @@ public abstract class AbstractVersionSelectorUI extends XViewerAtsCoreCodeXColum
                arts.add(art);
             }
          }
+         if (awas.isEmpty()) {
+            AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+               treeColumn.getText());
+            return;
+         }
          if (promptChangeVersionMultiSelect(new ArrayList<TeamWorkFlowArtifact>(awas),
             AtsApiService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             AtsApiService.get().getUserService().isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked)) {
@@ -246,6 +252,8 @@ public abstract class AbstractVersionSelectorUI extends XViewerAtsCoreCodeXColum
                }
             }
             if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+                  treeColumn.getText());
                return false;
             }
             boolean modified = promptChangeVersion((TeamWorkFlowArtifact) useArt,

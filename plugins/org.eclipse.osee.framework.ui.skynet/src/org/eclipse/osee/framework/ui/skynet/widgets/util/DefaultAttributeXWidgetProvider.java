@@ -41,15 +41,15 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    private XWidgetRendererItem createDynamicXWidgetLayout(AttributeTypeToken attributeType, int minOccurrence) {
-      XWidgetRendererItem defaultData = new XWidgetRendererItem(null);
-      defaultData.setName(attributeType.getUnqualifiedName());
-      defaultData.setStoreName(attributeType.getName());
-      defaultData.setToolTip(attributeType.getDescription());
+      XWidgetRendererItem rItem = new XWidgetRendererItem(null);
+      rItem.setName(attributeType.getUnqualifiedName());
+      rItem.setStoreName(attributeType.getName());
+      rItem.setToolTip(attributeType.getDescription());
       if (minOccurrence > 0) {
-         defaultData.getXOptionHandler().add(XOption.REQUIRED);
+         rItem.getXOptionHandler().add(XOption.REQUIRED);
       }
-      defaultData.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
-      return defaultData;
+      rItem.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
+      return rItem;
    }
 
    public static boolean useMultiLineWidget(AttributeTypeToken attributeType) {
@@ -61,19 +61,19 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<>();
 
-      XWidgetRendererItem defaultData = createDynamicXWidgetLayout(attributeType, artType.getMin(attributeType));
-      xWidgetLayoutData.add(defaultData);
+      XWidgetRendererItem rItem = createDynamicXWidgetLayout(attributeType, artType.getMin(attributeType));
+      xWidgetLayoutData.add(rItem);
 
       String xWidgetName;
       try {
          xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(artType, attributeType);
          if (attributeType.getName().equals("Relation Order")) {
-            defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             xWidgetName = XTextDam.WIDGET_ID;
          } else if (useMultiLineWidget(attributeType)) {
             xWidgetName = XTextDam.WIDGET_ID;
-            defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
-            defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            rItem.getXOptionHandler().add(XOption.NOT_EDITABLE);
+            rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          } else if (attributeType.isBranchId()) {
             xWidgetName = XBranchSelectWidget.WIDGET_ID;
          } else if (attributeType.isArtifactId() & artType.getMax(attributeType) == 1) {
@@ -87,12 +87,12 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          builder.append("Unable to determine base type for attribute type");
          builder.append(String.format("[%s]", attributeType));
          builder.append(Lib.exceptionToString(ex));
-         defaultData.setDefaultValue(builder.toString());
+         rItem.setDefaultValue(builder.toString());
       }
 
-      defaultData.setXWidgetName(xWidgetName);
-      defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
-      defaultData.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);
+      rItem.setXWidgetName(xWidgetName);
+      rItem.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+      rItem.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);
 
       return xWidgetLayoutData;
    }

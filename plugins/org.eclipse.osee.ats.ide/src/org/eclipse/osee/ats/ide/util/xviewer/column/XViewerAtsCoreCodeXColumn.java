@@ -13,8 +13,6 @@
 package org.eclipse.osee.ats.ide.util.xviewer.column;
 
 import java.util.Collection;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -23,6 +21,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.column.AtsColumnUtil;
 import org.eclipse.osee.ats.api.column.AtsCoreCodeColumnToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -33,7 +32,7 @@ import org.eclipse.swt.widgets.TreeItem;
  *
  * @author Donald G. Dunne
  */
-public class XViewerAtsCoreCodeXColumn extends XViewerAtsColumn implements IAltLeftClickProvider, IMultiColumnEditProvider, IXViewerValueColumn, IAttributeColumn {
+public class XViewerAtsCoreCodeXColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAttributeColumn {
 
    private final AtsCoreCodeColumnToken colToken;
    private final AtsApi atsApi;
@@ -75,6 +74,14 @@ public class XViewerAtsCoreCodeXColumn extends XViewerAtsColumn implements IAltL
       try {
          if (element instanceof IAtsObject) {
             value = atsApi.getColumnService().getColumnText(colToken.getColumnId(), (IAtsObject) element);
+            if (Strings.isInvalid(value) || value.equals("Unhandled Column")) {
+               if (column instanceof IAttributeColumn) {
+                  AttributeTypeToken attrType = ((IAttributeColumn) column).getAttributeType();
+                  if (attrType.isValid()) {
+                     value = atsApi.getColumnService().getColumnText(attrType.getName(), (IAtsObject) element);
+                  }
+               }
+            }
          }
       } catch (Exception ex) {
          value = LogUtil.getCellExceptionString(ex);
@@ -84,7 +91,7 @@ public class XViewerAtsCoreCodeXColumn extends XViewerAtsColumn implements IAltL
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      if (treeColumn != null && !treeColumn.isDisposed() && treeItem != null && !treeItem.isDisposed() && isMultiColumnEditable()) {
+      if (treeColumn != null && !treeColumn.isDisposed() && treeItem != null && !treeItem.isDisposed()) {
          return AtsColumnUtilIde.handleAltLeftClick(treeColumn.getData(), treeItem.getData(), true);
       }
       return false;
@@ -92,7 +99,9 @@ public class XViewerAtsCoreCodeXColumn extends XViewerAtsColumn implements IAltL
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      AtsColumnUtilIde.handleColumnMultiEdit(treeItems, colToken.getAttrType(), (XViewer) getXViewer());
+      if (treeColumn != null && !treeColumn.isDisposed()) {
+         AtsColumnUtilIde.handleColumnMultiEdit(treeItems, colToken.getAttrType(), (XViewer) getXViewer());
+      }
    }
 
 }

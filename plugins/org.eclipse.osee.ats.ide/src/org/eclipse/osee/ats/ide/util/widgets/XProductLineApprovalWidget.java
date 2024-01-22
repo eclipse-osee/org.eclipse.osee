@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 
 /**
@@ -31,8 +30,7 @@ public class XProductLineApprovalWidget extends XAbstractSignDateAndByButton {
    public static String WIDGET_ID = XProductLineApprovalWidget.class.getSimpleName();
 
    public XProductLineApprovalWidget() {
-      super("PL ARB Approved", "Sign or clear changes", AtsAttributeTypes.ProductLineApprovedDate,
-         AtsAttributeTypes.ProductLineApprovedBy, FrameworkImage.RUN_EXC, true);
+      super(AtsAttributeTypes.ProductLineApprovedBy, AtsAttributeTypes.ProductLineApprovedDate);
    }
 
    @Override

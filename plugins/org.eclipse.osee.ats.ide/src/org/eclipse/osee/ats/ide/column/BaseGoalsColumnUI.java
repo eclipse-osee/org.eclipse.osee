@@ -20,8 +20,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
@@ -50,7 +48,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Donald G. Dunne
  * @author David W Miller
  */
-public abstract class BaseGoalsColumnUI extends BackgroundLoadingPreComputedColumnUI implements IAltLeftClickProvider, IMultiColumnEditProvider {
+public abstract class BaseGoalsColumnUI extends BackgroundLoadingPreComputedColumnUI {
 
    private final WorkItemType goalType = WorkItemType.Goal;
    private final String persistString = "Set Goals";

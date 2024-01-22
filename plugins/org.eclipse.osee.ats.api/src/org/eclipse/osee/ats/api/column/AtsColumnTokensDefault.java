@@ -15,6 +15,8 @@ package org.eclipse.osee.ats.api.column;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault.CoreAttrTokColTokenDefault;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault.CoreCodeColumnTokenDefault;
 import org.eclipse.osee.ats.api.config.ActionRollup;
 import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
@@ -46,7 +48,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public class AtsColumnTokensDefault {
 
-   public static final String WorldXViewerFactory_COLUMN_NAMESPACE = "ats.column";
    private static Map<String, AtsCoreAttrTokColumnToken> idToAttrValCol = new HashMap<>(500);
    private static boolean hintsSet = false;
 
@@ -111,7 +112,7 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault DerivedFromTaskColumn = new CoreCodeColumnTokenDefault("ats.column.derived.from.task", "Derived From Task", 200, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, "Show related task workflows was created from");
    public static CoreCodeColumnTokenDefault DerivedWorkflowColumn = new CoreCodeColumnTokenDefault("ats.column.derived.workflow", "Derived Workflow", 200, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, "Show related Team Workflow, if created");
    public static CoreCodeColumnTokenDefault RelatedToStateColumn = new CoreCodeColumnTokenDefault("ats.column.relatedToState", AtsAttributeTypes.RelatedToState);
-   public static CoreCodeColumnTokenDefault ReviewedByColumn = new CoreCodeColumnTokenDefault(AtsAttributeTypes.ReviewedBy.getName(), AtsAttributeTypes.ReviewedBy);
+   public static CoreCodeColumnTokenDefault ReviewedByAndDateColumn = new CoreCodeColumnTokenDefault(AtsColumnUtil.COLUMN_NAMESPACE + "." + AtsAttributeTypes.ReviewedBy.getId() + "." + AtsAttributeTypes.ReviewedByDate.getId(), "Reviewed By and Date", 60, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, "");
    public static CoreCodeColumnTokenDefault SprintColumn = new CoreCodeColumnTokenDefault("ats.column.sprint", "Sprint", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault SprintOrderColumn = new CoreCodeColumnTokenDefault("ats.column.sprintOrder", "Sprint Order", 45, ColumnType.Integer, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "Order of item within displayed sprint.  Editing this field changes order.");
    public static CoreCodeColumnTokenDefault StateColumn = new CoreCodeColumnTokenDefault("ats.column.state", "State", AtsAttributeTypes.CurrentStateName);

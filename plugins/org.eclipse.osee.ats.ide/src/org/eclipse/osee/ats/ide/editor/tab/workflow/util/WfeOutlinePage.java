@@ -286,6 +286,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
          if (((WidgetDefinition) element).getAttributeType() != null) {
             items.add("Attribute Name: " + ((WidgetDefinition) element).getAttributeType().getName());
          }
+         if (((WidgetDefinition) element).getAttributeType2() != null) {
+            items.add("Attribute2 Name: " + ((WidgetDefinition) element).getAttributeType2().getName());
+         }
          if (Strings.isValid(((WidgetDefinition) element).getDescription())) {
             items.add("Description: " + ((WidgetDefinition) element).getDescription());
          }

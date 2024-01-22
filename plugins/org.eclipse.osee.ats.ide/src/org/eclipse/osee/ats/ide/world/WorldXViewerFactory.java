@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.world;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.api.column.AtsColumnUtil;
 import org.eclipse.osee.ats.api.column.AtsCoreColumn;
 import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.column.model.AtsCoreAttrTokenColumn;
 import org.eclipse.osee.ats.core.column.model.AtsCoreCodeColumn;
 import org.eclipse.osee.ats.ide.agile.AgileFeatureGroupColumnUI;
@@ -86,7 +87,6 @@ import org.eclipse.osee.ats.ide.column.ReviewNumMinorDefectsColumnUI;
 import org.eclipse.osee.ats.ide.column.ReviewReviewerColumnUI;
 import org.eclipse.osee.ats.ide.column.SiblingAtsIdColumnUI;
 import org.eclipse.osee.ats.ide.column.SiblingTeamDefColumnUI;
-import org.eclipse.osee.ats.ide.column.SignByAndDateColumnUI;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.column.TaskRelatedArtifactTypeColumnUI;
 import org.eclipse.osee.ats.ide.column.TitleColumnUI;
@@ -96,6 +96,13 @@ import org.eclipse.osee.ats.ide.column.WorkingBranchArchivedColumnUI;
 import org.eclipse.osee.ats.ide.column.WorkingBranchIdColumnUI;
 import org.eclipse.osee.ats.ide.column.WorkingBranchStateColumnUI;
 import org.eclipse.osee.ats.ide.column.WorkingBranchTypeColumnUI;
+import org.eclipse.osee.ats.ide.column.signby.ApproveRequestedByColumnUI;
+import org.eclipse.osee.ats.ide.column.signby.ApproveRequestedByDateColumnUI;
+import org.eclipse.osee.ats.ide.column.signby.ReviewedByColumnUI;
+import org.eclipse.osee.ats.ide.column.signby.ReviewedByDateColumnUI;
+import org.eclipse.osee.ats.ide.column.signby.SignedByColumnUI;
+import org.eclipse.osee.ats.ide.column.signby.SignedByDateColumnUI;
+import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsAttrTokenXColumn;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
@@ -103,6 +110,7 @@ import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.priority.PriorityColumnUI;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -124,7 +132,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastMo
 public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public GoalArtifact soleGoalArtifact;
-   public static final String COLUMN_NAMESPACE = "ats.column";
+   public static final String COLUMN_NAMESPACE = AtsColumnUtil.COLUMN_NAMESPACE;
    public final static String NAMESPACE = "WorldXViewer";
    protected Map<String, XViewerColumn> loadedColIds;
    protected AtsApi atsApi;
@@ -181,7 +189,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       if (loadedColIds == null) {
          loadedColIds = new HashMap<>();
 
-         // Load IDE columns first as these should override core columns and have IDE/UI implications
+         // Load ATS IDE columns first as these should override core columns and have IDE/UI implications
          for (XViewerColumn xCol : getWorldViewIdeXColumns()) {
             XViewerColumn xColCopy = xCol.copy();
             loadedColIds.put(xCol.getId(), xColCopy);
@@ -191,6 +199,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          if (loadResults.isErrors()) {
             XResultDataUI.report(loadResults, getClass().getSimpleName() + " Load Columns");
          }
+
+         // Register any other IDE columns from other plugins
+         registerPluginColumns();
 
          // Create remainder IDE columns: core columns, provider columns, AtsConfig.views columns
          for (AtsCoreColumn col : atsApi.getColumnService().getColumns()) {
@@ -202,6 +213,25 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                }
             }
          }
+      }
+   }
+
+   // Register any columns from other plugins
+   public void registerPluginColumns() {
+      try {
+         List<IAtsWorldEditorItem> worldItems = AtsWorldEditorItems.getItems();
+         for (IAtsWorldEditorItem item : worldItems) {
+            Collection<IUserGroupArtifactToken> itemGroups = item.getUserGroups();
+            if (AtsApiService.get().userService().isInUserGroup(
+               itemGroups.toArray(new IUserGroupArtifactToken[itemGroups.size()]))) {
+               for (XViewerColumn xCol : item.getXViewerColumns()) {
+                  XViewerColumn xColCopy = xCol.copy();
+                  loadedColIds.put(xCol.getId(), xColCopy);
+               }
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -367,7 +397,13 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          WorkingBranchStateColumnUI.getInstance(),
          WorkingBranchTypeColumnUI.getInstance(),
 
-         SignByAndDateColumnUI.valueOf(AtsAttributeTypes.ReviewedBy, AtsAttributeTypes.ReviewedByDate));
+         // Sign-by columns
+         ApproveRequestedByColumnUI.getInstance(), // Keep
+         ApproveRequestedByDateColumnUI.getInstance(), // Keep
+         SignedByColumnUI.getInstance(), // Keep
+         SignedByDateColumnUI.getInstance(), // Keep
+         ReviewedByColumnUI.getInstance(), // Keep
+         ReviewedByDateColumnUI.getInstance()); // Keep
 
       // @formatter:on
 

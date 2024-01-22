@@ -13,9 +13,12 @@
 
 package org.eclipse.osee.ats.ide.util.xviewer.column;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
+import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
@@ -33,6 +36,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * Eventually, when all ATS columns are converted to value columns, this class should implement IAltLeftClickProvider,
@@ -41,7 +46,7 @@ import org.eclipse.swt.graphics.Image;
  *
  * @author Donald G. Dunne
  */
-public abstract class XViewerAtsColumn extends XViewerColumn {
+public abstract class XViewerAtsColumn extends XViewerColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
 
    private Map<Object, String> elementToForegroundColor;
    private Map<Object, String> elementToBackgroundColor;
@@ -209,6 +214,22 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
 
    public void setInheritParent(Boolean inheritParent) {
       this.inheritParent = inheritParent;
+   }
+
+   @Override
+   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      if (treeColumn != null && !treeColumn.isDisposed() && treeItem != null && !treeItem.isDisposed()) {
+         return AtsColumnUtilIde.handleAltLeftClick(treeColumn.getData(), treeItem.getData(), true);
+      }
+      return false;
+   }
+
+   /**
+    * Override if column does provide multi-edit, else it will popup error dialog
+    */
+   @Override
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      AtsColumnUtilIde.handleColumnMultiEdit(treeColumn, treeItems, (XViewer) getXViewer());
    }
 
 }

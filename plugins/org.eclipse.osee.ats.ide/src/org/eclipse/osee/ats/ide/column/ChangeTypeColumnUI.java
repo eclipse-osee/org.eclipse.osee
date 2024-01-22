@@ -31,8 +31,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
-import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.chgtype.ChangeTypeDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -116,15 +116,9 @@ public class ChangeTypeColumnUI extends XViewerAtsCoreCodeXColumn {
             if (useArt.getArtifactType().getMax(AtsAttributeTypes.ChangeType) != 1) {
                return false;
             }
-            if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                  useArt = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(
-                     useArt).getStoreObject();
-               } else {
-                  return false;
-               }
-            }
             if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+                  treeColumn.getText());
                return false;
             }
             boolean modified = promptChangeType(Arrays.asList((TeamWorkFlowArtifact) useArt));
@@ -171,6 +165,11 @@ public class ChangeTypeColumnUI extends XViewerAtsCoreCodeXColumn {
                awas.add((IAtsTeamWorkflow) art);
             }
          }
+      }
+      if (awas.isEmpty()) {
+         AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+            treeColumn.getText());
+         return;
       }
       promptChangeType(awas);
       ((XViewer) getXViewer()).update(awas.toArray(), null);

@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 public abstract class MiniWorldXViewerFactory extends WorldXViewerFactory {
 
    public GoalArtifact soleGoalArtifact;
-   public static final String COLUMN_NAMESPACE = "ats.column";
 
    public MiniWorldXViewerFactory(String namespace) {
       super(namespace, null);

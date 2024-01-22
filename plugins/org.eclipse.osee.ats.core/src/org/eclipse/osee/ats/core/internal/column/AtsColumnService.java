@@ -81,6 +81,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -356,6 +357,13 @@ public class AtsColumnService implements IAtsColumnService {
    public Collection<AtsCoreColumn> getColumns() {
       ensureLoaded();
       return idToAtsColumn.values();
+   }
+
+   @Override
+   public String getColumnsJson() {
+      ensureLoaded();
+      String json = JsonUtil.toJson(idToAtsColumn.values());
+      return json;
    }
 
    @Override

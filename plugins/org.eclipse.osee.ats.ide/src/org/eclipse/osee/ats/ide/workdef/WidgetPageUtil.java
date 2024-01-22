@@ -175,38 +175,45 @@ public class WidgetPageUtil {
     */
    public static XWidgetRendererItem processWidgetDefinition(WidgetDefinition widgetDef, AbstractWorkflowArtifact sma,
       SwtXWidgetRenderer dynamicXWidgetLayout) {
-      XWidgetRendererItem data = null;
+      XWidgetRendererItem rItem = null;
       try {
-         data = new XWidgetRendererItem(dynamicXWidgetLayout);
-         data.setDefaultValue(widgetDef.getDefaultValue());
-         data.setHeight(widgetDef.getHeight());
+         rItem = new XWidgetRendererItem(dynamicXWidgetLayout);
+         rItem.setDefaultValue(widgetDef.getDefaultValue());
+         rItem.setHeight(widgetDef.getHeight());
          if (widgetDef.getAttributeType() != null) {
-            data.setStoreName(widgetDef.getAttributeType().getName());
-            data.setStoreId(widgetDef.getAttributeType().getId());
+            rItem.setStoreName(widgetDef.getAttributeType().getName());
+            rItem.setStoreId(widgetDef.getAttributeType().getId());
+            rItem.setAttributeType(widgetDef.getAttributeType());
          }
-         data.setRelationTypeSide(widgetDef.getRelationTypeSide());
-         data.setEnumeratedArt(widgetDef.getEnumeratedArt());
-         data.setComputedCharacteristic(widgetDef.getComputedCharacteristic());
-         data.setToolTip(widgetDef.getToolTip());
-         data.setId(widgetDef.getName());
-         data.setXWidgetName(widgetDef.getXWidgetName());
-         data.setArtifact(sma);
-         data.setName(widgetDef.getName());
-         data.setObject(widgetDef);
+         if (widgetDef.getAttributeType2() != null) {
+            rItem.setStoreName(widgetDef.getAttributeType().getName());
+            rItem.setStoreId(widgetDef.getAttributeType().getId());
+            rItem.setAttributeType2(widgetDef.getAttributeType2());
+         }
+         rItem.setRelationTypeSide(widgetDef.getRelationTypeSide());
+         rItem.setOseeImage(widgetDef.getOseeImage());
+         rItem.setEnumeratedArt(widgetDef.getEnumeratedArt());
+         rItem.setComputedCharacteristic(widgetDef.getComputedCharacteristic());
+         rItem.setToolTip(widgetDef.getToolTip());
+         rItem.setId(widgetDef.getName());
+         rItem.setXWidgetName(widgetDef.getXWidgetName());
+         rItem.setArtifact(sma);
+         rItem.setName(widgetDef.getName());
+         rItem.setObject(widgetDef);
          if (widgetDef.is(WidgetOption.MULTI_SELECT)) {
-            data.getXOptionHandler().add(XOption.MULTI_SELECT);
+            rItem.getXOptionHandler().add(XOption.MULTI_SELECT);
          } else if (widgetDef.is(WidgetOption.SINGLE_SELECT)) {
-            data.getXOptionHandler().add(XOption.SINGLE_SELECT);
+            rItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
          }
          if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION)) {
-            data.getXOptionHandler().add(XOption.REQUIRED);
+            rItem.getXOptionHandler().add(XOption.REQUIRED);
          } else if (widgetDef.is(WidgetOption.REQUIRED_FOR_COMPLETION)) {
-            data.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
+            rItem.getXOptionHandler().add(XOption.REQUIRED_FOR_COMPLETION);
          }
          if (widgetDef.is(WidgetOption.FILL_HORIZONTALLY)) {
-            data.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+            rItem.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
          } else if (widgetDef.is(WidgetOption.FILL_VERTICALLY)) {
-            data.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            rItem.getXOptionHandler().add(XOption.FILL_VERTICALLY);
          }
          for (WidgetOption widgetOpt : widgetDef.getOptions().getXOptions()) {
             XOption option = null;
@@ -216,27 +223,27 @@ public class WidgetPageUtil {
                // do nothing
             }
             if (option != null) {
-               data.getXOptionHandler().add(option);
+               rItem.getXOptionHandler().add(option);
             }
          }
          for (Entry<String, Object> pair : widgetDef.getParameters().entrySet()) {
-            data.getParameters().put(pair.getKey(), pair.getValue());
+            rItem.getParameters().put(pair.getKey(), pair.getValue());
          }
-         data.setConditions(widgetDef.getConditions());
-         dynamicXWidgetLayout.addWorkLayoutData(data);
+         rItem.setConditions(widgetDef.getConditions());
+         dynamicXWidgetLayout.addWorkLayoutData(rItem);
       } catch (Exception ex) {
-         data = new XWidgetRendererItem(dynamicXWidgetLayout);
-         data.setId(Lib.generateArtifactIdAsInt().toString());
-         data.setXWidgetName("XLabel");
-         data.setName("Error: " + widgetDef.getName() + " (double-click to view error)");
-         data.setToolTip("Double-click to see error.");
-         data.setDoubleClickText(Lib.exceptionToString(ex));
+         rItem = new XWidgetRendererItem(dynamicXWidgetLayout);
+         rItem.setId(Lib.generateArtifactIdAsInt().toString());
+         rItem.setXWidgetName("XLabel");
+         rItem.setName("Error: " + widgetDef.getName() + " (double-click to view error)");
+         rItem.setToolTip("Double-click to see error.");
+         rItem.setDoubleClickText(Lib.exceptionToString(ex));
          OseeLog.logf(StateXWidgetPage.class, Level.SEVERE, ex, "Exception processing widget [%s]",
             widgetDef.getName());
-         data.setObject(widgetDef);
-         dynamicXWidgetLayout.addWorkLayoutData(data);
+         rItem.setObject(widgetDef);
+         dynamicXWidgetLayout.addWorkLayoutData(rItem);
       }
-      return data;
+      return rItem;
    }
 
 }

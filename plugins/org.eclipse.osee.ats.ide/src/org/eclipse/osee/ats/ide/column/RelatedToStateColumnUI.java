@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.StateListDialog;
+import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -152,6 +153,9 @@ public class RelatedToStateColumnUI extends XViewerAtsCoreCodeXColumn {
                xViewer.update(taskArt, null);
                return true;
             }
+         } else {
+            AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+               treeColumn.getText());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -171,7 +175,8 @@ public class RelatedToStateColumnUI extends XViewerAtsCoreCodeXColumn {
          }
       }
       if (tasks.isEmpty()) {
-         AWorkbench.popup("Invalid selection for setting related-to-state.");
+         AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+            treeColumn.getText());
          return;
       }
       promptChangeRelatedToState(tasks);

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.ComputedCharacteristic;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class WidgetDefinition extends LayoutItem {
 
    private final AttributeTypeToken attributeType;
+   private AttributeTypeToken attributeType2;
    private final ComputedCharacteristicToken<?> computedCharacteristic;
    private final Map<String, Object> parameters = new HashMap<String, Object>();
    private final RelationTypeSide relationTypeSide;
@@ -48,6 +50,7 @@ public class WidgetDefinition extends LayoutItem {
    private Double min;
    private Double max;
    private ArtifactToken enumeratedArt;
+   private OseeImage oseeImage;
 
    public WidgetDefinition(String name) {
       this(name, "");
@@ -216,6 +219,22 @@ public class WidgetDefinition extends LayoutItem {
 
    public void setEnumeratedArt(ArtifactToken enumeratedArt) {
       this.enumeratedArt = enumeratedArt;
+   }
+
+   public OseeImage getOseeImage() {
+      return oseeImage;
+   }
+
+   public void setOseeImage(OseeImage oseeImage) {
+      this.oseeImage = oseeImage;
+   }
+
+   public AttributeTypeToken getAttributeType2() {
+      return attributeType2;
+   }
+
+   public void setAttributeType2(AttributeTypeToken attributeType2) {
+      this.attributeType2 = attributeType2;
    }
 
 }

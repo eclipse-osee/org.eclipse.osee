@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.PromptChangeUtil;
@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -38,25 +39,35 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class AtsColumnUtilIde {
 
+   public static final String INVALID_SELECTION = "Invalid Selection";
+
+   public static final String INVALID_ATTR_TYPE = "Invalid Attribute [%s]";
+   public static final String COLUMN_NOT_EDITABLE = "Column [%s] is not editable";
+   public static final String ATTRIBUTE_NOT_EDITABLE = "Attribute [%s] is not editable";
+   public static final String INVALID_COLUMN_FOR_SELECTED = "Column [%s] is not valid for selected";
+   public static final String INAVLID_ATTR_FOR_SELECTED = "Attribute [%s] is not valid for selected";
+
    public static boolean handleAltLeftClick(Object columnData, Object item, boolean persist) {
       try {
          if (columnData instanceof IAttributeColumn) {
             IAttributeColumn attrColumn = (IAttributeColumn) columnData;
-            if (attrColumn.getAttributeType().isInvalid()) {
+            AttributeTypeToken attrType = attrColumn.getAttributeType();
+            if (attrType.isInvalid()) {
+               AWorkbench.popup(INVALID_SELECTION, COLUMN_NOT_EDITABLE, attrColumn.getName());
+               return false;
+            }
+            if (!attrType.getDisplayHints().contains(AtsDisplayHint.Edit)) {
+               AWorkbench.popup(INVALID_SELECTION, ATTRIBUTE_NOT_EDITABLE, attrType.getUnqualifiedName());
                return false;
             }
             if (item instanceof Artifact) {
                Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(item);
+               if (!useArt.isAttributeTypeValid(attrType)) {
+                  AWorkbench.popup(INVALID_SELECTION, INAVLID_ATTR_FOR_SELECTED, attrType.getUnqualifiedName());
+                  return false;
+               }
                if (useArt.getArtifactType().getMax(attrColumn.getAttributeType()) != 1) {
                   if (useArt.getAttributeCount(attrColumn.getAttributeType()) > 1) {
-                     return false;
-                  }
-               }
-               if (useArt.isOfType(AtsArtifactTypes.Action)) {
-                  if (AtsApiService.get().getWorkItemService().getTeams(useArt).size() == 1) {
-                     useArt = (AbstractWorkflowArtifact) AtsApiService.get().getWorkItemService().getFirstTeam(
-                        useArt).getStoreObject();
-                  } else {
                      return false;
                   }
                }
@@ -71,6 +82,12 @@ public class AtsColumnUtilIde {
                }
             }
          }
+         if (columnData instanceof XViewerColumn) {
+            XViewerColumn column = (XViewerColumn) columnData;
+            AWorkbench.popup(INVALID_SELECTION, COLUMN_NOT_EDITABLE, column.getName());
+         }
+         return false;
+
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -78,28 +95,38 @@ public class AtsColumnUtilIde {
       return false;
    }
 
+   public static void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, XViewer xViewer) {
+      AWorkbench.popup(INVALID_SELECTION, COLUMN_NOT_EDITABLE, treeColumn.getText());
+      return;
+   }
+
    public static void handleColumnMultiEdit(Collection<TreeItem> treeItems, AttributeTypeToken attrType,
       XViewer xViewer) {
-      if (attrType.isValid()) {
-         Set<AbstractWorkflowArtifact> awas = new LinkedHashSet<>();
-         for (TreeItem item : treeItems) {
-            Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
-            try {
-               if (art instanceof AbstractWorkflowArtifact && art.isAttributeTypeValid(attrType)) {
-                  awas.add((AbstractWorkflowArtifact) art);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+      if (attrType.isInvalid()) {
+         AWorkbench.popup(INVALID_SELECTION, INVALID_ATTR_TYPE, attrType.getUnqualifiedName());
+         return;
+      }
+      if (!attrType.getDisplayHints().contains(AtsDisplayHint.Edit)) {
+         AWorkbench.popup(INVALID_SELECTION, ATTRIBUTE_NOT_EDITABLE, attrType.getUnqualifiedName());
+         return;
+      }
+      Set<AbstractWorkflowArtifact> awas = new LinkedHashSet<>();
+      for (TreeItem item : treeItems) {
+         Artifact art = AtsApiService.get().getQueryServiceIde().getArtifact(item);
+         try {
+            if (art instanceof AbstractWorkflowArtifact && art.isAttributeTypeValid(attrType)) {
+               awas.add((AbstractWorkflowArtifact) art);
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         if (awas.isEmpty()) {
-            AWorkbench.popup("Invalid Selection",
-               String.format("No selected items valid for attribute [%s] editing", attrType));
-            return;
-         }
-         if (PromptChangeUtil.promptChangeAttribute(awas, attrType, true)) {
-            xViewer.update(awas.toArray(), null);
-         }
+      }
+      if (awas.isEmpty()) {
+         AWorkbench.popup(INVALID_SELECTION, INAVLID_ATTR_FOR_SELECTED, attrType.getUnqualifiedName());
+         return;
+      }
+      if (PromptChangeUtil.promptChangeAttribute(awas, attrType, true)) {
+         xViewer.update(awas.toArray(), null);
       }
    }
 
