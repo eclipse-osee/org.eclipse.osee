@@ -18,26 +18,22 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Map;
-import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.Asserts;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
-import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
-import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -53,16 +49,7 @@ public class PurgeTransactionTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private static final String[] TABLES = new String[] {"osee_tx_details", "osee_txs"};
-
    private Collection<Artifact> softArts;
-   private final TransactionEndpoint txEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
-
-   @Before
-   @After
-   public void cleanup() {
-      Response res = txEndpoint.purgeUnusedBackingDataAndTransactions();
-      res.close();
-   }
 
    @Test
    public void testPurgeTransaction() throws Exception {
@@ -106,7 +93,7 @@ public class PurgeTransactionTest {
    }
 
    private int getCurrentRows(TransactionId createTxId) {
-      final String query = "select count(*) from osee_txs where transaction_id=? and tx_current=1";
-      return ConnectionHandler.getJdbcClient().fetch(-1, query, createTxId);
+      final String query = "select count(*) from osee_txs where branch_id=? and transaction_id=? and tx_current=1";
+      return ConnectionHandler.getJdbcClient().fetch(-1, query, CoreBranches.COMMON.getIdString(), createTxId);
    }
 }
