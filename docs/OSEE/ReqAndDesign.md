@@ -248,8 +248,8 @@ showing history of a given row
   - Feature - decomposed item of product or configuration
       - is an Applicability_Id
       - represented as unique NAME, ID
-      - can be a single Feature or some mathmatical combination of
-        Features. eg: IDM, ARC210, IDM & ARC210
+      - can be a single Feature or some mathematical combination of
+        Features. eg: ROBOT_ARM_LIGHT, ROBOT_SPEAKER, ROBOT_ARM_LIGHT & ROBOT_SPEAKER
   - Variant - combination of Features that make up a version of a
     product
       - is an Applicability_Id
