@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsAttributeEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkTypeEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ConvertWorkDefinitionToAttributes;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraEndpointImpl;
@@ -144,6 +145,7 @@ public class AtsApplication extends Application {
       // NOTE: @Consumes(MediaType.APPLICATION_JSON) doesn't work with GET, must be PUT
       singletons.add(new AtsActionEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AtsWorldEndpointImpl(atsApiServer));
+      singletons.add(new AtsWorkTypeEndpointImpl());
       singletons.add(new AtsHealthEndpointImpl(orcsApi, atsApiServer, jdbcService));
       singletons.add(new AtsWorkDefEndpointImpl(atsApiServer, orcsApi));
       singletons.add(new AgileEndpointImpl(atsApiServer, registry, jdbcService, orcsApi));
