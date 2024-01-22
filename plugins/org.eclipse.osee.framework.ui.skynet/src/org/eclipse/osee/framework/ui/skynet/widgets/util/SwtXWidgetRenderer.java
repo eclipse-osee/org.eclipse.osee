@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeType2Widget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.LabelAfterWidget;
@@ -126,43 +127,44 @@ public class SwtXWidgetRenderer {
       return outComp;
    }
 
-   protected XWidget setupXWidget(XWidgetRendererItem xWidgetRenderItem, boolean isEditable) {
-      XWidget xWidget = xWidgetRenderItem.getXWidget();
+   protected XWidget setupXWidget(XWidgetRendererItem rItem, boolean isEditable) {
+      XWidget xWidget = rItem.getXWidget();
       xWidgets.add(xWidget);
 
-      if (Strings.isValid(xWidgetRenderItem.getName())) {
-         setName(xWidget, xWidgetRenderItem.getName());
+      if (Strings.isValid(rItem.getName())) {
+         setName(xWidget, rItem.getName());
       } else if (Strings.isValid(xWidget.getLabel())) {
          setName(xWidget, xWidget.getLabel());
       }
 
-      if (Strings.isValid(xWidgetRenderItem.getToolTip())) {
-         xWidget.setToolTip(xWidgetRenderItem.getToolTip());
+      if (Strings.isValid(rItem.getToolTip())) {
+         xWidget.setToolTip(rItem.getToolTip());
       }
 
-      xWidget.setRequiredEntry(xWidgetRenderItem.isRequired());
-      xWidget.setEditable(xWidgetRenderItem.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
-      xWidget.setNoSelect(xWidgetRenderItem.getXOptionHandler().contains(XOption.NO_SELECT));
-      xWidget.setSingleSelect(xWidgetRenderItem.getXOptionHandler().contains(XOption.SINGLE_SELECT));
-      xWidget.setMultiSelect(xWidgetRenderItem.getXOptionHandler().contains(XOption.MULTI_SELECT));
-      xWidget.setAutoSave(xWidgetRenderItem.getXOptionHandler().contains(XOption.AUTO_SAVE));
-      xWidget.setFillHorizontally(xWidgetRenderItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
-      xWidget.setValidateDate(xWidgetRenderItem.getXOptionHandler().contains(XOption.VALIDATE_DATE));
-      xWidget.setFillVertically(xWidgetRenderItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
+      xWidget.setRequiredEntry(rItem.isRequired());
+      xWidget.setEditable(rItem.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
+      xWidget.setNoSelect(rItem.getXOptionHandler().contains(XOption.NO_SELECT));
+      xWidget.setSingleSelect(rItem.getXOptionHandler().contains(XOption.SINGLE_SELECT));
+      xWidget.setMultiSelect(rItem.getXOptionHandler().contains(XOption.MULTI_SELECT));
+      xWidget.setAutoSave(rItem.getXOptionHandler().contains(XOption.AUTO_SAVE));
+      xWidget.setFillHorizontally(rItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY));
+      xWidget.setValidateDate(rItem.getXOptionHandler().contains(XOption.VALIDATE_DATE));
+      xWidget.setFillVertically(rItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY));
       if (xWidget instanceof LabelAfterWidget) {
-         ((LabelAfterWidget) xWidget).setLabelAfter(
-            xWidgetRenderItem.getXOptionHandler().contains(XOption.LABEL_AFTER));
+         ((LabelAfterWidget) xWidget).setLabelAfter(rItem.getXOptionHandler().contains(XOption.LABEL_AFTER));
       }
-      if (xWidgetRenderItem.getDefaultValueObj() != null) {
-         xWidget.setDefaultValueObj(xWidgetRenderItem.getDefaultValueObj());
+      if (rItem.getDefaultValueObj() != null) {
+         xWidget.setDefaultValueObj(rItem.getDefaultValueObj());
       }
-      xWidget.setValueProvider(xWidgetRenderItem.getValueProvider());
+      xWidget.setValueProvider(rItem.getValueProvider());
 
-      xWidget.setArtifactType(xWidgetRenderItem.getArtifactType());
-      xWidget.setAttributeType(xWidgetRenderItem.getAttributeType());
-      xWidget.setTeamId(xWidgetRenderItem.getTeamId());
-      xWidget.setValues(xWidgetRenderItem.getValues());
-      xWidget.setConditions(xWidgetRenderItem.getConditions());
+      xWidget.setArtifactType(rItem.getArtifactType());
+      xWidget.setAttributeType(rItem.getAttributeType());
+      xWidget.setAttributeType2(rItem.getAttributeType2());
+      xWidget.setOseeImage(rItem.getOseeImage());
+      xWidget.setTeamId(rItem.getTeamId());
+      xWidget.setValues(rItem.getValues());
+      xWidget.setConditions(rItem.getConditions());
 
       return xWidget;
    }
@@ -194,20 +196,20 @@ public class SwtXWidgetRenderer {
       Group groupComp = null;
       // Create Attributes
       Set<XWidgetRendererItem> layoutDatas = getLayoutDatas();
-      for (XWidgetRendererItem rendererItem : layoutDatas) {
+      for (XWidgetRendererItem rItem : layoutDatas) {
          Composite currentComp = null;
 
          // first, check if this one is a group, if so, we set the group up and are done with this loop iteration
 
-         int i = rendererItem.getBeginGroupComposite();
+         int i = rItem.getBeginGroupComposite();
          if (i > 0) {
             inGroupComposite = true;
-            groupComp = buildGroupComposite(topLevelComp, rendererItem.getName(), i, toolkit);
+            groupComp = buildGroupComposite(topLevelComp, rItem.getName(), i, toolkit);
             continue;
          }
          if (inGroupComposite) {
             currentComp = groupComp;
-            if (rendererItem.isEndGroupComposite()) {
+            if (rItem.isEndGroupComposite()) {
                inGroupComposite = false;
                currentComp = topLevelComp;
                // No XWidget associated, so go to next one
@@ -221,12 +223,12 @@ public class SwtXWidgetRenderer {
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
          currentComp.setLayoutData(gd);
 
-         if (rendererItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+         if (rItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
             gd.grabExcessVerticalSpace = true;
          }
 
-         int columns = rendererItem.getBeginComposite();
-         boolean border = rendererItem.isBorder();
+         int columns = rItem.getBeginComposite();
+         boolean border = rItem.isBorder();
          if (columns > 0) {
             inChildComposite = true;
             childComp = buildChildComposite(currentComp, columns, toolkit, border);
@@ -234,10 +236,10 @@ public class SwtXWidgetRenderer {
 
          if (inChildComposite) {
             currentComp = childComp;
-            if (rendererItem.isEndComposite()) {
+            if (rItem.isEndComposite()) {
                inChildComposite = false;
             }
-         } else if (rendererItem.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
+         } else if (rItem.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
             currentComp = createComposite(topLevelComp, toolkit);
             currentComp.setLayout(ALayout.getZeroMarginLayout(2, false));
             currentComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -246,49 +248,49 @@ public class SwtXWidgetRenderer {
             }
          }
 
-         XWidget xWidget = setupXWidget(rendererItem, isEditable);
-         xWidget.setId(rendererItem.getId());
-         if (rendererItem.getObject() != null) {
-            xWidget.setObject(rendererItem.getObject());
+         XWidget xWidget = setupXWidget(rItem, isEditable);
+         xWidget.setId(rItem.getId());
+         if (rItem.getObject() != null) {
+            xWidget.setObject(rItem.getObject());
          }
-         xWidget.getWidgetHints().addAll(rendererItem.getWidgetHints());
+         xWidget.getWidgetHints().addAll(rItem.getWidgetHints());
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
          }
 
-         setupArtifactInfo(artifact, rendererItem, xWidget);
+         setupArtifactInfo(artifact, rItem, xWidget);
 
          if (xWidget instanceof XText) {
             XText xText = (XText) xWidget;
-            if (rendererItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
+            if (rItem.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
                xText.setFillHorizontally(true);
             }
-            if (rendererItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+            if (rItem.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
                xText.setFillVertically(true);
             }
-            if (rendererItem.isHeightSet()) {
-               xText.setHeight(rendererItem.getHeight());
+            if (rItem.isHeightSet()) {
+               xText.setHeight(rItem.getHeight());
             }
             xText.setDynamicallyCreated(true);
          }
 
          xWidget.createWidgets(managedForm, currentComp, 2);
-         setAttrToolTip(xWidget, rendererItem);
+         setAttrToolTip(xWidget, rItem);
 
          if (xModListener != null) {
             xWidget.addXModifiedListener(xModListener);
          }
          xWidget.addXModifiedListener(refreshRequiredModListener);
 
-         if (Strings.isValid(rendererItem.getDoubleClickText())) {
+         if (Strings.isValid(rItem.getDoubleClickText())) {
             if (Widgets.isAccessible(xWidget.getLabelWidget())) {
                xWidget.getLabelWidget().addMouseListener(new MouseAdapter() {
                   @Override
                   public void mouseDoubleClick(MouseEvent e) {
                      super.mouseDoubleClick(e);
                      ResultsEditor.open("Error", "Error: " + xWidget.getLabel(),
-                        AHTML.simplePage(rendererItem.getDoubleClickText()));
+                        AHTML.simplePage(rItem.getDoubleClickText()));
                   }
                });
             }
@@ -296,7 +298,7 @@ public class SwtXWidgetRenderer {
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreated(xWidget, toolkit, artifact, this, xModListener, isEditable);
-            dynamicWidgetLayoutListener.createXWidgetLayoutData(rendererItem, xWidget, toolkit, artifact, xModListener,
+            dynamicWidgetLayoutListener.createXWidgetLayoutData(rItem, xWidget, toolkit, artifact, xModListener,
                isEditable);
          }
       }
@@ -360,17 +362,17 @@ public class SwtXWidgetRenderer {
       }
    }
 
-   private void setupArtifactInfo(Artifact artifact, XWidgetRendererItem xWidgetLayoutData, XWidget xWidget) {
+   private void setupArtifactInfo(Artifact artifact, XWidgetRendererItem item, XWidget xWidget) {
       if (artifact == null) {
          return;
       }
       if (xWidget instanceof AttributeWidget || xWidget instanceof AttributeTypeWidget) {
          AttributeTypeToken attributeType = null;
-         if (xWidgetLayoutData.getStoreId() > 0) {
-            attributeType = AttributeTypeManager.getAttributeType(xWidgetLayoutData.getStoreId());
+         if (item.getStoreId() > 0) {
+            attributeType = AttributeTypeManager.getAttributeType(item.getStoreId());
          }
-         if (attributeType == null && Strings.isValid(xWidgetLayoutData.getStoreName())) {
-            attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+         if (attributeType == null && Strings.isValid(item.getStoreName())) {
+            attributeType = AttributeTypeManager.getType(item.getStoreName());
          }
          try {
             if (xWidget instanceof AttributeWidget) {
@@ -385,6 +387,24 @@ public class SwtXWidgetRenderer {
             if (xWidget instanceof AttributeTypeWidget) {
                if (attributeType != null) {
                   ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+      if (xWidget instanceof AttributeType2Widget) {
+         AttributeTypeToken attributeType2 = null;
+         if (item.getStoreId2() > 0) {
+            attributeType2 = AttributeTypeManager.getAttributeType(item.getStoreId2());
+         }
+         if (attributeType2 == null && Strings.isValid(item.getStoreName2())) {
+            attributeType2 = AttributeTypeManager.getType(item.getStoreName2());
+         }
+         try {
+            if (xWidget instanceof AttributeType2Widget) {
+               if (attributeType2 != null) {
+                  ((AttributeType2Widget) xWidget).setAttributeType2(attributeType2);
                }
             }
          } catch (Exception ex) {

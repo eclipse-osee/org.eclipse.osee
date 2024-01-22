@@ -44,9 +44,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Attrib
  */
 public abstract class SkynetXViewerFactory extends XViewerFactory {
 
-   private IOseeTreeReportProvider reportProvider;
-   private final List<XViewerColumn> attrColumns = new ArrayList<>();
-   private IXViewerCustomizations xViewerCustomizations;
+   protected IOseeTreeReportProvider reportProvider;
+   protected final List<XViewerColumn> attrColumns = new ArrayList<>();
+   protected IXViewerCustomizations xViewerCustomizations;
 
    public SkynetXViewerFactory(String namespace, IOseeTreeReportProvider reportProvider) {
       super(namespace);
@@ -68,7 +68,8 @@ public abstract class SkynetXViewerFactory extends XViewerFactory {
       registerAllAttributeColumnsForArtifacts(artifacts, show, false);
    }
 
-   public void registerAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts, boolean show, boolean multiColumnEditable) {
+   public void registerAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts, boolean show,
+      boolean multiColumnEditable) {
       try {
          for (XViewerColumn xCol : SkynetXViewerFactory.getAllAttributeColumnsForArtifacts(artifacts)) {
             xCol.setShow(show);

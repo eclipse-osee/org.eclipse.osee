@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.column;
+package org.eclipse.osee.ats.ide.column.signby;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +35,9 @@ import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XReviewedWidget;
+import org.eclipse.osee.ats.ide.util.widgets.XSignbyWidget;
+import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
-import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -52,31 +54,24 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
+ * Generic column to handle all the sign by and date columns (eg: Reviewed By and Reviewed Date)
+ *
  * @author Donald G. Dunne
  */
-public class SignByAndDateColumnUI extends XViewerAtsCoreCodeXColumn {
+public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXColumn {
 
-   private final AttributeTypeToken dateAttrType;
-   private final AttributeTypeToken byAttrType;
+   protected final AttributeTypeToken dateAttrType;
+   protected final AttributeTypeToken byAttrType;
+   private final AttributeTypeToken attrType1;
 
-   public SignByAndDateColumnUI(AttributeTypeToken byAttrType, AttributeTypeToken dateAttrType) {
-      super(new AtsCoreCodeColumnToken(
-         WorldXViewerFactory.COLUMN_NAMESPACE + "." + byAttrType.getUnqualifiedName() + " and Date",
-         byAttrType.getUnqualifiedName() + " and Date", 40, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes,
-         ""), AtsApiService.get());
-      this.dateAttrType = dateAttrType;
-      this.byAttrType = byAttrType;
-   }
-
-   /**
-    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
-    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
-    */
-   @Override
-   public SignByAndDateColumnUI copy() {
-      SignByAndDateColumnUI newXCol = new SignByAndDateColumnUI(byAttrType, dateAttrType);
-      super.copy(this, newXCol);
-      return newXCol;
+   public AbstractSignByAndDateColumnUI(AttributeTypeToken attrType1, AttributeTypeToken attrType2) {
+      super(
+         new AtsCoreCodeColumnToken(attrType1.getName(), attrType2.getUnqualifiedName(), 40,
+            (attrType1.isDate() ? ColumnType.Date : ColumnType.String), ColumnAlign.Left, Show.No, MultiEdit.Yes, ""),
+         AtsApiService.get());
+      this.attrType1 = attrType1;
+      this.dateAttrType = attrType1.isDate() ? attrType1 : attrType2;
+      this.byAttrType = attrType1.isDate() ? attrType2 : attrType1;
    }
 
    @Override
@@ -84,15 +79,20 @@ public class SignByAndDateColumnUI extends XViewerAtsCoreCodeXColumn {
       try {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
+            // TBD How handle this
             //            XResultData rd = XReviewedWidget.checkReviewedBy(useArt);
             //            if (rd.isErrors()) {
             //               return false;
             //            }
             if (!(useArt instanceof IAtsWorkItem)) {
+               AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+                  treeColumn.getText());
                return false;
             }
             IAtsWorkItem workItem = (IAtsWorkItem) useArt;
-            XReviewedWidget widget = new XReviewedWidget();
+            XSignbyWidget widget = new XSignbyWidget();
+            widget.setAttributeType(byAttrType);
+            widget.setAttributeType2(dateAttrType);
             widget.setArtifact((Artifact) workItem.getStoreObject());
             widget.handleSelection();
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
@@ -155,7 +155,7 @@ public class SignByAndDateColumnUI extends XViewerAtsCoreCodeXColumn {
             return "";
          }
          IAtsWorkItem workItem = (IAtsWorkItem) element;
-         return XAbstractSignDateAndByButton.getText((Artifact) workItem.getStoreObject(), dateAttrType, byAttrType);
+         return XAbstractSignDateAndByButton.getText((Artifact) workItem.getStoreObject(), attrType1);
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
@@ -173,14 +173,15 @@ public class SignByAndDateColumnUI extends XViewerAtsCoreCodeXColumn {
                }
             }
          }
+         if (workItems.isEmpty()) {
+            AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
+               treeColumn.getText());
+            return;
+         }
          promptChange(workItems, byAttrType, dateAttrType, AtsApiService.get());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   public static SignByAndDateColumnUI valueOf(AttributeTypeToken byAttrType, AttributeTypeToken dateAttrType) {
-      return new SignByAndDateColumnUI(byAttrType, dateAttrType);
    }
 
 }

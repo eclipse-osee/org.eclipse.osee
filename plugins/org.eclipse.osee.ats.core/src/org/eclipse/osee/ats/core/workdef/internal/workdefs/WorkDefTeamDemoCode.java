@@ -18,6 +18,7 @@ import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSIT
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
+import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.CreateChangeReportTasksWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.SignbyWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
@@ -84,7 +86,9 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new WidgetDefinition("Manager Approval", "XRequestedHoursApprovalWidget") //
+            new SignbyWidgetDefinition("Manager Approved", AtsAttributeTypes.ApproveRequestedHoursBy,
+               AtsAttributeTypes.ApproveRequestedHoursByDate) //
+                  .andImage(AtsImage.CHECK_CLIPBOARD) //
          );
 
       bld.andState(4, "Implement", StateType.Working) //
@@ -102,8 +106,8 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
             new CompositeLayoutItem(6, //
                new WidgetDefinition(DemoArtifactTypes.LocAffected, "XIntegerDam", WidgetOption.EDITABLE), //
                new WidgetDefinition(DemoArtifactTypes.LocReviewed, "XIntegerDam", WidgetOption.EDITABLE) //
-              // new WidgetDefinition(DemoArtifactTypes.LocRemaining, "XComputedCharacteristicWidget",
-          //        WidgetOption.NOT_EDITABLE, WidgetOption.NO_SELECT) //
+            // new WidgetDefinition(DemoArtifactTypes.LocRemaining, "XComputedCharacteristicWidget",
+            //        WidgetOption.NOT_EDITABLE, WidgetOption.NO_SELECT) //
             ));
 
       bld.andState(5, "Completed", StateType.Completed) //

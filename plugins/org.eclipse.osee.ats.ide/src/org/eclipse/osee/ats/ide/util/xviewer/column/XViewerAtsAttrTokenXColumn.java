@@ -18,8 +18,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
@@ -53,7 +51,7 @@ import org.eclipse.swt.widgets.TreeItem;
  *
  * @author Donald G. Dunne
  */
-public class XViewerAtsAttrTokenXColumn extends XViewerAtsColumn implements IAltLeftClickProvider, IMultiColumnEditProvider, IXViewerValueColumn, IAttributeColumn {
+public class XViewerAtsAttrTokenXColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAttributeColumn {
 
    String booleanOnTrueShow = null;
    String booleanOnFalseShow = null;
@@ -191,7 +189,7 @@ public class XViewerAtsAttrTokenXColumn extends XViewerAtsColumn implements IAlt
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      if (treeColumn != null && !treeColumn.isDisposed() && treeItem != null && !treeItem.isDisposed() && isMultiColumnEditable()) {
+      if (treeColumn != null && !treeColumn.isDisposed() && treeItem != null && !treeItem.isDisposed()) {
          return AtsColumnUtilIde.handleAltLeftClick(treeColumn.getData(), treeItem.getData(), true);
       }
       return false;
@@ -199,7 +197,9 @@ public class XViewerAtsAttrTokenXColumn extends XViewerAtsColumn implements IAlt
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      AtsColumnUtilIde.handleColumnMultiEdit(treeItems, attributeType, (XViewer) getXViewer());
+      if (treeColumn != null && !treeColumn.isDisposed()) {
+         AtsColumnUtilIde.handleColumnMultiEdit(treeItems, attributeType, (XViewer) getXViewer());
+      }
    }
 
    /**

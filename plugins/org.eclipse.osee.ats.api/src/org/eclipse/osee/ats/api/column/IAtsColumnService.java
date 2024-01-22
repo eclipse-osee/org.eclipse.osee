@@ -61,4 +61,6 @@ public interface IAtsColumnService {
 
    String getIdFromLegacyId(String legacyId);
 
+   String getColumnsJson();
+
 }

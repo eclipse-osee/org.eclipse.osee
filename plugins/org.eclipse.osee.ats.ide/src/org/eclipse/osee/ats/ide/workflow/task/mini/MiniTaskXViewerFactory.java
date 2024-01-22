@@ -34,9 +34,8 @@ public abstract class MiniTaskXViewerFactory extends WorldXViewerFactory {
       return Arrays.asList( //
          AtsColumnTokensDefault.TitleColumn, //
          AtsColumnTokensDefault.StateColumn, //
-         AtsColumnTokensDefault.PriorityColumn, //
          AtsColumnTokensDefault.AgileTeamPointsColumn, //
-         AtsColumnTokensDefault.ReviewedByColumn, //
+         AtsColumnTokensDefault.ReviewedByAndDateColumn, //
          AtsColumnTokensDefault.RiskFactorColumn, //
          AtsColumnTokensDefault.DescriptionColumn, //
          AtsColumnTokensDefault.AssumptionsColumn, //

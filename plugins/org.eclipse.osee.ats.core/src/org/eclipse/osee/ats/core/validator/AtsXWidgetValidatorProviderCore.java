@@ -36,7 +36,7 @@ public class AtsXWidgetValidatorProviderCore implements IAtsXWidgetValidatorProv
          atsValidators.add(new AtsXComboValidator());
          atsValidators.add(new AtsXComboBooleanValidator());
          atsValidators.add(new AtsXListValidator());
-         atsValidators.add(new AtsXWidgetAttrValidator());
+         atsValidators.add(new AtsXSignbyWidgetValidator());
          atsValidators.add(new AtsXPointsAttrValidator());
          atsValidators.add(new AtsXHyperlinkWfdForEnumAttrValidator());
          atsValidators.add(new AtsXHyperlinkLabelDateValidator());

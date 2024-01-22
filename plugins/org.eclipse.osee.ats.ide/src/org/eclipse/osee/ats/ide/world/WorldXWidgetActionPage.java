@@ -240,12 +240,12 @@ public class WorldXWidgetActionPage extends FormPage {
       rightParamComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       rightParamComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      List<XWidgetRendererItem> layoutDatas = null;
+      List<XWidgetRendererItem> rItems = null;
       dynamicXWidgetLayout = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
       try {
-         layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, xWidgetXml);
-         if (layoutDatas != null && !layoutDatas.isEmpty()) {
-            dynamicXWidgetLayout.addWorkLayoutDatas(layoutDatas);
+         rItems = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, xWidgetXml);
+         if (rItems != null && !rItems.isEmpty()) {
+            dynamicXWidgetLayout.addWorkLayoutDatas(rItems);
             dynamicXWidgetLayout.createBody(managedForm, rightParamComp, null, null, true);
             parametersContainer.layout();
             parametersContainer.getParent().layout();

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -78,6 +79,7 @@ public abstract class XWidget {
    private ILabelProvider labelProvider;
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
+   private AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
    private String id;
    protected Object defaultValueObj;
    private boolean autoSave = false;
@@ -88,6 +90,7 @@ public abstract class XWidget {
    private List<ConditionalRule> conditions = new ArrayList<>();
    private ArtifactId teamId = ArtifactId.SENTINEL;
    private List<WidgetHint> widgetHints = new ArrayList<>();
+   private OseeImage oseeImage;
 
    public XWidget(String label) {
       this.label = label;
@@ -566,6 +569,22 @@ public abstract class XWidget {
 
    public boolean hasWidgetHint(WidgetHint widgetHint) {
       return this.widgetHints.contains(widgetHint);
+   }
+
+   public AttributeTypeToken getAttributeType2() {
+      return attributeType2;
+   }
+
+   public void setAttributeType2(AttributeTypeToken attributeType2) {
+      this.attributeType2 = attributeType2;
+   }
+
+   public OseeImage getOseeImage() {
+      return oseeImage;
+   }
+
+   public void setOseeImage(OseeImage oseeImage) {
+      this.oseeImage = oseeImage;
    }
 
 }

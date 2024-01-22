@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeType2Widget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.EnumeratedArtifactWidget;
@@ -174,36 +175,38 @@ public final class FrameworkXWidgetProvider {
       return null;
    }
 
-   public XWidget createXWidget(XWidgetRendererItem xWidgetLayoutData) {
-      String xWidgetName = xWidgetLayoutData.getXWidgetName();
-      String name = xWidgetLayoutData.getName();
+   public XWidget createXWidget(XWidgetRendererItem rItem) {
+      String xWidgetName = rItem.getXWidgetName();
+      String name = rItem.getName();
       XWidget xWidget = null;
       try {
 
          OrcsTokenService tokenService = ServiceUtil.getTokenService();
          // Set xWidgetName from attribute type if not already set
-         Artifact artifact = xWidgetLayoutData.getArtifact();
+         Artifact artifact = rItem.getArtifact();
          if (!Strings.isValid(xWidgetName) && artifact != null) {
             AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
             ArtifactTypeToken artType = ArtifactTypeToken.SENTINEL;
-            if (!Strings.isValid(xWidgetName) && xWidgetLayoutData.getStoreId() > 0) {
-               tokenService.getArtifactType(xWidgetLayoutData.getArtifactType().getId());
+            if (!Strings.isValid(xWidgetName) && rItem.getStoreId() > 0) {
+               tokenService.getArtifactType(rItem.getArtifactType().getId());
             }
             if (attributeType == AttributeTypeToken.SENTINEL && !Strings.isValid(xWidgetName) && Strings.isValid(
-               xWidgetLayoutData.getStoreName())) {
-               attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreName());
+               rItem.getStoreName())) {
+               attributeType = tokenService.getAttributeType(rItem.getStoreName());
             }
             xWidgetName = getXWidgetNameBasedOnAttribute(artType, attributeType);
          }
          if (xWidgetName != null) {
-            xWidget = getXWidget(xWidgetLayoutData, xWidgetName, name, artifact);
+            xWidget = getXWidget(rItem, xWidgetName, name, artifact);
          }
          if (xWidget != null) {
-            xWidget.setArtifactType(xWidgetLayoutData.getArtifactType());
-            xWidget.setAttributeType(xWidgetLayoutData.getAttributeType());
-            xWidget.setTeamId(xWidgetLayoutData.getTeamId());
+            xWidget.setArtifactType(rItem.getArtifactType());
+            xWidget.setAttributeType(rItem.getAttributeType());
+            xWidget.setAttributeType2(rItem.getAttributeType2());
+            xWidget.setOseeImage(rItem.getOseeImage());
+            xWidget.setTeamId(rItem.getTeamId());
             if (artifact != null) {
-               AttributeTypeToken attributeType = getAttributeTypeOrSentinel(xWidgetLayoutData, xWidget, tokenService);
+               AttributeTypeToken attributeType = getAttributeTypeOrSentinel(rItem, xWidget, tokenService);
                if (attributeType != AttributeTypeToken.SENTINEL && xWidget instanceof AttributeWidget) {
                   ((AttributeWidget) xWidget).setAttributeType(artifact, attributeType);
                }
@@ -212,16 +215,16 @@ public final class FrameworkXWidgetProvider {
                }
             }
             if (xWidget instanceof AttributeTypeWidget) {
-               AttributeTypeToken attributeType = getAttributeTypeOrSentinel(xWidgetLayoutData, xWidget, tokenService);
+               AttributeTypeToken attributeType = getAttributeTypeOrSentinel(rItem, xWidget, tokenService);
                ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
             }
             if (xWidget instanceof EnumeratedArtifactWidget) {
                EnumeratedArtifactWidget widget = (EnumeratedArtifactWidget) xWidget;
-               if (xWidgetLayoutData.getEnumeratedArt() != null) {
-                  widget.setEnumeratedArt(xWidgetLayoutData.getEnumeratedArt());
+               if (rItem.getEnumeratedArt() != null) {
+                  widget.setEnumeratedArt(rItem.getEnumeratedArt());
                }
             }
-            xWidget.setObject(xWidgetLayoutData.getObject());
+            xWidget.setObject(rItem.getObject());
          }
       } catch (Exception ex) {
          String msg = String.format("Error creating widget for [%s][%s] exception: [%s] (see error log for details)",
@@ -243,12 +246,12 @@ public final class FrameworkXWidgetProvider {
       return attributeType;
    }
 
-   public static XWidget getXWidget(XWidgetRendererItem xWidgetLayoutData, String xWidgetName, String name, Artifact artifact) {
+   public static XWidget getXWidget(XWidgetRendererItem rItem, String xWidgetName, String name, Artifact artifact) {
       XWidget xWidget = null;
       // Look for widget provider to create widget
       Collection<IXWidgetProvider> providers = getXWidgetProviders();
       for (IXWidgetProvider widgetProvider : providers) {
-         xWidget = widgetProvider.createXWidget(xWidgetName, name, xWidgetLayoutData);
+         xWidget = widgetProvider.createXWidget(xWidgetName, name, rItem);
          if (xWidget != null) {
             break;
          }
@@ -258,20 +261,20 @@ public final class FrameworkXWidgetProvider {
       Class<XWidget> clazz = (Class<XWidget>) getNameToClass().get(xWidgetName);
       if (clazz != null) {
          try {
-            return clazz.getDeclaredConstructor().newInstance();
+            xWidget = clazz.getDeclaredConstructor().newInstance();
          } catch (Exception ex) {
             OseeLog.log(FrameworkXWidgetProvider.class, Level.SEVERE, ex.toString(), ex);
          }
       }
 
-      XOptionHandler options = xWidgetLayoutData.getXOptionHandler();
+      // Otherwise, use default widget creation
+      XOptionHandler options = rItem.getXOptionHandler();
       if (xWidget == null) {
-         // Otherwise, use default widget creation
 
          if (xWidgetName.equals("XText")) {
             xWidget = new XText(name);
-            if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
-               ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
+            if (Strings.isValid(rItem.getDefaultValue())) {
+               ((XText) xWidget).set(rItem.getDefaultValue());
             }
          } else if (xWidgetName.equals("XSelectFromMultiChoiceBranch")) {
             XSelectFromMultiChoiceBranch multiBranchSelect = new XSelectFromMultiChoiceBranch(name);
@@ -301,8 +304,7 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidgetName.equals(XRadioButtonsBooleanTriState.WIDGET_ID)) {
             xWidget = new XRadioButtonsBooleanTriState(name);
          } else if (xWidgetName.startsWith("XRadioButtons")) {
-            String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            String values[] = rItem.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(rItem);
             if (values.length > 0) {
                XRadioButtons radio = new XRadioButtons(name);
 
@@ -310,7 +312,7 @@ public final class FrameworkXWidgetProvider {
                   Arrays.sort(values);
                }
 
-               String defaultValue = xWidgetLayoutData.getDefaultValue();
+               String defaultValue = rItem.getDefaultValue();
                for (String value : values) {
                   XRadioButton button = radio.addButton(value);
                   if (Strings.isValid(defaultValue) && value.equals(defaultValue)) {
@@ -337,14 +339,14 @@ public final class FrameworkXWidgetProvider {
             xWidget = new XMembersCombo(name, true);
          } else if (xWidgetName.equals("XDate")) {
             xWidget = new XDate(name);
-            xWidget.setDefaultValueObj(xWidgetLayoutData.getDefaultValueObj());
+            xWidget.setDefaultValueObj(rItem.getDefaultValueObj());
          } else if (xWidgetName.equals("XMapEntry")) {
             xWidget = new XMapEntry();
-            xWidget.setDefaultValueObj(xWidgetLayoutData.getDefaultValueObj());
+            xWidget.setDefaultValueObj(rItem.getDefaultValueObj());
          } else if (xWidgetName.equals("XFileSelectionDialog")) {
             xWidget = new XFileTextWithSelectionDialog(name);
          } else if (xWidgetName.equals("XDirectorySelectionDialog")) {
-            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            String defaultValue = rItem.getDefaultValue();
             if (Strings.isValid(defaultValue)) {
                xWidget = new XFileTextWithSelectionDialog(name, Type.Directory, defaultValue);
             } else {
@@ -365,17 +367,17 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidgetName.equals("XFileTextWithSelectionDialog")) {
             xWidget = new XFileTextWithSelectionDialog(name);
          } else if (xWidgetName.equals("XLabel")) {
-            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            String defaultValue = rItem.getDefaultValue();
             if (Strings.isValid(defaultValue)) {
-               xWidget = new XLabel(name, xWidgetLayoutData.getDefaultValue());
+               xWidget = new XLabel(name, rItem.getDefaultValue());
             } else {
                xWidget = new XLabel(name);
             }
          } else if (xWidgetName.equals(XCheckBox.WIDGET_ID)) {
             XCheckBox checkBox = new XCheckBox(name);
             checkBox.setLabelAfter(options.contains(XOption.LABEL_AFTER));
-            if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
-               checkBox.set(Boolean.valueOf(xWidgetLayoutData.getDefaultValue()));
+            if (Strings.isValid(rItem.getDefaultValue())) {
+               checkBox.set(Boolean.valueOf(rItem.getDefaultValue()));
             }
             xWidget = checkBox;
          } else if (xWidgetName.equals(XCheckBoxDam.WIDGET_ID)) {
@@ -397,9 +399,8 @@ public final class FrameworkXWidgetProvider {
             if (name.equals("IsInTest")) {
                return new XComboDam(name);
             }
-            if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
-               String values[] =
-                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            if (rItem.getDynamicXWidgetLayout() != null) {
+               String values[] = rItem.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(rItem);
                if (values.length > 0) {
                   xWidget = new XComboDam(name);
                   XComboDam combo = new XComboDam(name);
@@ -420,9 +421,8 @@ public final class FrameworkXWidgetProvider {
                XSelectFromMultiChoiceDam widget = new XSelectFromMultiChoiceDam(name);
                return widget;
             }
-            if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
-               String values[] =
-                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            if (rItem.getDynamicXWidgetLayout() != null) {
+               String values[] = rItem.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(rItem);
                if (values.length > 0) {
                   XSelectFromMultiChoiceDam widget = new XSelectFromMultiChoiceDam(name);
                   widget.setSelectableItems(Arrays.asList(values));
@@ -441,8 +441,8 @@ public final class FrameworkXWidgetProvider {
             XComboBooleanDam combo = new XComboBooleanDam(name);
             combo.setDataStrings(BooleanAttribute.booleanChoices);
             xWidget = combo;
-            if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
-               String value = xWidgetLayoutData.getDefaultValue();
+            if (Strings.isValid(rItem.getDefaultValue())) {
+               String value = rItem.getDefaultValue();
                if ("true".equals(value)) {
                   combo.set("true");
                } else if ("false".equals(value)) {
@@ -460,8 +460,7 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidgetName.startsWith("XComboViewer")) {
             xWidget = new XComboViewer(name, SWT.NONE);
          } else if (xWidgetName.startsWith("XCombo")) {
-            String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            String values[] = rItem.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(rItem);
             if (values.length > 0) {
                XCombo combo = new XCombo(name);
 
@@ -477,7 +476,7 @@ public final class FrameworkXWidgetProvider {
                   combo.setDefaultSelectionAllowed(true);
                }
                xWidget = combo;
-               String defaultValue = xWidgetLayoutData.getDefaultValue();
+               String defaultValue = rItem.getDefaultValue();
                if (Strings.isValid(defaultValue)) {
                   combo.setDefaultValue(defaultValue);
                }
@@ -485,9 +484,8 @@ public final class FrameworkXWidgetProvider {
                throw new OseeArgumentException("Invalid XCombo.  Must be \"XCombo(option1,option2,option3)\"");
             }
          } else if (xWidgetName.startsWith("XListDam")) {
-            if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
-               String values[] =
-                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            if (rItem.getDynamicXWidgetLayout() != null) {
+               String values[] = rItem.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(rItem);
                XListDam list = new XListDam(name);
                if (values.length > 0) {
                   list.add(values);
@@ -505,23 +503,22 @@ public final class FrameworkXWidgetProvider {
                xWidget = new XListDropViewer(name);
             }
          } else if (xWidgetName.equals(XListRelationWidget.WIDGET_ID)) {
-            return new XListRelationWidget(artifact, name, xWidgetLayoutData.getRelationTypeSide());
+            return new XListRelationWidget(artifact, name, rItem.getRelationTypeSide());
          } else if (xWidgetName.equals(XComputedCharacteristicWidget.WIDGET_ID)) {
             if (name.equals("IsInTest")) {
                return new XComputedCharacteristicWidget(ComputedCharacteristicToken.SENTINEL);
             }
-            return new XComputedCharacteristicWidget(xWidgetLayoutData.getComputedCharacteristic());
+            return new XComputedCharacteristicWidget(rItem.getComputedCharacteristic());
          } else if (xWidgetName.equals("XListDropViewWithSave")) {
             XListDropViewWithSave xList = new XListDropViewWithSave(name);
             xWidget = xList;
          } else if (xWidgetName.startsWith("XList")) {
-            String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            String values[] = rItem.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(rItem);
             if (values.length > 0) {
                XList list = new XList(name);
                list.add(values);
                xWidget = list;
-               String defaultValue = xWidgetLayoutData.getDefaultValue();
+               String defaultValue = rItem.getDefaultValue();
                if (Strings.isValid(defaultValue)) {
                   list.setSelected(Arrays.asList(defaultValue.split(",")));
                }
@@ -543,9 +540,9 @@ public final class FrameworkXWidgetProvider {
                widget = new XBranchSelectWidget(name);
             }
 
-            widget.setToolTip(xWidgetLayoutData.getToolTip());
+            widget.setToolTip(rItem.getToolTip());
             try {
-               String branchUuid = xWidgetLayoutData.getDefaultValue();
+               String branchUuid = rItem.getDefaultValue();
                if (Strings.isValid(branchUuid)) {
                   try {
                      Long uuid = Long.valueOf(branchUuid);
@@ -569,7 +566,7 @@ public final class FrameworkXWidgetProvider {
             xWidget = widget;
          } else if (xWidgetName.equals(XArtifactTypeMultiChoiceSelect.WIDGET_ID)) {
             XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect(name);
-            String defaultType = xWidgetLayoutData.getDefaultValue();
+            String defaultType = rItem.getDefaultValue();
             if (Strings.isValid(defaultType)) {
                List<ArtifactTypeToken> types = new LinkedList<>();
                for (String type : defaultType.split(",")) {
@@ -590,22 +587,22 @@ public final class FrameworkXWidgetProvider {
             xWidget = widget;
          } else if (xWidgetName.equals("XHyperlinkLabel")) {
             xWidget = new XHyperlinkLabel(name);
-            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            String defaultValue = rItem.getDefaultValue();
             if (Strings.isValid(defaultValue)) {
                XHyperlinkLabel widget = (XHyperlinkLabel) xWidget;
-               widget.setUrl(xWidgetLayoutData.getDefaultValue());
+               widget.setUrl(rItem.getDefaultValue());
             }
          } else if (xWidgetName.equals(XRadioButton.WIDGET_ID)) {
             xWidget = new XRadioButton(name);
          } else if (xWidgetName.equals(XCheckBoxesExample.WIDGET_ID)) {
             xWidget = new XCheckBoxesExample();
          } else if (xWidgetName.equals(XLabelValue.WIDGET_ID)) {
-            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            String defaultValue = rItem.getDefaultValue();
             xWidget = new XLabelValue(name, defaultValue);
          } else if (xWidgetName.equals(XHyperlinkLabelValueSelectionDam.WIDGET_ID)) {
-            return new XHyperlinkLabelValueSelectionDam(name);
+            xWidget = new XHyperlinkLabelValueSelectionDam(name);
          } else if (xWidgetName.equals(XHyperlinkLabelEnumeratedArtDam.WIDGET_ID)) {
-            return new XHyperlinkLabelEnumeratedArtDam(name);
+            xWidget = new XHyperlinkLabelEnumeratedArtDam(name);
          } else {
             xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
          }
@@ -618,6 +615,20 @@ public final class FrameworkXWidgetProvider {
       if (xWidget != null && options.contains(XOption.NO_LABEL)) {
          xWidget.setDisplayLabel(false);
       }
+
+      if (xWidget != null && xWidget.getClass().getSimpleName().equals("XSignbyWidget")) {
+         System.err.println(xWidget.getClass().getSimpleName());
+      }
+      if (xWidget != null) {
+         xWidget.setOseeImage(rItem.getOseeImage());
+      }
+      if (rItem.getAttributeType().isValid() && xWidget instanceof AttributeTypeWidget) {
+         ((AttributeTypeWidget) xWidget).setAttributeType(rItem.getAttributeType());
+      }
+      if (rItem.getAttributeType2().isValid() && xWidget instanceof AttributeType2Widget) {
+         ((AttributeType2Widget) xWidget).setAttributeType2(rItem.getAttributeType2());
+      }
+
       return xWidget;
    }
 

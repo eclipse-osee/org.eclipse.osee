@@ -24,4 +24,6 @@ public interface IAttributeColumn {
 
    void setAttributeType(AttributeTypeToken attributeType);
 
+   String getName();
+
 }

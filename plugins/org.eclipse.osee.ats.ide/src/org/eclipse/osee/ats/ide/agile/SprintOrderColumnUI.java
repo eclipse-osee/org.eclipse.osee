@@ -82,13 +82,13 @@ public class SprintOrderColumnUI extends AbstractMembersOrderColumnUI {
             if (changedSprint != null) {
                xViewer.refresh(changedSprint);
                xViewer.update(treeItem.getData(), null);
+               return true;
             }
          }
-         return true;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return false;
       }
+      return false;
    }
 
    public static SprintArtifact getParentSprintArtifact(TreeItem treeItem) {

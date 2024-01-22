@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeDouble;
 import org.eclipse.osee.framework.core.data.AttributeTypeInteger;
 import org.eclipse.osee.framework.core.data.AttributeTypeLong;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
@@ -52,6 +53,18 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 public interface AtsAttributeTypes {
 
    // @formatter:off
+
+   // Sign-By attribute types
+   AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", TEXT_PLAIN, "", Read, UserArtId);
+   AttributeTypeDate ApproveRequestedHoursByDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", TEXT_CALENDAR, "", Read);
+   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", TEXT_PLAIN, "", Read, UserUserId);
+   AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", TEXT_CALENDAR, "", Read);
+   AttributeTypeLong ReviewedBy = ats.createLong(4020478495150345644L, "ats.Reviewed By", TEXT_PLAIN, "", Read, UserArtId);
+   AttributeTypeDate ReviewedByDate = ats.createDate(2436278456841462630L, "ats.Reviewed By Date", TEXT_CALENDAR, "", Read);
+   AttributeTypeLong SignedOffBy = ats.createLong(8050674225588113897L, "ats.Signed Off By", TEXT_PLAIN, "", Read, UserArtId);
+   AttributeTypeDate SignedOffByDate = ats.createDate(1939621262920722287L, "ats.Signed Off By Date", AttributeTypeToken.TEXT_CALENDAR, "", Read);
+
+
    AttributeTypeString ActionDetailsFormat = ats.createString(1152921504606847199L, "ats.Action Details Format", TEXT_PLAIN, "Format of string when push Action Details Copy button on SMA Workflow Editor.", Config);
    AttributeTypeBoolean Actionable = ats.createBoolean(1152921504606847160L, "ats.Actionable", TEXT_PLAIN, "True if item can have Action written against or assigned to.", Config);
    AttributeTypeArtifactId ActionableItemReference = ats.createArtifactId(6780739363553225476L, "ats.Actionable Item Reference", TEXT_PLAIN, "Actionable Items that are impacted by this change.", Read);
@@ -64,9 +77,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean AllowWebExport = ats.createBoolean(1244831604424847172L, "ats.Allow Web Export", TEXT_PLAIN, "", Config);
    AttributeTypeBoolean ApplicabilityWorkflow = ats.createBoolean(1152922022510067882L, "ats.Applicability Workflow", TEXT_PLAIN, "", Read);
    ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(new ApplicableToProgramAttributeType(), Read);
-   AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", TEXT_PLAIN, "", Read, UserArtId);
-   AttributeTypeDate ApproveRequestedHoursDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", TEXT_CALENDAR, "", Read);
-   AttributeTypeString Assumptions = ats.createString(593196463063939110L, "ats.Assumptions", TEXT_PLAIN, "", MultiLine, Read);
+   AttributeTypeString Assumptions = ats.createString(593196463063939110L, "ats.Assumptions", TEXT_PLAIN, "", MultiLine, Edit);
    AttributeTypeString AtsId = ats.createString(1152921504606847877L, "ats.Id", TEXT_PLAIN, "", Read);
    AttributeTypeString AtsIdPrefix = ats.createString(1162773128791720837L, "ats.ATS Id Prefix", TEXT_PLAIN, "ATS Id Prefix", Config);
    AttributeTypeString AtsIdSequenceName = ats.createString(1163054603768431493L, "ats.ATS Id Sequence Name", TEXT_PLAIN, "ATS Id Sequence Name", Config);
@@ -163,8 +174,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString Priority = ats.createString(1152921504606847179L, "ats.Priority", TEXT_PLAIN, "", Edit);
    AttributeTypeString Problem = ats.createString(1152921504606847193L, "ats.Problem", TEXT_PLAIN, "Problem found during analysis.", MultiLine, Edit);
    AttributeTypeDate ProblemFirstObserved = ats.createDate(8431670117014503949L, "ats.Problem First Observed", TEXT_CALENDAR, "Date of Problem First Observed", Edit);
-   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", TEXT_PLAIN, "", Read, UserUserId);
-   AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", TEXT_CALENDAR, "", Read);
    AttributeTypeString ProductLineBranchId = ats.createString(8728667450560659060L, "ats.Product Line Branch Id", TEXT_PLAIN, "PL branch associated with ATS object.", Read);
    AttributeTypeArtifactId ProgramId = ats.createArtifactId(1152922093377028266L, "ats.Program Id", TEXT_PLAIN, "", AtsDisplayHint.ReadConfig);
    AttributeTypeString ProposedResolution = ats.createString(1152921504606847194L, "ats.Proposed Resolution", TEXT_PLAIN, "Recommended resolution.", MultiLine, Edit);
@@ -205,8 +214,6 @@ public interface AtsAttributeTypes {
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow", Config);
    AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", TEXT_PLAIN, "Enter clear and concise title that can be generally understood.", Edit);
    AttributeTypeString Title = CoreAttributeTypes.Name;
-   AttributeTypeDate ReviewedByDate = ats.createDate(2436278456841462630L, "ats.Reviewed Date", TEXT_CALENDAR, "", Read);
-   AttributeTypeLong ReviewedBy = ats.createLong(4020478495150345644L, "ats.Reviewed By", TEXT_PLAIN, "", Read, UserArtId);
    AttributeTypeString QuantityUnderReview = ats.createString(489717926240421171L, "ats.Quantity Under Review", TEXT_PLAIN, "Total Pages, LOCs, Documents, etc Changed", Edit);
    AttributeTypeInteger UnplannedPoints = ats.createInteger(284254492767020802L, "ats.Unplanned Points", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean UnplannedWork = ats.createBoolean(2421093774890249189L, "ats.Unplanned Work", TEXT_PLAIN, "", DisplayHint.YesNoBoolean, Edit);

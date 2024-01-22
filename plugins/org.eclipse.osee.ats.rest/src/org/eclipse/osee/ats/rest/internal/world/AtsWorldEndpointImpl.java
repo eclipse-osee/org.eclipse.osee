@@ -77,6 +77,14 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
    @Override
    @GET
+   @Path("columnjson")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getColumnsJson() {
+      return atsApi.getColumnService().getColumnsJson();
+   }
+
+   @Override
+   @GET
    @Path("cust/global")
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<CustomizeData> getCustomizationsGlobal() {

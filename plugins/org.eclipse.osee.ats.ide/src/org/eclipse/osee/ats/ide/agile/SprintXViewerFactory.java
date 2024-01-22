@@ -27,23 +27,29 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvi
 public class SprintXViewerFactory extends WorldXViewerFactory {
 
    private final SprintArtifact soleSprintArtifact;
-   private final BacklogXViewerFactory backlogFactory;
+   private BacklogXViewerFactory backlogFactory;
    private static String NAMESPACE = "SprintXViewer";
 
    public SprintXViewerFactory(SprintArtifact soleSprintArtifact, IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       this.soleSprintArtifact = soleSprintArtifact;
-      this.backlogFactory = new BacklogXViewerFactory(null, reportProvider);
+   }
+
+   private BacklogXViewerFactory getBacklogFactory() {
+      if (this.backlogFactory == null) {
+         backlogFactory = new BacklogXViewerFactory(null, reportProvider);
+      }
+      return backlogFactory;
    }
 
    @Override
    public List<AtsCoreColumnToken> getDefaultVisibleColumns() {
-      return backlogFactory.getDefaultVisibleColumns();
+      return getBacklogFactory().getDefaultVisibleColumns();
    }
 
    @Override
    public List<Integer> getDefaultColumnWidths() {
-      return backlogFactory.getDefaultColumnWidths();
+      return getBacklogFactory().getDefaultColumnWidths();
    }
 
    @Override

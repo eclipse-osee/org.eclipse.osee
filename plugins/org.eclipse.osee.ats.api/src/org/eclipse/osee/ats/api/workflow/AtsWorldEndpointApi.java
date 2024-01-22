@@ -103,4 +103,9 @@ public interface AtsWorldEndpointApi {
    @Path("column")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<AtsCoreColumn> getColumns();
+
+   @GET
+   @Path("columnjson")
+   @Produces(MediaType.APPLICATION_JSON)
+   String getColumnsJson();
 }

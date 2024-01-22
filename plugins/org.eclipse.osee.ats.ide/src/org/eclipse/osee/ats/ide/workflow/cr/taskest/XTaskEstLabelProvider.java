@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.ide.workflow.cr.taskest;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -23,9 +24,7 @@ import org.eclipse.osee.ats.api.workflow.cr.TaskEstUtil;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskXViewer;
 import org.eclipse.osee.ats.ide.world.WorldLabelProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -78,9 +77,6 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
             } else {
                return "Other";
             }
-         } else if (xViewerColumn.getName().equals("Reviewed By")) {
-            return XAbstractSignDateAndByButton.getText((Artifact) task.getStoreObject(),
-               AtsAttributeTypes.ReviewedByDate, AtsAttributeTypes.ReviewedBy);
          }
       }
       String str = super.getColumnText(element, columnIndex);
@@ -103,7 +99,7 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
          IAtsTask task = (IAtsTask) element;
          if (xViewerColumn.getName().equals("Select")) {
             return ImageManager.getImage(AtsImage.TASK);
-         } else if (xViewerColumn.getName().equals("Reviewed By")) {
+         } else if (xViewerColumn.getId().equals(AtsColumnTokensDefault.ReviewedByAndDateColumn.getId())) {
             if (atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.ReviewedBy) > 0) {
                return ImageManager.getImage(AtsImage.CHECK_BLUE);
             }

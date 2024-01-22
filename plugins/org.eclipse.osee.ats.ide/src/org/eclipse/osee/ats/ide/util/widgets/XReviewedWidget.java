@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 
 /**
@@ -27,8 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton
 public class XReviewedWidget extends XAbstractSignDateAndByButton {
 
    public XReviewedWidget() {
-      super("Reviewed By", "Sign or clear changes", AtsAttributeTypes.ReviewedByDate, AtsAttributeTypes.ReviewedBy,
-         FrameworkImage.RUN_EXC, true);
+      super(AtsAttributeTypes.ReviewedBy, AtsAttributeTypes.ReviewedByDate);
    }
 
    @Override

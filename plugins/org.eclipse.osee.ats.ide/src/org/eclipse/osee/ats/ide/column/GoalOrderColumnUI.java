@@ -99,8 +99,8 @@ public class GoalOrderColumnUI extends AbstractMembersOrderColumnUI {
             if (changedGoal != null) {
                xViewer.refresh(changedGoal);
                xViewer.update(treeItem.getData(), null);
+               return true;
             }
-            return true;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

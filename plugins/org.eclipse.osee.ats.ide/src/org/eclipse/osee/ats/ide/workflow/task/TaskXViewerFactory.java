@@ -50,7 +50,7 @@ public class TaskXViewerFactory extends WorldXViewerFactory {
    // Return default visible column widths.  Empty list or missing will use default token width.
    @Override
    public List<Integer> getDefaultColumnWidths() {
-      return Arrays.asList(450, 60, 150, 40, 40, 100, 50, 50, 50, 80);
+      return Arrays.asList(450, 60, 40, 150, 40, 40, 150, 50, 90, 200);
    }
 
 }

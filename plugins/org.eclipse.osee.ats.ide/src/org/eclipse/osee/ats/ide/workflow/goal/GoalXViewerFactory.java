@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
 import org.eclipse.osee.ats.ide.column.AbstractMembersOrderColumnUI;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
-import org.eclipse.osee.ats.ide.column.GoalOrderVoteColumnUI;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 
@@ -57,8 +56,7 @@ public class GoalXViewerFactory extends WorldXViewerFactory {
 
    @Override
    public List<Integer> getDefaultColumnWidths() {
-      return Arrays.asList(AbstractMembersOrderColumnUI.DEFAULT_WIDTH, GoalOrderVoteColumnUI.DEFAULT_WIDTH, 250, 60, 60, 20,
-         20, 100, 50, 50, 50, 80);
+      return Arrays.asList(AbstractMembersOrderColumnUI.DEFAULT_WIDTH, 250, 60, 60, 20, 20, 100, 50, 50, 50, 200);
    }
 
    @Override

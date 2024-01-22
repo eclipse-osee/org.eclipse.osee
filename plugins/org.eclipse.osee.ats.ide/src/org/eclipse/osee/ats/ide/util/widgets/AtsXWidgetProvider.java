@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.ide.agile.XOpenStoredSprintReportsButton;
 import org.eclipse.osee.ats.ide.agile.XStoreSprintReportsButton;
 import org.eclipse.osee.ats.ide.editor.tab.bit.XHyperlinkOpenBitTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XAssigneesListWidget;
-import org.eclipse.osee.ats.ide.editor.tab.workflow.widget.XRequestedHoursApprovalWidget;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.search.widget.XDynamicAttrValuesWidget;
 import org.eclipse.osee.ats.ide.util.XVersionList;
@@ -105,9 +104,9 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XOriginatorHyperlinkWidget.class);
       register(XProductLineApprovalWidget.class);
       register(XProgramSelectionWidget.class);
-      register(XRequestedHoursApprovalWidget.class);
       register(XReviewStateSearchCombo.class);
       register(XReviewedWidget.class);
+      register(XSignbyWidget.class);
       register(XSprintHyperlinkWidget.class);
       register(XStateCombo.class);
       register(XStateSearchCombo.class);
@@ -135,17 +134,17 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
    }
 
    @Override
-   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem rItem) {
-      XWidget toReturn = super.createXWidget(widgetName, name, rItem);
-      if (toReturn != null) {
-         return toReturn;
+   public XWidget createXWidget(String widgetName, String name, XWidgetRendererItem item) {
+      XWidget widget = super.createXWidget(widgetName, name, item);
+      if (widget != null) {
+         return widget;
       } else if (widgetName.equals(XCreateChangeReportTasksXButton.WIDGET_ID)) {
-         AtsTaskDefToken atsTaskDefToken = (AtsTaskDefToken) rItem.getParameters().get(AtsTaskDefToken.ID);
-         return new XCreateChangeReportTasksXButton(name, XCreateChangeReportTasksXButton.class.getSimpleName(),
+         AtsTaskDefToken atsTaskDefToken = (AtsTaskDefToken) item.getParameters().get(AtsTaskDefToken.ID);
+         widget = new XCreateChangeReportTasksXButton(name, XCreateChangeReportTasksXButton.class.getSimpleName(),
             atsTaskDefToken);
       } else if (widgetName.equals(XHyperlinkChangeTypeSelection.WIDGET_ID) || widgetName.equals(
          XHyperlinkChangeTypeSelectionDam.WIDGET_ID)) {
-         String changeTypesStr = (String) rItem.getParameters().get(ChangeTypes.CHANGE_TYPE_PARAM_KEY);
+         String changeTypesStr = (String) item.getParameters().get(ChangeTypes.CHANGE_TYPE_PARAM_KEY);
          List<ChangeTypes> types = new ArrayList<>();
          if (Strings.isValid(changeTypesStr)) {
             for (String cTypeStr : changeTypesStr.split(";")) {
@@ -154,13 +153,13 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
             }
          }
          if (widgetName.equals(XHyperlinkChangeTypeSelectionDam.WIDGET_ID)) {
-            return new XHyperlinkChangeTypeSelectionDam(name, types.toArray(new ChangeTypes[types.size()]));
+            widget = new XHyperlinkChangeTypeSelectionDam(name, types.toArray(new ChangeTypes[types.size()]));
          } else if (widgetName.equals(XHyperlinkChangeTypeSelection.WIDGET_ID)) {
-            return new XHyperlinkChangeTypeSelection(name, types.toArray(new ChangeTypes[types.size()]));
+            widget = new XHyperlinkChangeTypeSelection(name, types.toArray(new ChangeTypes[types.size()]));
          }
       } else if (widgetName.equals(XHyperlinkPrioritySelection.WIDGET_ID) || widgetName.equals(
          XHyperlinkPrioritySelectionDam.WIDGET_ID)) {
-         String priorityTypesStr = (String) rItem.getParameters().get(Priorities.PRIORITY_PARAM_KEY);
+         String priorityTypesStr = (String) item.getParameters().get(Priorities.PRIORITY_PARAM_KEY);
          List<Priorities> types = new ArrayList<>();
          if (Strings.isValid(priorityTypesStr)) {
             for (String priStr : priorityTypesStr.split(";")) {
@@ -169,12 +168,12 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
             }
          }
          if (widgetName.equals(XHyperlinkPrioritySelectionDam.WIDGET_ID)) {
-            return new XHyperlinkPrioritySelectionDam(name, types.toArray(new Priorities[types.size()]));
+            widget = new XHyperlinkPrioritySelectionDam(name, types.toArray(new Priorities[types.size()]));
          } else if (widgetName.equals(XHyperlinkPrioritySelection.WIDGET_ID)) {
-            return new XHyperlinkPrioritySelection(name, types.toArray(new Priorities[types.size()]));
+            widget = new XHyperlinkPrioritySelection(name, types.toArray(new Priorities[types.size()]));
          }
       }
-      return toReturn;
+      return widget;
    }
 
 }

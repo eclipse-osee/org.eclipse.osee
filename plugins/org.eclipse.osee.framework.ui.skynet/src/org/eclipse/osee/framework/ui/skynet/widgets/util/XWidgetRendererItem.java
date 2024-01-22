@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
+import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.WidgetHint;
@@ -46,6 +47,8 @@ public class XWidgetRendererItem implements Cloneable {
    private String id = "";
    private String storeName = "";
    private Long storeId = -1L;
+   private String storeName2 = "";
+   private Long storeId2 = -1L;
    private String xWidgetName = UNKNOWN;
    private XWidget xWidget;
    private int beginComposite = 0; // If >0, indicates new child composite with columns == value
@@ -64,6 +67,7 @@ public class XWidgetRendererItem implements Cloneable {
    private String doubleClickText;
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
+   private AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
    private RelationTypeSide relationTypeSide;
    private ComputedCharacteristicToken<?> computedCharacteristic;
    private boolean horizontalLabel;
@@ -74,6 +78,7 @@ public class XWidgetRendererItem implements Cloneable {
    private ArtifactToken enumeratedArt;
    private ArtifactId teamId = ArtifactId.SENTINEL;
    private List<WidgetHint> widgetHints = new ArrayList<>();
+   private OseeImage oseeImage;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -444,6 +449,38 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setWidgetHints(List<WidgetHint> widgetHints) {
       this.widgetHints = widgetHints;
+   }
+
+   public String getStoreName2() {
+      return storeName2;
+   }
+
+   public void setStoreName2(String storeName2) {
+      this.storeName2 = storeName2;
+   }
+
+   public Long getStoreId2() {
+      return storeId2;
+   }
+
+   public void setStoreId2(Long storeId2) {
+      this.storeId2 = storeId2;
+   }
+
+   public AttributeTypeToken getAttributeType2() {
+      return attributeType2;
+   }
+
+   public void setAttributeType2(AttributeTypeToken attributeType2) {
+      this.attributeType2 = attributeType2;
+   }
+
+   public OseeImage getOseeImage() {
+      return oseeImage;
+   }
+
+   public void setOseeImage(OseeImage oseeImage) {
+      this.oseeImage = oseeImage;
    }
 
 }
