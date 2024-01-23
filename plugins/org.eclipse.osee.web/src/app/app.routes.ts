@@ -13,6 +13,7 @@
 import { Routes } from '@angular/router';
 import { RoleGuard } from '@osee/auth';
 import { navigationStructure } from '@osee/layout/routing';
+import { auth_routes } from './auth.routes';
 
 const serverHealth = navigationStructure[1];
 export const routes: Routes = [
@@ -55,12 +56,7 @@ export const routes: Routes = [
 		data: { requiredRoles: serverHealth?.requiredRoles },
 		loadChildren: () => import('./server-health/server-health.routes'),
 	},
-	// {
-	// 	path: '',
-	// 	loadChildren: () => import('@osee/toolbar'),
-	// 	outlet: 'toolbar',
-	// 	pathMatch: 'full', //not working in angular 16
-	// },
+	...auth_routes,
 	{
 		path: '',
 		loadChildren: () => import('@osee/layout'),

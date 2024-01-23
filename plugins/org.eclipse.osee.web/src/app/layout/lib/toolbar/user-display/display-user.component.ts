@@ -25,6 +25,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
+import { environment } from '@osee/environments';
+import { OktaSignComponent } from '../okta-sign/okta-sign.component';
 
 @Component({
 	selector: 'osee-display-user',
@@ -45,11 +47,18 @@ import { AsyncPipe } from '@angular/common';
 		]),
 	],
 	standalone: true,
-	imports: [MatMenuModule, MatIconModule, RouterOutlet, AsyncPipe],
+	imports: [
+		MatMenuModule,
+		MatIconModule,
+		RouterOutlet,
+		AsyncPipe,
+		OktaSignComponent,
+	],
 })
 export class DisplayUserComponent {
 	userInfo: Observable<user> = this.accountService.user;
 	opened: boolean = false;
+	authScheme = environment.authScheme;
 
 	constructor(private accountService: UserDataAccountService) {}
 }

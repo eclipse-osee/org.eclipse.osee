@@ -36,6 +36,7 @@
 			"@osee/layout/container": ["src/app/layout/lib/containers"],
 			"@osee/layout/notification": ["src/app/layout/lib/notification"],
 			"@osee/layout/routing": ["src/app/layout/lib/routing"],
+			"@osee/auto-login": ["src/app/auto-login"],
 			"@osee/page-not-found": ["src/app/page-not-found"],
 			"@osee/plconfig": ["src/app/ple/plconfig/lib"],
 			"@osee/ci-dashboard/navigation": [

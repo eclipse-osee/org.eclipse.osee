@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './environment';
-export * from './user-header.service';
-export * from './additional-auth.service';
-export * from './api';
+
+import { apiURL } from './api';
+import { environment_type } from './environments.types';
+import { UserHeaderProdService } from './internal/user-header-prod.service';
+export const environment: environment_type = {
+	production: true,
+	headerService: UserHeaderProdService,
+	authScheme: 'OKTA',
+};
+export const OSEEAuthURL = apiURL + '/orcs/datastore/user';

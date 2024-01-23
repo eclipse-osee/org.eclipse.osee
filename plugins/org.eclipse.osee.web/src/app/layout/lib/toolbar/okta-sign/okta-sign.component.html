@@ -1,0 +1,29 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+@if ((isAuthenticated | async) === false) {
+	<a
+		class="tw-w-full tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base"
+		color="primary"
+		mat-flat-button
+		(click)="signIn()"
+		>Okta Sign in</a
+	>
+} @else {
+	<a
+		class="tw-w-full tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base"
+		color="warn"
+		mat-flat-button
+		(click)="signOut()"
+		>Okta Sign out</a
+	>
+}
