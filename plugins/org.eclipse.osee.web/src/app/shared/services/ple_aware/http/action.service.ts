@@ -24,6 +24,7 @@ import {
 	targetedVersion,
 	CreateNewActionInterface,
 	newActionResponse,
+	WorkType,
 } from '@osee/shared/types/configuration-management';
 
 @Injectable({
@@ -39,6 +40,9 @@ export class ActionService {
 		return this.http.get<actionableItem[]>(
 			apiURL + `/ats/ai/worktype/${workType}`
 		);
+	}
+	public getWorkTypes() {
+		return this.http.get<WorkType[]>(apiURL + `/ats/workType`);
 	}
 	public getWorkFlow(id: string | number) {
 		return this.http.get<teamWorkflow>(apiURL + '/ats/teamwf/' + id);

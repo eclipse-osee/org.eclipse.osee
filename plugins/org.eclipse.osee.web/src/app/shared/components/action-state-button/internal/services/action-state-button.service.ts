@@ -81,9 +81,18 @@ export class ActionStateButtonService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
+	private _workTypes = this.actionService
+		.getWorkTypes()
+		.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
 	get actionableItems() {
 		return this._actionableItems;
 	}
+
+	get workTypes() {
+		return this._workTypes;
+	}
+
 	getVersions(actionableItem: string) {
 		return this.actionService.getVersions(actionableItem);
 	}

@@ -22,16 +22,17 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { share, tap } from 'rxjs/operators';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 import {
 	actionableItem,
 	targetedVersion,
-	PRIORITY,
+	PRIORITIES,
 	CreateAction,
+	WorkType,
 } from '@osee/shared/types/configuration-management';
 /**
  * Dialog for creating a new action with the correct workType and category.
@@ -42,7 +43,6 @@ import {
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		NgFor,
 		AsyncPipe,
 		FormsModule,
@@ -58,10 +58,21 @@ export class CreateActionDialogComponent {
 	users = this.userService.usersSorted;
 	actionableItems: Observable<actionableItem[]> =
 		this.actionService.actionableItems.pipe(share());
+	workTypes = this.actionService.workTypes.pipe(
+		tap((types) => {
+			types.forEach((t) => {
+				if (t.name === this.data.defaultWorkType) {
+					this.workType = t;
+					return;
+				}
+			});
+		})
+	);
 	targetedVersions!: Observable<targetedVersion[]>;
 	changeTypes!: Observable<targetedVersion[]>;
-	private _priorityKeys = Object.keys(PRIORITY);
-	private _priorityValues = Object.values(PRIORITY);
+	workType: WorkType = { name: '', humanReadableName: '', description: '' };
+	private _priorityKeys = Object.keys(PRIORITIES);
+	private _priorityValues = Object.values(PRIORITIES);
 	priorities = this._priorityKeys.map((item, row) => {
 		return {
 			name: item.split(/(?=[A-Z])/).join(' '),
@@ -85,5 +96,11 @@ export class CreateActionDialogComponent {
 		this.changeTypes = this.actionService.getChangeTypes(
 			this.data.actionableItem.id
 		);
+	}
+
+	selectWorkType(selection: MatSelectChange) {
+		this.workType = selection.value;
+		this.actionService.workTypeValue = this.workType.name;
+		this.data.actionableItem = new actionableItem();
 	}
 }

@@ -11,8 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NamedIdAndDescription } from '../named-id';
-import { PRIORITY } from './priority.enum';
+import { PRIORITIES, Priority } from './priority';
 import { CreateAction } from './create-action';
+import {
+	targetedVersion,
+	targetedVersionSentinel,
+} from 'src/app/shared/types/configuration-management/targeted-version';
 
 export interface CreateNewActionInterface {
 	title: string;
@@ -20,8 +24,8 @@ export interface CreateNewActionInterface {
 	aiIds: string[];
 	asUserId: string;
 	createdByUserId: string;
-	versionId: string;
-	priority: PRIORITY;
+	versionId: targetedVersion;
+	priority: Priority;
 	changeType: NamedIdAndDescription;
 }
 export class CreateNewAction implements CreateNewActionInterface {
@@ -33,8 +37,10 @@ export class CreateNewAction implements CreateNewActionInterface {
 		}
 		this.asUserId = (config && config.originator.id) || '';
 		this.createdByUserId = (config && config.originator.id) || '';
-		this.versionId = (config && config.targetedVersion) || '';
-		this.priority = (config && config.priority) || PRIORITY.LowestPriority;
+		this.versionId =
+			(config && config.targetedVersion) || targetedVersionSentinel;
+		this.priority =
+			(config && config.priority) || PRIORITIES.LowestPriority;
 		this.changeType = (config && {
 			id: config.changeType.id,
 			name: config.changeType.name,
@@ -42,11 +48,11 @@ export class CreateNewAction implements CreateNewActionInterface {
 		}) || { id: '-1', name: '', description: '' };
 	}
 	changeType: NamedIdAndDescription = { id: '-1', name: '', description: '' };
-	priority: PRIORITY = PRIORITY.LowestPriority;
+	priority: Priority = PRIORITIES.LowestPriority;
 	title: string = '';
 	description: string = '';
 	aiIds: string[] = [];
 	asUserId: string = '';
 	createdByUserId: string = '';
-	versionId: string = '';
+	versionId: targetedVersion = targetedVersionSentinel;
 }

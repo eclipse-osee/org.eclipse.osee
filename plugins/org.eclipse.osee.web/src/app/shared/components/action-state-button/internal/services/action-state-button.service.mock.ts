@@ -24,6 +24,7 @@ import {
 	testDataTransitionResponse,
 	MockXResultData,
 	testnewActionResponse,
+	testWorkType,
 } from '@osee/shared/testing';
 
 export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
@@ -54,6 +55,7 @@ export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
 			name: 'Second ARB',
 		},
 	]),
+	workTypes: of([testWorkType]),
 };
 export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonService> =
 	{
@@ -84,6 +86,7 @@ export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonServi
 				name: 'Second ARB',
 			},
 		]),
+		workTypes: of([testWorkType]),
 	};
 export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonService> =
 	{
@@ -114,4 +117,5 @@ export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonServic
 				name: 'Second ARB',
 			},
 		]),
+		workTypes: of([testWorkType]),
 	};

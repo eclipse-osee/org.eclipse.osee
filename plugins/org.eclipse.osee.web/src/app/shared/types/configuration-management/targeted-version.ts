@@ -14,11 +14,10 @@ export interface targetedVersion {
 	id: number;
 	name: string;
 	Description: string | null;
-	workflow: [];
-	Name: string;
-	'ats.Released': boolean;
-	'ats.Next Version': boolean;
-	'ats.Baseline Branch Id': string;
-	'ats.Allow Create Branch': boolean;
-	'ats. Allow Commit Branch': boolean;
 }
+
+export const targetedVersionSentinel: targetedVersion = {
+	id: -1,
+	name: '',
+	Description: '',
+};

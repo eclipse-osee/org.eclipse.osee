@@ -48,7 +48,10 @@ export const WORKTYPES = [
 	'Problem Report',
 ] as const;
 
-/**
- * @see org.eclipse.osee.ats.api.config.WorkType for this definition
- */
 export type workType = (typeof WORKTYPES)[number];
+
+export type WorkType = {
+	name: string;
+	humanReadableName: string;
+	description: string;
+};
