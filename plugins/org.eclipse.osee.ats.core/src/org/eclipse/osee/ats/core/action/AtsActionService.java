@@ -458,8 +458,16 @@ public class AtsActionService implements IAtsActionService {
       IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
       WorkDefinition workDef = null;
+      if (newActionListeners != null && !newActionListeners.isEmpty()) {
+         for (INewActionListener actionListener : newActionListeners) {
+            AtsWorkDefinitionToken workDefTok = actionListener.getOverrideWorkDefinitionId(teamDef);
+            if (workDefTok != null) {
+               workDef = atsApi.getWorkDefinitionService().getWorkDefinition(workDefTok);
+            }
+         }
+      }
       // Determine of any osgi registered listeners want to provide work def
-      if (actionListeners != null) {
+      if (workDef == null && actionListeners != null) {
          for (INewActionListener listener : actionListeners) {
             AtsWorkDefinitionToken overrideWorkDefinitionId = listener.getOverrideWorkDefinitionId(teamDef);
             if (overrideWorkDefinitionId != null) {
