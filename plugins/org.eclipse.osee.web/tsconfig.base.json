@@ -89,6 +89,7 @@
 				"src/app/ple/messaging/types-interface/lib/menus"
 			],
 			"@osee/page-not-found": ["src/app/page-not-found"],
+			"@osee/auto-login": ["src/app/auto-login"],
 			"@osee/plconfig": ["src/app/ple/plconfig/lib"],
 			"@osee/toolbar": ["src/app/layout/lib/toolbar"],
 			"@osee/toolbar/component": [

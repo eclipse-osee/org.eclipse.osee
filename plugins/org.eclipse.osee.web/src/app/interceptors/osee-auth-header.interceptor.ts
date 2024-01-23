@@ -14,7 +14,7 @@ import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
 import { filter, iif, map, switchMap, take } from 'rxjs';
-import { apiURL, OSEEAuthURL } from '@osee/environments';
+import { apiURL, environment, OSEEAuthURL } from '@osee/environments';
 
 export const OseeAuthInterceptor = (
 	req: HttpRequest<unknown>,
@@ -28,9 +28,12 @@ export const OseeAuthInterceptor = (
 			take(1),
 			map((user) => {
 				return req.clone({
-					headers: req.headers
-						.set('osee.account.id', user?.id || '')
-						.set('Authorization', user?.id || ''),
+					headers:
+						environment.authScheme !== 'NONE'
+							? req.headers
+									.set('osee.account.id', user?.id || '')
+									.set('Authorization', user?.id || '')
+							: req.headers,
 				});
 			}),
 			switchMap((authorizedReq) => next(authorizedReq))

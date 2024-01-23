@@ -1,5 +1,3 @@
-import { UserHeaderProdService } from './internal/user-header-prod.service';
-
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -12,9 +10,13 @@ import { UserHeaderProdService } from './internal/user-header-prod.service';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export const environment = {
+
+import { apiURL } from './api';
+import { environment_type } from './environments.types';
+import { UserHeaderProdService } from './internal/user-header-prod.service';
+export const environment: environment_type = {
 	production: true,
 	headerService: UserHeaderProdService,
+	authScheme: 'FORCED_SSO',
 };
-export const apiURL = '';
 export const OSEEAuthURL = apiURL + '/orcs/datastore/user';

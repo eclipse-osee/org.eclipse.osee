@@ -19,6 +19,7 @@ import {
 	UserHeaderService,
 	OSEEAuthURL,
 	environment,
+	AdditionalAuthService,
 } from '@osee/environments';
 
 @Injectable({
@@ -27,17 +28,9 @@ import {
 export class UserDataAccountService {
 	constructor(
 		private http: HttpClient,
-		private userHeaderService: UserHeaderService
+		private userHeaderService: UserHeaderService,
+		private authProvider: AdditionalAuthService
 	) {}
-
-	private _fetchFromApi = iif(
-		() => this.userHeaderService.useCustomHeaders,
-		this.http.get<user>(OSEEAuthURL, {
-			headers: this.userHeaderService.headers,
-		}),
-		this.http.get<user>(OSEEAuthURL)
-	);
-
 	private _devUser = of<user>({
 		id: '61106791',
 		name: 'Joe Smith',
@@ -62,12 +55,53 @@ export class UserDataAccountService {
 			},
 		],
 	});
+	private _fetchFromApi = iif(
+		() => this.userHeaderService.useCustomHeaders,
+		this.http.get<user>(OSEEAuthURL, {
+			headers: this.userHeaderService.headers,
+		}),
+		this.http.get<user>(OSEEAuthURL)
+	);
 
-	private _user = iif(
-		() => environment.production,
-		this._fetchFromApi,
-		this._devUser
-	).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+	private _demoAuth =
+		environment.authScheme === 'DEMO'
+			? this.http.get<user>(OSEEAuthURL, {
+					headers: this.userHeaderService.headers,
+			  })
+			: this.http.get<user>(OSEEAuthURL);
+
+	private _noneAuth =
+		environment.authScheme === 'NONE'
+			? this.http.get<user>(OSEEAuthURL)
+			: of<user>();
+
+	private _devAuth =
+		environment.authScheme === 'DEV' ? this._devUser : this._noneAuth;
+
+	private _forcedSSOAuth =
+		environment.authScheme === 'FORCED_SSO'
+			? this._fetchFromApi
+			: this._noneAuth;
+
+	private getAuthConfig() {
+		switch (environment.authScheme) {
+			case 'OKTA':
+				return this.authProvider.getAuth();
+			case 'FORCED_SSO':
+				return this._forcedSSOAuth;
+			case 'DEV':
+				return this._devAuth;
+			case 'DEMO':
+				return this._demoAuth;
+			case 'NONE':
+				return this._noneAuth;
+			default:
+				throw new Error('Auth Configuration not defined somehow?');
+		}
+	}
+	private _user = this.getAuthConfig().pipe(
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
 
 	public userHasRoles(roles: UserRoles[]) {
 		return combineLatest([this.user, from(roles)]).pipe(

@@ -10,11 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { UserHeaderDemoService } from './internal/user-header-demo.service';
 
-export const environment = {
+import { apiURL } from './api';
+import { UserHeaderDemoService } from './internal/user-header-demo.service';
+import { environment_type } from './environments.types';
+export const environment: environment_type = {
 	production: true,
 	headerService: UserHeaderDemoService,
+	authScheme: 'DEMO',
 };
-export const apiURL = '';
 export const OSEEAuthURL = apiURL + '/orcs/datastore/user';

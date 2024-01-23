@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './environment';
-export * from './user-header.service';
-export * from './additional-auth.service';
-export * from './api';
+import { Routes } from '@angular/router';
+import { OktaCallbackComponent } from '@okta/okta-angular';
+
+export const auth_routes: Routes = [
+	{ path: 'login/callback', component: OktaCallbackComponent },
+	{ path: 'login', loadComponent: () => import('@osee/auto-login') },
+];

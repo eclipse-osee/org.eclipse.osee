@@ -49,6 +49,504 @@
 						"namedChunks": true
 					},
 					"configurations": {
+						"okta_local_debug": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.okta.ts"
+								},
+								{
+									"replace": "src/environments/additional-auth.service.ts",
+									"with": "src/environments/additional-auth.service.okta.ts"
+								},
+								{
+									"replace": "src/extra_auth_deps.ts",
+									"with": "src/extra_auth_deps.okta.ts"
+								},
+								{
+									"replace": "src/app/auth.routes.ts",
+									"with": "src/app/auth.okta.routes.ts"
+								}
+							]
+						},
+						"okta_local_release": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.okta.ts"
+								},
+								{
+									"replace": "src/environments/additional-auth.service.ts",
+									"with": "src/environments/additional-auth.service.okta.ts"
+								},
+								{
+									"replace": "src/extra_auth_deps.ts",
+									"with": "src/extra_auth_deps.okta.ts"
+								},
+								{
+									"replace": "src/app/auth.routes.ts",
+									"with": "src/app/auth.okta.routes.ts"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"okta_java_debug": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.okta.ts"
+								},
+								{
+									"replace": "src/environments/additional-auth.service.ts",
+									"with": "src/environments/additional-auth.service.okta.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								},
+								{
+									"replace": "src/extra_auth_deps.ts",
+									"with": "src/extra_auth_deps.okta.ts"
+								},
+								{
+									"replace": "src/app/auth.routes.ts",
+									"with": "src/app/auth.okta.routes.ts"
+								}
+							]
+						},
+						"okta_java_release": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.okta.ts"
+								},
+								{
+									"replace": "src/environments/additional-auth.service.ts",
+									"with": "src/environments/additional-auth.service.okta.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								},
+								{
+									"replace": "src/extra_auth_deps.ts",
+									"with": "src/extra_auth_deps.okta.ts"
+								},
+								{
+									"replace": "src/app/auth.routes.ts",
+									"with": "src/app/auth.okta.routes.ts"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"dev_local_debug": {},
+						"dev_local_release": {
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"dev_java_debug": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"fileReplacements": [
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							],
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							]
+						},
+						"dev_java_release": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"fileReplacements": [
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							],
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"forced_sso_local_debug": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.prod.ts"
+								}
+							]
+						},
+						"forced_sso_local_release": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.prod.ts"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"forced_sso_java_debug": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.prod.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							]
+						},
+						"forced_sso_java_release": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.prod.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							],
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"demo_local_debug": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.demo.ts"
+								}
+							]
+						},
+						"demo_local_release": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.demo.ts"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"demo_java_debug": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.demo.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							],
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							]
+						},
+						"demo_java_release": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.demo.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							],
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"none_local_debug": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.none.ts"
+								}
+							]
+						},
+						"none_local_release": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.none.ts"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
+						"none_java_debug": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.none.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							]
+						},
+						"none_java_release": {
+							"outputPath": "dist/osee/production",
+							"baseHref": "/osee/",
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.none.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
+								}
+							],
+							"assets": [
+								"src/favicon.ico",
+								"src/assets",
+								{
+									"input": "src/assets_prod/help/mim",
+									"output": "assets/help/mim",
+									"glob": "*"
+								}
+							],
+							"optimization": true,
+							"outputHashing": "all",
+							"sourceMap": false,
+							"namedChunks": false,
+							"extractLicenses": true,
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "2mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "8kb"
+								}
+							]
+						},
 						"production": {
 							"outputPath": "dist/osee/production",
 							"baseHref": "/osee/",
@@ -56,6 +554,10 @@
 								{
 									"replace": "src/environments/environment.ts",
 									"with": "src/environments/environment.prod.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
 								}
 							],
 							"assets": [
@@ -92,6 +594,10 @@
 								{
 									"replace": "src/environments/environment.ts",
 									"with": "src/environments/environment.demo.ts"
+								},
+								{
+									"replace": "src/environments/api.ts",
+									"with": "src/environments/api.java.ts"
 								}
 							],
 							"assets": [
@@ -137,6 +643,46 @@
 						"demo": {
 							"proxyConfig": "src/environments/proxy.conf.json",
 							"buildTarget": "osee-web:build:demo"
+						},
+						"okta_local_debug": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:okta_local_debug"
+						},
+						"okta_local_release": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:okta_local_release"
+						},
+						"dev_local_debug": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:dev_local_debug"
+						},
+						"dev_local_release": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:dev_local_release"
+						},
+						"forced_sso_local_debug": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:forced_sso_local_debug"
+						},
+						"forced_sso_local_release": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:forced_sso_local_release"
+						},
+						"demo_local_debug": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:demo_local_debug"
+						},
+						"demo_local_release": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:demo_local_release"
+						},
+						"none_local_debug": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:none_local_debug"
+						},
+						"none_local_release": {
+							"proxyConfig": "src/environments/proxy.conf.json",
+							"buildTarget": "osee-web:build:none_local_release"
 						}
 					}
 				},

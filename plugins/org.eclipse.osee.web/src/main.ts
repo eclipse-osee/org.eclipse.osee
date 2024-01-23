@@ -27,6 +27,7 @@ import {
 } from '@angular/router';
 import { GlobalHttpInterceptors } from '@osee/interceptors';
 import { routes } from './app/app.routes';
+import { extra_auth_deps } from './extra_auth_deps';
 
 if (environment.production) {
 	enableProdMode();
@@ -43,7 +44,8 @@ bootstrapApplication(AppComponent, {
 						breaks: true,
 					},
 				},
-			})
+			}),
+			...extra_auth_deps
 		),
 		{ provide: UserHeaderService, useClass: environment.headerService },
 		{ provide: UrlSerializer, useClass: OseeUrlSerializer },

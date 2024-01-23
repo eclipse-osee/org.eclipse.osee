@@ -14,10 +14,10 @@ spec:
     - cat
     resources:
       limits:
-        memory: 3Gi
+        memory: 3.5Gi
         cpu: 1
       requests:
-        memory: 3Gi
+        memory: 3.5Gi
         cpu: 1
     env:
     - name: "HOME"

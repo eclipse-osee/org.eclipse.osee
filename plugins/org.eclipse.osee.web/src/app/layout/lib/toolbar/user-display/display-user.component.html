@@ -25,10 +25,20 @@
 </div>
 <mat-menu
 	#userTrigger="matMenu"
-	class="tw-max-w-fit">
-	<div
-		class="tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base">
-		{{ (userInfo | async)?.name }}
-	</div>
+	class="tw-flex tw-flex-col tw-items-center tw-overflow-y-hidden">
+	@if ((userInfo | async)?.name !== 'Sentinel') {
+		<div
+			class="tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base">
+			{{ (userInfo | async)?.name }}
+		</div>
+	} @else {
+		<div
+			class="tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base">
+			Not signed into OSEE.
+		</div>
+	}
+	@defer (when authScheme ==='OKTA') {
+		<osee-okta-sign></osee-okta-sign>
+	}
 	<router-outlet name="userMenu"></router-outlet>
 </mat-menu>

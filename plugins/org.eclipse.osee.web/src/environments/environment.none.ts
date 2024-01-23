@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -21,7 +21,7 @@ import { UserHeaderProdService } from './internal/user-header-prod.service';
 export const environment: environment_type = {
 	production: false,
 	headerService: UserHeaderProdService,
-	authScheme: 'DEV',
+	authScheme: 'NONE',
 };
 export const OSEEAuthURL = apiURL + '/orcs/datastore/user';
 
