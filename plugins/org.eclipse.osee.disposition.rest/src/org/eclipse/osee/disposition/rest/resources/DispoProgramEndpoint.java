@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,6 +39,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.disposition.model.CopySetParamOption;
+import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgamDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
@@ -243,7 +246,7 @@ public class DispoProgramEndpoint {
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoSetByName(@PathParam("programName") String programName, @PathParam("setName") String setName,
-      String importPath) {
+      String importPath, @QueryParam("sourceSet") @DefaultValue("") String sourceSet) {
       programName = String.format("(DISPO)%s", programName);
       importPath = importPath.replaceAll("\"", "");
       BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
@@ -254,6 +257,14 @@ public class DispoProgramEndpoint {
          ArtifactId createdSetId = dispoApi.createSet(programId, importPath, setName);
          setId = dispoApi.getDispoSetById(programId, ArtifactId.valueOf(createdSetId).getIdString()).getIdString();
          dispoApi.importDispoSet(programId, setId, importPath);
+         if (!sourceSet.isEmpty()) {
+            String sourceSetId = dispoApi.getDispoSetIdByName(programId, sourceSet);
+            if (sourceSetId != null) {
+               CopySetParams params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
+                  CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
+               dispoApi.copyDispoSet(programId, setId, programId, sourceSetId, params);
+            }
+         }
       }
       return Response.status(Status.OK).build();
    }

@@ -711,7 +711,7 @@ public class DispoApiImpl implements DispoApi {
             }
 
             File importDirectory;
-            if (setToEdit.getImportPath().contains("artifactory")) {
+            if (setToEdit.getImportPath().contains("https")) {
                logger.info("Beginning Import...");
                importDirectory = importData(branch, setToEdit, setToEdit.getImportPath());
             } else {
