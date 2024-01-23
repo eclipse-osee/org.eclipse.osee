@@ -469,7 +469,8 @@ public class OrcsStorageImpl implements Storage {
       }
       if (!isImport && itemNotes != null && !itemNotes.equals(origItem.getItemNotes())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
-      } else if (isImport && (origItem.getItemNotes().equals("none") || origItem.getItemNotes().isEmpty())) {
+      } else if (isImport && itemNotes != null && (origItem.getItemNotes().equals(
+         "none") || origItem.getItemNotes().isEmpty())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
       }
       if (fileNumber != null && !fileNumber.equals(origItem.getFileNumber())) {
