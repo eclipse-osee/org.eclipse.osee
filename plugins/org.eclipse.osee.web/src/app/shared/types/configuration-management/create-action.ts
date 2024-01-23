@@ -11,16 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { user } from '../auth';
-import { PRIORITY } from './priority.enum';
+import { PRIORITIES, Priority } from './priority';
 import { actionableItem } from './actionable-item';
+import { targetedVersion, targetedVersionSentinel } from './targeted-version';
 
 export interface CreateActionInterface {
+	defaultWorkType: string;
 	originator: user;
 	actionableItem: actionableItem;
-	targetedVersion: string;
+	targetedVersion: targetedVersion;
 	title: string;
 	description: string;
-	priority: PRIORITY;
+	priority: Priority;
 	changeType: {
 		id: string;
 		name: string;
@@ -31,13 +33,15 @@ export interface CreateActionInterface {
 }
 // only used in action dropdown component
 export class CreateAction implements CreateActionInterface {
-	constructor(currentUser: user) {
+	constructor(currentUser: user, workType: string = '') {
 		this.originator = currentUser;
+		this.defaultWorkType = workType;
 	}
-	priority = PRIORITY.LowestPriority;
+	defaultWorkType = '';
+	priority = PRIORITIES.LowestPriority;
 	originator: user;
 	actionableItem: actionableItem = new actionableItem();
-	targetedVersion: string = '';
+	targetedVersion: targetedVersion = targetedVersionSentinel;
 	title: string = '';
 	description: string = '';
 	changeType = {

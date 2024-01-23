@@ -26,12 +26,17 @@
 		</mat-panel-title>
 	</mat-expansion-panel-header>
 
-	<div class="tw-pt-2">
+	<div class="tw-relative tw-pt-2">
+		<osee-artifact-hierarchy-options
+			class="tw-absolute tw-right-0 tw-top-0 tw-pt-2" />
 		<osee-branch-picker></osee-branch-picker>
 		<div *ngIf="changedBranchId() && (branchType | async)">
-			<div class="tw-flex tw-justify-between tw-pt-4">
+			<div class="tw-flex tw-pt-4">
 				<osee-view-selector />
-				<osee-artifact-hierarchy-options />
+				<div
+					class="tw-flex tw-w-full tw-items-center tw-justify-center tw-px-2">
+					<osee-action-dropdown />
+				</div>
 			</div>
 			<div class="tw-pt-4">
 				<osee-artifact-search />

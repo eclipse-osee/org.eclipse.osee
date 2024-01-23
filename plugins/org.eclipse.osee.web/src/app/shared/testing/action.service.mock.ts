@@ -22,6 +22,7 @@ import {
 	testDataTransitionResponse,
 	testDataVersion,
 	testWorkFlow,
+	testWorkType,
 } from './configuration-management.response.mock';
 import { MockXResultData } from './XResultData.response.mock';
 import { MockNamedId } from './NamedId.response.mock';
@@ -30,6 +31,9 @@ import { testnewActionResponse } from './new-action.response.mock';
 export const actionServiceMock: Partial<ActionService> = {
 	getActionableItems(workType: string) {
 		return of(testARB);
+	},
+	getWorkTypes() {
+		return of([testWorkType]);
 	},
 	createBranch(body: CreateNewActionInterface) {
 		return of(testnewActionResponse);

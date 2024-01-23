@@ -12,59 +12,7 @@
  -->
 <h1 mat-dialog-title>Create Action</h1>
 <div mat-dialog-content>
-	<mat-form-field class="tw-w-full tw-text-lg">
-		<mat-label>Select Actionable Item</mat-label>
-		<mat-select
-			[(ngModel)]="data.actionableItem"
-			(selectionChange)="selectActionableItem()"
-			required
-			data-cy="select-actionable-item">
-			<mat-option
-				*ngFor="let item of actionableItems | async"
-				[value]="item"
-				[attr.data-cy]="'option-' + item.name">
-				{{ item.name }}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
-	<br />
-	<div
-		*ngIf="data.actionableItem.id.length !== 0"
-		class="tw-text-lg">
-		<mat-form-field
-			*ngIf="data.actionableItem.id.length !== 0"
-			class="tw-w-full">
-			<mat-label>Select Targeted Version</mat-label>
-			<mat-select
-				[(ngModel)]="data.targetedVersion"
-				required
-				data-cy="select-targeted-version">
-				<mat-option
-					*ngFor="let item of targetedVersions | async"
-					[value]="item"
-					[attr.data-cy]="'option-' + item.name">
-					{{ item.name }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
-		<mat-form-field
-			*ngIf="data.actionableItem.id.length !== 0"
-			class="tw-w-full">
-			<mat-label>Select Change Type</mat-label>
-			<mat-select
-				[(ngModel)]="data.changeType"
-				required
-				data-cy="select-change-type">
-				<mat-option
-					*ngFor="let item of changeTypes | async"
-					[value]="item"
-					[attr.data-cy]="'option-' + item.name">
-					{{ item.name }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
-	</div>
-	<mat-form-field class="tw-w-full tw-text-lg">
+	<mat-form-field class="tw-w-full">
 		<mat-label>Title</mat-label>
 		<input
 			matInput
@@ -74,8 +22,44 @@
 			required
 			data-cy="action-title" />
 	</mat-form-field>
-	<br />
-	<mat-form-field class="tw-w-full tw-text-lg">
+	@if (workTypes | async; as _workTypes) {
+		@if (data.defaultWorkType == '') {
+			<mat-form-field class="tw-w-full">
+				<mat-label>Select Work Type</mat-label>
+				<mat-select
+					[(ngModel)]="workType"
+					(selectionChange)="selectWorkType($event)"
+					required
+					data-cy="select-work-type">
+					<mat-option
+						*ngFor="let item of _workTypes"
+						[value]="item"
+						[attr.data-cy]="'option-' + item.name">
+						{{ item.humanReadableName }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		}
+	}
+	@if (workType.name != '') {
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Actionable Item</mat-label>
+			<mat-select
+				[(ngModel)]="data.actionableItem"
+				(selectionChange)="selectActionableItem()"
+				required
+				data-cy="select-actionable-item">
+				<mat-option
+					*ngFor="let item of actionableItems | async"
+					[value]="item"
+					[attr.data-cy]="'option-' + item.name">
+					{{ item.name }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<br />
+	}
+	<mat-form-field class="tw-w-full">
 		<mat-label>Description</mat-label>
 		<input
 			matInput
@@ -86,7 +70,7 @@
 			data-cy="action-description" />
 	</mat-form-field>
 	<br />
-	<mat-form-field class="tw-w-full tw-text-lg">
+	<mat-form-field class="tw-w-full">
 		<mat-label>Select Priority</mat-label>
 		<mat-select
 			[(ngModel)]="data.priority"
@@ -100,6 +84,37 @@
 			</mat-option>
 		</mat-select>
 	</mat-form-field>
+	<br />
+	@if (data.actionableItem.id.length !== 0) {
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Change Type</mat-label>
+			<mat-select
+				[(ngModel)]="data.changeType"
+				required
+				data-cy="select-change-type">
+				<mat-option
+					*ngFor="let item of changeTypes | async"
+					[value]="item"
+					[attr.data-cy]="'option-' + item.name">
+					{{ item.name }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field class="tw-w-full">
+			<mat-label>Select Targeted Version</mat-label>
+			<mat-select
+				[(ngModel)]="data.targetedVersion"
+				required
+				data-cy="select-targeted-version">
+				<mat-option
+					*ngFor="let item of targetedVersions | async"
+					[value]="item"
+					[attr.data-cy]="'option-' + item.name">
+					{{ item.name }}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	}
 </div>
 <div mat-dialog-actions>
 	<button
@@ -114,10 +129,10 @@
 		[disabled]="
 			data.description.length === 0 ||
 			data.title.length === 0 ||
-			data.targetedVersion.length === 0 ||
 			data.actionableItem.id.length === 0 ||
 			data.originator.id.length === 0 ||
-			data.changeType.id.length === 0
+			data.changeType.id.length === 0 ||
+			data.targetedVersion.id === -1
 		"
 		data-cy="submit-btn">
 		Create Action

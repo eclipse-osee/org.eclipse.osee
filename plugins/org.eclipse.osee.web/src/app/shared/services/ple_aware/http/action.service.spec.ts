@@ -22,7 +22,9 @@ import { apiURL } from '@osee/environments';
 import { NamedId } from '@osee/shared/types';
 import {
 	transitionAction,
-	PRIORITY,
+	PRIORITIES,
+	targetedVersionSentinel,
+	CreateNewActionInterface,
 } from '@osee/shared/types/configuration-management';
 import { ActionService } from './action.service';
 import {
@@ -36,14 +38,14 @@ import {
 	MockXResultData,
 } from '@osee/shared/testing';
 
-const testNewActionData = {
+const testNewActionData: CreateNewActionInterface = {
 	title: 'title',
 	description: 'string',
 	aiIds: [],
 	asUserId: '0',
 	createdByUserId: '0',
-	versionId: '0',
-	priority: PRIORITY.LowestPriority,
+	versionId: targetedVersionSentinel,
+	priority: PRIORITIES.LowestPriority,
 	changeType: { id: '-1', name: '', description: '' },
 };
 const testUsers = [{ testDataUser: MockUserResponse }];

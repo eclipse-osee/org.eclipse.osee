@@ -14,14 +14,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactHierarchyPanelComponent } from './artifact-hierarchy-panel.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BranchPickerStub } from '@osee/shared/components/testing';
 import {
-	BranchPickerComponent,
-	ViewSelectorComponent,
-} from '@osee/shared/components';
+	ActionDropdownStub,
+	BranchPickerStub,
+} from '@osee/shared/components/testing';
 import { ViewSelectorMockComponent } from '@osee/messaging/shared/testing';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hierarchy-path.service.mock';
+import { CommonModule } from '@angular/common';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ArtifactHierarchyComponent } from 'src/app/ple/artifact-explorer/lib/components/hierarchy/artifact-hierarchy/artifact-hierarchy.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatIconModule } from '@angular/material/icon';
+import { ArtifactSearchComponent } from '../artifact-search/artifact-search.component';
+import { ArtifactHeirarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-heirarchy-oprions.component.mock';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -29,11 +35,19 @@ describe('ArtifactHierarchyPanelComponent', () => {
 
 	beforeEach(() => {
 		TestBed.overrideComponent(ArtifactHierarchyPanelComponent, {
-			add: {
-				imports: [BranchPickerStub, ViewSelectorMockComponent],
-			},
-			remove: {
-				imports: [BranchPickerComponent, ViewSelectorComponent],
+			set: {
+				imports: [
+					CommonModule,
+					MatExpansionModule,
+					ArtifactHierarchyComponent,
+					DragDropModule,
+					ArtifactHeirarchyOptionsMockComponent,
+					MatIconModule,
+					ArtifactSearchComponent,
+					ActionDropdownStub,
+					BranchPickerStub,
+					ViewSelectorMockComponent,
+				],
 			},
 		}).configureTestingModule({
 			imports: [ArtifactHierarchyPanelComponent, NoopAnimationsModule],

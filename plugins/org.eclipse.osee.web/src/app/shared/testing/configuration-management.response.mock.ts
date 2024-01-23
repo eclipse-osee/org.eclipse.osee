@@ -15,6 +15,7 @@ import {
 	transitionAction,
 	teamWorkflow,
 	targetedVersion,
+	WorkType,
 } from '@osee/shared/types/configuration-management';
 import { commitResponse, transitionResponse } from '@osee/shared/types';
 import { MockXResultData } from './XResultData.response.mock';
@@ -102,12 +103,11 @@ export const testDataVersion: targetedVersion[] = [
 		id: 0,
 		name: 'name',
 		Description: null,
-		workflow: [],
-		Name: 'name',
-		'ats.Released': true,
-		'ats.Next Version': true,
-		'ats.Baseline Branch Id': '0',
-		'ats.Allow Create Branch': true,
-		'ats. Allow Commit Branch': true,
 	},
 ];
+
+export const testWorkType: WorkType = {
+	name: 'Work_Type',
+	humanReadableName: 'Work Type',
+	description: 'This is a work type',
+};

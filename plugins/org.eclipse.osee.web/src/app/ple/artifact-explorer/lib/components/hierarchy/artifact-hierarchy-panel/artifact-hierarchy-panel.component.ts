@@ -14,6 +14,7 @@ import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import {
+	ActionDropDownComponent,
 	BranchPickerComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
@@ -40,6 +41,7 @@ import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarc
 		ViewSelectorComponent,
 		MatIconModule,
 		ArtifactSearchComponent,
+		ActionDropDownComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })

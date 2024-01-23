@@ -53,7 +53,7 @@ export class ActionDropDownComponent implements OnChanges {
 		switchMap((thisUser) =>
 			this.dialog
 				.open(CreateActionDialogComponent, {
-					data: new CreateAction(thisUser),
+					data: new CreateAction(thisUser, this.workType),
 					minWidth: '60%',
 				})
 				.afterClosed()
