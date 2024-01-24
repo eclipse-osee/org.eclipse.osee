@@ -45,6 +45,7 @@ public class WorkDefBuilder {
    WorkDefinition workDef;
    XResultData rd;
    List<StateDefBuilder> stateDefBuilders = new ArrayList<>();
+   List<Integer> stateOrdinals = new ArrayList<>();
 
    public WorkDefBuilder(AtsWorkDefinitionToken workDefToken) {
       this(workDefToken, null);
@@ -56,7 +57,8 @@ public class WorkDefBuilder {
       rd = workDef.getResults();
    }
 
-   public StateDefBuilder andState(int ordinal, StateToken state, StateType type, WorkDefBuilderOption... builderOptions) {
+   public StateDefBuilder andState(int ordinal, StateToken state, StateType type,
+      WorkDefBuilderOption... builderOptions) {
       return this.andState(ordinal, state.getName(), type, builderOptions);
    }
 
@@ -73,12 +75,21 @@ public class WorkDefBuilder {
             rd.errorf("Ordinal [%s] already exists in state [%s]\n", ordinal, name);
          }
       }
+      stateOrdinals.add(ordinal);
       StateDefBuilder stateDefBuilder = new StateDefBuilder(ordinal, name, type, workDef, builderOptions);
       stateDefBuilders.add(stateDefBuilder);
       return stateDefBuilder;
    }
 
    public WorkDefinition getWorkDefinition() {
+      // Validate state ordinals
+      int numStates = stateDefBuilders.size();
+      for (int x = 1; x <= numStates; x++) {
+         if (!stateOrdinals.contains(x)) {
+            rd.errorf("Ordinal [%s] is missing in [%s]\n", x, workDef.getName());
+         }
+      }
+
       // Resolve all layouts formatted from getLayoutFromState
       // Resolve all state definitions from state tokens
       for (StateDefBuilder stateDefBuilder : stateDefBuilders) {
