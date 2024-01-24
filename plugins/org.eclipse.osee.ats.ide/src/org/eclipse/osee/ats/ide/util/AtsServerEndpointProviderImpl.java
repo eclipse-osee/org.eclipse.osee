@@ -37,6 +37,8 @@ import org.eclipse.osee.ats.core.workflow.util.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.workflow.util.WorkItemsJsonReader;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 
@@ -62,12 +64,13 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    private InsertionEndpointApi insertionEp;
    private InsertionActivityEndpointApi insertionActivityEp;
    private AtsHealthEndpointApi healthEp;
-   private ResourcesEndpoint resourcesEp;
+   private ResourcesEndpoint resourceEp;
    private AtsActionUiEndpointApi actionUiEp;
    private GitEndpoint gitEp;
    private JiraEndpoint jiraEp;
    private MetricsEndpointApi metricsEp;
    private IAtsTestEndpoint testEp;
+   private ArtifactEndpoint artEp;
 
    public AtsServerEndpointProviderImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -75,12 +78,20 @@ public class AtsServerEndpointProviderImpl implements IAtsServerEndpointProvider
    }
 
    @Override
-   public ResourcesEndpoint getResourcesEp() {
-      if (resourcesEp == null) {
-         WebTarget target = jaxRsApi.newTarget(String.format("orcs/resources"));
-         resourcesEp = jaxRsApi.newProxy(target, ResourcesEndpoint.class);
+   public ArtifactEndpoint getArtifactEp() {
+      if (artEp == null) {
+         artEp = ServiceUtil.getOseeClient().getArtifactEndpoint(CoreBranches.COMMON);
       }
-      return resourcesEp;
+      return artEp;
+   }
+
+   @Override
+   public ResourcesEndpoint getResourcesEp() {
+      if (resourceEp == null) {
+         WebTarget target = jaxRsApi.newTarget(String.format("orcs/resources"));
+         resourceEp = jaxRsApi.newProxy(target, ResourcesEndpoint.class);
+      }
+      return resourceEp;
    }
 
    public static WebTarget createAtsTarget(JaxRsApi jaxRsApi) {
