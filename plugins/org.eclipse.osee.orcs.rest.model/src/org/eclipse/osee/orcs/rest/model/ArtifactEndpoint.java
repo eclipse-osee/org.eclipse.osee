@@ -76,6 +76,11 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    ArtifactToken getArtifactToken(@PathParam("artifactId") ArtifactId artifactId);
 
+   @GET
+   @Path("{artifactId}/tokenOrSentinal")
+   @Produces(MediaType.APPLICATION_JSON)
+   ArtifactToken getArtifactTokenOrSentinel(@PathParam("artifactId") ArtifactId artifactId);
+
    @Path("{artifactId}/attribute")
    AttributeEndpoint getAttributes(@PathParam("artifactId") ArtifactId artifactId);
 
@@ -228,4 +233,5 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    List<List<ArtifactId>> getPathToArtifact(@PathParam("branch") BranchId branch,
       @PathParam("artifactId") ArtifactId artifactId, @QueryParam("viewId") ArtifactId viewId);
+
 }

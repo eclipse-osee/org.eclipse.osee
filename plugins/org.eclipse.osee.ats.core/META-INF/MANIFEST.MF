@@ -37,6 +37,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs.data,
+ org.eclipse.osee.orcs.rest.model,
  org.osgi.framework,
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment

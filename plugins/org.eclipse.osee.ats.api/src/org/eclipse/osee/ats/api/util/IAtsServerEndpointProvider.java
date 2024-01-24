@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.define.rest.api.git.GitEndpoint;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 
@@ -84,5 +85,7 @@ public interface IAtsServerEndpointProvider {
    MetricsEndpointApi getMetricsEp();
 
    IAtsTestEndpoint getTestEp();
+
+   ArtifactEndpoint getArtifactEp();
 
 }

@@ -86,13 +86,34 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    public void run(TableLoadOption... tableLoadOptions) {
       ensureFirstLoad();
       List<ArtifactToken> workItems = new ArrayList<>();
+
+      cleanupVisitedItems();
+
+      // Re-add non-deleted/non-purged
       for (RecentlyVisistedItem item : visitedItems.getReverseVisited()) {
          IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(item.getIdToken());
          if (workItem != null && !AtsApiService.get().getStoreService().isDeleted(item.getIdToken())) {
             workItems.add(workItem.getStoreObject());
          }
       }
+
+      // Open World View for non-deleted/non-purged
       WorldEditor.open(new WorldEditorSimpleProvider(getName(), workItems, null, tableLoadOptions));
+
+      // Refresh with non-deleted/non-purged
+      refresh();
+   }
+
+   private void cleanupVisitedItems() {
+      if (visitedItems != null) {
+         List<RecentlyVisistedItem> reverseVisited = visitedItems.getReverseVisited();
+         visitedItems.clearVisited();
+         for (RecentlyVisistedItem item : reverseVisited) {
+            if (AtsApiService.get().getQueryService().getArtifactTokenOrSentinal(item.getIdToken()).isValid()) {
+               visitedItems.addVisitedItem(item);
+            }
+         }
+      }
    }
 
    public static void clearVisited() {
@@ -142,6 +163,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
       try {
          if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
+            cleanupVisitedItems();
             String toStoreJson = AtsApiService.get().jaxRsApi().toJson(visitedItems);
             String fromStoreJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
             if (!toStoreJson.equals(fromStoreJson)) {

@@ -163,6 +163,11 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
+   public ArtifactToken getArtifactTokenOrSentinel(ArtifactId artifactId) {
+      return orcsApi.getQueryFactory().fromBranch(branch).andId(artifactId).asArtifactTokenOrSentinel();
+   }
+
+   @Override
    public AttributeEndpoint getAttributes(ArtifactId artifactId) {
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch);
       return new AttributeEndpointImpl(artifactId, branch, orcsApi, query, uriInfo);
@@ -419,10 +424,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    };
 
    @Override
-   public List<List<ArtifactId>> getPathToArtifact(BranchId branch, ArtifactId artifactId,
-      ArtifactId viewId) {
-      
-      // List of artIds to return from the query 
+   public List<List<ArtifactId>> getPathToArtifact(BranchId branch, ArtifactId artifactId, ArtifactId viewId) {
+
+      // List of artIds to return from the query
       List<Pair<ArtifactId, ArtifactId>> pairings = new ArrayList<>();
       List<ArtifactId> childArtIds = new ArrayList<>();
       Consumer<JdbcStatement> consumer = stmt -> {
@@ -452,9 +456,9 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
       // run query to return list of artifacts that belong on the path from the top of the hierarchy to the input artifact
       orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, branch, artifactId);
-      
+
       // organize the mixed list of pairs into a list of lists of artIds (list of paths)
-      List<List<ArtifactId>> paths = new ArrayList<>();    
+      List<List<ArtifactId>> paths = new ArrayList<>();
       while (childArtIds.contains(artifactId)) {
          paths.add(findPath(artifactId, childArtIds, pairings));
          // increment while condition (i.e. one path has been found)

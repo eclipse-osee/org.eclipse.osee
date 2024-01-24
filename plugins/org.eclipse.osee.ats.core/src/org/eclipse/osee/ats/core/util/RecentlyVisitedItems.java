@@ -71,4 +71,8 @@ public class RecentlyVisitedItems {
       return recentlyVisitedCount;
    }
 
+   public void addVisitedItem(RecentlyVisistedItem item) {
+      visited.add(item);
+   }
+
 }

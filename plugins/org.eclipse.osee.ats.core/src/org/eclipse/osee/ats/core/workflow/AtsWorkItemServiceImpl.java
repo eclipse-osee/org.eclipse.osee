@@ -338,6 +338,12 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public IAtsWorkItem getWorkItem(ArtifactToken artifact) {
       IAtsWorkItem workItem = null;
       try {
+         if (artifact.getArtifactType().isInvalid()) {
+            artifact = atsApi.getQueryService().getArtifact(Long.valueOf(artifact.getId()));
+         }
+         if (artifact == null) {
+            return null;
+         }
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             workItem = getTeamWf(artifact);
          } else if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview) || artifact.isOfType(

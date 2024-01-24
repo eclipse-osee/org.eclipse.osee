@@ -138,7 +138,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public ArtifactToken getArtifactTokenOrSentinal(ArtifactId artifactId) {
-      return getArtifactToken(artifactId);
+      return atsApi.getServerEndpoints().getArtifactEp().getArtifactTokenOrSentinel(artifactId);
    }
 
    @Override
