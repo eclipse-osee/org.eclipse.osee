@@ -43,6 +43,7 @@ Import-Package: com.fasterxml.jackson.annotation,
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core.access,
  org.eclipse.osee.ats.core.access.demo,
+ org.eclipse.osee.ats.core.action,
  org.eclipse.osee.ats.core.agile,
  org.eclipse.osee.ats.core.agile.operations,
  org.eclipse.osee.ats.core.ai,

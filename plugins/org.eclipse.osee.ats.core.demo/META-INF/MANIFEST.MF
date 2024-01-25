@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ATS Core Demo
+Bundle-SymbolicName: org.eclipse.osee.ats.core.demo;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Service-Component: OSGI-INF/*.xml
+Import-Package: org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.ai,
+ org.eclipse.osee.ats.api.config.tx,
+ org.eclipse.osee.ats.api.data,
+ org.eclipse.osee.ats.api.demo,
+ org.eclipse.osee.ats.api.team,
+ org.eclipse.osee.ats.api.workflow,
+ org.eclipse.osee.ats.core.action,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.util
+ 
