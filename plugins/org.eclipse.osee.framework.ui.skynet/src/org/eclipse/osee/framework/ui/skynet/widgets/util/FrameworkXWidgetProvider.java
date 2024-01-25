@@ -42,10 +42,10 @@ import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.EnumeratedArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactMultiChoiceSelect;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkArtifactRefIdEntryWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
@@ -76,6 +76,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkArtifactRefIdEntryWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
@@ -213,8 +214,8 @@ public final class FrameworkXWidgetProvider {
                AttributeTypeToken attributeType = getAttributeTypeOrSentinel(xWidgetLayoutData, xWidget, tokenService);
                ((AttributeTypeWidget) xWidget).setAttributeType(attributeType);
             }
-            if (xWidget instanceof XHyperlinkLabelEnumeratedArtDam) {
-               XHyperlinkLabelEnumeratedArtDam widget = (XHyperlinkLabelEnumeratedArtDam) xWidget;
+            if (xWidget instanceof EnumeratedArtifactWidget) {
+               EnumeratedArtifactWidget widget = (EnumeratedArtifactWidget) xWidget;
                if (xWidgetLayoutData.getEnumeratedArt() != null) {
                   widget.setEnumeratedArt(xWidgetLayoutData.getEnumeratedArt());
                }

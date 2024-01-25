@@ -46,6 +46,7 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
       super(label);
    }
 
+   @Override
    public void setAttributeType(AttributeTypeToken attributeType) {
       this.attributeType = attributeType;
    }
