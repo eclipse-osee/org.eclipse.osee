@@ -14,6 +14,8 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import static org.eclipse.osee.orcs.OseeDb.ARTIFACT_TABLE;
+import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_BINARY_TABLE;
+import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_SOURCE_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.BRANCH_BASELINE_TRANSACTION_ID;
 import static org.eclipse.osee.orcs.OseeDb.BRANCH_CATEGORY;
@@ -125,6 +127,8 @@ public final class DatabaseCreation {
       jdbcClient.createTable(OSEE_OAUTH_AUTHORIZATION_TABLE);
       jdbcClient.createTable(OSEE_OAUTH_TOKEN_TABLE);
       jdbcClient.createTable(OSEE_VALIDATE_GAMMA_ID);
+      jdbcClient.createTable(ATTRIBUTE_SOURCE_TABLE);
+      jdbcClient.createTable(ATTRIBUTE_BINARY_TABLE);
    }
 
    private void dropTables() {
@@ -185,5 +189,7 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(OSEE_OAUTH_AUTHORIZATION_TABLE);
       jdbcClient.dropTable(OSEE_OAUTH_TOKEN_TABLE);
       jdbcClient.dropTable(OSEE_VALIDATE_GAMMA_ID);
+      jdbcClient.dropTable(ATTRIBUTE_SOURCE_TABLE);
+      jdbcClient.dropTable(ATTRIBUTE_BINARY_TABLE);
    }
 }

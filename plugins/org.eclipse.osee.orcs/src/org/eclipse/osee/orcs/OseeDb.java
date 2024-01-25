@@ -56,6 +56,35 @@ public class OseeDb {
       ATTRIBUTE_TABLE.createIndex("OSEE_ATTRIBUTE_G_AT_IDX", true, ATTRIBUTE_GAMMA_ID, ATTRIBUTE_ATRR_ID);
    }
 
+   public static final SqlTable ATTRIBUTE_SOURCE_TABLE =
+      new SqlTable("osee_attribute_source", "att", ObjectType.ATTRIBUTE);
+   public static final SqlColumn ATTRIBUTE_SOURCE_TABLE_GAMMA_ID =
+      ATTRIBUTE_SOURCE_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_SOURCE_TABLE_ART_ID =
+      ATTRIBUTE_SOURCE_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_SOURCE_TABLE_TYPE_ID =
+      ATTRIBUTE_SOURCE_TABLE.addColumn("TYPE_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_SOURCE_TABLE_ATTR_ORDER =
+      ATTRIBUTE_SOURCE_TABLE.addColumn("ATTR_ORDER", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_SOURCE_TABLE_STRING_VALUE =
+      ATTRIBUTE_SOURCE_TABLE.addVarCharColumn("STRING_VALUE", 4000);
+   public static final SqlColumn ATTRIBUTE_SOURCE_TABLE_NUMBER_VALUE =
+      ATTRIBUTE_SOURCE_TABLE.addColumn("NUMBER_VALUE", JDBCType.BIGINT);
+   static {
+      ATTRIBUTE_SOURCE_TABLE.setPrimaryKeyConstraint(ATTRIBUTE_SOURCE_TABLE_TYPE_ID, ATTRIBUTE_SOURCE_TABLE_ART_ID,
+         ATTRIBUTE_SOURCE_TABLE_ATTR_ORDER);
+   }
+
+   public static final SqlTable ATTRIBUTE_BINARY_TABLE =
+      new SqlTable("osee_attribute_binary", "att", ObjectType.ATTRIBUTE);
+   public static final SqlColumn ATTRIBUTE_BINARY_TABLE_GAMMA_ID =
+      ATTRIBUTE_BINARY_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_BINARY_TABLE_VALUE =
+      ATTRIBUTE_BINARY_TABLE.addColumn("VALUE", JDBCType.BLOB);
+   static {
+      ATTRIBUTE_BINARY_TABLE.setPrimaryKeyConstraint(ATTRIBUTE_BINARY_TABLE_GAMMA_ID);
+   }
+
    public static final SqlTable RELATION_TABLE = new SqlTable("osee_relation_link", "rel", ObjectType.RELATION);
    public static final SqlColumn RELATION_LINK_REL_LINK_TYPE_ID =
       RELATION_TABLE.addColumn("REL_LINK_TYPE_ID", JDBCType.BIGINT);
