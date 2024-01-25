@@ -1,4 +1,5 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -52,6 +53,7 @@ public class XComputedCharacteristicWidget extends XText implements ArtifactWidg
       updateTextWidget();
    }
 
+   @SuppressWarnings("unchecked")
    private <T> List<T> getAttributeValues() {
       List<T> attributeValues = new ArrayList<>();
       for (AttributeTypeToken attributeType : computedCharacteristic.getAttributeTypesToCompute()) {

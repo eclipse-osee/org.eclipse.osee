@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
 import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -398,6 +399,13 @@ public class XWidgetBuilder {
       for (WidgetHint hint : widgetHints) {
          currItem.addWidgetHint(hint);
       }
+      return this;
+   }
+
+   public XWidgetBuilder andEnumeratedArtifactWidget(String displayName, String widgetType,
+      ArtifactToken artifactToken) {
+      andWidget(displayName, widgetType);
+      currItem.setEnumeratedArt(artifactToken);
       return this;
    }
 
