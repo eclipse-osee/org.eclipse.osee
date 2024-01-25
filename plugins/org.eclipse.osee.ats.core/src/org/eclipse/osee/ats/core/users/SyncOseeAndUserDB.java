@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -342,6 +343,7 @@ public abstract class SyncOseeAndUserDB {
          return;
       }
 
+      String oseeDbName = OseeProperties.getOseeDbName();
       String firstOrLastStr = first ? "First" : "Last";
       int firstOrLastDaysInt = first ? getDaysTillFirstInActiveNotice() : getDaysTillLastInActiveNotice();
       String firstOrLastStaticId = first ? FIRST_NOTIFICATION_STATIC_ID : SECOND_NOTIFICATION_STATIC_ID;
@@ -361,10 +363,10 @@ public abstract class SyncOseeAndUserDB {
          }
 
          String toEmail = user.getEmail();
-         String subject =
-            String.format("ACTION REQUIRED - OSEE Account Will Be Disabled - %s Notification", firstOrLastStr);
+         String subject = String.format(
+            "ACTION REQUIRED - OSEE Account IN " + oseeDbName + " Will Be Disabled - %s Notification", firstOrLastStr);
          atsApi.getNotificationService().sendNotifications(fromEmail, Collections.asList(toEmail), subject,
-            "Your OSEE account has not been accessed in the past " //
+            "Your OSEE account in " + oseeDbName + " has not been accessed in the past " //
                + firstOrLastDaysInt + " days.<br/><br/>" //
                + "<b>Please launch OSEE to continue account access.</b><br/><br/> " //
                + "Otherwise the account will be automatically disabled.<br/><br/>" //
