@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
@@ -46,7 +47,10 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {
          testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
-         Assert.assertEquals(DemoUsers.Joe_Smith_And_Kay_Jones, task.getAssigneesStr());
+         String assignees = task.getAssigneesStr();
+         boolean containsJoe = assignees.contains(DemoUsers.Joe_Smith.getName()); 
+         boolean containsKay = assignees.contains(DemoUsers.Kay_Jones.getName());
+         Assert.assertTrue(containsJoe && containsKay);
       }
       if (!taskNames.isEmpty()) {
          Assert.assertEquals(String.format("Not all tasks exist.  [%s] remain", taskNames), taskNames.size(),

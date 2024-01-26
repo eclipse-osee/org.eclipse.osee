@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.users;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.core.users.SyncOseeAndUserDB;
@@ -61,8 +62,14 @@ public class SyncOseeAndUserDBDemo extends SyncOseeAndUserDB {
          AtsUser userByToken = atsApi.getUserService().getUserByToken(DemoUsers.Keith_Johnson);
          userByToken.setActive(false);
          return userByToken;
+      } else { 
+    	 AtsUser userByToken = atsApi.getUserService().getUserByUserId(userId); 
+    	 if (userByToken != null) {
+    		 return userByToken;
+    	 } else {
+    		  return null;
+    	 }    	   
       }
-      return null;
    }
 
    @Override
