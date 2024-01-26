@@ -79,7 +79,7 @@ export const navigationStructure: navigationElement[] = [
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
-				routerLink: '/artifact/explorer',
+				routerLink: '/ple/artifact/explorer',
 				icon: '',
 				description: '',
 				children: [],
