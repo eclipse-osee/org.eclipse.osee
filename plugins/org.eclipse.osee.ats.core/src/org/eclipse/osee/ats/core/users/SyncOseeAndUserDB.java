@@ -386,7 +386,7 @@ public abstract class SyncOseeAndUserDB {
       JdbcStatement chStmt = jdbcClient.getStatement();
       Date lastActivityDate = null;
       try {
-         chStmt.runPreparedQuery(LAST_DATE_ACCOUNT_LOGGED_ACTIVITY, user.getIdString());
+         chStmt.runPreparedQuery(LAST_DATE_ACCOUNT_LOGGED_ACTIVITY, user.getId());
          while (chStmt.next()) {
             Timestamp time = chStmt.getTimestamp("START_TIMESTAMP");
             if (time != null) {
