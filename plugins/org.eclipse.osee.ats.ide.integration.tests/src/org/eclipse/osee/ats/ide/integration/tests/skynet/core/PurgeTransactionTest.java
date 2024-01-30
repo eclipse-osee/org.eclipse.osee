@@ -97,6 +97,6 @@ public class PurgeTransactionTest {
 
    private int getCurrentRows(TransactionId createTxId) {
       final String query = "select count(*) from osee_txs where branch_id=? and transaction_id=? and tx_current=1";
-      return ConnectionHandler.getJdbcClient().fetch(-1, query, CoreBranches.COMMON.getIdString(), createTxId);
+      return ConnectionHandler.getJdbcClient().fetch(-1, query, CoreBranches.COMMON.getId(), createTxId);
    }
 }
