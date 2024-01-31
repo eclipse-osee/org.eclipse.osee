@@ -116,7 +116,7 @@ public class AgileEndpointTest {
          Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
       }
       // Test Get
-      List<JaxAgileSprint> sprints = agile.getSprints(teamId);
+      List<JaxAgileSprint> sprints = agile.getSprints(teamId, false);
       Assert.assertEquals(1, sprints.size());
       JaxAgileSprint sprint = sprints.iterator().next();
       Assert.assertEquals("My Sprint", sprint.getName());
@@ -125,7 +125,7 @@ public class AgileEndpointTest {
 
       // Test Delete
       try (Response response3 = agile.deleteSprint(teamId, sprint.getId())) {
-         sprints = agile.getSprints(teamId);
+         sprints = agile.getSprints(teamId, false);
          Assert.assertNull(AtsApiService.get().getQueryService().getArtifact(sprint.getId()));
       }
    }

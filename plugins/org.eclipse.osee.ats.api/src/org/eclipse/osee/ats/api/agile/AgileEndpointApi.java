@@ -22,6 +22,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
@@ -171,7 +172,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/sprint")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAgileSprint> getSprints(@PathParam("teamId") long teamId);
+   public List<JaxAgileSprint> getSprints(@PathParam("teamId") long teamId, @QueryParam("active") boolean active);
 
    /**
     * @return list of in-work sprint tokens

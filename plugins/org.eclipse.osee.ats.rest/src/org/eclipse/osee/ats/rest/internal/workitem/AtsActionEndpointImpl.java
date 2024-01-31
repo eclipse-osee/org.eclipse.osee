@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -430,24 +431,15 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
       NewActionResult result = new NewActionResult();
       try {
-         AtsUser asUser = atsApi.getUserService().getCurrentUser();
-         if (asUser == null) {
-            result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
-            return result;
-         }
          Collection<IAtsActionableItem> ais = new ArrayList<>();
          ActionableItem ai =
             atsApi.getQueryService().getConfigItem(Long.valueOf(newActionData.getAiIds().iterator().next()));
          ais.add(ai);
 
          IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
-         ChangeTypes changeType =
-            newActionData.getChangeType().isValid() ? newActionData.getChangeType() : ChangeTypes.Improvement;
          IAtsVersion version =
             atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
-         ActionResult actionResult = atsApi.getActionService().createAction(asUser, newActionData.getTitle(),
-            newActionData.getDescription(), changeType, newActionData.getPriority(), false, null, ais, new Date(),
-            atsApi.getUserService().getCurrentUser(), null, changes);
+         ActionResult actionResult = atsApi.getActionService().createAction(newActionData, changes);
 
          IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
          atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
@@ -495,12 +487,16 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       try {
          AtsUser asUser = atsApi.getUserService().getUserByUserId(newActionData.getAsUserId());
          if (asUser == null) {
+            asUser = atsApi.getUserService().getUserById(ArtifactId.valueOf(newActionData.getCreatedByUserId()));
+         }
+         if (asUser == null) {
             result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
             return result;
          }
          IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", asUser);
 
          ActionResult actionResult = atsApi.getActionService().createAction(newActionData, changes);
+         result.setResults(actionResult.getResults());
 
          TransactionId transaction = changes.executeIfNeeded();
          if (transaction != null && transaction.isInvalid()) {
@@ -799,6 +795,11 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public BuildImpactDatas getBids(@PathParam("atsId") String atsId) {
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.getBids(atsId);
+   }
+
+   @Override
+   public Collection<String> getPointValues() {
+      return AtsAttributeTypes.Points.getEnumValues().stream().map(p -> p.getName()).collect(Collectors.toList());
    }
 
 }

@@ -660,13 +660,15 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public List<JaxAgileSprint> getSprints(long teamId) {
+   public List<JaxAgileSprint> getSprints(long teamId, boolean active) {
       if (teamId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
       List<JaxAgileSprint> sprints = new ArrayList<>();
       for (IAgileSprint sprint : atsApi.getAgileService().getSprintsForTeam(teamId)) {
-         sprints.add(toJaxSprint(sprint));
+         if (!active || (active && sprint.isActive())) {
+            sprints.add(toJaxSprint(sprint));
+         }
       }
       return sprints;
    }
