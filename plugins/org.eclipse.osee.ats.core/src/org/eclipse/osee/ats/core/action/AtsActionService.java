@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.CreateNewActionField;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -771,4 +772,16 @@ public class AtsActionService implements IAtsActionService {
 
       return goal;
    }
+
+   @Override
+   public Collection<CreateNewActionField> getCreateActionFields(Collection<IAtsActionableItem> actionableItems) {
+      List<CreateNewActionField> fields = new LinkedList<>();
+      for (ICreateNewActionFieldsProvider provider : CreateNewActionFieldsProviderService.getCreateNewActionProviders()) {
+         if (provider.actionableItemHasFields(atsApi, actionableItems)) {
+            fields.addAll(provider.getCreateNewActionFields(atsApi));
+         }
+      }
+      return fields;
+   }
+
 }
