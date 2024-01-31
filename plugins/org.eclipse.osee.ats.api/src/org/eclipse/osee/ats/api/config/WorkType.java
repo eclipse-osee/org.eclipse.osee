@@ -39,7 +39,7 @@ public class WorkType extends OseeEnum {
    public static final WorkType IntegrationTest = new WorkType("IntegrationTest", "Integration Test", "");
    public static final WorkType Issues = new WorkType("Issues");
    public static final WorkType Maintenance = new WorkType("Maintenance", true);
-   public static final WorkType MIM = new WorkType("MIM", "Message Interface Modeling");
+   public static final WorkType MIM = new WorkType("MIM", "MIM", "Message Interface Modeling", true);
    public static final WorkType MissionCode = new WorkType("MissionCode", "Mission Code", "");
    public static final WorkType None = new WorkType("None");
    public static final WorkType PIDS = new WorkType("PIDS");
@@ -60,6 +60,7 @@ public class WorkType extends OseeEnum {
 
    private String humanReadableName;
    private String description;
+   private boolean createBranchDefault;
 
    public WorkType() {
       super(ENUM_ID, "");
@@ -81,10 +82,11 @@ public class WorkType extends OseeEnum {
       this(name, humanReadableName, description, false);
    }
 
-   private WorkType(String name, String humanReadableName, String description, boolean createBranch) {
+   private WorkType(String name, String humanReadableName, String description, boolean createBranchDefault) {
       super(ENUM_ID, name);
       this.humanReadableName = humanReadableName;
       this.description = description;
+      this.createBranchDefault = createBranchDefault;
    }
 
    public String getHumanReadableName() {
@@ -93,6 +95,10 @@ public class WorkType extends OseeEnum {
 
    public String getDescription() {
       return description;
+   }
+
+   public boolean getCreateBranchDefault() {
+      return createBranchDefault;
    }
 
    public static WorkType valueOfOrNone(String workTypeStr) {

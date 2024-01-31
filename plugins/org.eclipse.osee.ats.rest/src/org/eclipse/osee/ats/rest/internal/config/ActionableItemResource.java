@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.CreateNewActionField;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -60,6 +61,17 @@ public class ActionableItemResource extends AbstractConfigResource {
          return Collections.emptyList();
       }
       return atsApi.getActionService().getCreateActionFields(Arrays.asList(ai));
+   }
+
+   @GET
+   @Path("{id}/teamdef")
+   @Produces(MediaType.APPLICATION_JSON)
+   public IAtsTeamDefinition getTeamDefinition(@PathParam("id") ArtifactId actionableItemId) {
+      IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(actionableItemId);
+      if (ai == null || ai.isInvalid()) {
+         return IAtsTeamDefinition.SENTINEL;
+      }
+      return ai.getTeamDefinition();
    }
 
 }

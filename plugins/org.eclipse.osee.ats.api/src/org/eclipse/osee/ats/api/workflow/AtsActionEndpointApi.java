@@ -330,4 +330,9 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas getBids(@PathParam("atsId") String atsId);
 
+   @Path("points")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<String> getPointValues();
+
 }

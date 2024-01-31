@@ -91,7 +91,8 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       return workPackageOptions;
    }
 
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object, List<IAtsWorkPackage> workPackageOptions) {
+   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object,
+      List<IAtsWorkPackage> workPackageOptions) {
       // Config objects get work package options from related work package artifacts
       if (object instanceof IAtsConfigObject) {
          IAtsConfigObject configObj = (IAtsConfigObject) object;
@@ -136,6 +137,9 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    @Override
    public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
       ArtifactToken realArt = atsApi.getQueryService().getArtifact(artifact);
+      if (realArt == null) {
+         return null;
+      }
       return new WorkPackage(logger, atsApi, realArt);
    }
 

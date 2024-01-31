@@ -97,13 +97,12 @@ public class AtsActionService implements IAtsActionService {
       ActionResult result = null;
       try {
          AtsUser asUser = atsApi.getUserService().getUserByUserId(data.getAsUserId());
-         Conditions.assertNotNull(asUser, "As-User must be specified.");
          AtsUser createdBy = null;
          if (Strings.isValid(data.getCreatedByUserId())) {
             createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
          }
          if (createdBy == null && Strings.isValid(data.getCreatedByUserId())) {
-            createdBy = atsApi.getUserService().getUserByUserId(data.getCreatedByUserId());
+            createdBy = atsApi.getUserService().getUserById(ArtifactId.valueOf(data.getCreatedByUserId()));
          }
          Conditions.assertNotNull(createdBy, "Created-By must be specified.");
          Conditions.assertNotNullOrEmpty(data.getAiIds(), "Actionable Items must be specified");
@@ -148,20 +147,24 @@ public class AtsActionService implements IAtsActionService {
                   IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
                   agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
                }
-               String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
-                  AtsAttributeTypes.PointsAttributeType, null);
-               if (Strings.isInValid(pointsAttrType)) {
-                  pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf.getTeamDefinition(),
+               if (agileTeam == null) {
+                  result.getResults().warning("Agile Team not found, could not set points.");
+               } else {
+                  String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
                      AtsAttributeTypes.PointsAttributeType, null);
-               }
-               if (!Strings.isValid(pointsAttrType)) {
-                  throw new OseeArgumentException(
-                     "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
-                     agileTeam.toStringWithId());
-               }
-               AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(pointsAttrType);
+                  if (Strings.isInValid(pointsAttrType)) {
+                     pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf.getTeamDefinition(),
+                        AtsAttributeTypes.PointsAttributeType, null);
+                  }
+                  if (!Strings.isValid(pointsAttrType)) {
+                     throw new OseeArgumentException(
+                        "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
+                        agileTeam.toStringWithId());
+                  }
+                  AttributeTypeToken attributeType = atsApi.tokenService().getAttributeType(pointsAttrType);
 
-               changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
+                  changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
+               }
             }
          }
 
@@ -243,8 +246,8 @@ public class AtsActionService implements IAtsActionService {
          }
 
          // set originator
-         if (Strings.isNumeric(data.getOriginatorStr())) {
-            AtsUser originator = atsApi.getUserService().getUserById(ArtifactId.valueOf(data.getOriginatorStr()));
+         if (data.getOriginator().isValid()) {
+            AtsUser originator = atsApi.getUserService().getUserById(data.getOriginator());
             if (originator != null) {
                for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
                   changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, originator.getUserId());
@@ -253,9 +256,9 @@ public class AtsActionService implements IAtsActionService {
          }
 
          // set assignee
-         if (Strings.isValid(data.getAssigneeStr())) {
+         if (Strings.isValid(data.getAssignees())) {
             List<AtsUser> assignees = new LinkedList<>();
-            for (String id : data.getAssigneeStr().split(",")) {
+            for (String id : data.getAssignees().split(",")) {
                AtsUser user = atsApi.getUserService().getUserById(ArtifactId.valueOf(id));
                if (user != null) {
                   assignees.add(user);

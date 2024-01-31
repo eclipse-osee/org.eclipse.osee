@@ -32,7 +32,7 @@ public class CreateNewActionField {
    public static final CreateNewActionField UnplannedWork =
       new CreateNewActionField("Unplanned Work", WidgetType.BOOLEAN, "XBoolean", AtsAttributeTypes.UnplannedWork);
    public static final CreateNewActionField WorkPackage =
-      new CreateNewActionField("Work Package", WidgetType.SELECT, "XText", AtsAttributeTypes.WorkPackage);
+      new CreateNewActionField("Work Package", WidgetType.TEXT, "XText", AtsAttributeTypes.WorkPackage);
    public static final CreateNewActionField Sprint =
       new CreateNewActionField("Sprint", WidgetType.SELECT, "XSprintHyperlinkWidget");
    public static final CreateNewActionField FeatureGroup =

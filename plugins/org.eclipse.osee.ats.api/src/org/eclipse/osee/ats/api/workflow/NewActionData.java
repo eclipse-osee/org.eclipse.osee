@@ -45,9 +45,9 @@ public class NewActionData {
    String agileTeam;
    String featureGroup;
    String workPackage;
-   String originatorStr;
-   String assigneeStr;
-   ArtifactId versionId;
+   ArtifactId originator = ArtifactId.SENTINEL;
+   String assignees; // Comma-separated list of assignee Artifact IDs
+   ArtifactId versionId = ArtifactId.SENTINEL;
 
    public NewActionData() {
       // jax-rs
@@ -222,26 +222,26 @@ public class NewActionData {
       this.agileTeam = agileTeam;
    }
 
-   public String getOriginatorStr() {
-      return originatorStr;
+   public ArtifactId getOriginator() {
+      return originator;
    }
 
    /**
     * @param originatorStr - originator id (not userId)
     */
-   public void setOriginatorStr(String originatorStr) {
-      this.originatorStr = originatorStr;
+   public void setOriginator(ArtifactId originator) {
+      this.originator = originator;
    }
 
-   public String getAssigneeStr() {
-      return assigneeStr;
+   public String getAssignees() {
+      return assignees;
    }
 
    /**
     * @param assigneeStr - comma delimited assignee ids (not userId)
     */
-   public void setAssigneeStr(String assigneeStr) {
-      this.assigneeStr = assigneeStr;
+   public void setAssignees(String assignees) {
+      this.assignees = assignees;
    }
 
    public ArtifactId getVersionId() {
