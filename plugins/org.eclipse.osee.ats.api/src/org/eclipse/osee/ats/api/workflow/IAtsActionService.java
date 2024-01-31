@@ -81,4 +81,6 @@ public interface IAtsActionService {
    IAtsGoal createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition,
       IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener);
 
+   Collection<CreateNewActionField> getCreateActionFields(Collection<IAtsActionableItem> actionableItems);
+
 }
