@@ -54,4 +54,5 @@ export type WorkType = {
 	name: string;
 	humanReadableName: string;
 	description: string;
+	createBranchDefault: boolean;
 };

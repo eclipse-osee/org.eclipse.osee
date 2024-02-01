@@ -18,6 +18,7 @@ import {
 } from '@osee/shared/types/configuration-management';
 import {
 	testARB,
+	testAgilePoints,
 	testBranchActions,
 	testDataTransitionResponse,
 	testDataVersion,
@@ -35,6 +36,9 @@ export const actionServiceMock: Partial<ActionService> = {
 	getWorkTypes() {
 		return of([testWorkType]);
 	},
+	createAction(body: CreateNewActionInterface) {
+		return of(testnewActionResponse);
+	},
 	createBranch(body: CreateNewActionInterface) {
 		return of(testnewActionResponse);
 	},
@@ -46,6 +50,9 @@ export const actionServiceMock: Partial<ActionService> = {
 	},
 	getAction(artifactId: string | number) {
 		return of(testBranchActions);
+	},
+	getPoints() {
+		return of(testAgilePoints);
 	},
 	validateTransitionAction(body: transitionAction) {
 		return of(testDataTransitionResponse);

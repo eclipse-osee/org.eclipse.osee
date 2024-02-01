@@ -25,6 +25,7 @@ import {
 	MockXResultData,
 	testnewActionResponse,
 	testWorkType,
+	testAgilePoints,
 } from '@osee/shared/testing';
 
 export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
@@ -36,6 +37,9 @@ export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
 	teamsLeads: of(MockNamedId),
 	branchTransitionable: of('true'),
 	addActionInitialStep: of(MockUserResponse),
+	getPoints() {
+		return of(testAgilePoints);
+	},
 	commitBranch(body: { committer: string; archive: string }) {
 		return of(testCommitResponse);
 	},

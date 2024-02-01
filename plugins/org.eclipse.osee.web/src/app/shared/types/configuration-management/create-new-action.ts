@@ -27,25 +27,39 @@ export interface CreateNewActionInterface {
 	versionId: targetedVersion;
 	priority: Priority;
 	changeType: NamedIdAndDescription;
+	originator: string;
+	assignees: string;
+	points: string;
+	unplanned: boolean;
+	workPackage: string;
+	featureGroup: string;
+	sprint: string;
+	attrValues: { [key: string]: string };
 }
 export class CreateNewAction implements CreateNewActionInterface {
 	constructor(config?: CreateAction) {
-		this.title = (config && config.title) || '';
-		this.description = (config && config.description) || '';
 		if (config) {
+			this.title = config.title;
+			this.description = config.description;
 			this.aiIds = [config.actionableItem.id];
+			this.asUserId = config.createdByUser.id;
+			this.createdByUserId = config.createdByUser.id;
+			this.versionId = config.targetedVersion;
+			this.priority = config.priority;
+			this.changeType = {
+				id: config.changeType.id,
+				name: config.changeType.name,
+				description: config.changeType.description,
+			};
+			this.originator = config.originator.id;
+			this.assignees = config.assignees;
+			this.points = config.points;
+			this.unplanned = config.unplanned;
+			this.workPackage = config.workPackage;
+			this.featureGroup = config.featureGroup;
+			this.sprint = config.sprint;
+			this.attrValues = config.attrValues;
 		}
-		this.asUserId = (config && config.originator.id) || '';
-		this.createdByUserId = (config && config.originator.id) || '';
-		this.versionId =
-			(config && config.targetedVersion) || targetedVersionSentinel;
-		this.priority =
-			(config && config.priority) || PRIORITIES.LowestPriority;
-		this.changeType = (config && {
-			id: config.changeType.id,
-			name: config.changeType.name,
-			description: config.changeType.description,
-		}) || { id: '-1', name: '', description: '' };
 	}
 	changeType: NamedIdAndDescription = { id: '-1', name: '', description: '' };
 	priority: Priority = PRIORITIES.LowestPriority;
@@ -55,4 +69,12 @@ export class CreateNewAction implements CreateNewActionInterface {
 	asUserId: string = '';
 	createdByUserId: string = '';
 	versionId: targetedVersion = targetedVersionSentinel;
+	originator: string = '';
+	assignees: string = '';
+	points: string = '';
+	unplanned: boolean = false;
+	workPackage: string = '';
+	featureGroup: string = '';
+	sprint: string = '';
+	attrValues: { [key: string]: string } = {};
 }

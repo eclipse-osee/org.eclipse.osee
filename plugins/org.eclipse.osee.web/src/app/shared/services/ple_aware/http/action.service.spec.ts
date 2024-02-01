@@ -47,6 +47,14 @@ const testNewActionData: CreateNewActionInterface = {
 	versionId: targetedVersionSentinel,
 	priority: PRIORITIES.LowestPriority,
 	changeType: { id: '-1', name: '', description: '' },
+	originator: 'Joe Smith',
+	assignees: '123,456',
+	points: '1',
+	unplanned: false,
+	workPackage: '12345',
+	featureGroup: '4',
+	sprint: '10',
+	attrValues: { '999': 'value' },
 };
 const testUsers = [{ testDataUser: MockUserResponse }];
 describe('ActionService', () => {
