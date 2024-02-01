@@ -65,27 +65,33 @@
 								balancer.expanded ? 'expanded' : 'collapsed'
 							"
 							*ngIf="balancer.expanded && balancer.alive">
-							<iframe
-								class="tw-min-h-[700px] tw-min-w-full"
-								[src]="buildBalancerManagerUrl(balancer.name)"
-								frameborder="0"></iframe>
-							<a
-								(click)="
-									openLink(
+							<div class="tw-flex tw-flex-col">
+								<iframe
+									class="tw-min-h-[700px] tw-min-w-full"
+									[src]="
 										buildBalancerManagerUrl(balancer.name)
-									)
-								"
-								class="tw-w-full tw-rounded-md tw-bg-primary-500 tw-p-4 tw-text-foreground tw-shadow-md hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900">
-								<div class="tw-flex tw-items-center">
-									<div class="tw-px-4 tw-text-white">
-										<mat-icon>open_in_new</mat-icon>
+									"
+									frameborder="0"></iframe>
+								<a
+									(click)="
+										openLink(
+											buildBalancerManagerUrl(
+												balancer.name
+											)
+										)
+									"
+									class="tw-w-full tw-rounded-md tw-bg-primary-500 tw-p-4 tw-text-foreground tw-shadow-md hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900">
+									<div class="tw-flex tw-items-center">
+										<div class="tw-px-4 tw-text-white">
+											<mat-icon>open_in_new</mat-icon>
+										</div>
+										<div
+											class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
+											Open in New Window
+										</div>
 									</div>
-									<div
-										class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
-										Open in New Window
-									</div>
-								</div>
-							</a>
+								</a>
+							</div>
 						</div>
 					</td>
 				</ng-container>
