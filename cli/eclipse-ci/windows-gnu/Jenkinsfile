@@ -1,0 +1,57 @@
+pipeline {
+  agent {
+    kubernetes {
+      label 'my-agent-pod'
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: win_gnu
+    image: tomaka/rust-mingw-docker
+    tty: true
+    command:
+    - cat
+    resources:
+      limits:
+        memory: 3Gi
+        cpu: 1
+      requests:
+        memory: 3Gi
+        cpu: 1
+    env:
+    - name: "HOME"
+      value: "/home/jenkins"
+    volumeMounts:
+    - mountPath: "/home/jenkins"
+      name: "jenkins-home"
+      readOnly: false
+  volumes:
+  - name: "jenkins-home"
+    emptyDir: {}
+"""
+    }
+  }
+  options {
+    timestamps()
+  }
+
+  stages {
+  
+    stage('Test') {
+      steps {
+        container('win_gnu') {
+          sh 'cargo test --target x86_86-pc-windows-gnu'
+        }
+      }
+    }
+
+    stage('Build') {
+      steps {
+        container('win_gnu') {
+          sh 'cargo build --target x86_86-pc-windows-gnu --release'
+        }
+      }
+    }
+  }
+}

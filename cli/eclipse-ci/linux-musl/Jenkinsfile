@@ -1,0 +1,57 @@
+pipeline {
+  agent {
+    kubernetes {
+      label 'my-agent-pod'
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: musl
+    image: messense/rust-musl-cross:x86_64-musl
+    tty: true
+    command:
+    - cat
+    resources:
+      limits:
+        memory: 3Gi
+        cpu: 1
+      requests:
+        memory: 3Gi
+        cpu: 1
+    env:
+    - name: "HOME"
+      value: "/home/jenkins"
+    volumeMounts:
+    - mountPath: "/home/jenkins"
+      name: "jenkins-home"
+      readOnly: false
+  volumes:
+  - name: "jenkins-home"
+    emptyDir: {}
+"""
+    }
+  }
+  options {
+    timestamps()
+  }
+
+  stages {
+  
+    stage('Test') {
+      steps {
+        container('musl') {
+          sh 'cargo test'
+        }
+      }
+    }
+
+    stage('Build') {
+      steps {
+        container('musl') {
+          sh 'cargo build --release'
+        }
+      }
+    }
+  }
+}
