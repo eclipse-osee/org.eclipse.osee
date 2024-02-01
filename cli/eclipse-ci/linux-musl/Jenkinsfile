@@ -22,6 +22,8 @@ spec:
     env:
     - name: "HOME"
       value: "/home/jenkins"
+    - name: "CARGO_HOME"
+      value: "/home/jenkins/.cargo/"
     volumeMounts:
     - mountPath: "/home/jenkins"
       name: "jenkins-home"
