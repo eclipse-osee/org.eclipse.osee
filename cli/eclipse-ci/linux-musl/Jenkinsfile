@@ -68,6 +68,7 @@ spec:
           sshagent ( ['projects-storage.eclipse.org-bot-ssh']) {
             sh '''
               cd target
+              cd release
               ls -al
             '''
             // sh '''
