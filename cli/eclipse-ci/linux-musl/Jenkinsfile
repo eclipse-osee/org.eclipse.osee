@@ -59,9 +59,13 @@ spec:
       steps {
         container('musl') {
           sh 'cargo build --release'
-          sh 'cd target'
-          sh 'cd release'
-          sh 'ls -al'
+          sh '''
+              printenv CARGO_TARGET_DIR
+              find . -type f -name 'libapplicability.d' 
+              cd target
+              cd release
+              ls -al
+          '''
         }
       }
     }
