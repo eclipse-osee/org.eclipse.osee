@@ -34,7 +34,7 @@ public class HealthBalancers {
       }
       for (String balancerName : balancerNames) {
          try {
-            String results = HealthUtils.getUrlResults("http://" + balancerName + "/balancer-manager");
+            String results = HealthUtils.getUrlResults("https://" + balancerName + "/balancer-manager");
             if (results.contains("Load Balancer Manager")) {
                balancers.add(new HealthBalancer(balancerName, true));
             } else {
