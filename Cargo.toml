@@ -14,6 +14,7 @@
 resolver = "2"
 members = [
     "cli/applicability",
+    "cli/applicability_parser",
     "cli/bat"
 ]
 [workspace.package]
