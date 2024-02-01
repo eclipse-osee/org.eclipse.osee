@@ -58,13 +58,7 @@ spec:
     stage('Build') {
       steps {
         container('musl') {
-          sh '''
-              cargo build --release
-              find . -type f -name 'libapplicability.d' 
-              cd target
-              cd release
-              ls -al
-          '''
+          sh 'cargo build --release'
         }
       }
     }
@@ -73,14 +67,10 @@ spec:
         container('jnlp') {
           sshagent ( ['projects-storage.eclipse.org-bot-ssh']) {
             sh '''
-              cd ./target/x86_64-unknown-linux-musl/release/
-              ls -al
+              ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
+              ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
+              scp -o BatchMode=yes -r ./target/x86_64-unknown-linux-musl/release/bat genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
             '''
-            // sh '''
-            //   ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
-            //   ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
-            //   scp -o BatchMode=yes -r target/release/bat genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
-            // '''
           }
         }
       }
