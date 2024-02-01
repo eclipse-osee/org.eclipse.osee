@@ -67,6 +67,7 @@ spec:
         container('jnlp') {
           sshagent ( ['projects-storage.eclipse.org-bot-ssh']) {
             sh '''
+              cd target
               ls -al
             '''
             // sh '''
