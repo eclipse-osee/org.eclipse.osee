@@ -18,6 +18,8 @@ import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_REQT;
 import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_TEST;
 import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_TOOL;
 import static org.eclipse.osee.disposition.model.DispoStrings.MODIFY_WORK_PRODUCT;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -64,15 +66,6 @@ public class ExportSet {
    private final String LEVEL_A_SUB_LOCATION_PATTERN = "\\s*\\d+\\.\\d+\\s*\\(P[a-z]\\)\\.\\d+$";
    private final String LEVEL_B_LOCATION_PATTERN = "(.*?RESULT.*|\\s*\\d+\\s*\\.\\s*(T|F).*)";
 
-   //@formatter:off
-   private final int FALSE_PRESENT = 1;            // xx01
-   private final int TRUE_PRESENT = 2;             // xx10
-   private final int BOTH_PRESENT = 3;             // xx11
-   private final int FALSE_COVERED = 4;            // 01xx
-   private final int TRUE_COVERED = 8;             // 10xx
-   private final int BOTH_COVERED = 12;            // 11xx
-   //@formatter:on
-
    private enum CoverageLevel {
       A,
       B,
@@ -96,94 +89,6 @@ public class ExportSet {
 
       private int getValue() {
          return value;
-      }
-   }
-
-   private class MCDCCoverageData {
-      // If we don't like bitFlags we could add 4 boolean fields to represent the bits, T\F path present and T\F path Covered
-      private int bitFlag;
-      private final Set<String> resolutionTypes;
-
-      MCDCCoverageData(int initFlagValue) {
-         bitFlag = initFlagValue;
-         resolutionTypes = new HashSet<>();
-      }
-
-      private void updateBitFlag(int value) {
-         bitFlag += value;
-      }
-
-      private void addResolutionType(String resolutionType) {
-         resolutionTypes.add(resolutionType);
-      }
-
-      private boolean isPairPresent() {
-         return (bitFlag & BOTH_PRESENT) == BOTH_PRESENT;
-      }
-
-      private boolean isPairCovered() {
-         return (bitFlag & BOTH_COVERED) == BOTH_COVERED;
-      }
-
-      private String getCoveringResolutionType() {
-         if (resolutionTypes.size() == 1) {
-            return resolutionTypes.iterator().next();
-         } else if (resolutionTypes.size() == 2) {
-            String toReturn;
-            List<String> typesCopy = new ArrayList<>(resolutionTypes);
-            if (typesCopy.remove("Test_Script")) {
-               switch (typesCopy.get(0)) {
-                  case "Defensive_Programming":
-                     toReturn = "Defensive_Programming/Test_Script";
-                     break;
-                  case "Exception_Handling":
-                     toReturn = "Exception_Handling/Test_Script";
-                     break;
-                  case "Analysis":
-                     toReturn = "Analysis/Test_Script";
-                     break;
-                  case "Deactivated_EXT_ATE_PRESENT":
-                     toReturn = "Deactivated_EXT_ATE_PRESENT/Test_Script";
-                     break;
-                  case "Deactivated_IN_AIR_OR_ENG_ON":
-                     toReturn = "Deactivated_IN_AIR_OR_ENG_ON/Test_Script";
-                     break;
-                  case "Deactivated_J4_Connector":
-                     toReturn = "Deactivated_J4_Connector/Test_Script";
-                     break;
-                  case "Deactivated_Compile_Time":
-                     toReturn = "Deactivated_Compile_Time/Test_Script";
-                     break;
-                  default:
-                     recordUnexpectedEvents(resolutionTypes);
-                     toReturn = "MIXED";
-               }
-            } else {
-               recordUnexpectedEvents(resolutionTypes);
-               toReturn = "MIXED - No Test_Script";
-            }
-            return toReturn;
-         } else {
-            recordUnexpectedEvents(resolutionTypes);
-            return "SHOULD NOT HAVE LANDED HERE";
-         }
-      }
-   }
-
-   private void recordUnexpectedEvents(Set<String> resolutionTypes) {
-      List<String> tempResolutionTypes = new ArrayList<>(resolutionTypes);
-      String wrongResolutions = "";
-      for (String resolution : tempResolutionTypes) {
-         if (!wrongResolutions.isEmpty()) {
-            wrongResolutions += "/";
-         }
-         wrongResolutions += resolution;
-      }
-      if (defaultCases.containsKey(wrongResolutions)) {
-         int count = defaultCases.get(wrongResolutions) + 1;
-         defaultCases.replace(wrongResolutions, count);
-      } else {
-         defaultCases.put(wrongResolutions, 1);
       }
    }
 
@@ -266,6 +171,21 @@ public class ExportSet {
 
    }
 
+   public ByteArrayOutputStream runCoverageReports(BranchId branch, DispoSet setPrimary, String option,
+      String fileName) {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+      try (FileOutputStream fos = new FileOutputStream(fileName)) {
+         baos.writeTo(fos);
+         runCoverageReport(branch, setPrimary, option, baos, "");
+         baos.close();
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
+
+      return baos;
+   }
+
    public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream,
       String fileName) {
       Map<String, String> resolutionsValueToText = new HashMap<>();
@@ -290,16 +210,18 @@ public class ExportSet {
          for (ResolutionMethod resolutionType : config.getValidResolutions()) {
             innerMap.put(resolutionType.getText(), new WrapInt(0));
             resolutionsValueToText.put(resolutionType.getValue(), resolutionType.getText());
+            if (level.equals(
+               CoverageLevel.A) && !resolutionType.getValue().isEmpty() && !resolutionType.getValue().equals(
+                  "Test_Script")) {
+               String levelAResolutionType = String.format("%s/Test_Script", resolutionType.getValue());
+               innerMap.put(levelAResolutionType, new WrapInt(0));
+               resolutionsValueToText.put(levelAResolutionType, levelAResolutionType);
+            }
          }
-         // Needed for Level A, pairs can but should not have different coverage methods
-         innerMap.put("MIXED", new WrapInt(0));
-         innerMap.put("Defensive_Programming/Test_Script", new WrapInt(0));
-         innerMap.put("Exception_Handling/Test_Script", new WrapInt(0));
-         innerMap.put("Analysis/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_EXT_ATE_PRESENT/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_IN_AIR_OR_ENG_ON/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_J4_Connector/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_Compile_Time/Test_Script", new WrapInt(0));
+         // Needed for Level A, each part of a pair can be satisfied by differing resolutions.
+         if (level.equals(CoverageLevel.A)) {
+            innerMap.put("MIXED", new WrapInt(0));
+         }
          levelToResolutionTypesToCount.put(level, innerMap);
       }
 
@@ -318,7 +240,6 @@ public class ExportSet {
          sheetWriter.writeRow((Object[]) headers);
 
          for (DispoItem item : items) {
-            Map<String, MCDCCoverageData> mcdcToCoverageData = new HashMap<>();
             List<DispoAnnotationData> annotations = item.getAnnotationsList();
             Collections.sort(annotations, new Comparator<DispoAnnotationData>() {
                @Override
@@ -383,7 +304,7 @@ public class ExportSet {
                }
 
                writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(),
-                  levelToResolutionTypesToCount, leveltoUnitToCovered, mcdcToCoverageData, levelsInSet);
+                  levelToResolutionTypesToCount, leveltoUnitToCovered, levelsInSet);
             }
 
             for (Map.Entry<String, Map<Boolean, String>> LevelCCoverageData : hitForLevelC.entrySet()) {
@@ -443,7 +364,11 @@ public class ExportSet {
             row[index] =
                getPercent(levelToCoveredTotalCount.get(lvl).getValue(), levelToTotalCount.get(lvl).getValue(), false);
             Integer uncovered = levelToTotalCount.get(lvl).getValue() - levelToCoveredTotalCount.get(lvl).getValue();
-            uncoveredRow[index++] = uncovered.toString();
+            int emptyCount = 0;
+            if (levelToResolutionTypesToCount.get(lvl).containsKey(" ")) {
+               emptyCount = levelToResolutionTypesToCount.get(lvl).get(" ").getValue(); //It is possible for there to be a space as resolution for empty rather than nothing.
+            }
+            uncoveredRow[index++] = getPercent(uncovered + emptyCount, levelToTotalCount.get(lvl).getValue(), false);
          }
          sheetWriter.writeRow(row);
 
@@ -468,6 +393,10 @@ public class ExportSet {
                Iterator<CoverageLevel> it = levelsInList.iterator();
                while (it.hasNext()) {
                   CoverageLevel lvl = it.next();
+                  if (resolution.contains("/") && index1 > 1) {
+                     row[index1++] = "";
+                     continue;
+                  }
                   if (levelToResolutionTypesToCount.get(lvl).get(resolution) == null) {
                      row[index1++] = "ERROR";
                      continue;
@@ -477,19 +406,6 @@ public class ExportSet {
                }
 
                sheetWriter.writeRow(row);
-            } else {
-               Iterator<CoverageLevel> it = levelsInList.iterator();
-               while (it.hasNext()) {
-                  CoverageLevel lvl = it.next();
-                  if (levelToResolutionTypesToCount.get(lvl).get(resolution) == null) {
-                     row[index1++] = "ERROR";
-                     continue;
-                  }
-                  int completed = levelToResolutionTypesToCount.get(lvl).get(resolution).getValue();
-                  int uncoveredCompleted = Integer.parseInt(uncoveredRow[index1]);
-                  int totalCount = levelToTotalCount.get(lvl).getValue();
-                  uncoveredRow[index1++] = getPercent(completed + uncoveredCompleted, totalCount, false);
-               }
             }
          }
 
@@ -621,22 +537,24 @@ public class ExportSet {
          for (ResolutionMethod resolutionType : config.getValidResolutions()) {
             innerMap.put(resolutionType.getText(), new WrapInt(0));
             resolutionsValueToText.put(resolutionType.getValue(), resolutionType.getText());
+            if (level.equals(
+               CoverageLevel.A) && !resolutionType.getValue().isEmpty() && !resolutionType.getValue().equals(
+                  "Test_Script")) {
+               String levelAResolutionType = String.format("%s/Test_Script", resolutionType.getValue());
+               innerMap.put(levelAResolutionType, new WrapInt(0));
+               resolutionsValueToText.put(levelAResolutionType, levelAResolutionType);
+            }
+         }
+         // Needed for Level A, each part of a pair can be satisfied by differing resolutions.
+         if (level.equals(CoverageLevel.A)) {
+            innerMap.put("MIXED", new WrapInt(0));
          }
 
-         innerMap.put("MIXED", new WrapInt(0));
-         innerMap.put("Defensive_Programming/Test_Script", new WrapInt(0));
-         innerMap.put("Exception_Handling/Test_Script", new WrapInt(0));
-         innerMap.put("Analysis/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_EXT_ATE_PRESENT/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_IN_AIR_OR_ENG_ON/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_J4_Connector/Test_Script", new WrapInt(0));
-         innerMap.put("Deactivated_Compile_Time/Test_Script", new WrapInt(0));
          levelToResolutionTypesToCount.put(level, innerMap);
       }
 
       try {
          for (DispoItem item : items) {
-            Map<String, MCDCCoverageData> mcdcToCoverageData = new HashMap<>();
             List<DispoAnnotationData> annotations = item.getAnnotationsList();
             Collections.sort(annotations, new Comparator<DispoAnnotationData>() {
                @Override
@@ -646,7 +564,7 @@ public class ExportSet {
             });
             for (DispoAnnotationData annotation : annotations) {
                writeRowAnnotationSummary(item, annotation, setPrimary.getName(), levelToResolutionTypesToCount,
-                  leveltoUnitToCovered, mcdcToCoverageData, levelsInSet);
+                  leveltoUnitToCovered, levelsInSet);
             }
          }
 
@@ -735,9 +653,7 @@ public class ExportSet {
                int index2 = 0;
                row[index2++] = entry.getKey();
 
-               Iterator<CoverageLevel> it2 = levelsInList.iterator();
                while (it.hasNext()) {
-                  CoverageLevel lvl = it2.next();
                   row[index2++] = entry.getValue().toString();
                }
                addToJsonObject(levelsInList, row, jsonObject);
@@ -836,8 +752,8 @@ public class ExportSet {
 
    private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item,
       DispoAnnotationData annotation, String setName, Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount,
-      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered,
-      Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
+      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, Set<CoverageLevel> levelsInSet)
+      throws IOException {
       String[] row = new String[columns];
       int index = 0;
       row[index++] = getNameSpace(item, setName);
@@ -863,23 +779,22 @@ public class ExportSet {
       sheetWriter.writeRow((Object[]) row);
 
       // location ex. 24, 24.T, 24.A.RESULT
-      calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType, mcdcToCoverageData,
+      calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType,
          annotation.getLocationRefs(), levelsInSet);
    }
 
    private void writeRowAnnotationSummary(DispoItem item, DispoAnnotationData annotation, String setName,
       Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount,
-      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered,
-      Map<String, MCDCCoverageData> mcdcToCoverageData, Set<CoverageLevel> levelsInSet) throws IOException {
+      Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, Set<CoverageLevel> levelsInSet) {
       String unit = getNormalizedName(item.getName());
       String resolutionType = annotation.getResolutionType();
-      calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType, mcdcToCoverageData,
+      calculateTotals(levelToResolutionToCount, levelToUnitsToCovered, unit, resolutionType,
          annotation.getLocationRefs(), levelsInSet);
    }
 
    private void calculateTotals(Map<CoverageLevel, Map<String, WrapInt>> levelToResolutionToCount,
       Map<CoverageLevel, Map<String, Pair<WrapInt, WrapInt>>> levelToUnitsToCovered, String unit, String resolutionType,
-      Map<String, MCDCCoverageData> mcdcToCoverageData, String location, Set<CoverageLevel> levelsInSet) {
+      String location, Set<CoverageLevel> levelsInSet) {
       // Determine what level count to increment by location simple number = C, number.T or number.number.RESULT = B, number.number.T = A
       CoverageLevel thisAnnotationsLevel = getLevel(location);
 
@@ -930,35 +845,7 @@ public class ExportSet {
       Pair<WrapInt, WrapInt> coveredOverTotal = unitToCovered.get(unit);
 
       int thisUnitsCoveredCount = 0;
-      if (Strings.isValid(resolutionType) && !isTypeAnalyze(resolutionType)) {
-         thisUnitsCoveredCount = 1;
-         currentCoveredTotalCount.inc();
-      }
-      if (coveredOverTotal == null) {
-         Pair<WrapInt, WrapInt> newCount = new Pair<>(new WrapInt(thisUnitsCoveredCount), new WrapInt(1));
-         unitToCovered.put(unit, newCount);
-      } else {
-         coveredOverTotal.getFirst().inc(thisUnitsCoveredCount);
-         coveredOverTotal.getSecond().inc();
-      }
-   }
-
-   private void uptickCoverageFunctionHit(Map<String, WrapInt> resolutionTypeToCount,
-      Map<String, Pair<WrapInt, WrapInt>> unitToCovered, WrapInt currentCoveredTotalCount, String unit,
-      String resolutionType) {
-      WrapInt count = resolutionTypeToCount.get(resolutionType);
-      if (Strings.isValid(resolutionType)) {
-         if (count == null) {
-            resolutionTypeToCount.put(resolutionType, new WrapInt(1));
-         } else {
-            count.inc();
-         }
-      }
-
-      Pair<WrapInt, WrapInt> coveredOverTotal = unitToCovered.get(unit);
-
-      int thisUnitsCoveredCount = 0;
-      if (Strings.isValid(resolutionType) && !isTypeAnalyze(resolutionType)) {
+      if (Strings.isValid(resolutionType) && !isTypeAnalyze(resolutionType) && !resolutionType.contains("Modify")) {
          thisUnitsCoveredCount = 1;
          currentCoveredTotalCount.inc();
       }
@@ -1028,7 +915,7 @@ public class ExportSet {
    }
 
    private List<String> organizeResolutions(Set<String> resolutionTypes) {
-      String[] toRemove = {"Test Script", "MIXED"};
+      String[] toRemove = {"Test Script", "MIXED", ""};
       List<String> tempResolutionTypes = new ArrayList<>(resolutionTypes);
       for (String coverageMethod : toRemove) {
          if (tempResolutionTypes.contains(coverageMethod)) {
@@ -1110,22 +997,42 @@ public class ExportSet {
          "Defensive_Programming",
          "Exception_Handling",
          "Analysis",
-         "Deactivated_IN_AIR_OR_ENG_ON",
-         "Deactivated_EXT_ATE_PRESENT",
-         "Deactivated_J4_Connector",
+         "Deactivated_Ada_console_command",
+         "Deactivated_Code",
          "Deactivated_Compile_Time",
+         "Deactivated_Engineering_test_page",
+         "Deactivated_EXT_ATE_PRESENT",
+         "Deactivated_Ground_testing_only",
+         "Deactivated_IN_AIR_OR_ENG_ON",
+         "Deactivated_INTEGRITY_serial_console_command",
+         "Deactivated_J4_Connector",
+         "Deactivated_Remote_SW_test_page",
+
          "Defensive_Programming/Test_Script",
          "Exception_Handling/Test_Script",
          "Analysis/Test_Script",
-         "Deactivated_EXT_ATE_PRESENT/Test_Script",
-         "Deactivated_IN_AIR_OR_ENG_ON/Test_Script",
-         "Deactivated_J4_Connector/Test_Script",
+         "Deactivated_Ada_console_command/Test_Script",
+         "Deactivated_Code/Test_Script",
          "Deactivated_Compile_Time/Test_Script",
+         "Deactivated_Engineering_test_page/Test_Script",
+         "Deactivated_EXT_ATE_PRESENT/Test_Script",
+         "Deactivated_Ground_testing_only/Test_Script",
+         "Deactivated_IN_AIR_OR_ENG_ON/Test_Script",
+         "Deactivated_INTEGRITY_serial_console_command/Test_Script",
+         "Deactivated_J4_Connector/Test_Script",
+         "Deactivated_Remote_SW_test_page/Test_Script",
+
          "Modify_Reqt",
          "Modify_Code",
          "Modify_Test",
          "Modify_Tooling",
-         "Modify_Work_Product"};
+         "Modify_Work_Product",
+
+         "Modify_Reqt/Test_Script",
+         "Modify_Code/Test_Script",
+         "Modify_Test/Test_Script",
+         "Modify_Tooling/Test_Script",
+         "Modify_Work_Product/Test_Script"};
       return toReturn;
    }
 }
