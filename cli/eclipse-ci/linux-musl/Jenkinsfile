@@ -67,10 +67,13 @@ spec:
         container('jnlp') {
           sshagent ( ['projects-storage.eclipse.org-bot-ssh']) {
             sh '''
-              ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
-              ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
-              scp -o BatchMode=yes -r target/release/bat genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
+              ls -al
             '''
+            // sh '''
+            //   ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
+            //   ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
+            //   scp -o BatchMode=yes -r target/release/bat genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-linux/1.0.0
+            // '''
           }
         }
       }
