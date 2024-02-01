@@ -59,6 +59,9 @@ spec:
       steps {
         container('musl') {
           sh 'cargo build --release'
+          sh 'cd target'
+          sh 'cd release'
+          sh 'ls -al'
         }
       }
     }
