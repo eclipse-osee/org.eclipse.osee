@@ -21,9 +21,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.annotation.security.RolesAllowed;
@@ -229,6 +231,31 @@ public class DispoProgramEndpoint {
          }
       }
       return Response.status(Status.OK).build();
+   }
+
+   @Path("{programName}/scripts")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Set<String> getTestScripts(@PathParam("programName") String programName) {
+      programName = String.format("(DISPO)%s", programName);
+      BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
+      return dispoApi.getTestScripts(programId);
+   }
+
+   @Path("{programName}/set/{setName}/scripts")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Set<String> getTestScripts(@PathParam("programName") String programName,
+      @PathParam("setName") String setName) {
+      programName = String.format("(DISPO)%s", programName);
+      BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
+      String setId = dispoApi.getDispoSetIdByName(programId, setName);
+      if (setId != null) {
+         return dispoApi.getTestScripts(programId, setId);
+      }
+      return new HashSet<String>();
    }
 
    @Path("{programName}/exportAll")

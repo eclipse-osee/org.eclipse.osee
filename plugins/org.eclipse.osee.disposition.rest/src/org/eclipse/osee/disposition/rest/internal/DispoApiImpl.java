@@ -272,6 +272,41 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public Set<String> getTestScripts(BranchId branch, String dispoSetId) {
+      Set<String> testScripts = new HashSet<String>();
+
+      for (DispoItem dispoItem : getDispoItems(branch, dispoSetId, true)) {
+         if (dispoItem != null) {
+            for (DispoAnnotationData annotation : dispoItem.getAnnotationsList()) {
+               if (annotation.getResolutionType().equals(DispoStrings.Test_Unit_Resolution)) {
+                  testScripts.add(annotation.getResolution());
+               }
+            }
+         }
+      }
+      return testScripts;
+   }
+
+   @Override
+   public Set<String> getTestScripts(BranchId branch) {
+      Set<String> testScripts = new HashSet<String>();
+
+      List<DispoSet> dispoSets = getDispoSets(branch, DispoStrings.CODE_COVERAGE);
+      for (DispoSet dispoSet : dispoSets) {
+         for (DispoItem dispoItem : getDispoItems(branch, dispoSet.getIdString(), true)) {
+            if (dispoItem != null) {
+               for (DispoAnnotationData annotation : dispoItem.getAnnotationsList()) {
+                  if (annotation.getResolutionType().equals(DispoStrings.Test_Unit_Resolution)) {
+                     testScripts.add(annotation.getResolution());
+                  }
+               }
+            }
+         }
+      }
+      return testScripts;
+   }
+
+   @Override
    public boolean deleteDispoSet(BranchId branch, String setId) {
       return getWriter().deleteDispoSet(branch, setId);
    }

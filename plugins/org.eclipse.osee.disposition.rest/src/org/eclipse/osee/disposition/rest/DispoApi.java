@@ -16,6 +16,7 @@ package org.eclipse.osee.disposition.rest;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.disposition.model.CiItemData;
 import org.eclipse.osee.disposition.model.CiSetData;
 import org.eclipse.osee.disposition.model.CopySetParams;
@@ -93,6 +94,10 @@ public interface DispoApi {
    void importAllDispoSets(BranchId branch, String filterState);
 
    void importAllDispoPrograms(String filterState);
+
+   Set<String> getTestScripts(BranchId branch, String dispoSetId);
+
+   Set<String> getTestScripts(BranchId branch);
 
    boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName,
       boolean assignUser);
