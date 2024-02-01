@@ -110,4 +110,7 @@ export const testWorkType: WorkType = {
 	name: 'Work_Type',
 	humanReadableName: 'Work Type',
 	description: 'This is a work type',
+	createBranchDefault: true,
 };
+
+export const testAgilePoints: string[] = ['1', '2', '3', '5'];

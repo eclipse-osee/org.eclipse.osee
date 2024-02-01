@@ -25,7 +25,7 @@
 	@if (workTypes | async; as _workTypes) {
 		@if (data.defaultWorkType == '') {
 			<mat-form-field class="tw-w-full">
-				<mat-label>Select Work Type</mat-label>
+				<mat-label>Work Type</mat-label>
 				<mat-select
 					[(ngModel)]="workType"
 					(selectionChange)="selectWorkType($event)"
@@ -43,7 +43,7 @@
 	}
 	@if (workType.name != '') {
 		<mat-form-field class="tw-w-full">
-			<mat-label>Select Actionable Item</mat-label>
+			<mat-label>Actionable Item</mat-label>
 			<mat-select
 				[(ngModel)]="data.actionableItem"
 				(selectionChange)="selectActionableItem()"
@@ -57,7 +57,6 @@
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
-		<br />
 	}
 	<mat-form-field class="tw-w-full">
 		<mat-label>Description</mat-label>
@@ -69,9 +68,8 @@
 			required
 			data-cy="action-description" />
 	</mat-form-field>
-	<br />
 	<mat-form-field class="tw-w-full">
-		<mat-label>Select Priority</mat-label>
+		<mat-label>Priority</mat-label>
 		<mat-select
 			[(ngModel)]="data.priority"
 			required
@@ -84,10 +82,9 @@
 			</mat-option>
 		</mat-select>
 	</mat-form-field>
-	<br />
 	@if (data.actionableItem.id.length !== 0) {
 		<mat-form-field class="tw-w-full">
-			<mat-label>Select Change Type</mat-label>
+			<mat-label>Change Type</mat-label>
 			<mat-select
 				[(ngModel)]="data.changeType"
 				required
@@ -100,21 +97,145 @@
 				</mat-option>
 			</mat-select>
 		</mat-form-field>
-		<mat-form-field class="tw-w-full">
-			<mat-label>Select Targeted Version</mat-label>
-			<mat-select
-				[(ngModel)]="data.targetedVersion"
-				required
-				data-cy="select-targeted-version">
-				<mat-option
-					*ngFor="let item of targetedVersions | async"
-					[value]="item"
-					[attr.data-cy]="'option-' + item.name">
-					{{ item.name }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
+		@for (field of additionalFields | async; track $index) {
+			@if (field.name === 'Targeted Version') {
+				<mat-form-field class="tw-w-full">
+					<mat-label>Targeted Version</mat-label>
+					<mat-select
+						[(ngModel)]="data.targetedVersion"
+						data-cy="select-targeted-version">
+						<mat-option
+							*ngFor="let item of targetedVersions | async"
+							[value]="item"
+							[attr.data-cy]="'option-' + item.name">
+							{{ item.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			} @else if (field.name === 'Originator') {
+				<mat-form-field class="tw-w-full">
+					<mat-label>{{ field.name }}</mat-label>
+					<mat-select
+						[(ngModel)]="data.originator"
+						[compareWith]="compareUsers"
+						data-cy="select-originator">
+						<mat-option
+							*ngFor="let item of users | async"
+							[value]="item"
+							[attr.data-cy]="'option-' + item.name">
+							{{ item.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			} @else if (field.name === 'Assignees') {
+				<mat-form-field class="tw-w-full">
+					<mat-label>{{ field.name }}</mat-label>
+					<mat-select
+						[(ngModel)]="selectedAssignees"
+						(selectionChange)="selectAssignees($event)"
+						multiple
+						data-cy="select-assignees">
+						<mat-option
+							*ngFor="let item of users | async"
+							[value]="item"
+							[attr.data-cy]="'option-' + item.name">
+							{{ item.name }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			} @else if (field.name === 'Points') {
+				<mat-form-field class="tw-w-full">
+					<mat-label>{{ field.name }}</mat-label>
+					<mat-select
+						[(ngModel)]="data.points"
+						data-cy="select-points">
+						<mat-option
+							*ngFor="let item of points | async"
+							[value]="item"
+							[attr.data-cy]="'option-' + item">
+							{{ item }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			} @else if (field.name === 'Unplanned Work') {
+				<mat-checkbox
+					class="tw-pb-2"
+					[(ngModel)]="data.unplanned"
+					color="primary">
+					<mat-label>Unplanned Work</mat-label>
+				</mat-checkbox>
+			} @else if (field.name === 'Work Package') {
+				<mat-form-field class="tw-w-full">
+					<mat-label>{{ field.name }}</mat-label>
+					<input
+						matInput
+						[(ngModel)]="data.workPackage" />
+				</mat-form-field>
+			} @else if (field.name === 'Feature Group') {
+				@if (featureGroups | async; as _featureGroups) {
+					<mat-form-field class="tw-w-full">
+						<mat-label>{{
+							_featureGroups.length === 0
+								? 'No Feature Groups Available'
+								: field.name
+						}}</mat-label>
+						<mat-select
+							[(ngModel)]="data.featureGroup"
+							[disabled]="_featureGroups.length === 0"
+							data-cy="select-feature-group">
+							<mat-option
+								*ngFor="let item of _featureGroups"
+								[value]="item.id"
+								[attr.data-cy]="'option-' + item.name">
+								{{ item.name }}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				}
+			} @else if (field.name === 'Sprint') {
+				@if (sprints | async; as _sprints) {
+					<mat-form-field class="tw-w-full">
+						<mat-label>{{
+							_sprints.length === 0
+								? 'No Sprints available for this team'
+								: field.name
+						}}</mat-label>
+						<mat-select
+							[(ngModel)]="data.sprint"
+							[disabled]="_sprints.length === 0"
+							data-cy="select-sprint">
+							<mat-option
+								*ngFor="let item of _sprints"
+								[value]="item.id"
+								[attr.data-cy]="'option-' + item.name">
+								{{ item.name }}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				}
+			} @else if (field.widgetType === 'TEXT') {
+				<mat-form-field class="tw-w-full">
+					<mat-label>{{ field.name }}</mat-label>
+					<input
+						matInput
+						[(ngModel)]="data.attrValues[field.attribute]" />
+				</mat-form-field>
+			} @else if (field.widgetType === 'BOOLEAN') {
+				<mat-checkbox
+					class="tw-pb-2"
+					[(ngModel)]="data.attrValues[field.attribute]"
+					color="primary">
+					<mat-label>{{ field.name }}</mat-label>
+				</mat-checkbox>
+			}
+		}
 	}
+	<mat-checkbox
+		class="tw-pb-2"
+		[(ngModel)]="data.createBranchDefault"
+		color="primary">
+		<mat-label>Create working branch</mat-label>
+	</mat-checkbox>
 </div>
 <div mat-dialog-actions>
 	<button
@@ -131,8 +252,7 @@
 			data.title.length === 0 ||
 			data.actionableItem.id.length === 0 ||
 			data.originator.id.length === 0 ||
-			data.changeType.id.length === 0 ||
-			data.targetedVersion.id === -1
+			data.changeType.id.length === 0
 		"
 		data-cy="submit-btn">
 		Create Action

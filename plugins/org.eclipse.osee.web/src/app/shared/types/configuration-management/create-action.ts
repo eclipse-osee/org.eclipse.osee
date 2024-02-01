@@ -16,13 +16,22 @@ import { actionableItem } from './actionable-item';
 import { targetedVersion, targetedVersionSentinel } from './targeted-version';
 
 export interface CreateActionInterface {
+	createdByUser: user;
 	defaultWorkType: string;
 	originator: user;
+	assignees: string;
 	actionableItem: actionableItem;
 	targetedVersion: targetedVersion;
 	title: string;
 	description: string;
 	priority: Priority;
+	points: string;
+	unplanned: boolean;
+	workPackage: string;
+	featureGroup: string;
+	sprint: string;
+	attrValues: { [key: string]: string };
+	createBranchDefault: boolean;
 	changeType: {
 		id: string;
 		name: string;
@@ -34,16 +43,26 @@ export interface CreateActionInterface {
 // only used in action dropdown component
 export class CreateAction implements CreateActionInterface {
 	constructor(currentUser: user, workType: string = '') {
+		this.createdByUser = currentUser;
 		this.originator = currentUser;
 		this.defaultWorkType = workType;
 	}
+	createdByUser: user;
 	defaultWorkType = '';
 	priority = PRIORITIES.LowestPriority;
 	originator: user;
+	assignees = '';
 	actionableItem: actionableItem = new actionableItem();
 	targetedVersion: targetedVersion = targetedVersionSentinel;
 	title: string = '';
 	description: string = '';
+	points = '';
+	unplanned = false;
+	workPackage: string = '';
+	featureGroup: string = '';
+	sprint: string = '';
+	attrValues: { [key: string]: string } = {};
+	createBranchDefault: boolean = false;
 	changeType = {
 		id: '-1',
 		name: '',

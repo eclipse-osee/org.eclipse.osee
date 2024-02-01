@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { user } from '@osee/shared/types/auth';
 import { ActionService } from '@osee/shared/services';
 
@@ -26,7 +26,8 @@ export class ActionUserService {
 			results.sort((a, b) => {
 				return a.name < b.name ? -1 : 1;
 			})
-		)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 	public get usersSorted(): Observable<user[]> {
 		return this._getSortedUsers;

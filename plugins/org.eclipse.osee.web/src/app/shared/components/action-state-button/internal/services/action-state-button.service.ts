@@ -100,6 +100,21 @@ export class ActionStateButtonService {
 	getChangeTypes(actionableItem: string) {
 		return this.actionService.getChangeTypes(actionableItem);
 	}
+	getPoints() {
+		return this.actionService.getPoints();
+	}
+	getCreateActionFields(actionableItemId: string) {
+		return this.actionService.getCreateActionFields(actionableItemId);
+	}
+	getTeamDef(actionableItemId: string) {
+		return this.actionService.getTeamDef(actionableItemId);
+	}
+	getFeatureGroups(teamDefId: string) {
+		return this.actionService.getFeatureGroups(teamDefId);
+	}
+	getSprints(teamDefId: string) {
+		return this.actionService.getSprints(teamDefId);
+	}
 	private _branchState = this.currentBranchService.currentBranch;
 	private _branchAction = this.currentActionService.branchAction;
 	private _branchWorkflow = this.currentActionService.branchWorkFlow;
@@ -150,7 +165,6 @@ export class ActionStateButtonService {
 	public get branchState() {
 		return this._branchState;
 	}
-
 	public get branchApproved() {
 		return this._branchApproved;
 	}
@@ -348,11 +362,14 @@ export class ActionStateButtonService {
 	}
 
 	public doAddAction(value: CreateAction, category: string) {
+		if (typeof value?.description === 'undefined') {
+			return of(); // @todo replace with a false response
+		}
 		return this._user.pipe(
 			take(1),
 			switchMap((user) =>
 				iif(
-					() => typeof value?.description != 'undefined',
+					() => value.createBranchDefault === true,
 					this.actionService
 						.createBranch(new CreateNewAction(value))
 						.pipe(
@@ -383,7 +400,7 @@ export class ActionStateButtonService {
 								)
 							)
 						),
-					of() // @todo replace with a false response
+					this.actionService.createAction(new CreateNewAction(value))
 				)
 			)
 		);

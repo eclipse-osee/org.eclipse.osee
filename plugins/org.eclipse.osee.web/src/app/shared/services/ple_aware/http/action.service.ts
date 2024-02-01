@@ -25,6 +25,7 @@ import {
 	CreateNewActionInterface,
 	newActionResponse,
 	WorkType,
+	CreateActionField,
 } from '@osee/shared/types/configuration-management';
 
 @Injectable({
@@ -43,6 +44,11 @@ export class ActionService {
 	}
 	public getWorkTypes() {
 		return this.http.get<WorkType[]>(apiURL + `/ats/workType`);
+	}
+	public getCreateActionFields(actionableItemId: string) {
+		return this.http.get<CreateActionField[]>(
+			apiURL + `/ats/ai/${actionableItemId}/additionalFields`
+		);
 	}
 	public getWorkFlow(id: string | number) {
 		return this.http.get<teamWorkflow>(apiURL + '/ats/teamwf/' + id);
@@ -67,11 +73,31 @@ export class ActionService {
 			apiURL + '/ats/teamwf/' + arbId + '/version?sort=true'
 		);
 	}
-
+	public getTeamDef(actionableItemId: string) {
+		return this.http.get<NamedId[]>(
+			apiURL + `/ats/ai/${actionableItemId}/teamdef`
+		);
+	}
+	public getSprints(teamDefId: string) {
+		return this.http.get<NamedId[]>(
+			apiURL + `/ats/agile/team/${teamDefId}/sprint?active=true`
+		);
+	}
 	public getChangeTypes(arbId: string): Observable<targetedVersion[]> {
 		return this.http.get<targetedVersion[]>(
 			apiURL + '/ats/teamwf/' + arbId + '/changeTypes?sort=true'
 		);
+	}
+	public getPoints() {
+		return this.http.get<string[]>(apiURL + '/ats/action/points');
+	}
+	public getFeatureGroups(teamDefId: string) {
+		return this.http.get<NamedId[]>(
+			apiURL + `/ats/agile/team/${teamDefId}/feature`
+		);
+	}
+	public createAction(body: CreateNewActionInterface) {
+		return this.http.post<newActionResponse>(apiURL + '/ats/action', body);
 	}
 	public createBranch(
 		body: CreateNewActionInterface

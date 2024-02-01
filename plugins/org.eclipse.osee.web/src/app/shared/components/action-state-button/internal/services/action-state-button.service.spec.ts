@@ -80,6 +80,15 @@ describe('ActionStateButtonService', () => {
 			).toBe('(a|)', { a: testnewActionResponse });
 		});
 	});
+	it('should add an action and create a branch', () => {
+		scheduler.run(({ expectObservable }) => {
+			const create = new CreateAction(MockUserResponse);
+			create.createBranchDefault = true;
+			expectObservable(service.doAddAction(create, '3')).toBe('(a|)', {
+				a: testnewActionResponse,
+			});
+		});
+	});
 	it('should commit a branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(
