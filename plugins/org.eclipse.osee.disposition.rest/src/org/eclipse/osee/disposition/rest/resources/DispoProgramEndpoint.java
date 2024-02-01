@@ -13,18 +13,19 @@
 
 package org.eclipse.osee.disposition.rest.resources;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -43,13 +44,17 @@ import org.eclipse.osee.disposition.model.CopySetParamOption;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgamDescriptorData;
+import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
+import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Angel Avila
@@ -69,9 +74,6 @@ public class DispoProgramEndpoint {
     *
     * @param descriptor Descriptor Data which includes name and import path
     * @return Response type for success of call
-    * @response.representation.201.doc Created the Disposition Set
-    * @response.representation.409.doc Conflict, tried to create a Disposition Set with same name
-    * @response.representation.400.doc Bad Request, did not provide both a Name and a valid Import Path
     */
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
@@ -104,20 +106,11 @@ public class DispoProgramEndpoint {
     *
     * @param name String used to name the branch
     * @return Response type for success of call
-    * @response.representation.201.doc Created the Disposition Set
-    * @response.representation.409.doc Conflict, tried to create a Disposition Set with same name
-    * @response.representation.400.doc Bad Request, did not provide both a Name and a valid Import Path
     */
    @Path("{name}")
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.TEXT_PLAIN)
-   @Operation(summary = "Create a new Disposition Set given a name")
-   @Tags(value = {@Tag(name = "create"), @Tag(name = "set")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "201", description = "OK. Created the Disposition Set"),
-      @ApiResponse(responseCode = "409", description = "Conflict. Tried to create a Disposition Set with same name"),
-      @ApiResponse(responseCode = "400", description = "Bad Request. Did not provide both a Name and a valid Import Path")})
    public Response createDispoProgramByName(@PathParam("name") String name, @QueryParam("userName") String userName) {
       DispoProgamDescriptorData programDescriptor = new DispoProgamDescriptorData();
       programDescriptor.setName(name);
@@ -128,16 +121,9 @@ public class DispoProgramEndpoint {
     * Get all Disposition Programs as JSON
     *
     * @return The Disposition Programs found
-    * @response.representation.200.doc OK, Found Disposition Program
-    * @response.representation.404.doc Not Found, Could not find any Disposition Programs
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   @Operation(summary = "Get all Disposition Programs as JSON")
-   @Tag(name = "program")
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK. Found Disposition Programs"),
-      @ApiResponse(responseCode = "400", description = "Not Found. Could not find any Disposition Programs")})
    public Response getAllPrograms() {
       List<BranchToken> allPrograms = dispoApi.getDispoPrograms();
       Collections.sort(allPrograms, new Comparator<BranchToken>() {
@@ -169,18 +155,11 @@ public class DispoProgramEndpoint {
 
    /**
     * @return The found branchId if successful. Error Code otherwise
-    * @response.representation.200.doc OK, Found branchId
-    * @response.representation.404.doc Not Found, Could not find any branchId
     */
    @Path("getDispoBranchId")
    @GET
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.APPLICATION_JSON)
-   @Operation(summary = "Get a Branch ID given a Branch name")
-   @Tag(name = "branch")
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK. Found Branch ID"),
-      @ApiResponse(responseCode = "400", description = "Not Found. Could not find any Branch ID")})
    public String getDispoBranchId(
       @Parameter(description = "The Branch name", required = true) @FormParam("name") String branchName) {
       return dispoApi.getDispoProgramIdByName(branchName).getIdString();
@@ -191,22 +170,11 @@ public class DispoProgramEndpoint {
     *
     * @param filterState Data used to specify what the user wants to import by its state
     * @return Error code if failing.
-    * @response.representation.200.doc OK, looking through all Disposition Sets.
-    * @response.representation.404.doc Not Found, can't connect to server.
-    * @response.representation.405.doc Method Not Allowed, invalid permission.
-    * @response.representation.415.doc Unsupported Media Type.
     */
    @Path("importAll")
    @PUT
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   @Operation(summary = "Import All Disposition Sets that are in a given State. Default state is \"NONE\"")
-   @Tags(value = {@Tag(name = "import"), @Tag(name = "sets")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK. Import successful"),
-      @ApiResponse(responseCode = "404", description = "Not Found. Can't connect to server"),
-      @ApiResponse(responseCode = "405", description = "Method Not Allowed. Invalid permission"),
-      @ApiResponse(responseCode = "415", description = "Unsupported Media Type")})
    public Response importAllDispoSets(String filterState) {
       Response.Status status;
       dispoApi.importAllDispoPrograms(filterState);
@@ -219,19 +187,10 @@ public class DispoProgramEndpoint {
     *
     * @param filterState Data used to specify what the user wants to import by its state
     * @return Error code if failing.
-    * @response.representation.200.doc OK, looking through Disposition Sets.
-    * @response.representation.404.doc Not Found, can't connect to server.
-    * @response.representation.415.doc Unsupported Media Type.
     */
    @Path("importDispoBranch")
    @PUT
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   @Operation(summary = "Import All Disposition Sets that are in a given Branch and State. Default state is \"NONE\"")
-   @Tags(value = {@Tag(name = "import"), @Tag(name = "branch")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK. Import successful"),
-      @ApiResponse(responseCode = "404", description = "Not Found. Can't connect to server"),
-      @ApiResponse(responseCode = "415", description = "Unsupported Media Type")})
    public Response importDispoBranchByName(
       @Parameter(description = "The Filter state", required = true) @FormParam("filterState") String filterState,
       @Parameter(description = "The Branch name", required = true) @FormParam("name") String branchName) {
@@ -257,46 +216,77 @@ public class DispoProgramEndpoint {
          ArtifactId createdSetId = dispoApi.createSet(programId, importPath, setName);
          setId = dispoApi.getDispoSetById(programId, ArtifactId.valueOf(createdSetId).getIdString()).getIdString();
          dispoApi.importDispoSet(programId, setId, importPath);
-         if (!sourceSet.isEmpty()) {
-            String sourceSetId = dispoApi.getDispoSetIdByName(programId, sourceSet);
-            if (sourceSetId != null) {
-               CopySetParams params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
-                  CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
-               dispoApi.copyDispoSet(programId, setId, programId, sourceSetId, params);
-            }
+      }
+      if (!sourceSet.isEmpty()) {
+         String sourceSetId = dispoApi.getDispoSetIdByName(programId, sourceSet);
+         if (sourceSetId != null) {
+            CopySetParams params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
+               CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
+            dispoApi.copyDispoSet(programId, setId, programId, sourceSetId, params);
+         } else {
+            return Response.status(Status.EXPECTATION_FAILED).entity(String.format(
+               "Vectorcast Update Successful. Failed to import manual dispositions from [%s].", sourceSet)).build();
          }
       }
       return Response.status(Status.OK).build();
    }
 
+   @Path("{programName}/exportAll")
+   @GET
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   public Response exportAllDispoSets(@PathParam("programName") String programName) {
+
+      final ExportSet writer = new ExportSet(dispoApi);
+      final String option = "detailed";
+
+      BranchToken programId = dispoApi.getDispoProgramIdByName(String.format("(DISPO)%s", programName));
+      List<DispoSet> dispoSets = dispoApi.getDispoSets(programId, DispoStrings.CODE_COVERAGE);
+
+      Date date = new Date();
+      String newstring = new SimpleDateFormat("yyyy-MM-dd").format(date);
+      final String zipName = String.format("%s_%s.zip", programName, newstring);
+
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+      try (FileOutputStream fos = new FileOutputStream(zipName)) {
+         baos.writeTo(fos);
+         ZipOutputStream zos = new ZipOutputStream(baos);
+
+         for (DispoSet dispoSet : dispoSets) {
+            if (!dispoSet.getImportState().equalsIgnoreCase("NONE")) {
+               final String fileName = String.format("%s_%s.xml", dispoSet.getName(), newstring);
+
+               zos.putNextEntry(new ZipEntry(fileName));
+               zos.write(writer.runCoverageReports(programId, dispoSet, option, fileName).toByteArray());
+               zos.closeEntry();
+            }
+         }
+         baos.close();
+         zos.close();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+
+      String contentDisposition =
+         String.format("attachment; filename=\"%s\"; creation-date=\"%s\"", zipName, new Date());
+      return Response.ok(baos.toByteArray()).header("Content-Disposition", contentDisposition).type(
+         "application/zip").build();
+   }
+
    @Path("{branchId}/set")
-   @Operation(summary = "Get Annotation")
-   @Tag(name = "annotation")
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK. Annotation found"),
-      @ApiResponse(responseCode = "404", description = "Not Found. Can't find annotation")})
    public DispoSetEndpoint getAnnotation(
       @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
       return new DispoSetEndpoint(dispoApi, branch);
    }
 
    @Path("{branchId}/admin")
-   @Operation(summary = "Get Dispo Set report")
-   @Tag(name = "annotation")
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK. Retrieved Dispo Set report"),
-      @ApiResponse(responseCode = "404", description = "Not Found. Can't find Dispo Set report")})
    public DispoAdminEndpoint getDispoSetReport(
       @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
       return new DispoAdminEndpoint(dispoApi, branch);
    }
 
    @Path("{branchId}/config")
-   @Operation(summary = "Get Dispo Datastore")
-   @Tag(name = "annotation")
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK. Retrieved the Dispo Datastore"),
-      @ApiResponse(responseCode = "404", description = "Not Found. Can't find the Dispo Datastore")})
    public DispoConfigEndpoint getDispoDataStore(
       @Parameter(description = "The Branch ID", required = true) @PathParam("branchId") BranchId branch) {
       return new DispoConfigEndpoint(dispoApi, branch);

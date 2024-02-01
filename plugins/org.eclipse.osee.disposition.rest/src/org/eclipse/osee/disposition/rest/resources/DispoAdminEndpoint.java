@@ -14,12 +14,7 @@
 package org.eclipse.osee.disposition.rest.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -73,11 +68,6 @@ public class DispoAdminEndpoint {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   @Operation(summary = "Get Dispo Set report given a primary Set")
-   @Tags(value = {@Tag(name = "report"), @Tag(name = "sets")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response getDispoSetReport(
       @Parameter(description = "Primary Set", required = true) @Encoded @QueryParam("primarySet") String primarySet,
       @Parameter(description = "Secondary Set", required = true) @Encoded @QueryParam("secondarySet") String secondarySet) {
@@ -105,11 +95,6 @@ public class DispoAdminEndpoint {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   @Operation(summary = "Post Dispo Set export given a primary Set")
-   @Tags(value = {@Tag(name = "export"), @Tag(name = "sets")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response postDispoSetExport(
       @Parameter(description = "Primary Set", required = true) @Encoded @QueryParam("primarySet") String primarySet,
       @Parameter(description = "Option", required = true) @QueryParam("option") String option) {
@@ -143,11 +128,6 @@ public class DispoAdminEndpoint {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   @Operation(summary = "Post Dispo Set export summary given a primary Set")
-   @Tags(value = {@Tag(name = "export"), @Tag(name = "sets")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response postDispoSetExportSummary(
       @Parameter(description = "Primary Set", required = true) @Encoded @QueryParam("primarySet") String primarySet) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
@@ -176,11 +156,6 @@ public class DispoAdminEndpoint {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   @Operation(summary = "Post Dispo Set export directory given a primary Set")
-   @Tags(value = {@Tag(name = "export"), @Tag(name = "sets")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response postDispoSetExportDirectory(
       @Parameter(description = "Primary Set", required = true) @Encoded @PathParam("primarySet") String primarySet,
       @Parameter(description = "Option", required = true) @QueryParam("option") String option,
@@ -216,11 +191,6 @@ public class DispoAdminEndpoint {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   @Operation(summary = "Get Dispo Set copy coverage given a destination Set")
-   @Tags(value = {@Tag(name = "copy"), @Tag(name = "sets")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response getDispoSetCopyCoverage(
       @Parameter(description = "Destination Set", required = true) @QueryParam("destinationSet") String destinationSet,
       @Parameter(description = "Source Branch", required = true) @QueryParam("sourceBranch") BranchId sourceBranch,
@@ -236,11 +206,6 @@ public class DispoAdminEndpoint {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_JSON)
-   @Operation(summary = "Get Dispo Set copy given a destination Set")
-   @Tags(value = {@Tag(name = "copy"), @Tag(name = "sets")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response getDispoSetCopy(
       @Parameter(description = "Destination Set", required = true) @QueryParam("destinationSet") String destinationSet,
       @Parameter(description = "Source Program", required = true) @QueryParam("sourceProgram") BranchId sourceBranch,
@@ -256,11 +221,6 @@ public class DispoAdminEndpoint {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   @Operation(summary = "Multi Item edit")
-   @Tag(name = "edit")
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response multiItemEdit(MassTeamAssignParams params,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       Response.Status status;
@@ -274,11 +234,6 @@ public class DispoAdminEndpoint {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_XML)
-   @Operation(summary = "Get rerun report")
-   @Tags(value = {@Tag(name = "report"), @Tag(name = "rerun")})
-   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "OK"),
-      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response getRerunReport(
       @Parameter(description = "Primary Set", required = true) @QueryParam("primarySet") String primarySet) {
       DispoSet set = dispoApi.getDispoSetById(branch, primarySet);
