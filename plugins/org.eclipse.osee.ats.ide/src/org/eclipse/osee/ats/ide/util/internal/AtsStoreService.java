@@ -353,7 +353,7 @@ public class AtsStoreService implements IAtsStoreService {
          servers.add(server);
       }
       if (servers.isEmpty()) {
-         rd.logf("No %s configured.  ATS cache is not updated.  ", OseeProperties.OSEE_HEALTH_SERVERS_KEY);
+         rd.errorf("No %s configured.  ATS cache is not updated.  ", OseeProperties.OSEE_HEALTH_SERVERS_KEY);
       } else {
          rd.log("\n");
          for (String server : servers) {
@@ -365,10 +365,10 @@ public class AtsStoreService implements IAtsStoreService {
                if (response.getStatus() == HttpURLConnection.HTTP_OK || response.getStatus() == HttpURLConnection.HTTP_ACCEPTED) {
                   rd.logf("ATS server %s cache update was successful.\n", server);
                } else {
-                  rd.logf("ERROR: ATS server %s cache update was not successful.\n", server);
+                  rd.errorf("ERROR: ATS server %s cache update was not successful.\n", server);
                }
             } catch (Exception ex) {
-               rd.logf("ERROR: ATS server %s cache update exception %s.\n", server, ex.getLocalizedMessage());
+               rd.errorf("ERROR: ATS server %s cache update exception %s.\n", server, ex.getLocalizedMessage());
             }
          }
       }

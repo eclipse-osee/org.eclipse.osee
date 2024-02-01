@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.ats.ide.navigate;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -32,9 +34,11 @@ public class ClearAtsConfigCacheAllServers extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
 
-      XResultData rd = AtsApiService.get().getStoreService().clearAtsCachesAllServers();
-      XResultDataUI.report(rd, getName());
-      AtsApiService.get().clearCaches();
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName() + "\n\nAre you sure?")) {
+         XResultData rd = AtsApiService.get().getStoreService().clearAtsCachesAllServers();
+         XResultDataUI.report(rd, getName());
+         AtsApiService.get().clearCaches();
+      }
 
    }
 
