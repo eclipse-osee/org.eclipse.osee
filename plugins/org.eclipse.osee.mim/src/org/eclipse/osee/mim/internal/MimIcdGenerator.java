@@ -16,6 +16,7 @@ package org.eclipse.osee.mim.internal;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,12 +37,14 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.CELLSTYLE;
@@ -88,6 +91,8 @@ public class MimIcdGenerator {
    private final Map<String, InterfaceStructureToken> messageHeaderStructures;
    private final Map<ArtifactId, MimChangeSummaryItem> diffs;
    private final Map<String, String> logicalTypeMaxRange;
+   private final Map<ArtifactId, Pair<String, String>> releaseArtifacts =
+      new HashMap<ArtifactId, Pair<String, String>>();
 
    public MimIcdGenerator(MimApi mimApi) {
       this.mimApi = mimApi;
@@ -137,6 +142,7 @@ public class MimIcdGenerator {
 
       Branch currentBranch =
          orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+
       BranchId parentBranch = currentBranch.getParentBranch();
 
       MimChangeSummary summary = new MimChangeSummary(new HashMap<>());
@@ -161,6 +167,10 @@ public class MimIcdGenerator {
       SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
 
       if (conn.isValid() && primaryNode.isValid() && secondaryNode.isValid()) {
+         // Write sheets
+         ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
+         writer.setDefaultZoom(80);
+         createChangeHistory(writer, currentBranch, conn.getId());
          messages =
             conn.getArtifactReadable().getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList();
 
@@ -214,27 +224,22 @@ public class MimIcdGenerator {
          }
 
          createStructureInfo(branch, view, messages);
+
+         if (diff) {
+            createChangeSummary(writer, summary);
+         }
+
+         createMessageSubMessageSummary(writer, branch, view, conn.getArtifactReadable(),
+            primaryNode.getArtifactReadable(), secondaryNode.getArtifactReadable(), messages, subMessages);
+         createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
+         createStructureNamesSheet(writer, structureLinks);
+         createStructureSummarySheet(writer, branch, messages, structureLinks);
+         createStructureSheets(writer, subMessagesWithHeaders, structureLinks);
+         writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
+         writer.writeWorkbook();
+         writer.closeWorkbook();
+
       }
-
-      // Write sheets
-      ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
-      writer.setDefaultZoom(80);
-      createChangeHistory(writer, currentBranch, conn.getId());
-
-      if (diff) {
-         createChangeSummary(writer, summary);
-      }
-
-      createMessageSubMessageSummary(writer, branch, view, conn.getArtifactReadable(),
-         primaryNode.getArtifactReadable(), secondaryNode.getArtifactReadable(), messages, subMessages);
-      createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
-      createStructureNamesSheet(writer, structureLinks);
-      createStructureSummarySheet(writer, branch, messages, structureLinks);
-      createStructureSheets(writer, subMessagesWithHeaders, structureLinks);
-      writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
-
-      writer.writeWorkbook();
-      writer.closeWorkbook();
    }
 
    private void createStructureInfo(BranchId branch, ArtifactId view, List<ArtifactReadable> messages) {
@@ -318,9 +323,9 @@ public class MimIcdGenerator {
                      flatElements.add(element);
                   }
                }
-
                MimChangeSummaryItem msgDiffItem = diffs.get(message.getArtifactId());
                MimChangeSummaryItem structDiffItem = diffs.get(struct.getArtifactId());
+
                Integer sizeInBytes = 0;
                int elementCount = 0;
                boolean structureSizeChanged = false;
@@ -375,6 +380,7 @@ public class MimIcdGenerator {
                boolean numElementsChanged = structDiffItem != null && !structDiffItem.getRelationChanges().isEmpty();
                boolean sizeInBytesChanged = numElementsChanged || structureSizeChanged;
                structureChanged = structureChanged || structDiffItem != null || txRateChanged || msgNumChanged;
+               String icdcn = structDiffItem != null ? icdcn = getRelatedWorkFlow(structDiffItem.getItemTxIds()) : "";
 
                txRates.add(msgRateText);
                categories.add(cat);
@@ -382,7 +388,7 @@ public class MimIcdGenerator {
                StructureInfo structureInfo = new StructureInfo(struct.getName(), struct.getNameAbbrev(), cat,
                   msgRateText, minSim, maxSim, minBps, maxBps, elementCount, sizeInBytes, sendingNode.getName(),
                   msgNumber, subMsgNumber, taskFileType, desc, message, subMessage.getArtifactReadable(), flatElements,
-                  structureChanged, txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex);
+                  structureChanged, txRateChanged, numElementsChanged, sizeInBytesChanged, byteChangeIndex, icdcn);
                if (struct.getId() == 0) {
                   headersList.put(struct.getName(), structureInfo);
                } else {
@@ -394,26 +400,19 @@ public class MimIcdGenerator {
    }
 
    private void createChangeHistory(ExcelWorkbookWriter writer, Branch branch, long connectionId) {
-      String[] headers = {"Team Workflow", "Date", "Change Description"};
+      String[] headers = {"Team Workflow", "Date", "Change Description", "Related Workflow"};
 
       writer.createSheet("Change History");
       writer.setColumnWidth(0, 5000);
       writer.setColumnWidth(1, 3000);
       writer.setColumnWidth(2, 10000);
+      writer.setColumnWidth(3, 10000);
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
 
       boolean working = branch.getBranchType().equals(BranchType.WORKING);
-      int increment = working ? 1 : 0;
+
       Long queryBranch = working ? branch.getParentBranch().getId() : branch.getId();
-      if (working) {
-         ArtifactReadable tw = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-            branch.getAssociatedArtifact()).asArtifact();
-         TransactionReadable baselineTx = orcsApi.getQueryFactory().transactionQuery().andTxId(
-            branch.getBaselineTx()).getResults().getAtMostOneOrDefault(TransactionReadable.SENTINEL);
-         writer.writeCell(1, 0, tw.getSoleAttributeValue(AtsAttributeTypes.AtsId));
-         writer.writeCell(1, 1, baselineTx.getDate());
-         writer.writeCell(1, 2, tw.getSoleAttributeValue(CoreAttributeTypes.Name));
-      }
+
       String ordering =
          orcsApi.getJdbcService().getClient().getDbType().isPaginationOrderingSupported() ? "ORDER BY time DESC" : "";
       //@formatter:off
@@ -421,7 +420,7 @@ public class MimIcdGenerator {
          "WITH"+orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse()+" gammas (transaction_id, gamma_id, commit_art_id,time) AS "
          + "(SELECT txd1.transaction_id, changedTxs.gamma_id,txd1.commit_art_id,txd1.time "
          + "FROM osee_tx_details txd1, osee_txs attrTxs, osee_attribute attr, osee_txs changedTxs "
-         + "WHERE txd1.branch_id = ? AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 AND "
+         + "WHERE txd1.branch_id in (?,?) AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 AND "
          + "attrTxs.gamma_id = attr.gamma_id AND attr.art_id = txd1.commit_art_id AND attr.attr_type_id = ? AND "
          + "attr.value IN "
          + "(SELECT DISTINCT "+orcsApi.getJdbcService().getClient().getDbType().getPostgresCastStart()+ " art.art_id "+ orcsApi.getJdbcService().getClient().getDbType().getPostgresCastVarCharEnd()
@@ -429,37 +428,56 @@ public class MimIcdGenerator {
          + "WHERE artTxs.branch_id = ? AND artTxs.tx_current = 1 AND art.art_type_id = ? "
          + "AND artTxs.gamma_id = art.gamma_id AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 "
          + "AND attrTxs.gamma_id = attr.gamma_id AND attr.art_id = art.art_id AND attr.attr_type_id = ? "
-         + "AND attr.value = 'MIM') AND txd1.transaction_id = changedTxs.transaction_id AND changedTxs.branch_id = ?), "
+         + "AND attr.value = 'MIM') AND txd1.transaction_id = changedTxs.transaction_id AND changedTxs.branch_id  in (?,?)), "
          + "arts (commit_art_id, transaction_id, art_id,time) AS (SELECT commit_art_id, transaction_id, art_id,time FROM gammas, "
-         + "osee_artifact art WHERE gammas.gamma_id = art.gamma_id UNION SELECT commit_art_id, art_id, transaction_id,time "
-         + "FROM gammas, osee_attribute attr WHERE gammas.gamma_id = attr.gamma_id UNION SELECT commit_art_id, a_art_id, "
-         + "transaction_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id UNION SELECT commit_art_id, "
-         + "b_art_id, transaction_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id ), "
+         + "osee_artifact art WHERE gammas.gamma_id = art.gamma_id UNION SELECT commit_art_id, transaction_id,art_id, time "
+         + "FROM gammas, osee_attribute attr WHERE gammas.gamma_id = attr.gamma_id UNION SELECT commit_art_id, transaction_id, "
+         + "a_art_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id UNION SELECT commit_art_id, "
+         + "transaction_id,b_art_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id ), "
          + "allRels (a_art_id, b_art_id, gamma_id, rel_type) AS ( SELECT a_art_id, b_art_id, txs.gamma_id, rel_type "
-         + "FROM osee_txs txs, osee_relation rel WHERE txs.branch_id = ? AND txs.tx_current = 1 AND "
+         + "FROM osee_txs txs, osee_relation rel WHERE txs.branch_id in (?,?) AND txs.tx_current = 1 AND "
          + "txs.gamma_id = rel.gamma_id UNION SELECT a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type FROM "
-         + "osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.tx_current = 1 AND "
+         + "osee_txs txs, osee_relation_link rel WHERE txs.branch_id in (?,?) AND txs.tx_current = 1 AND "
          + "txs.gamma_id = rel.gamma_id), cte_query(a_art_id, b_art_id, rel_type) AS "
          + "(SELECT a_art_id, b_art_id, rel_type FROM allRels WHERE a_art_id = ? "
          + "UNION ALL SELECT e.a_art_id, e.b_art_id, e.rel_type FROM allRels e "
-         + "INNER JOIN cte_query c ON c.a_art_id = e.b_art_id) SELECT name,atsid,time,row_number() over ("+ordering+") rn FROM (SELECT DISTINCT "
-         + "attr.value name, attr2.value atsid, arts.time time FROM cte_query, "
+         + "INNER JOIN cte_query c ON c.b_art_id = e.a_art_id) SELECT name,commit_art_id, atsid,time,row_number() over ("+ordering+") rn, relTw FROM (SELECT DISTINCT "
+         + "attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id FROM cte_query, "
          + "arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 "
          + "WHERE b_art_id = arts.art_id AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 "
          + "AND attrTxs.gamma_id = attr.gamma_id AND attr.art_id = arts.commit_art_id AND attr.attr_type_id = ? "
          + "AND attrTxs2.branch_id = ? AND attrTxs2.tx_current = 1 AND attrTxs2.gamma_id = attr2.gamma_id "
-         + "AND attr2.art_id = arts.commit_art_id AND attr2.attr_type_id = ?) t1";
+         + "AND attr2.art_id = arts.commit_art_id AND attr2.attr_type_id = ?) t1 "
+         + "left outer join "
+         + "(select rel_link.a_art_id, attr3.value relTw ,  rel_link.b_art_id "
+         + "from osee_txs relTxs,osee_relation_link rel_link,osee_txs attrTxs3,osee_attribute attr3 "
+         + "where rel_link.rel_link_type_id = ? and relTxs.branch_id = ? "
+         + " and relTxs.gamma_id = rel_link.gamma_id and rel_link.b_art_id = attr3.art_id and relTxs.tx_current = 1 "
+         + "and attrTxs3.branch_id = ? and attrTxs3.gamma_id = attr3.gamma_id and attrTxs3.tx_current = 1 "
+         + "and attr3.attr_type_id = ?) t2 on t2.a_art_id = t1.commit_art_id";
       //@formatter:on
       Consumer<JdbcStatement> consumer = stmt -> {
-         int row = stmt.getInt("rn") + increment;
-         writer.writeCell(row, 0, stmt.getString("atsId"));
-         writer.writeCell(row, 1, stmt.getTimestamp("time"));
-         writer.writeCell(row, 2, stmt.getString("name"));
+
+         int row = stmt.getInt("rn");
+         String atsId = stmt.getString("atsId");
+         java.sql.Timestamp timestamp = stmt.getTimestamp("time");
+         String name = stmt.getString("name");
+         String relTw = stmt.getString("relTw");
+         ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+         releaseArtifacts.put(commitArtId, new Pair<String, String>(atsId, relTw));
+         writer.writeCell(row, 0, atsId);
+         writer.writeCell(row, 1, timestamp);
+         writer.writeCell(row, 2, name);
+         writer.writeCell(row, 3, relTw);
       };
-      orcsApi.getJdbcService().getClient().runQuery(consumer, query, queryBranch, CoreBranches.COMMON.getId(),
+
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, queryBranch, CoreBranches.COMMON.getId(),
          AtsAttributeTypes.TeamDefinitionReference, CoreBranches.COMMON.getId(), AtsArtifactTypes.TeamDefinition,
-         CoreBranches.COMMON.getId(), AtsAttributeTypes.WorkType, queryBranch, queryBranch, queryBranch, connectionId,
-         CoreBranches.COMMON.getId(), CoreAttributeTypes.Name, CoreBranches.COMMON.getId(), AtsAttributeTypes.AtsId);
+         CoreBranches.COMMON.getId(), AtsAttributeTypes.WorkType, branch, queryBranch, branch, queryBranch, branch,
+         queryBranch, connectionId, CoreBranches.COMMON.getId(), CoreAttributeTypes.Name, CoreBranches.COMMON.getId(),
+         AtsAttributeTypes.AtsId, CoreRelationTypes.Dependency_Dependency, CoreBranches.COMMON, CoreBranches.COMMON,
+         AtsAttributeTypes.AtsId);
+
    }
 
    private void createChangeSummary(ExcelWorkbookWriter writer, MimChangeSummary summary) {
@@ -473,7 +491,8 @@ public class MimIcdGenerator {
          "Modification Type",
          "What Changed",
          "Is Value",
-         "Was Value"};
+         "Was Value",
+         "ICDCN"};
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
 
       int rowIndex = 1;
@@ -522,6 +541,7 @@ public class MimIcdGenerator {
             writer.writeCell(rowIndex, 5, change.getItemType());
             writer.writeCell(rowIndex, 6, change.getIsValue(), CELLSTYLE.WRAP);
             writer.writeCell(rowIndex, 7, change.getWasValue(), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex, 8, getRelatedWorkFlow(Collections.singleton(change.getTxId())));
             rowIndex++;
          }
          if (firstRow < rowIndex - 1) {
@@ -758,7 +778,8 @@ public class MimIcdGenerator {
          "Msg #",
          "SubMsg #",
          "Taskfile",
-         "Description"};
+         "Description",
+         "ICDCN"};
 
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
 
@@ -782,8 +803,8 @@ public class MimIcdGenerator {
          info.msgNum,
          info.subMsgNum,
          info.taskfile,
-         info.description};
-
+         info.description,
+         info.icdcn};
       //@formatter:off
       writer.writeCell(1, 0,  values[0], getCellColor(structReadable, false));
       writer.writeCell(1, 1,  values[1],  getCellColor(structReadable, CoreAttributeTypes.Name.getId()));
@@ -800,6 +821,7 @@ public class MimIcdGenerator {
       writer.writeCell(1, 12, values[12], getCellColor(structReadable, info.submessage, CoreAttributeTypes.InterfaceSubMessageNumber.getId()));
       writer.writeCell(1, 13, values[13], getCellColor(structReadable, CoreAttributeTypes.InterfaceTaskFileType.getId()));
       writer.writeCell(1, 14, values[14], getCellColor(structReadable, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
+      writer.writeCell(1, 15, values[15], getCellColor(structReadable, false));
       //@formatter:on
 
       return getMaxLengthsArray(createStringLengthArray(headers), createStringLengthArray(values));
@@ -841,7 +863,8 @@ public class MimIcdGenerator {
          "Description",
          "Enumerated Literals",
          "Notes",
-         "Default Value"};
+         "Default Value",
+         "ICDCN",};
       for (InterfaceSubMessageToken subMessage : subMessages) {
 
          List<InterfaceStructureToken> structs = new LinkedList<>();
@@ -871,9 +894,9 @@ public class MimIcdGenerator {
             columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
 
             writer.writeRow(3, elementHeaders, CELLSTYLE.BOLD);
-
             if (struct.getId() == 0) {
                for (InterfaceStructureElementToken element : struct.getElements()) {
+
                   PlatformTypeToken platformType = element.getPlatformType();
                   Integer byteSize = (int) element.getElementSizeInBytes();
                   resultWidths =
@@ -883,9 +906,9 @@ public class MimIcdGenerator {
                   rowIndex.getAndAdd(1);
                }
             } else {
+
                for (int i = 0; i < info.elements.size(); i++) {
                   InterfaceStructureElementToken element = info.elements.get(i);
-
                   Integer byteSize = (int) element.getInterfacePlatformTypeByteSize();
 
                   resultWidths = printDataElementRow(writer, rowIndex, struct.getArtifactReadable(), element,
@@ -912,6 +935,28 @@ public class MimIcdGenerator {
             writer.setColumnWidth(14, Math.max(writer.getColumnWidth(14), 15000)); // Structure Description
          }
       }
+   }
+
+   private String getRelatedWorkFlow(Set<TransactionId> txIds) {
+      String rtn = Strings.EMPTY_STRING;
+      if (!releaseArtifacts.isEmpty() && !txIds.isEmpty()) {
+         List<TransactionReadable> txRs =
+            orcsApi.getQueryFactory().transactionQuery().andTxIds(txIds).getResults().getList();
+
+         if (!txRs.isEmpty()) {
+
+            List<ArtifactReadable> commitArts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+               txRs.stream().map(a -> a.getCommitArt()).collect(Collectors.toList())).asArtifacts();
+
+            for (ArtifactId artifactId : releaseArtifacts.keySet().stream().filter(a -> commitArts.contains(a)).collect(
+               Collectors.toList())) {
+               String tw = (releaseArtifacts.get(artifactId).getSecond()) != null ? releaseArtifacts.get(
+                  artifactId).getSecond() : releaseArtifacts.get(artifactId).getFirst();
+               rtn = rtn + "," + tw;
+            }
+         }
+      }
+      return rtn.replaceAll("^,+", "");
    }
 
    private int[] printHeaderStructureRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex,
@@ -969,6 +1014,8 @@ public class MimIcdGenerator {
 
    private int[] printDataElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex, ArtifactReadable structure,
       InterfaceStructureElementToken elementToken, Integer byteLocation, Integer byteSize, boolean bytesChanged) {
+
+      Set<TransactionId> txIds = new HashSet<>();
       PlatformTypeToken platformType = elementToken.getPlatformType();
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
@@ -989,18 +1036,28 @@ public class MimIcdGenerator {
       String notes = elementToken.getNotes().isEmpty() ? "" : elementToken.getNotes();
       String defaultValue = elementToken.getInterfaceDefaultValue();
       boolean enumChanged = false;
-
+      if (diffs.containsKey(platformType.getArtifactId())) {
+         txIds.addAll(diffs.get(platformType.getArtifactId()).getAllTxIds());
+      }
       if (platformType != null && dataType.equals("enumeration")) {
          ArtifactReadable enumSet = platformType.getArtifactReadable().getRelated(
             CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
+
          enumLiterals = enumSet.getName() + ":\n";
          enumChanged = enumChanged || diffs.containsKey(enumSet.getArtifactId());
+         if (diffs.containsKey(enumSet.getArtifactId())) {
+            txIds.addAll(diffs.get(enumSet.getArtifactId()).getAllTxIds());
+         }
+
          for (ArtifactReadable enumState : enumSet.getRelated(
             CoreRelationTypes.InterfaceEnumeration_EnumerationState).getList()) {
             enumLiterals = enumLiterals + enumState.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinal,
                "0") + " = " + enumState.getSoleAttributeAsString(CoreAttributeTypes.Name, "") + "\n";
             enumChanged = enumChanged || diffs.containsKey(enumState.getArtifactId());
+            if (diffs.containsKey(enumState.getArtifactId())) {
+               txIds.addAll(diffs.get(enumState.getArtifactId()).getAllTxIds());
+            }
          }
       }
       if ((dataType.equals("uInteger") || dataType.equals("sInteger")) && enumLiterals.isEmpty()) {
@@ -1021,7 +1078,11 @@ public class MimIcdGenerator {
 
       CELLSTYLE byteStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : bytesChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
-
+      String icdcns = "";
+      if (elementDiff.isPresent()) {
+         txIds.addAll(elementDiff.get().getAllTxIds());
+      }
+      icdcns = getRelatedWorkFlow(txIds);
       Object[] values = new Object[] {
          beginWord, // 0
          beginByte, // 1
@@ -1036,7 +1097,8 @@ public class MimIcdGenerator {
          description, // 10
          enumLiterals.trim(), // 11
          notes, // 12
-         defaultValue}; // 13
+         defaultValue, //13
+         icdcns}; // 14
 
       if (startIndex < endIndex) {
          for (int i = startIndex; i < endIndex + 1; i++) {
@@ -1089,6 +1151,7 @@ public class MimIcdGenerator {
             writer.writeCell(rowIndex.get(), 11, values[11], arrEnumStyle, CELLSTYLE.WRAP);
             writer.writeCell(rowIndex.get(), 12, values[12], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), i), CELLSTYLE.WRAP);
             writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), i));
+            writer.writeCell(rowIndex.get(), 14, values[14]);
             //@formatter:on
 
             byteLocation = byteLocation + byteSize;
@@ -1115,6 +1178,7 @@ public class MimIcdGenerator {
          writer.writeCell(rowIndex.get(), 11, values[11], enumStyle, CELLSTYLE.WRAP);
          writer.writeCell(rowIndex.get(), 12, values[12], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), 0), CELLSTYLE.WRAP);
          writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), 0));
+         writer.writeCell(rowIndex.get(), 14, values[14]);
          //@formatter:on
          rowIndex.getAndAdd(1);
       }
@@ -1487,14 +1551,14 @@ public class MimIcdGenerator {
          elementDiff.getAttributeChanges(CoreAttributeTypes.InterfaceElementIndexStart.getId());
       if (attributeChanges.size() > 0) {
          ChangeReportRowDto change = attributeChanges.get(0);
-         if (arrayIndex < Integer.parseInt(change.getWasValue())) {
+         if (change.getChangeType().equals("Modified") && arrayIndex < Integer.parseInt(change.getWasValue())) {
             return true;
          }
       }
       attributeChanges = elementDiff.getAttributeChanges(CoreAttributeTypes.InterfaceElementIndexEnd.getId());
       if (attributeChanges.size() > 0) {
          ChangeReportRowDto change = attributeChanges.get(0);
-         if (arrayIndex > Integer.parseInt(change.getWasValue())) {
+         if (change.getChangeType().equals("Modified") && arrayIndex > Integer.parseInt(change.getWasValue())) {
             return true;
          }
       }
@@ -1525,7 +1589,8 @@ public class MimIcdGenerator {
       final boolean numElementsChanged;
       final boolean structureSizeChanged;
       final int byteChangeIndex;
-      public StructureInfo(String name, String nameAbbrev, String cat, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex) {
+      final String icdcn;
+      public StructureInfo(String name, String nameAbbrev, String cat, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, int byteChangeIndex, String icdcn) {
          this.name = name;
          this.nameAbbrev = nameAbbrev;
          this.category = cat;
@@ -1549,6 +1614,7 @@ public class MimIcdGenerator {
          this.numElementsChanged = numElementsChanged;
          this.structureSizeChanged = structureSizeChanged;
          this.byteChangeIndex = byteChangeIndex;
+         this.icdcn = icdcn;
       }
 
    }

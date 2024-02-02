@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -272,7 +273,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
       List<ArtifactReadable> artifacts = orcsApi.getQueryFactory().fromBranch(branch1).andIds(artIds).asArtifacts();
 
-      for (ChangeItem changeItem : changeItems) {
+      for (ChangeItem changeItem : changeItems.stream().filter(a -> a.getIgnoreType().isNone()).collect(
+         Collectors.toList())) {
          ArtifactReadable artA = artifacts.stream().filter(
             a -> ArtifactId.valueOf(a.getId()).equals(changeItem.getArtId())).findFirst().orElse(
                ArtifactReadable.SENTINEL);
@@ -281,14 +283,14 @@ public class TransactionFactoryImpl implements TransactionFactory {
                ArtifactReadable.SENTINEL) : ArtifactReadable.SENTINEL;
 
          if (!artA.isValid() && branch2.isValid()) {
-            artA = orcsApi.getQueryFactory().fromBranch(branch2).andIds(changeItem.getArtId()).asArtifact();
+            artA = orcsApi.getQueryFactory().fromBranch(branch2).andIds(changeItem.getArtId()).asArtifactOrSentinel();
             if (!artA.isValid()) {
                continue;
             }
          }
 
          if (changeItem.getArtIdB().isValid() && !artB.isValid() && branch2.isValid()) {
-            artB = orcsApi.getQueryFactory().fromBranch(branch2).andIds(changeItem.getArtIdB()).asArtifact();
+            artB = orcsApi.getQueryFactory().fromBranch(branch2).andIds(changeItem.getArtIdB()).asArtifactOrSentinel();
          }
 
          ApplicabilityToken currentApplic = ApplicabilityToken.SENTINEL;
@@ -298,6 +300,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
          String isValue = itemKindType.equals(ChangeType.Relation) ? "" : changeItem.getCurrentVersion().getValue();
          String wasValue = itemKindType.equals(ChangeType.Relation) ? "" : changeItem.getBaselineVersion().getValue();
          String changeType = modType.getName();
+         TransactionToken tx = changeItem.getCurrentVersion().getTransactionToken();
 
          // Artifact Names
          String names = artA.getName();
@@ -345,7 +348,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
          }
 
          changeReportRows.add(new ChangeReportRowDto(artA, artB, names, itemType, changeItem.getItemTypeId().getId(),
-            changeType, isValue, wasValue, itemKindType, modType, currentApplic, baselineApplic));
+            changeType, isValue, wasValue, itemKindType, modType, currentApplic, baselineApplic, tx));
       }
 
       changeReportRows.sort(new Comparator<ChangeReportRowDto>() {

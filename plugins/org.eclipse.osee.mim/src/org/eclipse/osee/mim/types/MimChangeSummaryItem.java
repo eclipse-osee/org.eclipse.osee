@@ -13,14 +13,17 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 
 /**
@@ -169,6 +172,35 @@ public class MimChangeSummaryItem {
    @Override
    public int hashCode() {
       return super.hashCode();
+   }
+
+   public Set<TransactionId> getAllTxIds() {
+      return getTxIds(this);
+   }
+
+   public Set<TransactionId> getItemTxIds() {
+      return getItemTxIds(this);
+   }
+
+   private Set<TransactionId> getItemTxIds(MimChangeSummaryItem item) {
+
+      Set<TransactionId> txIds = new HashSet<>();
+
+      txIds.add(item.getArtifactReadable().getTransaction());
+      txIds.addAll(item.getAttributeChanges().stream().map(a -> a.getTxId()).collect(Collectors.toSet()));
+      txIds.addAll(item.getRelationChanges().stream().map(a -> a.getTxId()).collect(Collectors.toSet()));
+
+      return txIds;
+   }
+
+   private Set<TransactionId> getTxIds(MimChangeSummaryItem item) {
+      Set<TransactionId> txIds = new HashSet<>();
+      for (MimChangeSummaryItem childItem : item.getChildren()) {
+         txIds.addAll(getTxIds(childItem));
+      }
+      txIds.addAll(getItemTxIds(item));
+
+      return txIds;
    }
 
 }
