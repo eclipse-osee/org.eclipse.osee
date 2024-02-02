@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 
@@ -40,11 +41,12 @@ public class ChangeReportRowDto {
    private ModificationType modType;
    private ApplicabilityToken isApplic;
    private ApplicabilityToken wasApplic;
+   private TransactionId txId;
 
    public ChangeReportRowDto() {
    }
 
-   public ChangeReportRowDto(ArtifactReadable artA, ArtifactReadable artB, String names, String itemType, Long itemTypeId, String changeType, String isValue, String wasValue, ChangeType itemKindType, ModificationType modType, ApplicabilityToken isApplic, ApplicabilityToken wasApplic) {
+   public ChangeReportRowDto(ArtifactReadable artA, ArtifactReadable artB, String names, String itemType, Long itemTypeId, String changeType, String isValue, String wasValue, ChangeType itemKindType, ModificationType modType, ApplicabilityToken isApplic, ApplicabilityToken wasApplic, TransactionId txId) {
       this.artA = artA;
       this.artB = artB;
       this.names = names;
@@ -57,6 +59,7 @@ public class ChangeReportRowDto {
       this.modType = modType;
       this.isApplic = isApplic;
       this.wasApplic = wasApplic;
+      this.txId = txId;
    }
 
    public String getIds() {
@@ -161,6 +164,10 @@ public class ChangeReportRowDto {
    @JsonIgnore
    public ApplicabilityToken getWasApplic() {
       return wasApplic;
+   }
+
+   public TransactionId getTxId() {
+      return txId;
    }
 
 }
