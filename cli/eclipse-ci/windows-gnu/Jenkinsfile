@@ -69,7 +69,7 @@ spec:
             sh '''
               ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-win/1.0.0
               ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-win/1.0.0
-              scp -o BatchMode=yes -r target/release/bat genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-win/1.0.0
+              scp -o BatchMode=yes -r ./target/x86_64-pc-windows-gnu/release/bat.exe genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/bat/x86_64-win/1.0.0
             '''
           }
         }
