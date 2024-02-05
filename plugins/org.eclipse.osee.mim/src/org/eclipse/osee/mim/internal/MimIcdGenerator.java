@@ -52,6 +52,7 @@ import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.MimApi;
+import org.eclipse.osee.mim.types.ElementArrayIndexOrder;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceNode;
@@ -300,6 +301,16 @@ public class MimIcdGenerator {
                            String arrayElementName =
                               element.getInterfaceElementWriteArrayHeaderName() ? element.getName() + " " + i + " " + arrayElement.getName() : arrayElement.getName() + " " + i;
                            arrayElementCopy.setName(arrayElementName);
+                           // Inherit some properties from the header in order to print the indices correctly later
+                           arrayElementCopy.setInterfaceElementWriteArrayHeaderName(
+                              element.getInterfaceElementWriteArrayHeaderName());
+                           arrayElementCopy.setInterfaceElementArrayIndexOrder(
+                              element.getInterfaceElementArrayIndexOrder());
+                           arrayElementCopy.setInterfaceElementArrayIndexDelimiterOne(
+                              element.getInterfaceElementArrayIndexDelimiterOne());
+                           arrayElementCopy.setInterfaceElementArrayIndexDelimiterTwo(
+                              element.getInterfaceElementArrayIndexDelimiterTwo());
+                           arrayElementCopy.setInterfaceElementArrayHeader(true);
                            flatElements.add(arrayElementCopy);
                         }
                      }
@@ -964,7 +975,6 @@ public class MimIcdGenerator {
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
       Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
       String enumLiterals = elementToken.getEnumLiteral();
-      String elementName = elementToken.getName();
       String dataType = elementToken.getLogicalType().isEmpty() ? "n/a" : elementToken.getLogicalType();
       dataType = dataType.replace("unsigned long", "uLong").replace("unsigned short", "uShort").replace("short",
          "sShort").replace("unsigned integer", "uInteger").replace("integer", "sInteger");
@@ -1019,7 +1029,7 @@ public class MimIcdGenerator {
          endWord, // 3
          endByte, // 4
          dataType, // 5
-         elementName, // 6
+         elementToken.getName(), // 6
          units, // 7
          validRange, // 8
          alterable, // 9
@@ -1040,7 +1050,30 @@ public class MimIcdGenerator {
             values[1] = beginByte;
             values[3] = endWord;
             values[4] = endByte;
-            values[6] = elementName + " " + Integer.toString(i);
+
+            // elementToken inherited header information from its parent up in createStructureInfo() if applicable.
+            // These values are not set on these elements naturally.
+            String elementName = elementToken.getName();
+            if (elementToken.getInterfaceElementArrayHeader() && !elementToken.getInterfaceElementWriteArrayHeaderName()) {
+               String[] split = elementToken.getName().split(" ");
+               String elementIndex = split[split.length - 1];
+               if (Strings.isNumeric(elementIndex)) {
+                  elementName = elementName.substring(0, elementName.length() - (elementIndex.length() + 1)).trim();
+                  String delimiter1 = elementToken.getInterfaceElementArrayIndexDelimiterOne();
+                  String delimiter2 = elementToken.getInterfaceElementArrayIndexDelimiterTwo();
+                  if (elementToken.getInterfaceElementArrayIndexOrder().equals(
+                     ElementArrayIndexOrder.INNER_OUTER.toString())) {
+                     elementName += delimiter1 + i + delimiter2 + elementIndex;
+                  } else {
+                     elementName += delimiter1 + elementIndex + delimiter2 + i;
+                  }
+               }
+            } else {
+               elementName += " " + i;
+            }
+
+            values[6] = elementName;
+
             //@formatter:off
             writer.writeCell(rowIndex.get(), 0, values[0], arrByteStyle);
             writer.writeCell(rowIndex.get(), 1, values[1], arrByteStyle);

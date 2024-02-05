@@ -18,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
+import org.eclipse.osee.mim.types.ElementArrayIndexOrder;
 
 /**
  * @author Luciano T. Vaglienti
@@ -30,6 +31,11 @@ public interface EnumEndpoint {
    @Path("MessagePeriodicities")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<String> getPeriodicity();
+
+   @GET
+   @Path("arrayIndexOrders")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<ElementArrayIndexOrder> getElementArrayIndexOrders();
 
    /**
     * @deprecated
@@ -65,4 +71,5 @@ public interface EnumEndpoint {
    @Path("Units")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<String> getPossibleUnits();
+
 }

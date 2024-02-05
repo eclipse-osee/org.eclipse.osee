@@ -669,6 +669,12 @@ public interface CoreAttributeTypes {
 
    AttributeTypeInteger InterfaceElementIndexEnd = osee.createInteger(2455059983007225802L, "Interface Element Index End", MediaType.TEXT_PLAIN, "");
 
+   AttributeTypeString InterfaceElementArrayIndexOrder = osee.createString(6818939106523472581L, "Interface Element Array Index Order", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString InterfaceElementArrayIndexDelimiterOne = osee.createString(6818939106523472582L, "Interface Element Array Index Delimiter One", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString InterfaceElementArrayIndexDelimiterTwo = osee.createString(6818939106523472583L, "Interface Element Array Index Delimiter Two", MediaType.TEXT_PLAIN, "");
+
    InterfaceLogicalTypeAttribute InterfaceLogicalType = osee.createEnum(new InterfaceLogicalTypeAttribute());
 
    AttributeTypeLong InterfaceEnumOrdinal = osee.createLong(2455059983007225790L, "Ordinal", MediaType.TEXT_PLAIN, "");

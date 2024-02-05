@@ -564,7 +564,10 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Notes)
       .zeroOrOne(InterfaceElementEnumLiteral)
       .zeroOrOne(InterfaceElementIndexStart)
-      .zeroOrOne(InterfaceElementIndexEnd));
+      .zeroOrOne(InterfaceElementIndexEnd)
+      .zeroOrOne(InterfaceElementArrayIndexOrder)
+      .zeroOrOne(InterfaceElementArrayIndexDelimiterOne)
+      .zeroOrOne(InterfaceElementArrayIndexDelimiterTwo));
 
    ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement));
 

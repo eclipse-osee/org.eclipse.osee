@@ -33,6 +33,9 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    private Boolean InterfaceElementAlterable;
    private Boolean interfaceElementArrayHeader = false;
    private Boolean interfaceElementWriteArrayHeaderName = false;
+   private String interfaceElementArrayIndexOrder = ElementArrayIndexOrder.OUTER_INNER.toString();
+   private String interfaceElementArrayIndexDelimiterOne = " ";
+   private String interfaceElementArrayIndexDelimiterTwo = " ";
    private String Notes;
    private String Description;
    private Integer InterfaceElementIndexStart;
@@ -82,6 +85,12 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
       this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
       this.setEnumLiteral(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementEnumLiteral, ""));
       this.setInterfaceDefaultValue(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceDefaultValue, ""));
+      this.setInterfaceElementArrayIndexOrder(art.getSoleAttributeValue(
+         CoreAttributeTypes.InterfaceElementArrayIndexOrder, ElementArrayIndexOrder.OUTER_INNER.toString()));
+      this.setInterfaceElementArrayIndexDelimiterOne(
+         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, " "));
+      this.setInterfaceElementArrayIndexDelimiterTwo(
+         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, " "));
       ArtifactReadable pTypeArt =
          art.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(
             ArtifactReadable.SENTINEL);
@@ -258,6 +267,34 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
 
    public void setInterfaceElementWriteArrayHeaderName(Boolean interfaceElementWriteArrayHeaderName) {
       this.interfaceElementWriteArrayHeaderName = interfaceElementWriteArrayHeaderName;
+   }
+
+   public String getInterfaceElementArrayIndexDelimiterOne() {
+      return interfaceElementArrayIndexDelimiterOne;
+   }
+
+   public void setInterfaceElementArrayIndexDelimiterOne(String interfaceElementArrayIndexDelimiterOne) {
+      this.interfaceElementArrayIndexDelimiterOne = interfaceElementArrayIndexDelimiterOne;
+   }
+
+   public String getInterfaceElementArrayIndexDelimiterTwo() {
+      return interfaceElementArrayIndexDelimiterTwo;
+   }
+
+   public void setInterfaceElementArrayIndexDelimiterTwo(String interfaceElementArrayIndexDelimiterTwo) {
+      this.interfaceElementArrayIndexDelimiterTwo = interfaceElementArrayIndexDelimiterTwo;
+   }
+
+   public String getInterfaceElementArrayIndexOrder() {
+      return interfaceElementArrayIndexOrder.toString();
+   }
+
+   public void setInterfaceElementArrayIndexOrder(String interfaceElementArrayIndexOrder) {
+      this.interfaceElementArrayIndexOrder = interfaceElementArrayIndexOrder;
+   }
+
+   public void setInterfaceElementArrayIndexOrder(ElementArrayIndexOrder interfaceElementArrayIndexOrder) {
+      this.interfaceElementArrayIndexOrder = interfaceElementArrayIndexOrder.toString();
    }
 
    /**

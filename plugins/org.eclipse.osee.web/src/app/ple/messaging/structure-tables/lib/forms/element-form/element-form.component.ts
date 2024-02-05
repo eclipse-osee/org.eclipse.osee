@@ -18,6 +18,8 @@ import {
 	OnInit,
 	Output,
 	SimpleChanges,
+	WritableSignal,
+	signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -65,7 +67,7 @@ import {
 	MatSlideToggleModule,
 } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -91,6 +93,7 @@ type platformTypeStates =
 		NgIf,
 		NgFor,
 		AsyncPipe,
+		NgTemplateOutlet,
 		FormsModule,
 		MatFormFieldModule,
 		MatInputModule,
@@ -134,6 +137,8 @@ export class ElementFormComponent implements OnInit, OnChanges {
 	private query = new BehaviorSubject<MimQuery<PlatformType> | undefined>(
 		undefined
 	);
+
+	arrayExample: WritableSignal<string[]> = signal([]);
 
 	protected _typeState = new BehaviorSubject<platformTypeStates>('SELECT');
 	types = this.structures.types;
@@ -198,9 +203,11 @@ export class ElementFormComponent implements OnInit, OnChanges {
 			)
 		)
 	);
+	arrayIndexOrders = this.structures.arrayIndexOrders;
 	ngOnInit(): void {
 		this.query.next(new PlatformTypeQuery());
 		this.queryMode.next(true);
+		this.updateArrayExample();
 	}
 	ngOnChanges(changes: SimpleChanges) {
 		if (
@@ -426,5 +433,37 @@ export class ElementFormComponent implements OnInit, OnChanges {
 			data: dialogData,
 		});
 		dialogRef.afterClosed().pipe(take(1)).subscribe();
+	}
+
+	compareArrayIndexOrders(a1: string, a2: string) {
+		return a1 === a2;
+	}
+
+	updateArrayExample() {
+		let examples: string[] = [];
+		const d1 = this.data.element.interfaceElementArrayIndexDelimiterOne;
+		const d2 = this.data.element.interfaceElementArrayIndexDelimiterTwo;
+		if (
+			this.data.element.interfaceElementArrayIndexOrder === 'INNER_OUTER'
+		) {
+			examples = [
+				'ElementName' + d1 + 1 + d2 + 1,
+				'ElementName' + d1 + 2 + d2 + 1,
+				'ElementName' + d1 + 3 + d2 + 1,
+				'ElementName' + d1 + 1 + d2 + 2,
+				'ElementName' + d1 + 2 + d2 + 2,
+				'ElementName' + d1 + 3 + d2 + 2,
+			];
+		} else {
+			examples = [
+				'ElementName' + d1 + 1 + d2 + 1,
+				'ElementName' + d1 + 1 + d2 + 2,
+				'ElementName' + d1 + 1 + d2 + 3,
+				'ElementName' + d1 + 2 + d2 + 1,
+				'ElementName' + d1 + 2 + d2 + 2,
+				'ElementName' + d1 + 2 + d2 + 3,
+			];
+		}
+		this.arrayExample.set(examples);
 	}
 }

@@ -13,11 +13,13 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.EnumEndpoint;
+import org.eclipse.osee.mim.types.ElementArrayIndexOrder;
 
 public class EnumEndpointImpl implements EnumEndpoint {
 
@@ -30,6 +32,11 @@ public class EnumEndpointImpl implements EnumEndpoint {
       periodicities.addAll(CoreAttributeTypes.InterfaceMessagePeriodicity.getEnumStrValues());
       periodicities.sort(Comparator.comparing(String::toString));
       return periodicities;
+   }
+
+   @Override
+   public Collection<ElementArrayIndexOrder> getElementArrayIndexOrders() {
+      return Arrays.asList(ElementArrayIndexOrder.values());
    }
 
    @Override

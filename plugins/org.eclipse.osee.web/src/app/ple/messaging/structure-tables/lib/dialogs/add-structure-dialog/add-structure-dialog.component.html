@@ -170,15 +170,13 @@
 				data-cy="stepper-back">
 				Back
 			</button>
-			<ng-container
-				*ngIf="
-					data.structure.name !== '' &&
-					data.structure.description !== '' &&
-					data.structure.interfaceMaxSimultaneity !== '' &&
-					data.structure.interfaceMinSimultaneity !== '' &&
-					data.structure.interfaceTaskFileType !== undefined &&
-					data.structure.interfaceStructureCategory !== ''
-				">
+			@if (
+				data.structure.name !== '' &&
+				data.structure.interfaceMaxSimultaneity !== '' &&
+				data.structure.interfaceMinSimultaneity !== '' &&
+				data.structure.interfaceTaskFileType !== undefined &&
+				data.structure.interfaceStructureCategory !== ''
+			) {
 				<button
 					mat-raised-button
 					color="primary"
@@ -186,7 +184,7 @@
 					data-cy="stepper-next">
 					Next
 				</button>
-			</ng-container>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
