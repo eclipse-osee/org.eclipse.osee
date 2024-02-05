@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './affectedArtifact';
+export * from './array-index-order';
 export * from './branch.applic';
 export * from './connection';
 export * from './connection-nodes';

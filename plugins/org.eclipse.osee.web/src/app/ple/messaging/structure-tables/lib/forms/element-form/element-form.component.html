@@ -115,14 +115,7 @@
 	<ng-container
 		*ngIf="!data.allowArray && data.element.interfaceElementArrayHeader">
 		<br />
-		<mat-slide-toggle
-			labelPosition="before"
-			name="arrayWriteHeaderNameToggle"
-			[(ngModel)]="data.element.interfaceElementWriteArrayHeaderName"
-			data-cy="field-array-write-header-name-toggle"
-			class="tw-py-2">
-			Use Array Header Name in Reports
-		</mat-slide-toggle>
+		<ng-template *ngTemplateOutlet="arrayFields"></ng-template>
 	</ng-container>
 	<ng-container *ngIf="data.allowArray">
 		<mat-slide-toggle
@@ -138,18 +131,9 @@
 		<ng-container *ngIf="data.element.interfaceElementArrayHeader">
 			<ng-container *ngIf="data.element.interfaceElementArrayHeader">
 				<br />
-				<mat-slide-toggle
-					labelPosition="before"
-					name="arrayWriteHeaderNameToggle"
-					[(ngModel)]="
-						data.element.interfaceElementWriteArrayHeaderName
-					"
-					data-cy="field-array-write-header-name-toggle"
-					class="tw-py-2">
-					Use Array Header Name in Reports
-				</mat-slide-toggle>
+				<ng-template *ngTemplateOutlet="arrayFields"></ng-template>
 			</ng-container>
-			<mat-label class="tw-m-0 tw-mb-2 tw-block tw-text-foreground-base"
+			<mat-label class="tw-m-0 tw-block tw-py-2 tw-text-foreground-base"
 				>Array Elements</mat-label
 			>
 			<ng-container *ngFor="let e of data.element.arrayElements">
@@ -266,3 +250,71 @@
 		</ng-template>
 	</ng-container>
 </form>
+
+<ng-template #arrayFields>
+	<mat-slide-toggle
+		labelPosition="before"
+		name="arrayWriteHeaderNameToggle"
+		[(ngModel)]="data.element.interfaceElementWriteArrayHeaderName"
+		data-cy="field-array-write-header-name-toggle"
+		class="tw-py-2">
+		Use Array Header Name in Reports
+	</mat-slide-toggle>
+	@if (!data.element.interfaceElementWriteArrayHeaderName) {
+		<br />
+		<div class="tw-flex tw-w-full tw-justify-between tw-gap-4">
+			<div class="tw-flex tw-w-full tw-flex-col tw-gap-2">
+				<mat-form-field subscriptSizing="dynamic">
+					<mat-label>Array Index Order</mat-label>
+					<mat-select
+						[(ngModel)]="
+							data.element.interfaceElementArrayIndexOrder
+						"
+						(ngModelChange)="updateArrayExample()"
+						name="arrayIndexFormat"
+						[compareWith]="compareArrayIndexOrders"
+						data-cy="field-array-index-format">
+						<mat-option
+							*ngFor="let option of arrayIndexOrders | async"
+							[value]="option.name"
+							[attr.data-cy]="'option-' + option.name">
+							{{ option.formattedName }}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field subscriptSizing="dynamic">
+					<mat-label>Array Index Delimiter 1</mat-label>
+					<textarea
+						cdkTextareaAutosize
+						matInput
+						[(ngModel)]="
+							data.element.interfaceElementArrayIndexDelimiterOne
+						"
+						(ngModelChange)="updateArrayExample()"
+						name="arrayIndexDelimiterOne"
+						data-cy="field-delimiter-one"></textarea>
+				</mat-form-field>
+				<mat-form-field subscriptSizing="dynamic">
+					<mat-label>Array Index Delimiter 2</mat-label>
+					<textarea
+						cdkTextareaAutosize
+						matInput
+						[(ngModel)]="
+							data.element.interfaceElementArrayIndexDelimiterTwo
+						"
+						(ngModelChange)="updateArrayExample()"
+						name="arrayIndexDelimiterTwo"
+						data-cy="field-delimiter-two"></textarea>
+				</mat-form-field>
+			</div>
+			<div class="tw-w-full tw-whitespace-pre">
+				<mat-label>Example:</mat-label>
+				<ul>
+					@for (example of arrayExample(); track $index) {
+						<li>{{ example }}</li>
+					}
+				</ul>
+			</div>
+		</div>
+	}
+</ng-template>

@@ -38,6 +38,9 @@ export class DefaultAddElementDialog implements ElementDialog {
 		arrayElements: [],
 		units: '',
 		enumLiteral: '',
+		interfaceElementArrayIndexOrder: 'OUTER_INNER',
+		interfaceElementArrayIndexDelimiterOne: ' ',
+		interfaceElementArrayIndexDelimiterTwo: ' ',
 	};
 	type = new PlatformTypeSentinel();
 	mode: ElementDialogMode = 'add';

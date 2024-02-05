@@ -382,6 +382,10 @@ export abstract class CurrentStructureService {
 		this.ui.DiffMode = value;
 	}
 
+	get arrayIndexOrders() {
+		return this.elements.getArrayIndexOrders();
+	}
+
 	get connectionsRoute() {
 		return combineLatest([this.branchType, this.BranchId]).pipe(
 			switchMap(([branchType, BranchId]) =>

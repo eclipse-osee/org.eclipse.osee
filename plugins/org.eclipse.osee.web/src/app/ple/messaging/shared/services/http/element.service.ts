@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from '@osee/environments';
-import type { element } from '../../types/element';
+import { type element } from '../../types/element';
 import {
 	ATTRIBUTETYPEIDENUM,
 	ARTIFACTTYPEIDENUM,
@@ -24,6 +24,7 @@ import {
 	TransactionService,
 } from '@osee/shared/transactions';
 import type { relation, transaction } from '@osee/shared/types';
+import { ArrayIndexOrder } from '@osee/messaging/shared/types';
 @Injectable({
 	providedIn: 'root',
 })
@@ -238,5 +239,11 @@ export class ElementService {
 	}
 	performMutation(body: transaction) {
 		return this.transactionService.performMutation(body);
+	}
+
+	getArrayIndexOrders() {
+		return this.http.get<ArrayIndexOrder[]>(
+			apiURL + '/mim/enums/arrayIndexOrders'
+		);
 	}
 }
