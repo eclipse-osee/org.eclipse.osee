@@ -12,7 +12,7 @@ spec:
     - name: volume-known-hosts
       mountPath: /home/jenkins/.ssh
   - name: win-gnu
-    image: tomaka/rust-mingw-docker
+    image: rbaldwin1/rust-mingw
     tty: true
     command:
     - cat
