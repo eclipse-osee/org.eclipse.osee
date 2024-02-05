@@ -11,7 +11,7 @@ spec:
     volumeMounts:
     - name: volume-known-hosts
       mountPath: /home/jenkins/.ssh
-  - name: win_gnu
+  - name: win-gnu
     image: tomaka/rust-mingw-docker
     tty: true
     command:
@@ -49,7 +49,7 @@ spec:
   
     stage('Test') {
       steps {
-        container('win_gnu') {
+        container('win-gnu') {
           sh 'cargo test --target x86_86-pc-windows-gnu'
         }
       }
@@ -57,7 +57,7 @@ spec:
 
     stage('Build') {
       steps {
-        container('win_gnu') {
+        container('win-gnu') {
           sh 'cargo build --target x86_86-pc-windows-gnu --release'
         }
       }
