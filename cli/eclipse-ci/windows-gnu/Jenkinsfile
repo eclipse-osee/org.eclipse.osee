@@ -50,7 +50,7 @@ spec:
     stage('Test') {
       steps {
         container('win-gnu') {
-          sh 'cargo test --target x86_86-pc-windows-gnu'
+          sh 'cargo test --target x86_64-pc-windows-gnu'
         }
       }
     }
@@ -58,7 +58,7 @@ spec:
     stage('Build') {
       steps {
         container('win-gnu') {
-          sh 'cargo build --target x86_86-pc-windows-gnu --release'
+          sh 'cargo build --target x86_64-pc-windows-gnu --release'
         }
       }
     }
