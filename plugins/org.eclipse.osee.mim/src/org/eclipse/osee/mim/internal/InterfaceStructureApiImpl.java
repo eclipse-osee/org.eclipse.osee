@@ -580,28 +580,31 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          submessageStructures.put(subMessage.getArtifactId(), structures);
          PlatformTypeToken structuresType = new PlatformTypeToken(0L, "UINTEGER", "unsigned integer", "32", "", "", "");
 
-         Integer minSimult = null;
-         Integer maxSimult = null;
-
-         for (InterfaceStructureToken struct : structures) {
-            String min = struct.getInterfaceMinSimultaneity();
-            String max = struct.getInterfaceMaxSimultaneity();
-            if (Strings.isNumeric(min) && Strings.isNumeric(max)) {
-               minSimult = minSimult == null ? Integer.parseInt(min) : minSimult + Integer.parseInt(min);
-               maxSimult = maxSimult == null ? Integer.parseInt(max) : maxSimult + Integer.parseInt(max);
-            } else {
-               structuresType.setInterfacePlatformTypeValidRangeDescription("Calculated");
+         if (structures.size() == 1) {
+            structuresType.setInterfacePlatformTypeMinval(structures.get(0).getInterfaceMinSimultaneity());
+            structuresType.setInterfacePlatformTypeMaxval(structures.get(0).getInterfaceMaxSimultaneity());
+         } else {
+            Integer minSimult = null;
+            Integer maxSimult = null;
+            for (InterfaceStructureToken struct : structures) {
+               String min = struct.getInterfaceMinSimultaneity();
+               String max = struct.getInterfaceMaxSimultaneity();
+               if (Strings.isNumeric(min) && Strings.isNumeric(max)) {
+                  minSimult = minSimult == null ? Integer.parseInt(min) : minSimult + Integer.parseInt(min);
+                  maxSimult = maxSimult == null ? Integer.parseInt(max) : maxSimult + Integer.parseInt(max);
+               } else {
+                  structuresType.setInterfacePlatformTypeValidRangeDescription("Calculated");
+               }
             }
-         }
-
-         if (minSimult != null && maxSimult != null) {
-            structuresType.setInterfacePlatformTypeMinval(minSimult + "");
-            structuresType.setInterfacePlatformTypeMaxval(maxSimult + "");
+            if (minSimult != null && maxSimult != null) {
+               structuresType.setInterfacePlatformTypeMinval(minSimult + "");
+               structuresType.setInterfacePlatformTypeMaxval(maxSimult + "");
+            }
          }
 
          element = new InterfaceStructureElementToken(id, "Number of Structures in Submessage " + number, applic,
             structuresType);
-         if (minSimult != maxSimult) {
+         if (!structuresType.getInterfacePlatformTypeMinval().equals(structuresType.getInterfacePlatformTypeMaxval())) {
             element.setInterfaceElementAlterable(true);
             timetag.setInterfaceElementAlterable(true);
          }
