@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 
 /**
+ * AUTO_SAVE by default
+ *
  * @author Donald G. Dunne
  */
 public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implements EditorWidget, AttributeWidget {
@@ -62,18 +64,16 @@ public class XHyperlinkLabelDateDam extends XHyperlinkLabelValueSelection implem
             "Select " + attributeTypeToken.getName(), dateValue);
          if (diag.open() == Window.OK) {
             dateValue = diag.getSelectedDate();
-            if (isAutoSave()) {
-               if (artifact != null && artifact.isValid()) {
-                  artifact.setSoleAttributeValue(attributeTypeToken, dateValue);
-                  if (artifact.isDirty()) {
-                     String comment = null;
-                     if (editorData != null && Strings.isValid(editorData.getEditorName())) {
-                        comment = editorData.getEditorName() + " Auto-Save";
-                     } else {
-                        comment = "Date Auto-Save";
-                     }
-                     getArtifact().persistInThread(comment);
+            if (artifact != null && artifact.isValid()) {
+               artifact.setSoleAttributeValue(attributeTypeToken, dateValue);
+               if (artifact.isDirty()) {
+                  String comment = null;
+                  if (editorData != null && Strings.isValid(editorData.getEditorName())) {
+                     comment = editorData.getEditorName() + " Auto-Save";
+                  } else {
+                     comment = "Date Auto-Save";
                   }
+                  getArtifact().persistInThread(comment);
                }
             }
             refresh();
