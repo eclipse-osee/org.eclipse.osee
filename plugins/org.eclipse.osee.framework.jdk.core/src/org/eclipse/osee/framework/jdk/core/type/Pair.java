@@ -15,7 +15,10 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * A container object for two values.
@@ -27,6 +30,12 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 
 public class Pair<F, S> implements Serializable {
+
+   /**
+    * A static empty immutable {Pair} literal.
+    */
+
+   private static @NonNull Pair<?, ?> EMPTY = Pair.createNullableImmutable(null, null);
 
    private static final long serialVersionUID = 1764353834209869140L;
 
@@ -71,7 +80,7 @@ public class Pair<F, S> implements Serializable {
     * @return a new {@link Pair} containing the objects <code>first</code> and <code>second</code>.
     */
 
-   public static <F, S> @NonNull Pair<F, S> createNullable(F first, S second) {
+   public static <F, S> @NonNull Pair<F, S> createNullable(@Nullable F first, @Nullable S second) {
       return new Pair<>(first, second);
    }
 
@@ -86,7 +95,7 @@ public class Pair<F, S> implements Serializable {
     * @return a new {@link Pair} containing the objects <code>first</code> and <code>second</code>.
     */
 
-   public static <F, S> @NonNull Pair<F, S> createNullableImmutable(F first, S second) {
+   public static <F, S> @NonNull Pair<F, S> createNullableImmutable(@Nullable F first, @Nullable S second) {
       //@formatter:off
       return
          new Pair<>( first, second ) {
@@ -112,17 +121,22 @@ public class Pair<F, S> implements Serializable {
       //@formatter:on
    }
 
+   @SuppressWarnings("unchecked")
+   public static <F, S> @NonNull Pair<F, S> empty() {
+      return (Pair<F, S>) Pair.EMPTY;
+   }
+
    /**
     * Saves the first member of the pair.
     */
 
-   protected F first;
+   protected @Nullable F first;
 
    /**
     * Saves the second member of the pair.
     */
 
-   protected S second;
+   protected @Nullable S second;
 
    /**
     * Creates a new {@link Pair} with <code>null</code> values.
@@ -140,7 +154,7 @@ public class Pair<F, S> implements Serializable {
     * @param second the value for the second member of the {@link Pair}.
     */
 
-   public Pair(F first, S second) {
+   public Pair(@Nullable F first, @Nullable S second) {
       this.first = first;
       this.second = second;
    }
@@ -151,14 +165,34 @@ public class Pair<F, S> implements Serializable {
 
    @Override
    public boolean equals(Object obj) {
-      boolean result = false;
-      if (obj instanceof Pair<?, ?>) {
-         Pair<?, ?> other = (Pair<?, ?>) obj;
-         boolean left = first == null ? other.first == null : first.equals(other.first);
-         boolean right = second == null ? other.second == null : second.equals(other.second);
-         result = left && right;
+
+      if (!(obj instanceof Pair<?, ?>)) {
+         return false;
       }
-      return result;
+
+      Pair<?, ?> other = (Pair<?, ?>) obj;
+
+      boolean firstEqual;
+
+      if (this.first != null) {
+         firstEqual = this.first.equals(other.first);
+      } else {
+         firstEqual = (other.first == null);
+      }
+
+      if (!firstEqual) {
+         return false;
+      }
+
+      boolean secondEqual;
+
+      if (this.second != null) {
+         secondEqual = this.second.equals(other.second);
+      } else {
+         secondEqual = (other.second == null);
+      }
+
+      return secondEqual;
    }
 
    /**
@@ -167,8 +201,54 @@ public class Pair<F, S> implements Serializable {
     * @return the first value.
     */
 
-   public F getFirst() {
+   public @Nullable F getFirst() {
       return this.first;
+   }
+
+   /**
+    * Gets the first value of the {@link Pair}.
+    *
+    * @return the first value.
+    * @throws NullPointerException if the first value is <code>null</code>.
+    */
+
+   public @NonNull F getFirstNonNull() {
+      return Conditions.requireNonNull(this.first);
+   }
+
+   /**
+    * Performs an action upon the second {@link Pair} member when it is non-<code>null</code> and returns the first
+    * member.
+    *
+    * @param secondAction the action to perform on the member {@link #second} when non-<code>null</code>.
+    * @throws NullPointerException when the second member is non-<code>null</code> and the {@link Consumer} parameter is
+    * <code>null</code>.
+    */
+
+   public @Nullable F getFirstIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction) {
+
+      Conditions.acceptWhenNonNull(this.second, secondAction);
+
+      return this.first;
+   }
+
+   /**
+    * Performs an action upon the second {@link Pair} member when it is non-<code>null</code> and returns the first
+    * member.
+    *
+    * @param secondAction the action to perform on the member {@link #second} when non-<code>null</code>.
+    * @throws NullPointerException when
+    * <ul>
+    * <li>The first member is <code>null</code>.</li>
+    * <li>The second member is non-<code>null</code> and the {@link Consumer} parameter is <code>null</code>.</li>
+    * </ul>
+    */
+
+   public @NonNull F getFirstNonNullIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction) {
+
+      Conditions.acceptWhenNonNull(this.second, secondAction);
+
+      return Conditions.requireNonNull(this.first);
    }
 
    /**
@@ -177,8 +257,19 @@ public class Pair<F, S> implements Serializable {
     * @return the second value.
     */
 
-   public S getSecond() {
+   public @Nullable S getSecond() {
       return this.second;
+   }
+
+   /**
+    * Gets the second value of the {@link Pair}.
+    *
+    * @return the second value.
+    * @throws NullPointerException if the first value is <code>null</code>.
+    */
+
+   public @NonNull S getSecondNonNull() {
+      return Conditions.requireNonNull(this.second);
    }
 
    /**
@@ -187,19 +278,25 @@ public class Pair<F, S> implements Serializable {
 
    @Override
    public int hashCode() {
-      final int prime = 37;
-      int result = 17;
-      if (first != null) {
-         result = prime * result + first.hashCode();
-      } else {
-         result = prime * result;
-      }
-      if (second != null) {
-         result = prime * result + second.hashCode();
-      } else {
-         result = prime * result;
-      }
-      return result;
+
+      return Objects.hash(this.first, this.second);
+
+   }
+
+   /**
+    * Performs an action upon the {@link Pair} members that are non-<code>null</code>.
+    *
+    * @param firstAction the action to perform on the member {@link #first} when non-<code>null</code>.
+    * @param secondAction the action to perform on the member {@link #second} when non-<code>null</code>.
+    * @throws NullPointerException when a member is non-<code>null</code> and the corresponding {@link Consumer}
+    * parameter is <code>null</code>.
+    */
+
+   public void ifPresent(@Nullable Consumer<@NonNull F> firstAction, @Nullable Consumer<@NonNull S> secondAction) {
+
+      Conditions.acceptWhenNonNull(this.first, firstAction);
+      Conditions.acceptWhenNonNull(this.second, secondAction);
+
    }
 
    /**
@@ -209,7 +306,7 @@ public class Pair<F, S> implements Serializable {
     * @param second the value for the second member of the {@link Pair}.
     */
 
-   public @NonNull Pair<F, S> set(F first, S second) {
+   public @NonNull Pair<F, S> set(@Nullable F first, @Nullable S second) {
       this.first = first;
       this.second = second;
       return this;
@@ -221,7 +318,7 @@ public class Pair<F, S> implements Serializable {
     * @param first the value to be set as the {@link #first} member.
     */
 
-   public void setFirst(F first) {
+   public void setFirst(@Nullable F first) {
       this.first = first;
    }
 
@@ -231,7 +328,7 @@ public class Pair<F, S> implements Serializable {
     * @param second the value to be set as the {@link #second} member.
     */
 
-   public void setSecond(S second) {
+   public void setSecond(@Nullable S second) {
       this.second = second;
    }
 
@@ -250,7 +347,8 @@ public class Pair<F, S> implements Serializable {
    public @NonNull String toString() {
       var firstAsString = String.valueOf(this.first);
       var secondAsString = String.valueOf(this.second);
-      return String.format("[%s, %s]", firstAsString, secondAsString);
+      var result = String.format("[%s, %s]", firstAsString, secondAsString);
+      return Conditions.requireNonNull(result);
    }
 
    /**
@@ -260,9 +358,10 @@ public class Pair<F, S> implements Serializable {
     * @param firstClass the expected {@link Class} of the first value.
     * @param secondClass the expected {@link Class} of the second value.
     * @return <code>false</code> when both values are of the expected {@link Class}; otherwise, <code>true</code>.
+    * @throws NullPointerException when <code>firstClass</code> or <code>secondClass</code> is <code>null</code>.
     */
 
-   public boolean typesKo(Class<?> firstClass, Class<?> secondClass) {
+   public boolean typesKo(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass) {
       return !this.typesOk(firstClass, secondClass);
    }
 
@@ -273,15 +372,20 @@ public class Pair<F, S> implements Serializable {
     * @param firstClass the expected {@link Class} of the first value.
     * @param secondClass the expected {@link Class} of the second value.
     * @return <code>true</code> when both values are of the expected {@link Class}; otherwise, <code>false</code>.
+    * @throws NullPointerException when <code>firstClass</code> or <code>secondClass</code> is <code>null</code>.
     */
 
-   public boolean typesOk(Class<?> firstClass, Class<?> secondClass) {
+   public boolean typesOk(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass) {
+
+      var classOfFirst = Conditions.applyWhenNonNull(this.first, (f) -> f.getClass());
+      var classOfSecond = Conditions.applyWhenNonNull(this.second, (s) -> s.getClass());
+
       //@formatter:off
       return
-            (    Objects.isNull( this.first )
-              || firstClass.isAssignableFrom( this.first.getClass() ) )
-         && (    Objects.isNull( this.second )
-              || secondClass.isAssignableFrom( this.second.getClass() ) );
+            (    ( classOfFirst == null )
+              || firstClass.isAssignableFrom( classOfFirst ) )
+         && (    ( classOfSecond == null )
+              || secondClass.isAssignableFrom( classOfSecond ) );
       //@formatter:on
    }
 

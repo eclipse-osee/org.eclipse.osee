@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
@@ -99,7 +100,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
 
                URI sourceUri = new URI(localUri);
                inputStream = sourceUri.toURL().openStream();
-               byte[] compressed = Lib.compressStream(inputStream, getOutfileName());
+               byte[] compressed = Zip.compressStream(inputStream, getOutfileName());
 
                String resourceId = storageId.getIdString();
                boolean overwriteAllowed = false;

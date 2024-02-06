@@ -138,7 +138,7 @@ public class PublishingTemplateKeyGroups implements ToMessage {
          .indent( indent )
          .title( "PublishingTemplateKeyGroups" )
          .indentInc()
-         .segmentIndexedList( "Safe Names", this.publishingTemplateKeyGroupList )
+         .segmentIndexed( "Safe Names", this.publishingTemplateKeyGroupList )
          .indentDec()
          ;
       //@formatter:on

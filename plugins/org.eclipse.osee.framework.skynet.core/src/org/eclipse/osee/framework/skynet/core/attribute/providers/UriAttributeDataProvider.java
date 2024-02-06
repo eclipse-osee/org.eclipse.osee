@@ -21,6 +21,7 @@ import java.util.Arrays;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
@@ -59,7 +60,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          if (!Arrays.equals(dataStore.getContent(), data != null ? data.array() : null)) {
             if (data != null) {
                byte[] compressed;
-               compressed = Lib.compressStream(Lib.byteBufferToInputStream(data), getInternalFileName());
+               compressed = Zip.compressStream(Lib.byteBufferToInputStream(data), getInternalFileName());
                dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
                response = true;
             } else {
@@ -80,7 +81,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       byte[] rawData = dataStore.getContent();
       if (rawData != null) {
          try {
-            decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
+            decompressed = ByteBuffer.wrap(Zip.decompressBytes(new ByteArrayInputStream(rawData)));
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }

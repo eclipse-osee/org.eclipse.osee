@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -67,7 +68,7 @@ public class ExchangeUtil {
          importSource = ExchangeUtil.createTempFolder(exchangePath);
          logger.info("Extracting Exchange File: [%s] to [%s]", source.getName(), importSource);
          try {
-            Lib.decompressStream(new FileInputStream(source), importSource);
+            Zip.decompressStream(new FileInputStream(source), importSource);
          } catch (Exception ex) {
             OseeCoreException.wrapAndThrow(ex);
          }

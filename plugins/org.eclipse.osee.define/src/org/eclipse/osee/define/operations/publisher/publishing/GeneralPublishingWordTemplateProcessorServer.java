@@ -22,7 +22,7 @@ import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOpe
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.core.server.publishing.WordRenderArtifactWrapperServerImpl;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -65,12 +65,12 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
     */
 
    @Override
-   protected void processArtifactSet(List<ArtifactReadable> artifacts, WordMLProducer wordMl) {
+   protected void processArtifactSet(List<ArtifactReadable> artifacts, PublishingAppender wordMl) {
 
-      var recurseChildren = this.publishingTemplate.getRendererOptions().getOutliningOptions()[0].isRecurseChildren();
+      var recurseChildren = this.publishingTemplate.getPublishOptions().getOutliningOptions()[0].isRecurseChildren();
 
       var includeEmptyHeaders =
-         this.publishingTemplate.getRendererOptions().getOutliningOptions()[0].isIncludeEmptyHeaders();
+         this.publishingTemplate.getPublishOptions().getOutliningOptions()[0].isIncludeEmptyHeaders();
 
       if (Objects.isNull(includeEmptyHeaders)) {
          includeEmptyHeaders = !this.renderer.isRendererOptionSetAndFalse(RendererOption.PUBLISH_EMPTY_HEADERS);

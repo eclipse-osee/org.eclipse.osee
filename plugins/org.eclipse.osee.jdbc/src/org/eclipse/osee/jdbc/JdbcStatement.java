@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.MapEntryAttributeUtil;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -125,28 +126,43 @@ public interface JdbcStatement extends AutoCloseable {
    IVariantData parse();
 
    default Object loadAttributeValue(AttributeTypeToken attributeType) {
-      Object value;
+
       if (attributeType.isBoolean()) {
-         value = getBoolean("value");
-      } else if (attributeType.isDouble()) {
-         value = getDouble("value");
-      } else if (attributeType.isInteger()) {
-         value = getInt("value");
-      } else if (attributeType.isLong()) {
-         value = getLong("value");
-      } else if (attributeType.isArtifactId()) {
-         String id = getString("value");
-         value = ArtifactId.valueOf(id);
-      } else if (attributeType.isBranchId()) {
-         value = BranchId.valueOf(getString("value"));
-      } else if (attributeType.isDate()) {
-         value = new Date(getLong("value"));
-      } else {
-         value = getString("value");
-         if (attributeType.isEnumerated()) {
-            value = Strings.intern((String) value);
-         }
+         return this.getBoolean("value");
       }
-      return value;
+
+      if (attributeType.isDouble()) {
+         return this.getDouble("value");
+      }
+
+      if (attributeType.isInteger()) {
+         return this.getInt("value");
+      }
+
+      if (attributeType.isLong()) {
+         return this.getLong("value");
+      }
+
+      if (attributeType.isDate()) {
+         return new Date(this.getLong("value"));
+      }
+
+      if (attributeType.isArtifactId()) {
+         return ArtifactId.valueOf(this.getString("value"));
+      }
+
+      if (attributeType.isBranchId()) {
+         return BranchId.valueOf(this.getString("value"));
+      }
+
+      if (attributeType.isEnumerated()) {
+         return Strings.intern(this.getString("value"));
+      }
+
+      if (attributeType.isMapEntry()) {
+         return MapEntryAttributeUtil.jsonDecode(this.getString("value"));
+      }
+
+      return this.getString("value");
    }
 }

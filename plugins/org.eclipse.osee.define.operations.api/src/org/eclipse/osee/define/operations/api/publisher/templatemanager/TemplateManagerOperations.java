@@ -30,7 +30,7 @@ public interface TemplateManagerOperations {
     * managed by this Template Manager.
     */
 
-   void deleteCache();
+   public void deleteCache();
 
    /**
     * Gets the publishing template that is the "best match" for the provided {@link PublishingTemplateRequest}
@@ -40,27 +40,17 @@ public interface TemplateManagerOperations {
     * @return the publishing template.
     */
 
-   PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest);
+   public PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest);
 
    /**
-    * Gets a publishing template by a primary and secondary key pair. In the case where more than one publishing
-    * template has the same key pair, the first publishing template found is returned. The following key pair types are
-    * supported:
-    * <dl>
-    * <dt>Primary Key: &quot;NAME&quot;</dt>
-    * <dd>Secondary Key: the publishing template name.</dd>
-    * <dt>Primary Key: &quot;SAFE_NAME&quot;</dt>
-    * <dd>Secondary Key: the publishing template safe name.</dd>
-    * <dt>Primary Key: &quot;IDENTIFIER&quot;</dt>
-    * <dd>Secondary Key: the publishing template identifier.</dd>
-    * </dl>
+    * Gets a status report for the publishing template that is the "best match" for the provided
+    * {@link PublishingTemplateRequest} parameters.
     *
-    * @param primaryKey the primary search key.
-    * @param secondaryKey the secondary search key.
-    * @return the first found {@link PublishingTemplate}.
+    * @param publishingTemplateRequest the publishing template selection parameters.
+    * @return the publishing template.
     */
 
-   PublishingTemplate getPublishingTemplate(String primaryKey, String secondaryKey);
+   public String getPublishingTemplateStatus(PublishingTemplateRequest publishingTemplateRequest);
 
    /**
     * Gets a list of all publishing template safe names from all publishing template providers. This method is provided
@@ -70,7 +60,7 @@ public interface TemplateManagerOperations {
     * @return a POJO containing a list of the publishing template safe names.
     */
 
-   PublishingTemplateKeyGroups getPublishingTemplateKeyGroups();
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups();
 
 }
 

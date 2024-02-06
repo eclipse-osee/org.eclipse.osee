@@ -247,8 +247,8 @@ public class DataRightResult implements ToMessage {
          .indent( indent )
          .title( "Data Right Anchors Result" )
          .indentInc()
-         .segmentIndexedList( "dataRightAnchorSkinnys", this.dataRightAnchorSkinnys )
-         .segmentIndexedList( "dataRights",             this.dataRights             )
+         .segmentIndexed( "dataRightAnchorSkinnys", this.dataRightAnchorSkinnys )
+         .segmentIndexed( "dataRights",             this.dataRights             )
          .indentDec()
          ;
       //@formatter:on

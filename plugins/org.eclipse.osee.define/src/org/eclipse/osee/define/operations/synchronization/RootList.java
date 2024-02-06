@@ -25,9 +25,10 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -185,7 +186,7 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
    public Iterator<ArtifactReadable> iterator() {
 
       if (Objects.isNull(this.artifactReadableRoots)) {
-         throw new IllegalStateException("Attempt to iterate the RootList before validation.\n");
+         throw new IllegalStateException("Attempt to iterate the RootList before Conditions.\n");
       }
 
       return this.artifactReadableRoots.iterator();
@@ -201,7 +202,7 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
    public Stream<ArtifactReadable> stream() {
 
       if (Objects.isNull(this.artifactReadableRoots)) {
-         throw new IllegalStateException("Attempt to iterate the RootList before validation.\n");
+         throw new IllegalStateException("Attempt to iterate the RootList before Conditions.\n");
       }
 
       return this.artifactReadableRoots.stream();
@@ -287,41 +288,41 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
       Message message = null;
 
       //@formatter:off
-      Validation.requireNonNull
+      Conditions.requireNonNull
          (
             message,
             this.orcsApi,
-            Validation.ValueType.MEMBER,
+            ValueType.MEMBER,
             "RootList",
             "validate",
             "orcsApi"
          );
 
-      Validation.requireNonNull
+      Conditions.requireNonNull
          (
             message,
             this.orcsTokenService,
-            Validation.ValueType.MEMBER,
+            ValueType.MEMBER,
             "RootList",
             "validate",
             "orcsTokenService"
          );
 
-      Validation.requireNonNull
+      Conditions.requireNonNull
          (
             message,
             this.direction,
-            Validation.ValueType.MEMBER,
+            ValueType.MEMBER,
             "RootList",
             "validate",
             "direction"
          );
 
-      Validation.requireNonNull
+      Conditions.requireNonNull
          (
             message,
             this.synchronizationArtifactBuilder,
-            Validation.ValueType.MEMBER,
+            ValueType.MEMBER,
             "RootList",
             "validate",
             "synchronizationArtifactBuilder"
@@ -331,7 +332,7 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
          throw
             new IllegalArgumentException
                    (
-                      Validation.buildIllegalArgumentExceptionMessage
+                      Conditions.buildIllegalArgumentExceptionMessage
                          (
                             this.getClass().getSimpleName(),
                             "validate",
@@ -395,7 +396,7 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
          .indent( indent )
          .title( "Root List" )
          .indentInc()
-         .segmentIndexedList( "Roots List", this.rootsList )
+         .segmentIndexed( "Roots List", this.rootsList )
          .indentDec()
          ;
       //@formatter:on

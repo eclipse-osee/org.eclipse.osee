@@ -100,11 +100,11 @@ public class AttachmentMessageBodyReader implements MessageBodyReader<Attachment
                       new Message()
                              .title( "AttachmentMessageBodyReader::readFrom, an empty input stream was recieved." )
                              .indentInc()
-                             .segment             ( "Type",         type        )
-                             .segment             ( "Generic Type", genericType )
-                             .segmentIndexedArray ( "Annotations",  annotations )
-                             .segment             ( "Media Type",   mediaType   )
-                             .segmentMap          ( "HTTP Headers", httpHeaders )
+                             .segment       ( "Type",         type        )
+                             .segment       ( "Generic Type", genericType )
+                             .segmentIndexed( "Annotations",  annotations )
+                             .segment       ( "Media Type",   mediaType   )
+                             .segmentMap    ( "HTTP Headers", httpHeaders )
                              .toString()
                    );
          //@formatter:on

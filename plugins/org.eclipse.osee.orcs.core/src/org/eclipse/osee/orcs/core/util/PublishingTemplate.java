@@ -17,11 +17,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
@@ -108,11 +109,11 @@ public class PublishingTemplate {
    private final ArtifactToken parentArtifactToken;
 
    /**
-    * When specified, the file contents will be used as the value of the publishing template's renderer options
+    * When specified, the file contents will be used as the value of the publishing template's publish options
     * attribute.
     */
 
-   private final Path rendererOptionsFileName;
+   private final Path publishOptionsFileName;
 
    /**
     * When specified, the file contents will be used as the value of the publishing template's Word ML.
@@ -121,11 +122,33 @@ public class PublishingTemplate {
    private final Path templateContentFileName;
 
    /**
+    * When specified, will be used to create attribute values for the Publishing Template's Publishing Template Content
+    * By Format Map Entry attribute. Each attribute value is a JSON record of the form:
+    *
+    * <pre>
+    *    {
+    *      "key":   "&lt;format&gt;",
+    *      "value": "&lt;template-content&gt;"
+    *    }
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>key:</dt>
+    * <dd>Is the format name specified by the {@link FormatIndicator}.</dd>
+    * <dt>template-content:</code>
+    * <dd>Is the JSON escaped contents of the file specified by the {@link Path}.</dd>
+    * </dl>
+    */
+
+   private final List<PublishingTemplateContentMapEntry> publishingTemplateContentMapEntries;
+
+   /**
     * Creates a new {@link PublishingTemplate} with the specified parameters.
     *
     * @param parentArtifactToken the hierarchical parent of the publishing template artifact.
     * @param name the name of the publishing template artifact.
-    * @param rendererOptionsFilename the publishing template renderer options filename. The parameter maybe
+    * @param publishOptionsFilename the publishing template renderer options filename. The parameter may be
     * <code>null</code>.
     * @param templateContentFileName the filename of a file containing the Word ML publishing template content. The
     * parameter maybe <code>null</code>.
@@ -135,7 +158,18 @@ public class PublishingTemplate {
     * are <code>null</code>.
     */
 
-   public PublishingTemplate(ArtifactToken parentArtifactToken, String name, String rendererOptionsFileName, String templateContentFileName, List<PublishingTemplateMatchCriterion> matchCriteria) {
+   //@formatter:off
+   public
+      PublishingTemplate
+         (
+            ArtifactToken                           parentArtifactToken,
+            String                                  name,
+            String                                  publishOptionsFileName,
+            String                                  templateContentFileName,
+            List<PublishingTemplateContentMapEntry> publishingTemplateContentMapEntries,
+            List<PublishingTemplateMatchCriterion>  matchCriteria
+         ) {
+   //@formatter:on
 
       this.parentArtifactToken = Objects.requireNonNull(parentArtifactToken,
          "SetupPublishing.PublishingTemplate::new, paramter \"parentArtifactToken\" cannot be null.");
@@ -143,27 +177,103 @@ public class PublishingTemplate {
       this.name =
          Objects.requireNonNull(name, "SetupPublishing.PublishingTemplate::new, parameter \"name\" cannnot be null.");
 
-      this.rendererOptionsFileName =
-         Objects.nonNull(rendererOptionsFileName) ? Paths.get(rendererOptionsFileName) : null;
+      this.publishOptionsFileName = Objects.nonNull(publishOptionsFileName) ? Paths.get(publishOptionsFileName) : null;
 
       this.templateContentFileName =
          Objects.nonNull(templateContentFileName) ? Paths.get(templateContentFileName) : null;
+
+      this.publishingTemplateContentMapEntries = Objects.requireNonNull(publishingTemplateContentMapEntries);
 
       this.matchCriteria = matchCriteria;
    }
 
    /**
-    * Creates a {@link PublishingTemplateRequest} that can be used to obtain the Publishing Template from the Publishing
-    * Template Manager.
+    * Gets the publishing template identifier as a {@link String}.
     *
-    * @return a {@link PublishingTemplateRequest} object.
+    * @return the publishing template identifier as a string.
     */
 
-   public PublishingTemplateRequest getPublishingTemplateRequest() {
+   public String getIdentifier() {
 
-      var publishingTemplateRequest = new PublishingTemplateRequest(this.identifier);
+      return this.identifier;
+   }
 
-      return publishingTemplateRequest;
+   /**
+    * Loads a publishing template configuration file from under either the OSEE-INF folder or the folder containing the
+    * class file for a specified class.
+    *
+    * @param inOseeInf when <code>true</code>, the files will be loaded from the OSEE-INF folder under the base path.
+    * When <code>false</code>, the files will be loaded from the "support" sub-directory of the folder containing the
+    * class file for the specified class.
+    * @param locationClass this class is used to generate the base path to the directory containing the files for the
+    * project containing the specified class.
+    * @param filePath a relative file path from the specified directory to the file to be loaded.
+    * @return A {@link String} with the contents of the loaded file.
+    */
+
+   private String readFile(boolean inOseeInf, Path filePath, Class<?> locationClass) {
+
+      try {
+         //@formatter:off
+         return
+            inOseeInf
+               ? OseeInf
+                    .getResourceContents
+                       (
+                          filePath.toString(),
+                          SetupPublishing.class
+                       )
+               : Lib
+                    .fileToString
+                       (
+                          locationClass,
+                          Paths
+                             .get( "support" )
+                             .resolve( filePath )
+                             .toString()
+                       );
+
+      } catch( Exception e ) {
+
+         var message =
+            new Message()
+                   .title( "PublishingTemplate::readFile, Failed to load file." )
+                   .indentInc()
+                   .segment( "In Osee Inf",    Boolean.valueOf( inOseeInf ) )
+                   .segment( "File Path",      filePath                     );
+
+         if( !inOseeInf ) {
+            message.segment( "Location Class", locationClass.getName() );
+         }
+
+         message.reasonFollows( e );
+
+         throw new AssertionError( message.toString(), e );
+      }
+      //@formatter:on
+   }
+
+   /**
+    * Reads a file using the method {@link #readFile} replacing occurrences of "_TEMPLATE_NAME_" with the publishing
+    * template name.
+    *
+    * @param inOseeInf when <code>true</code>, the files will be loaded from the OSEE-INF folder under the base path.
+    * When <code>false</code>, the files will be loaded from the "support" sub-directory of the folder containing the
+    * class file for the specified class.
+    * @param locationClass this class is used to generate the base path to the directory containing the files for the
+    * project containing the specified class.
+    * @param filePath a relative file path from the specified directory to the file to be loaded.
+    * @return A {@link String} with the contents of the loaded file.
+    */
+
+   private String readTemplateFile(boolean inOseeInf, Path filePath, Class<?> locationClass) {
+      //@formatter:off
+      return
+         this
+            .readFile( inOseeInf, filePath, locationClass )
+            .replace( "_TEMPLATE_NAME_", this.name );
+      //@formatter:on
+
    }
 
    /**
@@ -183,84 +293,59 @@ public class PublishingTemplate {
     * <code>publishingTemplateSetter</code> is <code>null</code>.
     */
 
-   public PublishingTemplate load(Class<?> locationClass, boolean inOseeInf,
-      PublishingTemplateSetter publishingTemplateSetter) {
+   public PublishingTemplate load(Class<?> locationClass, boolean inOseeInf, PublishingTemplateSetter publishingTemplateSetter) {
 
-      Objects.requireNonNull(locationClass, "PublishingTemplate::load, parameter \"locationClass\" cannot be null.");
-
-      Objects.requireNonNull(locationClass,
-         "PublishingTemplate::load, parameter \"publishingTemplateSetter\" cannot be null.");
-
-      String templateContents = null;
-      String rendererContents = null;
+      Objects.requireNonNull(locationClass);
+      Objects.requireNonNull(publishingTemplateSetter);
 
       //@formatter:off
-      if (Objects.nonNull(this.rendererOptionsFileName)) {
+      var templateContents =
+         Objects.nonNull( this.templateContentFileName )
+            ? this.readTemplateFile(inOseeInf, this.templateContentFileName, locationClass)
+            : null;
 
-         try {
-            rendererContents =
-               inOseeInf
-                  ? OseeInf.getResourceContents(this.rendererOptionsFileName.toString(), locationClass)
-                  : Lib.fileToString(locationClass, Paths.get( "support" ).resolve( this.rendererOptionsFileName ).toString());
+      var publishOptionsContents =
+         Objects.nonNull( this.publishOptionsFileName )
+            ? this.readFile( inOseeInf, this.publishOptionsFileName, locationClass )
+            : null;
 
-         } catch( Exception e ) {
-            throw
-               new AssertionError
-                      (
-                         new Message()
-                                .title( "PublishingTemplate::createPublishingTemplate, Failed to load renderer file." )
-                                .indentInc()
-                                .segment( "Location Class", locationClass.getCanonicalName() )
-                                .segment( "In Osee Inf",    Boolean.valueOf( inOseeInf )     )
-                                .segment( "File Path",      this.rendererOptionsFileName     )
-                                .reasonFollows( e )
-                                .toString(),
-                         e
-                      );
-         }
-      }
+      var publishingTemplateContentMapEntries =
+         this.publishingTemplateContentMapEntries
+            .stream()
+            .map
+               (
+                  ( publishingTemplateContentMapEntry ) -> Map.entry
+                                                              (
+                                                                 publishingTemplateContentMapEntry.getFormatIndicator().getFormatName(),
+                                                                 this.readTemplateFile
+                                                                    (
+                                                                       inOseeInf,
+                                                                       publishingTemplateContentMapEntry.getTemplateContentPath(),
+                                                                       locationClass
+                                                                    )
+                                                              )
+               )
+            .collect( Collectors.toList() );
 
-      if (Objects.nonNull(this.templateContentFileName)) {
+      var matchCriteria =
+         this.matchCriteria
+         .stream()
+         .map( PublishingTemplateMatchCriterion::getTemplateMatchCriteria )
+         .collect( Collectors.toCollection( ArrayList::new ) );
 
-         try {
-            templateContents =
-               inOseeInf
-                  ? OseeInf.getResourceContents(this.templateContentFileName.toString(), SetupPublishing.class)
-                  : Lib.fileToString(locationClass, Paths.get( "support" ).resolve( this.templateContentFileName ).toString() );
-
-         } catch( Exception e ) {
-            throw
-               new AssertionError
-                      (
-                         new Message()
-                                .title( "PublishingTemplate::createPublishingTemplate, Failed to load template file." )
-                                .indentInc()
-                                .segment( "Location Class", locationClass.getCanonicalName() )
-                                .segment( "In Osee Inf",    Boolean.valueOf( inOseeInf )     )
-                                .segment( "File Path",      this.templateContentFileName     )
-                                .reasonFollows( e )
-                                .toString(),
-                         e
-                      );
-         }
-
-         templateContents = templateContents.replace( "_TEMPLATE_NAME_", this.name );
-
-         this.identifier =
-            publishingTemplateSetter.set
+      this.identifier =
+         publishingTemplateSetter
+            .set
                (
                   this.parentArtifactToken,
                   this.name,
                   templateContents,
-                  rendererContents,
-                  this.matchCriteria
-                     .stream()
-                     .map(PublishingTemplateMatchCriterion::getTemplateMatchCriteria)
-                     .collect( Collectors.toCollection( ArrayList::new ) )
+                  publishOptionsContents,
+                  publishingTemplateContentMapEntries,
+                  matchCriteria
                );
 
-      }
-      //@formatter:on
+         //@formatter:on
 
       return this;
    }

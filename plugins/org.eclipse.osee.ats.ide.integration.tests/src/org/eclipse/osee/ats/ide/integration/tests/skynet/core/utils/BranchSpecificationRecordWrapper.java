@@ -18,7 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 
 /**
@@ -68,7 +68,7 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
    BranchSpecificationRecordWrapper(@NonNull BranchSpecificationRecord branchSpecificationRecord) {
       //@formatter:off
       this.branchSpecificationRecord =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                branchSpecificationRecord,
                "BranchSpecificationRecordWrapper",
@@ -211,7 +211,7 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
    public void setBranches(@NonNull Branch parentTestBranch, @NonNull Branch testBranch, @NonNull RelationEndpoint relationEndpoint) {
 
       //@formatter:off
-      Validation.requireNull
+      Conditions.requireNull
          (
             this.testBranch,
             "BranchSpecificationRecordWrapper",
@@ -222,7 +222,7 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
 
       //@formatter:off
       this.parentTestBranch =
-         Validation.requireNonNull
+         Conditions.requireNonNull
            (
               parentTestBranch,
               "BranchSpecificationRecordWrapper",
@@ -233,7 +233,7 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
 
       //@formatter:off
       this.testBranch =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                testBranch,
                "BranchSpecificationRecordWrapper",
@@ -244,7 +244,7 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
 
       //@formatter:off
       this.relationEndpoint =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                relationEndpoint,
                "BranchSpecificationRecordWrapper",

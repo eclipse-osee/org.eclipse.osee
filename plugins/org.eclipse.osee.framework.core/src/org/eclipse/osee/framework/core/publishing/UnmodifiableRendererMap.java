@@ -13,6 +13,10 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 
@@ -79,6 +83,23 @@ final class UnmodifiableRendererMap extends EnumRendererMap {
       @Override
       public RendererMap unmodifiableRendererMap() {
          return this;
+      }
+
+      @Override
+      public Iterator<Map.Entry<RendererOption, Object>> iterator() {
+         return new Iterator<Map.Entry<RendererOption, Object>>() {
+
+            @Override
+            public boolean hasNext() {
+               return false;
+            }
+
+            @Override
+            public Entry<RendererOption, Object> next() {
+               throw new NoSuchElementException();
+            }
+
+         };
       }
 
    };

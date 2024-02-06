@@ -49,8 +49,8 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.resource.management.DataResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -436,7 +436,7 @@ public class TransactionBuilderDataFactory {
                   if (data == null) {
                      throw new OseeCoreException("invalid data for zip: %s", uri.toString());
                   }
-                  ByteBuffer decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(data)));
+                  ByteBuffer decompressed = ByteBuffer.wrap(Zip.decompressBytes(new ByteArrayInputStream(data)));
                   list.add(new String(decompressed.array(), "UTF-8"));
                   item.setValue(list);
                } catch (IOException ex) {

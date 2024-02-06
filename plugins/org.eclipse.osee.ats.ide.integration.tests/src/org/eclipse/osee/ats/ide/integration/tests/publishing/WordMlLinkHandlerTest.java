@@ -95,7 +95,7 @@ public class WordMlLinkHandlerTest {
     * documents to <code>stdout</code>.
     */
 
-   private static boolean printDocuments = true;
+   private static boolean printDocuments = false;
 
    /**
     * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.

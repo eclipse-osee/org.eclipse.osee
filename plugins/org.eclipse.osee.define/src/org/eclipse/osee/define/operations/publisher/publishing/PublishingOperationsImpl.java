@@ -20,23 +20,19 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.operations.api.DefineOperations;
 import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
-import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOptionsFactory;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.operations.api.utils.AttachmentFactory;
 import org.eclipse.osee.define.rest.api.ArtifactUrlServer;
 import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
-import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
-import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingOptions;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateChange;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateData;
-import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordMLApplicabilityHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordMlLinkHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
@@ -49,15 +45,15 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
-import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.service.event.EventAdmin;
@@ -72,104 +68,10 @@ import org.osgi.service.event.EventAdmin;
 public class PublishingOperationsImpl implements PublishingOperations {
 
    /**
-    * Enumeration with configuration data for the publishable document types.
-    */
-
-   //@formatter:off
-   private enum DocumentType {
-
-      PREVIEW_WITH_FOLDERS
-         (
-           "Publish Preview With Folders",                     /* Thread Name */
-           RendererMap.of                                      /* Publishing Options */
-              (
-                RendererOption.EXCLUDE_FOLDERS,    false,
-                RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
-                RendererOption.MAX_OUTLINE_DEPTH,  9
-              )
-         ),
-
-      PREVIEW_WITHOUT_FOLDERS
-         (
-           "Publish Preview Without Folders",                  /* Thread Name        */
-           RendererMap.of                                     /* Publishing Options */
-              (
-                RendererOption.EXCLUDE_FOLDERS,    true,
-                RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
-                RendererOption.MAX_OUTLINE_DEPTH,  9
-              )
-         );
-      //@formatter:on
-
-      /**
-       * Saves the {@link RendererMap} for the {@link DocumentType}.
-       */
-
-      private RendererMap publishingOptions;
-
-      /**
-       * Saves the basename for the thread used to publish a document of the {@link DocumentType}.
-       */
-
-      private String threadName;
-
-      /**
-       * Creates a {@link DocumentType} member and saves the configuration data for the document type.
-       *
-       * @param threadName the basename for publishing documents of the {@link DocumentType}.
-       * @param publishingOptions the {@link RendererMap} for publishing document of the {@link DocumentType}.
-       */
-
-      DocumentType(String threadName, RendererMap publishingOptions) {
-
-         this.threadName = threadName;
-         this.publishingOptions = publishingOptions;
-
-      }
-
-      /**
-       * Gets the {@link PublishingOptions} for the {@link DocumentType}.
-       *
-       * @return the {@link PublishingOptions} for the {@link DocumentType}.
-       */
-
-      RendererMap getPublishingOptions() {
-         return this.publishingOptions;
-      }
-
-      /**
-       * Gets the base thread name for publishing document of the {@link DocumentType}.
-       *
-       * @return the base thread name for the {@link DocumentType}.
-       */
-
-      String getThreadName() {
-         return this.threadName;
-      }
-   }
-
-   private static final boolean excludeFolders = true;
-   private static final boolean includeFolders = false;
-
-   /**
     * Saves the single instance of the {@link PublishingOperationsImpl}.
     */
 
    private static PublishingOperationsImpl publishingOperationsImpl = null;
-
-   /**
-    * Saves a {@link PublishingOptionsFactory} that is used to create new {@link PublishingOptions} objects preset with
-    * defaults for the {@link DocumentType}.
-    */
-
-   //@formatter:off
-   private static final PublishingOptionsFactory<PublishingOperationsImpl.DocumentType> publishingOptionsFactory =
-      PublishingOptionsFactory.ofEntries
-         (
-            PublishingOperationsImpl.DocumentType.class,
-            PublishingOperationsImpl.DocumentType::getPublishingOptions
-         );
-   //@formatter:on
 
    /**
     * Gets or creates the single instance of the {@link PublishingOperationsImpl} class.
@@ -271,11 +173,11 @@ public class PublishingOperationsImpl implements PublishingOperations {
 
       //@formatter:off
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                branch,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "PublishingOperationsImpl",
                "getSharedPublishingArtifacts",
                "branch",
@@ -286,11 +188,11 @@ public class PublishingOperationsImpl implements PublishingOperations {
             );
 
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                view,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "PublishingOperationsImpl",
                "getSharedPublishingArtifacts",
                "view",
@@ -301,11 +203,11 @@ public class PublishingOperationsImpl implements PublishingOperations {
             );
 
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                sharedFolder,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "PublishingOperationsImpl",
                "getSharedPublishingArtifacts",
                "sharedFolder",
@@ -316,11 +218,11 @@ public class PublishingOperationsImpl implements PublishingOperations {
             );
 
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                artifactType,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "PublishingOperationsImpl",
                "getSharedPublishingArtifacts",
                "artifactType",
@@ -331,11 +233,11 @@ public class PublishingOperationsImpl implements PublishingOperations {
             );
 
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                attributeType,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "PublishingOperationsImpl",
                "getSharedPublishingArtifacts",
                "attributeType",
@@ -346,11 +248,11 @@ public class PublishingOperationsImpl implements PublishingOperations {
             );
 
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                attributeValue,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "PublishingOperationsImpl",
                "getSharedPublishingArtifacts",
                "attributeValue",
@@ -364,7 +266,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
          throw
             new IllegalArgumentException
                    (
-                      Validation.buildIllegalArgumentExceptionMessage
+                      Conditions.buildIllegalArgumentExceptionMessage
                          (
                             this.getClass().getSimpleName(),
                             "getSharedPublishingArtifacts",
@@ -422,252 +324,20 @@ public class PublishingOperationsImpl implements PublishingOperations {
    /**
     * {@inheritDoc}
     *
-    * @throws IllegalArgumentException when:
-    * <dl>
-    * <dt><code>branch</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>templateArtifactId</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>headArtifact</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>view</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than -1.</dd>
-    * </dl>
-    */
-
-   @Deprecated
-   @Override
-   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
-
-      Message message = null;
-
-      //@formatter:off
-      message =
-         Validation.require
-            (
-               message,
-               branch,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordPreview",
-               "branch",
-               "cannot be null",
-               Objects::isNull,
-               "branch identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               templateArtifactId,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordPreview",
-               "templateArtifactId",
-               "cannot be null",
-               Objects::isNull,
-               "publishing template identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               headArtifact,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordPreview",
-               "headArtifact",
-               "cannot be null",
-               Objects::isNull,
-               "head artifact identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               view,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordPreview",
-               "view",
-               "cannot be null",
-               Objects::isNull,
-               "view artifact identifier is greater than or equal to minus one",
-               (p) -> p.getId() < -1l
-            );
-
-      if (Objects.nonNull(message)) {
-         throw
-            new IllegalArgumentException
-                   (
-                      Validation.buildIllegalArgumentExceptionMessage
-                         (
-                            this.getClass().getSimpleName(),
-                            "msWordPreview",
-                            message
-                         )
-                   );
-      }
-      //@formatter:on
-
-      //@formatter:off
-      var attachment =
-         this.msWordPreviewInternal
-            (
-               new MsWordPreviewRequestData
-                      (
-                         new PublishingTemplateRequest( "AT-" + templateArtifactId.getIdString() ),
-                         BranchId.create( branch.getId(), view ),
-                         List.of( headArtifact )
-                      ),
-               PublishingOperationsImpl.includeFolders
-            );
-
-      return attachment;
-      //@formatter:on
-   }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws IllegalArgumentException when:
-    * <dl>
-    * <dt><code>branch</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>templateArtifactId</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>artifact</code>:</dt>
-    * <dd>when <code>null</code>, empty, or has an entry with an Id less than 0.</dd>
-    * <dt><code>view</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than -1.</dd>
-    * </dl>
-    */
-
-   @Deprecated
-   @Override
-   public Attachment msWordPreview(BranchId branch, ArtifactId templateArtifactId, List<ArtifactId> artifacts, ArtifactId view) {
-
-      Message message = null;
-
-      //@formatter:off
-      message =
-         Validation.require
-            (
-               message,
-               branch,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationImpl",
-               "msWordPreview",
-               "branch",
-               "cannot be null",
-               Objects::isNull,
-               "branch identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               templateArtifactId,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationImpl",
-               "msWordPreview",
-               "templateArtifactId",
-               "cannot be null",
-               Objects::isNull,
-               "publishing template identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               artifacts,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationImpl",
-               "msWordPreview",
-               "artifacts",
-               "cannot be null",
-               Objects::isNull,
-               "artifact identifier list is non-empty, all elements are non-null, and all elements are non-negative",
-               Validation.<List<ArtifactId>>predicate( List::isEmpty )
-                  .or( Validation.collectionContainsNull )
-                  .or( Validation.collectionElementPredicate( ( p ) -> p.getId() < 0 ) )
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               view,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationImpl",
-               "msWordPreview",
-               "view",
-               "cannot be null",
-               Objects::isNull,
-               "view artifact identifier is greater than or equal to minus one",
-               (p) -> p.getId() < -1l
-            );
-
-
-      if (Objects.nonNull(message)) {
-         throw
-            new IllegalArgumentException
-                   (
-                      Validation.buildIllegalArgumentExceptionMessage
-                         (
-                            this.getClass().getSimpleName(),
-                            "msWordPreview",
-                            message
-                         )
-                   );
-      }
-      //@formatter:on
-
-      //@formatter:off
-      var attachment =
-         this.msWordPreviewInternal
-            (
-               new MsWordPreviewRequestData
-                      (
-                        new PublishingTemplateRequest("AT-" + templateArtifactId.getIdString()),
-                        BranchId.create( branch.getId(), view),
-                        artifacts
-                      ),
-               PublishingOperationsImpl.includeFolders
-            );
-
-      return attachment;
-      //@formatter:on
-   }
-
-   /**
-    * {@inheritDoc}
-    *
-    * @param msWordPreviewRequestData the {@link MsWordPreviewRequestData} structure containing the publishing
-    * parameters.
+    * @param msWordPreviewRequestData the {@link PublishingRequestData} structure containing the publishing parameters.
     * @return an {@link InputStream} containing the Word ML XML containing the published artifacts.
     * @throws IllegalArgumentException when the parameter <code>msWordPreviewRequestData</code> is <code>null</code> or
-    * invalid according to {@link MsWordPreviewRequestData#isValid}.
+    * invalid according to {@link PublishingRequestData#isValid}.
     */
 
    @Override
-   public Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
+   public Attachment msWordPreview(PublishingRequestData msWordPreviewRequestData) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             msWordPreviewRequestData,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "PublishingOperationsImpl",
             "msWordPreview",
             "msWordPreviewRequestData",
@@ -679,24 +349,15 @@ public class PublishingOperationsImpl implements PublishingOperations {
             IllegalArgumentException::new
          );
 
-      return this.msWordPreviewInternal
-                (
-                   msWordPreviewRequestData,
-                   PublishingOperationsImpl.includeFolders
-                );
-      //@formatter:on
-   }
+      var publishingTemplateRequest = msWordPreviewRequestData.getPublishingTemplateRequest();
+      var publishingRendererOptions = msWordPreviewRequestData.getPublishingRendererOptions();
+      var publishArtifacts = msWordPreviewRequestData.getArtifactIds();
 
-   private Attachment msWordPreviewInternal(MsWordPreviewRequestData msWordPreviewRequestData, boolean folderInclusion) {
-
-      //@formatter:off
-      var branchId = msWordPreviewRequestData.getBranchId();
-      var viewId = branchId.getViewId();
       var firstArtifactId = msWordPreviewRequestData.getArtifactIds().get(0);
 
       var publishingTemplate =
          this.templateManagerOperations
-            .getPublishingTemplate( msWordPreviewRequestData.getPublishingTemplateRequest() );
+            .getPublishingTemplate( publishingTemplateRequest );
 
       if( publishingTemplate.isSentinel() ) {
 
@@ -713,15 +374,6 @@ public class PublishingOperationsImpl implements PublishingOperations {
          throw new OseeCoreException( message );
       }
 
-      var publishingOptions =
-         PublishingOperationsImpl.publishingOptionsFactory.create
-            (
-               PublishingOperationsImpl.DocumentType.PREVIEW_WITH_FOLDERS,
-               branchId,
-               viewId
-            );
-
-      var publishArtifacts = msWordPreviewRequestData.getArtifactIds();
 
       var outputStream = new ByteArrayOutputStream() {
          byte[] getBuffer() {
@@ -741,7 +393,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
              .configure
                 (
                    publishingTemplate,
-                   publishingOptions
+                   publishingRendererOptions
                 )
              .applyTemplate
                 (
@@ -757,13 +409,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
                       new Message()
                              .title( "PublishingOperationsImpl::msWordPreviewIntenal, Failed to publish document." )
                              .indentInc()
-                             .segment( "Publishing Branch Id", branchId )
-                             .segment( "Publishing View Id",   viewId   )
-                             .segment( "Publish Artifacts",    Objects.nonNull(publishArtifacts)
-                                                                  ? (publishArtifacts.size() > 0)
-                                                                       ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining(", ", "[ ", " ]"))
-                                                                       : "(no artifacts to publish specified)"
-                                                                  : "(no artifacts to publish specified)" )
+                             .toMessage( msWordPreviewRequestData )
                              .reasonFollows( e )
                              .toString(),
                              e
@@ -776,183 +422,14 @@ public class PublishingOperationsImpl implements PublishingOperations {
          this.attachmentFactory.create
             (
                inputStream,
-               PublishingOperationsImpl.DocumentType.PREVIEW_WITH_FOLDERS.name(),
-               branchId,
+               publishingRendererOptions.getRendererOptionValue( RendererOption.PUBLISH_IDENTIFIER),
+               publishingRendererOptions.getRendererOptionValue( RendererOption.BRANCH ),
                firstArtifactId
             );
 
       return attachment;
    }
    //@formatter:on
-
-   /**
-    * {@inheritDoc}
-    *
-    * @throws IllegalArgumentException when:
-    * <dl>
-    * <dt><code>branch</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>templateArtifactId</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>headArtifact</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than 0.</dd>
-    * <dt><code>view</code>:</dt>
-    * <dd>when <code>null</code> or with an Id less than -1.</dd>
-    * </dl>
-    */
-
-   @Override
-   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId templateArtifactId, ArtifactId headArtifact, ArtifactId view) {
-
-      Message message = null;
-
-      //@formatter:off
-      message =
-         Validation.require
-            (
-               message,
-               branch,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordTemplatePublish",
-               "branch",
-               "cannot be null",
-               Objects::isNull,
-               "branch identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               templateArtifactId,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordTemplatePublish",
-               "templateArtifactId",
-               "cannot be null",
-               Objects::isNull,
-               "publishing template identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               headArtifact,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordTemplatePublish",
-               "headArtifact",
-               "cannot be null",
-               Objects::isNull,
-               "head artifact identifier is non-negative",
-               (p) -> p.getId() <  0l
-            );
-
-      message =
-         Validation.require
-            (
-               message,
-               view,
-               Validation.ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "msWordTemplatePublish",
-               "view",
-               "cannot be null",
-               Objects::isNull,
-               "view artifact identifier is greater than or equal to minus one",
-               (p) -> p.getId() < -1l
-            );
-
-      if (Objects.nonNull(message)) {
-         throw
-            new IllegalArgumentException
-                   (
-                      Validation.buildIllegalArgumentExceptionMessage
-                         (
-                            this.getClass().getSimpleName(),
-                            "msWordTemplatePublish",
-                            message
-                         )
-                   );
-      }
-
-      var publishingTemplateRequest = new PublishingTemplateRequest("AT-" + templateArtifactId.getIdString());
-      var publishingTemplate = this.templateManagerOperations.getPublishingTemplate(publishingTemplateRequest);
-
-      var publishingOptions =
-         PublishingOperationsImpl.publishingOptionsFactory.create
-            (
-               PublishingOperationsImpl.DocumentType.PREVIEW_WITHOUT_FOLDERS,
-               branch,
-               view
-            );
-
-      var publishArtifacts = List.of( headArtifact );
-
-      var outputStream = new ByteArrayOutputStream() {
-         byte[] getBuffer() {
-            return this.buf;
-         }
-      };
-
-      try ( var writer = new OutputStreamWriter( outputStream ) ) {
-
-         new WordTemplateProcessorServer
-                (
-                  orcsApi,
-                  atsApi,
-                  this.dataAccessOperations,
-                  this.dataRightsOperations
-                )
-             .configure
-                (
-                   publishingTemplate,
-                   publishingOptions
-                )
-             .applyTemplate
-                (
-                   publishArtifacts,
-                   writer
-                );
-
-      } catch (Exception e) {
-         throw
-            new OseeCoreException
-                   (
-                     new Message()
-                            .title( "PublishingOperationsImpl::msWordTemplatePublish, Failed to publish document." )
-                            .indentInc()
-                            .segment( "Publishing Branch Id", branch.getIdString() )
-                            .segment( "Publishing View Id",   view.getIdString()   )
-                            .segment( "Publish Artifacts",    Objects.nonNull( publishArtifacts )
-                                                                 ? (publishArtifacts.size() > 0)
-                                                                      ? publishArtifacts.stream().map( ArtifactId::toString).collect( Collectors.joining( ", ", "[ ", " ]" ) )
-                                                                      : "(no artifacts to publish specified)"
-                                                                 : "(no artifacts to publish specified)" )
-                            .reasonFollows( e )
-                            .toString(),
-                            e
-                   );
-      }
-
-      var inputStream = new ByteArrayInputStream( outputStream.getBuffer(), 0, outputStream.size() );
-
-      var attachment =
-         this.attachmentFactory.create
-            (
-               inputStream,
-               PublishingOperationsImpl.DocumentType.PREVIEW_WITHOUT_FOLDERS.name(),
-               branch,
-               headArtifact
-            );
-
-      return attachment;
-      //@formatter:on
-   }
 
    @Override
    public Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog) {
@@ -1009,10 +486,10 @@ public class PublishingOperationsImpl implements PublishingOperations {
    public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData wordTemplateContentData) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             wordTemplateContentData,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "PublishingOperationsImpl",
             "renderWordTemplateContent",
             "wordTemplateContentData",
@@ -1058,10 +535,10 @@ public class PublishingOperationsImpl implements PublishingOperations {
    public WordUpdateChange updateWordArtifacts(WordUpdateData wordUpdateData) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             wordUpdateData,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "PublishingOperationsImpl",
             "updateWordArtifacts",
             "wordUpdateData",

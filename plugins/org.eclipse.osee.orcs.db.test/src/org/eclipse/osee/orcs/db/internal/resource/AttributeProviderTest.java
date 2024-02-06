@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -127,7 +128,7 @@ public class AttributeProviderTest {
       Assert.assertTrue(Arrays.equals(zippedData, actual));
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      String fileName = Lib.decompressStream(new ByteArrayInputStream(actual), outputStream);
+      String fileName = Zip.decompressStream(new ByteArrayInputStream(actual), outputStream);
       Assert.assertEquals("testData.txt", fileName);
       Assert.assertEquals(rawData, outputStream.toString("UTF-8"));
 
@@ -149,7 +150,7 @@ public class AttributeProviderTest {
       Assert.assertTrue(Arrays.equals(zippedData, resourceBytes));
 
       ByteArrayOutputStream outputStream1 = new ByteArrayOutputStream();
-      String fileName1 = Lib.decompressStream(new ByteArrayInputStream(resourceBytes), outputStream1);
+      String fileName1 = Zip.decompressStream(new ByteArrayInputStream(resourceBytes), outputStream1);
       Assert.assertEquals("testData.txt", fileName1);
       Assert.assertEquals(rawData, outputStream1.toString("UTF-8"));
 

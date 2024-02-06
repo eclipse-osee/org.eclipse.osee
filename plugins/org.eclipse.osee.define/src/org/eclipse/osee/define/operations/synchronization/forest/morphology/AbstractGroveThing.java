@@ -717,7 +717,7 @@ public class AbstractGroveThing implements GroveThing {
          .indent( indent )
          .title( name )
          .indentInc()
-         .segmentIndexedArray( "Grove Thing Keys", this.primaryKeys )
+         .segmentIndexed( "Grove Thing Keys", this.primaryKeys )
          ;
 
       /*

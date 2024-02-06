@@ -259,12 +259,11 @@ public class PublishingTemplateScalarKey implements Comparable<PublishingTemplat
 
       //@formatter:off
       outMessage
-         .title( "[ Key Type: " )
-         .append( this.keyType )
-         .append( ",  " )
-         .append( "Key: ")
-         .append( this.key )
-         .append( " ]" )
+         .title( "PublishingTemplateScalarKey" )
+         .indentInc()
+         .segment( "Key Type", this.keyType )
+         .segment( "Key",      this.key     )
+         .indentDec()
          ;
       //@formatter:on
 

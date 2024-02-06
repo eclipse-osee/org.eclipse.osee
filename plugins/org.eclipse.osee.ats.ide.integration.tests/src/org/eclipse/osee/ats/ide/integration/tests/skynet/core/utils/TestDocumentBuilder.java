@@ -352,14 +352,40 @@ public class TestDocumentBuilder {
           * Load the artifacts and set the test attribute values
           */
 
-         ArtifactLoader.loadArtifacts(
-            builderRecordWrappers.stream().map((builderRecordWrapper) -> this.getOrCreateArtifactToken(
-               builderRecordWrapper, branchSpecificationRecordWrapper.getRelationEndpoint(), testBranch,
-               hierarchicalParentArtifactIdMap, builderRecordWrapperByArtifactIdMap)).collect(Collectors.toList()),
-            testBranch, LoadLevel.ALL, LoadType.RELOAD_CACHE, DeletionFlag.EXCLUDE_DELETED).stream().map(
-               (artifact) -> builderRecordWrapperByArtifactIdMap.get(ArtifactId.valueOf(artifact.getId())).setArtifact(
-                  artifact)).peek(this::getOrCreateAttribute).peek(this::setAttributeValues).forEach(
-                     this::persistIfDirty);
+         //@formatter:off
+         ArtifactLoader
+            .loadArtifacts
+               (
+                  builderRecordWrappers
+                     .stream()
+                     .map
+                        (
+                           (builderRecordWrapper) -> this.getOrCreateArtifactToken
+                                                        (
+                                                           builderRecordWrapper,
+                                                           branchSpecificationRecordWrapper.getRelationEndpoint(),
+                                                           testBranch,
+                                                           hierarchicalParentArtifactIdMap,
+                                                           builderRecordWrapperByArtifactIdMap
+                                                        )
+                        )
+                     .collect( Collectors.toList() ),
+                     testBranch,
+                     LoadLevel.ALL,
+                     LoadType.RELOAD_CACHE,
+                     DeletionFlag.EXCLUDE_DELETED
+               )
+            .stream()
+            .map
+               (
+                  (artifact) -> builderRecordWrapperByArtifactIdMap
+                                   .get( ArtifactId.valueOf( artifact.getId() ) )
+                                   .setArtifact( artifact )
+               )
+            .peek( this::getOrCreateAttribute )
+            .peek( this::setAttributeValues )
+            .forEach( this::persistIfDirty );
+         //@formatter:on
 
          /*
           * Once all test artifacts are known to exist, verify and/or create the relationships

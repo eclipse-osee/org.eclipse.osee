@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateSetter;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 
@@ -42,6 +42,7 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
    /**
     * Saves the {@RelationEndpoint} used to find the hierarchical children of an {@link Artifact}.
     */
+
    private final RelationEndpoint relationEndpoint;
 
    /**
@@ -60,7 +61,7 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
     */
 
    @Override
-   public String set(ArtifactToken parent, String name, String content, String rendererOptions, List<String> matchCriteria) {
+   public String set(ArtifactToken parent, String name, String content, String rendererOptions, List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria) {
       //@formatter:off
       var templateArtifactToken =
          TestUtil
@@ -92,7 +93,7 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
                templateArtifact,
                CoreAttributeTypes.RendererOptions,
                valueList,
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value )
+               AttributeSetters.stringAttributeSetter
             );
       }
 
@@ -104,19 +105,33 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
                templateArtifact,
                CoreAttributeTypes.WholeWordContent,
                valueList,
-               ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value )
+               AttributeSetters.stringAttributeSetter
             );
       }
 
-      @SuppressWarnings("unchecked")
-      var valueList = (List<Object>) (Object) matchCriteria;
-      TestUtil.setAttributeValues
-         (
-            templateArtifact,
-            CoreAttributeTypes.TemplateMatchCriteria,
-            valueList,
-            ( attribute, value ) -> ((StringAttribute) attribute).setValue( (String) value )
-         );
+      if(Objects.nonNull(publishingTemplateContentMapEntries) && !publishingTemplateContentMapEntries.isEmpty()  ) {
+         @SuppressWarnings("unchecked")
+         var valueList = (List<Object>) (Object) publishingTemplateContentMapEntries;
+         TestUtil.setAttributeValues
+            (
+               templateArtifact,
+               CoreAttributeTypes.PublishingTemplateContentByFormatMapEntry,
+               valueList,
+               AttributeSetters.mapEntryAttributeSetter
+            );
+      }
+
+      if(Objects.nonNull(matchCriteria) && !matchCriteria.isEmpty()) {
+         @SuppressWarnings("unchecked")
+         var valueList = (List<Object>) (Object) matchCriteria;
+         TestUtil.setAttributeValues
+            (
+               templateArtifact,
+               CoreAttributeTypes.TemplateMatchCriteria,
+               valueList,
+               AttributeSetters.stringAttributeSetter
+            );
+      }
 
       if (templateArtifact.isDirty()) {
          templateArtifact.persist("Three Blind Mice");

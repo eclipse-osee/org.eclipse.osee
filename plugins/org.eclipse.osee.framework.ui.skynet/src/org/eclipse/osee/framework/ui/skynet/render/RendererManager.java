@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -148,7 +148,7 @@ public final class RendererManager {
    }
 
    public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType,
-      Artifact artifact, WordMLProducer producer, String format, String label, String footer,
+      Artifact artifact, PublishingAppender producer, String format, String label, String footer,
       RendererMap rendererOptions) {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, rendererOptions).renderAttribute(attributeType, artifact,
          presentationType, producer, format, label, footer);

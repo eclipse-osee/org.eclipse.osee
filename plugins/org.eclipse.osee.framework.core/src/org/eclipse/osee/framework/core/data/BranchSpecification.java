@@ -221,14 +221,26 @@ public class BranchSpecification implements ToMessage {
    }
 
    /**
-    * Gets the encapsulated {@link BranchId}. The returned value will be non-<code>null</code> but may be
-    * {@link BranchId#SENTINEL}.
+    * Gets the encapsulated {@link BranchId} containing the {@link ArtifactId} for the view. The returned value will be
+    * non-<code>null</code> but may contain a {@link Id#SENTINEL} for the branch. When the branch {@link Id} is
+    * {@link Id#SENTINEL} the {@link ArtifactId} for the view will be {@link ArtifactId#SENTINEL}.
     *
     * @return the encapsulated {@link BranchId}.
     */
 
    public BranchId getBranchId() {
       return this.branchId;
+   }
+
+   /**
+    * Gets the encapsulated {@link BranchId} with the contained view identifier set to {@link ArtifactId#SENTINEL}. The
+    * returned value will be non-<code>null</code> but may contain a {@link Id#SENTINEL} for the branch.
+    *
+    * @return the encapsulated {@link BranchId} with a {@link ArtifactId#SENTINEL} view identifier.
+    */
+
+   public BranchId getBranchIdWithOutViewId() {
+      return BranchId.valueOf(this.branchId.getId());
    }
 
    /**

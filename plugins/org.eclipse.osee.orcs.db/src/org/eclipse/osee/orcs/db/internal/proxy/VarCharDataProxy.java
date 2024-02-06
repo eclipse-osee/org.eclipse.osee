@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 
@@ -87,7 +87,7 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
       try {
          data = getStorage().getContent();
          if (data != null) {
-            data = Lib.decompressBytes(new ByteArrayInputStream(data));
+            data = Zip.decompressBytes(new ByteArrayInputStream(data));
             fromStorage = new String(data, "UTF-8");
          }
       } catch (IOException ex) {
@@ -102,7 +102,7 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
          ResourceNameResolver resolver = getResolver();
          Conditions.checkNotNull(resolver, "ResourceNameResolver", "Unable to determine internal file name");
          try {
-            byte[] compressed = Lib.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")),
+            byte[] compressed = Zip.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")),
                resolver.getInternalFileName());
             getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
             this.rawValue = null;

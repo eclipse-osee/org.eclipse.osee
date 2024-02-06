@@ -32,6 +32,8 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.PublishingTemplateSetterImpl;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
@@ -41,6 +43,7 @@ import org.eclipse.osee.client.test.framework.NotForEclipseOrgRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -50,8 +53,10 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.LinkType;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -104,8 +109,7 @@ public class WordTemplateRendererTest {
          this.testIsRegex = testIsRegex;
       }
 
-      void perform(String testName, String filePath, String document, String period, String altString, String pubString,
-         Boolean mergeFlag, Boolean fieldcodeFlag) {
+      void perform(String testName, String filePath, String document, String period, String altString, String pubString, Boolean mergeFlag, Boolean fieldcodeFlag) {
 
          if (this.checkFilter.apply(mergeFlag, fieldcodeFlag)) {
 
@@ -215,6 +219,9 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.RECURSE_TEMPLATE,                                             /* Name                       */
                       "RecursiveRendererOptions.json",                                                       /* Template Content File Name */
                       "wordrenderer_recurse.xml",                                                            /* Renderer Options File Name */
+                      List.of
+                         (
+                         ),
                       List.of                                                                                /* Match Criteria             */
                       (
                          new PublishingTemplateMatchCriterion
@@ -239,9 +246,12 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.SINGLE_TEMPLATE,                                              /* Name                       */
                       "SingleRendererOptions.json",                                                          /* Renderer Options File Name */
                       "wordrenderer_single.xml",                                                             /* Template Content File Name */
+                      List.of
+                         (
+                         ),
                       List.of                                                                                /* Match Criteria             */
-                      (
-                      )
+                        (
+                        )
                    ),
 
             new PublishingTemplate
@@ -250,9 +260,12 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES,                                   /* Name                       */
                       "SingleAttributeRendererOptions.json",                                                 /* Renderer Options File Name */
                       "wordrenderer_single_attrib.xml",                                                      /* Template Content File Name */
+                      List.of
+                         (
+                         ),
                       List.of                                                                                /* Match Criteria             */
-                      (
-                      )
+                         (
+                         )
                    ),
 
             new PublishingTemplate
@@ -261,9 +274,12 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.PRIMARY_TEMPLATE,                                             /* Name                       */
                       "PrimaryRendererOptions.json",                                                          /* Renderer Options File Name */
                       "wordrenderer_primary.xml",                                                            /* Template Content File Name */
+                      List.of
+                         (
+                         ),
                       List.of                                                                                /* Match Criteria             */
-                      (
-                      )
+                         (
+                         )
                    ),
 
             new PublishingTemplate
@@ -272,9 +288,12 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.PRIMARY_TEMPLATE_ID,                                          /* Name                       */
                       "PrimaryIdRendererOptions.json",                                                        /* Renderer Options File Name */
                       "wordrenderer_primary-idonly.xml",                                                     /* Template Content File Name */
+                      List.of
+                         (
+                         ),
                       List.of                                                                                /* Match Criteria             */
-                      (
-                      )
+                         (
+                         )
                    ),
 
             new PublishingTemplate
@@ -283,9 +302,12 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.PRIMARY_TEMPLATE_ID_NAME,                                     /* Name                       */
                       "PrimaryIdRendererOptions.json",                                                        /* Renderer Options File Name */
                       "wordrenderer_primary-idandname.xml",                                                  /* Template Content File Name */
+                      List.of
+                         (
+                         ),
                       List.of                                                                                /* Match Criteria             */
-                      (
-                      )
+                         (
+                         )
                    ),
 
             new PublishingTemplate
@@ -294,9 +316,12 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.SECONDARY_TEMPLATE,                                           /* Name                       */
                       "SecondaryRendererOptions.json",                                                           /* Renderer Options File Name */
                       "wordrenderer_secondary.xml",                                                          /* Template Content File Name */
+                      List.of
+                         (
+                         ),
                       List.of                                                                                /* Match Criteria             */
-                      (
-                      )
+                         (
+                         )
                    )
 
          );
@@ -357,7 +382,17 @@ public class WordTemplateRendererTest {
       WordTemplateRendererTest.templateMap =
          publishingTemplateList
             .stream()
-            .map( PublishingTemplate::getPublishingTemplateRequest )
+            .map( PublishingTemplate::getIdentifier )
+            .filter( Objects::nonNull )
+            .map
+               (
+                  ( publishingTemplateIdentifier ) -> new PublishingTemplateRequest
+                                                             (
+                                                                Conditions.requireNonNull( publishingTemplateIdentifier ),
+                                                                FormatIndicator.WORD_ML
+                                                             )
+               )
+            .filter( Objects::nonNull )
             .map( PublishingRequestHandler::getPublishingTemplate )
             .filter( org.eclipse.osee.framework.core.publishing.PublishingTemplate::isNotSentinel )
             .collect
@@ -472,8 +507,7 @@ public class WordTemplateRendererTest {
 
    private BranchToken updateBranch;
 
-   private void basicDocumentCheck(String filePath, String document, String pubString, boolean merge,
-      boolean fieldcode) {
+   private void basicDocumentCheck(String filePath, String document, String pubString, boolean merge, boolean fieldcode) {
 
       //@formatter:off
       var testName  = method.getQualifiedTestName();

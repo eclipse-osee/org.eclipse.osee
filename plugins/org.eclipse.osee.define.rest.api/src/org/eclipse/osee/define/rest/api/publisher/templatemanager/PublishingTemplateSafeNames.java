@@ -113,7 +113,7 @@ public class PublishingTemplateSafeNames implements ToMessage {
          .indent( indent )
          .title( "PublishingTemplateSafeNames" )
          .indentInc()
-         .segmentIndexedList( "Safe Names", this.safeNames )
+         .segmentIndexed( "Safe Names", this.safeNames )
          .indentDec()
          ;
       //@formatter:on

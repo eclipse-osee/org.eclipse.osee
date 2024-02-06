@@ -16,8 +16,8 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 import java.util.Set;
 import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateChange;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyGroups;
@@ -109,12 +109,12 @@ public class PublishingRequestHandler {
     */
 
    public static PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest) {
+      //@formatter:off
       try {
          var publishingTemplate =
-            PublishingRequestHandler.instance.templateManagerEndpoint.getPublishingTemplate(publishingTemplateRequest);
+            PublishingRequestHandler.instance.templateManagerEndpoint.getPublishingTemplate( publishingTemplateRequest );
          return publishingTemplate;
       } catch (Exception e) {
-         //@formatter:off
          throw
             new OseeWebApplicationException
                    (
@@ -127,8 +127,8 @@ public class PublishingRequestHandler {
                              .reasonFollows(e)
                              .toString()
                    );
-         //@formatter:on
       }
+      //@formatter:on
    }
 
    /**
@@ -164,7 +164,7 @@ public class PublishingRequestHandler {
     * @throws OseeWebApplicationException when the REST API call fails.
     */
 
-   public static Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
+   public static Attachment msWordPreview(PublishingRequestData msWordPreviewRequestData) {
       try {
          return PublishingRequestHandler.instance.publishingEndpoint.msWordPreview(msWordPreviewRequestData);
       } catch (Exception e) {

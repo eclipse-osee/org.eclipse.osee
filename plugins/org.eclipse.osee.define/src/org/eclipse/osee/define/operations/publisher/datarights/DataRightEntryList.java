@@ -142,7 +142,7 @@ class DataRightEntryList implements AutoCloseable, Iterable<DataRightEntry>, ToM
          .indentInc()
          .segment( "isOpen",                 this.isOpen                 )
          .segment( "overrideClassification", this.overrideClassification )
-         .segmentIndexedList( "dataRightEntries", this.dataRightEntries )
+         .segmentIndexed( "dataRightEntries", this.dataRightEntries )
          .indentDec()
          ;
       //@formatter:on

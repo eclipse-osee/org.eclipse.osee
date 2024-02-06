@@ -21,11 +21,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -37,15 +40,18 @@ import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -271,6 +277,15 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
 
    /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   protected @NonNull Optional<ImageDescriptor> getArtifactBasedImageDescriptor(@Nullable Artifact artifact) {
+      return Optional.empty();
+   }
+
+   /**
     * Displays a list of artifacts in the Artifact Explorer that could not be multi edited because they contained
     * artifacts that had an OLEData attribute.
     */
@@ -287,8 +302,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
-      RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
       var rating = MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
       if (!PresentationType.PREVIEW.equals(presentationType)) {
          rating--;
@@ -348,6 +362,44 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
+
+      /*
+       * Validate Inputs
+       */
+
+      //@formatter:off
+      Conditions.require
+         (
+            presentationType,
+            ValueType.PARAMETER,
+            MarkdownRenderer.class.getName(),
+            "getRenderInputStream",
+            "presentationType",
+            "must be non-null",
+            Objects::isNull,
+            NullPointerException::new
+         );
+
+      Conditions.require
+         (
+            artifacts,
+            ValueType.PARAMETER,
+            MarkdownRenderer.class.getName(),
+            "getRenderInputStream",
+            "artifacts",
+            "must be non-null and non-empty",
+            Conditions.or( Objects::isNull, Collection::isEmpty ),
+            "must not contain null elements",
+            Conditions::collectionContainsNull,
+            IllegalArgumentException::new
+         );
+      //@formatter:on
+
+      /*
+       * Set Publishing Format
+       */
+
+      this.setRendererOption(RendererOption.PUBLISHING_FORMAT, FormatIndicator.WORD_ML);
 
       //@formatter:off
       var firstArtifactOrNull =
@@ -458,12 +510,13 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    protected PublishingTemplate getTemplate(Artifact artifact, PresentationType presentationType) {
 
-      boolean useTemplateOnce = (boolean) getRendererOptionValue(RendererOption.USE_TEMPLATE_ONCE);
-      boolean firstTime = (boolean) getRendererOptionValue(RendererOption.FIRST_TIME);
-      boolean secondTime = (boolean) getRendererOptionValue(RendererOption.SECOND_TIME);
+      boolean useTemplateOnce = (boolean) this.getRendererOptionValue(RendererOption.USE_TEMPLATE_ONCE);
+      boolean firstTime = (boolean) this.getRendererOptionValue(RendererOption.FIRST_TIME);
+      boolean secondTime = (boolean) this.getRendererOptionValue(RendererOption.SECOND_TIME);
 
-      var publishingTemplateIdentifier = (String) getRendererOptionValue(RendererOption.PUBLISHING_TEMPLATE_IDENTIFIER);
-
+      var publishingTemplateIdentifier =
+         (String) this.getRendererOptionValue(RendererOption.PUBLISHING_TEMPLATE_IDENTIFIER);
+      var formatIndicator = (FormatIndicator) this.getRendererOptionValue(RendererOption.PUBLISHING_FORMAT);
       /*
        * Determine if selection is by identifier or match criteria
        */
@@ -494,7 +547,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
           * Request the publishing template using the saved identifier.
           */
 
-         var publishingTemplateRequest = new PublishingTemplateRequest(publishingTemplateIdentifier);
+         var publishingTemplateRequest = new PublishingTemplateRequest(publishingTemplateIdentifier, formatIndicator);
 
          var publishingTemplate = this.getTemplateCallServer(publishingTemplateRequest);
 
@@ -529,10 +582,11 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
       var publishingTemplateRequest =
          new PublishingTemplateRequest
                 (
-                   this.getIdentifier(),               /* Renderer Id                */
-                   artifactTypeName,                   /* Publish Artifact Type Name */
-                   presentationType.name(),            /* Presentation Type          */
-                   option                              /* Option                     */
+                   this.getIdentifier(),               /* Match Criteria: Renderer Id                */
+                   artifactTypeName,                   /* Match Criteria: Publish Artifact Type Name */
+                   presentationType.name(),            /* Match Criteria: Presentation Type          */
+                   option,                             /* Match Criteria: Option                     */
+                   formatIndicator                     /* Publishing Format Indicator                */
                 );
       //@formatter:on
 
@@ -605,7 +659,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer wordMl, String format, String label, String footer) {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, PublishingAppender wordMl, String format, String label, String footer) {
 
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
@@ -654,13 +708,13 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
 
             wordMl.addEditParagraphNoEscape(WordCoreUtil.getStartEditImage(artifact.getGuid()));
-            wordMl.addWordMl(data);
+            wordMl.append(data);
             wordMl.addEditParagraphNoEscape(WordCoreUtil.getEndEditImage(artifact.getGuid()));
 
          } else if (data != null) {
-            wordMl.addWordMl(data);
+            wordMl.append(data);
          } else if (footer != null) {
-            wordMl.addWordMl(footer);
+            wordMl.append(footer);
          }
          if (data != null && WordCoreUtil.containsLists(data)) {
             wordMl.resetListValue();

@@ -32,7 +32,9 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.EventTopicTransferType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.jdk.core.type.CharSequenceWindow;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
@@ -163,7 +165,83 @@ public abstract class AbstractEditTest {
       IFile renderFile = openArtifactForEdit(renderer, artifact);
       writeNewContentAndWaitForSave(artifact, renderFile, expected);
       String actual = getRenderedStoredContent(renderer, artifact);
-      Assert.assertEquals(expected, actual);
+      this.compare(expected, actual);
+   }
+
+   /**
+    * Asserts that two {@link String}s are equal. The comparison is done in chunks to make isolating where the
+    * difference is in large Word ML strings.
+    *
+    * @param a string to be compared.
+    * @param b string to be compared.
+    * @throws AssertionError when the {@link String}s <code>a</code> and <code>b</code> are different.
+    */
+
+   private void compare(String a, String b) {
+      var aSize = a.length();
+      var bSize = b.length();
+      var size = Math.min(aSize, bSize);
+      var chunkSize = 128;
+      var chunkCount = size / chunkSize;
+      var chunkRemainder = size % chunkSize;
+
+      for (int c = 0; c < chunkCount; c++) {
+
+         var s = c * chunkSize;
+         var e = s + chunkSize;
+
+         var chunkA = new CharSequenceWindow(a, s, e);
+         var chunkB = new CharSequenceWindow(b, s, e);
+
+         this.compareChunk(c, s, e, chunkA, chunkB);
+
+      }
+
+      if (chunkRemainder > 0) {
+         var s = chunkCount * chunkSize;
+         var e = s + chunkRemainder;
+
+         var chunkA = new CharSequenceWindow(a, s, e);
+         var chunkB = new CharSequenceWindow(b, s, e);
+
+         this.compareChunk(chunkCount + 1, s, e, chunkA, chunkB);
+      }
+
+      Assert.assertEquals("Comparison Strings Not Same Size", aSize, bSize);
+   }
+
+   /**
+    * Compares two {@link CharSequence}s.
+    *
+    * @param c the chunk index of the chunks being compared.
+    * @param s the inclusive starting character index of the chunks.
+    * @param e the exclusive ending character index of the chunks.
+    * @param a a {@link CharSequence} containing chunk <code>a</code>.
+    * @param b a {@link CharSequence} containing chunk <code>b</code>.
+    * @throws AssertionError when the {@link CharSequence}s <code>a</code> and <code>b</code> are different.
+    */
+
+   private void compareChunk(int c, int s, int e, CharSequence a, CharSequence b) {
+
+      var l = CharSequence.compare(a, b);
+
+      if (l != 0) {
+         //@formatter:off
+         var message =
+            new Message()
+                   .title( "Segments are not equal." )
+                   .indentInc()
+                   .segment( "Chunk", c )
+                   .segment( "Start", s )
+                   .segment( "End",   e )
+                   .segment( "A",     a )
+                   .segment( "B",     b )
+                   .toString();
+         //@formatter:on
+
+         throw new AssertionError(message);
+      }
+
    }
 
    private IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) {
@@ -173,8 +251,7 @@ public abstract class AbstractEditTest {
       return editFile;
    }
 
-   private void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content)
-      throws UnsupportedEncodingException, CoreException, InterruptedException {
+   private void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content) throws UnsupportedEncodingException, CoreException, InterruptedException {
       EventSystemPreferences preferences = OseeEventManager.getPreferences();
 
       boolean eventBoolean = preferences.isDisableEvents();

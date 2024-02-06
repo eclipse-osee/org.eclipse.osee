@@ -29,10 +29,11 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.osee.define.operations.api.DefineOperations;
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
-import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -43,6 +44,11 @@ import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -54,8 +60,20 @@ import org.eclipse.osee.orcs.OrcsApi;
 public final class FeatureImpactStreamingOutput implements StreamingOutput {
 
    private static final String rendererIdentifier = "org.eclipse.osee.define.operation.reports.featureimpact";
-   private static final PublishingTemplateRequest publishingTemplateRequest = new PublishingTemplateRequest(
-      FeatureImpactStreamingOutput.rendererIdentifier, null, PresentationType.PREVIEW.name(), null);
+   private static final PublishingTemplateRequest publishingTemplateRequest =
+      new PublishingTemplateRequest(FeatureImpactStreamingOutput.rendererIdentifier, null,
+         PresentationType.PREVIEW.name(), null, FormatIndicator.WORD_ML);
+   //@formatter:off
+   private static final RendererMap commonPublishingRendererOptions =
+      RendererMap.of
+         (
+            RendererOption.PUBLISH_IDENTIFIER, "Feature Impact Streaming Output",
+            RendererOption.EXCLUDE_FOLDERS,    false,
+            RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+            RendererOption.MAX_OUTLINE_DEPTH,  9,
+            RendererOption.PUBLISHING_FORMAT,  FormatIndicator.WORD_ML
+         );
+   //@formatter:on
 
    private final Branch branchId;
    private final OrcsApi orcsApi;
@@ -145,16 +163,23 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
             if (publishUpdatedDocs) {
                for (Entry<String, Pair<ArtifactReadable, ArtifactToken>> viewEntry : artViewsToCompare.entrySet()) {
                   final var previewHeadArtifactIdentifier = viewEntry.getValue().getFirst();
-                  final var previewViewArtifactIdentifier = viewEntry.getValue().getSecond();
-                  final var workingDocBranchWithView = BranchId.create(branch.getId(), previewViewArtifactIdentifier);
-                  final var baselineDocBranchWithView =
-                     BranchId.create(parentBranchIdentifier.getId(), previewViewArtifactIdentifier);
+                  final var previewViewArtifactIdentifier = ArtifactId.valueOf(viewEntry.getValue().getSecond());
+                  final var workingDocBranchWithoutView = BranchId.valueOf(branch.getId());
+                  final var baselineDocBranchWithoutView = BranchId.valueOf(parentBranchIdentifier.getId());
+                  final var workingDocRendererOptions =
+                     new EnumRendererMap(FeatureImpactStreamingOutput.commonPublishingRendererOptions);
+                  workingDocRendererOptions.setRendererOption(RendererOption.BRANCH, workingDocBranchWithoutView);
+                  workingDocRendererOptions.setRendererOption(RendererOption.VIEW, previewViewArtifactIdentifier);
+                  final var baselineDocRendererOptions =
+                     new EnumRendererMap(FeatureImpactStreamingOutput.commonPublishingRendererOptions);
+                  baselineDocRendererOptions.setRendererOption(RendererOption.BRANCH, baselineDocBranchWithoutView);
+                  baselineDocRendererOptions.setRendererOption(RendererOption.VIEW, previewViewArtifactIdentifier);
                   final var workingDocMsWordPreviewRequestData =
-                     new MsWordPreviewRequestData(FeatureImpactStreamingOutput.publishingTemplateRequest,
-                        workingDocBranchWithView, List.of(previewHeadArtifactIdentifier));
+                     new PublishingRequestData(FeatureImpactStreamingOutput.publishingTemplateRequest,
+                        workingDocRendererOptions, List.of(previewHeadArtifactIdentifier));
                   final var baselineDocMsWordPreviewRequestData =
-                     new MsWordPreviewRequestData(FeatureImpactStreamingOutput.publishingTemplateRequest,
-                        baselineDocBranchWithView, List.of(previewHeadArtifactIdentifier));
+                     new PublishingRequestData(FeatureImpactStreamingOutput.publishingTemplateRequest,
+                        baselineDocRendererOptions, List.of(previewHeadArtifactIdentifier));
                   final var workingDocStream = this.publishingOperations.msWordPreview(
                      workingDocMsWordPreviewRequestData).getDataHandler().getInputStream();
                   final var baselineDocStream = this.publishingOperations.msWordPreview(

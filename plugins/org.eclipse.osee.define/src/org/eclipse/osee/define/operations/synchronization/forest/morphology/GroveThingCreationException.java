@@ -84,7 +84,7 @@ public class GroveThingCreationException extends RuntimeException {
                 .segment( "Identifier Type", identifier, Identifier::getType )
                 .segment( "Primary Rank",    primaryRank                     )
                 .segment( "Native Rank",     nativeRank                      )
-                .segmentIndexedArray( "Parents", parents )
+                .segmentIndexed( "Parents", parents )
                 .segment( "Reason",          reason                          )
                 ;
       //@formatter:on

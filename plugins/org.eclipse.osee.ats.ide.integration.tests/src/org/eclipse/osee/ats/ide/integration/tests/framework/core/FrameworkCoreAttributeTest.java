@@ -162,6 +162,8 @@ public class FrameworkCoreAttributeTest {
             FrameworkCoreAttributeTest.magic + 100L,
             "Map Entry",
             "Description",
+            () -> "Key Description",
+            () -> "Value Description",
             "defaultKey",
             "defaultValue"
          );

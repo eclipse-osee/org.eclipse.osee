@@ -101,6 +101,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListRelationWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLong;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLongDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XMapEntry;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -231,8 +232,7 @@ public final class FrameworkXWidgetProvider {
       return xWidget;
    }
 
-   private AttributeTypeToken getAttributeTypeOrSentinel(XWidgetRendererItem xWidgetLayoutData, XWidget xWidget,
-      OrcsTokenService tokenService) {
+   private AttributeTypeToken getAttributeTypeOrSentinel(XWidgetRendererItem xWidgetLayoutData, XWidget xWidget, OrcsTokenService tokenService) {
       AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
       if (xWidget instanceof AttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
          attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreId());
@@ -243,8 +243,7 @@ public final class FrameworkXWidgetProvider {
       return attributeType;
    }
 
-   public static XWidget getXWidget(XWidgetRendererItem xWidgetLayoutData, String xWidgetName, String name,
-      Artifact artifact) {
+   public static XWidget getXWidget(XWidgetRendererItem xWidgetLayoutData, String xWidgetName, String name, Artifact artifact) {
       XWidget xWidget = null;
       // Look for widget provider to create widget
       Collection<IXWidgetProvider> providers = getXWidgetProviders();
@@ -338,6 +337,9 @@ public final class FrameworkXWidgetProvider {
             xWidget = new XMembersCombo(name, true);
          } else if (xWidgetName.equals("XDate")) {
             xWidget = new XDate(name);
+            xWidget.setDefaultValueObj(xWidgetLayoutData.getDefaultValueObj());
+         } else if (xWidgetName.equals("XMapEntry")) {
+            xWidget = new XMapEntry();
             xWidget.setDefaultValueObj(xWidgetLayoutData.getDefaultValueObj());
          } else if (xWidgetName.equals("XFileSelectionDialog")) {
             xWidget = new XFileTextWithSelectionDialog(name);

@@ -13,7 +13,7 @@
    "AttributeOptions" : 
    [
 	   {
-		   "AttrType"   : "Word Template Content",
+		   "AttrType"   : "<format-content-attribute>",
          "Label"      : "",
          "FormatPre"  : "",
          "FormatPost" : ""

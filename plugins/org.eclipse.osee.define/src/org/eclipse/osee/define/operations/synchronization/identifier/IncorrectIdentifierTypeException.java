@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.define.operations.synchronization.identifier;
 
-import java.util.Objects;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 
 /**
@@ -90,66 +89,76 @@ public class IncorrectIdentifierTypeException extends RuntimeException {
 
    /**
     * Creates a new {@link RuntimeException} with a message describing the {@link Identifier} whose
-    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}.
+    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}s.
     *
     * @param identifier the {@link Identifier} whose {@link IdentifierType} is not in the expected
     * {@link IdentifierTypeGroup}.
-    * @param expectedIdentifierTypeGroup the {@link IdentifierTypeGroup} the <code>identifier</code>'s
-    * {@link IdentifierType} is expected to be member of.
     * @param message additional context for the exception message. This parameter maybe <code>null</code>.
+    * @param missingIdentifierTypeGroup the first expected {@link IdentifierTypeGroup} <code>identifier</code> was not a
+    * member of. {@link IdentifierType} is expected to be member of.
+    * @param expectedIdentifierTypeGroups the {@link IdentifierTypeGroup}s the <code>identifier</code> is expected to be
+    * member of.
     */
 
-   public IncorrectIdentifierTypeException(Identifier identifier, IdentifierTypeGroup expectedIdentifierTypeGroup, String message) {
-      super(IncorrectIdentifierTypeException.buildMessage(identifier, expectedIdentifierTypeGroup, message));
+   public IncorrectIdentifierTypeException(Identifier identifier, String message, IdentifierTypeGroup missingIdentifierTypeGroup, IdentifierTypeGroup... expectedIdentifierTypeGroups) {
+      super(IncorrectIdentifierTypeException.buildMessage(identifier, message, missingIdentifierTypeGroup,
+         expectedIdentifierTypeGroups));
    }
 
    /**
     * Creates a new {@link RuntimeException} with a message describing the {@link Identifier} whose
-    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}.
+    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}s.
     *
     * @param identifier the {@link Identifier} whose {@link IdentifierType} is not in the expected
     * {@link IdentifierTypeGroup}.
-    * @param expectedIdentifierTypeGroup the {@link IdentifierTypeGroup} the <code>identifier</code>'s
-    * {@link IdentifierType} is expected to be member of.
+    * @param missingIdentifierTypeGroup the first expected {@link IdentifierTypeGroup} <code>identifier</code> was not a
+    * member of. {@link IdentifierType} is expected to be member of.
+    * @param expectedIdentifierTypeGroups the {@link IdentifierTypeGroup}s the <code>identifier</code> is expected to be
+    * member of.
     */
 
-   public IncorrectIdentifierTypeException(Identifier identifier, IdentifierTypeGroup expectedIdentifierTypeGroup) {
-      super(IncorrectIdentifierTypeException.buildMessage(identifier, expectedIdentifierTypeGroup, null));
+   public IncorrectIdentifierTypeException(Identifier identifier, IdentifierTypeGroup missingIdentifierTypeGroup, IdentifierTypeGroup... expectedIdentifierTypeGroups) {
+      super(IncorrectIdentifierTypeException.buildMessage(identifier, null, missingIdentifierTypeGroup,
+         expectedIdentifierTypeGroups));
    }
 
    /**
     * Creates a new {@link RuntimeException} with a message describing the {@link Identifier} whose
-    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}.
+    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}s.
     *
-    * @param identifier the {@link Identifier} whose {@link IdentifierType} is not in the expected
-    * {@link IdentifierTypeGroup}.
-    * @param expectedIdentifierTypeGroup the {@link IdentifierTypeGroup} the <code>identifier</code>'s
-    * {@link IdentifierType} is expected to be member of.
-    * @param message additional context for the exception message. This parameter maybe <code>null</code>.
     * @param cause the {@link Throwable} which led to this exception being thrown. This parameter maybe
     * <code>null</code>.
+    * @param identifier the {@link Identifier} whose {@link IdentifierType} is not in the expected
+    * {@link IdentifierTypeGroup}.
+    * @param message additional context for the exception message. This parameter maybe <code>null</code>.
+    * @param missingIdentifierTypeGroup the first expected {@link IdentifierTypeGroup} <code>identifier</code> was not a
+    * member of. {@link IdentifierType} is expected to be member of.
+    * @param expectedIdentifierTypeGroups the {@link IdentifierTypeGroup}s the <code>identifier</code> is expected to be
+    * member of.
     */
 
-   public IncorrectIdentifierTypeException(Identifier identifier, IdentifierTypeGroup expectedIdentifierTypeGroup, String message, Throwable cause) {
-      this(identifier, expectedIdentifierTypeGroup, message);
+   public IncorrectIdentifierTypeException(Throwable cause, Identifier identifier, String message, IdentifierTypeGroup missingIdentifierTypeGroup, IdentifierTypeGroup... expectedIdentifierTypeGroups) {
+      this(identifier, message, missingIdentifierTypeGroup, expectedIdentifierTypeGroups);
 
       this.initCause(cause);
    }
 
    /**
     * Creates a new {@link RuntimeException} with a message describing the {@link Identifier} whose
-    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}.
+    * {@link IdentifierType} was not a member of the expected {@link IdentifierTypeGroup}s.
     *
-    * @param identifier the {@link Identifier} whose {@link IdentifierType} is not in the expected
-    * {@link IdentifierTypeGroup}.
-    * @param expectedIdentifierTypeGroup the {@link IdentifierTypeGroup} the <code>identifier</code>'s
-    * {@link IdentifierType} is expected to be member of.
     * @param cause the {@link Throwable} which led to this exception being thrown. This parameter maybe
     * <code>null</code>.
+    * @param identifier the {@link Identifier} whose {@link IdentifierType} is not in the expected
+    * {@link IdentifierTypeGroup}.
+    * @param missingIdentifierTypeGroup the first expected {@link IdentifierTypeGroup} <code>identifier</code> was not a
+    * member of. {@link IdentifierType} is expected to be member of.
+    * @param expectedIdentifierTypeGroups the {@link IdentifierTypeGroup}s the <code>identifier</code> is expected to be
+    * member of.
     */
 
-   public IncorrectIdentifierTypeException(Identifier identifier, IdentifierTypeGroup expectedIdentifierTypeGroup, Throwable cause) {
-      this(identifier, expectedIdentifierTypeGroup);
+   public IncorrectIdentifierTypeException(Throwable cause, Identifier identifier, IdentifierTypeGroup missingIdentifierTypeGroup, IdentifierTypeGroup... expectedIdentifierTypeGroups) {
+      this(identifier, null, missingIdentifierTypeGroup, expectedIdentifierTypeGroups);
 
       this.initCause(cause);
    }
@@ -165,55 +174,44 @@ public class IncorrectIdentifierTypeException extends RuntimeException {
 
    public static String buildMessage(Identifier identifier, IdentifierType expectedIdentifierType, String message) {
       //@formatter:off
-      var exceptionMessage =
+      return
          new Message()
                 .title( "Identifier is not of the expected IdentifierType." )
+                .title( message )
+                .indentInc()
+                .segment( "Identifier",               identifier.getText()   )
+                .segment( "IdentifierType",           identifier.getType()   )
+                .segment( "Expected Identifier Type", expectedIdentifierType )
+                .toString()
                 ;
-
-      if( Objects.nonNull( message ) ) {
-         exceptionMessage.title( message );
-      }
-
-      exceptionMessage
-         .indentInc()
-         .segment( "Identifier",               identifier.getText()   )
-         .segment( "IdentifierType",           identifier.getType()   )
-         .segment( "Expected Identifier Type", expectedIdentifierType )
-         ;
       //@formatter:on
-
-      return exceptionMessage.toString();
    }
 
    /**
     * Builds an error message {@link String} describing the exception.
     *
-    * @param message additional context for the exception message. This parameter maybe <code>null</code>.
-    * @param identifier the {@link Identifier} of the wrong {@link IdentifierType}.
-    * @param expectedIdentifierType the expected {@link IdentifierType}.
-    * @return {@link String} message describing the exception condition.
+    * @param identifier the {@link Identifier} whose {@link IdentifierType} is not in the expected
+    * {@link IdentifierTypeGroup}.
+    * @param missingIdentifierTypeGroup the first expected {@link IdentifierTypeGroup} <code>identifier</code> was not a
+    * member of. {@link IdentifierType} is expected to be member of.
+    * @param expectedIdentifierTypeGroups the {@link IdentifierTypeGroup}s the <code>identifier</code> is expected to be
+    * member of.
     */
 
-   public static String buildMessage(Identifier identifier, IdentifierTypeGroup expectedIdentifierTypeGroup, String message) {
+   public static String buildMessage(Identifier identifier, String message, IdentifierTypeGroup missingIdentifierTypeGroup, IdentifierTypeGroup... expectedIdentifierTypeGroups) {
       //@formatter:off
-      var exceptionMessage =
+      return
          new Message()
-                .title( "The Identifier's IdentifierType is not a member of the expected IdentifierTypeGroup." )
+                .title( "The Identifier is not a member of the expected IdentifierTypeGroup." )
+                .title( message )
+                .indentInc()
+                .segment( "Identifier",                       identifier.getText()         )
+                .segment( "Identifier Type",                  identifier.getType()         )
+                .segment( "Identifier Type Group Not Found",  missingIdentifierTypeGroup   )
+                .segment( "Expected Identifier Type Groups",  expectedIdentifierTypeGroups )
+                .toString()
                 ;
-
-      if( Objects.nonNull( message ) ) {
-         exceptionMessage.title( message );
-      }
-
-      exceptionMessage
-         .indentInc()
-         .segment( "Identifier",                     identifier.getText()        )
-         .segment( "IdentifierType",                 identifier.getType()        )
-         .segment( "Expected Identifier Type Group", expectedIdentifierTypeGroup )
-         ;
       //@formatter:on
-
-      return exceptionMessage.toString();
    }
 
 }

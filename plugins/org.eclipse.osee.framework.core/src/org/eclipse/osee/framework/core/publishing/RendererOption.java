@@ -13,10 +13,23 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Morgan E. Cook
+ * @author Loren K. Ashley
  */
 
 public enum RendererOption {
@@ -31,7 +44,18 @@ public enum RendererOption {
 
    ATTRIBUTE_NAME("Attribute Name", OptionType.String),
 
+   /**
+    * This option is set with the {@link BranchId} of the branch rendered artifacts are to be loaded from. The optional
+    * view identifier ({@link ArtifactId}) in the {@link BranchId} should be set to {@link ArtifactId#SENTINEL}.
+    */
+
    BRANCH("Branch", OptionType.BranchId),
+
+   /**
+    * This option is set to the name of the branch rendered artifacts are to be loaded from.
+    */
+
+   BRANCH_NAME("Branch Name", OptionType.String),
 
    /**
     * Renderers can do the rendering in the client or on server. Server side renderers will return an input stream from
@@ -83,7 +107,15 @@ public enum RendererOption {
    NO_DISPLAY("No Display", OptionType.Boolean),
 
    /**
-    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key.
+    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key for opening a
+    * document in a markdown editor.
+    */
+
+   OPEN_IN_MARKDOWN_EDITOR_VALUE("Markdown Editor", OptionType.String),
+
+   /**
+    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key for opening a
+    * document in MS Word.
     */
 
    OPEN_IN_MS_WORD_VALUE("MS Word", OptionType.String),
@@ -145,6 +177,18 @@ public enum RendererOption {
     */
 
    PUBLISH_EMPTY_HEADERS("Push Empty Headers", OptionType.Boolean),
+
+   /**
+    * This option is used to specify an identifier for the publish.
+    */
+
+   PUBLISH_IDENTIFIER("Publish Identifier", OptionType.String),
+
+   /**
+    * This option is used to specify the output format of the publish.
+    */
+
+   PUBLISHING_FORMAT("Publishing Format", OptionType.FormatIndicator),
 
    /**
     * This option is used to specify the Publishing Template Manager's identifier for a Publishing Template to the
@@ -221,7 +265,100 @@ public enum RendererOption {
 
    WAS_BRANCH("Was Branch", OptionType.BranchId);
 
+   /**
+    * Saves an {@link ObjectMapper} for JSON serialization and deserialization of Renderer Option values.
+    */
+
+   private static ObjectMapper objectMapper = RendererOption.createObjectMapper();
+
+   /**
+    * A reverse lookup map of {@link RendererOption} members by their associated key names.
+    *
+    * @implNote Ensure that all key names are unique.
+    */
+
+   private static final Map<String, RendererOption> rendererOptions;
+
+   static {
+      rendererOptions = new HashMap<>();
+
+      for (var rendererOption : RendererOption.values()) {
+         rendererOptions.put(rendererOption.getKey(), rendererOption);
+      }
+   }
+
+   /**
+    * Adds a {@link JsonDeserializer} to a {@link SimpleModule} for the <code>objectClass</code>.
+    *
+    * @param <T> The class type the deserializer is for.
+    * @param simpleModule the {@link SimpleModule} to add the deserializer to.
+    * @param objectClass the class type the deserializer is for.
+    * @param jsonDeserializer the {@link JsonDeserializer} to be added.
+    * @implNote This method is to deal with casting issues for a {@link JsonDeserializer} for an unknown (?) type.
+    */
+
+   @SuppressWarnings("unchecked")
+   private static <T> void addDeserializer(SimpleModule simpleModule, Class<T> objectClass, JsonDeserializer<?> jsonDeserializer) {
+      simpleModule.addDeserializer(objectClass, (JsonDeserializer<T>) jsonDeserializer);
+   }
+
+   /**
+    * Creates the {@link ObjectMapper} for JSON processing of {@link RendererOption} value types.
+    *
+    * @return an {@link ObjectMapper} for JSON processing of {@link RendererOption} value types.
+    */
+
+   private static ObjectMapper createObjectMapper() {
+      var simpleModule = RendererOption.createSimpleModule();
+      var objectMapper = new ObjectMapper();
+      objectMapper.registerModule(simpleModule);
+      return objectMapper;
+   }
+
+   /**
+    * Creates the Jackson {@link SimpleModule} used to configure the {@link ObjectMapper} for JSON processing of
+    * {@link RendererOption} value types.
+    *
+    * @return the created {@link SimpleModule}.
+    */
+
+   private static SimpleModule createSimpleModule() {
+
+      var version = new Version(1, 0, 0, Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING);
+
+      var simpleModule = new SimpleModule(RendererOption.class.getName(), version);
+
+      for (var rendererOption : RendererOption.values()) {
+         var optionType = rendererOption.getType();
+         var jsonDeserializer = optionType.getJsonDeserializer();
+         if (Objects.isNull(jsonDeserializer)) {
+            continue;
+         }
+         var optionClass = optionType.getImplementationClass();
+         RendererOption.addDeserializer(simpleModule, optionClass, jsonDeserializer);
+      }
+
+      return simpleModule;
+   }
+
+   public static Optional<RendererOption> ofKey(String key) {
+      //@formatter:off
+      return
+         Objects.nonNull( key )
+            ? Optional.ofNullable( RendererOption.rendererOptions.get( key ) )
+            : Optional.empty();
+      //@formatter:on
+   }
+
+   @JsonCreator
+   public static RendererOption valueOfKey(String key) {
+
+      return RendererOption.rendererOptions.get(key);
+
+   }
+
    private final String key;
+
    private final OptionType type;
 
    RendererOption(String key, OptionType type) {
@@ -235,6 +372,23 @@ public enum RendererOption {
 
    public OptionType getType() {
       return type;
+   }
+
+   /**
+    * Deserializes a {@link RendererOption} value from a {@link JsonNode}.
+    *
+    * @param jsonNode the {@link JsonNode} containing the serialized {@link RendererOption} value.
+    * @return the deserialized {@link RendererOption} value as an {@link Object}.
+    */
+
+   public Object readValue(JsonNode jsonNode) {
+
+      try {
+         return RendererOption.objectMapper.treeToValue(jsonNode, this.getType().getImplementationClass());
+      } catch (Exception e) {
+         return null;
+      }
+
    }
 
 }

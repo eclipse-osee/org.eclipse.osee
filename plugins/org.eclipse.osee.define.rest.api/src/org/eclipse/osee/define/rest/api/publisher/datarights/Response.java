@@ -232,7 +232,7 @@ public class Response implements ToMessage {
    public boolean isValid() {
       //@formatter:off
       return
-         Objects.nonNull(this.format) && this.format.isValid() &&
+         Objects.nonNull(this.format) &&
          Objects.nonNull(this.cuiHeader) && Strings.isValidAndNonBlank(this.cuiHeader) &&
          Objects.nonNull(this.statementList) && Arrays.stream(this.statementList).allMatch(StatementMap::isValid) &&
          Objects.nonNull(this.titlePageStatementList) &&

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
- * Class used to specify sub-document publishing options in a publishing template {@link RendererOptions}. The following
+ * Class used to specify sub-document publishing options in a publishing template {@link PublishOptions}. The following
  * JSON schema specifies the nested templates section of the renderer options in a publishing template:
  *
  * <pre>
@@ -137,7 +137,7 @@ public class NestedTemplates implements ToMessage {
                              .title( "NestedTemplates::validateKey, parameter \"key\" has an invalid value." )
                              .indentInc()
                              .segment( "Specified Key", key )
-                             .segmentIndexedArray( "Allowed Values", NestedTemplates.keys.toArray() )
+                             .segmentIndexed( "Allowed Values", NestedTemplates.keys.toArray() )
                              .toString()
                    );
          //@formatter:on
@@ -165,7 +165,7 @@ public class NestedTemplates implements ToMessage {
                           .title( "NestedTemplates::validateOutlineType, parameter \"outlineType\" has an invalid value." )
                           .indentInc()
                           .segment( "Specified Outline Type", outlineType )
-                          .segmentIndexedArray( "Allowed Values", NestedTemplates.outlineTypes.toArray() )
+                          .segmentIndexed( "Allowed Values", NestedTemplates.outlineTypes.toArray() )
                           .toString()
                 );
          //@formatter:on

@@ -24,8 +24,9 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.publishing.DataRightAnchor;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -221,11 +222,11 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
       //@formatter:off
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                branchIdentifier,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "DataRightsOperationsImpl",
                "getDataRights",
                "branch",
@@ -236,7 +237,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             );
 
       message =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                message,
                overrideClassification,
@@ -246,27 +247,27 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             );
 
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                artifactIdentifiers,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "DataRightsOperationsImpl",
                "getDataRights",
                "artifactIdentifiers",
                "cannot be null",
                Objects::isNull,
                "artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier",
-               Validation.<List<ArtifactId>>predicate( List::isEmpty )
-                  .or( Validation.collectionContainsNull )
-                  .or( Validation.collectionElementPredicate( ( p ) -> p.getId() < 0L ) )
+               Conditions.<List<ArtifactId>>predicate( List::isEmpty )
+                  .or( Conditions.collectionContainsNull )
+                  .or( Conditions.collectionElementPredicate( ( p ) -> p.getId() < 0L ) )
             );
 
       if (Objects.nonNull(message)) {
          throw
             new IllegalArgumentException
                    (
-                      Validation.buildIllegalArgumentExceptionMessage
+                      Conditions.buildIllegalArgumentExceptionMessage
                          (
                             this.getClass().getSimpleName(),
                             "getDataRights",
@@ -311,24 +312,24 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
 
       //@formatter:off
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                artifactIdentifiers,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "DataRightsOperationsImpl",
                "getDataRights",
                "artifactIdentifiers",
                "cannot be null",
                Objects::isNull,
                "artifact identifier list is not empty, does not contain a null element, and does not contain a negative artifact identifier",
-               Validation.<List<ArtifactId>>predicate( List::isEmpty )
-                  .or( Validation.collectionContainsNull )
-                  .or( Validation.collectionElementPredicate( ( p ) -> p.getId() < 0l ) )
+               Conditions.<List<ArtifactId>>predicate( List::isEmpty )
+                  .or( Conditions.collectionContainsNull )
+                  .or( Conditions.collectionElementPredicate( ( p ) -> p.getId() < 0l ) )
             );
 
       message =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                message,
                artifactIdentifiers,
@@ -338,7 +339,7 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             );
 
       message =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                message,
                overrideClassification,
@@ -348,26 +349,26 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             );
 
       message =
-         Validation.require
+         Conditions.require
             (
                message,
                artifactMap,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "DataRightsOperationsImpl",
                "getDataRights",
                "artifactMap",
                "cannot be null",
                Objects::isNull,
                "",
-               Validation.mapContainsNullKey
-                  .or( Validation.mapContainsNullValue )
+               Conditions.mapContainsNullKey
+                  .or( Conditions.mapContainsNullValue )
             );
 
       if (Objects.nonNull(message)) {
          throw
             new IllegalArgumentException
                    (
-                      Validation.buildIllegalArgumentExceptionMessage
+                      Conditions.buildIllegalArgumentExceptionMessage
                          (
                             this.getClass().getSimpleName(),
                             "getDataRights",

@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 
 /**
  * @author Roberto E. Escobar
@@ -31,7 +32,7 @@ public final class Utility {
       InputStream inputStream = null;
       try {
          inputStream = new ByteArrayInputStream(data.getBytes("UTF-8"));
-         return Lib.compressStream(inputStream, name);
+         return Zip.compressStream(inputStream, name);
       } finally {
          Lib.close(inputStream);
       }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.HasArtifactType;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.IndentedString;
@@ -74,7 +74,7 @@ public class PublishingArtifactError {
       //@formatter:on
    }
 
-   public void publish(WordMLProducer WordMLProducer) {
+   public void publish(PublishingAppender WordMLProducer) {
       //@formatter:off
       Objects.requireNonNull
          (

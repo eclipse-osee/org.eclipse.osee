@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
-import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateChange;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -82,15 +82,7 @@ public interface PublishingOperations {
 
    public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue);
 
-   @Deprecated
-   public Attachment msWordPreview(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
-
-   @Deprecated
-   public Attachment msWordPreview(BranchId branch, ArtifactId template, List<ArtifactId> artifacts, ArtifactId view);
-
-   public Attachment msWordPreview(MsWordPreviewRequestData msWordPreviewRequest);
-
-   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view);
+   public Attachment msWordPreview(PublishingRequestData msWordPreviewRequest);
 
    /**
     * Publishes the content of an artifact's {@link CoreAttributeTypes.WholeWordContent} attribute.

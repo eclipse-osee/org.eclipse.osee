@@ -101,8 +101,8 @@ public class StatementForResponse implements ToMessage {
    public boolean isValid() {
       //@formatter:off
       return
-         Objects.nonNull(this.format) && this.format.isValid() &&
-         Objects.nonNull(this.formattedText) && Strings.isValidAndNonBlank(this.formattedText);
+            Objects.nonNull(this.format)
+         && Objects.nonNull(this.formattedText) && Strings.isValidAndNonBlank(this.formattedText);
       //@formatter:on
    }
 

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.define.operations.synchronization.identifier;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import org.eclipse.osee.define.operations.synchronization.forest.GroveThing;
@@ -128,13 +129,51 @@ public class Identifier {
     * Predicate to determine if the {@link IdentifierType} of this {@link Identifier} is a part of the specified
     * {@link IdentifierTypeGroup}.
     *
-    * @param identifierTypeGroup the identifier type group to check for membership in.
+    * @param identifierTypeGroups the identifier type group to check for membership in.
     * @return <code>true</code> when the {@link IdentifierType} of this {@link Identifier} is a member of the specified
     * {@link IdentifierTypeGroup}; otherwise, <code>false</code>.
     */
 
    public boolean isInGroup(IdentifierTypeGroup identifierTypeGroup) {
       return this.identifierType.isInGroup(identifierTypeGroup);
+   }
+
+   /**
+    * Predicate to determine if the {@link IdentifierType} of this {@link Identifier} is in all of the specified
+    * {@link IdentifierTypeGroup}s.
+    *
+    * @param identifierTypeGroups the identifier type groups to check for membership in.
+    * @return <code>true</code> when the {@link IdentifierType} of this {@link Identifier} is in all of the specified
+    * {@link IdentifierTypeGroup}s; otherwise, <code>false</code>.
+    */
+
+   public boolean isInGroupAllOf(IdentifierTypeGroup... identifierTypeGroups) {
+      return this.identifierType.isInGroupAllOf(identifierTypeGroups);
+   }
+
+   /**
+    * Predicate to determine if the {@link IdentifierType} of this {@link Identifier} is in any of the specified
+    * {@link IdentifierTypeGroup}s.
+    *
+    * @param identifierTypeGroups the identifier type groups to check for membership in.
+    * @return <code>true</code> when the {@link IdentifierType} of this {@link Identifier} is in any of the specified
+    * {@link IdentifierTypeGroup}s; otherwise, <code>false</code>.
+    */
+
+   public boolean isInGroupAnyOf(IdentifierTypeGroup... identifierTypeGroups) {
+      return this.identifierType.isInGroupAnyOf(identifierTypeGroups);
+   }
+
+   /**
+    * Gets a {@link List} of the {@link IdentifierTypeGroup} the {@link Identifier} is not a member of.
+    *
+    * @param identifierTypeGroups the identifier type groups to check for membership in.
+    * @return a {@link List} of the {@link IdentifierTypeGroup}s in <code>identifierTypeGroups</code> the
+    * <code>identifier</code> is not a member of.
+    */
+
+   public List<IdentifierTypeGroup> notInGroups(IdentifierTypeGroup... identifierTypeGroups) {
+      return this.identifierType.notInGroups(identifierTypeGroups);
    }
 
    /**
@@ -155,57 +194,70 @@ public class Identifier {
     * {@link IncorrectIdentifierTypeException} if it is not.
     *
     * @param identifierTypeGroup the identifier type group to require membership in.
+    * @return this {@link Identifier}.
     * @throws IncorrectIdentifierTypeException when this {@link Identifier} is not a member of the specified
     * {@link IdentifierGroup}.
     */
 
-   public void requireInGroup(IdentifierTypeGroup identifierTypeGroup) {
-      if (!this.identifierType.isInGroup(identifierTypeGroup)) {
-         throw new IncorrectIdentifierTypeException(this, identifierTypeGroup);
+   public Identifier requireInGroup(IdentifierTypeGroup... identifierTypeGroups) {
+      for (var identifierTypeGroup : identifierTypeGroups) {
+         if (!this.identifierType.isInGroup(identifierTypeGroup)) {
+            throw new IncorrectIdentifierTypeException(this, identifierTypeGroup);
+         }
       }
+      return this;
    }
 
    /**
     * Tests if this {@link Identifier} is a member of the specified {@link IdentifierGroup} and throws an
     * {@link IncorrectIdentifierTypeException} if it is not.
     *
-    * @param identifierTypeGroup the identifier type group to require membership in.
     * @param message additional context for the exception message. This parameter maybe <code>null</code>.
+    * @param identifierTypeGroups the identifier type groups to require membership in.
+    * @return this {@link Identifier}.
     * @throws IncorrectIdentifierTypeException when this {@link Identifier} is not a member of the specified
     * {@link IdentifierGroup}.
     */
 
-   public void requireInGroup(IdentifierTypeGroup identifierTypeGroup, String message) {
-      if (!this.identifierType.isInGroup(identifierTypeGroup)) {
-         throw new IncorrectIdentifierTypeException(this, identifierTypeGroup, message);
+   public Identifier requireInGroup(String message, IdentifierTypeGroup... identifierTypeGroups) {
+      for (var identifierTypeGroup : identifierTypeGroups) {
+         if (!this.identifierType.isInGroup(identifierTypeGroup)) {
+            throw new IncorrectIdentifierTypeException(this, message, identifierTypeGroup, identifierTypeGroups);
+         }
       }
+      return this;
    }
 
    /**
     * Tests if this {@link Identifier} is a member of the specified {@link IdentifierGroup} and throws an
     * {@link IncorrectIdentifierTypeException} if it is not.
     *
-    * @param identifierTypeGroup the identifier type group to require membership in.
     * @param messageSupplier a {@link Supplier} that provides a message with additional context for the exception
-    * message. This parameter maybe <code>null</code>.
+    * @param identifierTypeGroups the identifier type groups to require membership in. message. This parameter maybe
+    * <code>null</code>.
+    * @return this {@link Identifier}.
     * @throws IncorrectIdentifierTypeException when this {@link Identifier} is not a member of the specified
     * {@link IdentifierGroup}.
     */
 
-   public void requireInGroup(IdentifierTypeGroup identifierTypeGroup, Supplier<String> messageSupplier) {
-      if (!this.identifierType.isInGroup(identifierTypeGroup)) {
-         //@formatter:off
-         throw
-            new IncorrectIdentifierTypeException
-                   (
-                      this,
-                      identifierTypeGroup,
-                      Objects.nonNull( messageSupplier)
-                         ? messageSupplier.get()
-                         : null
-                   );
-         //@formatter:on
+   public Identifier requireInGroup(Supplier<CharSequence> messageSupplier, IdentifierTypeGroup... identifierTypeGroups) {
+      for (var identifierTypeGroup : identifierTypeGroups) {
+         if (!this.identifierType.isInGroup(identifierTypeGroup)) {
+            //@formatter:off
+            throw
+               new IncorrectIdentifierTypeException
+                      (
+                         this,
+                         Objects.nonNull( messageSupplier)
+                            ? messageSupplier.get().toString()
+                            : null,
+                            identifierTypeGroup,
+                         identifierTypeGroups
+                      );
+            //@formatter:on
+         }
       }
+      return this;
    }
 
    /**
@@ -213,14 +265,16 @@ public class Identifier {
     * throws an {@link IncorrectIdentifierTypeException} if it is not.
     *
     * @param identifierType the expected {@link IdentifierType}.
+    * @return this {@link Identifier}.
     * @throws IncorrectIdentifierTypeException when this {@link Identifier} is not of the type specified by
     * {@link IdentifierType}.
     */
 
-   public void requireType(IdentifierType identifierType) {
+   public Identifier requireType(IdentifierType identifierType) {
       if (!this.identifierType.equals(identifierType)) {
          throw new IncorrectIdentifierTypeException(this, identifierType);
       }
+      return this;
    }
 
    /**
@@ -229,14 +283,16 @@ public class Identifier {
     *
     * @param identifierType the expected {@link IdentifierType}.
     * @param message additional context for the exception message. This parameter maybe <code>null</code>.
+    * @return this {@link Identifier}.
     * @throws IncorrectIdentifierTypeException when this {@link Identifier} is not of the type specified by
     * {@link IdentifierType}.
     */
 
-   public void requireType(IdentifierType identifierType, String message) {
+   public Identifier requireType(IdentifierType identifierType, String message) {
       if (!this.identifierType.equals(identifierType)) {
          throw new IncorrectIdentifierTypeException(this, identifierType, message);
       }
+      return this;
    }
 
    /**
@@ -246,11 +302,12 @@ public class Identifier {
     * @param identifierType the expected {@link IdentifierType}.
     * @param messageSupplier a {@link Supplier} that provides a message with additional context for the exception
     * message. This parameter maybe <code>null</code>.
+    * @return this {@link Identifier}.
     * @throws IncorrectIdentifierTypeException when this {@link Identifier} is not of the type specified by
     * {@link IdentifierType}.
     */
 
-   public void requireType(IdentifierType identifierType, Supplier<String> messageSupplier) {
+   public Identifier requireType(IdentifierType identifierType, Supplier<CharSequence> messageSupplier) {
       if (!this.identifierType.equals(identifierType)) {
          //@formatter:off
          throw
@@ -259,11 +316,12 @@ public class Identifier {
                       this,
                       identifierType,
                       Objects.nonNull( messageSupplier)
-                         ? messageSupplier.get()
+                         ? messageSupplier.get().toString()
                          : null
                    );
          //@formatter:on
       }
+      return this;
    }
 
    /**

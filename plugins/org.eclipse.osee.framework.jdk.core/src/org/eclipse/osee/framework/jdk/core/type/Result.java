@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
@@ -348,7 +349,7 @@ public final class Result<V, E> implements ToMessage {
     * Saves an instance of an empty {@link Result}.
     */
 
-   private static Result<?, ?> emptyResult = new Result<>();
+   private static @NonNull Result<?, ?> emptyResult = new Result<>();
 
    /**
     * Returns an empty {@link Result} instance.
@@ -379,7 +380,7 @@ public final class Result<V, E> implements ToMessage {
     */
 
    @SafeVarargs
-   public static <E> @NonNull Optional<E> getMergedError(@NonNull ErrorMerger<E> errorMerger, @Nullable Result<?, E>... results) {
+   public static <E> Optional<E> getMergedError(@NonNull ErrorMerger<E> errorMerger, @Nullable Result<?, E>... results) {
 
       if (Objects.isNull(results) || results.length == 0) {
          return Optional.empty();
@@ -387,19 +388,22 @@ public final class Result<V, E> implements ToMessage {
 
       Objects.requireNonNull(errorMerger);
 
+      @Nullable
       E accumulator = null;
 
       for (int i = 0; i < results.length; i++) {
 
-         if (Objects.isNull(results[i])) {
+         var result = results[i];
+
+         if (result == null) {
             continue;
          }
 
-         if (results[i].isPresentError()) {
+         if (result.isPresentError()) {
             //@formatter:off
             accumulator = Objects.nonNull( accumulator )
-                             ? errorMerger.apply(accumulator, results[i].getError() )
-                             : results[i].getError();
+                             ? errorMerger.apply(accumulator, result.getError() )
+                             : result.getError();
            //@formatter:on
          }
       }
@@ -554,11 +558,18 @@ public final class Result<V, E> implements ToMessage {
       E accumulator = null;
 
       for (int i = 0; i < results.length; i++) {
-         if (results[i].isPresentError()) {
+
+         var result = results[i];
+
+         if (result == null) {
+            continue;
+         }
+
+         if (result.isPresentError()) {
             //@formatter:off
             accumulator = Objects.nonNull( accumulator )
-                             ? errorMerger.apply(accumulator, results[i].getError() )
-                             : results[i].getError();
+                             ? errorMerger.apply(accumulator, result.getError() )
+                             : result.getError();
            //@formatter:on
          }
       }
@@ -881,8 +892,10 @@ public final class Result<V, E> implements ToMessage {
 
       } catch (Exception e) {
 
-         return Result.ofError(Objects.requireNonNull(throwableToErrorMapper).apply(this.value, e));
+         @Nullable
+         E error = throwableToErrorMapper.apply(this.value, e);
 
+         return Result.ofErrorNullable(error);
       }
    }
 
@@ -980,13 +993,13 @@ public final class Result<V, E> implements ToMessage {
     * object and the resulting exception is thrown.
     */
 
-   public <T extends Throwable> @NonNull Optional<V> getAsOptionalOrElseThrow(@NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
+   public <T extends Throwable> Optional<V> getAsOptionalOrElseThrow(@NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
 
-      if (Objects.isNull(this.error)) {
+      if (this.error == null) {
          return Optional.ofNullable(this.value);
       }
 
-      throw Objects.requireNonNull(errorToThrowableMapper).apply(this.error);
+      throw Conditions.requireNonNull(errorToThrowableMapper).apply(this.error);
    }
 
    /**
@@ -1756,7 +1769,7 @@ public final class Result<V, E> implements ToMessage {
 
    @Override
    public @NonNull String toString() {
-      return this.toMessage(0, null).toString();
+      return Conditions.requireNonNull(this.toMessage(0, null).toString());
    }
 
 }

@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -22,11 +23,13 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
+import org.eclipse.osee.orcs.core.util.PublishingTemplateContentMapEntry;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateMatchCriterion;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateMatchCriterionListBuilder;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateSetter;
@@ -105,24 +108,53 @@ public class SetupPublishing {
                       (
                          CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
                          "WordEditTemplate",                                                                    /* Name                       */
-                         "templates/WordEditTemplate.json",                                                     /* Renderer Options File Name */
-                         "templates/Word Edit Template.xml",                                                    /* Template Content File Name */
-                         List.of                                                                                /* Match Criteria             */
+                         "templates/EDIT_TEMPLATE.json",                                                        /* Publish Options File Name  */
+                         null,                                                                                  /* Template Content File Name */
+                         List.of                                                                                /* Publishing Template Content Map Entries */
                             (
-                               new PublishingTemplateMatchCriterion
+                               new PublishingTemplateContentMapEntry
                                       (
-                                         RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                               /* Renderer Identifier */
-                                         PresentationType.SPECIALIZED_EDIT.name()                               /* Presentation Type   */
+                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
+                                         "templates/EDIT_TEMPLATE.xml"                                          /* Template Content File Path */
+                                      ),
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
+                                         "templates/EDIT_TEMPLATE.md"                                           /* Template Content File Path */
                                       )
-                            )
+                            ),
+                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
+                               (
+                                  SetupPublishing.matchPreviewTemplatesByName
+                               )
+                            .appendAlways
+                               (
+                                  new PublishingTemplateMatchCriterion
+                                         (
+                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            PresentationType.SPECIALIZED_EDIT.name()                            /* Presentation Type   */
+                                         )
+                               )
+                            .appendAlways
+                               (
+                                  new PublishingTemplateMatchCriterion
+                                         (
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
+                                            PresentationType.SPECIALIZED_EDIT.name()                            /* Presentation Type   */
+                                         )
+                               )
+                            .toList()
                       ),
 
                new PublishingTemplate
                       (
                          CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
                          "WordMergeTemplate",                                                                   /* Name                       */
-                         "templates/WordMergeTemplate.json",                                                    /* Renderer Options File Name */
+                         "templates/WordMergeTemplate.json",                                                    /* Publish Options File Name  */
                          "templates/PREVIEW_ALL.xml",                                                           /* Template Content File Name */
+                         List.of                                                                                /* Publishing Template Content Map Entries */
+                            (
+                            ),
                          List.of                                                                                /* Match Criteria             */
                             (
                                new PublishingTemplateMatchCriterion
@@ -147,9 +179,22 @@ public class SetupPublishing {
                             (
                                RendererOption.PREVIEW_ALL_VALUE.getKey()
                             ),
-                         null,                                                                                  /* Renderer Options File Name */
+                         null,                                                                                  /* Publish Options File Name */
                          "templates/PREVIEW_ALL.xml",                                                           /* Template Content File Name */
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria             */
+                         List.of                                                                                /* Publishing Template Content Map Entries */
+                            (
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                      ),
+                                new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                      )
+                            ),
+                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
                                 )
@@ -179,6 +224,15 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_VALUE.getKey()                           /* Option              */
                                          )
                                )
+                            .appendAlways
+                               (
+                                  new PublishingTemplateMatchCriterion
+                                         (
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
+                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_VALUE.getKey()                           /* Option              */
+                                         )
+                               )
                             .toList()
                       ),
 
@@ -189,9 +243,22 @@ public class SetupPublishing {
                             (
                                RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()
                             ),
-                         "templates/PREVIEW_ALL_NO_ATTRIBUTES.json",                                            /* Renderer Options JSON      */
-                         "templates/PREVIEW_ALL.xml",                                                           /* Template Content File Name */
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria             */
+                         "templates/PREVIEW_ALL_NO_ATTRIBUTES.json",                                            /* Publish Options JSON       */
+                         null,                                                                                  /* Template Content File Name */
+                         List.of                                                                                /* Publishing Template Content Map Entries */
+                            (
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                      ),
+                                new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                      )
+                            ),
+                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
                                 )
@@ -221,6 +288,15 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()             /* Option              */
                                          )
                                )
+                            .appendAlways
+                               (
+                                  new PublishingTemplateMatchCriterion
+                                         (
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
+                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()             /* Option              */
+                                         )
+                               )
                             .toList()
                       ),
 
@@ -231,9 +307,22 @@ public class SetupPublishing {
                             (
                                RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()
                             ),
-                         "templates/PREVIEW_ALL_RECURSE.json",                                                  /* Renderer Options File Name */
-                         "templates/PREVIEW_ALL.xml",                                                           /* Template Content File Name */
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria             */
+                         "templates/PREVIEW_ALL_RECURSE.json",                                                  /* Publish Options File Name  */
+                         null,                                                                                  /* Template Content File Name */
+                         List.of                                                                                /* Publishing Template Content Map Entries */
+                            (
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                      ),
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                      )
+                            ),
+                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
                                 )
@@ -255,6 +344,15 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                   /* Option              */
                                          )
                                )
+                            .appendAlways
+                               (
+                                  new PublishingTemplateMatchCriterion
+                                         (
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
+                                            PresentationType.PREVIEW_SERVER.name(),                             /* PresentationType    */
+                                            RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                   /* Option              */
+                                         )
+                               )
                             .toList()
                       ),
 
@@ -265,8 +363,21 @@ public class SetupPublishing {
                             (
                                RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
                             ),
-                         "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.json",                                    /* Renderer Options File Name */
-                         "templates/PREVIEW_ALL.xml",                                                           /* Template Content File Name */
+                         "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.json",                                    /* Publish Options File Name  */
+                         null,                                                                                  /* Template Content File Name */
+                         List.of                                                                                /* Publishing Template Content Map Entries */
+                            (
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                      ),
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                      )
+                            ),
                          new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria             */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
@@ -289,6 +400,15 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()     /* Option              */
                                          )
                                )
+                            .appendAlways
+                               (
+                                  new PublishingTemplateMatchCriterion
+                                         (
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
+                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()     /* Option              */
+                                         )
+                               )
                             .toList()
                       )
             );
@@ -297,30 +417,24 @@ public class SetupPublishing {
    //@formatter:on
 
    /**
-    * The name of the client side renderer for publishing previews.
+    * The name of the client side Word Markup Language renderer for publishing previews.
     */
 
    private static String RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD =
       "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer";
 
    /**
-    * The name of the server side renderer for publishing previews.
+    * The name of the server side Word Markup Language renderer for publishing previews.
     */
 
    private static String RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD =
       "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer";
 
    /**
-    * Fake renderer used for testing.
+    * The name of the Markdown renderer for publishing previews.
     */
 
-   private static String RENDERER_IDENTIFIER_TIS = "org.eclipse.osee.framework.ui.skynet.render.TisRenderer";
-
-   /**
-    * Fake renderer used of testing.
-    */
-
-   private static String RENDERER_IDENTIFIER_WORD = "org.eclipse.osee.framework.ui.skynet.word";
+   private static String RENDERER_IDENTIFIER_MARKDOWN = "org.eclipse.osee.framework.ui.skynet.render.MarkdownRenderer";
 
    /**
     * Creates the data rights artifact with the available data rights footers.
@@ -356,7 +470,7 @@ public class SetupPublishing {
             new PublishingTemplateSetter() {
 
                @Override
-               public String set(ArtifactToken parent, String name, String content, String rendererOptions, List<String> matchCriteria) {
+               public String set(ArtifactToken parent, String name, String content, String rendererOptions, List<Map.Entry<String,String>> publishingTemplateContentMapEntries, List<String> matchCriteria) {
 
                   Objects.requireNonNull(tx, "SetupPublishing::createPublishingTemplate, parameter \"tx\" cannot be null.");
 
@@ -371,6 +485,18 @@ public class SetupPublishing {
                   if (Objects.nonNull(content)) {
                      tx.setSoleAttributeValue(publishingTemplateArtifact, CoreAttributeTypes.WholeWordContent,
                         content);
+                  }
+
+                  if (Objects.nonNull(publishingTemplateContentMapEntries)) {
+                     publishingTemplateContentMapEntries.forEach
+                        (
+                           ( mapEntry ) -> tx.createAttribute
+                                              (
+                                                 publishingTemplateArtifact,
+                                                 CoreAttributeTypes.PublishingTemplateContentByFormatMapEntry,
+                                                 mapEntry
+                                              )
+                        );
                   }
 
                   if (Objects.nonNull(matchCriteria)) {

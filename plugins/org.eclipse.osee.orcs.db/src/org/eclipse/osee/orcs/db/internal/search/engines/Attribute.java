@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.resource.management.DataResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 
@@ -60,7 +60,7 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
          if (rawData == null) {
             return "";
          } else {
-            ByteBuffer decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
+            ByteBuffer decompressed = ByteBuffer.wrap(Zip.decompressBytes(new ByteArrayInputStream(rawData)));
             return StandardCharsets.UTF_8.decode(decompressed).toString();
          }
       } catch (IOException ex) {
@@ -76,7 +76,7 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
          if (rawData == null) {
             return null;
          } else {
-            return new ByteArrayInputStream(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
+            return new ByteArrayInputStream(Zip.decompressBytes(new ByteArrayInputStream(rawData)));
          }
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);

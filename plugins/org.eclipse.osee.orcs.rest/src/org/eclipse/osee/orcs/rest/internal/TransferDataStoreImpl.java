@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.model.transaction.BranchLocation;
@@ -116,7 +117,7 @@ public class TransferDataStoreImpl {
           	  String zipTarget = osee + currentTransferDirectory.replace(osee, "").replace("\\", "") + ".zip";
           	  results.log("\nAttemtping to compress files to location: " + zipTarget + " File(s)/Directory(ies) from: " +  directoryPath.toString());          	  
           	  if (Files.exists(pathTest)) {    		      		  
-          		  Lib.compressDirectory(directoryPath, zipTarget, true);
+          		  Zip.compressDirectory(directoryPath, zipTarget, true);
           		  results.log("\nTransfer file generation content successfully compressed, file location: " + zipTarget + "\nTransfer File Generation Process Completed!");
           	  }
             } catch (Exception e) {

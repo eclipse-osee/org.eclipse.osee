@@ -31,8 +31,8 @@ import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
-import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -41,6 +41,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
 import org.eclipse.osee.framework.core.xml.publishing.WordBody;
@@ -76,7 +81,7 @@ public class PublishingServerPreviewTest {
     * Set this flag to <code>true</code> to print the received Word ML documents to <code>stdout</code>.
     */
 
-   private static boolean printDocuments = true;
+   private static boolean printDocuments = false;
 
    /**
     * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.
@@ -122,6 +127,22 @@ public class PublishingServerPreviewTest {
 
    @Rule
    public TestName testName = new TestName();
+
+   /**
+    * Common publishing renderer options for the test.
+    */
+
+   //@formatter:off
+   private static final RendererMap commonPublishingRendererOptions =
+      RendererMap.of
+         (
+            RendererOption.PUBLISH_IDENTIFIER, "Publishing Preview Test",
+            RendererOption.EXCLUDE_FOLDERS,    false,
+            RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+            RendererOption.MAX_OUTLINE_DEPTH,  9,
+            RendererOption.PUBLISHING_FORMAT,  FormatIndicator.WORD_ML
+         );
+   //@formatter:on
 
    /**
     * The {@link BranchSpecificationRecord} identifier for the test branch.
@@ -773,8 +794,7 @@ public class PublishingServerPreviewTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement,
-      String documentString) {
+   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement, String documentString) {
 
       var error = publishingXmlUtils.getLastError();
 
@@ -842,7 +862,7 @@ public class PublishingServerPreviewTest {
     * @param msWordPreviewRequestData the Word preview request data to be sent to the server.
     */
 
-   private void publishPreview(MsWordPreviewRequestData msWordPreviewRequestData) {
+   private void publishPreview(PublishingRequestData msWordPreviewRequestData) {
 
       /*
        * Set sentinel values for unparsed document parts
@@ -1157,17 +1177,23 @@ public class PublishingServerPreviewTest {
    public void testMsWordPreviewServerFolder() {
 
       //@formatter:off
+      var publishingRendererOptions =
+         new EnumRendererMap( PublishingServerPreviewTest.commonPublishingRendererOptions );
+
+      publishingRendererOptions.setRendererOption(RendererOption.BRANCH, PublishingServerPreviewTest.rootBranchId);
+
       var msWordPreviewRequestData =
-         new MsWordPreviewRequestData
+         new PublishingRequestData
                 (
                    new PublishingTemplateRequest
                           (
                              "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
                              CoreArtifactTypes.Folder.getName(),
                              PresentationType.PREVIEW_SERVER.name(),
-                             "SERVER_PREVIEW_TEST_A"
+                             "SERVER_PREVIEW_TEST_A",
+                             FormatIndicator.WORD_ML
                           ),
-                   PublishingServerPreviewTest.rootBranchId,
+                   publishingRendererOptions,
                    List.of( PublishingServerPreviewTest.rootArtifactId )
                 );
 
@@ -1232,17 +1258,23 @@ public class PublishingServerPreviewTest {
    public void testMsWordPreviewServerFolderRecursiveWithRestrictedRightsRequirementB() {
 
       //@formatter:off
+      var publishingRendererOptions =
+         new EnumRendererMap( PublishingServerPreviewTest.commonPublishingRendererOptions );
+
+      publishingRendererOptions.setRendererOption(RendererOption.BRANCH, PublishingServerPreviewTest.rootBranchId);
+
       var msWordPreviewRequestData =
-         new MsWordPreviewRequestData
+         new PublishingRequestData
                 (
                    new PublishingTemplateRequest
                           (
                              "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
                              CoreArtifactTypes.Folder.getName(),
                              PresentationType.PREVIEW_SERVER.name(),
-                             "SERVER_PREVIEW_TEST_D"
+                             "SERVER_PREVIEW_TEST_D",
+                             FormatIndicator.WORD_ML
                           ),
-                   PublishingServerPreviewTest.rootBranchId,
+                   publishingRendererOptions,
                    List.of( ArtifactId.valueOf( PublishingServerPreviewTest.builderRecordMap.get( 4 ).get() ) )
                 );
 
@@ -1412,7 +1444,7 @@ public class PublishingServerPreviewTest {
       Assert.assertEquals
          (
             "Footer text does not match.",
-            "Contract No.: W58RGZ-15-C-0025",
+            "Contract No.: 0780663667",
             wordTextList.get( 2 ).get().getText()
          );
 
@@ -1452,17 +1484,23 @@ public class PublishingServerPreviewTest {
    public void testMsWordPreviewServerNoAttributesRequirementA() {
 
       //@formatter:off
+      var publishingRendererOptions =
+         new EnumRendererMap( PublishingServerPreviewTest.commonPublishingRendererOptions );
+
+      publishingRendererOptions.setRendererOption(RendererOption.BRANCH, PublishingServerPreviewTest.rootBranchId);
+
       var msWordPreviewRequestData =
-         new MsWordPreviewRequestData
+         new PublishingRequestData
                 (
                    new PublishingTemplateRequest
                           (
                              "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
                              CoreArtifactTypes.Folder.getName(),
                              PresentationType.PREVIEW_SERVER.name(),
-                             "SERVER_PREVIEW_TEST_B"
+                             "SERVER_PREVIEW_TEST_B",
+                             FormatIndicator.WORD_ML
                           ),
-                   PublishingServerPreviewTest.rootBranchId,
+                   publishingRendererOptions,
                    List.of( ArtifactId.valueOf( PublishingServerPreviewTest.builderRecordMap.get( 2 ).get() ) )
                 );
 
@@ -1546,17 +1584,23 @@ public class PublishingServerPreviewTest {
    public void testMetadataOptionsAll() {
 
       //@formatter:off
+      var publishingRendererOptions =
+         new EnumRendererMap( PublishingServerPreviewTest.commonPublishingRendererOptions );
+
+      publishingRendererOptions.setRendererOption(RendererOption.BRANCH, PublishingServerPreviewTest.rootBranchId);
+
       var msWordPreviewRequestData =
-         new MsWordPreviewRequestData
+         new PublishingRequestData
                 (
                    new PublishingTemplateRequest
                           (
                              "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
                              CoreArtifactTypes.Folder.getName(),
                              PresentationType.PREVIEW_SERVER.name(),
-                             "SERVER_PREVIEW_TEST_METADATAOPTIONS_ALL"
+                             "SERVER_PREVIEW_TEST_METADATAOPTIONS_ALL",
+                             FormatIndicator.WORD_ML
                           ),
-                   PublishingServerPreviewTest.rootBranchId,
+                   publishingRendererOptions,
                    List.of( PublishingServerPreviewTest.rootArtifactId )
                 );
 

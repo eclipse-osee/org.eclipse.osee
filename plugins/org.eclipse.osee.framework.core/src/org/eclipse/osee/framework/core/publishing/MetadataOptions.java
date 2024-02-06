@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
- * Class used to specify attribute metadata publishing options in a publishing template {@link RendererOptions}. The
+ * Class used to specify attribute metadata publishing options in a publishing template {@link PublishOptions}. The
  * following JSON schema specifies the metadata section of the renderer options in a publishing template:
  *
  * <pre>
@@ -169,7 +169,7 @@ public class MetadataOptions implements ToMessage {
                              .title( "MetadataOptions::new, parameter \"type\" has an invalid value." )
                              .indentInc()
                              .segment( "Specified type", this.type )
-                             .segmentIndexedArray( "Allowed Values", MetadataOptions.types.toArray() )
+                             .segmentIndexed( "Allowed Values", MetadataOptions.types.toArray() )
                              .toString()
                    );
          //@formatter:on
@@ -307,7 +307,7 @@ public class MetadataOptions implements ToMessage {
                              .title( "MetadataOptions::new, parameter \"type\" has an invalid value." )
                              .indentInc()
                              .segment( "Specified type", this.type )
-                             .segmentIndexedArray( "Allowed Values", MetadataOptions.types.toArray() )
+                             .segmentIndexed( "Allowed Values", MetadataOptions.types.toArray() )
                              .toString()
                    );
          //@formatter:on

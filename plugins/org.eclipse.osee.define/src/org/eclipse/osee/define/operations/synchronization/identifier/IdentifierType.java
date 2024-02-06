@@ -15,13 +15,13 @@ package org.eclipse.osee.define.operations.synchronization.identifier;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.osee.define.operations.synchronization.LinkType;
-import org.eclipse.osee.define.operations.synchronization.forest.Forest;
 import org.eclipse.osee.define.operations.synchronization.forest.GroveThing;
 
 /**
@@ -36,59 +36,134 @@ import org.eclipse.osee.define.operations.synchronization.forest.GroveThing;
 public enum IdentifierType implements LinkType {
 
    /**
-    * The {@link IdentifierType} for Attribute Definition {@link GroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Attribute Definition {@link GroveThing} Synchronization Artifact things. Attribute
+    * Definitions are members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#ATTRIBUTE}</li>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#PUBLISHING_DOM}</li>
+    * </ul>
     */
 
-   ATTRIBUTE_DEFINITION("AD"),
+   //@formatter:off
+   ATTRIBUTE_DEFINITION
+      (
+         "AD",
+         IdentifierTypeGroup.ATTRIBUTE,
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM
+      ),
+   //@formatter:on
 
    /**
-    * The {@link IdentifierType} for Attribute Value {@link GroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Attribute Value {@link GroveThing} Synchronization Artifact things. Attribute
+    * Values are members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#ATTRIBUTE}</li>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#PUBLISHING_DOM}</li>
+    * </ul>
     */
 
-   ATTRIBUTE_VALUE("AV"),
+   //@formatter:off
+   ATTRIBUTE_VALUE
+      (
+         "AV",
+         IdentifierTypeGroup.ATTRIBUTE,
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM
+      ),
+   //@formatter:on
 
    /**
-    * The {@link IdentifierType} for Data Type Definition {@link GroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Data Type Definition {@link GroveThing} Synchronization Artifact things. Data Type
+    * Definitions are members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * </ul>
     */
 
-   DATA_TYPE_DEFINITION("DD"),
+   //@formatter:off
+   DATA_TYPE_DEFINITION
+      (
+         "DD",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM
+      ),
+   //@formatter:on
 
    /**
-    * The {@link IdentifierType} for Enum Value {@link GroveThing} Synchronization Artifact things.
+    * The {@link IdentifierType} for Enum Value {@link GroveThing} Synchronization Artifact things. Enum Values are
+    * members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * </ul>
     */
 
-   ENUM_VALUE("EV"),
+   //@formatter:off
+   ENUM_VALUE
+      (
+         "EV",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM
+      ),
+   //@formatter:on
 
    /**
-    * The {@link IdentifierType} for the {@link Forest}.
+    * The {@link IdentifierType} for Header {@link GroveThing} Synchronization Artifact things. Headers are members of
+    * the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * </ul>
     */
 
-   FOREST("F"),
-
-   /**
-    * The {@link IdentifierType} for Header {@link GroveThing} Synchronization Artifact things.
-    */
-
-   HEADER("H"),
+   //@formatter:off
+   HEADER
+      (
+         "H",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM
+      ),
+   //@formatter:on
 
    /**
     * The {@link IdentifierType} for Specification {@link GroveThing} Synchronization Artifact things. Specifications
-    * are members of the {@link IdentifierTypeGroup#OBJECT} group.
+    * are members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#PUBLISHING_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#OBJECT}</li>
+    * </ul>
     */
 
-   SPECIFICATION("S", IdentifierTypeGroup.OBJECT),
+   //@formatter:off
+   SPECIFICATION
+      (
+         "S",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM,
+         IdentifierTypeGroup.OBJECT
+      ),
+   //@formatter:on
 
    /**
     * The {@link IdentifierType} for Spec Type {@link GroveThing} Synchronization Artifact things. Specification Types
-    * are members of the {@link IdentifierTypeGroup#TYPE} group.
+    * are members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#TYPE}</li>
+    * </ul>
     */
 
-   SPECIFICATION_TYPE("ST", IdentifierTypeGroup.TYPE),
+   //@formatter:off
+   SPECIFICATION_TYPE
+      (
+         "ST",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM,
+         IdentifierTypeGroup.TYPE
+      ),
+   //@formatter:on
 
    /**
     * The {@link IdentifierType} for Specter Spec Object {@link GroveThing} Synchronization Artifact things. Specter
     * Spec Objects are members of the groups:
     * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#PUBLISHING_DOM}</li>
     * <li>{@link IdentifierTypeGroup#OBJECT},</li>
     * <li>{@link IdentifierTypeGroup#SUBORDINATE_OBJECT}, and</li>
     * <li>{@link IdentifierTypeGroup#RELATABLE_OBJECT}</li>
@@ -97,44 +172,96 @@ public enum IdentifierType implements LinkType {
     * Spec Object in the Synchronization Artifact.
     */
 
-   SPECTER_SPEC_OBJECT("SSO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.SUBORDINATE_OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
+   //@formatter:off
+   SPECTER_SPEC_OBJECT
+      (
+         "SSO",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM,
+         IdentifierTypeGroup.OBJECT,
+         IdentifierTypeGroup.SUBORDINATE_OBJECT,
+         IdentifierTypeGroup.RELATABLE_OBJECT
+      ),
+   //@formatter:on
 
    /**
     * The {@link IdentifierType} for Spec Object {@link GroveThing} Synchronization Artifact things. Spec Objects are
     * members of the groups:
     * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#PUBLISHING_DOM}</li>
     * <li>{@link IdentifierTypeGroup#OBJECT},</li>
     * <li>{@link IdentifierTypeGroup#SUBORDINATE_OBJECT}, and</li>
     * <li>{@link IdentifierTypeGroup#RELATABLE_OBJECT}</li>
     * </ul>
     */
 
-   SPEC_OBJECT("SO", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.SUBORDINATE_OBJECT, IdentifierTypeGroup.RELATABLE_OBJECT),
+   //@formatter:off
+   SPEC_OBJECT
+      (
+         "SO",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM,
+         IdentifierTypeGroup.OBJECT,
+         IdentifierTypeGroup.SUBORDINATE_OBJECT,
+         IdentifierTypeGroup.RELATABLE_OBJECT
+      ),
+   //@formatter:on
 
    /**
     * The {@link IdentifierType} for Spec Object Type {@link GroveThing} Synchronization Artifact things. Spec Object
-    * Types are members of the {@link IdentifierTypeGroup#TYPE} group.
+    * Types are members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#TYPE}</li>
+    * </ul>
     */
 
-   SPEC_OBJECT_TYPE("SOT", IdentifierTypeGroup.TYPE),
+   //@formatter:off
+   SPEC_OBJECT_TYPE
+      (
+         "SOT",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM,
+         IdentifierTypeGroup.TYPE
+      ),
+   //@formatter:on
 
    /**
     * The {@link IdentifierType} for Spec Relation {@link GroveThing} Synchronization Artifact things. Spec Relations
     * are members of the groups:
     * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#PUBLISHING_DOM}</li>
     * <li>{@link IdentifierTypeGroup#OBJECT}, and</li>
     * <li>{@link IdentifierTypeGroup#SUBORDINATE_OBJECT}</li>
     * </ul>
     */
 
-   SPEC_RELATION("SR", IdentifierTypeGroup.OBJECT, IdentifierTypeGroup.SUBORDINATE_OBJECT),
+   //@formatter:off
+   SPEC_RELATION
+      (
+         "SR",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM,
+         IdentifierTypeGroup.OBJECT,
+         IdentifierTypeGroup.SUBORDINATE_OBJECT
+      ),
+   //@formatter:on
 
    /**
     * The {@link IdentifierType} for Spec Relation Type {@link GroveThing} Synchronization Artifact things. Spec
-    * Relation Types are members of the {@link IdentifierTypeGroup#TYPE} group.
+    * Relation Types are members of the following groups:
+    * <ul>
+    * <li>{@link IdentifierTypeGroup#SYNCHRONIZATION_ARTIFACT_DOM}</li>
+    * <li>{@link IdentifierTypeGroup#TYPE}</li>
+    * </ul>
     */
 
-   SPEC_RELATION_TYPE("SRT", IdentifierTypeGroup.TYPE);
+   //@formatter:off
+   SPEC_RELATION_TYPE
+      (
+         "SRT",
+         IdentifierTypeGroup.SYNCHRONIZATION_ARTIFACT_DOM,
+         IdentifierTypeGroup.TYPE
+      );
+   //@formatter:on
 
    /**
     * Map of identifier type associations. Each Synchronization Artifact {@link GroveThing} that represents an object
@@ -324,6 +451,59 @@ public enum IdentifierType implements LinkType {
    public boolean isInGroup(IdentifierTypeGroup identifierTypeGroup) {
       return this.identifierTypeGroups.contains(identifierTypeGroup);
    }
+
+   /**
+    * Predicate to determine if the {@link IdentifierType} is in all of the specified {@link IdentifierTypeGroup}s.
+    *
+    * @param identifierTypeGroups the identifier type groups to check for membership in.
+    * @return <code>true</code> when the {@link IdentifierType} is a member of all of the specified
+    * {@link IdentifierTypeGroup}s; otherwise, <code>false</code>.
+    */
+
+   public boolean isInGroupAllOf(IdentifierTypeGroup... identifierTypeGroups) {
+      for (var identifierTypeGroup : identifierTypeGroups) {
+         if (!this.identifierTypeGroups.contains(identifierTypeGroup)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   /**
+    * Gets a {@link List} of the {@link IdentifierTypeGroup} the {@link IdentifierType} is not a member of.
+    *
+    * @param identifierTypeGroups the identifier type groups to check for membership in.
+    * @return a {@link List} of the {@link IdentifierTypeGroup}s in <code>identifierTypeGroups</code> the
+    * <code>identifierType</code> is not a member of.
+    */
+
+   public List<IdentifierTypeGroup> notInGroups(IdentifierTypeGroup... identifierTypeGroups) {
+      //@formatter:off
+      return
+         Arrays
+            .stream(identifierTypeGroups)
+            .filter( (identifierTypeGroup) -> !this.isInGroup(identifierTypeGroup))
+            .collect(Collectors.toList());
+      //@formatter:on
+   }
+
+   /**
+    * Predicate to determine if the {@link IdentifierType} is in any of the specified {@link IdentifierTypeGroup}s.
+    *
+    * @param identifierTypeGroups the identifier type groups to check for membership in.
+    * @return <code>true</code> when the {@link IdentifierType} is a member of any of the specified
+    * {@link IdentifierTypeGroup}s; otherwise, <code>false</code>.
+    */
+
+   public boolean isInGroupAnyOf(IdentifierTypeGroup... identifierTypeGroups) {
+      for (var identifierTypeGroup : identifierTypeGroups) {
+         if (this.identifierTypeGroups.contains(identifierTypeGroup)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
 }
 
 /* EOF */

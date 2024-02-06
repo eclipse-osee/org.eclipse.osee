@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.core.util;
 
 import java.util.Objects;
-import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 
 /**
  * Defines a Publishing Template Match Criterion for the creation of a Publishing Template.
@@ -93,27 +92,6 @@ public class PublishingTemplateMatchCriterion {
       this.rendererIdentifier = rendererIdentifier;
       this.presentationType = presentationType;
       this.option = option;
-   }
-
-   /**
-    * Creates a {@link PublishingTemplateRequest} that can be used to obtain the Publishing Template from the Publishing
-    * Template Manager using this set of Match Criteria.
-    *
-    * @return a {@link PublishingTemplateRequest} object.
-    */
-
-   PublishingTemplateRequest getPublishingTemplateRequest() {
-      //@formatter:off
-      var publishingTemplateRequest =
-         new PublishingTemplateRequest
-                (
-                   this.rendererIdentifier,
-                   null,
-                   this.presentationType,
-                   this.option
-                );
-      //@formatter:on
-      return publishingTemplateRequest;
    }
 
    /**

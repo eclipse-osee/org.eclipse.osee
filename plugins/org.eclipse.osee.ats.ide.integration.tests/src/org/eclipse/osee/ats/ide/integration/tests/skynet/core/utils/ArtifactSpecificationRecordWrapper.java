@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.junit.Assert;
@@ -71,7 +71,7 @@ public class ArtifactSpecificationRecordWrapper implements ArtifactSpecification
 
       //@formatter:off
       this.builderRecord =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                builderRecord,
                "ArtifactSpecificationRecordWrapper",

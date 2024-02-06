@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -58,7 +59,7 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
 
       //@formatter:off
       this.sourceArtifact =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                sourceArtifact,
                "RelationshipSpecificationRecordWrapper",
@@ -69,7 +70,7 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
 
       //@formatter:off
       this.relationshipSpecificationRecord =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                relationshipSpecificationRecord,
                "RelationshipSpecificationRecordWrapper",
@@ -96,17 +97,17 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
 
       //@formatter:off
       return
-         Validation.require
+         Conditions.require
          (
             list,
-            Validation.ValueType.RESULT,
+            ValueType.RESULT,
             "RelationshipSpecificationRecordWrapper",
             "getRelationshipTargetArtifactSpecificationRecordIdentifiers",
             "this.relationshipSpecificationRecord.getRelationshipTargetArtifactSpecificationRecordIdentifiers()",
             "result is not null",
             Objects::isNull,
             "result does not contail a null element",
-            Validation::collectionContainsNull,
+            Conditions::collectionContainsNull,
             NullPointerException::new
          );
       //@formatter:on
@@ -124,7 +125,7 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
 
       //@formatter:off
       return
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                this.relationshipSpecificationRecord.getRelationTypeToken(),
                "RelationshipSpecificationRecordWrapper",

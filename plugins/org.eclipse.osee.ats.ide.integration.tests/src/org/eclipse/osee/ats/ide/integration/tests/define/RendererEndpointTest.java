@@ -29,17 +29,21 @@ import org.eclipse.osee.client.demo.DemoChoice;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingEndpoint;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
+import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -328,25 +332,43 @@ public class RendererEndpointTest {
    }
 
    @Test
-   public void testImport() throws IOException {
+   public void testPublish() throws IOException {
 
       //@formatter:off
-      var template =
-         ArtifactQuery.getArtifactFromTypeAndName
+      var publishingTemplateRequest =
+         new PublishingTemplateRequest
+                (
+                   "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
+                   null,
+                   PresentationType.PREVIEW_SERVER.name(),
+                   RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),
+                   FormatIndicator.WORD_ML
+                );
+
+      var publishingRendererOptions =
+         new EnumRendererMap
             (
-               CoreArtifactTypes.RendererTemplateWholeWord,
-               RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),
-               CoreBranches.COMMON
+               RendererOption.EXCLUDE_FOLDERS,   false,
+               RendererOption.LINK_TYPE,         LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+               RendererOption.MAX_OUTLINE_DEPTH, 9,
+               RendererOption.PUBLISHING_FORMAT, FormatIndicator.WORD_ML,
+               RendererOption.BRANCH,            RendererEndpointTest.rootBranchId
             );
 
+      var msWordPreviewRequestData =
+         new PublishingRequestData
+                (
+                   publishingTemplateRequest,
+                   publishingRendererOptions,
+                   List.of( RendererEndpointTest.rootArtifactId )
+                );
+
       try(
-            var inputStream = publishingEndpoint.msWordTemplatePublish
-                                 (
-                                    RendererEndpointTest.rootBranchId,
-                                    template,
-                                    RendererEndpointTest.rootArtifactId,
-                                    ArtifactId.SENTINEL
-                                 ).getDataHandler().getInputStream()
+            var inputStream =
+               publishingEndpoint
+                  .msWordPreview( msWordPreviewRequestData )
+                  .getDataHandler()
+                  .getInputStream()
          )
       {
 
