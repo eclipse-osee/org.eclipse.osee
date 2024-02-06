@@ -127,7 +127,7 @@ public class Request implements ToMessage {
 
       //@formatter:off
       return
-         Objects.nonNull( this.format ) && this.format.isValid()
+             Objects.nonNull( this.format )
          &&  Objects.nonNull( this.publishingTemplateRequest ) && this.publishingTemplateRequest.isValid()
          &&  Objects.nonNull( this.artifactProxyList ) && Arrays.stream(this.artifactProxyList).allMatch( ArtifactProxy::isValid );
       //@formatter:on

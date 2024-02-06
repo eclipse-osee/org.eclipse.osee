@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.cellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.CalendarWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.MapEntryWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -29,6 +30,7 @@ public class UniversalCellEditor extends CellEditor {
    private final Combo comboBox;
    private final Text textBox;
    private final CalendarWidget datePicker;
+   private final MapEntryWidget mapEntryWidget;
    private Control control;
    private boolean personCombo = false;
 
@@ -46,6 +48,7 @@ public class UniversalCellEditor extends CellEditor {
          cstyle |= SWT.FLAT;
       }
       this.datePicker = new CalendarWidget(parent, cstyle);
+      this.mapEntryWidget = new MapEntryWidget(parent, SWT.BORDER);
 
       setValueValid(true);
    }
@@ -67,6 +70,10 @@ public class UniversalCellEditor extends CellEditor {
       return datePicker;
    }
 
+   public MapEntryWidget getMapEntryControl() {
+      return this.mapEntryWidget;
+   }
+
    /**
     * Since UniveralCellEditor is managing its own controls and the CellEditor's mechanisms for managing the control
     * have been completly overridden, return null back to CellEditor when it calls this method
@@ -78,7 +85,7 @@ public class UniversalCellEditor extends CellEditor {
 
    /**
     * Returns whether this cell editor is activated.
-    * 
+    *
     * @return <code>true</code> if this cell editor's control is currently visible, and <code>false</code> if not
     * visible
     */
@@ -89,7 +96,7 @@ public class UniversalCellEditor extends CellEditor {
 
    /**
     * Returns the control used to implement this cell editor.
-    * 
+    *
     * @return the control, or <code>null</code> if this cell editor has no control
     */
    @Override
@@ -131,6 +138,9 @@ public class UniversalCellEditor extends CellEditor {
       }
       if (control instanceof CalendarWidget) {
          return datePicker.isValid() ? datePicker.getCalendar().getTime() : null;
+      }
+      if (control instanceof MapEntryWidget) {
+         return this.mapEntryWidget;
       }
       throw new IllegalArgumentException("Control was of an unexpected type: " + control.getClass().getName());
    }

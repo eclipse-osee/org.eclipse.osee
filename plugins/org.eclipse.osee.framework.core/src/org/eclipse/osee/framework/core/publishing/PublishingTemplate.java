@@ -17,13 +17,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
- * The data structure used to provide a Publishing Template. The reference to the Word ML for the publishing template is
- * mutable so that this can continue to be used as a carrier for the Render Options and the template Word ML as changes
- * are made to the template Word ML to prepare for the publish.
+ * The data structure used to provide a Publishing Template. The reference to the template content is mutable so that
+ * this can continue to be used as a carrier for the Publish Options and the Template Content as changes are made to the
+ * template content to prepare for the publish.
  *
  * @author Loren K. Ashley
  */
@@ -56,16 +60,16 @@ public class PublishingTemplate implements ToMessage {
    private String name;
 
    /**
-    * Saves the Publishing Template's {@link RendererOptions}.
+    * Saves the Publishing Template's {@link PublishOptions}.
     */
 
-   private RendererOptions rendererOptions;
+   private PublishOptions publishingOptions;
 
    /**
-    * Saves the Publishing Template's Word ML XML template content.
+    * Saves the Publishing Template's template content.
     */
 
-   private TemplateContent templateContent;
+   private String templateContent;
 
    /**
     * Creates a new empty {@link PublishingTemplate} for JSON deserialization.
@@ -74,7 +78,7 @@ public class PublishingTemplate implements ToMessage {
    public PublishingTemplate() {
       this.identifier = null;
       this.name = null;
-      this.rendererOptions = null;
+      this.publishingOptions = null;
       this.templateContent = null;
    }
 
@@ -83,20 +87,18 @@ public class PublishingTemplate implements ToMessage {
     *
     * @param identifier the Publishing Template's identifier.
     * @param name the Publishing Template's name.
-    * @param rendererOptions the Publishing Template's {@link RendererOptions}.
-    * @param style the Publishing Template's style Word ML.
-    * @param templateContent the Publishing Template's {@link TemplateConent}.
-    * @throws NullPointerException when any of the parameters are <code>null</code>.
+    * @param publishingOptions the Publishing Template's {@link PublishOptions}.
+    * @param templateContent the Publishing Template's content.
+    * @throws NullPointerException when any of the parameters <code>identifier</code>, <code>name</code>, or
+    * <code>publishingOptions</code> are <code>null</code>.
     */
 
-   public PublishingTemplate(String identifier, String name, RendererOptions rendererOptions, TemplateContent templateContent) {
-      this.identifier =
-         Objects.requireNonNull(identifier, "PublishingTemplate::new, parameter \"identifier\" cannot be null.");
-      this.name = Objects.requireNonNull(name, "PublishingTemplate::new, parameter \"name\" cannot be null.");
-      this.rendererOptions = Objects.requireNonNull(rendererOptions,
-         "PublishingTemplate::new, parameter \"rendererOptions\" cannot be null.");
-      this.templateContent = Objects.requireNonNull(templateContent,
-         "PublishingTemplate::new, parameter \"templateContent\" cannot be null.");
+   public PublishingTemplate(@NonNull String identifier, @NonNull String name, @NonNull PublishOptions publishingOptions, @Nullable String templateContent) {
+      this.identifier = Conditions.requireNonNull(identifier, "PublishingTemplate", "new", "identifier");
+      this.name = Conditions.requireNonNull(name, "PublishingTemplate", "new", "name");
+      this.publishingOptions =
+         Conditions.requireNonNull(publishingOptions, "PublishingTemplate", "new", "publishingOptions");
+      this.templateContent = Objects.nonNull(templateContent) ? templateContent : Strings.EMPTY_STRING;
    }
 
    /**
@@ -106,10 +108,10 @@ public class PublishingTemplate implements ToMessage {
     * <dd>When this member is unset, all members are set to the sentinel values.</dd>
     * <dt>{@link #name}:</dt>
     * <dd>When this member is unset, all members are set to the sentinel values.</dd>
-    * <dt>{@link #RendererOptions}:</dt>
-    * <dd>When this member is unset, it is set to a {@link RendererOptions} object with default values.</dd>
+    * <dt>{@link #PublishOptions}:</dt>
+    * <dd>When this member is unset, it is set to a {@link PublishOptions} object with default values.</dd>
     * <dt>{@link #templateContent}:</dt>
-    * <dd>When this member is unset, it is set to a {@link TemplateContent} object with default values.</dd>
+    * <dd>When this member is unset, it is set to an empty string.</dd>
     * </dl>
     */
 
@@ -126,17 +128,15 @@ public class PublishingTemplate implements ToMessage {
          return;
       }
 
-      if (Objects.isNull(this.rendererOptions)) {
-         this.rendererOptions = new RendererOptions();
+      if (Objects.isNull(this.publishingOptions)) {
+         this.publishingOptions = new PublishOptions();
       }
 
-      this.rendererOptions.defaults();
+      this.publishingOptions.defaults();
 
       if (Objects.isNull(this.templateContent)) {
-         this.templateContent = new TemplateContent();
+         this.templateContent = Strings.EMPTY_STRING;
       }
-
-      this.templateContent.defaults();
    }
 
    /**
@@ -169,28 +169,28 @@ public class PublishingTemplate implements ToMessage {
    }
 
    /**
-    * Gets the Publishing Template's {@link RendererOptions}.
+    * Gets the Publishing Template's {@link PublishOptions}.
     *
-    * @return the {@link RendererOptions}.
-    * @throws IllegalStateException when the member {@link #rendererOptions} has not been set.
+    * @return the {@link PublishOptions}.
+    * @throws IllegalStateException when the member {@link #publishingOptions} has not been set.
     */
 
-   public RendererOptions getRendererOptions() {
-      if (Objects.isNull(this.rendererOptions)) {
+   public PublishOptions getPublishOptions() {
+      if (Objects.isNull(this.publishingOptions)) {
          throw new IllegalStateException(
-            "PublishingTemplate::getRendererOptions, the member \"rendererOptions\" has not been set.");
+            "PublishingTemplate::getPublishOptions, the member \"publishOptions\" has not been set.");
       }
-      return this.rendererOptions;
+      return this.publishingOptions;
    }
 
    /**
-    * Gets the Publishing Template's Word ML content.
+    * Gets the Publishing Template content.
     *
-    * @return the {@link TemplateConent}.
+    * @return the content.
     * @throws IllegalStateException when the member {@link #templateContent} has not been set.
     */
 
-   public TemplateContent getTemplateContent() {
+   public String getTemplateContent() {
       if (Objects.isNull(this.templateContent)) {
          throw new IllegalStateException(
             "PublishingTemplate::getTemplateContent, the member \"templateContent\" has not been set.");
@@ -214,6 +214,12 @@ public class PublishingTemplate implements ToMessage {
       //@formatter:on
    }
 
+   /**
+    * Predicate to determine if the {@link PublishingTemplate} is not a sentinel template.
+    *
+    * @return <code>true</code>, when the {@link PublishingTemplate} is not a sentinel; otherwise, <code>false</code>.
+    */
+
    @JsonIgnore
    public boolean isNotSentinel() {
       return !this.isSentinel();
@@ -234,10 +240,9 @@ public class PublishingTemplate implements ToMessage {
          && !this.identifier.isBlank()
          && Objects.nonNull( this.name )
          && !this.name.isBlank()
-         && Objects.nonNull( this.rendererOptions )
-         && this.rendererOptions.isValid()
-         && Objects.nonNull( this.templateContent )
-         && this.templateContent.isValid();
+         && Objects.nonNull( this.publishingOptions )
+         && this.publishingOptions.isValid()
+         && Objects.nonNull( this.templateContent );
       //@formatter:on
    }
 
@@ -245,13 +250,13 @@ public class PublishingTemplate implements ToMessage {
     * Sets the members of the {@link PublishingTemplate} to the sentinel values.
     */
 
+   @JsonIgnore
    private void sentinel() {
       this.identifier = "SENTINEL";
       this.name = "SENTINEL";
-      this.rendererOptions = new RendererOptions();
-      this.rendererOptions.defaults();
-      this.templateContent = new TemplateContent();
-      this.templateContent.defaults();
+      this.publishingOptions = new PublishOptions();
+      this.publishingOptions.defaults();
+      this.templateContent = Strings.EMPTY_STRING;
    }
 
    /**
@@ -287,33 +292,32 @@ public class PublishingTemplate implements ToMessage {
    }
 
    /**
-    * Sets the Publishing Template's {@link RendererOptions}.
+    * Sets the Publishing Template's {@link PublishOptions}.
     *
-    * @param rendererOptions the {@link RendererOptions}.
-    * @throws NullPointerException when the parameter <code>rendererOptions</code> is <code>null</code>.
-    * @throws IllegalStateException when the member {@link #rendererOptions} has already been set.
+    * @param publishOptions the {@link PublishOptions}.
+    * @throws NullPointerException when the parameter <code>publishOptions</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #publishingOptions} has already been set.
     */
 
-   public void setRendererOptions(RendererOptions rendererOptions) {
-      if (Objects.nonNull(this.rendererOptions)) {
+   public void setPublishOptions(PublishOptions publishOptions) {
+      if (Objects.nonNull(this.publishingOptions)) {
          throw new IllegalStateException(
-            "PublishingTemplate::setRendererOptions, member \"rendererOptions\" has already been set.");
+            "PublishingTemplate::setPublishOptions, member \"publishOptions\" has already been set.");
       }
-      this.rendererOptions = Objects.requireNonNull(rendererOptions,
-         "PublishingTemplate::setRendererOptions, parameter \"rendererOptions\" cannot be null.");
+      this.publishingOptions = Objects.requireNonNull(publishOptions,
+         "PublishingTemplate::setPublishOptions, parameter \"publishOptions\" cannot be null.");
    }
 
    /**
-    * Sets the Publishing Template's Word ML template content. Once the publishing template Word ML has been set this
-    * method will not allow it to be set again. Use the method {@link #update} to make changes to the publishing
-    * template Word ML.
+    * Sets the Publishing Template content. Once the publishing template content has been set this method will not allow
+    * it to be set again. Use the method {@link #update} to make changes to the publishing template content.
     *
     * @param templateContent the {@link TemplateContent}.
     * @throws NullPointerException when the parameter <code>templateContent</code> is <code>null</code>.
     * @throws IllegalStateException when the member {@link #templateContent} has already been set.
     */
 
-   public void setTemplateContent(TemplateContent templateContent) {
+   public void setTemplateContent(String templateContent) {
       if (Objects.nonNull(this.templateContent)) {
          throw new IllegalStateException(
             "PublishingTemplate::setTemplateContent, member \"templateContent\" has already been set.");
@@ -323,14 +327,14 @@ public class PublishingTemplate implements ToMessage {
    }
 
    /**
-    * Updates the publishing template Word ML content using the provided {@link Function}.
+    * Updates the publishing template content using the provided {@link Function}.
     *
-    * @param updater the {@link Function} to be used to update the WordML content.
+    * @param updater the {@link Function} to be used to update the content.
     */
 
    @JsonIgnore
    public void update(Function<CharSequence, CharSequence> updater) {
-      this.templateContent.replace(updater.apply(this.templateContent.getTemplateString()));
+      this.templateContent = updater.apply(this.templateContent).toString();
    }
 
    /**
@@ -342,7 +346,7 @@ public class PublishingTemplate implements ToMessage {
 
    @JsonIgnore
    public boolean test(Predicate<CharSequence> tester) {
-      return tester.test(this.templateContent.getTemplateString());
+      return tester.test(this.templateContent);
    }
 
    /**
@@ -361,8 +365,11 @@ public class PublishingTemplate implements ToMessage {
          .indentInc()
          .segment( "Identifier", this.identifier )
          .segment( "Name",       this.name       )
-         .toMessage( this.rendererOptions )
-         .toMessage( this.templateContent )
+         .toMessage( this.publishingOptions )
+         .title( "Template Content" )
+         .indentInc()
+         .block( this.templateContent )
+         .indentDec()
          .indentDec()
          ;
       //@formatter:on

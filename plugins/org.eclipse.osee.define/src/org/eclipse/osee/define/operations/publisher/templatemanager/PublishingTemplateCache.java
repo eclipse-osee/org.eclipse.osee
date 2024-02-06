@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyGroups;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyType;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
@@ -205,13 +207,16 @@ class PublishingTemplateCache {
     * {@link Optional}.
     */
 
-   Optional<PublishingTemplate> createPublishingTemplate(ArtifactReadable artifactReadable) {
-      try {
-         return Optional.of(new PublishingTemplate(artifactReadable));
-      } catch (Exception e) {
-         this.logger.error(e, "PublishingTemplateCache::createPublishingTemplate, Invalid Publishing Template.");
-         return Optional.empty();
-      }
+   Optional<PublishingTemplate> createPublishingTemplate(@NonNull ArtifactReadable artifactReadable) {
+
+      //@formatter:off
+      var publishingTemplate =
+         PublishingTemplate
+            .create( artifactReadable )
+            .getFirstIfPresentOthers( this.logger::error );
+      //@formatter:on
+
+      return Optional.ofNullable(publishingTemplate);
    }
 
    /**
@@ -368,7 +373,7 @@ class PublishingTemplateCache {
                   }
                )
             .stream()
-            .map( this::createPublishingTemplate )
+            .map( ( artifactReadable ) -> Conditions.applyWhenNonNull( artifactReadable, ( a ) -> this.createPublishingTemplate( a ) ) )
             .filter( Optional::isPresent )
             .map( Optional::get )
             .collect( Collectors.toUnmodifiableList() );

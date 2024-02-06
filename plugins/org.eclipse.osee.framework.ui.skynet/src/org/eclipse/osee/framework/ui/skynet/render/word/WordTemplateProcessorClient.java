@@ -53,12 +53,13 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.publishing.AttributeOptions;
 import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.ProcessedArtifactTracker;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -114,7 +115,7 @@ public class WordTemplateProcessorClient {
 
    private List<AttributeOptions> attributeOptionsList;
 
-   private BranchId branch;
+   private BranchId branchId;
 
    /**
     * Saves a handle to the {@link DataRightsEndpoint}.
@@ -129,6 +130,8 @@ public class WordTemplateProcessorClient {
    private final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
 
    private boolean excludeFolders;
+
+   private final FormatIndicator formatIndicator;
 
    private AttributeTypeToken headingAttributeTypeToken;
 
@@ -184,12 +187,15 @@ public class WordTemplateProcessorClient {
 
    private boolean templateFooter = false;
 
+   private ArtifactId viewId;
+
    public WordTemplateProcessorClient() {
       this.attributeOptionsList = null;
       this.artifactsToExclude = new HashMap<>();
       this.dataRightsEndpoint = ServiceUtil.getOseeClient().getDataRightsEndpoint();
       this.elementType = null;
       this.folder = null;
+      this.formatIndicator = FormatIndicator.WORD_ML;
       this.maximumOutlineDepth = null;
       this.permanentLinkUrl = WordTemplateProcessorClient.staticPermanentLinkUrl;
       this.presentationType = null;
@@ -200,11 +206,12 @@ public class WordTemplateProcessorClient {
       this.secondaryPublishingTemplate = null;
    }
 
-   public WordTemplateProcessorClient configure(MSWordTemplateClientRenderer renderer,
-      PublishingTemplate publishingTemplate, PublishingTemplate secondaryPublishingTemplate, IContainer folder,
-      String outlineNumber, PresentationType presentationType) {
+   public WordTemplateProcessorClient configure(MSWordTemplateClientRenderer renderer, PublishingTemplate publishingTemplate, PublishingTemplate secondaryPublishingTemplate, IContainer folder, String outlineNumber, PresentationType presentationType) {
 
-      this.renderer = renderer;
+      /*
+       * Publishing Template
+       */
+
       this.publishingTemplate = publishingTemplate;
 
       this.primaryPublishingTemplate =
@@ -213,13 +220,23 @@ public class WordTemplateProcessorClient {
       this.secondaryPublishingTemplate = Objects.isNull(
          this.secondaryPublishingTemplate) ? secondaryPublishingTemplate : this.secondaryPublishingTemplate;
 
-      //this.nestedCount = 0;
+      /*
+       * Publishing Options
+       */
+
+      this.renderer = renderer;
+
+      /**
+       * Publishing Format
+       * <p>
+       * Client side publishing only support Word Markup Language.
+       */
 
       /*
        * Element Type
        */
 
-      this.elementType = this.publishingTemplate.getRendererOptions().getElementType();
+      this.elementType = this.publishingTemplate.getPublishOptions().getElementType();
 
       //@formatter:off
       if (    !WordTemplateProcessorClient.ARTIFACT.equals( this.elementType )
@@ -244,6 +261,18 @@ public class WordTemplateProcessorClient {
       this.folder = folder;
 
       /*
+       * Exclude Folders
+       */
+
+      this.excludeFolders = (boolean) renderer.getRendererOptionValue(RendererOption.EXCLUDE_FOLDERS);
+
+      /**
+       * Heading Attribute Type
+       * <p>
+       * Server Only
+       */
+
+      /*
        * Maximum outline depth
        */
 
@@ -261,14 +290,35 @@ public class WordTemplateProcessorClient {
       this.outlineType = (String) this.renderer.getRendererOptionValue(RendererOption.OUTLINE_TYPE);
 
       /*
+       * Override Classification
+       */
+
+      String overrideDataRights = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
+
+      this.overrideClassification =
+         DataRightsClassification.isValid(overrideDataRights) ? overrideDataRights : "invalid";
+
+      /*
        * Presentation Type
        */
 
       this.presentationType = presentationType;
 
+      /*
+       * Branch Identifier
+       */
+
+      this.branchId = this.renderer.getRendererOptionValue(RendererOption.BRANCH);
+
+      /*
+       * View Identifier
+       */
+
+      this.viewId = this.renderer.getRendererOptionValue(RendererOption.VIEW);
+
       try {
-         var rendererOptions = publishingTemplate.getRendererOptions();
-         var outliningOptionsArray = rendererOptions.getOutliningOptions();
+         var publishOptions = publishingTemplate.getPublishOptions();
+         var outliningOptionsArray = publishOptions.getOutliningOptions();
 
          if (outliningOptionsArray.length >= 1) {
             var outliningOptions = outliningOptionsArray[0];
@@ -287,8 +337,8 @@ public class WordTemplateProcessorClient {
       }
 
       try {
-         var rendererOptions = publishingTemplate.getRendererOptions();
-         var attributeOptions = rendererOptions.getAttributeOptions();
+         var publishOptions = publishingTemplate.getPublishOptions();
+         var attributeOptions = publishOptions.getAttributeOptions();
 
          //@formatter:off
          this.attributeOptionsList =
@@ -302,6 +352,7 @@ public class WordTemplateProcessorClient {
 
                         return
                               "*".equals( attributeType )
+                           || "<format-content-attribute>".equals( attributeType )
                            || AttributeTypeManager.typeExists( attributeType );
                      }
                   )
@@ -322,7 +373,7 @@ public class WordTemplateProcessorClient {
     *
     * @param artifacts null if the template defines the artifacts to be used in the publishing
     * @param templateContent the publishing template Word Ml
-    * @param templateOptions the publishing template JSON rendering options
+    * @param templateOptions the publishing template JSON publish options
     * @param templateStyles when non-<code>null</code> the publishing template styles will be replaced
     * @param folder null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
@@ -335,35 +386,29 @@ public class WordTemplateProcessorClient {
 
    public InputStream applyTemplate(List<Artifact> artifacts, OutputStream outputStream) {
 
-      String overrideDataRights = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
-      overrideClassification = "invalid";
-      if (DataRightsClassification.isValid(overrideDataRights)) {
-         overrideClassification = overrideDataRights;
-      }
+      if (!artifacts.isEmpty()) {
 
-      excludeFolders = (boolean) renderer.getRendererOptionValue(RendererOption.EXCLUDE_FOLDERS);
+         Branch fullBranch = BranchManager.getBranch(this.branchId);
 
-      if (artifacts.isEmpty()) {
-         branch = BranchId.SENTINEL;
-      } else {
-         branch = artifacts.get(0).getBranch();
-         Branch fullBranch = BranchManager.getBranch(branch);
          if (fullBranch.getBranchType().equals(BranchType.MERGE)) {
             fullBranch = fullBranch.getParentBranch();
          }
+
          ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(fullBranch);
 
-         applicabilityTokens = new HashMap<>();
+         this.applicabilityTokens = new HashMap<>();
+
          Collection<ApplicabilityToken> appTokens = applEndpoint.getApplicabilityTokens();
+
          for (ApplicabilityToken token : appTokens) {
             applicabilityTokens.put(token, token);
          }
       }
 
-      ArtifactId view = (ArtifactId) renderer.getRendererOptionValue(RendererOption.VIEW);
-      artifactsToExclude = getNonApplicableArtifacts(artifacts, view == null ? ArtifactId.SENTINEL : view);
+      artifactsToExclude =
+         getNonApplicableArtifacts(artifacts, this.viewId == null ? ArtifactId.SENTINEL : this.viewId);
 
-      WordMLProducer wordMlUnfinal = null;
+      PublishingAppender wordMlUnfinal = null;
       InputStream inputStream = null;
       BufferedWriter bufferedWriter = null;
 
@@ -373,14 +418,14 @@ public class WordTemplateProcessorClient {
           */
          var outputStreamWriter = new OutputStreamWriter(outputStream);
          bufferedWriter = new BufferedWriter(outputStreamWriter);
-         wordMlUnfinal = new WordMLProducer(bufferedWriter);
+         wordMlUnfinal = this.formatIndicator.createPublishingAppender(bufferedWriter);
       } else {
          /*
           * An output stream was not provided, write data to a buffer.
           */
          try {
             var charBak = new CharBackedInputStream();
-            wordMlUnfinal = new WordMLProducer(charBak);
+            wordMlUnfinal = this.formatIndicator.createPublishingAppender(charBak);
             inputStream = charBak;
          } catch (CharacterCodingException e) {
             //@formatter:off
@@ -411,6 +456,7 @@ public class WordTemplateProcessorClient {
 
       WordRenderUtil.setupPublishingTemplate
          (
+            this.formatIndicator,
             this.publishingTemplate,
             firstPublishingArtifact,
             wordMl,
@@ -434,7 +480,7 @@ public class WordTemplateProcessorClient {
                      @Override
                      public void accept( CharSequence segment ) {
 
-                        wordMl.addWordMl( segment );
+                        wordMl.append( segment );
 
                         if(    ( presentationType == PresentationType.SPECIALIZED_EDIT )
                             && ( artifacts.size() == 1 ) ) {
@@ -459,7 +505,7 @@ public class WordTemplateProcessorClient {
                      @Override
                      public void accept( CharSequence segment ) {
 
-                        wordMl.addWordMl( segment );
+                        wordMl.append( segment );
 
                         WordTemplateProcessorClient.this.parseNestedTemplateOptions( wordMl );
 
@@ -476,12 +522,12 @@ public class WordTemplateProcessorClient {
 
          WordCoreUtil.processPublishingTemplate
             (
-               this.publishingTemplate.getTemplateContent().getTemplateString(),
+               this.publishingTemplate.getTemplateContent(),
                segmentProcessor,
                ( tail ) ->
                {
                   var cleanFooterText = WordCoreUtil.cleanupFooter( tail );
-                  wordMl.addWordMl( cleanFooterText );
+                  wordMl.append( cleanFooterText );
                }
            );
          //@formatter:on
@@ -547,7 +593,7 @@ public class WordTemplateProcessorClient {
       HashMap<ArtifactId, ArtifactId> toReturn = new HashMap<>();
 
       if (artifacts != null && !artifacts.isEmpty()) {
-         Object[] objs = {branch, view, branch};
+         Object[] objs = {branchId, view, branchId};
 
          if (view.isValid()) {
             List<ArtifactId> excludedArtifacts = ArtifactLoader.selectArtifactIds(LOAD_EXCLUDED_ARTIFACTIDS, objs, 300);
@@ -624,9 +670,9 @@ public class WordTemplateProcessorClient {
          CoreAttributeTypes.NativeContent);
    }
 
-   private void parseNestedTemplateOptions(WordMLProducer wordMl) {
+   private void parseNestedTemplateOptions(PublishingAppender wordMl) {
       try {
-         var rendererOptions = this.primaryPublishingTemplate.getRendererOptions();
+         var rendererOptions = this.primaryPublishingTemplate.getPublishOptions();
          var nestedTemplatesArray = rendererOptions.getNestedTemplates();
 
          if (nestedCount < nestedTemplatesArray.length) {
@@ -702,8 +748,7 @@ public class WordTemplateProcessorClient {
       }
    }
 
-   private void processArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType,
-      PresentationType presentationType, DataRightContentBuilder dataRightContentBuilder) {
+   private void processArtifact(Artifact artifact, PublishingAppender wordMl, String outlineType, PresentationType presentationType, DataRightContentBuilder dataRightContentBuilder) {
 
       if (isWordTemplateContentValid(artifact)) {
 
@@ -751,7 +796,7 @@ public class WordTemplateProcessorClient {
     * ML.
     */
 
-   private void processArtifactSet(List<Artifact> artifacts, WordMLProducer wordMl) {
+   private void processArtifactSet(List<Artifact> artifacts, PublishingAppender wordMl) {
 
       this.nonTemplateArtifacts.clear();
 
@@ -818,7 +863,7 @@ public class WordTemplateProcessorClient {
                    * The publishing branch
                    */
 
-                  this.branch,
+                  this.branchId,
 
                   /*
                    * Recursion logic
@@ -889,9 +934,7 @@ public class WordTemplateProcessorClient {
       processedArtifactTracker.clear();
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeOptions attributeOptions,
-      AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine,
-      String footer) {
+   private void processAttribute(Artifact artifact, PublishingAppender wordMl, AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) {
 
       renderer.setRendererOption(RendererOption.ALL_ATTRIBUTES, allAttrs);
 
@@ -999,6 +1042,7 @@ public class WordTemplateProcessorClient {
 
             WordRenderUtil.renderAttribute
                (
+                 this.formatIndicator,
                  attributeType,
                  this.renderer::renderRelationOrder,
                  new WordRenderArtifactWrapperClientImpl( artifact ),
@@ -1013,7 +1057,7 @@ public class WordTemplateProcessorClient {
 
    }
 
-   private boolean processOutlining(Artifact artifact, WordMLProducer wordMl, String outlineType) {
+   private boolean processOutlining(Artifact artifact, PublishingAppender wordMl, String outlineType) {
 
       boolean startedSection = false;
 
@@ -1169,8 +1213,7 @@ public class WordTemplateProcessorClient {
 
    }
 
-   private boolean renderArtifact(Artifact artifact, PresentationType presentationType, WordMLProducer wordMl,
-      String outlineType, DataRightContentBuilder dataRightContentBuilder) {
+   private boolean renderArtifact(Artifact artifact, PresentationType presentationType, PublishingAppender wordMl, String outlineType, DataRightContentBuilder dataRightContentBuilder) {
 
       boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
 
@@ -1191,7 +1234,8 @@ public class WordTemplateProcessorClient {
       //@formatter:off
       WordRenderUtil.processMetadataOptions
          (
-            this.primaryPublishingTemplate.getRendererOptions().getMetadataOptions(),
+            this.formatIndicator,
+            this.primaryPublishingTemplate.getPublishOptions().getMetadataOptions(),
             this.applicabilityTokens,
             new WordRenderArtifactWrapperClientImpl( artifact ),
             wordMl
@@ -1205,6 +1249,7 @@ public class WordTemplateProcessorClient {
       //@formatter:off
       WordRenderUtil.processAttributes
          (
+            this.formatIndicator,
             this.attributeOptionsList,
             ( lAttributeOptions, lAttributeType, lAllAttributes ) ->
                this.processAttribute
@@ -1238,7 +1283,7 @@ public class WordTemplateProcessorClient {
       }
    }
 
-   private CharSequence startOutlineSubSectionOverride(WordMLProducer wordMl, Artifact artifact, String headingText) {
+   private CharSequence startOutlineSubSectionOverride(PublishingAppender wordMl, Artifact artifact, String headingText) {
       String paragraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
       if (paragraphNumber.isEmpty()) {
          ArtifactHierarchyComparator comparator = new ArtifactHierarchyComparator();

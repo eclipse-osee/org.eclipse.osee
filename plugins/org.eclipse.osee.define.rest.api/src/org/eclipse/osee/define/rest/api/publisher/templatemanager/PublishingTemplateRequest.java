@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
@@ -182,7 +183,13 @@ public class PublishingTemplateRequest implements ToMessage {
     * </ul>
     */
 
-   private @Nullable Boolean byOptions;
+   private @NonNull Boolean byOptions;
+
+   /**
+    * Specifies the format for the publishing template content is desired in.
+    */
+
+   private @Nullable FormatIndicator formatIndicator;
 
    /**
     * An additional {@link String} that maybe provided for Publishing Template selection. This member maybe
@@ -221,11 +228,12 @@ public class PublishingTemplateRequest implements ToMessage {
     */
 
    public PublishingTemplateRequest() {
-      this.byOptions = null;
-      this.option = null;
-      this.presentationType = null;
-      this.publishArtifactTypeName = null;
+      this.byOptions = true;
       this.rendererId = null;
+      this.publishArtifactTypeName = null;
+      this.presentationType = null;
+      this.option = null;
+      this.formatIndicator = null;
    }
 
    /**
@@ -241,12 +249,13 @@ public class PublishingTemplateRequest implements ToMessage {
     * publishing results will be presented to the user.
     * @param option the name of the template to select or an additional {@link String} that may be provided for
     * Publishing Template selection. This parameter may be <code>null</code>, empty, or blank.
+    * @param formatIndicator the requested format for the publishing template content.
     * @throws IllegalArgumentException when <code>rendererId</code> or <code>presentationType</code> are
     * <code>null</code> or blank.
     */
 
    @JsonIgnore
-   public PublishingTemplateRequest(@NonNull String rendererId, @Nullable String publishArtifactTypeName, @NonNull String presentationType, @Nullable String option) {
+   public PublishingTemplateRequest(@NonNull String rendererId, @Nullable String publishArtifactTypeName, @NonNull String presentationType, @Nullable String option, @Nullable FormatIndicator formatIndicator) {
 
       //@formatter:off
       this.byOptions               = true;
@@ -254,6 +263,7 @@ public class PublishingTemplateRequest implements ToMessage {
       this.publishArtifactTypeName = Strings.isValidAndNonBlank( publishArtifactTypeName ) ? publishArtifactTypeName : null;
       this.presentationType        = Strings.isValidAndNonBlank( presentationType        ) ? presentationType        : null;
       this.option                  = Strings.isValidAndNonBlank( option                  ) ? option                  : null;
+      this.formatIndicator         = Objects.nonNull( formatIndicator )                    ? formatIndicator         : FormatIndicator.WORD_ML;
       this.templateId              = null;
       //@formatter:on
       if (Objects.isNull(this.rendererId) || Objects.isNull(this.presentationType)) {
@@ -270,7 +280,7 @@ public class PublishingTemplateRequest implements ToMessage {
     */
 
    @JsonIgnore
-   public PublishingTemplateRequest(@NonNull String templateId) {
+   public PublishingTemplateRequest(@NonNull String templateId, FormatIndicator formatIndicator) {
 
       //@formatter:off
       this.byOptions               = false;
@@ -278,8 +288,27 @@ public class PublishingTemplateRequest implements ToMessage {
       this.presentationType        = null;
       this.publishArtifactTypeName = null;
       this.rendererId              = null;
+      this.formatIndicator         = formatIndicator;
       this.templateId              = Objects.requireNonNull(templateId);
       //@formatter:on
+   }
+
+   /**
+    * Gets the {@link FormatIndicator} for the requested publishing template format.
+    *
+    * @return the {@link FormatIndicator} for the requested publishing template format.
+    * @throws IllegalStateException when the member {@link #formatIndicator} has not been set.
+    */
+
+   public @Nullable FormatIndicator getFormatIndicator() {
+
+      if (Objects.isNull(this.byOptions)) {
+         throw new IllegalStateException(
+            "PublishingTemplateRequest::getOption, the member \"byOptions\" has not been set.");
+      }
+
+      return this.formatIndicator;
+
    }
 
    /**
@@ -338,7 +367,7 @@ public class PublishingTemplateRequest implements ToMessage {
     *
     * @return the {@link PublishingTemplateRequset} option {@link #rendererId}.
     * @throws IllegalStateException when the member {@link #byOption} has not been set; or the member {@link #byOption}
-    * is <code>true</code>, and the member {@link #rendererId} has not been set.
+    * is <code>true</code>, and the membe*r {@link #rendererId} has not been set.
     */
 
    public @Nullable String getRendererId() {
@@ -395,21 +424,33 @@ public class PublishingTemplateRequest implements ToMessage {
     * <dt>Member {@link #byOptions} has not been set:</dt>
     * <dd>the request is invalid.</dd>
     * <dt>Member {@link #byOptions} is <code>true</code>:</dt>
-    * <dd>The following members must be set and valid:
+    * <dd>The following members are validated as follows:
     * <dl>
     * <dt>{@link #presentationType}</dt>
     * <dd>This member must be set to a non-empty and non-whitespace string.</dd>
-    * <dt>{@link #publishArtifactTypeName}</dt>
-    * <dd>This member must be set.</dd>
     * <dt>{@link #rendererId}</dt>
+    * <dd>This member must be set and non-blank.</dd>
+    * <dt>{@link #formatIndicator}</dt>
     * <dd>This member must be set.</dd>
+    * <dt>{@link #templateId}</dt>
+    * <dd>This member must be <code>null</code>.</dd>
     * </dl>
     * </dd>
     * <dt>Member {@link #byOptions} is <code>false</code>:</dt>
-    * <dd>The following members must be set and valid:
+    * <dd>The following members are validated as follows:
     * <dl>
+    * <dt>{@link #option}</dt>
+    * <dd>This member must be <code>null</code>.</dd>
+    * <dt>{@link #presentationType}</dt>
+    * <dd>This member must be <code>null</code>.</dd>
+    * <dt>{@link #publishArtifactTypeName}</dt>
+    * <dd>This member must be <code>null</code>.</dd>
+    * <dt>{@link #rendererId}</dt>
+    * <dd>This member must be <code>null</code>.</dd>
+    * <dt>{@link #formatIndicator}</dt>
+    * <dd>This member must be set.</dd>
     * <dt>{@link #templateId}</dt>
-    * <dd>This member must be set to a valid base-10 integer greater than zero.</dd>
+    * <dd>This member must be set and non-blank.</dd>
     * </dl>
     * </dd>
     * </dl>
@@ -427,8 +468,9 @@ public class PublishingTemplateRequest implements ToMessage {
       if (this.byOptions) {
          //@formatter:off
          return
-               Objects.nonNull( this.presentationType ) && !this.presentationType.isBlank()
-            && Objects.nonNull( this.rendererId ) && !this.rendererId.isBlank()
+               ( this.presentationType != null ) && !this.presentationType.isBlank()
+            && Strings.isValidAndNonBlank( this.rendererId )
+            && Objects.nonNull( this.formatIndicator )
             && Objects.isNull( this.templateId );
          //@formatter:on
       }
@@ -439,7 +481,8 @@ public class PublishingTemplateRequest implements ToMessage {
          && Objects.isNull( this.presentationType )
          && Objects.isNull( this.publishArtifactTypeName )
          && Objects.isNull( this.rendererId )
-         && Objects.nonNull( this.templateId );
+         && Objects.nonNull( this.formatIndicator )
+         && Strings.isValidAndNonBlank( this.templateId );
       //@formatter:on
    }
 
@@ -459,6 +502,23 @@ public class PublishingTemplateRequest implements ToMessage {
       }
       this.byOptions = Objects.requireNonNull(byOptions,
          "PublishingTemplateRequset::setByOptions, parameter \"byOptions\" cannot be null.");
+   }
+
+   /**
+    * Sets the {@link FormatIndicator} for the publishing template request.
+    *
+    * @return the {@link FormatIndicator} for the requested publishing template format.
+    * @throws IllegalStateException when the member {@link #formatIndicator} has already been set.
+    */
+
+   public void setFormatIndicator(FormatIndicator formatIndicator) {
+
+      if (Objects.nonNull(this.formatIndicator)) {
+         throw new IllegalStateException(
+            "PublishingTemplateRequest::setFormatIndicator, member \"formatIndicator\" has already been set.");
+      }
+
+      this.formatIndicator = formatIndicator;
    }
 
    /**
@@ -567,7 +627,8 @@ public class PublishingTemplateRequest implements ToMessage {
                .segment( "Publish Artifact Type Name", this.publishArtifactTypeName )
                .segment( "Presentation Type",          this.presentationType        )
                .segment( "Option",                     this.option                  )
-               .segment( "Template Identifier",        this.templateId )
+               .segment( "Template Identifier",        this.templateId              )
+               .segmentToMessage( this.formatIndicator )
                .indentDec()
                .indentDec();
          //@formatter:on
@@ -583,6 +644,7 @@ public class PublishingTemplateRequest implements ToMessage {
                .segment( "Publish Artifact Type Name", this.publishArtifactTypeName )
                .segment( "Presentation Type",          this.presentationType        )
                .segment( "Option",                     this.option                  )
+               .segmentToMessage( this.formatIndicator )
                .indentDec()
                .indentDec()
                ;
@@ -595,6 +657,7 @@ public class PublishingTemplateRequest implements ToMessage {
             .title( "Publishing Template Request is by template identifier." )
             .indentInc()
             .segment( "Template Identifier", this.templateId )
+            .segmentToMessage( this.formatIndicator )
             .indentDec()
             .indentDec()
             ;

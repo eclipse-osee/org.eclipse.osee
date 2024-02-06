@@ -15,14 +15,17 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +35,285 @@ import java.util.stream.Collectors;
  */
 
 public class Message {
+
+   private static void appendSpace(final int count, StringBuilder stringBuilder) {
+      for (int i = 0; i < count; i++) {
+         stringBuilder.append(" ");
+      }
+   }
+
+   /**
+    * An extension of the {@link Line} class for message title lines.
+    */
+
+   private class TitleLine extends Line {
+
+      /**
+       * Creates a new {@link TitleLine} for an indented title.
+       *
+       * @param indent the indent level for the title.
+       * @param title the title text.
+       */
+
+      TitleLine(int indent, CharSequence title) {
+         super(indent, Message.copy(title), Strings.EMPTY_STRING);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      TitleLine copy(int indent) {
+         return new TitleLine(this.indent + indent, Message.copy(this.title));
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void append(StringBuilder message, int[] indentColumnStartArray) {
+         message.append(IndentedString.indentString(this.getIndent()));
+         message.append(this.getTitle()).append(Message.lineEnding);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void appendTitle(CharSequence text) {
+         if (Objects.isNull(this.title)) {
+            this.title = new StringBuilder(Message.newSize(text.length()));
+         } else if (this.title instanceof String) {
+            this.title = new StringBuilder(Message.newSize(this.title.length() + text.length())).append(this.title);
+         }
+         ((StringBuilder) this.title).append(text);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      int size(int[] indentColumnStartArray) {
+         //@formatter:off
+         return
+              IndentedString.indentSize() * this.indent
+            + this.title.length()
+            + Message.lineEndingSize;
+         //@formatter:on
+      }
+   }
+
+   /**
+    * An extension of the {@link Line} class for message segment lines.
+    */
+
+   private class SegmentLine extends Line {
+
+      /**
+       * Creates a new {@link Line} for an indented title and column aligned value string.
+       *
+       * @param indent the indent level for the title.
+       * @param title the title text.
+       * @param value the string representation of the value.
+       */
+
+      SegmentLine(int indent, CharSequence title, CharSequence value) {
+         super(indent, Message.copy(title), Message.copy(value));
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      SegmentLine copy(int indent) {
+         return new SegmentLine(this.indent + indent, Message.copy(this.title), Message.copy(this.value));
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void append(StringBuilder message, int[] indentColumnStartArray) {
+         var lines = Strings.splitToLinesInCharSequenceWindows(this.getValue(), ArrayList::new);
+         var lineCount = lines.size();
+         if (lineCount == 0) {
+            return;
+         }
+         var firstLine = lines.get(0);
+         var maxIndent = indentColumnStartArray.length - 1;
+         var indent = this.getIndent();
+
+         indent = (indent <= maxIndent) ? (indent >= 0) ? indent : 0 : maxIndent;
+         var indentString = IndentedString.indentString(indent);
+         var title = this.getTitle();
+         var titleLength = title.length() + 2;
+         var spaceLength = indentColumnStartArray[indent] - titleLength;
+         var spacePosition = indentString.length() + titleLength + spaceLength;
+         var spaceRemainder = spacePosition % IndentedString.indentSize();
+         spaceLength += (spaceRemainder > 0) ? IndentedString.indentSize() - spaceRemainder : 0;
+
+         message.append(indentString);
+         message.append(this.getTitle()).append(": ");
+         Message.appendSpace(spaceLength, message);
+         message.append(firstLine).append(Message.lineEnding);
+
+         if (lineCount == 1) {
+            return;
+         }
+
+         var secondColumn = titleLength + spaceLength;
+         var secondColumnIndent = (secondColumn / IndentedString.indentSize()) + indent;
+         indentString = IndentedString.indentString(secondColumnIndent);
+
+         for (var i = 1; i < lines.size(); i++) {
+            message.append(indentString);
+            message.append(lines.get(i));
+            message.append(Message.lineEnding);
+         }
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void appendTitle(CharSequence text) {
+         return;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      int size(int[] indentColumnStartArray) {
+         var maxIndent = indentColumnStartArray.length - 1;
+         var indent = this.getIndent();
+         indent = (indent <= maxIndent) ? (indent >= 0) ? indent : 0 : maxIndent;
+         //@formatter:off
+         return
+              IndentedString.indentSize() * this.getIndent()
+            + indentColumnStartArray[indent]
+            + this.value.length()
+            + Message.lineEndingSize;
+        //@formatter:on
+      }
+   }
+
+   /**
+    * An extension of the {@link Line} class for blank message lines.
+    */
+
+   private class BlankLine extends Line {
+
+      /**
+       * Creates a new blank {@link Line}.
+       */
+
+      BlankLine() {
+         super(0, Strings.EMPTY_STRING, Strings.EMPTY_STRING);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      BlankLine copy(int indent) {
+         return new BlankLine();
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void append(StringBuilder message, int[] indentColumnStartArray) {
+         message.append(Message.lineEnding);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void appendTitle(CharSequence text) {
+         return;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      int size(int[] indentColumnStartArray) {
+         return Message.lineEndingSize;
+      }
+
+   }
+
+   /**
+    * An extension of the {@link Line} class for message lines that are really a group of unindented and unformatted
+    * lines.
+    */
+
+   private class BlockLine extends Line {
+
+      /**
+       * Creates a new {@link Line} for an unindented block of text.
+       *
+       * @param title the single or multi-line text block.
+       */
+
+      BlockLine(CharSequence title) {
+         super(-1, Message.copy(title), Strings.EMPTY_STRING);
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      BlockLine copy(int indent) {
+         return new BlockLine(Message.copy(this.title));
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void append(StringBuilder message, int[] indentColumnStartArray) {
+         for (var line : this.getTitle().toString().split("\\v")) {
+            message.append(line).append(Message.lineEnding);
+         }
+
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      void appendTitle(CharSequence text) {
+         return;
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+
+      @Override
+      int size(int[] indentColumnStartArray) {
+         return this.title.length() + Message.lineEndingSize;
+      }
+   }
 
    /**
     * Internal class to encapsulate the data for a message line. {@link Message} lines can be one of the following
@@ -89,100 +371,40 @@ public class Message {
     * </dl>
     */
 
-   private class Line {
+   private abstract class Line {
 
       /**
        * The indent level for the message line. Message lines can be one of the following types:
        */
 
-      private final int indent;
-
-      /**
-       * Flag indicates the type of message line.
-       */
-
-      private final LineType lineType;
+      protected final int indent;
 
       /**
        * Saves the title text.
        */
 
-      private CharSequence title;
+      protected CharSequence title;
 
       /**
        * Saves the string representation of the value.
        */
 
-      private final CharSequence value;
+      protected final CharSequence value;
 
       /**
-       * Creates a new blank {@link Line}.
-       */
-
-      Line() {
-         this.lineType = LineType.BLANK;
-         this.indent = 0;
-         this.title = "";
-         this.value = "";
-      }
-
-      /**
-       * Creates a new {@link Line} for an unindented block of text.
-       *
-       * @param title the single or multi-line text block.
-       */
-
-      Line(CharSequence title) {
-         this.lineType = LineType.BLOCK;
-         this.indent = -1;
-         this.title = Message.copy(title);
-         this.value = "";
-      }
-
-      /**
-       * Creates a new {@link Line} for an indented title.
+       * Creates a new {@link Line}.
        *
        * @param indent the indent level for the title.
        * @param title the title text.
-       */
-
-      Line(int indent, CharSequence title) {
-         this.lineType = LineType.TITLE;
-         this.indent = indent;
-         this.title = Message.copy(title);
-         this.value = "";
-      }
-
-      /**
-       * Creates a new {@link Line} for an indented title and column aligned value string.
-       *
-       * @param indent the indent level for the title.
-       * @param title the title text.
-       * @param value the string representation of the value.
        */
 
       Line(int indent, CharSequence title, CharSequence value) {
-         this.lineType = LineType.SEGMENT;
          this.indent = indent;
          this.title = Message.copy(title);
          this.value = Message.copy(value);
       }
 
-      /**
-       * Creates a new {@link Line} that is a copy of another with an additional indent.
-       *
-       * @implNote If the title or value text in the other {@link Line} is not saved in an immutable {@link String}, a
-       * new {@link StringBuilder} will be created and the text from the other {@link Line} will be copied into it.
-       * @param indent the additional indent levels.
-       * @param otherLine the other {@link Line} to be copied.
-       */
-
-      Line(int indent, Line otherLine) {
-         this.lineType = otherLine.lineType;
-         this.indent = indent + (otherLine.indent >= 0 ? otherLine.indent : 0);
-         this.title = Message.copy(otherLine.title);
-         this.value = Message.copy(otherLine.value);
-      }
+      abstract Line copy(int index);
 
       /**
        * Appends the {@link Line} content to the {@link StringBuilder} according to the {@link Line#lineType}.
@@ -191,44 +413,7 @@ public class Message {
        * @param indentColumnStartArray an array containing the value starting column for each indent level.
        */
 
-      void append(StringBuilder message, int[] indentColumnStartArray) {
-
-         switch (this.lineType) {
-
-            case BLANK: {
-               message.append(Message.lineEnding);
-               return;
-            }
-
-            case BLOCK: {
-               for (var line : this.getTitle().toString().split("\\v")) {
-                  message.append(line).append(Message.lineEnding);
-               }
-               return;
-            }
-
-            case SEGMENT: {
-               var maxIndent = indentColumnStartArray.length - 1;
-               var indent = this.getIndent();
-               indent = (indent <= maxIndent) ? (indent >= 0) ? indent : 0 : maxIndent;
-               message.append(IndentedString.indentString(indent));
-               message.append(this.getTitle()).append(": ");
-               var space = indentColumnStartArray[indent] - this.title.length();
-               for (int i = 0; i < space; i++) {
-                  message.append(" ");
-               }
-               message.append(this.getValue()).append(Message.lineEnding);
-               return;
-            }
-
-            case TITLE: {
-               message.append(IndentedString.indentString(this.getIndent()));
-               message.append(this.getTitle()).append(Message.lineEnding);
-               return;
-            }
-         }
-
-      }
+      abstract void append(StringBuilder message, int[] indentColumnStartArray);
 
       /**
        * Appends the provided text to the {@link Line#title}. If the existing storage is <code>null</code> or a
@@ -237,21 +422,7 @@ public class Message {
        * @param text the text to be appended.
        */
 
-      void appendTitle(CharSequence text) {
-
-         switch (this.lineType) {
-            case TITLE: {
-               if (Objects.isNull(this.title)) {
-                  this.title = new StringBuilder(Message.newSize(text.length()));
-               } else if (this.title instanceof String) {
-                  this.title =
-                     new StringBuilder(Message.newSize(this.title.length() + text.length())).append(this.title);
-               }
-               ((StringBuilder) this.title).append(text);
-            }
-            default:
-         }
-      }
+      abstract void appendTitle(CharSequence text);
 
       /**
        * Gets the indent level for the {@link Line}.
@@ -264,16 +435,6 @@ public class Message {
       }
 
       /**
-       * Gets the {@link LineType} of the {@link Line}.
-       *
-       * @return the {@link LineType}.
-       */
-
-      LineType getLineType() {
-         return this.lineType;
-      }
-
-      /**
        * Gets the length of the title for a {@link LineType#SEGMENT} {@link Line}. For non-{@link LineType#SEGMENT}
        * {@link Line}s zero is returned.
        *
@@ -283,16 +444,7 @@ public class Message {
 
       int getSegmentTitleLength() {
 
-         switch (this.lineType) {
-
-            case SEGMENT: {
-               return this.title.length();
-            }
-
-            default: {
-               return 0;
-            }
-         }
+         return (this instanceof SegmentLine) ? this.title.length() : 0;
       }
 
       /**
@@ -324,76 +476,8 @@ public class Message {
        * @return the estimated number of character in the array.
        */
 
-      int size(int[] indentColumnStartArray) {
+      abstract int size(int[] indentColumnStartArray);
 
-         switch (this.lineType) {
-
-            case BLANK: {
-               return Message.lineEndingSize;
-            }
-
-            case BLOCK: {
-               return this.title.length() + Message.lineEndingSize;
-            }
-
-            case SEGMENT: {
-               var maxIndent = indentColumnStartArray.length - 1;
-               var indent = this.getIndent();
-               indent = (indent <= maxIndent) ? (indent >= 0) ? indent : 0 : maxIndent;
-               //@formatter:off
-               return
-                    IndentedString.indentSize() * this.getIndent()
-                  + indentColumnStartArray[indent]
-                  + this.value.length()
-                  + Message.lineEndingSize;
-              //@formatter:on
-            }
-
-            case TITLE: {
-               //@formatter:off
-               return
-                    IndentedString.indentSize() * this.getIndent()
-                  + this.title.length()
-                  + Message.lineEndingSize;
-               //@formatter:on
-            }
-
-            default: {
-               return 0;
-            }
-         }
-      }
-   }
-
-   /**
-    * Enumeration of the types of lines in a message.
-    */
-
-   private enum LineType {
-
-      /**
-       * An empty line.
-       */
-
-      BLANK,
-
-      /**
-       * A single or multi-line block of text.
-       */
-
-      BLOCK,
-
-      /**
-       * A line with a title followed by column aligned value.
-       */
-
-      SEGMENT,
-
-      /**
-       * A line with just a title.
-       */
-
-      TITLE;
    }
 
    /**
@@ -479,13 +563,41 @@ public class Message {
    private final List<Line> lines;
 
    /**
+    * Saves the line count when the method {@link #mark()} is called. The predicate {@link #isModified} will compare the
+    * current line count with the member {@link #mark} and return <code>true</code> when additional lines have been
+    * appended.
+    */
+
+   private int mark;
+
+   /**
     * Creates a new empty {@link Message}.
     */
 
    public Message() {
       this.lines = new LinkedList<>();
       this.indent = 0;
+      this.mark = 0;
       this.cachedResult = null;
+   }
+
+   /**
+    * Sets the member {@link #mark} to the current line count.
+    */
+
+   public void mark() {
+      this.mark = this.lines.size();
+   }
+
+   /**
+    * Predicate tests if the member {@link #mark} does not equals the current line count.
+    *
+    * @return <code>true</code> when the current line count does not equal the {@link #mark}; otherwise,
+    * <code>false</code>.
+    */
+
+   public boolean isModified() {
+      return this.mark != this.lines.size();
    }
 
    /**
@@ -508,9 +620,7 @@ public class Message {
 
       var lastLine = this.lines.get(size - 1);
 
-      if (LineType.TITLE.equals(lastLine.getLineType())) {
-         lastLine.appendTitle(text);
-      }
+      lastLine.appendTitle(text);
 
       return this;
    }
@@ -523,7 +633,7 @@ public class Message {
 
    public Message blank() {
       this.cachedResult = null;
-      this.lines.add(new Line());
+      this.lines.add(new BlankLine());
       return this;
    }
 
@@ -536,7 +646,7 @@ public class Message {
 
    public Message block(CharSequence block) {
       this.cachedResult = null;
-      this.lines.add(new Line(block));
+      this.lines.add(new BlockLine(block));
       return this;
    }
 
@@ -549,7 +659,7 @@ public class Message {
 
    public Message copy(Message otherMessage) {
       this.cachedResult = null;
-      otherMessage.lines.forEach((otherLine) -> this.lines.add(new Line(this.indent, otherLine)));
+      otherMessage.lines.forEach((otherLine) -> this.lines.add(otherLine.copy(this.indent)));
       return this;
    }
 
@@ -860,32 +970,6 @@ public class Message {
    }
 
    /**
-    * Adds a multi-line segment generated from the specified object's {@link ToMessage#toMessage} method.
-    *
-    * @param toMessage an object implementing the {@link ToMessage} interface.
-    * @return this {@link Message}.
-    */
-
-   public Message segmentToMessage(ToMessage toMessage) {
-      return toMessage.toMessage(this.indent, this);
-   }
-
-   /**
-    * Adds a multi-line segment with a title generated from the specified object's {@link ToMessage#toMessage} method.
-    *
-    * @param toMessage an object implementing the {@link ToMessage} interface.
-    * @return this {@link Message}.
-    */
-
-   public Message segmentToMessage(CharSequence title, ToMessage toMessage) {
-      this.title(title);
-      this.indentInc();
-      toMessage.toMessage(this.indent, this);
-      this.indentDec();
-      return this;
-   }
-
-   /**
     * Adds a new segment line with the value string generated from a {@link List}. This method behaves as though the
     * following method were called:
     *
@@ -932,19 +1016,23 @@ public class Message {
     * @return the {@link Message}.
     */
 
-   public <T> Message segment(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor) {
+   public <T> Message segment(CharSequence title, Collection<T> valueCollection, Function<T, Object> valueExtractor) {
 
       this.cachedResult = null;
 
       //@formatter:off
-      var valueString = Objects.isNull( valueList )
+      var valueString = Objects.isNull( valueCollection )
                            ? "(null)"
-                           : valueList.isEmpty()
+                           : valueCollection.isEmpty()
                                 ? "(empty)"
-                                : valueList.stream().map(valueExtractor).map(Message::objectToString).collect(Collectors.joining(", ","[ "," ]"));
+                                : valueCollection
+                                     .stream()
+                                     .map( valueExtractor )
+                                     .map( Message::objectToString )
+                                     .collect( Collectors.joining(", ","[ "," ]" ) );
       //@formatter:on
 
-      this.lines.add(new Line(this.indent, title, valueString));
+      this.lines.add(new SegmentLine(this.indent, title, valueString));
 
       return this;
    }
@@ -1003,7 +1091,57 @@ public class Message {
                            : Message.objectToString( valueExtractor.apply( value ) );
       //@formatter:on
 
-      this.lines.add(new Line(this.indent, title, valueString));
+      this.lines.add(new SegmentLine(this.indent, title, valueString));
+
+      return this;
+   }
+
+   /**
+    * Adds a new segment line with a title and a value string generated from an array of values. The invocation of this
+    * method generates the value string from the <code>valueArray</code>. Changes to the <code>valueArray</code> after
+    * this method completes will not be reflected in the {@link Message}. The segment line will be formatted as follows:
+    *
+    * <pre>
+    *    &lt;title&gt; &quot;: &quot; &lt;space&gt; &quot;[ &quot; [ &lt;element-value&gt; { &quot;, &quot; &lt;element-value&gt;  } ] &quot; ]&quot;
+    * </pre>
+    *
+    * Where:
+    * <dl>
+    * <dt>title</dt>
+    * <dd>A title for the value to be displayed.</dd>
+    * <dt>space</dt>
+    * <dd>A generated sequence of spaces to align the columns the value string start in.</dd>
+    * <dt>element-value</dt>
+    * <dd>The <code>valueExtractor</code> function is applied to each element of the <code>valueArray</code> and the
+    * method {@link #toString} is used to generate a string representation of each value.</dd>
+    * </dl>
+    *
+    * @param <T> the type of values in the <code>valueArray</code>.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueArray the array of values to generate the value string from.
+    * @param valueExtractor a {@link Function} used to extract the value for the message from each array element. If the
+    * <code>valueArray</code> may contain <code>null</code> elements, the provided <code>valueExtractor</code>
+    * {@link Function} should be able to process <code>null</code> inputs without throwing an {@link Exception}.
+    * @return the {@link Message}.
+    */
+
+   public <T> Message segment(CharSequence title, T[] valueArray, Function<T, Object> valueExtractor) {
+
+      this.cachedResult = null;
+
+      //@formatter:off
+      var valueString = Objects.isNull( valueArray )
+                           ? "(null)"
+                           : ( valueArray.length == 0 )
+                                ? "(empty)"
+                                : Arrays
+                                     .stream( valueArray )
+                                     .map(valueExtractor)
+                                     .map(Message::objectToString)
+                                     .collect( Collectors.joining(", ","[ "," ]" ) );
+      //@formatter:on
+
+      this.lines.add(new SegmentLine(this.indent, title, valueString));
 
       return this;
    }
@@ -1050,7 +1188,7 @@ public class Message {
     * method were called:
     *
     * <pre>
-    * message.segment(&quot;title&quot;, theArray, Function.identity());
+    * message.segment(&quot;title&quot;, theArray, Function.identity(), -1);
     * </pre>
     *
     * @param <T> the type of values in the Array.
@@ -1059,8 +1197,27 @@ public class Message {
     * @return this {@link Message}.
     */
 
-   public <T> Message segmentIndexedArray(CharSequence title, T[] valueArray) {
-      return this.segmentIndexedArray(title, valueArray, (t) -> t);
+   public <T> Message segmentIndexed(CharSequence title, T[] valueArray) {
+      return this.segmentIndexed(title, Arrays.asList(valueArray), Function.identity(), -1);
+   }
+
+   /**
+    * Adds a new segment line with the value string generated from an Array. This method behaves as though the following
+    * method were called:
+    *
+    * <pre>
+    * message.segment(&quot;title&quot;, theArray, Function.identity(), -1);
+    * </pre>
+    *
+    * @param <T> the type of values in the Array.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueArray an array of values to generate the value string from.
+    * @param valueExtractor a {@link Function} used to extract the value for the message from each array element.
+    * @return this {@link Message}.
+    */
+
+   public <T> Message segmentIndexed(CharSequence title, T[] valueArray, Function<T, Object> valueExtractor) {
+      return this.segmentIndexed(title, Arrays.asList(valueArray), valueExtractor, -1);
    }
 
    /**
@@ -1095,72 +1252,60 @@ public class Message {
     * Otherwise the method {@link ToMessage#toString} is used to generate the member value message.</dd>
     * </dl>
     *
-    * @param title the class member name for the member array.
-    * @param memberArray the array of objects to generate a member value message for.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueArray an array of values to generate the value string from.
+    * @param valueExtractor a {@link Function} used to extract the value for the message from each array element.
+    * @param limit the maximum number of values to be added to the message. A value of -1, indicates no limit.
     * @return this {@link Message}.
     */
 
-   public <T> Message segmentIndexedArray(CharSequence title, T[] valueArray, Function<T, Object> valueExtractor) {
+   public <T> Message segmentIndexed(CharSequence title, T[] valueArray, Function<T, Object> valueExtractor, int limit) {
 
-      this.cachedResult = null;
-
-      if (Objects.isNull(valueArray)) {
-         this.lines.add(new Line(this.indent, title, "(null)"));
-         return this;
-      }
-
-      if (valueArray.length <= 0) {
-         this.lines.add(new Line(this.indent, title, "(empty)"));
-         return this;
-      }
-
-      this.lines.add(new Line(this.indent++, title));
-
-      int i = 0;
-      var listElementTitle = new StringBuilder();
-      for (var value : valueArray) {
-         var displayValue = valueExtractor.apply(value);
-         listElementTitle.setLength(0);
-         listElementTitle.append("[").append(i++).append("]");
-         if (value instanceof ToMessage) {
-            this.lines.add(new Line(this.indent, listElementTitle));
-            ((ToMessage) value).toMessage(this.indent + 1, this);
-         } else {
-            this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
-         }
-      }
-
-      this.indent--;
-
-      return this;
+      return this.segmentIndexed(title, Arrays.asList(valueArray), valueExtractor, limit);
    }
 
    /**
-    * Adds a new segment line with the value string generated from a {@link List}. This method behaves as though the
-    * following method were called:
+    * Adds a new segment line with the value string generated from the values provided by an {@link Iterable}. This
+    * method behaves as though the following method were called:
     *
     * <pre>
-    * message.segment(&quot;title&quot;, theList, Function.identity());
+    * message.segmentIndexed(&quot;title&quot;, valueIterator, Function.identity(), -1);
     * </pre>
     *
     * @param <T> the type of values in the {@link List}.
     * @param title the title {@link CharSequence} for the line.
-    * @param valueList a @{link List} of values to generate the value string from.
+    * @param valueIterator an @{link Iterator} that provides the values to generate the message line from.
     * @return this {@link Message}.
     */
 
-   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList) {
-      return this.segmentIndexedList(title, valueList, (t) -> t);
-   }
-
-   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor) {
-      return this.segmentIndexedList(title, valueList, valueExtractor, -1);
+   public <T> Message segmentIndexed(CharSequence title, Iterable<T> valueList) {
+      return this.segmentIndexed(title, valueList, (t) -> t);
    }
 
    /**
-    * Adds a new segment line with a title and a value string generated from a {@link List}. The invocation of this
-    * method generates the value string from the {@link List}. Changes to the {@link List} after this method completes
-    * will not be reflected in the {@link Message}. The segment line will be formatted as follows:
+    * Adds a new segment line with the value string generated from the values provided by an {@link Iterable}. This
+    * method behaves as though the following method were called:
+    *
+    * <pre>
+    * message.segmentIndexed(&quot;title&quot;, valueIterator, valueExtractor, -1);
+    * </pre>
+    *
+    * @param <T> the type of values in the {@link List}.
+    * @param title the title {@link CharSequence} for the line.
+    * @param valueIterator an @{link Iterator} that provides the values to generate the message line from.
+    * @param valueExtractor a {@link Function} used to extract the value from the iterator values to generate the
+    * message line from.
+    * @return this {@link Message}.
+    */
+
+   public <T> Message segmentIndexed(CharSequence title, Iterable<T> valueList, Function<T, Object> valueExtractor) {
+      return this.segmentIndexed(title, valueList, valueExtractor, -1);
+   }
+
+   /**
+    * Adds a new segment line with a title and a value string generated from the values provided by an {@link Iterable}.
+    * Changes to the collection behind the {@link Iterator} after this method completes will not be reflected in the
+    * {@link Message}. The segment line will be formatted as follows:
     *
     * <pre>
     *    &lt;title&gt; ": " { &lt;null-or-empty&gt; } "\n"
@@ -1191,42 +1336,52 @@ public class Message {
     *
     * @param <T> the type of values in the {@link List}.
     * @param title the title {@link CharSequence} for the line.
-    * @param valueList a @{link List} of values to generate the value string from.
-    * @param valueExtractor a {@link Function} used to extract the value for the message from each list element.
-    * @param limit the maximum number of list values to be included in the message. A value of zero or less disables the
-    * limit check.
+    * @param valueIterator an @{link Iterator} that provides the values to generate the message line from.
+    * @param valueExtractor a {@link Function} used to extract the value from the iterator values to generate the
+    * message line from.
+    * @param limit the maximum number of values to be added to the message. A value of -1, indicates no limit.
     * @return this {@link Message}.
     */
 
-   public <T> Message segmentIndexedList(CharSequence title, List<T> valueList, Function<T, Object> valueExtractor, int limit) {
+   public <T> Message segmentIndexed(CharSequence title, Iterable<T> valueList, Function<T, Object> valueExtractor, int limit) {
 
       this.cachedResult = null;
 
       if (Objects.isNull(valueList)) {
-         this.lines.add(new Line(this.indent, title, "(null)"));
+         this.lines.add(new SegmentLine(this.indent, title, "(null)"));
          return this;
       }
 
-      if (valueList.isEmpty()) {
-         this.lines.add(new Line(this.indent, title, "(empty)"));
+      var iterator = valueList.iterator();
+
+      if (!iterator.hasNext()) {
+         this.lines.add(new SegmentLine(this.indent, title, "(empty)"));
          return this;
       }
 
-      this.lines.add(new Line(this.indent++, title));
+      this.lines.add(new TitleLine(this.indent++, title));
 
       int safety = 0;
       int i = 0;
       var listElementTitle = new StringBuilder();
-      for (var value : valueList) {
-         var displayValue = valueExtractor.apply(value);
+
+      while (iterator.hasNext()) {
+
+         var displayValue = valueExtractor.apply(iterator.next());
+
          listElementTitle.setLength(0);
          listElementTitle.append("[").append(i++).append("]");
-         if (value instanceof ToMessage) {
-            this.lines.add(new Line(this.indent, listElementTitle));
-            ((ToMessage) value).toMessage(this.indent + 1, this);
-            this.indent--;
+
+         if (displayValue instanceof ToMessage) {
+
+            var listElementValue = ((ToMessage) displayValue).toMessage(0, null).toString();
+
+            this.lines.add(new SegmentLine(this.indent, listElementTitle, listElementValue));
+
          } else {
-            this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
+
+            this.lines.add(new SegmentLine(this.indent, listElementTitle, Message.objectToString(displayValue)));
+
          }
 
          if ((limit > 0) && (++safety >= limit)) {
@@ -1255,7 +1410,11 @@ public class Message {
     */
 
    public <K, V> Message segmentMap(CharSequence title, Map<K, V> valueMap) {
-      return this.segmentMap(title, valueMap, (v) -> v);
+      return this.segmentMap(title, valueMap, (k) -> k, (v) -> v, -1);
+   }
+
+   public <K, V> Message segmentMap(CharSequence title, Map<K, V> valueMap, Function<V, Object> valueExtractor) {
+      return this.segmentMap(title, valueMap, (k) -> k, valueExtractor, -1);
    }
 
    /**
@@ -1297,36 +1456,71 @@ public class Message {
     * @param valueExtractor a {@link Function} used to extract the value for the message from each map value.
     * @return this {@link Message}.
     */
+   public <K, V> Message segmentMap(CharSequence title, Map<K, V> valueMap, Function<V, Object> valueExtractor, int limit) {
+      return this.segmentMap(title, valueMap, (k) -> k, valueExtractor, limit);
+   }
 
-   public <K, V> Message segmentMap(CharSequence title, Map<K, V> valueMap, Function<V, Object> valueExtractor) {
+   public <K, V> Message segmentMap(CharSequence title, Map<K, V> valueMap, Function<K, Object> keyExtractor, Function<V, Object> valueExtractor, int limit) {
 
       this.cachedResult = null;
 
       if (Objects.isNull(valueMap)) {
-         this.lines.add(new Line(this.indent, title, "(null)"));
+         this.lines.add(new SegmentLine(this.indent, title, "(null)"));
          return this;
       }
 
-      if (valueMap.isEmpty()) {
-         this.lines.add(new Line(this.indent, title, "(empty)"));
+      var iterator = valueMap.entrySet().iterator();
+
+      if (!iterator.hasNext()) {
+         this.lines.add(new SegmentLine(this.indent, title, "(empty)"));
          return this;
       }
 
-      this.lines.add(new Line(this.indent++, title));
+      this.lines.add(new TitleLine(this.indent++, title));
 
+      int safety = 0;
+      int i = 0;
       var listElementTitle = new StringBuilder();
 
-      for (var entry : valueMap.entrySet()) {
-         var displayValue = valueExtractor.apply(entry.getValue());
+      while (iterator.hasNext()) {
+
+         var mapEntry = iterator.next();
+
+         var key = keyExtractor.apply(mapEntry.getKey());
+
+         //@formatter:off
+         var displayKey   = ( key instanceof ToMessage )
+                               ? ((ToMessage) key).toMessage(0, null ).toString()
+                               : Message.objectToString(key);
+         //@formatter:on
+
+         var value = valueExtractor.apply(mapEntry.getValue());
+
+         //@formatter:off
+         var displayValue = ( value instanceof ToMessage )
+                                ? ((ToMessage) value).toMessage(0, null ).toString()
+                                : Message.objectToString(value);
+         //@formatter:on
+
          listElementTitle.setLength(0);
-         listElementTitle.append("[").append(Message.objectToString(entry.getKey())).append("]");
-         if (displayValue instanceof ToMessage) {
-            this.lines.add(new Line(this.indent, listElementTitle));
-            ((ToMessage) displayValue).toMessage(this.indent + 1, this);
-            this.indent--;
-         } else {
-            this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
+         listElementTitle.append("[").append(i++).append("]");
+
+         //@formatter:off
+         var mapEntryString =
+            new Message()
+                   .title( "MapEntry" )
+                   .indentInc()
+                   .segment( "Key", displayKey )
+                   .segment( "Value", displayValue )
+                   .toString();
+         //@formatter:on
+
+         this.lines.add(new SegmentLine(this.indent, listElementTitle, mapEntryString));
+
+         if ((limit > 0) && (++safety >= limit)) {
+            break;
          }
+
       }
 
       this.indent--;
@@ -1335,97 +1529,29 @@ public class Message {
    }
 
    /**
-    * Adds a new segment line with the value string generated from a {@link Set}. This method behaves as though the
-    * following method were called:
+    * Adds a multi-line segment with a title generated from the specified object's {@link ToMessage#toMessage} method.
     *
-    * <pre>
-    * message.segmentSet(&quot;title&quot;, theSet, Function.identity());
-    * </pre>
-    *
-    * @param <V> the type of values in the {@link Set}.
-    * @param title the title {@link CharSequence} for the line.
-    * @param valueSet a @{link Set} values to generate the value string from.
+    * @param toMessage an object implementing the {@link ToMessage} interface.
     * @return this {@link Message}.
     */
 
-   public <V> Message segmentSet(CharSequence title, Set<V> valueSet) {
-      return this.segmentSet(title, valueSet, (v) -> v);
+   public Message segmentToMessage(CharSequence title, ToMessage toMessage) {
+      this.title(title);
+      this.indentInc();
+      toMessage.toMessage(this.indent, this);
+      this.indentDec();
+      return this;
    }
 
    /**
-    * Adds a new segment line with a title and a value string generated from a {@link Set}. The invocation of this
-    * method generates the value string from the {@link Set}. Changes to the {@link Set} after this method completes
-    * will not be reflected in the {@link Message}. The segment line will be formatted as follows:
+    * Adds a multi-line segment generated from the specified object's {@link ToMessage#toMessage} method.
     *
-    * <pre>
-    *    &lt;title&gt; ": " { &lt;null-or-empty&gt; } "\n"
-    *    { &lt;indent+2&gt; "[" &lt;integer-count&gt; "]:\n" &lt;indent+3&gt; &lt;member-element-value&gt; }
-    * </pre>
-    *
-    * Where:
-    * <dl>
-    * <dt>title:</dt>
-    * <dd>Is the member name as specified by the parameter <code>title</code>.</dd>
-    * <dt>null-or-empty:</dt>
-    * <dd>This string is determined by the parameter <code>valueSet</code> as follows:
-    * <dl>
-    * <dt><code>null</code>:</dt>
-    * <dd>the string "(null)".</dd>
-    * <dt><code>size</code> == 0:</dt>
-    * <dd>the string "(empty)".</dd>
-    * <dt>not <code>null</code> and <code>size</code> != 0:</dt>
-    * <dd>the empty string.</dd>
-    * </dl>
-    * <dt>integer-count:</dt>
-    * <dd>Is incremented for each value drawn from the unordered {@link Set} element.</dd>
-    * <dt>member-element-value:</dt>
-    * <dd>Is a string representation of the set value. When the member {@link Set} element implements the
-    * {@link ToMessage} interface the member value message is generated with the {@link ToMessage#toMessage} method.
-    * Otherwise the method {@link ToMessage#toString} is used to generate the member value message.</dd>
-    * </dl>
-    *
-    * @param <V> the type of values in the {@link Set}.
-    * @param title the title {@link CharSequence} for the line.
-    * @param valueSet a @{link Set} of values to generate the value string from.
-    * @param valueExtractor a {@link Function} used to extract the value for the message from each set value.
+    * @param toMessage an object implementing the {@link ToMessage} interface.
     * @return this {@link Message}.
     */
 
-   public <V> Message segmentSet(CharSequence title, Set<V> valueSet, Function<V, Object> valueExtractor) {
-
-      this.cachedResult = null;
-
-      if (Objects.isNull(valueSet)) {
-         this.lines.add(new Line(this.indent, title, "(null)"));
-         return this;
-      }
-
-      if (valueSet.isEmpty()) {
-         this.lines.add(new Line(this.indent, title, "(empty)"));
-         return this;
-      }
-
-      this.lines.add(new Line(this.indent++, title));
-
-      var listElementTitle = new StringBuilder();
-      int count = 0;
-
-      for (var entry : valueSet) {
-         var displayValue = valueExtractor.apply(entry);
-         listElementTitle.setLength(0);
-         listElementTitle.append("[").append(count++).append("]");
-         if (displayValue instanceof ToMessage) {
-            this.lines.add(new Line(this.indent, listElementTitle));
-            ((ToMessage) displayValue).toMessage(this.indent + 1, this);
-            this.indent--;
-         } else {
-            this.lines.add(new Line(this.indent, listElementTitle.toString(), Message.objectToString(displayValue)));
-         }
-      }
-
-      this.indent--;
-
-      return this;
+   public Message segmentToMessage(ToMessage toMessage) {
+      return toMessage.toMessage(this.indent, this);
    }
 
    /**
@@ -1438,9 +1564,24 @@ public class Message {
    public Message title(CharSequence title) {
       this.cachedResult = null;
       if (Objects.nonNull(title)) {
-         this.lines.add(new Line(this.indent, title));
+         this.lines.add(new TitleLine(this.indent, title));
       }
       return this;
+   }
+
+   /**
+    * Adds a new title line with the provided {@link Supplier}. If the <code>titleSupplier</code> is <code>null</code>
+    * or returns <code>null</code>, a new title line will not be added.
+    *
+    * @param title the {@link Supplier} for the title line message, maybe <code>null</code>.
+    * @return this {@link Message}.
+    */
+
+   public Message title(Supplier<CharSequence> titleSupplier) {
+      if (Objects.isNull(titleSupplier)) {
+         return this;
+      }
+      return this.title(titleSupplier.get());
    }
 
    /**
@@ -1483,7 +1624,9 @@ public class Message {
       var indentColumnStartArray = new int[maxIndent + 1];
 
       //@formatter:off
-      this.lines.stream().filter( ( line ) -> LineType.SEGMENT.equals( line.getLineType() ) )
+      this.lines
+         .stream()
+         .filter( ( line ) -> line instanceof SegmentLine )
          .forEach
             (
                ( line ) ->

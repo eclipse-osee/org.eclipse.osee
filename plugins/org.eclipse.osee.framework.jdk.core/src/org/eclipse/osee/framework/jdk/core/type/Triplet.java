@@ -14,7 +14,10 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * A container object for three values.
@@ -27,6 +30,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 
 public class Triplet<F, S, T> extends Pair<F, S> {
+
    private static final long serialVersionUID = -3319956950656820062L;
 
    /**
@@ -64,7 +68,7 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     */
 
    public static <F, S, T> @NonNull Triplet<F, S, T> createNonNullImmutable(@NonNull F first, @NonNull S second, @NonNull T third) {
-      return createNullable(Objects.requireNonNull(first), Objects.requireNonNull(second),
+      return createNullableImmutable(Objects.requireNonNull(first), Objects.requireNonNull(second),
          Objects.requireNonNull(third));
    }
 
@@ -81,7 +85,7 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * <code>third</code>.
     */
 
-   public static <F, S, T> Triplet<F, S, T> createNullable(F first, S second, T third) {
+   public static <F, S, T> @NonNull Triplet<F, S, T> createNullable(@Nullable F first, @Nullable S second, @Nullable T third) {
       return new Triplet<>(first, second, third);
    }
 
@@ -99,7 +103,7 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * <code>third</code>.
     */
 
-   public static <F, S, T> Triplet<F, S, T> createNullableImmutable(F first, S second, T third) {
+   public static <F, S, T> @NonNull Triplet<F, S, T> createNullableImmutable(@Nullable F first, @Nullable S second, @Nullable T third) {
       //@formatter:off
       return
          new Triplet<>( first, second, third ) {
@@ -139,7 +143,7 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * Saves the third member of the triplet.
     */
 
-   protected T third;
+   protected @Nullable T third;
 
    /**
     * Creates a new {@link Triplet} with <code>null</code> values.
@@ -159,7 +163,7 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @param third the value for the third member of the {@link Triplet}.
     */
 
-   public Triplet(F first, S second, T third) {
+   public Triplet(@Nullable F first, @Nullable S second, @Nullable T third) {
       super(first, second);
       this.third = third;
    }
@@ -170,13 +174,70 @@ public class Triplet<F, S, T> extends Pair<F, S> {
 
    @Override
    public boolean equals(Object obj) {
-      boolean result = false;
-      if (obj instanceof Triplet<?, ?, ?>) {
-         Triplet<?, ?, ?> other = (Triplet<?, ?, ?>) obj;
-         boolean thirdEquals = third == null ? other.third == null : third.equals(other.third);
-         result = thirdEquals && super.equals(other);
+
+      boolean superEqual = super.equals(obj);
+
+      if (!superEqual) {
+         return false;
       }
-      return result;
+
+      if (!(obj instanceof Triplet<?, ?, ?>)) {
+         return false;
+      }
+
+      Triplet<?, ?, ?> other = (Triplet<?, ?, ?>) obj;
+
+      boolean thirdEqual;
+
+      if (this.third != null) {
+         thirdEqual = this.third.equals(other.third);
+      } else {
+         thirdEqual = (other.third == null);
+      }
+
+      return thirdEqual;
+   }
+
+   /**
+    * Performs an action upon the second and third {@link Triplet} members when it is non-<code>null</code> and returns
+    * the first member.
+    *
+    * @param secondAction the action to perform on the member {@link #second} when non-<code>null</code>.
+    * @param thirdAction the action to perform on the member {@link #third} when non-<code>null</code>.
+    * @throws NullPointerException when the second member is non-<code>null</code> and the {@link Consumer} parameter is
+    * <code>null</code>.
+    */
+
+   public @Nullable F getFirstIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction) {
+
+      Conditions.acceptWhenNonNull(this.second, secondAction);
+      Conditions.acceptWhenNonNull(this.third, thirdAction);
+
+      return this.first;
+   }
+
+   /**
+    * Performs an action upon the second and third {@link Triplet} members when they are non-<code>null</code> and
+    * returns the first member.
+    *
+    * @param secondAction the action to perform on the member {@link #second} when non-<code>null</code>.
+    * @param thirdAction the action to perform on the member {@link #third} when non-<code>null</code>.
+    * @throws NullPointerException when
+    * <ul>
+    * <li>The first member is <code>null</code>.</li>
+    * <li>The second member is non-<code>null</code> and the <code>secondAction</code> {@link Consumer} parameter is
+    * <code>null</code>.</li>
+    * <li>The third member is non-<code>null</code> and the <code>thirdAction</code> {@link Consumer} parameter is
+    * <code>null</code>.</li>
+    * </ul>
+    */
+
+   public @NonNull F getFirstNonNullIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction) {
+
+      Conditions.acceptWhenNonNull(this.second, secondAction);
+      Conditions.acceptWhenNonNull(this.third, thirdAction);
+
+      return Conditions.requireNonNull(this.first);
    }
 
    /**
@@ -185,8 +246,19 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @return the third value.
     */
 
-   public T getThird() {
+   public @Nullable T getThird() {
       return this.third;
+   }
+
+   /**
+    * Gets the third value of the {@link Triplet}.
+    *
+    * @return the third value.
+    * @throws NullPointerException when the third member is <code>null</code>.
+    */
+
+   public @NonNull T getThirdNonNull() {
+      return Conditions.requireNonNull(this.third);
    }
 
    /**
@@ -195,14 +267,25 @@ public class Triplet<F, S, T> extends Pair<F, S> {
 
    @Override
    public int hashCode() {
-      final int prime = 37;
-      int result = super.hashCode();
-      if (third != null) {
-         result = prime * result + third.hashCode();
-      } else {
-         result = prime * result;
-      }
-      return result;
+
+      return Objects.hash(this.first, this.second, this.third);
+   }
+
+   /**
+    * Performs an action upon the {@link Triplet} members that are non-<code>null</code>.
+    *
+    * @param firstAction the action to perform on the member {@link #first} when non-<code>null</code>.
+    * @param secondAction the action to perform on the member {@link #second} when non-<code>null</code>.
+    * @param thirdAction the action to perform on the member {@link #third} when non-<code>null</code>.
+    * @throws NullPointerException when a member is non-<code>null</code> and the corresponding {@link Consumer}
+    * parameter is <code>null</code>.
+    */
+
+   public void ifPresent(@Nullable Consumer<@NonNull F> firstAction, @Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction) {
+
+      Conditions.acceptWhenNonNull(this.first, firstAction);
+      Conditions.acceptWhenNonNull(this.second, secondAction);
+      Conditions.acceptWhenNonNull(this.third, thirdAction);
    }
 
    /**
@@ -213,9 +296,9 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @param third the value for the third member of the {@link Triplet}.
     */
 
-   public @NonNull Triplet<F, S, T> set(F first, S second, T third) {
+   public @NonNull Triplet<F, S, T> set(@Nullable F first, @Nullable S second, @Nullable T third) {
       super.set(first, second);
-      setThird(third);
+      this.setThird(third);
       return this;
    }
 
@@ -225,7 +308,7 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @param third the value to be set as the third member of the {@link Triplet}.
     */
 
-   public void setThird(T third) {
+   public void setThird(@Nullable T third) {
       this.third = third;
    }
 
@@ -245,7 +328,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
       var firstAsString = String.valueOf(this.first);
       var secondAsString = String.valueOf(this.second);
       var thirdAsString = String.valueOf(this.third);
-      return String.format("[%s, %s, %s]", firstAsString, secondAsString, thirdAsString);
+      var result = String.format("[%s, %s, %s]", firstAsString, secondAsString, thirdAsString);
+      return Conditions.requireNonNull(result);
    }
 
    /**
@@ -256,9 +340,10 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @param secondClass the expected {@link Class} of the second value.
     * @param thridClass the expected {@link Class} of the third value.
     * @return <code>false</code> when all values are of the expected {@link Class}; otherwise, <code>true</code>.
+    * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public boolean typesKo(Class<?> firstClass, Class<?> secondClass, Class<?> thirdClass) {
+   public boolean typesKo(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass, @NonNull Class<?> thirdClass) {
       return !this.typesOk(firstClass, secondClass, thirdClass);
    }
 
@@ -270,14 +355,17 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @param secondClass the expected {@link Class} of the second value.
     * @param thridClass the expected {@link Class} of the third value.
     * @return <code>true</code> when all values are of the expected {@link Class}; otherwise, <code>false</code>.
+    * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public boolean typesOk(Class<?> firstClass, Class<?> secondClass, Class<?> thirdClass) {
+   public boolean typesOk(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass, @NonNull Class<?> thirdClass) {
+
+      var classOfThird = Conditions.applyWhenNonNull(this.third, (t) -> t.getClass());
       //@formatter:off
       return
             this.typesOk(firstClass, secondClass)
-         && (    Objects.isNull( this.third )
-              || secondClass.isAssignableFrom( this.third.getClass() ) );
+         && (    ( classOfThird == null )
+              || secondClass.isAssignableFrom( classOfThird ) );
       //@formatter:on
    }
 

@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
@@ -164,7 +165,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       try {
          var publishingTemplateKeyGroup = this.publishingTemplateKeyGroupBySafeNameMap.get(safeName);
          var publishingTemplateIdentifier = publishingTemplateKeyGroup.getIdentifier().getKey();
-         var publishingTemplateRequest = new PublishingTemplateRequest(publishingTemplateIdentifier);
+         var publishingTemplateRequest =
+            new PublishingTemplateRequest(publishingTemplateIdentifier, FormatIndicator.WORD_ML);
          var publishingTemplate = PublishingRequestHandler.getPublishingTemplate(publishingTemplateRequest);
          return publishingTemplate;
       } catch (Exception e) {

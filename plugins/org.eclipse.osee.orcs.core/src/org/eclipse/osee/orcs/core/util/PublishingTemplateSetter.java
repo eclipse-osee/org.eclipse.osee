@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.util;
 
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -23,7 +24,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 public interface PublishingTemplateSetter {
 
    /**
-    * Implements of this method are expected to do the following:
+    * Implementations of this method are expected to do the following:
     * <ul>
     * <li>Create a {@link CoreArtifactTypes#RendererTemplateWholeWord} artifact with the name <code>name</code> under
     * the parent {@link Artifact} <code>parent</code>.</li>
@@ -40,12 +41,13 @@ public interface PublishingTemplateSetter {
     * hierarchically under.
     * @param name the name for the Publishing Template Artifact.
     * @param content the Word ML content for the Publishing Template Artifact.
+    * @param publishingTemplateContentMapEntries a list of format names and JSON encoded template content.
     * @param rendererOptions the JSON content for the Publishing Template Artifact.
     * @param matchCriteria the values for the Publishing Template Artifact's Match Criteria Attribute.
     * @return the Publishing Template Manager's identifier for the Publishing Template.
     */
 
-   String set(ArtifactToken parent, String name, String content, String rendererOptions, List<String> matchCriteria);
+   String set(ArtifactToken parent, String name, String content, String rendererOptions, List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria);
 }
 
 /* EOF */

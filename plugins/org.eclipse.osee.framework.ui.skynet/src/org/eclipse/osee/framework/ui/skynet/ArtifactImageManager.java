@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -257,18 +259,15 @@ public final class ArtifactImageManager {
       return ImageManager.setupImageWithOverlay(image, overlay, location).getImageKey();
    }
 
-   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider,
-      ArtifactTypeToken artifactType) {
+   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactTypeToken artifactType) {
       providersOverrideImageMap.put(artifactType, imageProvider);
    }
 
-   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, OseeImage oseeImage,
-      ArtifactImageProvider provider) {
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, OseeImage oseeImage, ArtifactImageProvider provider) {
       registerBaseImage(artifactType, ImageManager.create(oseeImage), provider);
    }
 
-   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage,
-      ArtifactImageProvider provider) {
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) {
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactType);
 
       String providerId = artifactTypeImageProviderMap.get(artifactType);
@@ -311,6 +310,22 @@ public final class ArtifactImageManager {
          return ImageManager.getImageDescriptor(image);
       }
       return ImageManager.getImageDescriptor(setupImage(artifact));
+   }
+
+   public synchronized static Optional<ImageDescriptor> getImageDescriptorNoDefault(Artifact artifact) {
+      if (Objects.isNull(artifact)) {
+         return Optional.empty();
+      }
+      var artifactType = artifact.getArtifactType();
+      if (Objects.isNull(artifactType)) {
+         return Optional.empty();
+      }
+      var image = artifactType.getImage();
+      if (Objects.isNull(image)) {
+         return Optional.empty();
+      }
+      var imageDescriptor = ImageManager.getImageDescriptor(image);
+      return Optional.ofNullable(imageDescriptor);
    }
 
    private synchronized static String setupImage(Artifact artifact) {

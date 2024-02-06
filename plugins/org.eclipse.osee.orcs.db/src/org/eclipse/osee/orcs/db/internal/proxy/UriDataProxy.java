@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
@@ -62,7 +63,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
                Conditions.checkNotNull(resolver, "ResourceNameResolver", "Unable to determine internal file name");
 
                byte[] compressed =
-                  Lib.compressStream(Lib.byteBufferToInputStream(data), resolver.getInternalFileName());
+                  Zip.compressStream(Lib.byteBufferToInputStream(data), resolver.getInternalFileName());
                getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
             } else {
                getStorage().setContent(null, "txt", "txt/plain", "UTF-8");
@@ -81,7 +82,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
       byte[] rawData = getStorage().getContent();
       if (rawData != null) {
          try {
-            decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
+            decompressed = ByteBuffer.wrap(Zip.decompressBytes(new ByteArrayInputStream(rawData)));
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }

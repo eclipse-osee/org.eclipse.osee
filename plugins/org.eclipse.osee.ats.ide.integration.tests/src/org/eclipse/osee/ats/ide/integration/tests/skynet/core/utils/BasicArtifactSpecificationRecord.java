@@ -19,8 +19,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -176,10 +177,10 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
 
       //@formatter:off
       this.identifier =
-         Validation.require
+         Conditions.require
             (
                identifier,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicArtifactSpecificationRecord",
                "new",
                "identifier",
@@ -194,10 +195,10 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
 
       //@formatter:off
       this.hierarchicalParentIdentifier =
-         Validation.require
+         Conditions.require
             (
                hierarchicalParentIdentifier,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicArtifactSpecificationRecord",
                "new",
                "hierarchicalParentIdentifier",
@@ -216,7 +217,7 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
          this.artifactId =
             ArtifactId.valueOf
                (
-                  Validation.requireNonNull
+                  Conditions.requireNonNull
                      (
                         artifactToken.getId(),
                         "BasicArtifactSpecificationRecord",
@@ -228,10 +229,10 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
 
          //@formatter:off
          this.name =
-            Validation.require
+            Conditions.require
                (
                   artifactToken.getName(),
-                  Validation.ValueType.PARAMETER,
+                  ValueType.PARAMETER,
                   "BasicArtifactSpecificationRecord",
                   "new",
                   "artifactToken.getName()",
@@ -243,7 +244,7 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
 
          //@formatter:off
          this.artifactTypeToken =
-            Validation.requireNonNull
+            Conditions.requireNonNull
             (
                artifactToken.getArtifactType(),
                "BasicArtifactSpecificationRecord",
@@ -258,10 +259,10 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
 
          //@formatter:off
          this.name =
-            Validation.require
+            Conditions.require
                (
                   name,
-                  Validation.ValueType.PARAMETER,
+                  ValueType.PARAMETER,
                   "BasicArtifactSpecificationRecord",
                   "new",
                   "name",
@@ -273,7 +274,7 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
 
          //@formatter:off
          this.artifactTypeToken =
-            Validation.requireNonNull
+            Conditions.requireNonNull
                (
                   typeToken,
                   "BasicArtifactSpecificationRecord",
@@ -285,10 +286,10 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
 
       //@formatter:off
       this.attributeSpecifications =
-         Validation.require
+         Conditions.require
             (
                attributeSpecifications,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicArtifactSpecificationRecord",
                "new",
                "attributeSpecifications",
@@ -296,17 +297,17 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
                Objects::isNull,
                NullPointerException::new,
                "does not contain null elements",
-               Validation::collectionContainsNull,
+               Conditions::collectionContainsNull,
                NullPointerException::new
             );
       //@formatter:on
 
       //@formatter:off
       this.relationshipSpecificationRecords =
-         Validation.require
+         Conditions.require
             (
                relationshipSpecifications,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicArtifactSpecificationRecord",
                "new",
                "relationshipSpecifications",
@@ -314,7 +315,7 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
                Objects::isNull,
                NullPointerException::new,
                "does not contain null elements",
-               Validation::collectionContainsNull,
+               Conditions::collectionContainsNull,
                NullPointerException::new
             );
       //@formatter:on

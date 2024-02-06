@@ -1095,12 +1095,6 @@ public class Forest implements ToMessage {
    private final Direction direction;
 
    /**
-    * Saves the {@link Forest} {@link Identifier}.
-    */
-
-   private final Identifier identifier;
-
-   /**
     * Constructor creates the data structures for a new Synchronization Artifact. Each Synchronization Artifact export
     * or import should use it's own {@link Forest}.
     *
@@ -1153,11 +1147,6 @@ public class Forest implements ToMessage {
 
       this.direction = direction;
       this.identifierFactory = new IdentifierFactory(direction.getIdentifierFactoryType());
-      //@formatter:off
-      this.identifier = Direction.EXPORT.equals( direction )
-                           ? this.identifierFactory.createIdentifier(IdentifierType.FOREST)
-                           : this.identifierFactory.createIdentifier(IdentifierType.FOREST, "F-0" );
-      //@formatter:on
    }
 
    /**
@@ -1325,16 +1314,6 @@ public class Forest implements ToMessage {
 
    public Grove getGrove(IdentifierType identifierType) {
       return this.groveMap.get(identifierType);
-   }
-
-   /**
-    * Gets the {@link Forest} {@link Identifier}.
-    *
-    * @return the forest {@link Identifier}.
-    */
-
-   public Identifier getIdentifier() {
-      return this.identifier;
    }
 
    /**

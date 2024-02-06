@@ -16,10 +16,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeMapEntry;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.MapEntryAttributeUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.MapEntryAttribute;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -214,7 +218,15 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
          } else if (page instanceof XStackedWidgetAttrPage || page.getObjectId() instanceof AttributeId) {
             XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
             if (attrPage.isLoaded()) {
-               attrPage.getAttribute().setFromString(page.getWidget().getData().toString());
+               Attribute<?> attribute = attrPage.getAttribute();
+               if (!(attribute instanceof MapEntryAttribute)) {
+                  attribute.setFromString(page.getWidget().getData().toString());
+               } else {
+                  MapEntryAttribute mapEntryAttribute = (MapEntryAttribute) attribute;
+                  @SuppressWarnings("unchecked")
+                  Map.Entry<String, String> mapEntry = (Map.Entry<String, String>) page.getWidget().getData();
+                  mapEntryAttribute.setValue(mapEntry);
+               }
             }
          }
       }
@@ -300,35 +312,86 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
       }
    }
 
-   private Date toDate(String value) {
+   private static Date toDate(String value) {
       try {
-         return new Date(Long.parseLong(value));
+         var date = new Date(Long.parseLong(value));
+         return date;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return new Date();
    }
 
+   private static Map.Entry<String, String> toMapEntry(Attribute<?> attribute) {
+
+      if (!(attribute instanceof MapEntryAttribute)) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Unexpected attrbute type.");
+         return MapEntryAttributeUtil.EMPTY_MAP_ENTRY;
+      }
+
+      var mapEntryAttribute = (MapEntryAttribute) attribute;
+
+      try {
+
+         var mapEntry = mapEntryAttribute.getValue();
+
+         return mapEntry;
+
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return MapEntryAttributeUtil.EMPTY_MAP_ENTRY;
+
+   }
+
    private Object setWidgetValue(XWidget xWidget, Attribute<?> attribute) {
-      String value = attribute.getDisplayableString();
-      if (Strings.isValid(value)) {
+
+      try {
+
          xWidget.setNotificationsAllowed(false);
-         if (xWidget instanceof XInteger) {
-            ((XInteger) xWidget).set(value);
-         } else if (xWidget instanceof XLong) {
-            ((XLong) xWidget).set(value);
-         } else if (xWidget instanceof XDate) {
-            ((XDate) xWidget).setDate(toDate(value));
-         } else if (xWidget instanceof XFloat) {
-            ((XFloat) xWidget).setText(value);
-         } else if (xWidget instanceof XLabel) {
-            ((XLabel) xWidget).setLabel(value);
-         } else if (xWidget instanceof XText) {
-            ((XText) xWidget).setText(value);
+
+         if (!(attribute instanceof MapEntryAttribute)) {
+
+            String value = attribute.getDisplayableString();
+
+            if (Strings.isValid(value)) {
+
+               if (xWidget instanceof XInteger) {
+                  ((XInteger) xWidget).set(value);
+               } else if (xWidget instanceof XLong) {
+                  ((XLong) xWidget).set(value);
+               } else if (xWidget instanceof XDate) {
+                  ((XDate) xWidget).setDate(XStackedDam.toDate(value));
+               } else if (xWidget instanceof XFloat) {
+                  ((XFloat) xWidget).setText(value);
+               } else if (xWidget instanceof XLabel) {
+                  ((XLabel) xWidget).setLabel(value);
+               } else if (xWidget instanceof XText) {
+                  ((XText) xWidget).setText(value);
+               }
+
+            }
+
+            return value;
+
+         } else {
+
+            var value = XStackedDam.toMapEntry(attribute);
+
+            var mapEntryAttribute = (MapEntryAttribute) attribute;
+            var mapEntryAttributeType = (AttributeTypeMapEntry) mapEntryAttribute.getAttributeType();
+            var xMapEntry = (XMapEntry) xWidget;
+
+            xMapEntry.setMapEntry(value);
+            xMapEntry.setToolTips(mapEntryAttributeType.getKeyDescription(),
+               mapEntryAttributeType.getValueDescription());
+
+            return value;
          }
+
+      } finally {
          xWidget.setNotificationsAllowed(true);
       }
-      return value;
    }
 
    private XWidget getWidget(AttributeTypeToken attributeType, Composite parent, String initialInput) {
@@ -373,6 +436,15 @@ public class XStackedDam extends XStackedWidget<String> implements AttributeWidg
             xLabel.setLabel(initialInput);
          }
          xWidget = xLabel;
+      } else if (attributeType.isMapEntry()) {
+         XMapEntry xMapEntry = new XMapEntry();
+         xMapEntry.setFillVertically(true);
+         xMapEntry.createWidgets(this.getManagedForm(), parent, 2);
+         if (Strings.isValidAndNonBlank(initialInput)) {
+            Map.Entry<String, String> mapEntry = MapEntryAttributeUtil.jsonDecode(initialInput);
+            xMapEntry.setMapEntry(mapEntry);
+         }
+         xWidget = xMapEntry;
       }
 
       if (xWidget == null) {

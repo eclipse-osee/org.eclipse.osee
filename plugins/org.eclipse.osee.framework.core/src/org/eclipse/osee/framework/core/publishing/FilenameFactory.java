@@ -24,9 +24,10 @@ import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 
 /**
  * A factory class for creating publishing filenames.
@@ -198,15 +199,15 @@ public class FilenameFactory {
    public static Map<String, String> create(@NonNull List<@NonNull FilenameSpecification> filenameSpecifications) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             filenameSpecifications,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "FilenameFactory",
             "create",
             "list of filename specifications",
             "non-null and no null elements",
-            Validation.collectionContainsNull,
+            Conditions.collectionContainsNull,
             NullPointerException::new
          );
       //@formatter:on

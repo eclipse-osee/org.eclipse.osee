@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -142,7 +143,8 @@ public class WordTemplateProcessorTest {
                    "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer",
                    null,
                    PresentationType.PREVIEW.name(),
-                   "PREVIEW_ALL_RECURSE"
+                   "PREVIEW_ALL_RECURSE",
+                   FormatIndicator.WORD_ML
                 );
       //@formatter:on
 

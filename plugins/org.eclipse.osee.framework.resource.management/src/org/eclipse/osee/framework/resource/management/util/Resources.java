@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.internal.CompressedResourceBridge;
 
@@ -42,7 +43,7 @@ public class Resources {
       byte[] buffer = new byte[0];
       try {
          inputStream = resource.getContent();
-         buffer = Lib.compressStream(inputStream, resource.getName());
+         buffer = Zip.compressStream(inputStream, resource.getName());
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       } finally {
@@ -59,7 +60,7 @@ public class Resources {
       InputStream inputStream = null;
       try {
          inputStream = resource.getContent();
-         fileName = Lib.decompressStream(inputStream, outputStream);
+         fileName = Zip.decompressStream(inputStream, outputStream);
          fileName = URLEncoder.encode(fileName, "UTF-8");
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);

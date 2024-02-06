@@ -31,20 +31,32 @@ public class AttributeDataProxyFactory {
       this.logger = logger;
    }
 
-   public DataProxy createProxy(AttributeTypeToken attributeTypeToken, Object value, String uri) {
-      Object checkedValue = intern(attributeTypeToken, value);
-      AbstractDataProxy dataProxy;
+   public <T> DataProxy<T> createProxy(AttributeTypeToken attributeTypeToken, T value, String uri) {
+      @SuppressWarnings("unchecked")
+      T checkedValue = (T) intern(attributeTypeToken, value);
 
       if (attributeTypeToken.isUri()) {
-         dataProxy = new UriDataProxy();
+         @SuppressWarnings("unchecked")
+         AbstractDataProxy<T> uriDataProxy = new UriDataProxy();
+         uriDataProxy.setLogger(logger);
+         uriDataProxy.setStorage(new Storage(resourceManager, uriDataProxy));
+         uriDataProxy.setData(checkedValue, uri);
+         return uriDataProxy;
+      } else if (attributeTypeToken.isMapEntry()) {
+         var mapEntryDataProxy = new MapEntryDataProxy();
+         mapEntryDataProxy.setLogger(logger);
+         mapEntryDataProxy.setStorage(new Storage(resourceManager, mapEntryDataProxy));
+         mapEntryDataProxy.setDataByObject(checkedValue, uri);
+         @SuppressWarnings("unchecked")
+         var dataProxy = (DataProxy<T>) mapEntryDataProxy;
+         return dataProxy;
       } else {
-         dataProxy = new VarCharDataProxy();
+         var varCharDataProxy = new VarCharDataProxy<T>();
+         varCharDataProxy.setLogger(logger);
+         varCharDataProxy.setStorage(new Storage(resourceManager, varCharDataProxy));
+         varCharDataProxy.setData(checkedValue, uri);
+         return varCharDataProxy;
       }
-
-      dataProxy.setLogger(logger);
-      dataProxy.setStorage(new Storage(resourceManager, dataProxy));
-      dataProxy.setData(checkedValue, uri);
-      return dataProxy;
    }
 
    private Object intern(AttributeTypeToken attributeType, Object original) {

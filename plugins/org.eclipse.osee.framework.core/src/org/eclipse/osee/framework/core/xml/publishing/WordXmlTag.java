@@ -19,9 +19,10 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Quad;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 
 /**
  * Enumeration of Word ML tag names with namespace.
@@ -183,19 +184,19 @@ public enum WordXmlTag {
 
    public static @NonNull Appendable appendTags(@NonNull Appendable appendable, @NonNull XmlTagType xmlTagType, @NonNull WordXmlTag... wordXmlTags) {
 
-      Validation.requireNonNull(appendable, "WordXmlTag", "appendTags", "appendable");
-      Validation.requireNonNull(xmlTagType, "XmlTagType", "appendTags", "xmlTagType");
+      Conditions.requireNonNull(appendable, "WordXmlTag", "appendTags", "appendable");
+      Conditions.requireNonNull(xmlTagType, "XmlTagType", "appendTags", "xmlTagType");
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             wordXmlTags,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "WordXmlTag",
             "appendTag",
             "wordXmlTags",
             "cannot be null or contain null elements",
-            Validation::arrayContainsNull,
+            Conditions::arrayContainsNull,
             NullPointerException::new
          );
       //@formatter:on
@@ -214,7 +215,7 @@ public enum WordXmlTag {
                          new Message()
                                 .title( "WordCoreUtil.WordXmlTag::appenCloseTags, failed to append to appendable." )
                                 .indentInc()
-                                .segmentIndexedArray( "Tags", wordXmlTags )
+                                .segmentIndexed( "Tags", wordXmlTags )
                                 .reasonFollows( e )
                                 .toString(),
                          e
@@ -276,21 +277,21 @@ public enum WordXmlTag {
 
    public static @NonNull Appendable appendTags(@NonNull Appendable appendable, @NonNull Object... wordXmlTagSpecifications) {
 
-      Validation.requireNonNull(appendable, "WordXmlTag", "appendCloseTags", "appendable");
+      Conditions.requireNonNull(appendable, "WordXmlTag", "appendCloseTags", "appendable");
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             wordXmlTagSpecifications,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "WordXmlTag",
             "appendTags",
             "wordXmlTagSpecifications",
             "cannot be null or contain null elements",
-            Validation::arrayContainsNull,
+            Conditions::arrayContainsNull,
             NullPointerException::new,
             "wordXmlTagSpecifications must be a Pair<WordXmlTag,XmlTagType> or Quad<WordXmlTag,XmlTagType,WordXmlAttribute,CharSequence>",
-            Validation.arrayElementPredicate
+            Conditions.arrayElementPredicate
                (
                   ( wordXmlTagSpecification ) ->
 
@@ -333,7 +334,7 @@ public enum WordXmlTag {
                   default:
                      //@formatter:off
                      throw
-                        Validation.invalidCase
+                        Conditions.invalidCase
                            (
                               xmlTagType,
                               "WordXmlTag",
@@ -363,7 +364,7 @@ public enum WordXmlTag {
                      default:
                         //@formatter:off
                         throw
-                           Validation.invalidCase
+                           Conditions.invalidCase
                               (
                                  xmlTagType,
                                  "WordXmlTag",
@@ -385,7 +386,7 @@ public enum WordXmlTag {
                          new Message()
                                 .title( "WordCoreUtil.WordXmlTag::appendOpenTags, failed to append to appendable." )
                                 .indentInc()
-                                .segmentIndexedArray( "Word Ml Tag Specifications", wordXmlTagSpecifications )
+                                .segmentIndexed( "Word Ml Tag Specifications", wordXmlTagSpecifications )
                                 .reasonFollows( e )
                                 .toString(),
                          e
@@ -514,10 +515,10 @@ public enum WordXmlTag {
 
    private WordXmlTag(@NonNull String tagName) {
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             tagName,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "WordXmlTag",
             "new",
             "tagName",
@@ -553,10 +554,10 @@ public enum WordXmlTag {
 
    private WordXmlTag(@NonNull String tagName, @NonNull Set<@NonNull WordXmlAttribute> wordXmlAttributes) {
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             tagName,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "WordXmlTag",
             "new",
             "tagName",
@@ -565,17 +566,17 @@ public enum WordXmlTag {
             IllegalArgumentException::new
          );
 
-      Validation.require
+      Conditions.require
          (
             wordXmlAttributes,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "WordXmlTag",
             "new",
             "wordXmlAttributes",
             "cannot be null",
             Objects::isNull,
             "cannot contain null entries",
-            Validation::collectionContainsNull,
+            Conditions::collectionContainsNull,
             NullPointerException::new
          );
       //@formatter:on
@@ -615,7 +616,7 @@ public enum WordXmlTag {
 
    public @NonNull String getTag(@NonNull XmlTagType xmlTagType) {
 
-      Validation.requireNonNull(xmlTagType, "WordXmlTag", "getTag", "xmlTagType");
+      Conditions.requireNonNull(xmlTagType, "WordXmlTag", "getTag", "xmlTagType");
 
       switch (xmlTagType) {
          case OPEN:
@@ -627,7 +628,7 @@ public enum WordXmlTag {
          default:
             //@formatter:off
             throw
-               Validation.invalidCase
+               Conditions.invalidCase
                   (
                      xmlTagType,
                      "WordXmlTag",
@@ -678,7 +679,7 @@ public enum WordXmlTag {
          default:
             //@formatter:off
             throw
-               Validation.invalidCase
+               Conditions.invalidCase
                   (
                      xmlTagType,
                      "WordXmlTag",
@@ -716,18 +717,18 @@ public enum WordXmlTag {
    public @NonNull CharSequence getOpenTagWithAttributes(@NonNull Pair<?, ?>... attributes) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             attributes,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "WordXmlTag",
             "getOpenTagWithAttributes",
             "attributes",
             "cannot be null or contain null elements",
-            Validation::arrayContainsNull,
+            Conditions::arrayContainsNull,
             NullPointerException::new,
             "attributes must be a Pair<WordXmlAttribute,CharSequence> with non-null entries",
-            Validation.arrayElementPredicate
+            Conditions.arrayElementPredicate
                (
                   ( attributeSpecification ) ->
                          !( ((Pair<?,?>) attributeSpecification).typesOk( WordXmlAttribute.class, CharSequence.class ) )
@@ -796,18 +797,18 @@ public enum WordXmlTag {
    public CharSequence getSelfCloseTagWithAttributes(Pair<?, ?>... attributes) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             attributes,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "WordXmlTag",
             "getOpenTagWithAttributes",
             "attributes",
             "cannot be null or contain null elements",
-            Validation::arrayContainsNull,
+            Conditions::arrayContainsNull,
             NullPointerException::new,
             "attributes must be a Pair<WordXmlAttribute,CharSequence> with non-null entries",
-            Validation.arrayElementPredicate
+            Conditions.arrayElementPredicate
                (
                   ( attributeSpecification ) ->
                          !( ((Pair<?,?>) attributeSpecification).typesOk( WordXmlAttribute.class, CharSequence.class ) )

@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import static org.eclipse.osee.framework.core.enums.FileExtension.XML;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.AttributeTypeArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeBoolean;
@@ -73,7 +75,9 @@ import org.eclipse.osee.framework.core.enums.token.VerificationEventAttributeTyp
 import org.eclipse.osee.framework.core.enums.token.VerificationLevelAttributeType;
 import org.eclipse.osee.framework.core.publishing.CuiCategoryIndicator;
 import org.eclipse.osee.framework.core.publishing.CuiTypeIndicator;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.util.toggles.CuiNamesConfiguration;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -106,7 +110,9 @@ public interface CoreAttributeTypes {
    AttributeTypeArtifactId BaselinedBy = osee.createArtifactIdNoTag(1152921504606847247L, "Baselined By", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeDate BaselinedTimestamp = osee.createDateNoTag(1152921504606847244L, "Baselined Timestamp", AttributeTypeToken.TEXT_CALENDAR, "");
+
    AttributeTypeString BatchId = osee.createString(2054979068972550525L, "Batch Id", MediaType.TEXT_PLAIN, "Batch Id");
+
    AttributeTypeString BranchDiffData = osee.createString(1152921504606847921L, "Branch Diff Data", MediaType.APPLICATION_JSON, "Json results from change report");
 
    CsciAttributeType CSCI = osee.createEnum(new CsciAttributeType());
@@ -317,6 +323,8 @@ public interface CoreAttributeTypes {
             428007622831294440L,
             "CUI Category CUI Type pairs to Required Indicators Map Entry",
             "JSON that defines a key (CUI Category and CUI Type) value (Required Indicator) map entry.",
+            () -> "CUI Category and CUI Type",
+            () -> "Required Indicator",
             "defaultKey",
             "defaultValue"
          );
@@ -342,6 +350,8 @@ public interface CoreAttributeTypes {
             194620179570089921L,
             "Required Indicator Configuration Entry",
             "JSON that defines a Required Indicator (key) and the value Required Indicator Configuration (value) to use for the Required Indicator.",
+            () -> "Required Indicator",
+            () -> "Required Indicator Configuration",
             "defaultKey",
             "defaultValue"
          );
@@ -433,6 +443,8 @@ public interface CoreAttributeTypes {
             4689764541412006527L,
             "Required Indicator Statement Entry",
             "JSON that defines a key (Statement Format) value (Statement Text) map entry.",
+            () -> "Statement Format",
+            () -> "Statement Text",
             "defaultKey",
             "defaultValue"
          );
@@ -705,7 +717,6 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString InterfacePlatformTypeAnalogAccuracy = osee.createString(3899709087455064788L, "Interface Platform Type Analog Accuracy", MediaType.TEXT_PLAIN, "");
 
-
    AttributeTypeString InterfaceUnitMeasurement = osee.createString(2478822847543373494L, "Interface Unit Measurement", MediaType.TEXT_PLAIN, "Measurement type of the unit");
 
    AttributeTypeString ImportTransportType = osee.createString(238254247108261698L, "Import Transport Types", MediaType.TEXT_PLAIN, "Transport Type of MIM Import");
@@ -821,8 +832,11 @@ public interface CoreAttributeTypes {
    AttributeTypeString OseeVersion = osee.createString(1152921504606847290L, "OSEE Version", MediaType.TEXT_PLAIN, "OSEE Version");
 
    AttributeTypeString OseeAppDefinition = osee.createStringNoTag(1152921504606847380L, "Osee App Definition", MediaType.APPLICATION_JSON, "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App");
+
    AttributeTypeString TestEnvBatchId = osee.createString(2054979068972801627L, "Test Env Batch Id", MediaType.TEXT_PLAIN, "Batch Id provided by the test environment");
+
    AttributeTypeString JavaVersion = osee.createStringNoTag(1152921504606849836L, "Java Version", MediaType.APPLICATION_JSON, "Java Version");
+
    PageOrientationAttributeType PageOrientation = osee.createEnum(new PageOrientationAttributeType());
 
    AttributeTypeString ParagraphNumber = osee.createString(1152921504606847101L, "Paragraph Number", MediaType.TEXT_PLAIN, "This is the corresponding section number from the outline of document from which this artifact was imported");
@@ -859,7 +873,33 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString PropertyKey = osee.createString(5139071591277404578L, "Property Key", MediaType.TEXT_PLAIN, "Property Store Key");
 
-   AttributeTypeMapEntry PublishingTemplateContentByFormatMapEntry = osee.createMapEntry(81484999873657204L, "Publishing Template Content By Format Map Entry", "Json that defines a key (Format) value (Publishing Template Content) map entry.", "defaultKey", "defaultValue" );
+   /**
+    * Attribute type for specifying the publishing template content for each publishing format.
+    * <p>
+    * This attribute is used by the {@link CoreArtifactTypes#RendererTemplateWholeWord} artifact. The attribute key should
+    * be one of the {@link FormatIndicator} names given by {@link FormatIndicator#getFormatName()}. The attribute value
+    * should be the publishing template content to be associated with format specified by the key.
+    * <dl>
+    * <dt>Display Name:</dt>
+    * <dd>Content Map</dd>
+    * <dt>Attribute Type Identifier:</dt>
+    * <dd>81484999873657204L</dd>
+    * </dl>
+    */
+
+   AttributeTypeMapEntry PublishingTemplateContentByFormatMapEntry =
+      osee.createMapEntry
+         (
+            81484999873657204L,
+            "Content Map",
+              "Content Map Entry\n"
+            + "Key specifies the content format.\n"
+            + "Value specifies the Publishing Template Content for the format.",
+            () -> Arrays.stream( FormatIndicator.values() ).map( FormatIndicator::getFormatName ).collect( Collectors.joining( ", " ) ),
+            () -> "Publishing Template Content",
+            Strings.EMPTY_STRING,
+            Strings.EMPTY_STRING
+         );
 
    AttributeTypeString PublishingTemplateDataRightsConfigurationNameReference = osee.createString(6329223727577326200L, "Data Rights Configuration", MediaType.TEXT_PLAIN, "Specifies the data rights configuration to use for a publish.", DisplayHint.SingleLine);
 
@@ -871,7 +911,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString RelationOrder = osee.createStringNoTag(1152921504606847089L, "Relation Order", MediaType.TEXT_PLAIN, "Defines relation ordering information", DisplayHint.MultiLine);
 
-   AttributeTypeString RendererOptions = osee.createString(904L, "Renderer Options", MediaType.APPLICATION_JSON, "", "txt");
+   AttributeTypeString RendererOptions = osee.createString(904L, "Renderer Options", MediaType.APPLICATION_JSON, "", "txt", DisplayHint.MultiLine);
 
    AttributeTypeString RepositoryType = osee.createString(8150083798685627257L, "Repository Type", MediaType.TEXT_PLAIN, "");
 
@@ -888,7 +928,9 @@ public interface CoreAttributeTypes {
    AttributeTypeString ScheduledMachine = osee.createString(527991454069746927L, "Scheduled Machine", MediaType.TEXT_PLAIN, "Machine the script should run on next");
 
    AttributeTypeString Result = osee.createString(1152921504606847364L, "Result", MediaType.TEXT_PLAIN, "Result");
+
    AttributeTypeString OverallResult = osee.createString(1152921504606883746L, "Overall Result", MediaType.TEXT_PLAIN, "Overall result of the test point sumarizing all groups");
+
    AttributeTypeString ResultType = osee.createString(1152921504606847374L, "Result Type", MediaType.TEXT_PLAIN, "Result Type");
 
    AttributeTypeInteger ReviewId = osee.createInteger(1152921504606847245L, "Review Id", MediaType.TEXT_PLAIN, "");
@@ -912,7 +954,9 @@ public interface CoreAttributeTypes {
    AttributeTypeInteger ScriptHealth = osee.createInteger(1152921504606847367L, "Script Health", MediaType.TEXT_PLAIN, "Script Health");
 
    AttributeTypeString ScriptName = osee.createString(1152921504606847353L, "Script Name", MediaType.TEXT_PLAIN, "Full Name of Script Run");
+
    AttributeTypeString ScriptSubsystem = osee.createString(1152921504606848173L, "Script Subsystem", MediaType.TEXT_PLAIN, "Subsystem the script tests");
+
    SoftwareControlCategoryAttributeType SoftwareControlCategory = osee.createEnum(new SoftwareControlCategoryAttributeType());
 
    AttributeTypeString SoftwareControlCategoryRationale = osee.createStringNoTag(750929222178534710L, "Software Control Category Rationale", MediaType.TEXT_PLAIN, "");
@@ -924,7 +968,9 @@ public interface CoreAttributeTypes {
    ComputedSoftwareCriticalityIndex SoftwareCriticalityIndex = osee.createComp(ComputedSoftwareCriticalityIndex::new, 1152921504606847725L, "Safety Criticality Index", "Calculation of SwCI using Safety Severity and Software Control Category", SoftwareControlCategory, SafetySeverity);
 
    AttributeTypeBoolean SoftwareSafetyImpact = osee.createBooleanNoTag(8318805403746485981L, "Software Safety Impact", MediaType.TEXT_PLAIN, "Software Safety Impact");
+
    AttributeTypeString GroupType = osee.createStringNoTag(750929222178593862L, "Group Type", MediaType.TEXT_PLAIN, "Info Group Type");
+
    AttributeTypeDate StartDate = osee.createDate(1152921504606847294L, "Start Date", AttributeTypeToken.TEXT_CALENDAR, "Start Date");
 
    AttributeTypeDate EndDate = osee.createDate(1152921504606847295L, "End Date", AttributeTypeToken.TEXT_CALENDAR, "Stop Date");
@@ -960,7 +1006,9 @@ public interface CoreAttributeTypes {
    AttributeTypeString Street = osee.createString(1152921504606847069L, "Street", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeInteger StackTraceLine = osee.createInteger(3884112593403558397L, "Stack Trace Line", MediaType.TEXT_PLAIN, "Stack Trace Line");
+
    AttributeTypeString StackTraceSource = osee.createString(3884112593403558184L, "Stack Trace Source", MediaType.TEXT_PLAIN, "Stack Trace Source");
+
    AttributeTypeString SubjectMatterExpert = osee.createString(72057594037928275L, "Subject Matter Expert", MediaType.TEXT_PLAIN, "Name of the Subject Matter Expert");
 
    SubsystemAttributeType Subsystem = osee.createEnum(new SubsystemAttributeType());
@@ -1000,7 +1048,9 @@ public interface CoreAttributeTypes {
    AttributeTypeArtifactId UserArtifactId = osee.createArtifactIdNoTag(1152921504606847701L, "User Artifact Id", MediaType.TEXT_PLAIN, "Artifact id of an artifact of type User");
 
    AttributeTypeString UserId = osee.createString(1152921504606847073L, "User Id", MediaType.TEXT_PLAIN, "");
+
    AttributeTypeString UserName = osee.createString(1152921504606848975L, "User Name", MediaType.TEXT_PLAIN, "");
+
    AttributeTypeString UserSettings = osee.createString(1152921504606847076L, "User Settings", MediaType.TEXT_PLAIN, "", XML.getFileExtension());
 
    AttributeTypeBoolean UseValidator = osee.createBoolean(322346571838162L, "Is Validator Used", MediaType.TEXT_PLAIN, "");

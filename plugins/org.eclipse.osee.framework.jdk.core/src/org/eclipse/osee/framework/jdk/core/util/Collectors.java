@@ -15,9 +15,15 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
@@ -52,7 +58,7 @@ public final class Collectors {
     */
 
    //@formatter:off
-   public static <T,K,V> java.util.stream.Collector<T,?,MapSet<K,V>>
+   public static <T,K,V> Collector<T,?,MapSet<K,V>>
       toMapSet
          (
             Function<? super T, ? extends K> keyMapper,
@@ -60,7 +66,7 @@ public final class Collectors {
          ) {
 
       return
-         java.util.stream.Collector.of
+         Collector.of
                 (
                    HashMapHashSet::new,
                    ( mapSet, t ) -> mapSet.putValue( keyMapper.apply( t ), valueMapper.apply( t ) ),
@@ -85,7 +91,7 @@ public final class Collectors {
     */
 
    //@formatter:off
-   public static <T,K,V> java.util.stream.Collector<T,?,ListMap<K,V>>
+   public static <T,K,V> Collector<T,?,ListMap<K,V>>
       toListMap
          (
             Function<? super T, ? extends K> keyMapper,
@@ -93,7 +99,7 @@ public final class Collectors {
          ) {
 
       return
-         java.util.stream.Collector.of
+         Collector.of
                 (
                    ListMap::new,
                    ( listMap, t ) -> listMap.put( keyMapper.apply( t ), valueMapper.apply( t ) ),
@@ -121,32 +127,129 @@ public final class Collectors {
     */
 
    //@formatter:off
-   public static<T,A,B> java.util.stream.Collector<T, ?, Pair<List<A>,List<B>>>
+   public static<T,A,B> @NonNull Collector<T, ?, Pair<List<A>,List<B>>>
       toListPair
          (
             Function<? super T, ? extends Optional<A>> listAValueExtractor,
             Function<? super T, ? extends Optional<B>> listBValueExtractor
          ) {
 
-      return
-         java.util.stream.Collector.of
+      Collector<T, ?, Pair<List<A>,List<B>>> collector =
+         Collector.of
             (
                () -> new Pair<>(new LinkedList<>(),new LinkedList<>() ),
                ( listPair, t ) ->
                {
-                  listAValueExtractor.apply( t ).ifPresent( listPair.getFirst()::add );
-                  listBValueExtractor.apply( t ).ifPresent( listPair.getSecond()::add );
+                  listAValueExtractor.apply( t ).ifPresent( listPair.getFirstNonNull()::add );
+                  listBValueExtractor.apply( t ).ifPresent( listPair.getSecondNonNull()::add );
                },
                ( leftListPair, rightListPair ) ->
                {
-                  leftListPair.getFirst().addAll( rightListPair.getFirst() );
-                  leftListPair.getSecond().addAll( rightListPair.getSecond() );
+                  leftListPair.getFirstNonNull().addAll( rightListPair.getFirst() );
+                  leftListPair.getSecondNonNull().addAll( rightListPair.getSecond() );
                   return leftListPair;
                }
             );
+
+      return Conditions.requireNonNull( collector );
    }
    //@formatter:off
 
+   /**
+    * Returns a {@link Collector} which performs a transform on both the key and value of the {@link Map.Entry} objects in a stream and
+    * collects them into a {@link Map}.
+    *
+    * @param <IK> the type of key in the streamed {@link Map.Entry} objects.
+    * @param <IV> the type of the value in the streamed {@link Map.Entry} objects.
+    * @param <OK> the input keys are transformed into objects of this type before being added to the map.
+    * @param <OV> the input values are transformed into objects of this type before being added to the map.
+    * @param mapSupplier a {@link Supplier} that provides the {@link Map} that will be added to by the collector.
+    * @param keyMapper a {@link Function} that transforms the keys in the streamed {@link Map.Entry} objects into the keys that will be stored in the map.
+    * @param valueMapper a {@link Function} that transforms the values in the streamed {@link Map.Entry} objects into the values that will be store in the map.
+    * @return the {@link Collector}.
+    */
+
+   //@formatter:off
+   public static <IK,IV,OK,OV> @NonNull Collector<Map.Entry<IK,IV>,?,Map<OK,OV>>
+      toMap
+         (
+            @NonNull Supplier<Map<OK,OV>> mapSupplier,
+            @NonNull Function<IK,OK> keyMapper,
+            @NonNull Function<IV,OV> valueMapper
+         ) {
+
+      Objects.requireNonNull( mapSupplier );
+      Objects.requireNonNull( keyMapper );
+      Objects.requireNonNull( valueMapper );
+
+      Collector<Map.Entry<IK,IV>,?,Map<OK,OV>> collector =
+         java.util.stream.Collector.of
+                (
+                   mapSupplier,
+                   ( map, mapEntry ) -> map.put
+                                           (
+                                              keyMapper.apply( mapEntry.getKey() ),
+                                              valueMapper.apply( mapEntry.getValue() )
+                                           ),
+                   ( a, b) -> { a.putAll( b ); return a; }
+                );
+
+      return Conditions.requireNonNull( collector );
+   }
+   //@formatter:on
+
+   /**
+    * Returns a {@link Collector} which performs a transform on both the key and value of the {@link Map.Entry} objects
+    * in a stream, applies a filter to each transformed key/value pair, and collects the key/value pairs passing the
+    * filter into a {@link Map}.
+    *
+    * @param <IK> the type of key in the streamed {@link Map.Entry} objects.
+    * @param <IV> the type of the value in the streamed {@link Map.Entry} objects.
+    * @param <OK> the input keys are transformed into objects of this type before being added to the map.
+    * @param <OV> the input values are transformed into objects of this type before being added to the map.
+    * @param mapSupplier a {@link Supplier} that provides the {@link Map} that will be added to by the collector.
+    * @param keyMapper a {@link Function} that transforms the keys in the streamed {@link Map.Entry} objects into the
+    * keys that will be stored in the map.
+    * @param valueMapper a {@link Function} that transforms the values in the streamed {@link Map.Entry} objects into
+    * the values that will be store in the map.
+    * @param outputFilter a {@link BiFunction} applied to each transformed key/value pairs that returns
+    * <code>true</code> for the key/value pairs to be collected.
+    * @return the {@link Collector}.
+    */
+
+   //@formatter:off
+   public static <IK,IV,OK,OV> @NonNull Collector<Map.Entry<IK,IV>,?,Map<OK,OV>>
+      toMap
+         (
+            @NonNull Supplier<Map<OK,OV>> mapSupplier,
+            @NonNull Function<IK,OK> keyMapper,
+            @NonNull Function<IV,OV> valueMapper,
+            @NonNull BiPredicate<OK,OV> outputFilter
+         ) {
+
+      Objects.requireNonNull( mapSupplier );
+      Objects.requireNonNull( keyMapper );
+      Objects.requireNonNull( valueMapper );
+
+      Collector<Map.Entry<IK,IV>,?,Map<OK,OV>> collector =
+         java.util.stream.Collector.of
+                (
+                   mapSupplier,
+                   ( map, mapEntry ) ->
+                   {
+                      var outputKey   = keyMapper.apply( mapEntry.getKey() );
+                      var outputValue = valueMapper.apply( mapEntry.getValue() );
+
+                      if( outputFilter.test( outputKey, outputValue ) ) {
+                         map.put( outputKey, outputValue );
+                      }
+                   },
+                   ( a, b) -> { a.putAll( b ); return a; }
+                );
+
+      return Conditions.requireNonNull( collector );
+   }
+   //@formatter:on
 }
 
 /* EOF */

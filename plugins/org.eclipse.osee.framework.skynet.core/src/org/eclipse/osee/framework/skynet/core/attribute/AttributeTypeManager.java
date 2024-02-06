@@ -125,13 +125,13 @@ public class AttributeTypeManager {
          return new UriAttributeDataProvider(attribute);
       }
       if (attributeType.isMapEntry()) {
-         return new MapEntryAttributeDataProvider(attribute);
+         var mapEntryAttribute = (MapEntryAttribute) attribute;
+         return new MapEntryAttributeDataProvider(mapEntryAttribute);
       }
       return new DefaultAttributeDataProvider<T>(attribute);
    }
 
-   public static boolean checkIfRemovalAllowed(AttributeTypeToken attributeType,
-      Collection<? extends Artifact> artifacts) {
+   public static boolean checkIfRemovalAllowed(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art.getArtifactType().getMin(attributeType) > 0) {
             return false;

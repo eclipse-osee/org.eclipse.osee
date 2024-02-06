@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
@@ -61,7 +61,7 @@ public class BasicAttributeSpecificationRecord implements AttributeSpecification
 
       //@formatter:off
       this.attributeType =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                attributeType,
                "BasicAttributeSpecificationRecord",
@@ -72,7 +72,7 @@ public class BasicAttributeSpecificationRecord implements AttributeSpecification
 
       //@formatter:off
       this.attributeValues =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                attributeValues,
                "BasicAttributeSpecificationRecord",
@@ -83,7 +83,7 @@ public class BasicAttributeSpecificationRecord implements AttributeSpecification
 
       //@formatter:off
       this.attributeSetter =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                attributeSetter,
                "BasicAttributeSpecificationRecord",

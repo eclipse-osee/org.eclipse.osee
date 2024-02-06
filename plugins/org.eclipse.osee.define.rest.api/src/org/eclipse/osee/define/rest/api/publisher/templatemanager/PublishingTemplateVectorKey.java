@@ -175,9 +175,9 @@ public class PublishingTemplateVectorKey implements Comparable<PublishingTemplat
       //@formatter:off
       outMessage
          .indent( indent )
-         .title( "PublishingTemplatekey" )
+         .title( "PublishingTemplateVectorKey" )
          .indentInc()
-         .segmentIndexedList( "Key",  this.key   )
+         .segmentIndexed( "Key",  this.key   )
          .indentDec()
          ;
       //@formatter:on

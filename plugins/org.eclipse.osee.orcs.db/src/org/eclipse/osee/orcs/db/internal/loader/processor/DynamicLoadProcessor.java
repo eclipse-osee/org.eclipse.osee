@@ -168,7 +168,9 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
       AttributeTypeToken attributeType = tokenService.getAttributeType(chStmt.getLong(typeColumnName));
       String value = chStmt.getString(valueColumnName);
       String uri = chStmt.getString(uriColumnName);
-      return proxyFactory.createProxy(attributeType, value, uri);
+      @SuppressWarnings("unchecked")
+      DataProxy<T> dataProxy = (DataProxy<T>) proxyFactory.createProxy(attributeType, value, uri);
+      return dataProxy;
    }
 
    private BranchType getBranchType(JdbcStatement chStmt, String columnName) {

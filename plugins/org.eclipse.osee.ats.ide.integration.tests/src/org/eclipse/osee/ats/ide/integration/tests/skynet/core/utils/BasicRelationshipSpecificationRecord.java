@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 
 /**
  * A basic implementation of the {@link RelationshipSpecificationRecord} that will provide the necessary information for
@@ -53,7 +54,7 @@ public class BasicRelationshipSpecificationRecord implements RelationshipSpecifi
 
       //@formatter:off
       this.relationTypeToken =
-         Validation.requireNonNull
+         Conditions.requireNonNull
             (
                relationTypeToken,
                "BasicRelationshipSpecificationRecord",
@@ -64,17 +65,17 @@ public class BasicRelationshipSpecificationRecord implements RelationshipSpecifi
 
       //@formatter:off
       this.targetArtifactSpecificationRecordIdentifiers =
-         Validation.require
+         Conditions.require
             (
                targetArtifactSpecificationRecordIdentifiers,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicRelationshipSpecificationRecord",
                "new",
                "targetArtifactSpecificationRecordIdentifiers",
                "cannot be null",
                Objects::isNull,
                "does not contain null elements",
-               Validation::collectionContainsNull,
+               Conditions::collectionContainsNull,
                NullPointerException::new
             );
       //@formatter:on

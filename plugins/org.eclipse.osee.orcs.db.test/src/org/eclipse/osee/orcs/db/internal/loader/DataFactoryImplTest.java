@@ -99,6 +99,7 @@ public class DataFactoryImplTest {
    private String guid;
    private RelationData relData;
 
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
@@ -140,7 +141,7 @@ public class DataFactoryImplTest {
 
       when(dataProxy.getRawValue()).thenReturn(expectedProxyValue);
       when(dataProxy.getUri()).thenReturn(expectedProxyUri);
-      when(proxyFactory.createProxy(Name, expectedProxyValue, expectedProxyUri)).thenReturn(otherDataProxy);
+      when(proxyFactory.createProxy(Name, expectedProxyValue, expectedProxyUri)).thenReturn((DataProxy) otherDataProxy);
       when(otherDataProxy.getRawValue()).thenReturn(expectedProxyValue);
       when(otherDataProxy.getUri()).thenReturn(expectedProxyUri);
 
@@ -224,9 +225,10 @@ public class DataFactoryImplTest {
       assertEquals(guid, actual.getGuid());
    }
 
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testCreateAttributeData() {
-      when(proxyFactory.createProxy(Name, "", "")).thenReturn(otherDataProxy);
+      when(proxyFactory.createProxy(Name, "", "")).thenReturn((DataProxy) otherDataProxy);
       when(otherDataProxy.getRawValue()).thenReturn(2389);
       when(otherDataProxy.getUri()).thenReturn("");
 

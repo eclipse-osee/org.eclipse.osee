@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -35,9 +37,10 @@ import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -46,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
@@ -217,9 +219,16 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
       //@formatter:on
    }
 
+   protected @NonNull MenuCmdDef getArtifactBasedMenuCommand(@NonNull MenuCmdDef menuCmdDef, @Nullable Artifact artifact) {
+
+      return Objects.requireNonNull(menuCmdDef);
+   }
+
    /**
     * Adds the context menu command entries for this renderer to the specified list of {@link MenuCmdDef} objects for
-    * the specified artifact.
+    * the specified artifact. The {@link MenuCmdDef}s are copied from the member {@link #menuCommands} using the
+    * overloadable method {@link #getArtifactBasedMenuCommand}. Derived classes may overload this method to modify the
+    * renderer's menu commands based upon the artifact that was selected.
     *
     * @param commands the {@link List} of {@link MenuCmdDef} objects to be appended to. This parameter maybe an empty
     * list but should not be <code>null</code>.
@@ -230,12 +239,20 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
 
-      Objects.requireNonNull(commands,
-         "DefaultArtifactRenderer::addMenuCommandDefinitions, the parameter \"commands\" is null.");
+      Objects.requireNonNull(commands);
+      Objects.requireNonNull(artifact);
 
-      if (Objects.nonNull(this.menuCommands)) {
-         this.menuCommands.forEach(commands::add);
+      if (Objects.isNull(this.menuCommands)) {
+         return;
       }
+
+      //@formatter:off
+      this.menuCommands
+         .stream()
+         .map( ( menuCmdDef) -> this.getArtifactBasedMenuCommand( menuCmdDef, artifact ) )
+         .forEach( commands::add );
+      //@formatter:on
+
    }
 
    /**
@@ -441,32 +458,32 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
-      WordMLProducer wordMl = producer;
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, PublishingAppender producer, String format, String label, String footer) {
+      PublishingAppender wordMl = producer;
       boolean allAttrs = (boolean) this.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES);
 
       wordMl.startParagraph();
 
       if (allAttrs) {
          if (!attributeType.matches(CoreAttributeTypes.PlainTextContent)) {
-            wordMl.addWordMl(
+            wordMl.append(
                "<w:r><w:t> " + XmlEncoderDecoder.textToXml(attributeType.getUnqualifiedName()) + ": </w:t></w:r>");
          } else {
-            wordMl.addWordMl("<w:r><w:t> </w:t></w:r>");
+            wordMl.append("<w:r><w:t> </w:t></w:r>");
          }
       } else {
          // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
-         wordMl.addWordMl(label);
+         wordMl.append(label);
       }
 
       if (attributeType.equals(CoreAttributeTypes.RelationOrder)) {
          wordMl.endParagraph();
          String data = renderRelationOrder(new WordRenderArtifactWrapperClientImpl(artifact));
-         wordMl.addWordMl(data);
+         wordMl.append(data);
       } else {
          String valueList = artifact.getAttributesToString(attributeType);
          if (format.contains(">x<")) {
-            wordMl.addWordMl(format.replace(">x<", ">" + XmlEncoderDecoder.textToXml(valueList).toString() + "<"));
+            wordMl.append(format.replace(">x<", ">" + XmlEncoderDecoder.textToXml(valueList).toString() + "<"));
          } else {
             wordMl.addTextInsideParagraph(valueList);
          }
@@ -498,16 +515,16 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
       return returnValue;
    }
 
-   public String renderRelationOrder(ArtifactReadable wrappedArtifact) {
-      Artifact artifact = ((WordRenderArtifactWrapperClientImpl) wrappedArtifact).getArtifact();
-      StringBuilder builder = new StringBuilder();
-      ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
-      RelationOrderRenderer renderer = new RelationOrderRenderer(guidResolver);
+   public String renderRelationOrder(ArtifactReadable artifactReadable) {
+      var artifact = ((WordRenderArtifactWrapperClientImpl) artifactReadable).getArtifact();
+      var stringBuilder = new StringBuilder();
+      var guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
+      var renderer = new RelationOrderRenderer(guidResolver);
 
-      WordMLProducer producer = new WordMLProducer(builder);
-      RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
-      renderer.toWordML(producer, artifact.getBranch(), relationOrderData);
-      return builder.toString();
+      var publishingAppender = FormatIndicator.WORD_ML.createPublishingAppender(stringBuilder);
+      var relationOrderData = RelationManager.createRelationOrderData(artifact);
+      renderer.toWordML(publishingAppender, artifact.getBranch(), relationOrderData);
+      return stringBuilder.toString();
    }
 
    /**

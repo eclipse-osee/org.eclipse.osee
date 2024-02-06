@@ -14,9 +14,11 @@
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.MapEntryAttributeUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
+import org.eclipse.osee.orcs.core.ds.MapEntryDataProxy;
 
 /**
  * Server side implementation of an attribute that holds a string key and string value pair that is serialized from and
@@ -26,7 +28,7 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 
 @OseeAttribute("MapEntryAttribute")
-public class MapEntryAttribute extends CharacterBackedAttribute<Map.Entry<String, String>> {
+public class MapEntryAttribute extends AttributeImpl<Map.Entry<String, String>> {
 
    /**
     * Creates a new empty {@link MapEntryAttribute} with the specified identifier.
@@ -36,6 +38,15 @@ public class MapEntryAttribute extends CharacterBackedAttribute<Map.Entry<String
 
    public MapEntryAttribute(Long identifier) {
       super(identifier);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   public MapEntryDataProxy getDataProxy() {
+      return (MapEntryDataProxy) super.getDataProxy();
    }
 
    /**
@@ -62,6 +73,26 @@ public class MapEntryAttribute extends CharacterBackedAttribute<Map.Entry<String
       var mapEntry = MapEntryAttributeUtil.jsonDecode(value);
       return mapEntry;
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
+   protected boolean subClassSetValue(Entry<String, String> value) {
+      return this.getDataProxy().setValue(value);
+   }
+
+   /**
+    * Gets the attribute value as an immutable foldable {@link Map.Entry}.
+    *
+    * @return the attribute value as a {@link Map.Entry}.
+    */
+
+   @Override
+   public Map.Entry<String, String> getValue() {
+      return this.getDataProxy().getRawValue();
    }
 
 }

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -38,7 +38,7 @@ public class RelationOrderRenderer {
       this.guidResolver = guidResolver;
    }
 
-   private void writeTableRow(WordMLProducer writer, RelationTypeToken relationType, RelationSide side, String sorterName, List<String> orderedData) {
+   private void writeTableRow(PublishingAppender writer, RelationTypeToken relationType, RelationSide side, String sorterName, List<String> orderedData) {
       writer.startTableRow();
       String relationName = relationType.getName();
       String relationSideName = relationType.getSideName(side);
@@ -57,8 +57,8 @@ public class RelationOrderRenderer {
 
    }
 
-   public void toWordML(WordMLProducer producer, BranchId branch, RelationOrderData relationOrderData) {
-      WordMLProducer writer = producer;
+   public void toWordML(PublishingAppender producer, BranchId branch, RelationOrderData relationOrderData) {
+      PublishingAppender writer = producer;
       try {
          writer.startTable();
          writer.addTablePresentation(WordCoreUtil.tablePresentation.WIDTH_5_694_BORDER_NONE_JUSTIFIED_CENTER);

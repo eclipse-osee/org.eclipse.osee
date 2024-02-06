@@ -66,6 +66,7 @@ public class SynchronizationEndpointImpl implements SynchronizationEndpoint {
    public InputStream exporter(ExportRequest exportRequest) {
 
       try {
+         Objects.requireNonNull(exportRequest);
          PublishingPermissions.verify();
          return this.defineOperations.getSynchronizationOperations().exporter(exportRequest);
       } catch (UserNotAuthorizedForPublishingException e) {

@@ -17,8 +17,9 @@ import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 
 /**
  * A basic implementation of the {@link BranchSpecificationRecord} interface that will provide the necessary information
@@ -71,11 +72,11 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
       this
          (
             identifier,
-            Validation
+            Conditions
                .require
                   (
                      testBranchToken,
-                     Validation.ValueType.PARAMETER,
+                     ValueType.PARAMETER,
                      "BasicBranchSpecificationRecord",
                      "new",
                      "testBranchToken",
@@ -110,10 +111,10 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
       this
          (
             identifier,
-            Validation.require
+            Conditions.require
                (
                   testBranchName,
-                  Validation.ValueType.PARAMETER,
+                  ValueType.PARAMETER,
                   "BasicBranchSpecificationRecord",
                   "new",
                   "testBranchName",
@@ -168,10 +169,10 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
 
       //@formatter:off
       this.identifier =
-         Validation.require
+         Conditions.require
             (
                identifier,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicBranchSpecificationRecord",
                "new",
                "identifier",
@@ -186,10 +187,10 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
 
       //@formatter:off
       this.testBranchName =
-         Validation.require
+         Conditions.require
             (
                testBranchName,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicBranchSpecificationRecord",
                "new",
                "testBranchName",
@@ -201,10 +202,10 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
 
       //@formatter:off
       this.testBranchCreationComment =
-         Validation.require
+         Conditions.require
             (
                testBranchCreationComment,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicBranchSpecificationRecord",
                "new",
                "testBranchCreationComment",
@@ -216,10 +217,10 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
 
       //@formatter:off
       this.parentTestBranchIdentifier =
-         Validation.require
+         Conditions.require
             (
                parentTestBranchIdentifier,
-               Validation.ValueType.PARAMETER,
+               ValueType.PARAMETER,
                "BasicBranchSpecificationRecord",
                "new",
                "parentTestBranchIdentifier",

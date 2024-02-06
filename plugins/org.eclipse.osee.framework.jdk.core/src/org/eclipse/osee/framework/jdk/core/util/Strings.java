@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +43,13 @@ public class Strings {
    private static final String QUOTE_STR = "\"";
    private static final String SPACE_COMMON = "\n|\t|\r|" + System.getProperty("line.separator");
    private static final String STR = "%s%s%s";
-   public static final Charset UTF_8 = Charset.forName("UTF-8");
+   public static final Charset UTF_8 = StandardCharsets.UTF_8;
+
+   /**
+    * Regular expression pattern that matches any Unicode line break.
+    */
+
+   private static Pattern lineBreak = Pattern.compile("\\R");
 
    /**
     * Provides a nicer list of items with an 'and' at the end. <br/>
@@ -319,6 +326,23 @@ public class Strings {
    }
 
    /**
+    * Predicate to determine if an {@link Object} is a non-blank {@link String}.
+    *
+    * @param value the {@link Object} to test.
+    * @return <code>true</code>, when the {@link Object} is a non-blank {@link String}; otherwise, <code>false</code>.
+    */
+
+   public static boolean isValidAndNonBlank(Object value) {
+      //@formatter:off
+      return
+         !(
+               !( value instanceof String )
+            || ((String) value).isBlank()
+          );
+      //@formatter:on
+   }
+
+   /**
     * <p>
     * Remove all <code>\n</code> and <code>\t</code>.
     * </p>
@@ -488,8 +512,7 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<String>> T split(char delimiter, String string, int maxSplits,
-      Supplier<T> collectionFactory) {
+   public static <T extends Collection<String>> T split(char delimiter, String string, int maxSplits, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -523,8 +546,7 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence,
-      Supplier<T> collectionFactory) {
+   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -559,8 +581,7 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence, int maxSplits,
-      Supplier<T> collectionFactory) {
+   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence, int maxSplits, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -582,6 +603,41 @@ public class Strings {
    }
 
    /**
+    * Splits the <code>charSequence</code> into a {@link Collection} of {@link CharSequenceWindow}s for each line.
+    *
+    * @param <T> the {@link Collection} implementation to be returned by the method.
+    * @param charSequence the {@link CharSequence} to be split into {@link CharSequenceWindow}s.
+    * @param collectionFactory a {@link Supplier} of the {@link Collection} to add the {@link CharSequenceWindow}s to.
+    * @return a new {@link Collection} of the {@link CharSequenceWindow}s. An empty {@link Collection} will be returned
+    * for a <code>null</code> <code>charSequence</code>.
+    * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
+    */
+
+   public static <T extends Collection<CharSequenceWindow>> T splitToLinesInCharSequenceWindows(CharSequence charSequence, Supplier<T> collectionFactory) {
+
+      var result = Objects.requireNonNull(collectionFactory).get();
+
+      if (Objects.isNull(charSequence)) {
+         return result;
+      }
+
+      int position, lastPosition = 0;
+      var matcher = Strings.lineBreak.matcher(charSequence);
+
+      while (matcher.find()) {
+         position = matcher.start();
+         result.add(new CharSequenceWindow(charSequence, lastPosition, position));
+         lastPosition = matcher.end();
+      }
+
+      if (lastPosition < charSequence.length()) {
+         result.add(new CharSequenceWindow(charSequence, lastPosition));
+      }
+
+      return result;
+   }
+
+   /**
     * Splits the <code>charSequence</code> into a {@link Collection} of {@link CharSequenceWindow}s using the character
     * <code>delimiter</code>.
     *
@@ -594,8 +650,7 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter,
-      CharSequence charSequence, Supplier<T> collectionFactory) {
+   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter, CharSequence charSequence, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -630,8 +685,7 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter,
-      CharSequence charSequence, int maxSplits, Supplier<T> collectionFactory) {
+   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter, CharSequence charSequence, int maxSplits, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 

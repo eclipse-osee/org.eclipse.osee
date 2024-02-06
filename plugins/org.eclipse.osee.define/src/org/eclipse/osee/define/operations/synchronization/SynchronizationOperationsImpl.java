@@ -21,8 +21,9 @@ import org.eclipse.osee.define.rest.api.synchronization.ExportRequest;
 import org.eclipse.osee.define.rest.api.synchronization.ImportRequest;
 import org.eclipse.osee.define.util.OsgiUtils;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -137,10 +138,10 @@ public class SynchronizationOperationsImpl implements SynchronizationOperations 
    public InputStream exporter(ExportRequest exportRequest) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             exportRequest,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "SynchronizationOperationsImpl",
             "exporter",
             "exportRequest",
@@ -190,11 +191,11 @@ public class SynchronizationOperationsImpl implements SynchronizationOperations 
 
          //@formatter:off
          message =
-            Validation.require
+            Conditions.require
                (
                   message,
                   importRequest,
-                  Validation.ValueType.PARAMETER,
+                  ValueType.PARAMETER,
                   "SynchronizationOperationsImpl",
                   "importer",
                   "importRequest",
@@ -205,7 +206,7 @@ public class SynchronizationOperationsImpl implements SynchronizationOperations 
                );
 
          message =
-            Validation.requireNonNull
+            Conditions.requireNonNull
                (
                   message,
                   inputStream,
@@ -218,7 +219,7 @@ public class SynchronizationOperationsImpl implements SynchronizationOperations 
             throw
                new IllegalArgumentException
                       (
-                         Validation.buildIllegalArgumentExceptionMessage
+                         Conditions.buildIllegalArgumentExceptionMessage
                             (
                                this.getClass().getSimpleName(),
                                "importer",

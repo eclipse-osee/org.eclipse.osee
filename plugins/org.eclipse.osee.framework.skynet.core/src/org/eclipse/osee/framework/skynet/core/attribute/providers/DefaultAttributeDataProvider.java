@@ -18,7 +18,7 @@ import java.io.IOException;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
@@ -54,7 +54,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
       try {
          data = dataStore.getContent();
          if (data != null) {
-            data = Lib.decompressBytes(new ByteArrayInputStream(data));
+            data = Zip.decompressBytes(new ByteArrayInputStream(data));
             fromStorage = new String(data, "UTF-8");
          }
       } catch (IOException ex) {
@@ -103,7 +103,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
       if (value != null && value instanceof String && ((String) value).length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
-               Lib.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")), getInternalFileName());
+               Zip.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")), getInternalFileName());
             dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
             this.rawValue = null;
          } catch (IOException ex) {

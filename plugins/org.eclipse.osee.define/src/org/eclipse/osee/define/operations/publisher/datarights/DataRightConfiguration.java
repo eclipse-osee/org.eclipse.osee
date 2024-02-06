@@ -96,7 +96,7 @@ class DataRightConfiguration {
          .append(       "</w:p>" )
          .append(       "<w:p>" )
          .append(          "<w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr>" )
-         .append(          "<w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contract No.: </w:t></w:r>" )
+         .append(          "<w:r><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr><w:t>Contract No.: 0780663667</w:t></w:r>" )
          .append(       "</w:p>" )
          .append(       "<w:p>" )
          .append(          "<w:pPr><w:spacing w:before=\"0\" w:after=\"0\" w:line=\"240\" w:line-rule=\"auto\"/><w:jc w:val=\"both\"/><w:rPr><w:rFonts w:cs=\"Arial\"/><w:sz w:val=\"16\"/></w:rPr></w:pPr>" )

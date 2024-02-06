@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyGroups;
@@ -25,8 +24,8 @@ import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemp
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.jdk.core.util.Validation;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 
@@ -94,13 +93,6 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
    private final JdbcService jdbcService;
 
    /**
-    * Regular expression patter used to extract the {@link PublishingTemplateProvider} key from a Publishing Template
-    * Identifier.
-    */
-
-   private final Pattern keyPrefixPattern;
-
-   /**
     * Saves a reference to the {@link PublishingTemplateCache}.
     */
 
@@ -118,10 +110,7 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
 
       this.jdbcService = jdbcService;
 
-      this.keyPrefixPattern = Pattern.compile("(^[A-Z]+)-");
-
       this.publishingTemplateCache = PublishingTemplateCache.create(logger, dataAccessOperations);
-
    }
 
    /**
@@ -205,10 +194,10 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
    public org.eclipse.osee.framework.core.publishing.PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest) {
 
       //@formatter:off
-      Validation.require
+      Conditions.require
          (
             publishingTemplateRequest,
-            Validation.ValueType.PARAMETER,
+            ValueType.PARAMETER,
             "TemplateManagerOperationsImpl",
             "getPublishingTemplate",
             "publishingTemplateRequest",
@@ -224,7 +213,7 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
       boolean isNoTags = Boolean.valueOf(OseeInfo.getValue(this.jdbcService.getClient(), "osee.publish.no.tags"));
 
       //@formatter:off
-      var publishingTemplate =
+      var publishingTemplateBean =
          ( publishingTemplateRequest.isByOptions()
               ? this.publishingTemplateCache
                    .findFirstTemplate( PublishingTemplateKeyType.NAME, publishingTemplateRequest.getOption() )
@@ -236,13 +225,23 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
                                   )
                       )
               : this.publishingTemplateCache
-                   .findFirstTemplate( PublishingTemplateKeyType.IDENTIFIER, publishingTemplateRequest.getTemplateId() )
+                   .findFirstTemplate
+                      (
+                         PublishingTemplateKeyType.IDENTIFIER,
+                         publishingTemplateRequest.getTemplateId()
+                      )
          )
-         .map( PublishingTemplate::getBean )
+         .map
+            (
+               ( publishingTemplate ) -> publishingTemplate.getBean
+                                            (
+                                               publishingTemplateRequest.getFormatIndicator()
+                                            )
+            )
          .orElse( org.eclipse.osee.framework.core.publishing.PublishingTemplate.SENTINEL );
       //@formatter:on
 
-      return publishingTemplate;
+      return publishingTemplateBean;
    }
 
    /**
@@ -250,55 +249,49 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     */
 
    @Override
-   public org.eclipse.osee.framework.core.publishing.PublishingTemplate getPublishingTemplate(String primaryKey, String secondaryKey) {
-
-      Message message = null;
+   public String getPublishingTemplateStatus(PublishingTemplateRequest publishingTemplateRequest) {
 
       //@formatter:off
-      message = Validation.requireNonNull( message, primaryKey,   "TemplateManagerOperationsImpl", "getPublishingTemplate", "primayKey"    );
-      message = Validation.requireNonNull( message, secondaryKey, "TemplateManagerOperationsImpl", "getPublishingTemplate", "secondaryKey" );
-
-      if (Objects.nonNull(message)) {
-         var exceptionMessage = Validation.buildIllegalArgumentExceptionMessage( this.getClass().getSimpleName(), "getPublishingTemplate", message );
-         throw new IllegalArgumentException( exceptionMessage );
-      }
+      Conditions.require
+         (
+            publishingTemplateRequest,
+            ValueType.PARAMETER,
+            "TemplateManagerOperationsImpl",
+            "getPublishingTemplate",
+            "publishingTemplateRequest",
+            "cannot be null",
+            Objects::isNull,
+            NullPointerException::new,
+            "publishing template request is valid",
+            (p) -> !p.isValid(),
+            IllegalArgumentException::new
+         );
       //@formatter:on
 
-      var publishingTemplateCacheKey = PublishingTemplateKeyType.valueOf(primaryKey);
+      boolean isNoTags = Boolean.valueOf(OseeInfo.getValue(this.jdbcService.getClient(), "osee.publish.no.tags"));
 
-      switch (publishingTemplateCacheKey) {
-         case NAME:
-         case SAFE_NAME: {
-            //@formatter:off
-            return
-               this.publishingTemplateCache
-                  .findFirstTemplate( publishingTemplateCacheKey, secondaryKey )
-                  .map( PublishingTemplate::getBean )
-                  .orElse( org.eclipse.osee.framework.core.publishing.PublishingTemplate.SENTINEL );
-            //@formatter:on
-         }
-
-         case IDENTIFIER: {
-            var prefixMatcher = this.keyPrefixPattern.matcher(secondaryKey);
-
-            if (!prefixMatcher.matches()) {
-               return org.eclipse.osee.framework.core.publishing.PublishingTemplate.SENTINEL;
-            }
-
-            var localIdentifier = secondaryKey.substring(prefixMatcher.end(0) + 2);
-
-            //@formatter:off
-            return
-               this.publishingTemplateCache
-                  .findFirstTemplate( publishingTemplateCacheKey, localIdentifier )
-                  .map( PublishingTemplate::getBean )
-                  .orElse( org.eclipse.osee.framework.core.publishing.PublishingTemplate.SENTINEL );
-            //@formatter:on
-         }
-
-         default:
-            return org.eclipse.osee.framework.core.publishing.PublishingTemplate.SENTINEL;
-      }
+      //@formatter:off
+      return
+         ( publishingTemplateRequest.isByOptions()
+              ? this.publishingTemplateCache
+                   .findFirstTemplate( PublishingTemplateKeyType.NAME, publishingTemplateRequest.getOption() )
+                   .or
+                      (
+                         () -> this.publishingTemplateCache.findFirstTemplateByMatchCriteria
+                                  (
+                                     this.getPossibleTemplateNamesOrderedBySpecialization( publishingTemplateRequest, isNoTags )
+                                  )
+                      )
+              : this.publishingTemplateCache
+                   .findFirstTemplate
+                      (
+                         PublishingTemplateKeyType.IDENTIFIER,
+                         publishingTemplateRequest.getTemplateId()
+                      )
+         )
+         .map( PublishingTemplate::getStatus )
+         .orElse( "NOT FOUND" );
+      //@formatter:on
    }
 
    /**

@@ -2758,6 +2758,7 @@ public class WordCoreUtil {
     * the 'x' in the Renderer Option Template replacement token is replaced with the provided <code>text</code> after
     * XML encoding; otherwise, the provided <code>text</code> is XML encoded.
     *
+    * @param formatIndicator the format of the publish.
     * @param rendererOptionTemplate the WordML template from the Renderer Options.
     * @param text the text to be XML encoded an inserted into the template.
     * @return when the <code>rendererOptionTemplate</code> is valid, a {@link CharSequence} containing the
@@ -2765,7 +2766,7 @@ public class WordCoreUtil {
     * of the provided <code>text</code>.
     */
 
-   public static CharSequence replaceRendererOptionToken(String labelTemplate, String formatTemplate, CharSequence name, CharSequence value) {
+   public static CharSequence replaceRendererOptionToken(FormatIndicator formatIndicator, String labelTemplate, String formatTemplate, CharSequence name, CharSequence value) {
 
       //@formatter:off
       int x = labelTemplate.indexOf( WordCoreUtil.RENDERER_OPTION_FORMAT_TOKEN );
@@ -2789,58 +2790,112 @@ public class WordCoreUtil {
       int f =   ( formatTemplate.length() >   0 ? 1 : 0 )
               + ( y                       != -1 ? 2 : 0 );
 
+      switch( formatIndicator ) {
 
-      switch(l) {
-         default: // no label, no token
+         default:
+         case WORD_ML:
          {
-            stringBuilder
-               .append( WordCoreUtil.RUN_TEXT )
-               .append( XmlEncoderDecoder.textToXml( name ) )
-               .append( ": " );
-         }
-         break;
+            switch(l) {
+               default: // no label, no token
+               {
+                  stringBuilder
+                     .append( WordCoreUtil.RUN_TEXT )
+                     .append( XmlEncoderDecoder.textToXml( name ) )
+                     .append( ": " );
+               }
+               break;
 
-         case 1: // label, no token
-         {
-            stringBuilder
-               .append( labelTemplate );
-         }
-         break;
+               case 1: // label, no token
+               {
+                  stringBuilder
+                     .append( labelTemplate );
+               }
+               break;
 
-         case 3: // label, token
-         {
-            stringBuilder
-               .append( labelTemplate.subSequence( 0, x ) )
-               .append( XmlEncoderDecoder.textToXml( name ) )
-               .append( labelTemplate.subSequence( x + 1, labelTemplate.length() ) );
-         }
-         break;
-      }
-
-      switch(f) {
-         default: // no format, no token
-         {
-            if( l != 0 ) {
-               stringBuilder
-                  .append( WordCoreUtil.RUN_TEXT );
+               case 3: // label, token
+               {
+                  stringBuilder
+                     .append( labelTemplate.subSequence( 0, x ) )
+                     .append( XmlEncoderDecoder.textToXml( name ) )
+                     .append( labelTemplate.subSequence( x + 1, labelTemplate.length() ) );
+               }
+               break;
             }
-            stringBuilder
-               .append( XmlEncoderDecoder.textToXml( value ) );
+
+            switch(f) {
+               default: // no format, no token
+               {
+                  if( l != 0 ) {
+                     stringBuilder
+                        .append( WordCoreUtil.RUN_TEXT );
+                  }
+                  stringBuilder
+                     .append( XmlEncoderDecoder.textToXml( value ) );
+               }
+               break;
+
+               case 3:  // format token
+                  stringBuilder
+                     .append( formatTemplate.subSequence( 0, y ) )
+                     .append( XmlEncoderDecoder.textToXml( value ) )
+                     .append( formatTemplate.subSequence( y + 1, formatTemplate.length() ) );
+            }
+
+            if( f != 3 ) {
+               stringBuilder
+                  .append( WordCoreUtil.RUN_TEXT_END );
+            }
          }
          break;
 
-         case 3:  // format token
-            stringBuilder
-               .append( formatTemplate.subSequence( 0, y ) )
-               .append( XmlEncoderDecoder.textToXml( value ) )
-               .append( formatTemplate.subSequence( y + 1, formatTemplate.length() ) );
-      }
+         case MARKDOWN:
+         {
+            var publishingAppender = formatIndicator.createPublishingAppender( stringBuilder );
 
-      if( f != 3 ) {
-         stringBuilder
-            .append( WordCoreUtil.RUN_TEXT_END );
-      }
+            switch(l) {
+               default: // no label, no token
+               {
+                  publishingAppender
+                     .append( name )
+                     .append( ": " );
+               }
+               break;
 
+               case 1: // label, no token
+               {
+                  publishingAppender
+                     .append( labelTemplate );
+               }
+               break;
+
+               case 3: // label, token
+               {
+                  publishingAppender
+                     .append( labelTemplate.subSequence( 0, x ) )
+                     .append( XmlEncoderDecoder.textToXml( name ) )
+                     .append( labelTemplate.subSequence( x + 1, labelTemplate.length() ) );
+               }
+               break;
+            }
+
+            switch(f) {
+               default: // no format, no token
+               {
+                  publishingAppender
+                     .append( value );
+               }
+               break;
+
+               case 3:  // format token
+                  publishingAppender
+                     .append( formatTemplate.subSequence( 0, y ) )
+                     .append( value )
+                     .append( formatTemplate.subSequence( y + 1, formatTemplate.length() ) );
+            }
+
+         }
+         break;
+      }
       return stringBuilder;
 
       //@formatter:on
@@ -2989,14 +3044,15 @@ public class WordCoreUtil {
     * Generate Word ML for a section's header
     *
     * @param header input for the word ml to process
-    * @param type (word-ml or text)
+    * @param formatIndicator the format for the publish.
     * @return a {@link StringBuilder} with word ml or the header
     */
 
-   public static StringBuilder generateHeader(CharSequence header, FormatIndicator type) {
+   public static StringBuilder generateHeader(CharSequence header, FormatIndicator formatIndicator) {
       //@formatter:off
-      if (type.getType().equals("word-ml")) {
-         var size = WordCoreUtil.HEADER.length()
+      if (formatIndicator.isWordMl()) {
+         var size =
+                 WordCoreUtil.HEADER.length()
                + WordCoreUtil.HEADER_END.length()
                + header.length();
 
@@ -3009,7 +3065,7 @@ public class WordCoreUtil {
          return output;
       } else {
          var size =
-            WordCoreUtil.HEADER.length()
+              WordCoreUtil.HEADER.length()
             + WordCoreUtil.HEADER_END.length()
             + WordCoreUtil.PARAGRAPH.length()
             + WordCoreUtil.PARAGRAPH_END.length()
@@ -3039,13 +3095,13 @@ public class WordCoreUtil {
     * Generate Word ML for a section's footer
     *
     * @param footer input for the word ml to process
-    * @param type (word-ml or text)
+    * @param formatIndicator the format for the publish.
     * @return a {@link StringBuilder} with word ml or the footer
     */
 
-   public static StringBuilder generateFooter(CharSequence footer, FormatIndicator type) {
+   public static StringBuilder generateFooter(CharSequence footer, FormatIndicator formatIndicator) {
     //@formatter:off
-      if (type.getType().equals("word-ml")) {
+      if (formatIndicator.isWordMl()) {
          var size = WordCoreUtil.FOOTER.length()
                + WordCoreUtil.FOOTER_END.length()
                + footer.length();

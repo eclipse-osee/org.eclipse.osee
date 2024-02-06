@@ -89,7 +89,7 @@ public class WordRenderUtil {
        * {@link WordRenderUtil#processAttributes} method is called when it is determined that an attribute will be
        * rendered.
        *
-       * @param attributeOptions the {@link AttributeOptions} array element from the {@link RendererOptions} that
+       * @param attributeOptions the {@link AttributeOptions} array element from the {@link PublishOptions} that
        * applies to the attribute to be rendered.
        * @param attributeType the type of attribute to be rendered.
        * @param allAttributes the render all attributes flag.
@@ -193,9 +193,7 @@ public class WordRenderUtil {
     * @throws OseeCoreException when a failure occurred obtaining the data rights.
     */
 
-   public static Optional<DataRightContentBuilder> getDataRights(List<PublishingArtifact> artifacts, BranchId branchId,
-      boolean recurse, boolean notHistorical, String overrideClassification,
-      ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider) {
+   public static Optional<DataRightContentBuilder> getDataRights(List<PublishingArtifact> artifacts, BranchId branchId, boolean recurse, boolean notHistorical, String overrideClassification, ArtifactAcceptor descendantArtifactAcceptor, DataRightsProvider dataRightsProvider) {
 
       //@formatter:off
       assert
@@ -301,8 +299,7 @@ public class WordRenderUtil {
     * descendants.
     */
 
-   public static List<PublishingArtifact> getPublishArtifacts(List<PublishingArtifact> artifacts, boolean recursive,
-      boolean notHistorical, ArtifactAcceptor descendantArtifactAcceptor) {
+   public static List<PublishingArtifact> getPublishArtifacts(List<PublishingArtifact> artifacts, boolean recursive, boolean notHistorical, ArtifactAcceptor descendantArtifactAcceptor) {
 
       if (Objects.isNull(artifacts) || artifacts.isEmpty()) {
          return null;
@@ -361,17 +358,14 @@ public class WordRenderUtil {
 
       var startParagraphNumber = "1";
 
-      if (Objects.isNull(publishingTemplate) || Objects.isNull(artifact)) {
+      //@formatter:off
+      if(    Objects.isNull(publishingTemplate)
+          || Objects.isNull(artifact)
+          || publishingTemplate.test(WordCoreUtil::isNotArtifactPublishingTemplateInsertToken)
+          || !artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber) ) {
          return startParagraphNumber;
       }
-
-      if (publishingTemplate.test(WordCoreUtil::isNotArtifactPublishingTemplateInsertToken)) {
-         return startParagraphNumber;
-      }
-
-      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
-         return startParagraphNumber;
-      }
+      //@formatter:on
 
       var paragraphNumber = artifact.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber, "");
 
@@ -398,9 +392,7 @@ public class WordRenderUtil {
     * {@link DescendantArtifactAcceptor} will excluded from the output list.
     */
 
-   private static void loadChildrenRecursive(List<PublishingArtifact> allArtifacts, Set<ArtifactId> checkSet,
-      List<PublishingArtifact> levelArtifacts, int outlineLevel, boolean recurse, boolean notHistorical,
-      ArtifactAcceptor descendantArtifactAcceptor) {
+   private static void loadChildrenRecursive(List<PublishingArtifact> allArtifacts, Set<ArtifactId> checkSet, List<PublishingArtifact> levelArtifacts, int outlineLevel, boolean recurse, boolean notHistorical, ArtifactAcceptor descendantArtifactAcceptor) {
 
       var artifactIterator = levelArtifacts.iterator();
       PublishingArtifact artifact = null;
@@ -466,7 +458,9 @@ public class WordRenderUtil {
     * Otherwise it only runs for the specific attribute element. In this default implementation the presentation type is
     * preview.
     *
-    * @param attributeOptionsArray a list of the {@link AttributeOptions} from the {@link RendererOptions} for the
+    * @param formatIndicator the output format of the publish. This parameter is used to determine the attribute type to
+    * process when the "AttrType" attribute option is set to "&lt;format-content-attribute&gt;".
+    * @param attributeOptionsArray a list of the {@link AttributeOptions} from the {@link PublishOptions} for the
     * publish.
     * @param attributeProcessor a callback method to render and attribute.
     * @param attributeTypeFunction a callback method to look up an {@link AttributeTypeToken} by an attribute name.
@@ -482,6 +476,7 @@ public class WordRenderUtil {
    public static void
       processAttributes
          (
+            FormatIndicator formatIndicator,
             List<AttributeOptions> attributeOptionsArray,
             AttributeProcessor attributeProcessor,
             AttributeTypeFunction attributeTypeFunction,
@@ -534,7 +529,12 @@ public class WordRenderUtil {
              * the outlining setting or whether the attribute type is for a heading.
              */
 
-            var attributeType = attributeTypeFunction.apply(attributeName);
+            //@formatter:off
+            var attributeType =
+               "<format-content-attribute>".equals( attributeName )
+                  ? formatIndicator.getMainContentAttributeTypeToken()
+                  : attributeTypeFunction.apply(attributeName);
+            //@formatter:on
 
             if (artifact.isAttributeTypeValid(attributeType)) {
 
@@ -561,64 +561,65 @@ public class WordRenderUtil {
     * @param applicabilityTokens a {@link Map} of the applicability tokens by applicability identifiers for rendering
     * the "Applicability" metadata attribute.
     * @param artifact the client or server artifact wrapped in an {@link ArtifactReadable}.
-    * @param wordMl the {@link WordMLProducer} to render the attributes with.
+    * @param publishingAppender the {@link PublishingAppender} to render the attributes with.
     */
 
-   public static void processMetadataOptions(MetadataOptions[] metadataOptionsArray,
-      Map<ApplicabilityId, ApplicabilityToken> applicabilityTokens, ArtifactReadable artifact, WordMLProducer wordMl) {
+   public static void processMetadataOptions(FormatIndicator formatIndicator, MetadataOptions[] metadataOptionsArray, Map<ApplicabilityId, ApplicabilityToken> applicabilityTokens, ArtifactReadable artifact, PublishingAppender publishingAppender) {
+
+      if (Objects.isNull(metadataOptionsArray)) {
+         return;
+      }
 
       //@formatter:off
-      if (Objects.nonNull(metadataOptionsArray)) {
+      Arrays.asList( metadataOptionsArray )
+         .forEach
+            (
+               (element) ->
+               {
 
-         Arrays.asList( metadataOptionsArray )
-            .forEach
-               (
-                  (element) ->
-                  {
+                   String name = element.getType();
+                   String format = element.getFormat();
+                   String label = element.getLabel();
+                   String value;
 
-                      String name = element.getType();
-                      String format = element.getFormat();
-                      String label = element.getLabel();
-                      String value;
-
-                      switch( name )
+                   switch( name )
+                   {
+                      case WordRenderUtil.APPLICABILITY:
                       {
-                         case WordRenderUtil.APPLICABILITY:
-                         {
-                            ApplicabilityToken applicabilityToken;
+                         ApplicabilityToken applicabilityToken;
 
-                            value = artifact.getApplicability().isValid()
-                                       ? Objects.nonNull( applicabilityToken = applicabilityTokens.get(artifact.getApplicability() ) )
-                                            ? applicabilityToken.getName()
-                                            : artifact.getApplicability().getIdString()
-                                       : "unknown";
-                         }
-                         break;
-
-                         case WordRenderUtil.ARTIFACT_TYPE:
-                         {
-                            value = artifact.getArtifactType().getName();
-                         }
-                         break;
-
-                         case WordRenderUtil.ARTIFACT_ID:
-                         {
-                            value = artifact.getIdString();
-                         }
-                         break;
-
-                         default:
-                         {
-                            value = "";
-                         }
+                         value = artifact.getApplicability().isValid()
+                                    ? Objects.nonNull( applicabilityToken = applicabilityTokens.get(artifact.getApplicability() ) )
+                                         ? applicabilityToken.getName()
+                                         : artifact.getApplicability().getIdString()
+                                    : "unknown";
                       }
+                      break;
 
-                      wordMl.startParagraph();
-                      wordMl.addWordMl( WordCoreUtil.replaceRendererOptionToken( label, format, name, value ) );
-                      wordMl.endParagraph();
-                  }
-               );
-      }
+                      case WordRenderUtil.ARTIFACT_TYPE:
+                      {
+                         value = artifact.getArtifactType().getName();
+                      }
+                      break;
+
+                      case WordRenderUtil.ARTIFACT_ID:
+                      {
+                         value = artifact.getIdString();
+                      }
+                      break;
+
+                      default:
+                      {
+                         value = "";
+                      }
+                   }
+
+                   publishingAppender.startParagraph();
+                   publishingAppender.append( WordCoreUtil.replaceRendererOptionToken( formatIndicator, label, format, name, value ) );
+                   publishingAppender.endParagraph();
+               }
+            );
+      //@formatter:on
    }
 
    /**
@@ -631,13 +632,13 @@ public class WordRenderUtil {
     * @param attributeType the attribute to be rendered.
     * @param relationOrderFunction a {@link RelationOrderFunction} used to render the
     * {@link CoreAttributeTypes#RelationOrder} attribute.
-    * @param artifact the artifact's whose attribute is to be rendered.
-    * @param wordMl the generated Word ML is written to the {@link WordMLProducer}.
+    * @param artifactReadable the artifact's whose attribute is to be rendered.
+    * @param publishingAppender the generated Word ML is written to the {@link PublishingAppender}.
     * @param label the label template from the Publishing Template Renderer Options for the attribute.
     * @param format the format template from the Publishing Template Renderer Options for the attribute.
     */
 
-   public static void renderAttribute(AttributeTypeToken attributeType, RelationOrderFunction relationOrderFunction, ArtifactReadable artifact, WordMLProducer wordMl, String label, String format) {
+   public static void renderAttribute(FormatIndicator formatIndicator, AttributeTypeToken attributeType, RelationOrderFunction relationOrderFunction, ArtifactReadable artifactReadable, PublishingAppender publishingAppender, String label, String format) {
 
       var name = attributeType.getUnqualifiedName();
 
@@ -656,17 +657,17 @@ public class WordRenderUtil {
           * Render Relation Order
           */
 
-         wordMl.startParagraph();
-         wordMl.addRunWithTextEscape(name);
-         wordMl.endParagraph();
+         publishingAppender.startParagraph();
+         publishingAppender.addRunWithTextEscape(name);
+         publishingAppender.endParagraph();
 
          /*
           * Data will contain a sub-section with a table.
           */
 
-         String data = relationOrderFunction.apply(artifact);
+         String data = relationOrderFunction.apply(artifactReadable);
 
-         wordMl.addWordMl(data);
+         publishingAppender.append(data);
 
       } else {
 
@@ -674,14 +675,14 @@ public class WordRenderUtil {
           * Render Label: Value
           */
 
-         var value = artifact.getAttributeValuesAsString(attributeType);
+         var value = artifactReadable.getAttributeValuesAsString(attributeType);
 
-         wordMl.startParagraph();
-         wordMl.addWordMl(WordCoreUtil.replaceRendererOptionToken(label, format, name, value));
-         wordMl.endParagraph();
+         publishingAppender.startParagraph();
+         publishingAppender.append(
+            WordCoreUtil.replaceRendererOptionToken(formatIndicator, label, format, name, value));
+         publishingAppender.endParagraph();
       }
    }
-
 
    //@formatter:off
    public static String
@@ -689,7 +690,7 @@ public class WordRenderUtil {
          (
             ArtifactReadable                   artifact,
             ArtifactId                         viewId,
-            WordMLProducer                     wordMl,
+            PublishingAppender                 wordMl,
             RendererMap                        rendererMap,
             PresentationType                   presentationType,
             String                             label,
@@ -773,7 +774,7 @@ public class WordRenderUtil {
             wordMl.addEditParagraphNoEscape(WordCoreUtil.getStartEditImage(artifact.getGuid()));
 
             if( Objects.nonNull( wordMlContentDataAndFooter ) ) {
-               wordMl.addWordMl( wordMlContentDataAndFooter );
+               wordMl.append( wordMlContentDataAndFooter );
             }
 
             wordMl.addEditParagraphNoEscape(WordCoreUtil.getEndEditImage(artifact.getGuid()));
@@ -782,7 +783,7 @@ public class WordRenderUtil {
 
             if( Objects.nonNull( wordMlContentDataAndFooter ) ) {
 
-               wordMl.addWordMl( wordMlContentDataAndFooter );
+               wordMl.append( wordMlContentDataAndFooter );
 
                if( WordCoreUtil.containsLists( wordMlContentDataAndFooter) ) {
 
@@ -794,7 +795,7 @@ public class WordRenderUtil {
 
                if( Objects.nonNull( footer ) ) {
 
-                  wordMl.addWordMl( footer );
+                  wordMl.append( footer );
 
                }
 
@@ -809,41 +810,60 @@ public class WordRenderUtil {
    //@formatter:on
 
    /**
-    * Prepares a publishing template by doing the following:
+    * Prepares a {@link PublishingTemplate} and a {@link PublishingAppender}.
+    * <dl>
+    * <dt>Publishing Template Setup</dt>
+    * <dd>
     * <ul>
-    * <li>Removes Word ML page number tags for page 1.</li>
+    * <li>If the publishing template format is Word ML, the page number tags for page 1 are removed.</li>
+    * <li>If the publishing template format is Word ML, styles are updated to the initial outlining numbers for the
+    * publish.</li></dd>
+    * <dt>Publishing Appender Setup</dt>
+    * <dd>
     * <li>Sets the initial list sequence numbers for the starting number of the publish.</li>
+    * <li>Sets the maximum outlining level.</li>
     * </ul>
+    * </dl>
     *
+    * @param formatIndicator the format for the publish.
     * @param publishingTemplate the {@link PublishingTemplate} to prepare.
     * @param artifact the artifact to be published.
-    * @param wordMl the {@link WordMLProducer} for the publish is initialized with the starting paragraph number.
+    * @param publishingAppender the {@link PublishingAppender} for the publish is initialized with the starting
+    * paragraph number.
     * @param outlineNumber when not <code>null</code> or blank, is used as the starting paragraph number.
     * @param maxOutline the maximum number of outlining levels allowed for the publish.
     */
 
-   public static void setupPublishingTemplate(PublishingTemplate publishingTemplate, ArtifactReadable artifact,
-      WordMLProducer wordMl, String outlineNumber, String outlineType, int maxOutline) {
+   public static void setupPublishingTemplate(FormatIndicator formatIndicator, PublishingTemplate publishingTemplate, ArtifactReadable artifact, PublishingAppender publishingAppender, String outlineNumber, String outlineType, int maxOutline) {
+
+      if (formatIndicator.isWordMl()) {
+         publishingTemplate.update(WordCoreUtil::cleanupPageNumberTypeStart1);
+      }
 
       //@formatter:off
-      publishingTemplate.update( WordCoreUtil::cleanupPageNumberTypeStart1 );
-
       final var finalOutlineNumber =
          Strings.isInvalidOrBlank( outlineNumber )
             ? WordRenderUtil.getStartingParagraphNumber( artifact, publishingTemplate )
             : outlineNumber;
-
-       publishingTemplate.update
-          (
-            (tc) -> WordCoreUtil.initializePublishingTemplateOutliningNumbers( finalOutlineNumber, tc, outlineType )
-          );
-
-       wordMl.setNextParagraphNumberTo( finalOutlineNumber );
-
-       if( maxOutline < 9 ) {
-          wordMl.setMaxOutlineLevel( maxOutline );
-       }
        //@formatter:on
+
+      if (formatIndicator.isWordMl()) {
+         //@formatter:off
+          publishingTemplate.update
+             (
+               ( templateContent) -> WordCoreUtil.initializePublishingTemplateOutliningNumbers
+                                        (
+                                           finalOutlineNumber,
+                                           templateContent,
+                                           outlineType
+                                        )
+             );
+          //@formatter:on
+      }
+
+      publishingAppender.setNextParagraphNumberTo(finalOutlineNumber);
+
+      publishingAppender.setMaxOutlineLevel(maxOutline);
    }
 
 }

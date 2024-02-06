@@ -221,7 +221,7 @@ public class ExportRequest implements ToMessage {
          .title( "ExportRequest" )
          .indentInc()
          .segment( "synchronizationArtifactType", this.synchronizationArtifactType )
-         .segmentIndexedArray( "roots", this.roots )
+         .segmentIndexed( "roots", this.roots )
          .indentDec()
          ;
       //@formatter:on

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.swt;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -62,6 +63,14 @@ public final class ImageManager {
          return getImageDescriptor(MISSING);
       }
       return getImageDescriptor(new ProgramImage(extension));
+   }
+
+   public synchronized static Optional<ImageDescriptor> safeGetProgramImageDescriptor(String extension) {
+      try {
+         return Optional.ofNullable(getImageDescriptor(new ProgramImage(extension)));
+      } catch (Exception e) {
+         return Optional.empty();
+      }
    }
 
    private static boolean isInTest() {

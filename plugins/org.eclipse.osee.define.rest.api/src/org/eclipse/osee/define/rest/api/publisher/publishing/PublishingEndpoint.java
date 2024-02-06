@@ -162,7 +162,7 @@ public interface PublishingEndpoint {
    Attachment
       msWordPreview
          (
-            @Multipart ( value = "msWordPreviewRequestData", type = MediaType.APPLICATION_JSON ) MsWordPreviewRequestData msWordPreviewRequestData
+            @Multipart ( value = "msWordPreviewRequestData", type = MediaType.APPLICATION_JSON ) PublishingRequestData msWordPreviewRequestData
          );
    //@formatter:on
 

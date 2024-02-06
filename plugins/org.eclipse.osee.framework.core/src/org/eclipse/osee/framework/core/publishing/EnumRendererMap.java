@@ -16,13 +16,15 @@ package org.eclipse.osee.framework.core.publishing;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 
 /**
- * This class is used by {@link IRenderer} implementations to store {@link RendererOptions} and there values. It is also
+ * This class is used by {@link IRenderer} implementations to store {@link PublishOptions} and there values. It is also
  * used by the server side publishing.
  *
  * @author Branden W. Phillips
@@ -460,6 +462,15 @@ public class EnumRendererMap implements RendererMap {
     */
 
    @Override
+   public Iterator<Entry<RendererOption, Object>> iterator() {
+      return this.rendererOptions.entrySet().iterator();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public Set<RendererOption> keySet() {
       return Collections.unmodifiableSet(this.rendererOptions.keySet());
    }
@@ -535,10 +546,7 @@ public class EnumRendererMap implements RendererMap {
                   .toString();
       //@formatter:on
 
-      @SuppressWarnings("cast")
-      var castPriorValue = value;
-
-      return castPriorValue;
+      return value;
    }
 
    /**
@@ -606,8 +614,18 @@ public class EnumRendererMap implements RendererMap {
          }
 
          @Override
+         public Iterator<Map.Entry<RendererOption, Object>> iterator() {
+            return EnumRendererMap.this.iterator();
+         }
+
+         @Override
          public Set<RendererOption> keySet() {
             return EnumRendererMap.this.keySet();
+         }
+
+         @Override
+         public <T> T removeRendererOption(RendererOption key) {
+            throw new UnsupportedOperationException();
          }
 
          @Override
@@ -623,11 +641,6 @@ public class EnumRendererMap implements RendererMap {
          @Override
          public RendererMap unmodifiableRendererMap() {
             return this;
-         }
-
-         @Override
-         public <T> T removeRendererOption(RendererOption key) {
-            throw new UnsupportedOperationException();
          }
 
       };

@@ -15,15 +15,17 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.define.rest.api.publisher.publishing.MsWordPreviewRequestData;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -32,10 +34,13 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
@@ -152,8 +157,8 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
                      MSWordTemplateServerRenderer.imageDescriptor,
                      Map.of
                         (
-                           RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
-                           RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_VALUE.getKey()
+                           RendererOption.OPEN_OPTION.getKey(),       RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
+                           RendererOption.TEMPLATE_OPTION.getKey(),   RendererOption.PREVIEW_ALL_VALUE.getKey()
                         )
                    ),
 
@@ -216,6 +221,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
    public MSWordTemplateServerRenderer(RendererMap options) {
       super(options);
       this.comparator = new WordTemplateCompare(this);
+      this.menuCommands = MSWordTemplateServerRenderer.menuCommandDefinitions;
    }
 
    /**
@@ -229,12 +235,8 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-
-      Objects.requireNonNull(commands,
-         "MSWordTemplateServerRenderer::addMenuCommandDefinitions, the parameter \"commands\" is null.");
-
-      MSWordTemplateServerRenderer.menuCommandDefinitions.forEach(commands::add);
+   protected @NonNull Optional<ImageDescriptor> getArtifactBasedImageDescriptor(@Nullable Artifact artifact) {
+      return Optional.empty();
    }
 
    /**
@@ -339,83 +341,109 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     * publishing template selection.
     * @param publishArtifacts a list of the {@link Artifact} objects to be published.
     * @return an {@link Attachment} containing the MsWord content of the published artifacts.
-    * @throws OseeCoreException when:
-    * <ul>
-    * <li>inputs are invalid,</li>
-    * <li>failed OSEE server response,</li>
-    * <li>no Word content is returned from the server,</li>
-    * <li>the Word content is not properly terminated, or</li>
-    * <li>the Word content was not properly encoded for the {@link InputStream}.</li>
-    * </ul>
+    * @throws NullPointerException when <code>presentationType</code> is <code>null</code>, <code>artifacts</code> is
+    * <code>null</code>, or <code>artifacts</code> contains a <code>null</code> element.
+    * @throws NullPointerException when the parameter <code>presentationType</code> is <code>null</code>.
+    * @throws IllegalArgumentException when the parameter <code>artifacts</code> is <code>null</code>, empty, or
+    * contains a <code>null</code>.
+    * @throws OseeCoreException when the publish fails.
     */
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> publishArtifacts) {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
 
       /*
        * Validate Inputs
        */
 
       //@formatter:off
-      if(    Objects.isNull(presentationType)
-          || Objects.isNull(publishArtifacts)
-          || (publishArtifacts.size() == 0) ) {
+      Conditions.require
+         (
+            presentationType,
+            ValueType.PARAMETER,
+            MarkdownRenderer.class.getName(),
+            "getRenderInputStream",
+            "presentationType",
+            "must be non-null",
+            Objects::isNull,
+            NullPointerException::new
+         );
 
-         throw
-            new OseeCoreException
-                   (
-                      new Message()
-                             .title( "MsWord Renderer invalid inputs." )
-                             .indentInc()
-                             .segment( "PresentationType", Objects.nonNull( presentationType )
-                                                              ? presentationType
-                                                              : "(no presentation type specified)"  )
-                             .segment( "Publish Artifacts ", publishArtifacts, Artifact::getIdString )
-                             .toString()
-                   );
-      }
+      Conditions.require
+         (
+            artifacts,
+            ValueType.PARAMETER,
+            MarkdownRenderer.class.getName(),
+            "getRenderInputStream",
+            "artifacts",
+            "must be non-null and non-empty",
+            Conditions.or( Objects::isNull, Collection::isEmpty ),
+            "must not contain null elements",
+            Conditions::collectionContainsNull,
+            IllegalArgumentException::new
+         );
+      //@formatter:on
+
+      /*
+       * Set Publishing Format
+       */
+
+      var formatIndicator = FormatIndicator.WORD_ML;
+      this.setRendererOption(RendererOption.PUBLISHING_FORMAT, formatIndicator);
 
       /*
        * Create the server request data
        */
 
+      //@formatter:off
       var publishingTemplateRequest =
          new PublishingTemplateRequest
                 (
-                   this.getIdentifier(),                                                 /* Renderer Id                */
-                   publishArtifacts.get(0).getArtifactTypeName(),                        /* Publish Artifact Type Name */
-                   presentationType.name(),                                              /* Presentation Type          */
-                   (String) this.getRendererOptionValue(RendererOption.TEMPLATE_OPTION)  /* Option                     */
+                   this.getIdentifier(),                                                 /* Match Criteria: Renderer Id                */
+                   artifacts.get(0).getArtifactTypeName(),                               /* Match Criteria: Publish Artifact Type Name */
+                   presentationType.name(),                                              /* Match Criteria: Presentation Type          */
+                   (String) this.getRendererOptionValue(RendererOption.TEMPLATE_OPTION), /* Match Criteria: Option                     */
+                   formatIndicator                                                       /* Publish Format Indicator                   */
                 );
 
-      var branchId =
-         BranchId.create
-            (
-               publishArtifacts.get(0).getBranch().getId(),                 /* Branch Id */
-               ((ArtifactId) getRendererOptionValue(RendererOption.VIEW))   /* View Id   */
-            );
+      var artifactIdentifiers =
+         artifacts
+            .stream()
+            .map( Artifact::getId )
+            .map( ArtifactId::valueOf )
+            .collect( Collectors.toList() );
+
+      var publishingRequestData =
+         new PublishingRequestData
+                (
+                   publishingTemplateRequest, /* Publishing Template Request */
+                   this,                      /* Renderer Options            */
+                   artifactIdentifiers        /* Artifact To Publish         */
+                );
       //@formatter:on
-
-      /*
-       * Make list of Artifact Identifiers from the list of Artifacts to be published
-       */
-
-      var publishArtifactIds =
-         publishArtifacts.stream().map(Artifact::getId).map(ArtifactId::valueOf).collect(Collectors.toList());
-
-      var msWordPreviewRequestData =
-         new MsWordPreviewRequestData(publishingTemplateRequest, branchId, publishArtifactIds);
 
       /*
        * Make the server call for the publish
        */
 
-      var attachment = PublishingRequestHandler.msWordPreview(msWordPreviewRequestData);
+      var attachment = PublishingRequestHandler.msWordPreview(publishingRequestData);
 
       try {
+
          return attachment.getDataHandler().getInputStream();
+
       } catch (Exception e) {
-         throw new RuntimeException(e);
+         //@formatter:off
+         throw
+            new OseeCoreException
+                   (
+                      new Message()
+                             .title( "MSWordTemplateServerRenderer::getRenderInputStream, failed to obtain publishing stream." )
+                             .reasonFollows( e )
+                             .toString(),
+                      e
+                   );
+         //@formatter:on
       }
 
    }
@@ -465,7 +493,7 @@ public class MSWordTemplateServerRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, PublishingAppender producer, String format, String label, String footer) {
       throw new UnsupportedOperationException();
    }
 

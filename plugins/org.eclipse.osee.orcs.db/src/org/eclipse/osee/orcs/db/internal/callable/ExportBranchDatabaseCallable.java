@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.SystemProperties;
@@ -130,7 +131,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       if (options.getBoolean(ExportOptions.COMPRESS.name())) {
          getLogger().info("Compressing Branch Export Data - [%s]", zipTargetName);
          File zipTarget = new File(tempFolder.getParent(), zipTargetName);
-         Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
+         Zip.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
          getLogger().info("Deleting Branch Export Temp Folder - [%s]", tempFolder);
          Lib.deleteDir(tempFolder);
       } else {

@@ -70,6 +70,32 @@ public class MenuCmdDef {
          optionKey, optionValue, (Map<String, String>) null);
    }
 
+   /**
+    * Creates a new menu command definition with the following:
+    * <dl>
+    * <dt>Command Group:</dt>
+    * <dd>The specified <code>commandGroup</code> is used for the menu grouping to add the command to.</dd>
+    * <dt>Command Identifier:</dt>
+    * <dd>The specified <code>commandId</code> is used for the desired menu system command.</dd>
+    * <dt>Presentation Type:</dt>
+    * <dd>No Presentation Type is used.</dd>
+    * <dt>Label:</dt>
+    * <dd>A menu command label is not used.</dd>
+    * <dt>Icon:</dt>
+    * <dd>The specified <code>icon</code> is used for the default menu icon.</dd>
+    * <dt>Option Key:</dt>
+    * <dd>An option key is not used.</dd>
+    * <dt>Option Value:</dt>
+    * <dd>An option value is not used.</dd>
+    * <dt>Command Parameter Map:</dt>
+    * <dd>An empty map is used.</dd>
+    * </dl>
+    *
+    * @param commandGroup the menu grouping to add the command to.
+    * @param commandId an identifier for the desired menu system command.
+    * @param icon the default icon {@link ImageDescriptor}.
+    */
+
    public MenuCmdDef(CommandGroup commandGroup, String commandId, ImageDescriptor icon) {
       this(commandGroup, commandId, (PresentationType) null, (String) null, icon, (String) null, (String) null,
          (Map<String, String>) null);
@@ -94,8 +120,42 @@ public class MenuCmdDef {
          optionValue, (Map<String, String>) null);
    }
 
-   /*
-    * Primary constructor. All other constructors should invoke this one.
+   /**
+    * Creates a new menu command definition with the following:
+    * <dl>
+    * <dt>Command Group:</dt>
+    * <dd>The specified <code>commandGroup</code> is used for the menu grouping to add the command to.</dd>
+    * <dt>Command Identifier:</dt>
+    * <dd>The specified <code>commandId</code> is used for the desired menu system command.</dd>
+    * <dt>Presentation Type:</dt>
+    * <dd>The specified <code>presentationType</code> is used. This specifies the type of presentation made to the user
+    * by the command.</dd>
+    * <dt>Label:</dt>
+    * <dd>The specified <code>label</code> is used for the menu command.</dd>
+    * <dt>Icon:</dt>
+    * <dd>The specified <code>icon</code> is used for the default menu icon.</dd>
+    * <dt>Option Key:</dt>
+    * <dd>The <code>optionKey</code> and <code>optionValue</code> are added to the menu command definition's command
+    * parameter map.</dd>
+    * <dt>Option Value:</dt>
+    * <dd>The <code>optionKey</code> and <code>optionValue</code> are added to the menu command definition's command
+    * parameter map.</dd>
+    * <dt>Command Parameter Map:</dt>
+    * <dd>The command parameters in the <code>commandParamMap</code> are copied into the menu command definition's
+    * command parameter map.</dd>
+    * </dl>
+    *
+    * @param commandGroup the menu grouping to add the command to.
+    * @param commandId an identifier for the desired menu system command.
+    * @param presentationType the type of presentation made by the command.
+    * @param label the menu label for the command.
+    * @param icon the default icon {@link ImageDescriptor}.
+    * @param optionKey when <code>optionValue</code> is also specified, the <code>optionKey</code> and
+    * <code>optionValue</code> are added to the menu command definition's command parameter map.
+    * @param optionValue when <code>optionKey</code> is also specified, the <code>optionKey</code> and
+    * <code>optionValue</code> are added to the menu command definition's command parameter map.
+    * @param commandParamMap a {@link Map} of command parameters for the menu command definition.
+    * @implNote Primary constructor. All other constructors should invoke this one.
     */
 
    //@formatter:off
@@ -137,13 +197,22 @@ public class MenuCmdDef {
    }
    //@formatter:on
 
-   private MenuCmdDef(CommandGroup commandGroup, String commandId, Map<String, String> commandParamMap, ImageDescriptor icon, String label) {
+   //@formatter:off
+   private MenuCmdDef
+      (
+         CommandGroup        commandGroup,
+         String              commandId,
+         Map<String, String> commandParamMap,
+         ImageDescriptor     icon,
+         String              label ) {
+
       this.commandGroup = commandGroup;
       this.commandId = commandId;
       this.commandParamMap = new HashMap<>(commandParamMap);
       this.icon = icon;
       this.label = label;
    }
+   //@formatter:on
 
    public CommandGroup getcommandGroup() {
       return this.commandGroup;

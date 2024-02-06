@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuidToWordML;
@@ -149,10 +149,10 @@ public class RelationOrderRendererTest {
    }
 
    private void checkRelationOrderRenderer(String expected, RelationOrderData orderData) {
-      StringBuilder builder = new StringBuilder();
-      WordMLProducer producer = new WordMLProducer(builder);
-      renderer.toWordML(producer, null, orderData);
-      Assert.assertEquals(expected, builder.toString());
+      var stringBuilder = new StringBuilder();
+      var publishingAppender = FormatIndicator.WORD_ML.createPublishingAppender(stringBuilder);
+      renderer.toWordML(publishingAppender, null, orderData);
+      Assert.assertEquals(expected, stringBuilder.toString());
    }
 
    private static final class MockArtifactGuidResolver extends ArtifactGuidToWordML {

@@ -13,8 +13,19 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
@@ -23,7 +34,48 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
  * @author Loren K. Ashley
  */
 
-public interface RendererMap extends ToMessage {
+@JsonSerialize(using = RendererMapSerializer.class)
+@JsonDeserialize(using = RendererMapDeserializer.class)
+public interface RendererMap extends Iterable<Map.Entry<RendererOption, Object>>, ToMessage {
+
+   /**
+    * Default method of JSON deserialization of a {@link RendererMap} from JSON.
+    *
+    * @param jsonParser the {@link JsonParser} containing the serialized {@link RendererMap}.
+    * @return a {@link RendererMap} built from the JSON data.
+    * @throws IOException when a JSON deserialization error occurs.
+    */
+
+   public static RendererMap deserialize(@NonNull JsonParser jsonParser) throws IOException {
+
+      Objects.requireNonNull(jsonParser);
+
+      var rendererOptions = new EnumRendererMap();
+
+      JsonNode readTree = jsonParser.getCodec().readTree(jsonParser);
+
+      if (Objects.isNull(readTree)) {
+         throw new OseeCoreException("RendererMap::deserialize, failed to get JsonNode readTree.");
+      }
+
+      if (!readTree.isObject()) {
+         throw new OseeCoreException("ReadTree is not Object");
+      }
+
+      var objectNode = (ObjectNode) readTree;
+
+      var fieldIterator = objectNode.fields();
+      while (fieldIterator.hasNext()) {
+         var field = fieldIterator.next();
+         var key = field.getKey();
+         var rendererOption = RendererOption.ofKey(key).orElseThrow();
+         var value = field.getValue();
+         var valueObject = rendererOption.readValue(value);
+         rendererOptions.setRendererOption(rendererOption, valueObject);
+      }
+
+      return rendererOptions;
+   }
 
    /**
     * Returns an empty unmodifiable {@link RendererMap}.
@@ -129,6 +181,15 @@ public interface RendererMap extends ToMessage {
    boolean isRendererOptionSetAndTrue(RendererOption key);
 
    /**
+    * Returns an {@link Iterator} over the {@link Map.Entry}s.
+    *
+    * @return an {@link Iterator} over the {@link Map.Entry}s.
+    */
+
+   @Override
+   Iterator<Map.Entry<RendererOption, Object>> iterator();
+
+   /**
     * Gets an unmodifiable {@link Set} view of the {@link RendererOption} keys in the map. The set is backed by the map
     * and changes to the map will be reflected in the set.
     *
@@ -147,6 +208,27 @@ public interface RendererMap extends ToMessage {
     */
 
    <T> T removeRendererOption(RendererOption key);
+
+   /**
+    * Default method for JSON serialization of the {@link RendererMap} implementation.
+    *
+    * @param jsonGenerator the {@link JsonGenerator} used to serialize the map entires.
+    * @throws IOException when a JSON serialization error occurs.
+    */
+
+   default public void serialize(@NonNull JsonGenerator jsonGenerator) throws IOException {
+
+      Objects.requireNonNull(jsonGenerator);
+
+      jsonGenerator.writeStartObject();
+
+      for (var mapEntry : this) {
+         jsonGenerator.writeObjectField(mapEntry.getKey().getKey(), mapEntry.getValue());
+      }
+
+      jsonGenerator.writeEndObject();
+
+   }
 
    /**
     * Sets the value of a {@link RendererOption} in the map.

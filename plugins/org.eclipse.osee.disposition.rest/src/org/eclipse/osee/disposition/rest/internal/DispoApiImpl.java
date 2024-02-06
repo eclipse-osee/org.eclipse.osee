@@ -69,7 +69,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Zip;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -900,7 +900,7 @@ public class DispoApiImpl implements DispoApi {
          ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
          File unzipLocation = new File(downloadLocation);
 
-         Lib.decompressStream(zis, buffer, unzipLocation);
+         Zip.decompressStream(zis, buffer, unzipLocation);
       } catch (Exception ex) {
          throw new OseeCoreException("Artifactory Operation Failed", ex);
       } finally {

@@ -239,7 +239,7 @@ public class ImportRequest implements ToMessage {
          .title( "ImportRequest" )
          .indentInc()
          .segment( "synchronizationArtifactType", this.synchronizationArtifactType )
-         .segmentIndexedArray( "importMappings", this.importMappings )
+         .segmentIndexed( "importMappings", this.importMappings )
          .indentDec()
          ;
       //@formatter:on

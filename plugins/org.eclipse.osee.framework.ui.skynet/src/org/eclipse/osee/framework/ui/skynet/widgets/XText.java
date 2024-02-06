@@ -31,6 +31,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -585,4 +586,11 @@ public class XText extends XWidget {
       sText.selectAll();
    }
 
+   public Color getBackground() {
+      return sText.getBackground();
+   }
+
+   public void setBackground(Color color) {
+      sText.setBackground(color);
+   }
 }

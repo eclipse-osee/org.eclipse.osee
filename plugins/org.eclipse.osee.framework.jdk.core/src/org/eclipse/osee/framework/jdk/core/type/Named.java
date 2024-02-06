@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -63,7 +64,7 @@ public interface Named extends Comparable<Named> {
       String[] names = new String[namedObjects.size()];
       int i = 0;
       for (Named namedObject : namedObjects) {
-         names[i++] = namedObject.getName();
+         names[i++] = Conditions.requireNonNull(namedObject).getName();
       }
       return names;
    }

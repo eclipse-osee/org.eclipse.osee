@@ -163,7 +163,7 @@ public class CompareData implements ToMessage {
          .segment           ( "Path Prefix",           this.pathPrefix          )
          .segment           ( "Output Path",           this.outputPath          )
          .segment           ( "Generator Script Path", this.generatorScriptPath )
-         .segmentIndexedList( "Merge List",            this.mergeList           )
+         .segmentIndexed( "Merge List",            this.mergeList           )
          .segmentMap        ( "Data To Compare",       this.dataToCompare       )
          .indentDec()
          ;

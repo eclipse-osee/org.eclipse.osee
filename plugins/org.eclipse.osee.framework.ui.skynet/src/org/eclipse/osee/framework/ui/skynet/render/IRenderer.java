@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
-import org.eclipse.osee.framework.core.publishing.WordMLProducer;
+import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
@@ -190,13 +190,13 @@ public interface IRenderer extends RendererMap {
     * @param attributeType the {@link AttributeTypeToken} of the attribute to be rendered.
     * @param artifact the {@link Artifact} to obtain the attribute value from.
     * @param presentationType the type of presentation to generate for the attribute's value.
-    * @param producer the {@link WordMLProducer} object to generate the Word ML with.
+    * @param producer the {@link PublishingAppender} object to generate the Word ML with.
     * @param format the attribute formatting option from the publishing template.
     * @param label a label for the attribute in Word ML.
     * @param footer a footer for the attribute in Word ML.
     */
 
-   void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer);
+   void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, PublishingAppender producer, String format, String label, String footer);
 
    /**
     * Generates a text representation of an artifact's attribute value.
