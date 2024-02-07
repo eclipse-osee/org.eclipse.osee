@@ -647,6 +647,11 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public List<String> getDispoSetNames(BranchId branch, String type) {
+      return getQuery().getDispoSets(branch, type);
+   }
+
+   @Override
    public DispoSet getDispoSetById(BranchId branch, String setId) {
       return getQuery().findDispoSetsById(branch, setId);
    }

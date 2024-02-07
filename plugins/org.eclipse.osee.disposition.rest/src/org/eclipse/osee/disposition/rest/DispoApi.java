@@ -45,6 +45,8 @@ public interface DispoApi {
 
    List<DispoSet> getDispoSets(BranchId branch, String type);
 
+   List<String> getDispoSetNames(BranchId branch, String type);
+
    DispoSet getDispoSetById(BranchId branch, String dispoSetId);
 
    String getDispoSetIdByName(BranchId branchId, String setName);

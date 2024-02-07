@@ -175,6 +175,23 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public List<String> getDispoSets(BranchId branch, String type) {
+      ResultSet<ArtifactReadable> results = getQuery()//
+         .fromBranch(branch)//
+         .andTypeEquals(DispoOseeTypes.DispositionSet)//
+         .getResults();
+
+      List<String> toReturn = new ArrayList<>();
+      for (ArtifactReadable art : results) {
+         DispoSetArtifact dispoSetArt = new DispoSetArtifact(art);
+         if (dispoSetArt.getDispoType().equals(type)) {
+            toReturn.add(dispoSetArt.getName());
+         }
+      }
+      return toReturn;
+   }
+
+   @Override
    public DispoSet findDispoSetsById(BranchId branch, String setId) {
       ArtifactReadable result = findDispoArtifact(branch, setId);
       return new DispoSetArtifact(result);
