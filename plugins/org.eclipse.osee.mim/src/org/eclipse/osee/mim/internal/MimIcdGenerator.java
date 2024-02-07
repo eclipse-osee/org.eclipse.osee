@@ -708,14 +708,14 @@ public class MimIcdGenerator {
       rowIndex++;
 
       writer.writeCell(rowIndex, 3, "Unique Structures:", CELLSTYLE.BOLD);
-      writer.writeCell(rowIndex, 4, maxAttrs);
+      writer.writeCell(rowIndex, 4, totalStructs);
       writer.writeCell(rowIndex, 6, "MB/s:", CELLSTYLE.BOLD);
       writer.writeCell(rowIndex, 7, totalMinBps / 1048576.0);
       writer.writeCell(rowIndex, 8, totalMaxBps / 1048576.0);
       rowIndex++;
 
       writer.writeCell(rowIndex, 3, "Max # Attributes:", CELLSTYLE.BOLD);
-      writer.writeCell(rowIndex, 4, totalStructs);
+      writer.writeCell(rowIndex, 4, maxAttrs);
       writer.writeCell(rowIndex, 6, "Mb/s:", CELLSTYLE.BOLD);
       writer.writeCell(rowIndex, 7, totalMinBps * 8.0 / 1048576.0);
       writer.writeCell(rowIndex, 8, totalMaxBps * 8.0 / 1048576.0);
