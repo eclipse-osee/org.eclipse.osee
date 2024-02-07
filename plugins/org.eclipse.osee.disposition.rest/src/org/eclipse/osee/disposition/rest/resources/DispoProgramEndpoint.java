@@ -21,11 +21,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.annotation.security.RolesAllowed;
@@ -237,25 +235,24 @@ public class DispoProgramEndpoint {
    @GET
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Set<String> getTestScripts(@PathParam("programName") String programName) {
+   public String getTestScripts(@PathParam("programName") String programName) {
       programName = String.format("(DISPO)%s", programName);
       BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
-      return dispoApi.getTestScripts(programId);
+      return String.join("\n", dispoApi.getTestScripts(programId));
    }
 
    @Path("{programName}/set/{setName}/scripts")
    @GET
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Set<String> getTestScripts(@PathParam("programName") String programName,
-      @PathParam("setName") String setName) {
+   public String getTestScripts(@PathParam("programName") String programName, @PathParam("setName") String setName) {
       programName = String.format("(DISPO)%s", programName);
       BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
       String setId = dispoApi.getDispoSetIdByName(programId, setName);
       if (setId != null) {
-         return dispoApi.getTestScripts(programId, setId);
+         return String.join("\n", dispoApi.getTestScripts(programId, setId));
       }
-      return new HashSet<String>();
+      return "";
    }
 
    @Path("{programName}/exportAll")
@@ -299,6 +296,20 @@ public class DispoProgramEndpoint {
          String.format("attachment; filename=\"%s\"; creation-date=\"%s\"", zipName, new Date());
       return Response.ok(baos.toByteArray()).header("Content-Disposition", contentDisposition).type(
          "application/zip").build();
+   }
+
+   /**
+    * Get all Disposition Sets on the given branch
+    *
+    * @return The Disposition Sets found on the branch
+    */
+   @GET
+   @Path("{programName}/sets")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getAllDispoSets(@PathParam("programName") String programName) {
+      BranchToken programId = dispoApi.getDispoProgramIdByName(String.format("(DISPO)%s", programName));
+      List<String> allDispoSets = dispoApi.getDispoSetNames(programId, DispoStrings.CODE_COVERAGE);
+      return String.join("\n", allDispoSets);
    }
 
    @Path("{branchId}/set")
