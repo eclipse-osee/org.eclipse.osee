@@ -10,13 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	Component,
-	Input,
-	OnChanges,
-	OnInit,
-	SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { BranchCategoryService } from '../../internal/services/branch-category.service';
 import { BranchSelectorComponent } from '../internal/components/branch-selector/branch-selector.component';
 import { BranchTypeSelectorComponent } from '../internal/components/branch-type-selector/branch-type-selector.component';
@@ -35,7 +29,10 @@ export class BranchPickerComponent implements OnChanges {
 	constructor(
 		private branchCategoryService: BranchCategoryService,
 		private workTypeService: WorktypeService
-	) {}
+	) {
+		this.branchCategoryService.category = this.category;
+		this.workTypeService.workType = this.workType;
+	}
 	ngOnChanges(changes: SimpleChanges): void {
 		this.branchCategoryService.category = this.category;
 		this.workTypeService.workType = this.workType;
