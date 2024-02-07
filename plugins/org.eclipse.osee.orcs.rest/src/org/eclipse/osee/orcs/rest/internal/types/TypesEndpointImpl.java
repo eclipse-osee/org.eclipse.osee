@@ -14,15 +14,21 @@
 package org.eclipse.osee.orcs.rest.internal.types;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
@@ -67,6 +73,35 @@ public class TypesEndpointImpl implements TypesEndpoint {
             artA.getName(), artA.getIdString(), artB.getName(), artB.getIdString());
       }
       return rd;
+   }
+
+   @Override
+   public Collection<NamedIdBase> getArtifactTypes() {
+      return this.orcsApi.tokenService().getArtifactTypes().stream().filter(a -> a.getId() != -1).map(
+         a -> new NamedIdBase(a.getId(), a.getName())).sorted(new Comparator<NamedIdBase>() {
+            @Override
+            public int compare(NamedIdBase o1, NamedIdBase o2) {
+               return o1.getName().compareTo(o2.getName());
+            }
+         }).collect(Collectors.toList());
+   }
+
+   @Override
+   public Collection<NamedIdBase> getAttributeTypes(List<ArtifactTypeToken> artifactTypes) {
+      Set<AttributeTypeToken> attrTypes = new HashSet<>();
+      if (artifactTypes.isEmpty()) {
+         attrTypes.addAll(this.orcsApi.tokenService().getAttributeTypes());
+      }
+      for (ArtifactTypeToken artType : artifactTypes) {
+         attrTypes.addAll(orcsApi.tokenService().getArtifactType(artType.getId()).getValidAttributeTypes());
+      }
+      return attrTypes.stream().filter(a -> a.getId() != -1).map(a -> new NamedIdBase(a.getId(), a.getName())).sorted(
+         new Comparator<NamedIdBase>() {
+            @Override
+            public int compare(NamedIdBase o1, NamedIdBase o2) {
+               return o1.getName().compareTo(o2.getName());
+            }
+         }).collect(Collectors.toList());
    }
 
    @Override

@@ -48,6 +48,20 @@ import org.eclipse.osee.orcs.search.ArtifactTable;
  */
 @Path("artifact")
 public interface ArtifactEndpoint {
+   @GET
+   @Path("search")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactReadable> getSearchResults(@QueryParam("search") String search, @QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
+      @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch);
+
+   @GET
+   @Path("search/token")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getSearchResultTokens(@QueryParam("search") String search,
+      @QueryParam("viewId") ArtifactId viewId, @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
+      @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch);
+
    @POST
    @Path("search/v1")
    @Consumes(MediaType.APPLICATION_JSON)
@@ -220,13 +234,6 @@ public interface ArtifactEndpoint {
    @Path("createTxBuilder/{artifactTypeId}")
    @Produces(MediaType.APPLICATION_JSON)
    TxBuilderInput getTxBuilderInput(@PathParam("artifactTypeId") ArtifactTypeToken artifactTypeId);
-
-   @GET
-   @Path("searchByFilter")
-   @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactReadable> searchArtifactsByFilter(@QueryParam("filter") String filter,
-      @QueryParam("attributeTypeId") AttributeTypeToken attributeTypeId,
-      @QueryParam("artifactTypeId") ArtifactTypeToken artifactTypeId, @QueryParam("viewId") ArtifactId viewId);
 
    @GET
    @Path("{artifactId}/getPathToArtifact")

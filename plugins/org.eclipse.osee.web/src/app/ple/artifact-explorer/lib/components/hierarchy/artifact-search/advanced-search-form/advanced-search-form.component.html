@@ -1,0 +1,80 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<form class="tw-w-full">
+	<mat-form-field class="tw-w-full">
+		<mat-label>Artifact Types</mat-label>
+		<mat-chip-set class="tw-pt-4">
+			@for (item of data.artifactTypes; track $index) {
+				<mat-chip
+					>{{ item.name
+					}}<button
+						matChipRemove
+						[attr.aria-label]="'remove ' + item.name"
+						(click)="removeArtType(item)">
+						<mat-icon>cancel</mat-icon>
+					</button></mat-chip
+				>
+			}
+		</mat-chip-set>
+		<input
+			matInput
+			[ngModel]="artTypesFilter()"
+			(ngModelChange)="updateArtTypesFilter($event)"
+			name="artTypeInput"
+			[matAutocomplete]="artAuto" />
+		<mat-autocomplete
+			#artAuto="matAutocomplete"
+			[displayWith]="displayWith"
+			(optionSelected)="selectArtType($event)">
+			@for (artType of filteredArtTypes() || []; track artType.id) {
+				<mat-option [value]="artType">{{ artType.name }}</mat-option>
+			}
+		</mat-autocomplete>
+	</mat-form-field>
+	<mat-form-field class="tw-w-full">
+		<mat-label>Attribute Types</mat-label>
+		<mat-chip-set class="tw-pt-4">
+			@for (item of data.attributeTypes; track $index) {
+				<mat-chip
+					>{{ item.name
+					}}<button
+						matChipRemove
+						[attr.aria-label]="'remove ' + item.name"
+						(click)="removeAttrType(item)">
+						<mat-icon>cancel</mat-icon>
+					</button></mat-chip
+				>
+			}
+		</mat-chip-set>
+		<input
+			matInput
+			[ngModel]="attrTypesFilter()"
+			(ngModelChange)="updateAttrTypesFilter($event)"
+			name="attrTypeInput"
+			[matAutocomplete]="attrAuto" />
+		<mat-autocomplete
+			#attrAuto="matAutocomplete"
+			[displayWith]="displayWith"
+			(optionSelected)="selectAttrType($event)">
+			@for (attrType of filteredAttrTypes() || []; track attrType.id) {
+				<mat-option [value]="attrType">{{ attrType.name }}</mat-option>
+			}
+		</mat-autocomplete>
+	</mat-form-field>
+	<mat-checkbox
+		[(ngModel)]="data.exactMatch"
+		name="exactMatch"
+		color="primary">
+		<mat-label>Exact Match</mat-label>
+	</mat-checkbox>
+</form>

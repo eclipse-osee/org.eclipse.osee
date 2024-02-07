@@ -31,7 +31,7 @@ export const navigationStructure: navigationElement[] = [
 		isDropdownOpen: false,
 		requiredRoles: [],
 		routerLink: '/ple',
-		icon: '',
+		icon: 'conveyor_belt',
 		description: '',
 		children: [
 			// Level-2
@@ -264,7 +264,7 @@ export const navigationStructure: navigationElement[] = [
 		isDropdownOpen: false,
 		requiredRoles: [UserRoles.OSEE_ADMIN],
 		routerLink: '/server/health',
-		icon: '',
+		icon: 'monitor_heart',
 		description: '',
 		children: [
 			{

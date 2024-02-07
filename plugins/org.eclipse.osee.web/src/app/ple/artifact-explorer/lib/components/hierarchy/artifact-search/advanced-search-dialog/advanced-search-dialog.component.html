@@ -1,0 +1,25 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div mat-dialog-content>
+	<h1 mat-dialog-title>Advanced Artifact Search Options</h1>
+	<osee-advanced-search-form [data]="data"></osee-advanced-search-form>
+</div>
+<mat-dialog-actions align="end">
+	<button
+		mat-raised-button
+		cdkFocusInitial
+		color="primary"
+		[mat-dialog-close]="data">
+		Ok
+	</button>
+</mat-dialog-actions>

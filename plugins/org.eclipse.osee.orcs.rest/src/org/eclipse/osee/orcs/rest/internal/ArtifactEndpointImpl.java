@@ -13,6 +13,7 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
@@ -83,6 +83,44 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       this.uriInfo = uriInfo;
       this.branch = branch;
       this.tokenService = orcsApi.tokenService();
+   }
+
+   @Override
+   public List<ArtifactReadable> getSearchResults(String search, ArtifactId viewId,
+      List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch) {
+      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch).asArtifacts();
+   }
+
+   @Override
+   public List<ArtifactToken> getSearchResultTokens(String search, ArtifactId viewId,
+      List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch) {
+      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch).asArtifactTokens();
+   }
+
+   private QueryBuilder getSearchQueryBuilder(String search, ArtifactId viewId, List<ArtifactTypeToken> artifactTypes,
+      List<AttributeTypeToken> attributeTypes, boolean exactMatch) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
+      if (!artifactTypes.isEmpty()) {
+         query.andTypeEquals(artifactTypes);
+      }
+      if (Strings.isValid(search)) {
+         List<QueryOption> options = new LinkedList<>();
+
+         if (exactMatch) {
+            options.addAll(Arrays.asList(QueryOption.EXACT_MATCH_OPTIONS));
+         } else {
+            options.addAll(Arrays.asList(QueryOption.CONTAINS_MATCH_OPTIONS));
+         }
+
+         if (!attributeTypes.isEmpty()) {
+            query = query.and(attributeTypes, search, options.toArray(QueryOption[]::new));
+         } else {
+            query =
+               query.and(Arrays.asList(QueryBuilder.ANY_ATTRIBUTE_TYPE), search, options.toArray(QueryOption[]::new));
+         }
+      }
+      return query;
    }
 
    @Override
@@ -409,19 +447,6 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       return new TxBuilderInput(branch,
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactTypeId).asArtifacts());
    }
-
-   @Override
-   public List<ArtifactReadable> searchArtifactsByFilter(String filter, AttributeTypeToken attributeTypeId,
-      ArtifactTypeToken artifactTypeId, ArtifactId viewId) {
-      artifactTypeId = artifactTypeId == null ? ArtifactTypeToken.SENTINEL : artifactTypeId;
-      attributeTypeId = attributeTypeId == null ? CoreAttributeTypes.Name : attributeTypeId;
-      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-
-      List<ArtifactReadable> arts = orcsApi.getQueryFactory().fromBranch(branch, viewId).and(attributeTypeId, filter,
-         QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_DELIMITER__ANY).asArtifacts();
-
-      return arts;
-   };
 
    @Override
    public List<List<ArtifactId>> getPathToArtifact(BranchId branch, ArtifactId artifactId, ArtifactId viewId) {

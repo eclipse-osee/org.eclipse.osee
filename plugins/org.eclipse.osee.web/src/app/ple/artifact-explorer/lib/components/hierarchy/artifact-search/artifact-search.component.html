@@ -13,6 +13,63 @@
 <div class="tw-flex">
 	<!-- search autocomplete -->
 	<form class="tw-flex-grow">
+		@if (advancedSearchCriteria | async; as _criteria) {
+			@if (
+				_criteria.artifactTypes.length > 0 ||
+				_criteria.attributeTypes.length > 0 ||
+				_criteria.exactMatch
+			) {
+				<div class="tw-flex tw-items-center tw-gap-2 tw-pb-2 tw-pl-2">
+					<span>Filters:</span>
+					<mat-chip-set>
+						@if (_criteria.artifactTypes.length > 0) {
+							<mat-chip
+								[matTooltip]="
+									getToolTip(_criteria.artifactTypes)
+								"
+								matTooltipClass="tw-whitespace-pre"
+								>Artifact Types<button
+									matChipRemove
+									[attr.aria-label]="
+										'remove artifact type filter'
+									"
+									(click)="removeArtTypeFilter(_criteria)">
+									<mat-icon>cancel</mat-icon>
+								</button></mat-chip
+							>
+						}
+						@if (_criteria.attributeTypes.length > 0) {
+							<mat-chip
+								[matTooltip]="
+									getToolTip(_criteria.attributeTypes)
+								"
+								matTooltipClass="tw-whitespace-pre"
+								>Attribute Types<button
+									matChipRemove
+									[attr.aria-label]="
+										'remove attribute type filter'
+									"
+									(click)="removeAttrTypeFilter(_criteria)">
+									<mat-icon>cancel</mat-icon>
+								</button></mat-chip
+							>
+						}
+						@if (_criteria.exactMatch) {
+							<mat-chip
+								>Exact Match<button
+									matChipRemove
+									[attr.aria-label]="
+										'remove exact match filter'
+									"
+									(click)="removeExactMatchFilter(_criteria)">
+									<mat-icon>cancel</mat-icon>
+								</button></mat-chip
+							>
+						}
+					</mat-chip-set>
+				</div>
+			}
+		}
 		<mat-form-field
 			class="tw-w-full [&>.mat-mdc-form-field-subscript-wrapper]:tw-hidden">
 			<mat-label> Search for Artifact </mat-label>
@@ -22,6 +79,12 @@
 				matInput
 				[matAutocomplete]="auto"
 				(keyup)="onSearchTextChange($event)" />
+			<button
+				matSuffix
+				mat-icon-button
+				(click)="openAdvancedSearchDialog($event)">
+				<mat-icon>more_horiz</mat-icon>
+			</button>
 			<mat-autocomplete
 				autoActiveFirstOption
 				#auto="matAutocomplete">

@@ -18,7 +18,8 @@ import {
 	artifact,
 	artifactWithDirectRelations,
 } from '../types/artifact-explorer.data';
-import { HttpParamsType } from '@osee/shared/types';
+import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { AdvancedSearchCriteria } from '../types/artifact-search';
 
 @Injectable({
 	providedIn: 'root',
@@ -61,35 +62,85 @@ export class ArtifactExplorerHttpService {
 		);
 	}
 
-	public getArtifactByFilter(
+	public getArtifactTokensByFilter(
 		branchId: string,
 		filter: string,
-		attributeTypeId: string,
-		artifactTypeId: string,
-		viewId: string
-	): Observable<artifact[]> {
+		viewId: string,
+		searchCriteria?: AdvancedSearchCriteria
+	): Observable<NamedId[]> {
+		const params = this.createParams(
+			branchId,
+			filter,
+			viewId,
+			searchCriteria
+		);
+		return this.http.get<NamedId[]>(
+			apiURL + '/orcs/branch/' + branchId + '/artifact/search/token',
+			{
+				params: params,
+			}
+		);
+	}
+
+	public getArtifactsByFilter(
+		branchId: string,
+		filter: string,
+		viewId: string,
+		searchCriteria?: AdvancedSearchCriteria
+	) {
+		const params = this.createParams(
+			branchId,
+			filter,
+			viewId,
+			searchCriteria
+		);
+		return this.http.get<artifact[]>(
+			apiURL + '/orcs/branch/' + branchId + '/artifact/search',
+			{
+				params: params,
+			}
+		);
+	}
+
+	private createParams(
+		branchId: string,
+		filter: string,
+		viewId: string,
+		searchCriteria?: AdvancedSearchCriteria
+	) {
 		let params: HttpParamsType = {};
 		if (branchId && branchId !== '') {
 			params = { ...params, branchId: branchId };
 		}
 		if (filter && filter !== '') {
-			params = { ...params, filter: filter };
-		}
-		if (attributeTypeId && attributeTypeId !== '') {
-			params = { ...params, attributeTypeId: attributeTypeId };
-		}
-		if (artifactTypeId && artifactTypeId !== '') {
-			params = { ...params, artifactTypeId: artifactTypeId };
+			params = { ...params, search: filter };
 		}
 		if (viewId && viewId !== '') {
 			params = { ...params, viewId: viewId };
 		}
-		return this.http.get<artifact[]>(
-			apiURL + '/orcs/branch/' + branchId + '/artifact/searchByFilter',
-			{
-				params: params,
+		if (searchCriteria) {
+			if (searchCriteria.attributeTypes.length > 0) {
+				params = {
+					...params,
+					attributeType: searchCriteria.attributeTypes.map(
+						(a) => a.id
+					),
+				};
 			}
-		);
+			if (searchCriteria.artifactTypes.length > 0) {
+				params = {
+					...params,
+					artifactType: searchCriteria.artifactTypes.map((a) => a.id),
+				};
+			}
+			if (searchCriteria.exactMatch) {
+				params = {
+					...params,
+					exact: searchCriteria.exactMatch,
+				};
+			}
+		}
+		return params;
 	}
 
 	public getPathToArtifact(

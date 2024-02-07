@@ -13,14 +13,18 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Roberto E. Escobar
@@ -32,6 +36,16 @@ public interface TypesEndpoint {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    XResultData getTypes();
+
+   @GET
+   @Path("artifact")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<NamedIdBase> getArtifactTypes();
+
+   @GET
+   @Path("attribute")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<NamedIdBase> getAttributeTypes(@QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes);
 
    @GET
    @Path("health")
