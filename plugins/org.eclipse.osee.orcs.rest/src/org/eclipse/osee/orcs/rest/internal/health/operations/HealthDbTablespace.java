@@ -43,10 +43,11 @@ public class HealthDbTablespace {
 
             String selectFromTblSummaryQuery = "SELECT * FROM OSEE_DB_TABLESPACE_SUMMARY " + handleOrderByOracle();
             Consumer<JdbcStatement> consumer = stmt -> {
-               tablespaces.add(new TablespaceMonitoringMetric(stmt.getString("TABLESPACE_NAME"),
-                  stmt.getString("MAX_TS_PCT_USED"), stmt.getString("AUTO_EXT"), stmt.getString("TS_PCT_USED"),
-                  stmt.getString("TS_PCT_FREE"), stmt.getString("USED_TS_SIZE"), stmt.getString("FREE_TS_SIZE"),
-                  stmt.getString("CURR_TS_SIZE"), stmt.getString("MAX_TX_SIZE")));
+               tablespaces.add(
+                  new TablespaceMonitoringMetric(stmt.getString("TABLESPACE_NAME"), stmt.getString("MAX_TS_PCT_USED"),
+                     stmt.getString("AUTO_EXT"), String.valueOf(stmt.getDouble("TS_PCT_USED")),
+                     stmt.getString("TS_PCT_FREE"), stmt.getString("USED_TS_SIZE"), stmt.getString("FREE_TS_SIZE"),
+                     stmt.getString("CURR_TS_SIZE"), stmt.getString("MAX_TX_SIZE")));
             };
             orcsApi.getJdbcService().getClient().runQuery(consumer, selectFromTblSummaryQuery);
 
