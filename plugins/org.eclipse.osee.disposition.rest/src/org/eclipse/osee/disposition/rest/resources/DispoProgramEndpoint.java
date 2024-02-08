@@ -154,6 +154,20 @@ public class DispoProgramEndpoint {
    }
 
    /**
+    * Get all Disposition Programs as a return delimited string
+    *
+    * @return The Disposition Programs found
+    */
+   @Path("list")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getAllProgramNames() {
+      List<String> allProgramNames = dispoApi.getDispoProgramNames();
+      Collections.sort(allProgramNames);
+      return String.join("\n", allProgramNames);
+   }
+
+   /**
     * @return The found branchId if successful. Error Code otherwise
     */
    @Path("getDispoBranchId")

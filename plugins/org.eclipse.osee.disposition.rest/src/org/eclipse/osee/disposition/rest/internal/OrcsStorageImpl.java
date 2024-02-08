@@ -549,6 +549,18 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public List<String> getDispoBranchNames() {
+      List<String> dispoBranchNames = new ArrayList<>();
+      ResultSet<BranchToken> dispoBranches =
+         getQuery().branchQuery().andIsOfType(BranchType.WORKING).andIsChildOf(dispoParent).getResultsAsId();
+
+      for (BranchToken branch : dispoBranches) {
+         dispoBranchNames.add(branch.getName().replaceFirst("\\(DISPO\\)", ""));
+      }
+      return dispoBranchNames;
+   }
+
+   @Override
    public List<String> getCheckedReruns(HashMap<String, DispoItem> items, String setId) {
       return Named.getNames(items.values(), DispoItem::getNeedsRerun);
    }

@@ -637,6 +637,11 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public List<String> getDispoProgramNames() {
+      return getQuery().getDispoBranchNames();
+   }
+
+   @Override
    public BranchToken getDispoProgramIdByName(String branchName) {
       return getQuery().findDispoProgramIdByName(branchName);
    }
