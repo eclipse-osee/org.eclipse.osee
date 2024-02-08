@@ -66,6 +66,8 @@ public interface DispoQuery {
 
    List<BranchToken> getDispoBranches();
 
+   List<String> getDispoBranchNames();
+
    Collection<DispoItem> findDispoItemByAnnoationText(BranchId branch, String setId, String keyword,
       boolean isDetailed);
 
