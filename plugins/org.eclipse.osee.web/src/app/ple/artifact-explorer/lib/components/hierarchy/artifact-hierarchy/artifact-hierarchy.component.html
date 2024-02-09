@@ -16,6 +16,9 @@
 			<!-- artifacts -->
 			<ng-container *ngFor="let artifact of arts; trackBy: trackById">
 				<div
+					(contextmenu)="
+						openContextMenu($event, DEFAULT_HIERARCHY_ARTIFACT_ID)
+					"
 					class="tw-flex tw-py-1 tw-pl-4"
 					[ngClass]="
 						artifactsOpen().includes(artifact.id)
@@ -31,9 +34,10 @@
 						" />
 					<!-- artifact icon and name button -->
 					<button
+						(contextmenu)="openContextMenu($event, artifact.id)"
 						cdkDrag
 						[cdkDragData]="artifact"
-						class="tw-flex tw-flex-grow tw-items-center hover:tw-text-primary"
+						class="tw-flex tw-items-center hover:tw-text-primary"
 						(click)="addTab(artifact)">
 						<div class="tw-pl-4">
 							<mat-icon [class]="getIconClasses(artifact.icon)">
@@ -71,3 +75,16 @@
 		</ng-container>
 	</ng-container>
 </ng-container>
+<div
+	style="visibility: hidden; position: fixed"
+	[style.left]="menuPosition.x"
+	[style.top]="menuPosition.y"
+	[matMenuTriggerFor]="contextMenu"></div>
+<mat-menu #contextMenu="matMenu">
+	<ng-template
+		matMenuContent
+		let-artifactId="artifactId">
+		<osee-artifact-options-context-menu
+			[artifactId]="artifactId"></osee-artifact-options-context-menu>
+	</ng-template>
+</mat-menu>

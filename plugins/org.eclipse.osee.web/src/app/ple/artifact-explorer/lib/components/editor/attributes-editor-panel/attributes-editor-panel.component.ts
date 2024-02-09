@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TransactionService } from '@osee/shared/transactions';
 import { attributeType, modifyArtifact, transaction } from '@osee/shared/types';
@@ -18,14 +18,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { AttributeEnumsDropdownComponent } from '../attribute-enums-dropdown/attribute-enums-dropdown.component';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { tab } from '../../../types/artifact-explorer.data';
+import { attribute, tab } from '../../../types/artifact-explorer.data';
+import { AttributesEditorComponent } from '../attributes-editor/attributes-editor.component';
+import { FormDirective } from '@osee/shared/directives';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -40,62 +40,64 @@ import { tab } from '../../../types/artifact-explorer.data';
 		MatIconModule,
 		MatAutocompleteModule,
 		MatExpansionModule,
-		AttributeEnumsDropdownComponent,
+		AttributesEditorComponent,
+		FormDirective,
 	],
 	templateUrl: './attributes-editor-panel.component.html',
 })
 export class AttributesEditorPanelComponent {
 	@Input() tab!: tab;
-	isDirty: boolean = false;
 
 	enum$ = new Observable<string[]>();
 
-	constructor(
-		private transactionService: TransactionService,
-		private artExpHttpService: ArtifactExplorerHttpService
-	) {}
-
-	populateOptions(attrId: string) {
-		this.enum$ = this.artExpHttpService.getAttributeEnums(
-			this.tab.branchId,
-			this.tab.artifact.id,
-			attrId
-		);
-	}
-
-	makeDirty() {
-		this.isDirty = true;
-	}
+	constructor(private transactionService: TransactionService) {}
 
 	saveChanges() {
-		const tx: transaction = {
-			branch: this.tab.branchId,
-			txComment:
-				'Attribute changes for artifact: ' + this.tab.artifact.name,
-		};
-		const attributes: attributeType[] = this.tab.artifact.attributes.map(
-			(attr) => {
-				return { typeId: attr.typeId, value: attr.value };
-			}
-		);
-		const modifyArtifact: modifyArtifact = {
-			id: this.tab.artifact.id,
-			setAttributes: attributes,
-		};
-		tx.modifyArtifacts = [modifyArtifact];
-		this.transactionService
-			.performMutation(tx)
-			.pipe(
-				tap(() => {
-					this.isDirty = false;
-				})
-			)
-			.subscribe();
+		if (this.updatedAttributes.value.length > 0) {
+			const tx: transaction = {
+				branch: this.tab.branchId,
+				txComment:
+					'Attribute changes for artifact: ' + this.tab.artifact.name,
+			};
+			const attributes: attributeType[] =
+				this.updatedAttributes.value.map((attr) => {
+					return { typeId: attr.typeId, value: attr.value };
+				});
+			const modifyArtifact: modifyArtifact = {
+				id: this.tab.artifact.id,
+				setAttributes: attributes,
+			};
+			tx.modifyArtifacts = [modifyArtifact];
+			this.transactionService
+				.performMutation(tx)
+				.pipe(
+					tap(() => {
+						this.updatedAttributes.next([]);
+					})
+				)
+				.subscribe();
+		}
 	}
 
-	// panel open/close state handling
+	// Panel open/close state handling
+
 	panelOpen = new BehaviorSubject<boolean>(true);
 	togglePanel() {
 		this.panelOpen.next(!this.panelOpen.value);
 	}
+
+	// Handle output attributes returned from attribute editor
+
+	updatedAttributes = new BehaviorSubject<attribute[]>([]);
+	handleUpdatedAttributes(updatedAttributes: attribute[]) {
+		this.updatedAttributes.next(updatedAttributes);
+	}
+
+	hasChanges(): boolean {
+		return this.updatedAttributes.value.length > 0;
+	}
+
+	// Handle form status change
+
+	@ViewChild('attributesEditorForm') _attributesEditorForm!: NgForm;
 }

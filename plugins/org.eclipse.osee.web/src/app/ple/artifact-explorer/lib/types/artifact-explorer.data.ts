@@ -12,6 +12,8 @@ import { iconVariant, twColor, twShade } from '@osee/shared/types';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export const DEFAULT_HIERARCHY_ARTIFACT_ID: `${number}` = '197818';
+
 export interface artifactWithDirectRelations {
 	artId: string;
 	artName: string;
@@ -55,11 +57,14 @@ export interface artifact {
 
 export interface attribute {
 	name: string;
-	value: string;
+	value: AttributeValue;
 	typeId: string;
 	id: string;
-	baseType: string;
+	storeType: string;
+	multiplicityId: string;
 }
+
+export type AttributeValue = string | Date;
 
 export type artifactTypeIcon = {
 	icon: string;
@@ -79,6 +84,17 @@ export interface tab {
 
 export interface artifactHierarchyOptions {
 	showRelations: boolean;
+}
+
+export class artifactToCreate {
+	public name = '';
+	public artifactTypeId = '0';
+	public parentArtifactId = '0';
+	public attributes: attribute[] = [];
+
+	constructor(parentArtifactId: `${number}`) {
+		this.parentArtifactId = parentArtifactId;
+	}
 }
 
 export const artifactSentinel: artifact = {

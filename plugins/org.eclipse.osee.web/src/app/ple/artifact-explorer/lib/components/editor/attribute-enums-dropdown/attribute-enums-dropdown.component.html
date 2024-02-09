@@ -27,14 +27,13 @@
 			[required]="required"
 			[disabled]="disabled"
 			placeholder="Unspecified"
-			[errorStateMatcher]="errorMatcher"
-			id="enums"
-			name="enums"
+			[id]="_componentId"
+			[name]="_componentId"
 			(focusin)="autoCompleteOpened()"
 			(focusout)="close()"
 			(ngModelChange)="updateTypeAhead($event)"
 			#enums="ngModel"
-			[matAutocomplete]="autoRates" />
+			[matAutocomplete]="enumsAutocomplete" />
 		<mat-icon
 			*ngIf="!autoCompleteState.openedState"
 			matIconSuffix
@@ -52,7 +51,7 @@
 		<mat-autocomplete
 			autoActiveFirstOption="true"
 			autoSelectActiveOption="true"
-			#autoRates="matAutocomplete"
+			#enumsAutocomplete="matAutocomplete"
 			(optionSelected)="updateValue($event.option.value)">
 			<mat-option
 				*ngFor="let enum of _enums | async"
@@ -62,7 +61,7 @@
 			<ng-template #loading>
 				<mat-option
 					id="-1"
-					[value]="{ id: '-1', name: 'invalid' }">
+					[value]="'enum'">
 					Loading...
 				</mat-option>
 			</ng-template>

@@ -95,6 +95,7 @@
 			"@osee/toolbar/component": [
 				"src/app/layout/lib/toolbar/osee-toolbar/osee-toolbar.component"
 			],
+			"@osee/shared/directives": ["src/app/shared/directives"],
 			"@osee/shared/utils": ["src/app/shared/utils"],
 			"@osee/shared/resolvers": ["src/app/shared/resolvers"],
 			"@osee/shared/components": ["src/app/shared/components"],

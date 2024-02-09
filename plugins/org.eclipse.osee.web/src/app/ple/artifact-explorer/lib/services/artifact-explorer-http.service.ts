@@ -17,6 +17,7 @@ import { Observable } from 'rxjs';
 import {
 	artifact,
 	artifactWithDirectRelations,
+	attribute,
 } from '../types/artifact-explorer.data';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
@@ -45,20 +46,9 @@ export class ArtifactExplorerHttpService {
 		);
 	}
 
-	public getAttributeEnums(
-		branchId: string,
-		artifactId: string,
-		attributeId: string
-	): Observable<string[]> {
+	public getAttributeEnums(attributeId: string): Observable<string[]> {
 		return this.http.get<string[]>(
-			apiURL +
-				'/orcs/branch/' +
-				branchId +
-				'/artifact/' +
-				artifactId +
-				'/attribute/' +
-				attributeId +
-				'/enums'
+			apiURL + '/orcs/types/attribute/' + attributeId + '/enums'
 		);
 	}
 
@@ -165,6 +155,12 @@ export class ArtifactExplorerHttpService {
 			{
 				params: params,
 			}
+		);
+	}
+
+	public getArtifactTypeAttributes(artifactId: string) {
+		return this.http.get<attribute[]>(
+			apiURL + '/orcs/types/artifact/' + artifactId + '/attributes'
 		);
 	}
 }

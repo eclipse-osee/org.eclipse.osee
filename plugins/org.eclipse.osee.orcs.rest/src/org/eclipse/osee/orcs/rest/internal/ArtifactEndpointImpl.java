@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectPojo;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirect;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
@@ -431,7 +431,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public ArtifactRelatedDirectPojo getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId) {
+   public ArtifactRelatedDirect getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       // query for artifact and its direct relations
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
@@ -439,7 +439,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       // query for artifact type token using input artifact id
       ArtifactTypeToken token = art.getArtifactType();
       // pojo to store artifact's direct relations and all valid relation types
-      return new ArtifactRelatedDirectPojo(token, art, branch, this.tokenService);
+      return new ArtifactRelatedDirect(token, art, branch, this.tokenService);
    }
 
    @Override

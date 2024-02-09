@@ -1,0 +1,117 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+
+@if (_attributes | async; as attributes) {
+	@for (attribute of attributes; track attribute) {
+		<div class="tw-flex tw-justify-between">
+			<div
+				class="tw-flex tw-w-1/6 tw-items-center tw-pl-4 tw-font-bold"
+				[ngClass]="
+					isRequired(attribute) && attribute.value === ''
+						? 'tw-text-warning'
+						: ''
+				">
+				{{ attribute.name }}:
+			</div>
+			<div class="tw-w-5/6 tw-pl-4">
+				@switch (attribute.storeType) {
+					@case ('Enumeration') {
+						@if (attribute.typeId) {
+							<osee-attribute-enums-dropdown
+								[disabled]="!editable"
+								[attributeId]="attribute.typeId"
+								[(attributeValue)]="attribute.value"
+								(attributeValueChange)="emitUpdatedAttributes()"
+								[required]="isRequired(attribute)" />
+						}
+					}
+					@case ('String') {
+						<mat-form-field class="tw-w-full">
+							<textarea
+								[disabled]="
+									!editable || attribute.name === 'Id'
+								"
+								matInput
+								matInputAutosize
+								placeholder="value"
+								[name]="'attrString' + attribute.typeId"
+								[(ngModel)]="attribute.value"
+								(input)="emitUpdatedAttributes()"
+								[required]="isRequired(attribute)"></textarea>
+						</mat-form-field>
+					}
+					@case ('Boolean') {
+						<mat-form-field class="tw-w-full">
+							<mat-select
+								[disabled]="!editable"
+								[name]="'attrBoolean' + attribute.typeId"
+								[(ngModel)]="attribute.value"
+								(selectionChange)="emitUpdatedAttributes()"
+								[required]="isRequired(attribute)"
+								[value]="attribute.value ? 'true' : 'false'">
+								<mat-option [value]="'true'"> true </mat-option>
+								<mat-option [value]="'false'">
+									false
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					}
+					@case ('Date') {
+						<mat-form-field class="tw-w-full">
+							<input
+								matInput
+								[matDatepicker]="picker"
+								placeholder="Select a date"
+								[name]="'attrDate' + attribute.typeId"
+								[(ngModel)]="attribute.value"
+								(ngModelChange)="emitUpdatedAttributes()"
+								[required]="isRequired(attribute)"
+								[disabled]="!editable" />
+							<mat-datepicker-toggle
+								matSuffix
+								[for]="picker"></mat-datepicker-toggle>
+							<mat-datepicker #picker></mat-datepicker>
+						</mat-form-field>
+					}
+					@case ('Integer') {
+						<mat-form-field class="tw-w-full">
+							<textarea
+								[disabled]="!editable"
+								matInput
+								matInputAutosize
+								placeholder="value"
+								[name]="'attrInteger' + attribute.typeId"
+								[(ngModel)]="attribute.value"
+								(change)="emitUpdatedAttributes()"
+								[required]="isRequired(attribute)"></textarea>
+						</mat-form-field>
+					}
+					@case ('Long') {
+						<mat-form-field class="tw-w-full">
+							<textarea
+								[disabled]="!editable"
+								matInput
+								matInputAutosize
+								placeholder="value"
+								[name]="'attrLong' + attribute.typeId"
+								[(ngModel)]="attribute.value"
+								(change)="emitUpdatedAttributes()"
+								[required]="isRequired(attribute)"></textarea>
+						</mat-form-field>
+					}
+				}
+			</div>
+		</div>
+		<br />
+	}
+}

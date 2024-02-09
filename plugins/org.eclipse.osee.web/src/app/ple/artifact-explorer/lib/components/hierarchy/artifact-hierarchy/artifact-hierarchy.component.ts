@@ -15,6 +15,7 @@ import {
 	Input,
 	OnChanges,
 	SimpleChanges,
+	ViewChild,
 	signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -41,10 +42,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import {
+	DEFAULT_HIERARCHY_ARTIFACT_ID,
 	artifact,
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context-menu/artifact-options-context-menu.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
@@ -58,6 +62,8 @@ import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relat
 		MatButtonModule,
 		ArtifactHierarchyRelationsComponent,
 		AnimatedExpandButtonComponent,
+		MatMenuModule,
+		ArtifactOptionsContextMenuComponent,
 	],
 	templateUrl: './artifact-hierarchy.component.html',
 })
@@ -203,4 +209,26 @@ export class ArtifactHierarchyComponent implements OnChanges {
 			return of(childPaths);
 		})
 	);
+
+	// Right-click context menu
+
+	@ViewChild(MatMenuTrigger, { static: true })
+	matMenuTrigger!: MatMenuTrigger;
+
+	menuPosition = {
+		x: '0',
+		y: '0',
+	};
+
+	openContextMenu(event: MouseEvent, artifactId: `${number}`) {
+		event.preventDefault();
+		this.menuPosition.x = event.clientX + 'px';
+		this.menuPosition.y = event.clientY + 'px';
+		this.matMenuTrigger.menuData = {
+			artifactId: artifactId,
+		};
+		this.matMenuTrigger.openMenu();
+	}
+
+	DEFAULT_HIERARCHY_ARTIFACT_ID = DEFAULT_HIERARCHY_ARTIFACT_ID;
 }

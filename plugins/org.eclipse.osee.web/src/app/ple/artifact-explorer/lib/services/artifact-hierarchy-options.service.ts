@@ -27,6 +27,7 @@ export class ArtifactHierarchyOptionsService {
 	}
 
 	constructor(private pathService: ArtifactHierarchyPathService) {}
+
 	private paths = this.pathService.getPaths().pipe(
 		filter((p) => p.length > 0),
 		switchMap(() => of({ showRelations: true }))
