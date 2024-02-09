@@ -81,8 +81,7 @@ public class AtsColumnUtilIde {
                   return true;
                }
             }
-         }
-         if (columnData instanceof XViewerColumn) {
+         } else if (columnData instanceof XViewerColumn) {
             XViewerColumn column = (XViewerColumn) columnData;
             AWorkbench.popup(INVALID_SELECTION, COLUMN_NOT_EDITABLE, column.getName());
          }

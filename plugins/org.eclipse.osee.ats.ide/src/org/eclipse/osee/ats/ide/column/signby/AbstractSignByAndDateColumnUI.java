@@ -14,7 +14,9 @@
 package org.eclipse.osee.ats.ide.column.signby;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,22 +34,27 @@ import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.config.MultiEdit;
 import org.eclipse.osee.ats.api.config.Show;
 import org.eclipse.osee.ats.api.util.ColumnType;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.util.widgets.XReviewedWidget;
-import org.eclipse.osee.ats.ide.util.widgets.XSignbyWidget;
+import org.eclipse.osee.ats.ide.util.widgets.signby.XAbstractSignByAndDateButton;
+import org.eclipse.osee.ats.ide.util.widgets.signby.XSignByAndDateWidget;
 import org.eclipse.osee.ats.ide.util.xviewer.column.AtsColumnUtilIde;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -66,7 +73,7 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
 
    public AbstractSignByAndDateColumnUI(AttributeTypeToken attrType1, AttributeTypeToken attrType2) {
       super(
-         new AtsCoreCodeColumnToken(attrType1.getName(), attrType2.getUnqualifiedName(), 40,
+         new AtsCoreCodeColumnToken(attrType1.getName(), attrType1.getUnqualifiedName(), 40,
             (attrType1.isDate() ? ColumnType.Date : ColumnType.String), ColumnAlign.Left, Show.No, MultiEdit.Yes, ""),
          AtsApiService.get());
       this.attrType1 = attrType1;
@@ -79,18 +86,16 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
       try {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = AtsApiService.get().getQueryServiceIde().getArtifact(treeItem);
-            // TBD How handle this
-            //            XResultData rd = XReviewedWidget.checkReviewedBy(useArt);
-            //            if (rd.isErrors()) {
-            //               return false;
-            //            }
             if (!(useArt instanceof IAtsWorkItem)) {
                AWorkbench.popup(AtsColumnUtilIde.INVALID_SELECTION, AtsColumnUtilIde.INVALID_COLUMN_FOR_SELECTED,
                   treeColumn.getText());
                return false;
             }
             IAtsWorkItem workItem = (IAtsWorkItem) useArt;
-            XSignbyWidget widget = new XSignbyWidget();
+            if (!isAuthorized(Arrays.asList(workItem), byAttrType)) {
+               return false;
+            }
+            XSignByAndDateWidget widget = new XSignByAndDateWidget();
             widget.setAttributeType(byAttrType);
             widget.setAttributeType2(dateAttrType);
             widget.setArtifact((Artifact) workItem.getStoreObject());
@@ -114,11 +119,8 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
    public static boolean promptChange(final Collection<IAtsWorkItem> workItems, AttributeTypeToken byAttrType,
       AttributeTypeToken dateAttrType, AtsApi atsApi) {
       try {
-         for (IAtsWorkItem workItem : workItems) {
-            XResultData rd = XReviewedWidget.checkReviewedBy(workItem.getArtifactToken());
-            if (rd.isErrors()) {
-               return false;
-            }
+         if (!isAuthorized(workItems, byAttrType)) {
+            return false;
          }
          // Ok --> 0, Cancel --> 1, Clear --> 2
          int res = MessageDialog.open(3, Displays.getActiveShell(), byAttrType.getUnqualifiedName(),
@@ -132,10 +134,10 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
                   artifacts.add((Artifact) workItem.getStoreObject());
                }
                if (res == 2) {
-                  XAbstractSignDateAndByButton.setSigned(artifacts, dateAttrType, byAttrType,
+                  XAbstractSignByAndDateButton.setSigned(artifacts, dateAttrType, byAttrType,
                      byAttrType.getUnqualifiedName(), false);
                } else if (res == 0) {
-                  XAbstractSignDateAndByButton.setSigned(artifacts, dateAttrType, byAttrType,
+                  XAbstractSignByAndDateButton.setSigned(artifacts, dateAttrType, byAttrType,
                      byAttrType.getUnqualifiedName(), true);
                }
                return Status.OK_STATUS;
@@ -148,6 +150,20 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
       return true;
    }
 
+   private static boolean isAuthorized(final Collection<IAtsWorkItem> workItems, AttributeTypeToken byAttrType) {
+      for (IAtsWorkItem workItem : workItems) {
+         XResultData rd = new XResultData();
+         for (IAtsWorkItemHook wiHook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
+            wiHook.isModifiableAttribute(workItem.getArtifactToken(), byAttrType, rd);
+         }
+         if (rd.isErrors()) {
+            XResultDataUI.report(rd, "Unable to Sign");
+            return false;
+         }
+      }
+      return true;
+   }
+
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
@@ -155,10 +171,29 @@ public abstract class AbstractSignByAndDateColumnUI extends XViewerAtsCoreCodeXC
             return "";
          }
          IAtsWorkItem workItem = (IAtsWorkItem) element;
-         return XAbstractSignDateAndByButton.getText((Artifact) workItem.getStoreObject(), attrType1);
+         return getText((Artifact) workItem.getStoreObject(), attrType1);
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
+   }
+
+   private String getText(Artifact artifact, AttributeTypeToken attrType1) {
+      String result = "";
+      if (artifact.isAttributeTypeValid(attrType1)) {
+         if (attrType1.isDate()) {
+            Date date = artifact.getSoleAttributeValue(attrType1, null);
+            if (date != null) {
+               result = DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM);
+            }
+         } else {
+            User user =
+               UserManager.getUserByArtId(artifact.getSoleAttributeValue(attrType1, SystemUser.UnAssigned.getId()));
+            if (!user.equals(SystemUser.UnAssigned)) {
+               return user.getName();
+            }
+         }
+      }
+      return result;
    }
 
    @Override

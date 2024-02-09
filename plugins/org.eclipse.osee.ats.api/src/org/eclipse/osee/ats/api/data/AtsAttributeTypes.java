@@ -57,7 +57,9 @@ public interface AtsAttributeTypes {
    // Sign-By attribute types
    AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", TEXT_PLAIN, "", Read, UserArtId);
    AttributeTypeDate ApproveRequestedHoursByDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", TEXT_CALENDAR, "", Read);
-   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", TEXT_PLAIN, "", Read, UserUserId);
+   AttributeTypeLong ManagerSignedOffBy = ats.createLong(3557074610252165583L, "ats.Mgr Signed Off By", MediaType.TEXT_PLAIN, "", Read, UserArtId);
+   AttributeTypeDate ManagerSignedOffByDate = ats.createDate(8897748680273440857L, "ats.Mgr Signed Off By Date", AttributeTypeToken.TEXT_CALENDAR, "", Read);
+   AttributeTypeLong ProductLineApprovedBy = ats.createLong(7838821957985211888L, "ats.Product Line Approved By", TEXT_PLAIN, "", Read, UserArtId);
    AttributeTypeDate ProductLineApprovedDate = ats.createDate(735226602374161400L, "ats.Product Line Approved Date", TEXT_CALENDAR, "", Read);
    AttributeTypeLong ReviewedBy = ats.createLong(4020478495150345644L, "ats.Reviewed By", TEXT_PLAIN, "", Read, UserArtId);
    AttributeTypeDate ReviewedByDate = ats.createDate(2436278456841462630L, "ats.Reviewed By Date", TEXT_CALENDAR, "", Read);

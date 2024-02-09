@@ -35,7 +35,8 @@ public abstract class MiniTaskXViewerFactory extends WorldXViewerFactory {
          AtsColumnTokensDefault.TitleColumn, //
          AtsColumnTokensDefault.StateColumn, //
          AtsColumnTokensDefault.AgileTeamPointsColumn, //
-         AtsColumnTokensDefault.ReviewedByAndDateColumn, //
+         AtsColumnTokensDefault.ReviewedByColumn, //
+         AtsColumnTokensDefault.ReviewedByDateColumn, //
          AtsColumnTokensDefault.RiskFactorColumn, //
          AtsColumnTokensDefault.DescriptionColumn, //
          AtsColumnTokensDefault.AssumptionsColumn, //
@@ -46,7 +47,7 @@ public abstract class MiniTaskXViewerFactory extends WorldXViewerFactory {
    // Return default visible column widths.  Empty list or missing will use default token width.
    @Override
    public List<Integer> getDefaultColumnWidths() {
-      return Arrays.asList(200, 75, 20, 30, 100, 40, 150, 150, 40);
+      return Arrays.asList(200, 75, 20, 40, 40, 100, 40, 150, 150, 40);
    }
 
 }

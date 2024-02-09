@@ -14,13 +14,13 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import static org.eclipse.osee.ats.api.workdef.WidgetOption.FILL_VERTICALLY;
-import static org.eclipse.osee.ats.api.workdef.WidgetOption.REQUIRED_FOR_TRANSITION;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -63,7 +63,9 @@ public class WorkDefTeamProductLine extends AbstractWorkDef {
             new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             getWorkingBranchWidgetComposite(), //
             new WidgetDefinition("Commit Manager", "XCommitManager"), //
-            new WidgetDefinition("PL ARB Approved", "XProductLineApprovalWidget", REQUIRED_FOR_TRANSITION) //
+            new SignByAndDateWidgetDefinition("PL ARB Approved", AtsAttributeTypes.ProductLineApprovedBy,
+               AtsAttributeTypes.ProductLineApprovedDate) //
+                  .andRequiredByTeamLead() //
          );
 
       bld.andState(3, "Completed", StateType.Completed) //

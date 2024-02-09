@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.ats.ide.util.widgets.signby;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,21 +21,36 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeType2Widget;
+import org.eclipse.osee.framework.ui.skynet.widgets.AttributeTypeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonWithLabelDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -52,17 +67,14 @@ import org.eclipse.swt.widgets.Label;
  *
  * @author Donald G. Dunne
  */
-public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam implements AttributeTypeWidget, AttributeType2Widget {
+public abstract class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements AttributeTypeWidget, AttributeType2Widget {
 
-   public static final String NOT_YET_SIGNED = "Not Yet Signed";
    protected AttributeTypeToken dateAttrType;
    protected AttributeTypeToken byAttrType;
-   private final AttributeTypeToken attrType1;
 
-   public XAbstractSignDateAndByButton(AttributeTypeToken attrType1, AttributeTypeToken attrType2) {
+   public XAbstractSignByAndDateButton(AttributeTypeToken attrType1, AttributeTypeToken attrType2) {
       super((attrType1.isDate() ? attrType2.getUnqualifiedName() : attrType1.getUnqualifiedName()), "Sign or Clear",
          ImageManager.getImage(FrameworkImage.RUN_EXC));
-      this.attrType1 = attrType1;
       this.dateAttrType = attrType1.isDate() ? attrType1 : attrType2;
       this.byAttrType = attrType1.isDate() ? attrType2 : attrType1;
       addListener();
@@ -74,24 +86,15 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam i
 
    @Override
    public String getResultsText() {
-      return getText(getArtifact(), attrType1);
-   }
-
-   public static String getText(Artifact artifact, AttributeTypeToken attrType1) {
-      String result = NOT_YET_SIGNED;
-      if (artifact.isAttributeTypeValid(attrType1)) {
-         if (attrType1.isDate()) {
-            Date date = artifact.getSoleAttributeValue(attrType1, null);
-            if (date != null) {
-               result = DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM);
-            }
-         } else {
-            User user =
-               UserManager.getUserByArtId(artifact.getSoleAttributeValue(attrType1, SystemUser.UnAssigned.getId()));
-            return user.getName();
+      Date date = artifact.getSoleAttributeValue(dateAttrType, null);
+      if (date != null) {
+         User user =
+            UserManager.getUserByArtId(artifact.getSoleAttributeValue(byAttrType, SystemUser.UnAssigned.getId()));
+         if (user != null) {
+            return String.format("Signed by %s on %s", user.getName(), DateUtil.getDateNow(date, DateUtil.MMDDYYHHMM));
          }
       }
-      return result;
+      return "";
    }
 
    private final XModifiedListener listener = new XModifiedListener() {
@@ -103,6 +106,12 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam i
 
    public void handleSelection() {
       try {
+
+         XResultData result = isAuthorizedToChange();
+         if (result.isErrors()) {
+            XResultDataUI.report(result, "Unable to Sign");
+            return;
+         }
          // Ok --> 0, Cancel --> 1, Clear --> 2
          int res = MessageDialog.open(3, Displays.getActiveShell(), getLabel(), getSignMessage(), SWT.NONE,
             new String[] {"Ok", "Cancel", "Clear"});
@@ -124,14 +133,35 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam i
             }
          };
          Operations.scheduleJob(signJob, false, Job.SHORT, null);
-
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    };
 
+   protected XResultData isAuthorizedToChange() {
+      XResultData rd = new XResultData();
+      if (hasWidgetHint(WidgetHint.LeadRequired)) {
+         Artifact storeArt = getArtifact();
+         String teamArtifactId =
+            storeArt.getSoleAttribute(AtsAttributeTypes.TeamDefinitionReference).getValue().toString();
+         Artifact teamArtifact =
+            ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(teamArtifactId), CoreBranches.COMMON);
+         if (!teamArtifact.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead).contains(UserManager.getUser())) {
+            rd.errorf("Insufficient Privileges to Sign [%s].\nOnly a ATS Team Lead may perform this action.\n" //
+               + "Team Leads for this workflow are %s\n", byAttrType.getUnqualifiedName(),
+               teamArtifact.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead).toString());
+         }
+      }
+      if (rd.isSuccess()) {
+         for (IAtsWorkItemHook wiHook : AtsApiService.get().getWorkItemService().getWorkItemHooks()) {
+            wiHook.isModifiableAttribute(artifact, getSignByAttrType(), rd);
+         }
+      }
+      return rd;
+   }
+
    protected String getSignMessage() {
-      return "Sign " + getLabel() + "?";
+      return "Sign [" + getLabel() + "]?";
    }
 
    public boolean userHasPermission() {
@@ -171,7 +201,7 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam i
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && getResultsText().equals(NOT_YET_SIGNED)) {
+      if (isRequiredEntry() && artifact.getSoleAttributeValue(getSignDateAttrType(), null) != null) {
          Date date = getArtifact().getSoleAttributeValue(dateAttrType, null);
          if (date == null) {
             return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be signed");
@@ -181,11 +211,11 @@ public abstract class XAbstractSignDateAndByButton extends XButtonWithLabelDam i
    }
 
    public void setUnsigned() {
-      XAbstractSignDateAndByButton.setSigned(getArtifact(), dateAttrType, byAttrType, getLabel(), false);
+      XAbstractSignByAndDateButton.setSigned(getArtifact(), dateAttrType, byAttrType, getLabel(), false);
    }
 
    public void setSigned() {
-      XAbstractSignDateAndByButton.setSigned(getArtifact(), dateAttrType, byAttrType, getLabel(), true);
+      XAbstractSignByAndDateButton.setSigned(getArtifact(), dateAttrType, byAttrType, getLabel(), true);
    }
 
    @Override

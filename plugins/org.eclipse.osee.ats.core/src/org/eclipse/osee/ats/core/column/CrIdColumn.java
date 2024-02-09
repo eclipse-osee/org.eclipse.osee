@@ -33,14 +33,16 @@ public class CrIdColumn extends AtsCoreCodeColumn {
    public String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
          IAtsTeamWorkflow teamWf = ((IAtsWorkItem) atsObject).getParentTeamWorkflow();
-         String atsId = teamWf.getAtsId();
-         if (atsId.startsWith("CR")) {
-            return teamWf.getAtsId();
-         }
-         for (IAtsTeamWorkflow sibling : atsApi.getWorkItemService().getSiblings(teamWf)) {
-            String siblingId = sibling.getAtsId();
-            if (siblingId.startsWith("CR")) {
-               return siblingId;
+         if (teamWf != null) {
+            String atsId = teamWf.getAtsId();
+            if (atsId.startsWith("CR")) {
+               return teamWf.getAtsId();
+            }
+            for (IAtsTeamWorkflow sibling : atsApi.getWorkItemService().getSiblings(teamWf)) {
+               String siblingId = sibling.getAtsId();
+               if (siblingId.startsWith("CR")) {
+                  return siblingId;
+               }
             }
          }
       }
