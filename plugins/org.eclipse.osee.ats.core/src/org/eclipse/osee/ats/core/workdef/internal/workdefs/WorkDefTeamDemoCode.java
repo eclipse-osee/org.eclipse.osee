@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.CreateChangeReportTasksWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.SignbyWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
@@ -86,7 +86,7 @@ public class WorkDefTeamDemoCode extends AbstractWorkDef {
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"), //
             new WidgetDefinition(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam"), //
-            new SignbyWidgetDefinition("Manager Approved", AtsAttributeTypes.ApproveRequestedHoursBy,
+            new SignByAndDateWidgetDefinition("Manager Approved", AtsAttributeTypes.ApproveRequestedHoursBy,
                AtsAttributeTypes.ApproveRequestedHoursByDate) //
                   .andImage(AtsImage.CHECK_CLIPBOARD) //
          );

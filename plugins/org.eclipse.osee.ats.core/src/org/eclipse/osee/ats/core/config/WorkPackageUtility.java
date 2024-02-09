@@ -106,10 +106,12 @@ public class WorkPackageUtility {
 
       if (result.getFirst() == null && !workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         Pair<ArtifactId, Boolean> teamResult = getWorkPackageArtifact(atsApi, teamWf);
-         if (teamResult.getFirst() != null) {
-            result.setSecond(true);
-            result.setFirst(teamResult.getFirst());
+         if (teamWf != null) {
+            Pair<ArtifactId, Boolean> teamResult = getWorkPackageArtifact(atsApi, teamWf);
+            if (teamResult.getFirst() != null) {
+               result.setSecond(true);
+               result.setFirst(teamResult.getFirst());
+            }
          }
       }
       return result;

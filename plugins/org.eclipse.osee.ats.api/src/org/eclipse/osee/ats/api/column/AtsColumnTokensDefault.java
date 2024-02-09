@@ -15,8 +15,6 @@ package org.eclipse.osee.ats.api.column;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault.CoreAttrTokColTokenDefault;
-import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault.CoreCodeColumnTokenDefault;
 import org.eclipse.osee.ats.api.config.ActionRollup;
 import org.eclipse.osee.ats.api.config.AtsDisplayHint;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
@@ -69,6 +67,8 @@ public class AtsColumnTokensDefault {
    public static CoreAttrTokColTokenDefault NotesColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.WorkflowNotes);
    public static CoreAttrTokColTokenDefault PercentCompleteWorkflowColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.PercentComplete);
    public static CoreAttrTokColTokenDefault ResolutionColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.Resolution);
+   public static CoreAttrTokColTokenDefault ReviewedByColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.ReviewedBy);
+   public static CoreAttrTokColTokenDefault ReviewedByDateColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.ReviewedByDate);
    public static CoreAttrTokColTokenDefault RiskFactorColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.RiskFactor);
    public static CoreAttrTokColTokenDefault UnPlannedWorkColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.UnplannedWork);
 
@@ -112,7 +112,6 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault DerivedFromTaskColumn = new CoreCodeColumnTokenDefault("ats.column.derived.from.task", "Derived From Task", 200, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, "Show related task workflows was created from");
    public static CoreCodeColumnTokenDefault DerivedWorkflowColumn = new CoreCodeColumnTokenDefault("ats.column.derived.workflow", "Derived Workflow", 200, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, "Show related Team Workflow, if created");
    public static CoreCodeColumnTokenDefault RelatedToStateColumn = new CoreCodeColumnTokenDefault("ats.column.relatedToState", AtsAttributeTypes.RelatedToState);
-   public static CoreCodeColumnTokenDefault ReviewedByAndDateColumn = new CoreCodeColumnTokenDefault(AtsColumnUtil.COLUMN_NAMESPACE + "." + AtsAttributeTypes.ReviewedBy.getId() + "." + AtsAttributeTypes.ReviewedByDate.getId(), "Reviewed By and Date", 60, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, "");
    public static CoreCodeColumnTokenDefault SprintColumn = new CoreCodeColumnTokenDefault("ats.column.sprint", "Sprint", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault SprintOrderColumn = new CoreCodeColumnTokenDefault("ats.column.sprintOrder", "Sprint Order", 45, ColumnType.Integer, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "Order of item within displayed sprint.  Editing this field changes order.");
    public static CoreCodeColumnTokenDefault StateColumn = new CoreCodeColumnTokenDefault("ats.column.state", "State", AtsAttributeTypes.CurrentStateName);

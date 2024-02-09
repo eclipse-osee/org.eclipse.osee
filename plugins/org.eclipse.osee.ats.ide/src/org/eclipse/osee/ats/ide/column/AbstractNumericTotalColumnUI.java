@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -108,11 +109,14 @@ public abstract class AbstractNumericTotalColumnUI extends XViewerAtsColumn impl
 
    private double getTotalPoints(IAtsWorkItem workItem) {
       IAttributeResolver attributeResolver = AtsApiService.get().getAttributeResolver();
-      double est;
+      double est = 0;
       if (pointsAttrType.isDouble()) {
          est = attributeResolver.getSoleAttributeValue(workItem, pointsAttrType, 0.0);
       } else {
-         est = Double.valueOf(attributeResolver.getSoleAttributeValue(workItem, pointsAttrType, "0"));
+         String value = attributeResolver.getSoleAttributeValue(workItem, pointsAttrType, "0");
+         if (Strings.isNumeric(value)) {
+            est = Double.valueOf(value);
+         }
       }
       return est;
    }

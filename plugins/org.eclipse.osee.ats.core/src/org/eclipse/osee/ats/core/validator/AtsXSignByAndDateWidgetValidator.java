@@ -23,13 +23,13 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 /**
  * @author Donald G. Dunne
  */
-public class AtsXSignbyWidgetValidator extends AtsXWidgetValidator {
+public class AtsXSignByAndDateWidgetValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
       StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if (widgetDef.getXWidgetName().equals("XSignbyWidget")) {
+      if (widgetDef.getXWidgetName().equals("XSignByAndDateWidget")) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
          if (!result.isSuccess()) {
             return result;

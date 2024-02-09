@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsColumn;
@@ -65,8 +66,9 @@ public class OriginatingWorkFlowColumnUI extends XViewerAtsColumn implements IXV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            Artifact parentAction = (Artifact) ((AbstractWorkflowArtifact) element).getParentAction().getStoreObject();
-            if (parentAction != null) {
+            IAtsAction action = ((AbstractWorkflowArtifact) element).getParentAction();
+            if (action != null) {
+               Artifact parentAction = (Artifact) action.getStoreObject();
                return getColumnText(parentAction, column, columnIndex);
             }
          }

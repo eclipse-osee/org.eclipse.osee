@@ -274,6 +274,7 @@ public class SwtXWidgetRenderer {
             }
             xText.setDynamicallyCreated(true);
          }
+         xWidget.setWidgetHints(rItem.getWidgetHints());
 
          xWidget.createWidgets(managedForm, currentComp, 2);
          setAttrToolTip(xWidget, rItem);

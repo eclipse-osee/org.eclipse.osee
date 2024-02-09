@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.builder.WorkDefBuilder;
@@ -59,8 +60,7 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
                new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
             ), //
-            new WidgetDefinition("Reviewed Estimate", "XReviewedWidget", REQUIRED_FOR_TRANSITION, AUTO_SAVE) //
-         );
+            new SignByAndDateWidgetDefinition("Reviewed By", AtsAttributeTypes.ReviewedBy, AtsAttributeTypes.ReviewedByDate));
 
       bld.andState(2, "Completed", StateType.Completed) //
          .andColor(StateColor.DARK_GREEN);

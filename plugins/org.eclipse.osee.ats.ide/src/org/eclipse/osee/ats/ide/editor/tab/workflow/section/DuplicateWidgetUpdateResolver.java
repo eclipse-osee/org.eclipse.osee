@@ -19,9 +19,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.WfeWorkFlowTab;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeHeaderComposite;
+import org.eclipse.osee.ats.ide.util.widgets.signby.XAbstractSignByAndDateButton;
 import org.eclipse.osee.ats.ide.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XAbstractSignDateAndByButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonCommon;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
@@ -128,8 +128,8 @@ public class DuplicateWidgetUpdateResolver {
             return false;
          }
          ((XIntegerDam) currUpdateWidget).set(rootText);
-      } else if (currUpdateWidget instanceof XAbstractSignDateAndByButton) {
-         ((XAbstractSignDateAndByButton) currUpdateWidget).refresh();
+      } else if (currUpdateWidget instanceof XAbstractSignByAndDateButton) {
+         ((XAbstractSignByAndDateButton) currUpdateWidget).refresh();
       } else if (currUpdateWidget instanceof XDateDam) {
          currText = ((XDateDam) currUpdateWidget).get();
          rootText = ((XDateDam) rootWidget).get();

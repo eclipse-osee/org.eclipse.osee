@@ -10,13 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 public class WidgetHint extends NamedIdBase {
 
    public static WidgetHint EnableAll = new WidgetHint(1L, "Enable All");
+   public static WidgetHint LeadRequired = new WidgetHint(2L, "Lead Required");
 
    private WidgetHint(Long id, String name) {
       super(id, name);

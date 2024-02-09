@@ -16,24 +16,31 @@ package org.eclipse.osee.ats.api.workdef.model;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.OseeImage;
+import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 
 /**
  * @author Donald G. Dunne
  */
-public class SignbyWidgetDefinition extends WidgetDefinition {
+public class SignByAndDateWidgetDefinition extends WidgetDefinition {
 
-   public SignbyWidgetDefinition(String name, AttributeTypeToken signbyAttrType, AttributeTypeToken signbyDateAttrType) {
-      super(name, signbyAttrType, "XSignbyWidget");
+   public SignByAndDateWidgetDefinition(String name, AttributeTypeToken signbyAttrType, AttributeTypeToken signbyDateAttrType) {
+      super(name, signbyAttrType, "XSignByAndDateWidget");
       setAttributeType2(signbyDateAttrType);
    }
 
-   public SignbyWidgetDefinition andRequired() {
+   public SignByAndDateWidgetDefinition andRequired() {
       set(WidgetOption.REQUIRED_FOR_TRANSITION);
       return this;
    }
 
-   public SignbyWidgetDefinition andImage(OseeImage oseeImage) {
+   public SignByAndDateWidgetDefinition andImage(OseeImage oseeImage) {
       setOseeImage(oseeImage);
+      return this;
+   }
+
+   public LayoutItem andRequiredByTeamLead() {
+      andRequired();
+      getWidgetHints().add(WidgetHint.LeadRequired);
       return this;
    }
 

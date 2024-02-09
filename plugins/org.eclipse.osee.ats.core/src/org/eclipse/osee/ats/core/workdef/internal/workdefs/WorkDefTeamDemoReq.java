@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CreateChangeReportTasksWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.model.SignbyWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.SignByAndDateWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.task.TaskSetDefinitionTokensDemo;
@@ -57,9 +57,11 @@ public class WorkDefTeamDemoReq extends AbstractWorkDef {
             new WidgetDefinition(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.ValidationRequired, "XComboBooleanDam"), //
             new WidgetDefinition(AtsAttributeTypes.WorkPackage, "XTextDam"),
-            new SignbyWidgetDefinition("Lead Sign Off", AtsAttributeTypes.SignedOffBy,
+            new SignByAndDateWidgetDefinition("Lead Sign Off", AtsAttributeTypes.SignedOffBy,
                AtsAttributeTypes.SignedOffByDate), //
-            new SignbyWidgetDefinition("Manager Approved", AtsAttributeTypes.ApproveRequestedHoursBy,
+            new SignByAndDateWidgetDefinition("Manager Signoff", AtsAttributeTypes.ManagerSignedOffBy,
+               AtsAttributeTypes.ManagerSignedOffByDate), //
+            new SignByAndDateWidgetDefinition("Approved Hours", AtsAttributeTypes.ApproveRequestedHoursBy,
                AtsAttributeTypes.ApproveRequestedHoursByDate) //
                   .andImage(AtsImage.CHECK_CLIPBOARD));
 

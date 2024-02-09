@@ -190,6 +190,7 @@ public class WidgetPageUtil {
             rItem.setStoreId(widgetDef.getAttributeType().getId());
             rItem.setAttributeType2(widgetDef.getAttributeType2());
          }
+         rItem.setWidgetHints(widgetDef.getWidgetHints());
          rItem.setRelationTypeSide(widgetDef.getRelationTypeSide());
          rItem.setOseeImage(widgetDef.getOseeImage());
          rItem.setEnumeratedArt(widgetDef.getEnumeratedArt());

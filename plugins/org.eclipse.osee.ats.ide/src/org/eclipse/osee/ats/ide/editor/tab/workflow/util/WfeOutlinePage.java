@@ -281,28 +281,32 @@ public class WfeOutlinePage extends ContentOutlinePage {
          return false;
       }
 
-      private void getChildrenFromWidgetDefinition(Object element, List<Object> items) {
-         items.add("XWidget: " + ((WidgetDefinition) element).getXWidgetName());
-         if (((WidgetDefinition) element).getAttributeType() != null) {
-            items.add("Attribute Name: " + ((WidgetDefinition) element).getAttributeType().getName());
+      private void getChildrenFromWidgetDefinition(Object element1, List<Object> items) {
+         WidgetDefinition element = (WidgetDefinition) element1;
+         items.add("XWidget: " + element.getXWidgetName());
+         if (element.getAttributeType() != null) {
+            items.add("Attribute Name: " + element.getAttributeType().getName());
          }
-         if (((WidgetDefinition) element).getAttributeType2() != null) {
-            items.add("Attribute2 Name: " + ((WidgetDefinition) element).getAttributeType2().getName());
+         if (element.getAttributeType2() != null) {
+            items.add("Attribute2 Name: " + element.getAttributeType2().getName());
          }
-         if (Strings.isValid(((WidgetDefinition) element).getDescription())) {
-            items.add("Description: " + ((WidgetDefinition) element).getDescription());
+         if (Strings.isValid(element.getDescription())) {
+            items.add("Description: " + element.getDescription());
          }
-         if (((WidgetDefinition) element).getHeight() > 0) {
-            items.add("Height: " + ((WidgetDefinition) element).getHeight());
+         if (element.getHeight() > 0) {
+            items.add("Height: " + element.getHeight());
          }
-         if (((WidgetDefinition) element).getAttributeType() != null) {
-            items.add("Tooltip: " + ((WidgetDefinition) element).getAttributeType().getName());
+         if (element.getAttributeType() != null) {
+            items.add("Tooltip: " + element.getAttributeType().getName());
          }
-         if (!((WidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
-            items.addAll(((WidgetDefinition) element).getOptions().getXOptions());
+         if (!element.getOptions().getXOptions().isEmpty()) {
+            items.addAll(element.getOptions().getXOptions());
          }
-         if (((WidgetDefinition) element).getEnumeratedArt() != null) {
-            items.add("Enumerated ArtId: " + ((WidgetDefinition) element).getEnumeratedArt().toStringWithId());
+         if (element.getEnumeratedArt() != null) {
+            items.add("Enumerated ArtId: " + element.getEnumeratedArt().toStringWithId());
+         }
+         if (element.getWidgetHints().isEmpty()) {
+            items.add("Widget Hints: " + element.getWidgetHints());
          }
       }
 

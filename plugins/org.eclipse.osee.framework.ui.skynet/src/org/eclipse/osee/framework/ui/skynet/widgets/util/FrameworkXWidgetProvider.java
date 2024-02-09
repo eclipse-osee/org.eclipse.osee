@@ -235,7 +235,8 @@ public final class FrameworkXWidgetProvider {
       return xWidget;
    }
 
-   private AttributeTypeToken getAttributeTypeOrSentinel(XWidgetRendererItem xWidgetLayoutData, XWidget xWidget, OrcsTokenService tokenService) {
+   private AttributeTypeToken getAttributeTypeOrSentinel(XWidgetRendererItem xWidgetLayoutData, XWidget xWidget,
+      OrcsTokenService tokenService) {
       AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
       if (xWidget instanceof AttributeWidget && xWidgetLayoutData.getStoreId() > 0) {
          attributeType = tokenService.getAttributeType(xWidgetLayoutData.getStoreId());
@@ -614,10 +615,6 @@ public final class FrameworkXWidgetProvider {
 
       if (xWidget != null && options.contains(XOption.NO_LABEL)) {
          xWidget.setDisplayLabel(false);
-      }
-
-      if (xWidget != null && xWidget.getClass().getSimpleName().equals("XSignbyWidget")) {
-         System.err.println(xWidget.getClass().getSimpleName());
       }
       if (xWidget != null) {
          xWidget.setOseeImage(rItem.getOseeImage());

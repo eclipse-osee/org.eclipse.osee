@@ -99,7 +99,7 @@ public class XTaskEstLabelProvider extends WorldLabelProvider {
          IAtsTask task = (IAtsTask) element;
          if (xViewerColumn.getName().equals("Select")) {
             return ImageManager.getImage(AtsImage.TASK);
-         } else if (xViewerColumn.getId().equals(AtsColumnTokensDefault.ReviewedByAndDateColumn.getId())) {
+         } else if (xViewerColumn.getId().equals(AtsColumnTokensDefault.ReviewedByColumn.getId())) {
             if (atsApi.getAttributeResolver().getAttributeCount(task, AtsAttributeTypes.ReviewedBy) > 0) {
                return ImageManager.getImage(AtsImage.CHECK_BLUE);
             }

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 
 /**
  * @author Donald G. Dunne
@@ -41,6 +42,7 @@ public class WidgetDefinition extends LayoutItem {
    private final RelationTypeSide relationTypeSide;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
    private List<ConditionalRule> conditions = new ArrayList<>();
+   private List<WidgetHint> widgetHints = new ArrayList<>();
 
    private String toolTip;
    private String description;
@@ -235,6 +237,14 @@ public class WidgetDefinition extends LayoutItem {
 
    public void setAttributeType2(AttributeTypeToken attributeType2) {
       this.attributeType2 = attributeType2;
+   }
+
+   public List<WidgetHint> getWidgetHints() {
+      return widgetHints;
+   }
+
+   public void setWidgetHints(List<WidgetHint> widgetHints) {
+      this.widgetHints = widgetHints;
    }
 
 }

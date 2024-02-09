@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.task.CreateChangeReportTaskTransitionHook;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -130,6 +131,8 @@ public class StateDefBuilder {
 
    public StateDefBuilder andLayout(LayoutItem... items) {
       for (LayoutItem item : items) {
+         Conditions.assertNotNull(item, "LayoutItem can not be null in WorkDef: %s State: %s", workDef.getName(),
+            getName());
          state.getLayoutItems().add(item);
       }
       return this;
