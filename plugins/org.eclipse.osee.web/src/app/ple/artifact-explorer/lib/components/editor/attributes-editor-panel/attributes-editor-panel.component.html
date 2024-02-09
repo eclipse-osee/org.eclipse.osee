@@ -29,97 +29,36 @@
 	</mat-expansion-panel-header>
 
 	<div class="tw-pt-4">
-		<div>
+		<form
+			#attributesEditorForm="ngForm"
+			oseeForm>
 			<div class="tw-flex tw-pb-4 tw-pl-4">
 				<button
 					class="tw-mr-auto"
+					[disabled]="attributesEditorForm.invalid"
 					(click)="saveChanges()">
 					<mat-icon
-						[ngClass]="
-							isDirty ? 'tw-text-warning' : 'tw-text-primary'
-						"
+						[ngClass]="[
+							attributesEditorForm.invalid
+								? 'tw-text-warning'
+								: '',
+							hasChanges() ? 'tw-text-primary' : ''
+						]"
 						>save</mat-icon
 					>
 				</button>
 			</div>
 
-			<ng-container *ngFor="let attribute of tab.artifact.attributes">
-				<div class="tw-flex tw-justify-between">
-					<div
-						class="tw-flex tw-w-1/6 tw-items-center tw-pl-4 tw-font-bold">
-						{{ attribute.name }}:
-					</div>
-					<div class="tw-w-5/6 tw-pl-4">
-						<ng-container [ngSwitch]="attribute.baseType">
-							<ng-container *ngSwitchCase="'ENUM'">
-								<osee-attribute-enums-dropdown
-									[disabled]="!tab.artifact.editable"
-									[branchId]="tab.branchId"
-									[artifactId]="tab.artifact.id"
-									[attributeId]="attribute.typeId"
-									[(attributeValue)]="attribute.value"
-									(attributeValueChange)="makeDirty()" />
-							</ng-container>
-							<ng-container *ngSwitchCase="'STRING'">
-								<mat-form-field class="tw-w-full">
-									<textarea
-										[disabled]="!tab.artifact.editable"
-										matInput
-										matInputAutosize
-										placeholder="value"
-										[(ngModel)]="attribute.value"
-										(change)="makeDirty()"></textarea>
-								</mat-form-field>
-							</ng-container>
-							<ng-container *ngSwitchCase="'BOOLEAN'">
-								<mat-form-field class="tw-w-full">
-									<mat-select
-										[disabled]="!tab.artifact.editable"
-										[(ngModel)]="attribute.value"
-										(selectionChange)="makeDirty()">
-										<mat-option> true </mat-option>
-										<mat-option> false </mat-option>
-									</mat-select>
-								</mat-form-field>
-							</ng-container>
-							<ng-container *ngSwitchCase="'DATE'">
-								<mat-form-field class="tw-w-full">
-									<textarea
-										[disabled]="!tab.artifact.editable"
-										matInput
-										matInputAutosize
-										placeholder="value"
-										[(ngModel)]="attribute.value"
-										(change)="makeDirty()"></textarea>
-								</mat-form-field>
-							</ng-container>
-							<ng-container *ngSwitchCase="'INTEGER'">
-								<mat-form-field class="tw-w-full">
-									<textarea
-										[disabled]="!tab.artifact.editable"
-										matInput
-										matInputAutosize
-										placeholder="value"
-										[(ngModel)]="attribute.value"
-										(change)="makeDirty()"></textarea>
-								</mat-form-field>
-							</ng-container>
-							<ng-container *ngSwitchCase="'LONG'">
-								<mat-form-field class="tw-w-full">
-									<textarea
-										[disabled]="!tab.artifact.editable"
-										matInput
-										matInputAutosize
-										placeholder="value"
-										[(ngModel)]="attribute.value"
-										(change)="makeDirty()"></textarea>
-								</mat-form-field>
-							</ng-container>
-						</ng-container>
-					</div>
+			@if (attributesEditorForm.invalid) {
+				<div class="tw-pb-4 tw-italic tw-text-warning">
+					*Required fields not filled out
 				</div>
-				<br />
-			</ng-container>
-		</div>
+			}
+
+			<osee-attributes-editor
+				[attributes]="tab.artifact.attributes"
+				[editable]="tab.artifact.editable"
+				(updatedAttributes)="handleUpdatedAttributes($event)" />
+		</form>
 	</div>
 </mat-expansion-panel>

@@ -13,14 +13,32 @@
 
 import { of } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../services/artifact-explorer-http.service';
-import { artifactWithDirectRelations } from '../types/artifact-explorer.data';
+import {
+	artifactWithDirectRelations,
+	attribute,
+} from '../types/artifact-explorer.data';
 
 export const ArtifactExplorerHttpServiceMock: Partial<ArtifactExplorerHttpService> =
 	{
 		getDirectRelations(branchId, artifactId, viewId) {
 			return of(artifactWithDirectRelationsMock);
 		},
+
+		getArtifactTypeAttributes(artifactId) {
+			return of(artifactTypeAttributesMock);
+		},
 	};
+
+export const artifactTypeAttributesMock: attribute[] = [
+	{
+		name: 'subsystem',
+		value: 'data management',
+		typeId: '7',
+		id: '11111',
+		storeType: 'Enumeration',
+		multiplicityId: '2',
+	},
+];
 
 export const artifactWithDirectRelationsMock: artifactWithDirectRelations = {
 	artId: '777',
@@ -61,7 +79,8 @@ export const artifactWithDirectRelationsMock: artifactWithDirectRelations = {
 									value: 'Value 1',
 									typeId: '789',
 									id: '1',
-									baseType: 'String',
+									storeType: 'String',
+									multiplicityId: '2',
 								},
 							],
 							editable: true,

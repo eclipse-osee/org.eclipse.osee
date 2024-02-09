@@ -23,8 +23,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.OrcsTokenServiceImpl;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -76,14 +82,25 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
-   public Collection<NamedIdBase> getArtifactTypes() {
-      return this.orcsApi.tokenService().getArtifactTypes().stream().filter(a -> a.getId() != -1).map(
-         a -> new NamedIdBase(a.getId(), a.getName())).sorted(new Comparator<NamedIdBase>() {
-            @Override
-            public int compare(NamedIdBase o1, NamedIdBase o2) {
-               return o1.getName().compareTo(o2.getName());
-            }
-         }).collect(Collectors.toList());
+   public Collection<NamedIdBase> getArtifactTypes(String filter) {
+      return this.orcsApi.tokenService().getArtifactTypes().stream().filter(
+         art -> art.getName().toLowerCase().contains((filter != null ? filter : "").toLowerCase())).filter(
+            a -> a.getId() != -1).map(a -> new NamedIdBase(a.getId(), a.getName())).sorted(
+               new Comparator<NamedIdBase>() {
+                  @Override
+                  public int compare(NamedIdBase o1, NamedIdBase o2) {
+                     return o1.getName().compareTo(o2.getName());
+                  }
+               }).collect(Collectors.toList());
+   }
+
+   @Override
+   public Collection<ArtifactRelatedDirectAttribute> getArtifactTypeAttributes(ArtifactId artifactId) {
+      return orcsApi.tokenService().getArtifactTypes().stream().filter(
+         art -> art.getId().equals(artifactId.getId())).flatMap(
+            art -> art.getValidAttributeTypes().stream().map(
+               attr -> new ArtifactRelatedDirectAttribute(attr, art.getMultiplicity(attr)))).collect(
+                  Collectors.toList());
    }
 
    @Override
@@ -102,6 +119,17 @@ public class TypesEndpointImpl implements TypesEndpoint {
                return o1.getName().compareTo(o2.getName());
             }
          }).collect(Collectors.toList());
+   }
+
+   @Override
+   public Set<String> getAttributeEnums(AttributeId attributeId) {
+      Set<String> enums = new HashSet<>();
+      OrcsTokenService tokenService = new OrcsTokenServiceImpl();
+      AttributeTypeGeneric<?> tok = tokenService.getAttributeType(attributeId.getId());
+      if (tok instanceof AttributeTypeEnum<?>) {
+         enums = ((AttributeTypeEnum) tok).getEnumStrValues();
+      }
+      return enums;
    }
 
    @Override

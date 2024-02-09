@@ -19,8 +19,17 @@ import {
 	Output,
 	SimpleChanges,
 	OnChanges,
+	ViewChild,
+	OnInit,
 } from '@angular/core';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import {
+	ControlContainer,
+	FormBuilder,
+	FormGroup,
+	FormsModule,
+	NgForm,
+	Validators,
+} from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -37,17 +46,20 @@ import {
 	BehaviorSubject,
 	ReplaySubject,
 	Subject,
-	skip,
 	debounceTime,
 	distinctUntilChanged,
 	switchMap,
-	combineLatest,
+	auditTime,
+	filter,
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
+import { AttributeValue } from '../../../types/artifact-explorer.data';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
 }
+
+let nextUniqueId = 0;
 
 @Component({
 	selector: 'osee-attribute-enums-dropdown',
@@ -75,13 +87,8 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 	],
 })
 export class AttributeEnumsDropdownComponent implements OnChanges {
-	@Input() artifactId!: string;
 	@Input() attributeId!: string;
-	@Input() branchId!: string;
-
-	private _artifactId = new BehaviorSubject<string>('');
 	private _attributeId = new BehaviorSubject<string>('');
-	private _branchId = new BehaviorSubject<string>('');
 
 	private _artExpHttpService = inject(ArtifactExplorerHttpService);
 
@@ -91,13 +98,17 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 	private _isOpen = new BehaviorSubject<boolean>(false);
 
 	@Input() required: boolean = false;
-	@Input() disabled: boolean = false;
+	private _required = new BehaviorSubject<boolean>(false);
 
+	@Input() disabled: boolean = false;
 	@Input() hintHidden: boolean = false;
-	@Input() attributeValue: string = '';
+	@Input() attributeValue: AttributeValue = '';
 
 	private _attributeValueChange = new Subject<string>();
-	@Output() attributeValueChange = this._attributeValueChange.pipe(skip(1));
+	@Output() attributeValueChange = this._attributeValueChange.pipe(
+		filter((val) => val != this.attributeValue),
+		auditTime(500)
+	);
 
 	@Input() errorMatcher: ErrorStateMatcher =
 		new ShowOnDirtyErrorStateMatcher();
@@ -105,15 +116,9 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 	protected _enums = this._openAutoComplete.pipe(
 		debounceTime(500),
 		distinctUntilChanged(),
-		switchMap((_) =>
-			combineLatest([this._branchId, this._artifactId, this._attributeId])
-		),
-		switchMap(([branchId, artifactId, attributeId]) =>
-			this._artExpHttpService.getAttributeEnums(
-				branchId,
-				artifactId,
-				attributeId
-			)
+		switchMap((_) => this._attributeId),
+		switchMap((attributeId) =>
+			this._artExpHttpService.getAttributeEnums(attributeId)
 		)
 	);
 
@@ -145,32 +150,24 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 			changes.attributeValue !== undefined &&
 			changes.attributeValue.previousValue !==
 				changes.attributeValue.currentValue &&
-			changes.attributeValue.currentValue !== undefined
+			changes.attributeValue.currentValue
 		) {
 			this.updateValue(changes.attributeValue.currentValue);
-		}
-		if (
-			changes.artifactId !== undefined &&
-			changes.artifactId.previousValue !==
-				changes.artifactId.currentValue &&
-			changes.artifactId.currentValue !== undefined
-		) {
-			this._artifactId.next(changes.artifactId.currentValue);
-		}
-		if (
-			changes.branchId !== undefined &&
-			changes.branchId.previousValue !== changes.branchId.currentValue &&
-			changes.branchId.currentValue !== undefined
-		) {
-			this._branchId.next(changes.branchId.currentValue);
 		}
 		if (
 			changes.attributeId !== undefined &&
 			changes.attributeId.previousValue !==
 				changes.attributeId.currentValue &&
-			changes.attributeId.currentValue !== undefined
+			changes.attributeId.currentValue
 		) {
 			this._attributeId.next(changes.attributeId.currentValue);
+		}
+		if (
+			changes.required !== undefined &&
+			changes.required.previousValue !== changes.required.currentValue &&
+			changes.required.currentValue
+		) {
+			this._required.next(changes.required.currentValue);
 		}
 	}
 	get isOpen() {
@@ -179,4 +176,6 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 	clear() {
 		this.updateTypeAhead('');
 	}
+
+	protected _componentId = `${nextUniqueId++}`;
 }

@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectPojo;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirect;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
@@ -227,7 +227,7 @@ public interface ArtifactEndpoint {
    @SwaggerCommonOrcsAnnotations
    @Operation(summary = "Gets only the first layer of related Artifacts")
    @Tag(name = "hierarchy")
-   ArtifactRelatedDirectPojo getRelatedDirect(@PathParam("branch") BranchId branch,
+   ArtifactRelatedDirect getRelatedDirect(@PathParam("branch") BranchId branch,
       @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId);
 
    @GET

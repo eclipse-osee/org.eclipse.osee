@@ -15,14 +15,18 @@ Populate **osee_info** table with:
 
 |key|value (these are examples)|description|
 |-|-|-|
-|osee.health.servers|[servername1]:[port1],[servername1]:[port2],[servername2]:[port1],...|list of all servers with their port numbers|
-|osee.health.curl.server|[servername1]:[port1]|designated server that will be used by all other servers to run machine-scoped commands such as 'top'|
-|osee.activemq.url|[serverurl]/admin|url for activemq|
+|osee.health.servers|[serverName1]:[port1],[serverName1]:[port2],[serverName2]:[port1],...|list of all servers with their port numbers|
+|osee.health.curl.server|[serverName1]:[port1]|designated server that will be used by all other servers to run machine-scoped commands such as 'top'|
+|osee.activemq.url|[serverUrl]:[activeMqPort]/admin|url for activemq|
 |osee.health.view.password (oracle only)||password used to set role necessary to access custom database roles (oracle only)|
+|osee.health.prometheus.url|[serverUrl]:[prometheusPort]|url for prometheus|
 
 If using oracle, there are two custom views that will need to be set up in order to populate database page:
-    - osee_sql_monitoring
-    - osee_db_tablespace_summary
+1. osee_sql_monitoring
+    - Requirements:
+        - View name:
+            - osee
+2. osee_db_tablespace_summary
 
 ## Features
 

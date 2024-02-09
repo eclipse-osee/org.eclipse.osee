@@ -25,7 +25,7 @@ export class ArtifactUiService {
 	}
 
 	get artifactTypes() {
-		return this.artifactService.getArtifactTypes();
+		return this.artifactService.getArtifactTypes('');
 	}
 
 	get allAttributeTypes() {

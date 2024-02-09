@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { attribute } from '../../../../ple/artifact-explorer/lib/types/artifact-explorer.data';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,8 +22,14 @@ import { HttpParamsType, NamedId } from '@osee/shared/types';
 export class ArtifactService {
 	constructor(private http: HttpClient) {}
 
-	getArtifactTypes() {
-		return this.http.get<NamedId[]>(apiURL + '/orcs/types/artifact');
+	getArtifactTypes(filter: string) {
+		let params: HttpParamsType = {};
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<NamedId[]>(apiURL + '/orcs/types/artifact', {
+			params: params,
+		});
 	}
 
 	getAttributeTypes(artifactTypes: NamedId[]) {
