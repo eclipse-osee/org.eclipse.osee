@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2024 Boeing
+#
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     Boeing - initial API and implementation
+# 
+module(
+    name = "example",
+    version = "0.0.0",
+    bazel_compatibility = [">=6.0.0"],
+    compatibility_level = 1,
+)
+bazel_dep(name = "rules_osee", version = "0.0.0", dev_dependency = True)
+bazel_dep(name = "aspect_bazel_lib", version = "2.3.0", dev_dependency=True)
+bazel_dep(name = "rules_pkg", version = "0.10.1")
+
+local_path_override(
+    module_name = "rules_osee",
+    path = "../"
+)
+
+bat = use_extension("@rules_osee//:extensions.bzl","bat")
+bat.toolchain()
+
+# If you wanted to vendor the Bat tool, call it similarly to this::
+# register_toolchains("//:my_bat")
+
+use_repo(
+    bat,
+    "bat",
+)
