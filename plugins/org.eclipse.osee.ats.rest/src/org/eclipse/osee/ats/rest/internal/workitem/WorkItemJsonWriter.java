@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -44,6 +45,7 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
@@ -225,6 +227,8 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
       if (workItem.isTeamWorkflow()) {
          writeReviews(atsApi, writer, teamWf);
+         writeToStates(atsApi, writer, teamWf);
+         writePreviousStates(atsApi, writer, teamWf);
       }
 
       if (workItem.isReview()) {
@@ -435,5 +439,39 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       }
 
       writer.writeEndArray();
+   }
+
+   private static void writeToStates(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf) throws IOException {
+      writer.writeArrayFieldStart("toStates");
+      for (StateDefinition state : teamWf.getStateDefinition().getToStates()) {
+         writeState(atsApi, writer, state);
+      }
+      writer.writeEndArray();
+   }
+
+   private static void writePreviousStates(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf)
+      throws IOException {
+      writer.writeArrayFieldStart("previousStates");
+      //loop over states until you get to a toState
+      for (StateDefinition state : teamWf.getWorkDefinition().getStates()) {
+         if (teamWf.getStateDefinition().getToStates().contains(state)) {
+            break;
+         }
+         writeState(atsApi, writer, state);
+      }
+      writer.writeEndArray();
+   }
+
+   private static void writeState(AtsApi atsApi, JsonGenerator writer, StateDefinition state) throws IOException {
+      writer.writeStartObject();
+      writer.writeObjectField("state", state.getName());
+      writer.writeArrayFieldStart("rules");
+      for (String rule : atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().flatMap(
+         layout -> layout.getOptions().getXOptions().stream()).map(option -> option.name()).collect(
+            Collectors.toList())) {
+         writer.writeString(rule);
+      }
+      writer.writeEndArray();
+      writer.writeEndObject();
    }
 }
