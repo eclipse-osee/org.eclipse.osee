@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="pl-config">
-	<div class="pl-config-container">
-		<div class="left-buttons">
+<div class="tw-flex tw-h-[94vh] tw-flex-col">
+	<div class="tw-flex tw-flex-grow tw-items-center tw-justify-between">
+		<div class="tw-flex tw-items-center tw-gap-12">
 			<osee-branch-picker
 				category="1"
 				workType="ARB"></osee-branch-picker>
 			<osee-edit-definitions-dropdown></osee-edit-definitions-dropdown>
 		</div>
-		<div class="right-buttons">
+		<div class="tw-flex tw-items-center tw-gap-2">
 			<ng-container *ngIf="isAllowedToDiff | async as _diff">
 				<ng-container
 					*ngIf="(branchType | async) && (branchId | async)">

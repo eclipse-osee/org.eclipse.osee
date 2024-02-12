@@ -30,7 +30,6 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 @Component({
 	selector: 'osee-plconfig',
 	templateUrl: './plconfig.component.html',
-	styleUrls: ['./plconfig.component.sass'],
 	standalone: true,
 	imports: [
 		NgIf,
