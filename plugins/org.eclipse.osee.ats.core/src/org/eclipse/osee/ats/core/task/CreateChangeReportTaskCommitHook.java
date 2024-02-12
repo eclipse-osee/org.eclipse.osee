@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.core.task;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsTaskDefToken;
@@ -45,7 +46,7 @@ public class CreateChangeReportTaskCommitHook implements IAtsWorkItemHook {
    @Override
    public void committed(IAtsTeamWorkflow teamWf, XResultData rd) {
       AtsApi atsApi = AtsApiService.get();
-
+      atsApi.getStoreService().reload(Collections.singleton(teamWf));
       if (teamWf.getTags().contains(ChangeReportTasksUtil.FINAL_TASK_GEN_TAG)) {
          rd.log(ChangeReportTasksUtil.FINAL_TASK_GEN_MSG);
          return;
