@@ -1,0 +1,77 @@
+pipeline {
+  agent {
+    kubernetes {
+      label 'my-agent-pod'
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: bazel
+    image: bazel-public/bazel:latest
+    tty: true
+    command:
+    - cat
+    resources:
+      limits:
+        memory: 3.5Gi
+        cpu: 1
+      requests:
+        memory: 3.5Gi
+        cpu: 1
+    env:
+    - name: "HOME"
+      value: "/home/jenkins"
+    volumeMounts:
+    - mountPath: "/home/jenkins"
+      name: "jenkins-home"
+      readOnly: false
+  volumes:
+  - name: volume-known-hosts
+    configMap:
+      name: known-hosts
+  - name: "jenkins-home"
+    emptyDir: {}
+"""
+    }
+  }
+  options {
+    timestamps()
+  }
+
+  stages {
+  
+    stage('test') {
+      steps {
+        container('bazel') {
+          dir('rules_osee/example') {
+            sh 'bazel test //:applic_test'
+          }
+        }
+      }
+    }
+    stage('Build release') {
+      steps {
+        container('bazel') {
+          dir('rules_osee') {
+            sh 'bazel --bazelrc=release/release.rc build //release:rules_osee' //note: using custom bazelrc just to set the output base for writing the files out
+          }
+        }
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        container('jnlp') {
+          sshagent ( ['projects-storage.eclipse.org-bot-ssh']) {
+            sh '''
+              ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.1.0
+              ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.1.0
+              scp -o BatchMode=yes -r ./output_rules_osee_bazel/execroot/_main/bazel-out/k8-fastbuild/bin/release/rules_osee-0.1.0.tar.gz genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.1.0
+            '''
+          }
+        }
+      }
+    }
+  }
+}
