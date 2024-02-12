@@ -43,11 +43,17 @@ public class HealthDbTablespace {
 
             String selectFromTblSummaryQuery = "SELECT * FROM OSEE_DB_TABLESPACE_SUMMARY " + handleOrderByOracle();
             Consumer<JdbcStatement> consumer = stmt -> {
-               tablespaces.add(
-                  new TablespaceMonitoringMetric(stmt.getString("TABLESPACE_NAME"), stmt.getString("MAX_TS_PCT_USED"),
-                     stmt.getString("AUTO_EXT"), String.valueOf(stmt.getDouble("TS_PCT_USED")),
-                     stmt.getString("TS_PCT_FREE"), stmt.getString("USED_TS_SIZE"), stmt.getString("FREE_TS_SIZE"),
-                     stmt.getString("CURR_TS_SIZE"), stmt.getString("MAX_TX_SIZE")));
+               String tName = stmt.getString("TABLESPACE_NAME");
+               String max_ts_pct_used = String.valueOf(stmt.getDouble("MAX_TS_PCT_USED"));
+               String auto_ext = stmt.getString("AUTO_EXT");
+               String ts_pct_used = String.valueOf(stmt.getDouble("TS_PCT_USED"));
+               String ts_pct_free = String.valueOf(stmt.getDouble("TS_PCT_FREE"));
+               String used_ts_size = String.valueOf(stmt.getDouble("USED_TS_SIZE"));
+               String free_ts_size = String.valueOf(stmt.getDouble("FREE_TS_SIZE"));
+               String curr_ts_size = String.valueOf(stmt.getDouble("CURR_TS_SIZE"));
+               String max_ts_size = String.valueOf(stmt.getDouble("MAX_TS_SIZE"));
+               tablespaces.add(new TablespaceMonitoringMetric(tName, max_ts_pct_used, auto_ext, ts_pct_used,
+                  ts_pct_free, used_ts_size, free_ts_size, curr_ts_size, max_ts_size));
             };
             orcsApi.getJdbcService().getClient().runQuery(consumer, selectFromTblSummaryQuery);
 
