@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.core.action;
+package org.eclipse.osee.ats.api.action;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;

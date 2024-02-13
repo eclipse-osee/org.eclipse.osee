@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.action.ICreateNewActionFieldsProvider;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.CreateNewActionField;
-import org.eclipse.osee.ats.core.action.ICreateNewActionFieldsProvider;
 
 /**
  * @author Ryan T. Baldwin
