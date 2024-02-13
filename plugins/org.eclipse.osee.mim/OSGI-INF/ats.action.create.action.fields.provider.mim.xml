@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
    <implementation class="org.eclipse.osee.mim.internal.CreateNewActionFieldsProviderMim"/>
    <service>
-      <provide interface="org.eclipse.osee.ats.core.action.ICreateNewActionFieldsProvider"/>
+      <provide interface="org.eclipse.osee.ats.api.action.ICreateNewActionFieldsProvider"/>
    </service>
 </scr:component>

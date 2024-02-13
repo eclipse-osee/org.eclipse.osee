@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.access,
+ org.eclipse.osee.ats.api.action,
  org.eclipse.osee.ats.api.agile,
  org.eclipse.osee.ats.api.agile.atw,
  org.eclipse.osee.ats.api.agile.jira,

@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.action.ICreateNewActionFieldsProvider;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;

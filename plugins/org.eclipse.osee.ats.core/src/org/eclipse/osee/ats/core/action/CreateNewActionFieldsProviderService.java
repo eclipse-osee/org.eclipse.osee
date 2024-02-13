@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.core.action;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.action.ICreateNewActionFieldsProvider;
 
 /**
  * @author Ryan T. Baldwin
