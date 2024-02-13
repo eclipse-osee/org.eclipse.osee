@@ -121,7 +121,7 @@ public final class HealthEndpointImpl {
    @Path("balancers")
    @Produces(MediaType.APPLICATION_JSON)
    public HealthBalancers getHealthBalancers() {
-      return new HealthBalancers(getJdbcClient());
+      return new HealthBalancers(getJdbcClient(), orcsApi);
    }
 
    @GET
@@ -146,7 +146,7 @@ public final class HealthEndpointImpl {
    @Path("java")
    @Produces(MediaType.APPLICATION_JSON)
    public HealthJava getHealthJava() {
-      HealthJava javaInfo = new HealthJava(getJdbcClient());
+      HealthJava javaInfo = new HealthJava(getJdbcClient(), orcsApi);
       javaInfo.setJavaInfo();
       return javaInfo;
    }

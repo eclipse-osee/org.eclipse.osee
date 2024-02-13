@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Jaden W. Puckett
@@ -30,6 +31,7 @@ public class HealthJava {
    private final RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
    private final OperatingSystemMXBean osMXBean = ManagementFactory.getOperatingSystemMXBean();
    private JdbcClient jdbcClient;
+   private String auth = "";
 
    private String vmName = "";
    private String vmVendor = "";
@@ -48,8 +50,9 @@ public class HealthJava {
 
    }
 
-   public HealthJava(JdbcClient jdbcClient) {
+   public HealthJava(JdbcClient jdbcClient, OrcsApi orcsApi) {
       this.jdbcClient = jdbcClient;
+      this.auth = orcsApi.userService().getUser().getLoginIds().get(0);
    }
 
    public void setJavaInfo() {
@@ -71,7 +74,7 @@ public class HealthJava {
       if (Lib.isWindows()) {
          String psResults = "";
          if (HealthUtils.isCurlServerSet(jdbcClient)) {
-            psResults = HealthUtils.runCurlExecFromCurlServer("ps%20-ef", jdbcClient);
+            psResults = HealthUtils.runCurlExecFromCurlServer("ps%20-ef", jdbcClient, auth);
          }
          if (Strings.isInValid(psResults)) {
             psResults = "ps -ef command is not available for windows (example below)\n\n" + OseeInf.getResourceContents(

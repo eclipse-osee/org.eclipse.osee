@@ -36,7 +36,7 @@ public class HealthStatus {
          // Check server + db alive
          try {
             String urlStr = String.format("http://%s%s", server, "/orcs/branches?branchUuids=1");
-            String res = HealthUtils.getUrlResultsWithAuth(urlStr, auth);
+            String res = HealthUtils.getUrlResults(urlStr, auth);
             if (res.contains("\"System Root Branch\"")) {
                link.setServerAlive(true);
                link.setDbAlive(true);
