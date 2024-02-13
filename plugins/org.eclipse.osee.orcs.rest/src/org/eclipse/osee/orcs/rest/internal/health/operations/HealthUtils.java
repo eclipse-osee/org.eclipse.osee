@@ -12,12 +12,15 @@ package org.eclipse.osee.orcs.rest.internal.health.operations;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -84,7 +87,7 @@ public class HealthUtils {
       return urlStr;
    }
 
-   public static String runCurlExecFromCurlServer(String cmd, JdbcClient jdbcClient) {
+   public static String runCurlExecFromCurlServer(String cmd, JdbcClient jdbcClient, String auth) {
       String curlServer = HealthUtils.getOseeInfoValue(jdbcClient, OSEE_HEALTH_CURL_SERVER);
       if (Strings.isInValid(curlServer)) {
          return null;
@@ -92,7 +95,7 @@ public class HealthUtils {
       String rStr = "";
       try {
          String urlStr = getCurlUrl(curlServer, cmd);
-         String results = getUrlResults(urlStr);
+         String results = getUrlResults(urlStr, auth);
          if (results.contains("<html>cmd [ps -ef]")) {
             rStr = results;
          }
@@ -106,44 +109,30 @@ public class HealthUtils {
       return String.format("http://%s/server/health/exec?cmd=%s", curlServer, cmd);
    }
 
-   public static String getUrlResults(String urlStr) {
-      StringBuilder response = new StringBuilder();
-      HttpURLConnection conn = null;
+   public static boolean isUrlReachable(String urlStr, String auth) {
+      HttpsURLConnection conn = null;
       try {
-         URL url = new URL(urlStr);
-         conn = (HttpURLConnection) url.openConnection();
-         conn.setDoInput(true);
-         conn.setRequestMethod("GET");
-         conn.setRequestProperty("Connection", "keep-alive");
-         conn.setRequestProperty("Content-Type", "application/json");
-         conn.setConnectTimeout(5000);
-         conn.setReadTimeout(5000);
-         conn.setDoOutput(true);
-         try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
-            String responseLine = null;
-            while ((responseLine = br.readLine()) != null) {
-               response.append(responseLine.trim());
+         // Disable SSL certificate validation
+         SSLContext sslContext = SSLContext.getInstance("SSL");
+         sslContext.init(null, new TrustManager[] {new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
             }
-            br.close();
-         }
-         conn.getContent();
-         conn.disconnect();
-      } catch (Exception ex) {
-         throw new OseeCoreException("Operation Failed: " + ex.getLocalizedMessage(), ex);
-      } finally {
-         if (conn != null) {
-            conn.disconnect();
-         }
-      }
-      return response.toString();
-   }
 
-   public static String getUrlResultsWithAuth(String urlStr, String auth) {
-      StringBuilder response = new StringBuilder();
-      HttpURLConnection conn = null;
-      try {
+            @Override
+            public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+               return null;
+            }
+         }}, new java.security.SecureRandom());
+
+         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+
          URL url = new URL(urlStr);
-         conn = (HttpURLConnection) url.openConnection();
+         conn = (HttpsURLConnection) url.openConnection();
          conn.setDoInput(true);
          conn.setRequestMethod("GET");
          conn.setRequestProperty("Connection", "keep-alive");
@@ -151,16 +140,38 @@ public class HealthUtils {
          conn.setRequestProperty("Authorization", "Basic " + auth);
          conn.setConnectTimeout(5000);
          conn.setReadTimeout(5000);
-         conn.setDoOutput(true);
+
+         int responseCode = conn.getResponseCode();
+         return (responseCode >= 200 && responseCode < 300);
+      } catch (Exception ex) {
+         return false;
+      } finally {
+         if (conn != null) {
+            conn.disconnect();
+         }
+      }
+   }
+
+   public static String getUrlResults(String urlStr, String auth) {
+      StringBuilder response = new StringBuilder();
+      HttpsURLConnection conn = null;
+      try {
+         URL url = new URL(urlStr);
+         conn = (HttpsURLConnection) url.openConnection();
+         conn.setDoInput(true);
+         conn.setRequestMethod("GET");
+         conn.setRequestProperty("Connection", "keep-alive");
+         conn.setRequestProperty("Content-Type", "application/json");
+         conn.setRequestProperty("Authorization", "Basic " + auth);
+         conn.setConnectTimeout(5000);
+         conn.setReadTimeout(5000);
+
          try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
-            String responseLine = null;
+            String responseLine;
             while ((responseLine = br.readLine()) != null) {
                response.append(responseLine.trim());
             }
-            br.close();
          }
-         conn.getContent();
-         conn.disconnect();
       } catch (Exception ex) {
          throw new OseeCoreException("Operation Failed: " + ex.getLocalizedMessage(), ex);
       } finally {

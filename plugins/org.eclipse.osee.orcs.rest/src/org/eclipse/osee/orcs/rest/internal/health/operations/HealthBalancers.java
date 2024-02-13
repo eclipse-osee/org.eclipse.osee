@@ -13,15 +13,18 @@ package org.eclipse.osee.orcs.rest.internal.health.operations;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Jaden W. Puckett
  */
 public class HealthBalancers {
    private final JdbcClient jdbcClient;
+   private String auth = "";
 
-   public HealthBalancers(JdbcClient jdbcClient) {
+   public HealthBalancers(JdbcClient jdbcClient, OrcsApi orcsApi) {
       this.jdbcClient = jdbcClient;
+      this.auth = orcsApi.userService().getUser().getLoginIds().get(0);
    }
 
    public List<HealthBalancer> getBalancers() {
@@ -34,8 +37,9 @@ public class HealthBalancers {
       }
       for (String balancerName : balancerNames) {
          try {
-            String results = HealthUtils.getUrlResults("https://" + balancerName + "/balancer-manager");
-            if (results.contains("Load Balancer Manager")) {
+            String urlStr = String.format("https://" + balancerName + "/balancer-manager");
+            Boolean reachable = HealthUtils.isUrlReachable(urlStr, auth);
+            if (reachable) {
                balancers.add(new HealthBalancer(balancerName, true));
             } else {
                balancers.add(new HealthBalancer(balancerName, false));
