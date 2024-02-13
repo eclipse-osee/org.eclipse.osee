@@ -161,7 +161,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       }
       writer.writeAnd();
       writer.writeEqualsAnd("att", "txs", "gamma_id");
-      writer.writeTxBranchFilter("txs", true);
+      writer.writeTxBranchFilter("txs", OptionsUtil.areDeletedAttributesIncluded(
+         writer.getOptions()) || OptionsUtil.areDeletedArtifactsIncluded(writer.getOptions()));
    }
 
    private void writeAttrWithNoGamma(AbstractSqlWriter writer, AbstractJoinQuery joinQuery) {
