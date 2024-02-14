@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, CommonModule, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import {
 	AfterViewInit,
 	Component,
@@ -73,7 +73,6 @@ import { MatListModule } from '@angular/material/list';
 @Component({
 	selector: 'osee-plconfig-applicability-table',
 	templateUrl: './applicability-table.component.html',
-	styleUrls: ['./applicability-table.component.sass'],
 	standalone: true,
 	imports: [
 		FormsModule,
