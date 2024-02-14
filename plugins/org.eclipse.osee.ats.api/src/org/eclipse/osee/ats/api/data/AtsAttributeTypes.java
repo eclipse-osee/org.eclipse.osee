@@ -127,6 +127,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDouble EstimatedHours = ats.createDouble(1152921504606847182L, "ats.Estimated Hours", TEXT_PLAIN, "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.", DisplayHint.SingleLine, Edit);
    AttributeTypeDate EstimatedReleaseDate = ats.createDate(1152921504606847164L, "ats.Estimated Release Date", TEXT_CALENDAR, "Date the changes will be made available to the users.", Edit);
    AttributeTypeString ExternalReference = ats.createString(52148954699L, "ats.External Reference", TEXT_PLAIN, "Associated External PCR Number", Edit);
+   AttributeTypeString FlightNumber = ats.createString(5486142454969512441L, "Flight Number", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", TEXT_PLAIN, "Expanded and descriptive name.", Edit);
    AttributeTypeString FunctionalArea = ats.createString(5540854390791380448L, "ats.Functional Area", TEXT_PLAIN, "", Read);
    AttributeTypeArtifactId FeatureImpactReference = ats.createArtifactId(1148992834242L, "ats.Feature Impacted", TEXT_PLAIN, "", Read);
@@ -148,7 +149,8 @@ public interface AtsAttributeTypes {
    AttributeTypeInteger LocReviewed = ats.createInteger(1152921504606847208L, "ats.LOC Reviewed", TEXT_PLAIN, "Total Lines of Code Reviewed", Edit);
    AttributeTypeString Location = ats.createString(1152921504606847223L, "ats.Location", TEXT_PLAIN, "Enter location of materials to review.", MultiLine, Edit);
    AttributeTypeString Log = ats.createString(1152921504606847202L, "ats.Log", MediaType.TEXT_XML, "", Edit);
-   AttributeTypeString MeetingAttendee = ats.createString(1152921504606847225L, "ats.Meeting Attendee", TEXT_PLAIN, "Attendee of meeting.", Read);
+   AttributeTypeString MeetingAttendeeUserId = ats.createString(1152921504606847225L, "ats.Meeting Attendee UserId", TEXT_PLAIN, "Attendee of meeting.", Read);
+   AttributeTypeArtifactId MeetingAttendeeId = ats.createArtifactId(333878714647126685L, "ats.Meeting Attendee Id", TEXT_PLAIN, "Art Id of meeting attendee.", Edit, UserArtId);
    AttributeTypeDate MeetingDate = ats.createDate(5605018543870805270L, "ats.Meeting Date", TEXT_CALENDAR, "", Edit);
    AttributeTypeDouble MeetingLength = ats.createDouble(1152921504606847188L, "ats.Meeting Length", TEXT_PLAIN, "Length of meeting.", Edit);
    AttributeTypeString MeetingLocation = ats.createString(1152921504606847224L, "ats.Meeting Location", TEXT_PLAIN, "Location meeting is held.", Edit);
@@ -198,6 +200,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString Role = ats.createString(1152921504606847226L, "ats.Role", TEXT_PLAIN, "", Read);
    AttributeTypeString RootCause = ats.createString(3624854321220981352L, "ats.Root Cause", TEXT_PLAIN, "", Edit);
    AttributeTypeString RuleDefinition = ats.createString(1152921504606847150L, "ats.Rule Definition", TEXT_PLAIN, "", Config);
+   AttributeTypeString Ship = ats.createString(2066487546203415020L, "Ship", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString SignalDbSystemId = ats.createString(1153126013769613779L, "Signal Db System ID", TEXT_PLAIN, "",Config );
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", TEXT_CALENDAR, "", Edit);
    AttributeTypeString State = ats.createString(1152921504606847191L, "ats.State", TEXT_PLAIN, "States of workflow state machine.", Read);
@@ -214,7 +217,9 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean TeamUsesVersions = ats.createBoolean(1152921504606847158L, "ats.Team Uses Versions", TEXT_PLAIN, "", Config);
    AttributeTypeString TaskAutoGenType = ats.createString(175464975663435993L, "ats.Task Auto Gen Type", TEXT_PLAIN, "", Read);
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow", Config);
-   AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", TEXT_PLAIN, "Enter clear and concise title that can be generally understood.", Edit);
+   AttributeTypeDate TestDate = ats.createDateNoTag(153597844730396747L, "lba.Test Date", MediaType.TEXT_PLAIN, "", Edit);
+   AttributeTypeString TestNumber = ats.createString(2762697107597452065L, "Test Number", MediaType.TEXT_PLAIN, "", Edit);
+AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", TEXT_PLAIN, "Enter clear and concise title that can be generally understood.", Edit);
    AttributeTypeString Title = CoreAttributeTypes.Name;
    AttributeTypeString QuantityUnderReview = ats.createString(489717926240421171L, "ats.Quantity Under Review", TEXT_PLAIN, "Total Pages, LOCs, Documents, etc Changed", Edit);
    AttributeTypeInteger UnplannedPoints = ats.createInteger(284254492767020802L, "ats.Unplanned Points", TEXT_PLAIN, "", Edit);

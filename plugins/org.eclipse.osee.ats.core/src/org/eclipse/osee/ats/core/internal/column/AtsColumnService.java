@@ -422,7 +422,7 @@ public class AtsColumnService implements IAtsColumnService {
          legacyIdToId.put("attribute.ats.Id", "ats.id");
          legacyIdToId.put("attribute.ats.Id", AtsAttributeTypes.AtsId.getName());
          legacyIdToId.put("attribute.ats.Legacy PCR Id", AtsAttributeTypes.LegacyPcrId.getName());
-         legacyIdToId.put("attribute.ats.Meeting Attendee", AtsAttributeTypes.MeetingAttendee.getName());
+         legacyIdToId.put("attribute.ats.Meeting Attendee", AtsAttributeTypes.MeetingAttendeeUserId.getName());
          legacyIdToId.put("attribute.ats.Meeting Date", AtsAttributeTypes.MeetingDate.getName());
          legacyIdToId.put("attribute.ats.Meeting Length", AtsAttributeTypes.MeetingLength.getName());
          legacyIdToId.put("attribute.ats.Meeting Location", AtsAttributeTypes.MeetingLocation.getName());

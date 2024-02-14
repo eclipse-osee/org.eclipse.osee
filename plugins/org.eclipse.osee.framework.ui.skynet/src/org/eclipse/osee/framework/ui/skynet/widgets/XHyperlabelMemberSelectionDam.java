@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,16 +31,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
- * Select users and store as single userId attributes. This is an AUTO_SAVE widget.
+ * Select users and store as single art id attributes. This is an AUTO_SAVE widget.
  *
  * @author Donald G. Dunne
  */
-public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements AttributeWidget {
+public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection implements AttributeWidget {
 
    private Artifact artifact;
    private AttributeTypeToken attributeType;
 
-   public XHyperlabelMemberSelDam(String displayLabel) {
+   public XHyperlabelMemberSelectionDam(String displayLabel) {
       super(displayLabel);
    }
 
@@ -69,9 +70,9 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    public Set<User> getStoredUsers() {
       Set<User> users = new HashSet<>();
       try {
-         for (String userId : artifact.getAttributesToStringList(attributeType)) {
+         for (Object artIdObj : artifact.getAttributes(attributeType)) {
             try {
-               users.add(UserManager.getUserByUserId(userId));
+               users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -86,11 +87,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    @Override
    public void saveToArtifact() {
       try {
-         Set<String> userIds = new HashSet<>();
-         for (User user : getSelectedUsers()) {
-            userIds.add(user.getUserId());
-         }
-         artifact.setAttributeValues(attributeType, userIds);
+         artifact.setAttributeFromValues(attributeType, getSelectedUsers());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
