@@ -75,8 +75,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
-import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelectionDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkArtifactRefIdEntryWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
@@ -132,20 +132,21 @@ public final class FrameworkXWidgetProvider {
    private static List<IXWidgetProvider> providers;
 
    private static Map<String, Class<? extends XWidget>> getNameToClass() {
-      register(XHyperlinkLabelDate.class);
-      register(XHyperlinkLabelDateDam.class);
-      register(XHyperlinkWfdForEnumAttr.class);
-      register(XHyperlinkWfdForEnumAttrDam.class);
-      register(XHyperlinkTriStateBoolean.class);
-      register(XHyperlinkTriStateBooleanDam.class);
-      register(XHyperlinkLabelValueStringSel.class);
-      register(XHyperlinkLabelValueSelectionDam.class);
-      register(XHyperlinkLabelEnumeratedArtDam.class);
       register(XArtifactSelectWidget.class);
       register(XArtifactSelectWidgetWithSave.class);
+      register(XHyperlabelMemberSelectionDam.class);
+      register(XHyperlinkArtifactRefIdEntryWidget.class);
+      register(XHyperlinkLabelDate.class);
+      register(XHyperlinkLabelDateDam.class);
+      register(XHyperlinkLabelEnumeratedArtDam.class);
+      register(XHyperlinkLabelValueSelectionDam.class);
+      register(XHyperlinkLabelValueStringSel.class);
+      register(XHyperlinkTriStateBoolean.class);
+      register(XHyperlinkTriStateBooleanDam.class);
+      register(XHyperlinkWfdForEnumAttr.class);
+      register(XHyperlinkWfdForEnumAttrDam.class);
       register(XHyperlinkWfdForUser.class);
       register(XHyperlinkWfdForUserAll.class);
-      register(XHyperlinkArtifactRefIdEntryWidget.class);
       return nameToClass;
    }
 
@@ -493,8 +494,8 @@ public final class FrameworkXWidgetProvider {
                }
                xWidget = list;
             }
-         } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
-            xWidget = new XHyperlabelMemberSelDam(name);
+         } else if (xWidgetName.equals("XHyperlabelMemberSelectionDam")) {
+            xWidget = new XHyperlabelMemberSelectionDam(name);
          } else if (xWidgetName.equals("XHyperlabelMemberSelection")) {
             xWidget = new XHyperlabelMemberSelection(name);
          } else if (xWidgetName.startsWith("XListDropViewer")) {

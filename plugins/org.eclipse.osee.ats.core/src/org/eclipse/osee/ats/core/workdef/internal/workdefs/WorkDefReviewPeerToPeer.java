@@ -129,7 +129,8 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.MeetingLength, "XFloatDam", REQUIRED_FOR_TRANSITION), //
                new WidgetDefinition(AtsAttributeTypes.MeetingLocation, "XTextDam", REQUIRED_FOR_TRANSITION) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.MeetingAttendee, "XHyperlabelMemberSelDam", REQUIRED_FOR_TRANSITION), //
+            new WidgetDefinition(AtsAttributeTypes.MeetingAttendeeUserId, "XHyperlabelMemberSelectionDam",
+               REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.Role, "XUserRoleViewer", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.ReviewDefect, "XDefectViewer"), //

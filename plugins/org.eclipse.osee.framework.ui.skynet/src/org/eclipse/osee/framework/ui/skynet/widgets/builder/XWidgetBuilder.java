@@ -409,4 +409,11 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andXHyperLinkMember(AttributeTypeToken user) {
+      newXWidget();
+      currItem.setName(user.getUnqualifiedName());
+      currItem.setXWidgetName("XHyperlabelMemberSelection");
+      return this;
+   }
+
 }

@@ -323,7 +323,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(LocChanged)
       .zeroOrOne(LocReviewed)
       .zeroOrOne(Location)
-      .any(MeetingAttendee)
+      .any(MeetingAttendeeUserId)
       .zeroOrOne(MeetingDate)
       .zeroOrOne(MeetingLength)
       .zeroOrOne(MeetingLocation)
