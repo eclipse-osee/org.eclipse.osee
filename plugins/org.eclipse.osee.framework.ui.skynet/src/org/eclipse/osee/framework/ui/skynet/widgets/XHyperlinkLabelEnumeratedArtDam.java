@@ -30,7 +30,6 @@ public class XHyperlinkLabelEnumeratedArtDam extends XHyperlinkLabelEnumeratedAr
 
    public static final String WIDGET_ID = XHyperlinkLabelEnumeratedArtDam.class.getSimpleName();
 
-   protected AttributeTypeToken attributeType;
    protected Artifact artifact;
 
    public XHyperlinkLabelEnumeratedArtDam() {
