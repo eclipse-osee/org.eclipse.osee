@@ -21,7 +21,14 @@ import java.util.Optional;
  * @author Loren K. Ashley
  */
 
-public class WordRunStyleList extends AbstractElementList<WordRun, WordRunStyle> {
+public class WordRunStyleList<P extends AbstractElement> extends AbstractElementList<P, WordRunStyle> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordRunStyleList} with a {@link WordRun} parent.
+    */
+
+   public static WordElementParserFactory<WordRun, WordRunStyleList<WordRun>, WordRunStyle> wordRunParentFactory =
+      new WordElementParserFactory<>(WordRunStyleList::new, WordRunStyle::new, WordMlTag.RUN_STYLE);
 
    /**
     * Creates a new open and empty list for {@link WordRunStyles}s.
@@ -30,8 +37,8 @@ public class WordRunStyleList extends AbstractElementList<WordRun, WordRunStyle>
     * @throws NullPointerException when the parameter <code>wordRun</code> is <code>null</code>.
     */
 
-   public WordRunStyleList(WordRun wordRun) {
-      super(wordRun);
+   public WordRunStyleList(P parent) {
+      super(parent);
    }
 
    /**
@@ -40,13 +47,12 @@ public class WordRunStyleList extends AbstractElementList<WordRun, WordRunStyle>
     * @return the containing {@link WordRun}.
     */
 
-   @SuppressWarnings("cast")
    public Optional<WordRun> getWordRun() {
       var parent = this.getParent();
       //@formatter:off
       return
          (parent instanceof WordRun)
-            ? Optional.of( parent )
+            ? Optional.of( (WordRun) parent )
             : Optional.empty();
       //@formatter:on
    }

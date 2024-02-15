@@ -25,17 +25,13 @@ import org.junit.runners.Suite;
    EmailGroupsBlamTest.class,
    InterArtifactDropTest.class,
    PlainTextEditTest.class,
-   PreviewAndMultiPreviewTest.class,
    // RelationIntegrityCheckTest moved to LongRunningTestSuite
    ReplaceWithBaselineTest.class,
    StringGuidsToArtifactListOperationTest.class,
    TemplateArtifactValidatorTest.class,
-   // ViewWordChangeAndDiffTest moved to LongRunningTestSuite
    WordArtifactElementExtractorTest.class,
    WordEditTest.class,
    WordOutlineAndStyleTest.class,
-   WordTemplateProcessorTest.class,
-   // WordTemplateRendererTest moved to LongRunningTestSuite
    WordTrackedChangesTest.class,
    FrameworkImageTest.class,
    OseeEmailTest.class,

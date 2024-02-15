@@ -15,18 +15,20 @@ package org.eclipse.osee.define.operations.publisher.publishing;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.eclipse.osee.define.rest.internal.wordupdate.UpdateBookmarkIds;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -47,8 +49,6 @@ public class WordCoreUtilServer {
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
    private static final Pattern referencePattern = Pattern.compile("(_Ref[0-9]{9}|Word\\.Bookmark\\.End)");
-   private static int bookMarkId = 1000;
-   private static UpdateBookmarkIds updateBookmarkIds = new UpdateBookmarkIds(bookMarkId);
    //private static String newLineChar = ">(\\r|\\n|\\r\\n)<";
 
    public static byte[] getFormattedContent(Element formattedItemElement) throws XMLStreamException {
@@ -93,6 +93,33 @@ public class WordCoreUtilServer {
                      )
                );
          //@formatter:on
+   }
+
+   private static final String LOAD_EXCLUDED_ARTIFACTIDS_SQL =
+      "select art_id from osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = 1 and not exists (select null from osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and e1 = ? and t2.gamma_id = txsP.gamma_id and txsP.branch_id = ? and txsP.tx_current = 1 and e2 = txs.app_id)";
+
+   public static Set<ArtifactId> getNonApplicableArtifacts(OrcsApi orcsApi, BranchId branchId, ArtifactId viewId) {
+
+      if (viewId.isInvalid()) {
+         return null;
+      }
+
+      var result = new HashSet<ArtifactId>(256);
+
+      var jdbcClient = orcsApi.getJdbcService().getClient();
+
+      //@formatter:off
+      jdbcClient
+         .runQuery
+            (
+               stmt -> result.add( ArtifactId.valueOf(stmt.getLong("art_id"))),
+               LOAD_EXCLUDED_ARTIFACTIDS_SQL,
+               branchId,
+               viewId,
+               branchId
+            );
+      //@formatter:on
+      return result;
    }
 
    /**
@@ -154,23 +181,5 @@ public class WordCoreUtilServer {
          return style.startsWith("heading") || style.startsWith("toc") || style.startsWith("outline");
       }
    }
-
-   /**
-    * @return the content with the ending bookmark IDs being reassigned to a unique number. This is done to ensure all
-    * versions of MS Word will function correctly.
-    */
-   public static CharSequence reassignBookMarkID(CharSequence content) {
-      return WordCoreUtilServer.updateBookmarkIds.fixTags(content);
-   }
-
-   /**
-    * Removes all new lines, CRLF, CR, or LF from the content in between 2 tags.
-    *
-    * @param content
-    * @return content
-    */
-   //   private static String removeNewLines(String content) {
-   //      return content.replaceAll(newLineChar, "><");
-   //   }
 
 }

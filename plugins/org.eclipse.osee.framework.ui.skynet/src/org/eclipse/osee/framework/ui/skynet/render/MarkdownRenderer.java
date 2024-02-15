@@ -356,8 +356,6 @@ public class MarkdownRenderer extends FileSystemRenderer {
          (
             presentationType,
             ValueType.PARAMETER,
-            MarkdownRenderer.class.getName(),
-            "getRenderInputStream",
             "presentationType",
             "must be non-null",
             Objects::isNull,
@@ -368,8 +366,6 @@ public class MarkdownRenderer extends FileSystemRenderer {
          (
             artifacts,
             ValueType.PARAMETER,
-            MarkdownRenderer.class.getName(),
-            "getRenderInputStream",
             "artifacts",
             "must be non-null",
             Objects::isNull,

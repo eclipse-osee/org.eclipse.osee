@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyGroups;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyType;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -59,7 +60,8 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     * </ul>
     */
 
-   public synchronized static TemplateManagerOperationsImpl create(JdbcService jdbcService, Log logger, DataAccessOperations dataAccessOperations) {
+   public synchronized static TemplateManagerOperationsImpl create(JdbcService jdbcService, Log logger,
+      DataAccessOperations dataAccessOperations, OrcsTokenService orcsTokenService) {
 
       //@formatter:off
       return
@@ -69,7 +71,8 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
                           (
                              Objects.requireNonNull(jdbcService),
                              Objects.requireNonNull(logger),
-                             Objects.requireNonNull(dataAccessOperations)
+                             Objects.requireNonNull(dataAccessOperations),
+                             Objects.requireNonNull(orcsTokenService)
                           )
               )
             : TemplateManagerOperationsImpl.templateManagerOperationsImpl;
@@ -106,11 +109,12 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     * @param dataAccessOperations the {@link DataAccessOperations} handle.
     */
 
-   private TemplateManagerOperationsImpl(JdbcService jdbcService, Log logger, DataAccessOperations dataAccessOperations) {
+   private TemplateManagerOperationsImpl(JdbcService jdbcService, Log logger, DataAccessOperations dataAccessOperations,
+      OrcsTokenService orcsTokenService) {
 
       this.jdbcService = jdbcService;
 
-      this.publishingTemplateCache = PublishingTemplateCache.create(logger, dataAccessOperations);
+      this.publishingTemplateCache = PublishingTemplateCache.create(logger, dataAccessOperations, orcsTokenService);
    }
 
    /**
@@ -144,7 +148,8 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     * {@link PublishingTemplateRequest#getPresentationType} is <code>null</code>.
     */
 
-   private List<String> getPossibleTemplateNamesOrderedBySpecialization(PublishingTemplateRequest publishingTemplateRequest, boolean isNoTags) {
+   private List<String> getPossibleTemplateNamesOrderedBySpecialization(
+      PublishingTemplateRequest publishingTemplateRequest, boolean isNoTags) {
 
       var rendererId = publishingTemplateRequest.getRendererId();
       var presentationType = publishingTemplateRequest.getPresentationType();
@@ -191,15 +196,14 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     */
 
    @Override
-   public org.eclipse.osee.framework.core.publishing.PublishingTemplate getPublishingTemplate(PublishingTemplateRequest publishingTemplateRequest) {
+   public org.eclipse.osee.framework.core.publishing.PublishingTemplate getPublishingTemplate(
+      PublishingTemplateRequest publishingTemplateRequest) {
 
       //@formatter:off
       Conditions.require
          (
             publishingTemplateRequest,
             ValueType.PARAMETER,
-            "TemplateManagerOperationsImpl",
-            "getPublishingTemplate",
             "publishingTemplateRequest",
             "cannot be null",
             Objects::isNull,
@@ -256,8 +260,6 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
          (
             publishingTemplateRequest,
             ValueType.PARAMETER,
-            "TemplateManagerOperationsImpl",
-            "getPublishingTemplate",
             "publishingTemplateRequest",
             "cannot be null",
             Objects::isNull,

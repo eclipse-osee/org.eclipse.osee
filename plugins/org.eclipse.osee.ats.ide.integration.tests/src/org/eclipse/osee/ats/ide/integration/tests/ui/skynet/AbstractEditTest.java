@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -123,31 +122,41 @@ public abstract class AbstractEditTest {
       this.renderer = renderer;
    }
 
+   /**
+    * Creates test artifact with no contents.
+    */
+
    @Before
-   public void setUp() throws Exception {
+   public void setUp() {
+
       String artifactName = method.getQualifiedTestName() + ".Edit1";
 
       artifact = createArtifact(branch, artType, artifactName);
       artifact.persist(method.getQualifiedTestName());
    }
 
+   /**
+    * Purges the test artifact
+    */
+
    @After
-   public void tearDown() throws Exception {
+   public void tearDown() {
+
       if (artifact != null) {
          artifact.purgeFromBranch();
       }
+
    }
 
    private Artifact createArtifact(BranchToken branch, ArtifactTypeToken artType, String artifactName) {
+
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
+
       Artifact artifact = ArtifactTypeManager.addArtifact(artType, branch, artifactName);
       Assert.assertNotNull(artifact);
-      return artifact;
-   }
 
-   private List<Artifact> toList(Artifact artifact) {
-      return Objects.nonNull(artifact) ? Collections.singletonList(artifact) : Collections.emptyList();
+      return artifact;
    }
 
    protected Artifact getArtifact() {
@@ -156,17 +165,72 @@ public abstract class AbstractEditTest {
 
    protected abstract String updateDataForTest(String testData);
 
+   protected abstract void verifyModifiedArtifactContent(String editorSaveContent, String modifiedArtifactContent);
+
    @Test
    public void testEditUsingWordTemplateRender() throws Exception {
-      String testData = Lib.fileToString(getClass(), editFile);
-      Assert.assertNotNull(testData);
 
-      String expected = updateDataForTest(testData);
+      /*
+       * Get the content to be used as the editor save content.
+       */
 
-      IFile renderFile = openArtifactForEdit(renderer, artifact);
-      writeNewContentAndWaitForSave(artifact, renderFile, expected);
-      String actual = getRenderedStoredContent(renderer, artifact);
-      this.compare(expected, actual);
+      String editorSaveContentTemplate = Lib.fileToString(this.getClass(), this.editFile);
+
+      Assert.assertNotNull(editorSaveContentTemplate);
+
+      String editorSaveContent = this.updateDataForTest(editorSaveContentTemplate);
+
+      Assert.assertNotNull(editorSaveContent);
+
+      /*
+       * Render the empty test artifact
+       */
+
+      //@formatter:off
+      final var renderedEmptyArtifactIFile =
+         renderer
+            .renderToFile
+               (
+                  List.of( artifact ),
+                  PresentationType.SPECIALIZED_EDIT,
+                  this.method.getTestName()
+               )
+            .orElseThrow();
+      //@formatter:on
+
+      /*
+       * Overwrite the rendered empty artifact with the simulated editor save file.
+       */
+
+      this.writeNewContentAndWaitForSave(artifact, renderedEmptyArtifactIFile, editorSaveContent);
+
+      /*
+       * Render the test artifact with the updated content
+       */
+
+      //@formatter:off
+      final var renderedModifiedArtifactIFile =
+         renderer
+            .renderToFile
+               (
+                  List.of( artifact ),
+                  PresentationType.SPECIALIZED_EDIT,
+                  this.method.getTestName()
+               )
+            .orElseThrow();
+      //@formatter:on
+
+      /*
+       * Get contents of the render file with the modified test artifact contents
+       */
+
+      String modifiedArtifactContents;
+
+      try (final var inputStream = renderedModifiedArtifactIFile.getContents()) {
+         modifiedArtifactContents = new String(inputStream.readAllBytes());
+      }
+
+      this.verifyModifiedArtifactContent(editorSaveContent, modifiedArtifactContents);
    }
 
    /**
@@ -178,7 +242,7 @@ public abstract class AbstractEditTest {
     * @throws AssertionError when the {@link String}s <code>a</code> and <code>b</code> are different.
     */
 
-   private void compare(String a, String b) {
+   protected void compare(String a, String b) {
       var aSize = a.length();
       var bSize = b.length();
       var size = Math.min(aSize, bSize);
@@ -246,13 +310,14 @@ public abstract class AbstractEditTest {
    }
 
    private IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) {
-      IFile editFile = renderer.renderToFile(this.toList(artifact), PresentationType.SPECIALIZED_EDIT,
+      IFile editFile = renderer.renderToFile(List.of(artifact), PresentationType.SPECIALIZED_EDIT,
          this.method.getTestName()).orElseThrow();
       return editFile;
    }
 
    private void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content)
       throws UnsupportedEncodingException, CoreException, InterruptedException {
+
       EventSystemPreferences preferences = OseeEventManager.getPreferences();
 
       boolean eventBoolean = preferences.isDisableEvents();
@@ -282,8 +347,10 @@ public abstract class AbstractEditTest {
       Assert.assertNotNull(renderer);
       Assert.assertNotNull(artifact);
 
-      IFile renderedFileFromModifiedStorage = renderer.renderToFile(this.toList(artifact),
+      IFile renderedFileFromModifiedStorage = renderer.renderToFile(List.of(artifact),
          PresentationType.SPECIALIZED_EDIT, this.method.getTestName()).orElseThrow();
+      Assert.assertNotNull(renderedFileFromModifiedStorage);
+
       InputStream inputStream = null;
       try {
          inputStream = renderedFileFromModifiedStorage.getContents();

@@ -21,7 +21,15 @@ import java.util.Optional;
  * @author Loren K. Ashley
  */
 
-public class WordTableColumnList extends AbstractElementList<WordTableRow, WordTableColumn> {
+public class WordTableColumnList<P extends AbstractElement> extends AbstractElementList<P, WordTableColumn> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordTableColumnList} with a {@link WordTableRow}
+    * parent.
+    */
+
+   public static WordElementParserFactory<WordTableRow, WordTableColumnList<WordTableRow>, WordTableColumn> wordTableRowParentFactory =
+      new WordElementParserFactory<>(WordTableColumnList::new, WordTableColumn::new, WordMlTag.TABLE_COLUMN);
 
    /**
     * Creates a new open and empty list for {@link WordTableColumn}s.
@@ -30,8 +38,8 @@ public class WordTableColumnList extends AbstractElementList<WordTableRow, WordT
     * @throws NullPointerException when the parameter <code>wordTableRow</code> is <code>null</code>.
     */
 
-   public WordTableColumnList(WordTableRow wordTableRow) {
-      super(wordTableRow);
+   public WordTableColumnList(P parent) {
+      super(parent);
    }
 
    /**
@@ -40,13 +48,12 @@ public class WordTableColumnList extends AbstractElementList<WordTableRow, WordT
     * @return the containing {@link WordTableRow}.
     */
 
-   @SuppressWarnings("cast")
    public Optional<WordTableRow> getWordTableRow() {
       var parent = this.getParent();
       //@formatter:off
       return
          (parent instanceof WordTableRow)
-            ? Optional.of(parent)
+            ? Optional.of((WordTableRow) parent)
             : Optional.empty();
       //@formatter:off
    }

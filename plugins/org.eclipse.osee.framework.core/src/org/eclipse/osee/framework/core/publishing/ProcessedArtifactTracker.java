@@ -204,17 +204,9 @@ public class ProcessedArtifactTracker {
     * {@link ProcessedArtifactTracker}.
     */
 
-   public void add(ArtifactReadable artifact) {
+   public void add(PublishingArtifact artifact) {
 
       Objects.requireNonNull(artifact, "ProcessedArtifactTracker::add, parameter \"artifact\" cannot be null.");
-
-      if (artifact.getId().equals(9519889L)) {
-         System.out.println("SNOOPY");
-      }
-
-      if (artifact.getId().equals(9519885L)) {
-         System.out.println("SNOOPY-2");
-      }
 
       if (ArtifactReadable.SENTINEL.equals(artifact)) {
          throw new IllegalArgumentException(
@@ -263,7 +255,7 @@ public class ProcessedArtifactTracker {
     * {@link ProcessedArtifactTracker}.
     */
 
-   public void add(Collection<ArtifactReadable> artifacts) {
+   public void add(Collection<PublishingArtifact> artifacts) {
 
       Objects.requireNonNull(artifacts, "ProcessedArtifactTracker::add, parameter \"artifacts\" cannot be null.");
 
@@ -535,7 +527,7 @@ public class ProcessedArtifactTracker {
                      new IllegalStateException
                             (
                                new Message()
-                                      .title( "ProcessedArtifactTracker::setBookemarked, attepmt to get artifact record by link reference for an untracked artifact." )
+                                      .title( "ProcessedArtifactTracker::setBookmarked, attepmt to get artifact record by link reference for an untracked artifact." )
                                       .indentInc()
                                       .segment( "Link Reference", linkReference )
                                       .toString()

@@ -478,10 +478,10 @@ public class PublishingSharedArtifactsFolderTest {
             var exceptionLogBlocker =
                new ExceptionLogBlocker
                       (
-                         "javax.ws.rs.NotFoundException",
-                         "org.eclipse.osee.framework.core.exception.OseeNotFoundException",
-                         "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",
-                         "Error:\\s*Unable to locate the shared folder\\."
+                         "javax.ws.rs.NotFoundException",                                                                   /* Primary Server Exception   */
+                         "org.eclipse.osee.framework.core.exception.OseeNotFoundException",                                 /* Secondary Server Exception */
+                         "org.eclipse.osee.framework.jdk.core.type.OseeCoreException",                                      /* Client Exception           */
+                         "PublishingOperationsImpl::getSharedPublishingArtifacts,\\s*Unable to locate the shared folder\\." /* Client Exception Text      */
                       )
          )
       {

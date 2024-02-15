@@ -19,7 +19,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -49,22 +48,17 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
-import org.eclipse.osee.framework.core.xml.publishing.WordFieldCharacter;
+import org.eclipse.osee.framework.core.xml.publishing.WordBody;
 import org.eclipse.osee.framework.core.xml.publishing.WordFieldCharacterList;
-import org.eclipse.osee.framework.core.xml.publishing.WordHlink;
 import org.eclipse.osee.framework.core.xml.publishing.WordHlinkList;
-import org.eclipse.osee.framework.core.xml.publishing.WordInstructionText;
 import org.eclipse.osee.framework.core.xml.publishing.WordInstructionTextList;
+import org.eclipse.osee.framework.core.xml.publishing.WordMlAttribute;
+import org.eclipse.osee.framework.core.xml.publishing.WordMlTag;
 import org.eclipse.osee.framework.core.xml.publishing.WordParagraph;
 import org.eclipse.osee.framework.core.xml.publishing.WordParagraphList;
-import org.eclipse.osee.framework.core.xml.publishing.WordRun;
 import org.eclipse.osee.framework.core.xml.publishing.WordRunList;
-import org.eclipse.osee.framework.core.xml.publishing.WordRunStyle;
 import org.eclipse.osee.framework.core.xml.publishing.WordRunStyleList;
-import org.eclipse.osee.framework.core.xml.publishing.WordSection;
 import org.eclipse.osee.framework.core.xml.publishing.WordSectionList;
-import org.eclipse.osee.framework.core.xml.publishing.WordXmlAttribute;
-import org.eclipse.osee.framework.core.xml.publishing.WordXmlTag;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.xml.XmlEncoderDecoder;
@@ -609,28 +603,32 @@ public class WordMlLinkHandlerTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(String errorStatement, String... documentStrings) {
+   private static AssertionError buildAssertionError(String errorStatement, Object... options) {
 
-      var error = WordMlLinkHandlerTest.publishingXmlUtils.getLastError();
-      var cause = WordMlLinkHandlerTest.publishingXmlUtils.getLastCause();
+      Throwable throwable = null;
+      StringBuilder stringBuilder = null;
       //@formatter:off
-      var documentString =
-         ( Objects.nonNull(documentStrings) && documentStrings.length > 0 )
-            ? documentStrings[0]
-            : null;
+      if( ( options != null ) && options.length > 0 ) {
+         for( var option : options ) {
+            if( option instanceof Throwable ) {
+               throwable = (Throwable) option;
+            } else if( option instanceof String ) {
+               (stringBuilder = ( stringBuilder == null ) ? new StringBuilder() : stringBuilder ).append( (String) option );
+            }
+         }
+      }
 
       var message =
          new Message()
                 .title( errorStatement )
                 .indentInc()
-                .segment( "Cause", cause )
-                .reasonFollowsIfPresent( error )
-                .followsIfNonNull( "XML Follows", documentString )
+                .reasonFollowsIfNonNull( throwable )
+                .followsIfNonNull( "Document", stringBuilder.toString() )
                 .indentDec();
 
       return
-         error.isPresent()
-            ? new AssertionError( message.toString(), error.get() )
+         ( throwable != null )
+            ? new AssertionError( message.toString(), throwable )
             : new AssertionError( message.toString() );
       //@formatter:on
    }
@@ -645,14 +643,16 @@ public class WordMlLinkHandlerTest {
    private Document parseDocument(String content) {
       //@formatter:off
       var document =
-         WordMlLinkHandlerTest.publishingXmlUtils.parse( content )
+         PublishingXmlUtils.parse( content )
             .orElseThrow
                (
-                 () -> WordMlLinkHandlerTest.buildAssertionError
-                          (
-                             "Failed to parse XML.",
-                             content
-                          )
+                 ( throwable ) ->
+                    WordMlLinkHandlerTest.buildAssertionError
+                       (
+                          "Failed to parse XML.",
+                          throwable,
+                          content
+                       )
                );
 
       var documentString =
@@ -689,18 +689,17 @@ public class WordMlLinkHandlerTest {
    private static void checkParagraphInternalDocReference(WordParagraph wordParagraph, String expectedLinkText) {
 
       //@formatter:off
-      WordRunList wordRunList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordParagraph,
-                  WordXmlTag.RUN,
-                  WordRunList::new,
-                  WordRun::new
-               )
+      final var wordRunList =
+         PublishingXmlUtils
+            .parseDescendantsList( wordParagraph, WordRunList.wordParagraphParentFactory )
             .orElseThrow
                (
-                  () -> WordMlLinkHandlerTest.buildAssertionError("Failed to parse runs from a paragraph.")
+                  ( throwable ) ->
+                     WordMlLinkHandlerTest.buildAssertionError
+                        (
+                           "Failed to parse runs from a paragraph.",
+                           throwable
+                        )
                );
       //@formatter:on
 
@@ -709,20 +708,20 @@ public class WordMlLinkHandlerTest {
       var wordRun = wordRunList.get(0).orElseThrow();
 
       //@formatter:off
-      WordFieldCharacterList wordFieldCharacterList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordRun,
-                  WordXmlTag.FIELD_CHARACTER,
-                  WordFieldCharacterList::new,
-                  WordFieldCharacter::new
-               )
+      var wordFieldCharacterList =
+         PublishingXmlUtils
+            .parseDescendantsList( wordRun, WordFieldCharacterList.wordRunParentFactory )
             .orElseThrow
                (
-                  () -> WordMlLinkHandlerTest.buildAssertionError("Failed to parse runs from a paragraph.")
+                  ( throwable ) ->
+                     WordMlLinkHandlerTest.buildAssertionError
+                        (
+                           "Failed to parse runs from a paragraph.",
+                           throwable
+                        )
                );
       //@formatter:on
+
       //@formatter:off
       Assert.assertEquals
          (
@@ -736,7 +735,7 @@ public class WordMlLinkHandlerTest {
 
       final var expectedOpenFieldCharacterType = "begin";
       final var openFieldCharacterType =
-         wordFieldCharacter.getAttribute(WordXmlAttribute.FIELD_CHARACTER_TYPE).orElseThrow();
+         wordFieldCharacter.getAttribute(WordMlAttribute.FIELD_CHARACTER_TYPE).orElseThrow();
 
       //@formatter:off
       WordMlLinkHandlerTest.assertEquals
@@ -755,18 +754,17 @@ public class WordMlLinkHandlerTest {
       wordRun = wordRunList.get(1).orElseThrow();
 
       //@formatter:off
-      WordInstructionTextList wordInstructionTextList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordRun,
-                  WordXmlTag.INSTRUCTION_TEXT,
-                  WordInstructionTextList::new,
-                  WordInstructionText::new
-               )
+      final var wordInstructionTextList =
+         PublishingXmlUtils
+            .parseDescendantsList( wordRun, WordInstructionTextList.wordRunParentFactory )
             .orElseThrow
                (
-                  () -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse runs from a paragraph." )
+                  ( throwable ) ->
+                     WordMlLinkHandlerTest.buildAssertionError
+                        (
+                           "Failed to parse runs from a paragraph.",
+                           throwable
+                        )
                );
       //@formatter:on
 
@@ -802,18 +800,9 @@ public class WordMlLinkHandlerTest {
 
       //@formatter:off
       wordFieldCharacterList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordRun,
-                  WordXmlTag.FIELD_CHARACTER,
-                  WordFieldCharacterList::new,
-                  WordFieldCharacter::new
-               )
-            .orElseThrow
-               (
-                  () -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse runs from a paragraph." )
-               );
+         PublishingXmlUtils
+            .parseDescendantsList( wordRun, WordFieldCharacterList.wordRunParentFactory )
+            .orElseThrow( ( throwable ) -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse runs from a paragraph.", throwable ) );
       //@formatter:on
 
       Assert.assertEquals("Unexpected number of field characters in first paragraph.", 1,
@@ -823,7 +812,7 @@ public class WordMlLinkHandlerTest {
 
       final var expectedMiddleFieldCharacterType = "separate";
       final var middleFieldCharacterType =
-         wordFieldCharacter.getAttribute(WordXmlAttribute.FIELD_CHARACTER_TYPE).orElseThrow();
+         wordFieldCharacter.getAttribute(WordMlAttribute.FIELD_CHARACTER_TYPE).orElseThrow();
 
       //@formatter:off
       WordMlLinkHandlerTest.assertEquals
@@ -842,19 +831,10 @@ public class WordMlLinkHandlerTest {
       wordRun = wordRunList.get(3).orElseThrow();
 
       //@formatter:off
-      WordRunStyleList wordRunStyleList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordRun,
-                  WordXmlTag.RUN_STYLE,
-                  WordRunStyleList::new,
-                  WordRunStyle::new
-               )
-            .orElseThrow
-               (
-                  () -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse runs from a paragraph." )
-               );
+      final var wordRunStyleList =
+         PublishingXmlUtils
+            .parseDescendantsList( wordRun, WordRunStyleList.wordRunParentFactory )
+            .orElseThrow( ( throwable ) -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse runs from a paragraph.", throwable ) );
       //@formatter:on
 
       Assert.assertEquals("Unexpected number of field characters in first paragraph.", 1, wordRunStyleList.size());
@@ -863,7 +843,7 @@ public class WordMlLinkHandlerTest {
 
       var expectedRunStyle = "Hyperlink";
 
-      var runStyle = wordRunStyle.getAttribute(WordXmlAttribute.VALUE).orElseThrow();
+      var runStyle = wordRunStyle.getAttribute(WordMlAttribute.VALUE).orElseThrow();
 
       //@formatter:off
       WordMlLinkHandlerTest.assertEquals
@@ -899,18 +879,9 @@ public class WordMlLinkHandlerTest {
 
       //@formatter:off
       wordFieldCharacterList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordRun,
-                  WordXmlTag.FIELD_CHARACTER,
-                  WordFieldCharacterList::new,
-                  WordFieldCharacter::new
-               )
-            .orElseThrow
-               (
-                  () -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse runs from a paragraph." )
-               );
+         PublishingXmlUtils
+            .parseDescendantsList( wordRun, WordFieldCharacterList.wordRunParentFactory )
+            .orElseThrow( ( throwable ) -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse runs from a paragraph.", throwable ) );
       //@formatter:on
 
       Assert.assertEquals("Unexpected number of field characters in first paragraph.", 1,
@@ -921,7 +892,7 @@ public class WordMlLinkHandlerTest {
       final var expectedCloseFieldCharacterType = "end";
 
       final var closeFieldCharacterType =
-         wordFieldCharacter.getAttribute(WordXmlAttribute.FIELD_CHARACTER_TYPE).orElseThrow();
+         wordFieldCharacter.getAttribute(WordMlAttribute.FIELD_CHARACTER_TYPE).orElseThrow();
 
       //@formatter:off
       WordMlLinkHandlerTest.assertEquals
@@ -1030,22 +1001,10 @@ public class WordMlLinkHandlerTest {
             String             expectedLinkText
          ) {
 
-      WordHlinkList wordHlinkList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordParagraph,
-                  WordXmlTag.HLINK,
-                  WordHlinkList::new,
-                  WordHlink::new
-               )
-            .orElseThrow
-               (
-                  () -> WordMlLinkHandlerTest.buildAssertionError
-                           (
-                              "Failed to parse hlinks from a paragraph."
-                           )
-               );
+      final var wordHlinkList =
+         PublishingXmlUtils
+            .parseDescendantsList( wordParagraph, WordHlinkList.wordParagraphParentFactory )
+            .orElseThrow( ( throwable ) -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse hlinks from a paragraph.", throwable ) );
 
       Assert.assertEquals
          (
@@ -1067,7 +1026,7 @@ public class WordMlLinkHandlerTest {
 
       var hlinkDest =
          wordHlink
-            .getAttribute( WordXmlAttribute.DESTINATION )
+            .getAttribute( WordMlAttribute.DESTINATION )
             .orElseThrow
                (
                   () -> WordMlLinkHandlerTest.buildAssertionError
@@ -1151,23 +1110,26 @@ public class WordMlLinkHandlerTest {
       }
    }
 
-   private static void processParagraphList(Document document, int expectedSectionCount, int expectedParagraphCount, BiConsumer<Integer, WordParagraph> paragraphChecker) {
+   private static void processParagraphList(Document document, int expectedSectionCount, int expectedParagraphCount,
+      BiConsumer<Integer, WordParagraph> paragraphChecker) {
 
       //@formatter:off
       var wordDocument =
-         WordMlLinkHandlerTest.publishingXmlUtils
+         PublishingXmlUtils
             .parseWordDocument( document )
             .orElseThrow
                (
-                  () -> WordMlLinkHandlerTest.buildAssertionError
-                           (
-                              "Failed to parse WordDocument."
-                           )
+                  ( throwable ) ->
+                     WordMlLinkHandlerTest.buildAssertionError
+                        (
+                           "Failed to parse WordDocument.",
+                           throwable
+                        )
                );
 
       var wordBody =
          WordMlLinkHandlerTest.publishingXmlUtils
-            .parseWordBody( wordDocument )
+            .parseChild( wordDocument, WordMlTag.BODY, WordBody::new )
             .orElseThrow
                (
                   () -> WordMlLinkHandlerTest.buildAssertionError
@@ -1176,22 +1138,10 @@ public class WordMlLinkHandlerTest {
                   )
                );
 
-      WordSectionList wordSectionList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordBody,
-                  WordXmlTag.SECTION,
-                  WordSectionList::new,
-                  WordSection::new
-               )
-            .orElseThrow
-               (
-                  () -> WordMlLinkHandlerTest.buildAssertionError
-                           (
-                              "Failed to parse Word Section List."
-                           )
-               );
+      var wordSectionList =
+         PublishingXmlUtils
+            .parseDescendantsList( wordBody, WordSectionList.wordBodyParentFactory )
+            .orElseThrow( ( throwable ) -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse Word Section List.", throwable ) );
 
       Assert.assertEquals
          (
@@ -1211,22 +1161,10 @@ public class WordMlLinkHandlerTest {
                            )
                );
 
-      WordParagraphList wordParagraphList =
-         WordMlLinkHandlerTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordSection,
-                  WordXmlTag.PARAGRAPH,
-                  WordParagraphList::new,
-                  WordParagraph::new
-               )
-            .orElseThrow
-               (
-                  () -> WordMlLinkHandlerTest.buildAssertionError
-                           (
-                              "Failed to parse paragraphs from the first Word Section."
-                           )
-               );
+      final var wordParagraphList =
+         PublishingXmlUtils
+            .parseDescendantsList( wordSection, WordParagraphList.wordSectionParentFactory )
+            .orElseThrow( ( throwable ) -> WordMlLinkHandlerTest.buildAssertionError( "Failed to parse paragraphs from the first Word Section.", throwable ) );
 
       Assert.assertEquals
          (

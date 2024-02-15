@@ -84,7 +84,8 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
     * @param synchronizationArtifactType the type of synchronization artifact to be produced.
     */
 
-   private RootList(OrcsApi orcsApi, Direction direction, SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
+   private RootList(OrcsApi orcsApi, Direction direction,
+      SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
       this.orcsApi = orcsApi;
       this.orcsTokenService = orcsApi.tokenService();
       this.direction = direction;
@@ -105,7 +106,8 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
     * <code>synchronizationArtifactBuilder</code> are <code>null</code>.
     */
 
-   public static RootList create(OrcsApi orcsApi, Direction direction, SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
+   public static RootList create(OrcsApi orcsApi, Direction direction,
+      SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
 
       Objects.requireNonNull(orcsApi, "RootList::create, parameter \"orcsApi\" is null.");
 
@@ -293,8 +295,6 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
             message,
             this.orcsApi,
             ValueType.MEMBER,
-            "RootList",
-            "validate",
             "orcsApi"
          );
 
@@ -303,8 +303,6 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
             message,
             this.orcsTokenService,
             ValueType.MEMBER,
-            "RootList",
-            "validate",
             "orcsTokenService"
          );
 
@@ -313,8 +311,6 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
             message,
             this.direction,
             ValueType.MEMBER,
-            "RootList",
-            "validate",
             "direction"
          );
 
@@ -323,8 +319,6 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
             message,
             this.synchronizationArtifactBuilder,
             ValueType.MEMBER,
-            "RootList",
-            "validate",
             "synchronizationArtifactBuilder"
          );
 

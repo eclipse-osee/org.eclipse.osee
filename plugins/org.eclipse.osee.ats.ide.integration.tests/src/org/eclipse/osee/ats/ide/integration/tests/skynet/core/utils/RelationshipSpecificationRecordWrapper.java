@@ -55,15 +55,14 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
     * @throws NullPointerException when any parameters are <code>null</code>.
     */
 
-   RelationshipSpecificationRecordWrapper(@NonNull Artifact sourceArtifact, @NonNull RelationshipSpecificationRecord relationshipSpecificationRecord) {
+   RelationshipSpecificationRecordWrapper(@NonNull Artifact sourceArtifact,
+      @NonNull RelationshipSpecificationRecord relationshipSpecificationRecord) {
 
       //@formatter:off
       this.sourceArtifact =
          Conditions.requireNonNull
             (
                sourceArtifact,
-               "RelationshipSpecificationRecordWrapper",
-               "new",
                "sourceArtifact"
             );
       //@formatter:on
@@ -73,8 +72,6 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
          Conditions.requireNonNull
             (
                relationshipSpecificationRecord,
-               "RelationshipSpecificationRecordWrapper",
-               "new",
                "relationshipSpecificationRecord"
             );
       //@formatter:on
@@ -101,8 +98,6 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
          (
             list,
             ValueType.RESULT,
-            "RelationshipSpecificationRecordWrapper",
-            "getRelationshipTargetArtifactSpecificationRecordIdentifiers",
             "this.relationshipSpecificationRecord.getRelationshipTargetArtifactSpecificationRecordIdentifiers()",
             "result is not null",
             Objects::isNull,
@@ -128,8 +123,6 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
          Conditions.requireNonNull
             (
                this.relationshipSpecificationRecord.getRelationTypeToken(),
-               "RelationshipSpecificationRecordWrapper",
-               "getRelationTypeToken",
                "this.relationshipSpecificationRecord.getRelationTypeToken()"
             );
       //@formatter:on

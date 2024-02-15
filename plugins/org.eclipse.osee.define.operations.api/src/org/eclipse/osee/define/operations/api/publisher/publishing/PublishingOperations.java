@@ -21,13 +21,13 @@ import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestDa
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateChange;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -62,7 +62,8 @@ public interface PublishingOperations {
     * </ul>
     */
 
-   LinkHandlerResult link(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType);
+   LinkHandlerResult link(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId,
+      LinkType linkType, PresentationType presentationType);
 
    /**
     * Gets all artifacts under a shared publishing folder (artifact) of a specific type with a specific attribute value.
@@ -80,7 +81,8 @@ public interface PublishingOperations {
     * @throws BadRequestException when an error occurs finding the shared publishing folder or the shared artifacts.
     */
 
-   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue);
+   public List<PublishingArtifact> getSharedPublishingArtifacts(BranchId branch, ArtifactId view,
+      ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue);
 
    public Attachment msWordPreview(PublishingRequestData msWordPreviewRequest);
 
@@ -97,7 +99,8 @@ public interface PublishingOperations {
     * @return an {@link Attachment} containing a stream with the published document.
     */
 
-   Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog);
+   Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
+      TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog);
 
    public String renderPlainText(BranchId branchId, String data);
 
@@ -122,7 +125,8 @@ public interface PublishingOperations {
     * </ul>
     */
 
-   LinkHandlerResult unlink(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType);
+   LinkHandlerResult unlink(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId,
+      LinkType linkType);
 
    /**
     * For the specified branch, updates the {@link BranchId} in links of all artifacts with a

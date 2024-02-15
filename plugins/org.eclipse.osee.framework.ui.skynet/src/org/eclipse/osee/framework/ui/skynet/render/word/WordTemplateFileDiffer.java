@@ -52,7 +52,8 @@ public final class WordTemplateFileDiffer {
       this.renderer = renderer;
    }
 
-   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren) {
+   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber,
+      String outlineType, boolean recurseChildren) {
 
       if (Objects.nonNull(nextParagraphNumber)) {
          this.renderer.setRendererOption(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
@@ -71,16 +72,25 @@ public final class WordTemplateFileDiffer {
       this.renderer.setRendererOption(RendererOption.IN_PUBLISH_MODE, true);
 
       // need to keep original value as well as reseting to false
+      //@formatter:off
       if (this.renderer.isRendererOptionSet(RendererOption.PUBLISH_DIFF)) {
-         this.renderer.setRendererOption(RendererOption.ORIG_PUBLISH_AS_DIFF,
-            renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
+
+         this.renderer.setRendererOption
+            (
+               RendererOption.ORIG_PUBLISH_AS_DIFF,
+               renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF)
+            );
+
       } else {
+
          this.renderer.removeRendererOption(RendererOption.ORIG_PUBLISH_AS_DIFF);
+
       }
 
       this.renderer.setRendererOption(RendererOption.PUBLISH_DIFF, false);
+      this.renderer.setRendererOption( RendererOption.RECURSE_ON_LOAD, false);
+      //@formatter:on
 
-      this.renderer.setRendererOption(RendererOption.RECURSE, recurseChildren);
       // can use this as "diff branch?"
       BranchId endBranch = (BranchId) renderer.getRendererOptionValue(RendererOption.BRANCH);
       this.renderer.setRendererOption(RendererOption.WAS_BRANCH, endBranch);
@@ -111,7 +121,9 @@ public final class WordTemplateFileDiffer {
       }
 
       boolean recurseOnLoad = (boolean) renderer.getRendererOptionValue(RendererOption.RECURSE_ON_LOAD);
+
       Collection<Artifact> toProcess = recurseChildren || recurseOnLoad ? getAllArtifacts(endArtifacts) : endArtifacts;
+
       List<Change> changes = new LinkedList<>();
       ChangeDataLoader changeLoader = new ChangeDataLoader(changes, txDelta);
       IProgressMonitor monitor = (IProgressMonitor) renderer.getRendererOptionValue(RendererOption.PROGRESS_MONITOR);
@@ -137,7 +149,8 @@ public final class WordTemplateFileDiffer {
       return toReturn;
    }
 
-   private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix, TransactionDelta txDelta) {
+   private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix,
+      TransactionDelta txDelta) {
 
       Collection<ArtifactDelta> artifactDeltas = new ArrayList<>();
       Set<ArtifactId> addedIds = new HashSet<>();

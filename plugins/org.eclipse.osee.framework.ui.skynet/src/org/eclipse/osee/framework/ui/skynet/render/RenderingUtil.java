@@ -207,8 +207,13 @@ public final class RenderingUtil {
                 .append( rendererDocumentType )
                 .append( " document." )
                 .indentInc()
-                .segment( "Artifacts", artifacts,   Artifact::getIdString    )
-                .segment( "Branch",    branchToken, BranchToken::getIdString )
+                .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString )
+                .segment( "Branch", branchToken, BranchToken::getIdString )
+                .blank()
+                .indentDec()
+                .title( "Reason Follows:" )
+                .blank()
+                .block( errorMessage )
                 .toString();
       //@formatter:on
 

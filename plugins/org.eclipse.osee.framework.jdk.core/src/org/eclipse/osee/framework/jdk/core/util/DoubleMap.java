@@ -31,6 +31,12 @@ import java.util.Set;
 public interface DoubleMap<Kp, Ks, V> {
 
    /**
+    * Removes all entries from the map.
+    */
+
+   void clear();
+
+   /**
     * Predicate to determine if the map contains a value or values associated with the primary key.
     *
     * @param primaryKey

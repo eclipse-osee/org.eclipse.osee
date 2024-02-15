@@ -273,10 +273,10 @@ public class TestDocumentBuilder {
 
       var isMoved = new HashSet<Integer>( branchSpecificationRecords.size() * 8 );
       var toDo = new ArrayList<>( branchSpecificationRecords );
-      var canDo = new ArrayList<>( branchSpecificationRecords );
+      var canDo = new ArrayList<BranchSpecificationRecord>( branchSpecificationRecords.size() );
       while( !toDo.isEmpty() ) {
          for( int i = 0; i < toDo.size(); i++ ) {
-            var branchSpecificationRecord = canDo.get(i);
+            var branchSpecificationRecord = toDo.get(i);
             var identifier = branchSpecificationRecord.getIdentifier();
             var parentIdentifier = branchSpecificationRecord.getHierarchicalParentIdentifier();
             if( ( parentIdentifier == 0 ) || isMoved.contains( parentIdentifier ) ){

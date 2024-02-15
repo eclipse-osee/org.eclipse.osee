@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.util.Optional;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.w3c.dom.Element;
 
 /**
@@ -24,6 +25,16 @@ import org.w3c.dom.Element;
 
 public class WordDocument extends AbstractElement {
 
+   //@formatter:off
+   private static Pair<Class<?>,Class<?>> wordBodyChildKey =
+      Pair.createNullableImmutable( WordBody.class, null );
+   //@formatter:on
+
+   //@formatter:off
+   private static Pair<Class<?>,Class<?>> wordTableListOfWordDocumentChildKey =
+      Pair.createNullableImmutable( WordTableList.class, WordDocument.class );
+   //@formatter:on
+
    /**
     * Creates a new {@link WordDocument} object.
     *
@@ -32,7 +43,7 @@ public class WordDocument extends AbstractElement {
     */
 
    public WordDocument(Element wordDocumentElement) {
-      super(wordDocumentElement, WordXmlTag.WORD_DOCUMENT);
+      super(wordDocumentElement, WordMlTag.WORD_DOCUMENT);
    }
 
    /**
@@ -43,7 +54,11 @@ public class WordDocument extends AbstractElement {
     */
 
    public Optional<WordBody> getWordBody() {
-      return this.getChild(WordBody.class);
+      return this.getChild(WordDocument.wordBodyChildKey);
+   }
+
+   public Optional<WordTableList<WordDocument>> getWordTableList() {
+      return this.getChild(WordDocument.wordTableListOfWordDocumentChildKey);
    }
 }
 

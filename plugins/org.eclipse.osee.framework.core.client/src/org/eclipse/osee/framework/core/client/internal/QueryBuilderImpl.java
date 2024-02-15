@@ -42,7 +42,8 @@ public class QueryBuilderImpl implements QueryBuilder {
    private final List<Predicate> predicates;
    private final QueryExecutor executor;
 
-   public QueryBuilderImpl(BranchId branch, List<Predicate> predicates, QueryOptions options, PredicateFactory predicateFactory, QueryExecutor executor) {
+   public QueryBuilderImpl(BranchId branch, List<Predicate> predicates, QueryOptions options,
+      PredicateFactory predicateFactory, QueryExecutor executor) {
       this.branch = branch;
       this.predicates = predicates;
       this.options = options;
@@ -69,6 +70,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder fromTransaction(TransactionId transaction) {
       options.setFromTransaction(transaction);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andTxComment(String comment) {
+      predicates.add(predicateFactory.createTransactionCommentSearch(comment));
       return this;
    }
 
@@ -209,6 +216,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) {
       predicates.add(predicateFactory.createRelatedToSearch(relationTypeSide, artifactIds));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
+      predicates.add(predicateFactory.createRelatedRecursiveSearch(relationTypeSide, artifactId));
       return this;
    }
 

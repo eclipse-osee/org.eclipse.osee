@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @param <C> the {@link AbstractElement} derived class for this element's children.
  */
 
-public class AbstractElementList<P, C extends AbstractElement> implements Iterable<C> {
+public class AbstractElementList<P extends AbstractElement, C extends AbstractElement> implements Iterable<C>, AutoCloseable {
 
    /**
     * The parent {@link org.w3c.dom.Document} or {@link AbstractElement} sub-class.
@@ -92,7 +92,8 @@ public class AbstractElementList<P, C extends AbstractElement> implements Iterab
     * @throws IllegalStateException when the list has been closed.
     */
 
-   void close() {
+   @Override
+   public void close() {
 
       if (this.closed) {
          throw new IllegalStateException("AbstractElementList::close, the list has already been closed.");

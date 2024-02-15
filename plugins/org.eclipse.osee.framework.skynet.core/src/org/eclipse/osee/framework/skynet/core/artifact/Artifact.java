@@ -564,7 +564,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public final boolean areAllAttributeTypesInvalid(@NonNull AttributeTypeId... attributeTypes) {
       Conditions.requireNonNull(attributeTypes);
       for (var attributeType : attributeTypes) {
-         Conditions.checkValid(attributeType);
+         Conditions.requireNonNull(attributeType);
          if (this.isAttributeTypeValid(attributeType)) {
             return false;
          }

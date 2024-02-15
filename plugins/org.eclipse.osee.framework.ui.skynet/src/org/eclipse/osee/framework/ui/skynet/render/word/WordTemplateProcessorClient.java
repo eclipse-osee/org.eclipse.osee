@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,55 +24,69 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osee.define.rest.api.publisher.datarights.DataRightsEndpoint;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.publishing.AllowedOutlineTypes;
 import org.eclipse.osee.framework.core.publishing.AttributeOptions;
 import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
+import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
+import org.eclipse.osee.framework.core.publishing.IncludeMetadataAttributes;
+import org.eclipse.osee.framework.core.publishing.OutlineNumber;
+import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.core.publishing.ProcessedArtifactTracker;
+import org.eclipse.osee.framework.core.publishing.PublishIoException;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
+import org.eclipse.osee.framework.core.publishing.SectionNumberWhenMaximumOutlineLevelExceeded;
+import org.eclipse.osee.framework.core.publishing.TrailingDot;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordRenderApplicabilityChecker;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
+import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactHierarchyComparator;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.word.WordCoreUtilClient;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -97,25 +109,34 @@ public class WordTemplateProcessorClient {
 
    private static final String ARTIFACT = "Artifact";
 
-   private static final String LOAD_EXCLUDED_ARTIFACTIDS =
-      "select art_id from osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = 1 and not exists (select null from osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and e1 = ? and t2.gamma_id = txsP.gamma_id and txsP.branch_id = ? and txsP.tx_current = 1 and e2 = txs.app_id)";
+   protected static final String FONT = "Times New Roman";
 
    private static final String NESTED_TEMPLATE = "NestedTemplate";
+
+   private static final String staticPermanentLinkUrl =
+      String.format("http://%s:%s/", ClientSessionManager.getClientName(), ClientSessionManager.getClientPort());
 
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
 
    private static final Program wordApp = Program.findProgram("doc");
 
-   private static final String staticPermanentLinkUrl =
-      String.format("http://%s:%s/", ClientSessionManager.getClientName(), ClientSessionManager.getClientPort());
+   private boolean allAttributes;
+
+   /**
+    * Saves the types of artifacts that may be used for outlining.
+    */
+
+   private AllowedOutlineTypes allowedOutlineTypes;
 
    private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
-
-   private HashMap<ArtifactId, ArtifactId> artifactsToExclude;
 
    private List<AttributeOptions> attributeOptionsList;
 
    private BranchId branchId;
+
+   private final ArtifactTypeToken contentArtifactType;
+
+   private AttributeTypeToken contentAttributeType;
 
    /**
     * Saves a handle to the {@link DataRightsEndpoint}.
@@ -125,21 +146,25 @@ public class WordTemplateProcessorClient {
 
    private String elementType;
 
-   private final Set<ArtifactId> emptyFolders = new HashSet<>();
+   private ArtifactAcceptor emptyFoldersArtifactAcceptor;
 
-   private final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
+   private ArtifactAcceptor excludedArtifactTypeArtifactAcceptor;
 
-   private boolean excludeFolders;
+   IContainer folder;
 
    private final FormatIndicator formatIndicator;
 
+   private ArtifactTypeToken headingArtifactTypeToken;
+
    private AttributeTypeToken headingAttributeTypeToken;
 
-   private Boolean includeEmptyHeaders;
+   private IncludeHeadings includeHeadings;
+
+   private IncludeMetadataAttributes includeMetadataAttributes;
+
+   private String initialOutlineNumber = null;
 
    private boolean isDiff;
-
-   IContainer folder;
 
    private Integer maximumOutlineDepth;
 
@@ -147,19 +172,15 @@ public class WordTemplateProcessorClient {
 
    final List<Artifact> nonTemplateArtifacts = new LinkedList<>();
 
-   private String outlineNumber = null;
-
-   private boolean outlineOnlyHeadersFolders = false;
+   private OutlineNumber outlineNumber;
 
    private String outlineType;
-
-   private boolean outlining;
 
    private String overrideClassification;
 
    private boolean overrideOutlineNumber = false;
 
-   private CharSequence paragraphNumber = null;
+   //private CharSequence paragraphNumber = null;
 
    private final String permanentLinkUrl;
 
@@ -175,7 +196,7 @@ public class WordTemplateProcessorClient {
 
    private PublishingTemplate publishingTemplate;
 
-   private boolean recurseChildren;
+   private Boolean recurseChildren;
 
    /**
     * Used to read publishing options from the parent renderer and to write back publishing parameters.
@@ -185,188 +206,53 @@ public class WordTemplateProcessorClient {
 
    private PublishingTemplate secondaryPublishingTemplate;
 
-   private boolean templateFooter = false;
+   private boolean templateFooter;
+
+   protected WordRenderApplicabilityChecker wordRenderApplicabilityChecker;
+
+   private boolean contentAttributeOnly;
+
+   private final OrcsTokenService tokenService;
 
    private ArtifactId viewId;
 
    public WordTemplateProcessorClient() {
+
+      final var oseeClient = ServiceUtil.getOseeClient();
+
+      this.allAttributes = false;
       this.attributeOptionsList = null;
-      this.artifactsToExclude = new HashMap<>();
-      this.dataRightsEndpoint = ServiceUtil.getOseeClient().getDataRightsEndpoint();
+      this.allowedOutlineTypes = AllowedOutlineTypes.ANYTHING;
+      this.branchId = null;
+      this.contentArtifactType = null;
+      this.contentAttributeOnly = false;
+      this.contentAttributeType = null;
+      this.dataRightsEndpoint = oseeClient.getDataRightsEndpoint();
       this.elementType = null;
+      this.emptyFoldersArtifactAcceptor = null;
+      this.excludedArtifactTypeArtifactAcceptor = null;
       this.folder = null;
       this.formatIndicator = FormatIndicator.WORD_ML;
+      this.headingArtifactTypeToken = null;
+      this.headingAttributeTypeToken = null;
+      this.includeHeadings = null;
+      this.includeMetadataAttributes = null;
+      this.initialOutlineNumber = null;
       this.maximumOutlineDepth = null;
+      this.outlineNumber = null;
+      this.overrideOutlineNumber = false;
       this.permanentLinkUrl = WordTemplateProcessorClient.staticPermanentLinkUrl;
       this.presentationType = null;
       this.primaryPublishingTemplate = null;
       this.processedArtifactTracker = new ProcessedArtifactTracker();
       this.publishingTemplate = null;
+      this.recurseChildren = null;
       this.renderer = null;
       this.secondaryPublishingTemplate = null;
-   }
-
-   public WordTemplateProcessorClient configure(WordTemplateRenderer renderer, PublishingTemplate publishingTemplate,
-      PublishingTemplate secondaryPublishingTemplate, IContainer folder, String outlineNumber,
-      PresentationType presentationType) {
-
-      /*
-       * Publishing Template
-       */
-
-      this.publishingTemplate = publishingTemplate;
-
-      this.primaryPublishingTemplate =
-         Objects.isNull(this.primaryPublishingTemplate) ? publishingTemplate : this.primaryPublishingTemplate;
-
-      this.secondaryPublishingTemplate = Objects.isNull(
-         this.secondaryPublishingTemplate) ? secondaryPublishingTemplate : this.secondaryPublishingTemplate;
-
-      /*
-       * Publishing Options
-       */
-
-      this.renderer = renderer;
-
-      /**
-       * Publishing Format
-       * <p>
-       * Client side publishing only support Word Markup Language.
-       */
-
-      /*
-       * Element Type
-       */
-
-      this.elementType = this.publishingTemplate.getPublishOptions().getElementType();
-
-      //@formatter:off
-      if (    !WordTemplateProcessorClient.ARTIFACT.equals( this.elementType )
-           && !WordTemplateProcessorClient.NESTED_TEMPLATE.equals(this.elementType ) ) {
-
-         throw
-            new OseeCoreException
-                   (
-                      new Message()
-                            .title( "WordTemplateProcessor::applyTemplate, publishing is only implemented for ARTIFACT and NESTED_TEMPLATE element types.")
-                            .indentInc()
-                            .segment( "Publishing Template", this.publishingTemplate.getName() )
-                            .segment( "Element Type",        this.elementType                  )
-                            .toString()
-                   );
-      }
-
-      /*
-       * Folder
-       */
-
-      this.folder = folder;
-
-      /*
-       * Exclude Folders
-       */
-
-      this.excludeFolders = (boolean) renderer.getRendererOptionValue(RendererOption.EXCLUDE_FOLDERS);
-
-      /**
-       * Heading Attribute Type
-       * <p>
-       * Server Only
-       */
-
-      /*
-       * Maximum outline depth
-       */
-
-      //@formatter:off
-      this.maximumOutlineDepth =
-         this.renderer.isRendererOptionSet( RendererOption.MAX_OUTLINE_DEPTH )
-            ? (Integer) this.renderer.getRendererOptionValue( RendererOption.MAX_OUTLINE_DEPTH )
-            : 9;
-      //@formatter:on
-
-      /*
-       * Outline Number
-       */
-
-      this.outlineType = (String) this.renderer.getRendererOptionValue(RendererOption.OUTLINE_TYPE);
-
-      /*
-       * Override Classification
-       */
-
-      String overrideDataRights = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
-
-      this.overrideClassification =
-         DataRightsClassification.isValid(overrideDataRights) ? overrideDataRights : "invalid";
-
-      /*
-       * Presentation Type
-       */
-
-      this.presentationType = presentationType;
-
-      /*
-       * Branch Identifier
-       */
-
-      this.branchId = this.renderer.getRendererOptionValue(RendererOption.BRANCH);
-
-      /*
-       * View Identifier
-       */
-
-      this.viewId = this.renderer.getRendererOptionValue(RendererOption.VIEW);
-
-      try {
-         var publishOptions = publishingTemplate.getPublishOptions();
-         var outliningOptionsArray = publishOptions.getOutliningOptions();
-
-         if (outliningOptionsArray.length >= 1) {
-            var outliningOptions = outliningOptionsArray[0];
-
-            this.outlining = outliningOptions.isOutlining();
-            this.outlineOnlyHeadersFolders = outliningOptions.isOutlineOnlyHeaderFolders();
-            this.overrideOutlineNumber = outliningOptions.isOverrideOutlineNumber();
-            this.recurseChildren = outliningOptions.isRecurseChildren();
-            this.includeEmptyHeaders = outliningOptions.isIncludeEmptyHeaders();
-            this.outlineNumber = outliningOptions.getOutlineNumber();
-            this.templateFooter = outliningOptions.isTemplateFooter();
-            this.headingAttributeTypeToken = AttributeTypeManager.getType(outliningOptions.getHeadingAttributeType());
-         }
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-
-      try {
-         var publishOptions = publishingTemplate.getPublishOptions();
-         var attributeOptions = publishOptions.getAttributeOptions();
-
-         //@formatter:off
-         this.attributeOptionsList =
-            Arrays
-               .stream( attributeOptions )
-               .filter
-                  (
-                     ( attributeOptionsElement ) ->
-                     {
-                        var attributeType = attributeOptionsElement.getAttributeName();
-
-                        return
-                              "*".equals( attributeType )
-                           || "<format-content-attribute>".equals( attributeType )
-                           || AttributeTypeManager.typeExists( attributeType );
-                     }
-                  )
-               .collect( Collectors.toList() );
-               ;
-         //@formatter:on
-
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
-
-      return this;
+      this.templateFooter = false;
+      this.tokenService = oseeClient.tokenService();
+      this.viewId = null;
+      this.wordRenderApplicabilityChecker = null;
    }
 
    /**
@@ -378,7 +264,7 @@ public class WordTemplateProcessorClient {
     * @param templateOptions the publishing template JSON publish options
     * @param templateStyles when non-<code>null</code> the publishing template styles will be replaced
     * @param folder null when not using an extension template
-    * @param outlineNumber if null will find based on first artifact
+    * @param initialOutlineNumber if null will find based on first artifact
     * @param presentationType
     * @param outputStream when non-<code>null</code> generated WordMl is appended to this {@link OutputStream}. When
     * null the Word ML is written to a buffer.
@@ -407,8 +293,24 @@ public class WordTemplateProcessorClient {
          }
       }
 
-      artifactsToExclude =
-         getNonApplicableArtifacts(artifacts, this.viewId == null ? ArtifactId.SENTINEL : this.viewId);
+      /*
+       * Get the initial outline number
+       */
+
+      final var firstArtifact = artifacts.isEmpty() ? null : new WordRenderArtifactWrapperClientImpl(artifacts.get(0));
+
+      //@formatter:off
+      this.initialOutlineNumber =
+         this.outlineNumber.isValidOutlineNumber( this.initialOutlineNumber )
+            ? this.initialOutlineNumber
+            : WordRenderUtil.getStartingParagraphNumber(firstArtifact, publishingTemplate);
+      //@formatter:on
+
+      this.outlineNumber.setOutlineNumber(this.initialOutlineNumber);
+
+      /*
+       * Setup the Publishing Appender
+       */
 
       PublishingAppender wordMlUnfinal = null;
       InputStream inputStream = null;
@@ -444,27 +346,20 @@ public class WordTemplateProcessorClient {
          }
       }
 
-      var wordMl = wordMlUnfinal;
+      var publishingAppender = wordMlUnfinal;
 
       /*
        * Setup Publishing Template
        */
 
       //@formatter:off
-      var firstPublishingArtifact =
-         artifacts.isEmpty()
-            ? null
-            : new WordRenderArtifactWrapperClientImpl( artifacts.get(0) );
-
       WordRenderUtil.setupPublishingTemplate
          (
             this.formatIndicator,
             this.publishingTemplate,
-            firstPublishingArtifact,
-            wordMl,
-            this.outlineNumber,
-            this.outlineType,
-            this.maximumOutlineDepth
+            publishingAppender,
+            this.initialOutlineNumber,
+            this.outlineType
          );
        //@formatter:on
 
@@ -482,18 +377,23 @@ public class WordTemplateProcessorClient {
                      @Override
                      public void accept( CharSequence segment ) {
 
-                        wordMl.append( segment );
+                        publishingAppender.append( segment );
 
                         if(    ( presentationType == PresentationType.SPECIALIZED_EDIT )
                             && ( artifacts.size() == 1 ) ) {
-                           // for single edit override outlining options
-                           WordTemplateProcessorClient.this.outlining = false;
+
+                           /*
+                            * Do not process headings for editing
+                            */
+
+                           WordTemplateProcessorClient.this.includeHeadings = IncludeHeadings.NEVER;
+
                         }
 
                         WordTemplateProcessorClient.this.processArtifactSet
                            (
                               artifacts,
-                              wordMl
+                              publishingAppender
                            );
                      }
                   };
@@ -507,9 +407,9 @@ public class WordTemplateProcessorClient {
                      @Override
                      public void accept( CharSequence segment ) {
 
-                        wordMl.append( segment );
+                        publishingAppender.append( segment );
 
-                        WordTemplateProcessorClient.this.parseNestedTemplateOptions( wordMl );
+                        WordTemplateProcessorClient.this.parseNestedTemplateOptions( publishingAppender );
 
                      }
                   };
@@ -529,7 +429,7 @@ public class WordTemplateProcessorClient {
                ( tail ) ->
                {
                   var cleanFooterText = WordCoreUtil.cleanupFooter( tail );
-                  wordMl.append( cleanFooterText );
+                  publishingAppender.append( cleanFooterText );
                }
            );
          //@formatter:on
@@ -554,6 +454,208 @@ public class WordTemplateProcessorClient {
       return inputStream;
    }
 
+   public WordTemplateProcessorClient configure(WordTemplateRenderer renderer, PublishingTemplate publishingTemplate,
+      PublishingTemplate secondaryPublishingTemplate, IContainer folder, PresentationType presentationType) {
+
+      /*
+       * Publishing Template
+       */
+
+      this.publishingTemplate = publishingTemplate;
+
+      this.primaryPublishingTemplate =
+         Objects.isNull(this.primaryPublishingTemplate) ? publishingTemplate : this.primaryPublishingTemplate;
+
+      this.secondaryPublishingTemplate = Objects.isNull(
+         this.secondaryPublishingTemplate) ? secondaryPublishingTemplate : this.secondaryPublishingTemplate;
+
+      /*
+       * Publishing Options
+       */
+
+      this.renderer = renderer;
+
+      /*
+       * All Attributes
+       */
+
+      this.allAttributes = this.renderer.isRendererOptionSetAndTrue(RendererOption.ALL_ATTRIBUTES);
+
+      /**
+       * Publishing Format
+       * <p>
+       * Client side publishing only support Word Markup Language.
+       */
+
+      /*
+       * Content Attribute Only
+       */
+
+      this.contentAttributeOnly = renderer.getRendererOptionValue(RendererOption.CONTENT_ATTRIBUTE_ONLY);
+
+      /*
+       * Element Type
+       */
+
+      this.elementType = this.publishingTemplate.getPublishOptions().getElementType();
+
+      //@formatter:off
+      if (    !WordTemplateProcessorClient.ARTIFACT.equals( this.elementType )
+           && !WordTemplateProcessorClient.NESTED_TEMPLATE.equals(this.elementType ) ) {
+
+         throw
+            new OseeCoreException
+                   (
+                      new Message()
+                            .title( "WordTemplateProcessor::applyTemplate, publishing is only implemented for ARTIFACT and NESTED_TEMPLATE element types.")
+                            .indentInc()
+                            .segment( "Publishing Template", this.publishingTemplate.getName() )
+                            .segment( "Element Type",        this.elementType                  )
+                            .toString()
+                   );
+      }
+
+      /*
+       * Folder
+       */
+
+      this.folder = folder;
+
+      /*
+       * Maximum outline depth
+       */
+
+      //@formatter:off
+      int rendererOptionMaximumOutlineDepth =
+         this.renderer.isRendererOptionSet( RendererOption.MAX_OUTLINE_DEPTH )
+            ? this.renderer.getRendererOptionValue( RendererOption.MAX_OUTLINE_DEPTH )
+            : -1;
+
+      int formatMaximumOutlineDepth = this.formatIndicator.getMaximumOutlineDepth();
+
+      switch(    ( rendererOptionMaximumOutlineDepth == -1 ? 1 : 0 )
+               + ( formatMaximumOutlineDepth         == -1 ? 2 : 0 ) ) {
+         case 0: this.maximumOutlineDepth = Math.min( rendererOptionMaximumOutlineDepth, formatMaximumOutlineDepth );
+                 break;
+         case 1: this.maximumOutlineDepth = formatMaximumOutlineDepth;
+                 break;
+         case 2: this.maximumOutlineDepth = rendererOptionMaximumOutlineDepth;
+                 break;
+         case 3: this.maximumOutlineDepth = 100;
+                 break;
+      }
+      //@formatter:on
+
+      /*
+       * Outline Number
+       */
+
+      this.outlineNumber = new OutlineNumber(this.maximumOutlineDepth, 1, TrailingDot.NO,
+         SectionNumberWhenMaximumOutlineLevelExceeded.INCREMENT_CURRENT_LEVEL);
+
+      /*
+       * Outline Type
+       */
+
+      this.outlineType = (String) this.renderer.getRendererOptionValue(RendererOption.OUTLINE_TYPE);
+
+      /*
+       * Override Classification
+       */
+
+      String overrideDataRights = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
+
+      this.overrideClassification =
+         DataRightsClassification.isValid(overrideDataRights) ? overrideDataRights : "invalid";
+
+      /*
+       * Presentation Type
+       */
+
+      this.presentationType = presentationType;
+
+      /*
+       * Branch Identifier
+       */
+
+      this.branchId = this.renderer.getRendererOptionValue(RendererOption.BRANCH);
+
+      /*
+       * View Identifier
+       */
+
+      this.viewId = this.renderer.getRendererOptionValue(RendererOption.VIEW);
+
+      /*
+       * Applicability Checker
+       */
+
+      //@formatter:off
+      this.wordRenderApplicabilityChecker =
+         new WordRenderApplicabilityChecker
+                (
+                   (branchId, viewId) -> WordCoreUtilClient.getNonApplicableArtifacts(this.branchId, this.viewId)
+                );
+      //@formatter:on
+
+      this.wordRenderApplicabilityChecker.load(this.branchId, this.viewId);
+
+      /*
+       * Content Options
+       */
+
+      final var publishOptions = publishingTemplate.getPublishOptions();
+
+      /*
+       * Content Artifact Type
+       */
+
+      /*
+       * Content Attribute Type
+       */
+
+      /*
+       * Outlining Options
+       */
+
+      //@formatter:off
+      OutliningOptions.setValues
+         (
+            publishOptions.getOutliningOptions(),
+            this.formatIndicator,
+            this.renderer,
+            this.tokenService,
+            ( allowedOutlineTypes   ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
+            ( contentAttributeType  ) -> this.contentAttributeType                 = contentAttributeType,
+            ( excludeArtifactTypes  ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludeArtifactTypes ),
+            ( headingArtifactType   ) -> this.headingArtifactTypeToken             = headingArtifactType,
+            ( headingAttributeType  ) -> this.headingAttributeTypeToken            = headingAttributeType,
+            ( includeHeadings       ) -> this.includeHeadings                      = includeHeadings,
+            ( initialOutlineNumber  ) -> this.initialOutlineNumber                 = initialOutlineNumber,
+            ( overrideOutlineNumber ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
+            ( recurseChildren       ) -> this.recurseChildren                      = recurseChildren,
+            ( templateFooter        ) -> this.templateFooter                       = templateFooter
+         );
+      //@formatter:on
+
+      /*
+       * Attribute Options
+       */
+
+      //@formatter:off
+      this.attributeOptionsList =
+         AttributeOptions.setValues
+            (
+               publishOptions.getAttributeOptions(),
+               this.tokenService
+            );
+      //@formatter:on
+
+      this.includeMetadataAttributes = IncludeMetadataAttributes.ALWAYS;
+
+      return this;
+   }
+
    private void displayNonTemplateArtifacts(final Collection<Artifact> artifacts, final String warningString) {
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -566,110 +668,6 @@ public class WordTemplateProcessorClient {
             }
          });
       }
-   }
-
-   public Set<ArtifactId> getEmptyFolders() {
-      return emptyFolders;
-   }
-
-   private List<ArtifactTypeToken> getExcludeArtifactTypes() {
-      excludeArtifactTypes.clear();
-
-      Object o = renderer.getRendererOptionValue(RendererOption.EXCLUDE_ARTIFACT_TYPES);
-      if (o instanceof Collection<?>) {
-         Collection<?> coll = (Collection<?>) o;
-         Iterator<?> iterator = coll.iterator();
-         while (iterator.hasNext()) {
-            Object next = iterator.next();
-            if (next instanceof ArtifactTypeToken) {
-               excludeArtifactTypes.add((ArtifactTypeToken) next);
-            }
-         }
-
-      }
-
-      return excludeArtifactTypes;
-   }
-
-   private HashMap<ArtifactId, ArtifactId> getNonApplicableArtifacts(List<Artifact> artifacts, ArtifactId view) {
-      HashMap<ArtifactId, ArtifactId> toReturn = new HashMap<>();
-
-      if (artifacts != null && !artifacts.isEmpty()) {
-         Object[] objs = {branchId, view, branchId};
-
-         if (view.isValid()) {
-            List<ArtifactId> excludedArtifacts = ArtifactLoader.selectArtifactIds(LOAD_EXCLUDED_ARTIFACTIDS, objs, 300);
-            for (ArtifactId artId : excludedArtifacts) {
-               toReturn.put(artId, artId);
-            }
-         }
-      }
-
-      return toReturn;
-   }
-
-   private boolean isArtifactIncluded(Artifact artifact) {
-      boolean excludedArtifact =
-         (excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder)) || (artifactsToExclude.containsKey(
-            ArtifactId.create(artifact)) || emptyFolders.contains(artifact));
-      boolean excludedArtifactType = excludeArtifactTypes != null && isOfType(artifact, excludeArtifactTypes);
-
-      return !excludedArtifact && !excludedArtifactType;
-   }
-
-   /**
-    * Takes a list of artifacts and loops through finding which headers should not be published. Takes an artifact and
-    * loops through its' children. On each set of grandchildren, the method is called recursively.<br/>
-    * <br/>
-    * case1: Any MS Word Header that has only excluded children is not published<br/>
-    * case2: Any MS Word Header that has only excluded children, but has included grandchildren, is published<br/>
-    * case3: Non MS Word Header artifacts are still published even if all children/grandchildren are excluded<br/>
-    * case4: Any MS Word Header that has no children is not published<br/>
-    * case5: Any MS Word Header with only excluded header children, should not be published<br/>
-    */
-   public boolean isEmptyHeaders(List<Artifact> artifacts) {
-      boolean hasIncludedChildren = false;
-      boolean includeParent = false;
-      List<Artifact> children = new LinkedList<>();
-      for (Artifact artifact : artifacts) {
-         if (artifact.getId().equals(13728L)) {
-            System.out.println("Snoopy Empty");
-         }
-         if (!artifact.isHistorical()) {
-            children = artifact.getChildren();
-         }
-         if (!children.isEmpty()) {
-            hasIncludedChildren = isEmptyHeaders(children);
-            if (!hasIncludedChildren) {
-               if (artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
-                  emptyFolders.add(artifact);
-               }
-            }
-         } else if (children.isEmpty() && artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
-            emptyFolders.add(artifact);
-         }
-         if (!isOfType(artifact, excludeArtifactTypes) && !artifact.isOfType(CoreArtifactTypes.HeadingMsWord)) {
-            includeParent = true;
-         }
-         if (hasIncludedChildren) {
-            includeParent = true;
-         }
-      }
-      return includeParent;
-   }
-
-   private boolean isOfType(Artifact artifact, List<ArtifactTypeToken> excludeArtifactTypes) {
-      for (ArtifactTypeToken artType : excludeArtifactTypes) {
-         if (artifact.isOfType(artType)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   private boolean isWordTemplateContentValid(Artifact artifact) {
-      return !artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(
-         CoreAttributeTypes.NativeContent);
    }
 
    private void parseNestedTemplateOptions(PublishingAppender wordMl) {
@@ -685,26 +683,22 @@ public class WordTemplateProcessorClient {
 
             var sectionNumber = nestedTemplates.getSectionNumber();
 
-            var key = nestedTemplates.getKey();
-            RendererOption rendererOption = RendererOption.valueOf(key.toUpperCase());
+            final var key = nestedTemplates.getKey();
+            final var value = nestedTemplates.getValue();
+            final var branch = (BranchId) renderer.getRendererOptionValue(RendererOption.BRANCH);
 
-            var value = nestedTemplates.getValue();
-            this.renderer.setRendererOption(rendererOption, value);
-
-            String artifactName = (String) renderer.getRendererOptionValue(RendererOption.NAME);
-            String artifactId = (String) renderer.getRendererOptionValue(RendererOption.ID);
-            BranchId branch = (BranchId) renderer.getRendererOptionValue(RendererOption.BRANCH);
             List<Artifact> artifacts = null;
 
-            if (Strings.isValid(artifactId)) {
-
-               List<ArtifactId> artIds = Arrays.asList(ArtifactId.valueOf(artifactId));
-               artifacts = ArtifactQuery.getArtifactListFrom(artIds, branch, EXCLUDE_DELETED);
-
-            } else if (Strings.isValid(artifactName)) {
-
-               artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch);
-
+            switch (key) {
+               case "Id":
+                  List<ArtifactId> artIds = Arrays.asList(ArtifactId.valueOf(value));
+                  artifacts = ArtifactQuery.getArtifactListFrom(artIds, branch, DeletionFlag.EXCLUDE_DELETED);
+                  break;
+               case "Name":
+                  artifacts = ArtifactQuery.getArtifactListFromName(value, branch);
+                  break;
+               default:
+                  Conditions.invalidCase(key, "Key from a Nested Publishing Template", OseeCoreException::new);
             }
 
             var subDocName = nestedTemplates.getSubDocName();
@@ -716,9 +710,10 @@ public class WordTemplateProcessorClient {
                   templateFileDiffer.generateFileDifferences(artifacts, "/results/" + subDocFileName, sectionNumber,
                      outlineType, recurseChildren);
                }
+
             } else {
 
-               //@formatter:off
+            //@formatter:off
                var inputStream =
                   this
                      .configure
@@ -727,7 +722,6 @@ public class WordTemplateProcessorClient {
                           secondaryPublishingTemplate,
                           null,
                           this.folder,
-                          subDocFileName,
                           this.presentationType
                         )
                      .applyTemplate
@@ -739,7 +733,34 @@ public class WordTemplateProcessorClient {
 
                IFile file = folder.getFile( new Path( subDocFileName ) );
 
-               AIFile.writeToFile( file, inputStream );
+               try {
+
+                  AIFile.writeToFile( file, inputStream );
+
+               } catch( Exception e ) {
+
+                  final var cause = e.getCause();
+
+                  if( !( cause instanceof CoreException ) ) {
+                     throw e;
+                  }
+
+                  final var coreException = (CoreException) cause;
+                  final var status = coreException.getStatus();
+                  final var code = status.getCode();
+
+                  if( code != IResourceStatus.FAILED_WRITE_LOCAL ) {
+                     throw e;
+                  }
+
+                  final var osStringPath = file.getLocation().toOSString();
+
+                  final var publishIoException =
+                     new PublishIoException( "Could not write file.", osStringPath, e );
+
+                  throw publishIoException;
+
+               }
                //@formatter:on
             }
             wordMl.createHyperLinkDoc(subDocFileName);
@@ -750,48 +771,128 @@ public class WordTemplateProcessorClient {
       }
    }
 
-   private void processArtifact(Artifact artifact, PublishingAppender wordMl, String outlineType,
-      PresentationType presentationType, DataRightContentBuilder dataRightContentBuilder) {
+   //@formatter:off
+   private void
+      processArtifact
+         (
+            PublishingArtifact      artifact,
+            PublishingAppender      publishingAppender,
+            ArtifactAcceptor        artifactAcceptor,
+            DataRightContentBuilder dataRightContentBuilder,
+            String                  outlineType,
+            PresentationType        presentationType
+         ) {
 
-      if (isWordTemplateContentValid(artifact)) {
+      if (this.processedArtifactTracker.contains(artifact)) {
+         return;
+      }
 
-         // If the artifact has not been processed
+      this.processedArtifactTracker.add(artifact);
 
-         if (this.processedArtifactTracker.contains(artifact)) {
-            return;
+      boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
+
+      /*
+       * Render and append the artifact's content. startedSection is true when the artifact content contains a
+       * sub-section open tag.
+       */
+
+      boolean startedSection =
+         WordRenderUtil.renderArtifact
+            (
+               this.allAttributes,
+               this.allowedOutlineTypes,
+               this.applicabilityTokens,
+               this.attributeOptionsList,
+               this::processAttribute,
+               artifact,
+               artifactAcceptor,
+               null,
+               this.contentAttributeOnly,
+               this.contentAttributeType,
+               dataRightContentBuilder,
+               this.emptyFoldersArtifactAcceptor,
+               this.excludedArtifactTypeArtifactAcceptor,
+               formatIndicator,
+               this.headingArtifactTypeToken,
+               this.headingAttributeTypeToken,
+               ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
+               IncludeBookmark.NO.getArtifactAcceptor(),
+               this.includeHeadings,
+               this.includeMetadataAttributes,
+               this::nonTemplateArtifactHandler,
+               this.publishingTemplate.getPublishOptions().getMetadataOptions(),
+               this.tokenService,
+               presentationType,
+               publishingAppender,
+               publishInline,
+               () -> RendererManager.getAttributeTypeOrderList( ((WordRenderArtifactWrapperClientImpl) artifact).getArtifact() ),
+               this.outlineNumber,
+               this.overrideOutlineNumber,
+               ( lambdaArtifact, lambdaParagraphNumber ) -> this.paragraphNumberUpdater(lambdaParagraphNumber.toString(), lambdaArtifact),
+               this.wordRenderApplicabilityChecker
+            );
+
+      var children = List.<PublishingArtifact> of();
+
+      if (this.recurseChildren) {
+
+         try {
+
+            children = artifact.getChildrenAsPublishingArtifacts();
+
+         } catch (Exception e) {
+
+            //Eat the error, client processing does not have a publishing error log yet
          }
 
-         boolean startedSection = false;
+         if (!children.isEmpty()) {
 
-         if (isArtifactIncluded(artifact)) {
-
-            startedSection |=
-               this.renderArtifact(artifact, presentationType, wordMl, outlineType, dataRightContentBuilder);
-
-         }
-
-         // Check for option that may have been set from Publish with Diff BLAM to recurse
-         boolean recurse = (boolean) renderer.getRendererOptionValue(RendererOption.RECURSE_ON_LOAD);
-         boolean origDiff = (boolean) renderer.getRendererOptionValue(RendererOption.ORIG_PUBLISH_AS_DIFF);
-
-         if (recurseChildren && !recurse || recurse && !origDiff) {
-            for (Artifact childArtifact : artifact.getChildren()) {
-               processArtifact(childArtifact, wordMl, outlineType, presentationType, dataRightContentBuilder);
+            if (startedSection) {
+               this.outlineNumber.startLevel();
             }
+
+            for (final var childArtifact : children) {
+
+               if (childArtifact == null) {
+
+                  //Eat the null artifact, client processing does not have a publishing error log yet
+                  continue;
+               }
+
+               this.processArtifact
+                  (
+                     childArtifact,
+                     publishingAppender,
+                     artifactAcceptor,
+                     dataRightContentBuilder,
+                     outlineType,
+                     presentationType
+                  );
+
+            }
+
+            if (startedSection) {
+               this.outlineNumber.endLevel();
+            }
+
          }
-
-         if (startedSection) {
-            wordMl.endOutlineSubSection();
-         }
-
-         this.processedArtifactTracker.add(new WordRenderArtifactWrapperClientImpl(artifact));
-
-      } else {
-
-         nonTemplateArtifacts.add(artifact);
 
       }
+
+      if (startedSection) {
+
+         this.outlineNumber.nextSection();
+
+         if (!this.outlineNumber.isAboveMaximumOutlingLevel()) {
+
+            publishingAppender.endSubSection();
+
+         }
+
+      }
+
    }
+   //@formatter:on
 
    /**
     * Generates the Word ML to be inserted into the publishing template replacing the publishing template's "insert
@@ -799,29 +900,37 @@ public class WordTemplateProcessorClient {
     * ML.
     */
 
-   private void processArtifactSet(List<Artifact> artifacts, PublishingAppender wordMl) {
+   //@formatter:off
+   private void
+      processArtifactSet
+         (
+            List<Artifact>     nativeArtifacts,
+            PublishingAppender wordMl
+         ) {
 
       this.nonTemplateArtifacts.clear();
 
-      if (Strings.isValid(this.outlineNumber)) {
-         wordMl.setNextParagraphNumberTo(this.outlineNumber);
+      if (Strings.isValid(this.initialOutlineNumber)) {
+         this.outlineNumber.setOutlineNumber(this.initialOutlineNumber);
       }
 
-      /**
-       * EmptyHeaders can be set in the template RendererOptions, or via the rendererOptions (such as the Publish with
-       * Specified Template Blam). Via Template's RendererOptions takes priority, if set, this will check to see if the
-       * option to exclude empty headers was set to false. If true, won't run at all regardless of rendererOptions. If
-       * template does not set the option, will check to see if set via rendererOptions, again, if set to false it will
-       * run, if true it will not run.
-       */
+      final List<PublishingArtifact> artifacts =
+         nativeArtifacts
+            .stream()
+            .map( WordRenderArtifactWrapperClientImpl::new )
+            .collect( Collectors.toCollection( LinkedList::new ) );
 
-      if (Objects.isNull(this.includeEmptyHeaders)) {
-         this.includeEmptyHeaders = !this.renderer.isRendererOptionSetAndFalse(RendererOption.PUBLISH_EMPTY_HEADERS);
-      }
-
-      if (!includeEmptyHeaders) {
-         this.isEmptyHeaders(artifacts);
-      }
+      this.emptyFoldersArtifactAcceptor =
+         WordRenderUtil.populateEmptyHeaders
+            (
+               artifacts,
+               this.includeHeadings,
+               this.allowedOutlineTypes,
+               this.headingArtifactTypeToken,
+               this.contentAttributeType,
+               this.excludedArtifactTypeArtifactAcceptor,
+               ArtifactAcceptor.not( ArtifactReadable::isHistorical )
+            );
 
       /*
        * Has a difference report been requested?
@@ -835,7 +944,7 @@ public class WordTemplateProcessorClient {
 
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
 
-         templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType,
+         templateFileDiffer.generateFileDifferences(nativeArtifacts, "/results/", initialOutlineNumber, outlineType,
             recurseChildren);
 
       } else {
@@ -852,7 +961,6 @@ public class WordTemplateProcessorClient {
           * published (if specified through recurseChildren) and determines all of their data rights.
           */
 
-         //@formatter:off
          WordRenderUtil
             .getDataRights
                (
@@ -860,7 +968,7 @@ public class WordTemplateProcessorClient {
                    * Publish artifacts to analyze for data rights
                    */
 
-                  artifacts.stream().map( WordRenderArtifactWrapperClientImpl::new ).collect( Collectors.toCollection( LinkedList::new ) ),
+                  artifacts,
 
                   /*
                    * The publishing branch
@@ -872,9 +980,7 @@ public class WordTemplateProcessorClient {
                    * Recursion logic
                    */
 
-                      (     this.recurseChildren
-                         || (boolean) renderer.getRendererOptionValue( RendererOption.RECURSE_ON_LOAD ) )
-                  && !( (boolean) renderer.getRendererOptionValue( RendererOption.ORIG_PUBLISH_AS_DIFF ) ),
+                  this.recurseChildren,
 
                   /*
                    * Not Historical, true -> reject descendants of historical artifacts and historical descendants
@@ -892,7 +998,11 @@ public class WordTemplateProcessorClient {
                    * When recursing, this tester accepts or rejects descendant artifacts
                    */
 
-                  ( publishingArtifact ) -> this.isArtifactIncluded( ((WordRenderArtifactWrapperClientImpl)publishingArtifact).getArtifact() ),
+                  ArtifactAcceptor.and
+                     (
+                        this.wordRenderApplicabilityChecker,
+                        this.emptyFoldersArtifactAcceptor
+                     ),
 
                   /*
                    * Client/Server calling of the Data Rights Manager is different.
@@ -920,13 +1030,14 @@ public class WordTemplateProcessorClient {
                                                  (
                                                     artifact,
                                                     wordMl,
+                                                    ArtifactAcceptor.ok(),
+                                                    dataRightContentBuilder,
+                                                    //client-only
                                                     outlineType,
-                                                    presentationType,
-                                                    dataRightContentBuilder
+                                                    presentationType
                                                  )
                            )
                );
-         //@formatter:on
 
          WordUiUtil.getStoredResultData();
       }
@@ -936,21 +1047,34 @@ public class WordTemplateProcessorClient {
 
       processedArtifactTracker.clear();
    }
+   //@formatter:on
 
-   private void processAttribute(Artifact artifact, PublishingAppender wordMl, AttributeOptions attributeOptions,
-      AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine,
-      String footer) {
+   //@formatter:off
+   private void
+      processAttribute
+         (
+            PublishingArtifact artifact,
+            PublishingAppender publishingAppender,
+            AttributeOptions   attributeOptions,
+            AttributeTypeToken attributeType,
+            boolean            allAttrs,
+            PresentationType   presentationType,
+            boolean            publishInLine,
+            String             footer,
+            IncludeBookmark    includeBookmark
+         ) {
+
+      final var nativeArtifact = ((WordRenderArtifactWrapperClientImpl) artifact).getArtifact();
 
       renderer.setRendererOption(RendererOption.ALL_ATTRIBUTES, allAttrs);
 
       // This is for SRS Publishing. Do not publish unspecified attributes
 
-      //@formatter:off
       if(
              !allAttrs
           &&  attributeType.matches( CoreAttributeTypes.Partition, CoreAttributeTypes.SeverityCategory )
           &&  artifact.isAttributeTypeValid( CoreAttributeTypes.Partition )
-          &&  artifact
+          &&  nativeArtifact
                  .getAttributes( CoreAttributeTypes.Partition )
                  .stream()
                  .anyMatch
@@ -961,17 +1085,13 @@ public class WordTemplateProcessorClient {
         ) {
          return;
       }
-      //@formatter:on
 
-      boolean templateOnly = (boolean) renderer.getRendererOptionValue(RendererOption.TEMPLATE_ONLY);
-
-      if (templateOnly && attributeType.notEqual(CoreAttributeTypes.WordTemplateContent)) {
+      if (this.contentAttributeOnly && attributeType.notEqual(CoreAttributeTypes.WordTemplateContent)) {
          return;
       }
 
-      var attributes = artifact.getAttributes(attributeType);
+      var attributes = nativeArtifact.getAttributes(attributeType);
 
-      //@formatter:off
       if (
                   !attributes.isEmpty()
 
@@ -1006,7 +1126,7 @@ public class WordTemplateProcessorClient {
                      * If there are no attribute values of the attribute type for the artifact, skip it
                      */
 
-                 ||  artifact.getAttributes( attributeType ).isEmpty()
+                 ||  nativeArtifact.getAttributes( attributeType ).isEmpty()
                )
          )
       {
@@ -1022,23 +1142,24 @@ public class WordTemplateProcessorClient {
             (
                new WordRenderArtifactWrapperClientImpl( artifact ),
                this.renderer.getRendererOptionValue(RendererOption.VIEW),
-               wordMl,
+               publishingAppender,
                this.renderer.getRendererOptionsView(),
                presentationType,
                attributeOptions.getLabel(),
                footer,
                this.permanentLinkUrl,
                false,
+               includeBookmark,
                artifact.isHistorical()
-                  ? artifact.getTransaction()
+                  ? nativeArtifact.getTransaction()
                   : TransactionToken.SENTINEL,
                unknownGuids,
                ( wordTemplateContentData ) -> PublishingRequestHandler.renderWordTemplateContent( wordTemplateContentData ),
-               ( exception ) -> WordUiUtil.displayErrorMessage( artifact, exception.toString() )
+               ( exception ) -> WordUiUtil.displayErrorMessage( nativeArtifact, exception.toString() )
             );
 
          if( !unknownGuids.isEmpty() ) {
-            WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
+            WordUiUtil.displayUnknownGuids( nativeArtifact, unknownGuids);
          }
 
       } else {
@@ -1051,78 +1172,22 @@ public class WordTemplateProcessorClient {
                  attributeType,
                  this.renderer::renderRelationOrder,
                  new WordRenderArtifactWrapperClientImpl( artifact ),
-                 wordMl,
+                 publishingAppender,
                  attributeOptions.getLabel(),
                  attributeOptions.getFormat()
                );
          }
 
       }
-      //@formatter:on
 
    }
-
-   private boolean processOutlining(Artifact artifact, PublishingAppender wordMl, String outlineType) {
-
-      boolean startedSection = false;
-
-      boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
-      boolean templateOnly = (boolean) renderer.getRendererOptionValue(RendererOption.TEMPLATE_ONLY);
-      boolean headerOrFolder =
-         artifact.isOfType(CoreArtifactTypes.HeadingMsWord) || artifact.isOfType(CoreArtifactTypes.Folder);
-      boolean includeOutline = templateOnly ? false : (outlineOnlyHeadersFolders ? headerOrFolder : true);
-
-      boolean includeUUIDs = (boolean) renderer.getRendererOptionValue(RendererOption.INCLUDE_UUIDS);
-
-      if (outlining && includeOutline) {
-         String headingText = artifact.getSoleAttributeValue(headingAttributeTypeToken, "");
-
-         if (includeUUIDs) {
-            String UUIDtext = String.format(" <UUID = %s>", artifact.getIdString());
-            headingText = headingText.concat(UUIDtext);
-         }
-
-         Boolean mergeTag = (Boolean) renderer.getRendererOptionValue(RendererOption.ADD_MERGE_TAG);
-         if (mergeTag != null && mergeTag) {
-            headingText = headingText.concat(" [MERGED]");
-         }
-
-         if (!publishInline) {
-            if (overrideOutlineNumber) {
-               paragraphNumber = startOutlineSubSectionOverride(wordMl, artifact, headingText);
-            } else {
-               paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
-            }
-            startedSection = true;
-         }
-
-         if (paragraphNumber == null) {
-            paragraphNumber = wordMl.startOutlineSubSection();
-            startedSection = true;
-         }
-
-         if ((boolean) renderer.getRendererOptionValue(RendererOption.UPDATE_PARAGRAPH_NUMBERS) && !publishInline) {
-            if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
-               artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
-
-               SkynetTransaction transaction =
-                  (SkynetTransaction) renderer.getRendererOptionValue(RendererOption.TRANSACTION_OPTION);
-               if (transaction != null) {
-                  artifact.persist(transaction);
-               } else {
-                  artifact.persist(getClass().getSimpleName());
-               }
-            }
-         }
-      }
-
-      return startedSection;
-   }
+   //@formatter:on
 
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
     */
+
    public void publishWithNestedTemplates(List<Artifact> artifacts) {
 
       if (Objects.isNull(this.secondaryPublishingTemplate)) {
@@ -1147,8 +1212,6 @@ public class WordTemplateProcessorClient {
          }
       }
 
-      getExcludeArtifactTypes();
-
       //@formatter:off
       var artifactFilenameSegment =
          Objects.nonNull( artifacts ) && ( artifacts.size() > 0 )
@@ -1162,7 +1225,7 @@ public class WordTemplateProcessorClient {
             (
                renderer,
                PresentationType.PREVIEW,
-               RendererUtil.makeRenderPath( COMMON.getShortName() ),
+               RendererUtil.makeRenderPath( CoreBranches.COMMON.getShortName() ),
                "xml",
                artifactFilenameSegment
             )
@@ -1178,7 +1241,6 @@ public class WordTemplateProcessorClient {
                               this.publishingTemplate,
                               null,
                               iFile.getParent(),
-                              this.outlineNumber,
                               PresentationType.PREVIEW
                            )
                         .applyTemplate
@@ -1218,93 +1280,62 @@ public class WordTemplateProcessorClient {
 
    }
 
-   private boolean renderArtifact(Artifact artifact, PresentationType presentationType, PublishingAppender wordMl,
-      String outlineType, DataRightContentBuilder dataRightContentBuilder) {
+   protected CharSequence headingTextProcessor(CharSequence headingText, PublishingArtifact artifact) {
 
-      boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
+      var includeUUIDs = renderer.isRendererOptionSetAndTrue(RendererOption.INCLUDE_UUIDS);
+      var mergeTag = renderer.isRendererOptionSetAndTrue(RendererOption.ADD_MERGE_TAG);
 
-      var startedSection = this.processOutlining(artifact, wordMl, outlineType);
-
-      String footer = "";
-      if (!this.templateFooter) {
-         var orientation = WordRenderUtil.getPageOrientation(new WordRenderArtifactWrapperClientImpl(artifact));
-         footer = dataRightContentBuilder.getContent(artifact, orientation);
+      if (!includeUUIDs && !mergeTag) {
+         return headingText;
       }
 
-      final var finalFooter = footer;
+      var stringBuilder = new StringBuilder(headingText.length() + 256).append(headingText);
 
-      /*
-       * Add metadata attributes to the Word ML output
-       */
+      if (includeUUIDs) {
 
-      //@formatter:off
-      WordRenderUtil.processMetadataOptions
-         (
-            this.formatIndicator,
-            this.primaryPublishingTemplate.getPublishOptions().getMetadataOptions(),
-            this.applicabilityTokens,
-            new WordRenderArtifactWrapperClientImpl( artifact ),
-            wordMl
-         );
-      //@formatter:on
+         /*
+          * Add UUID
+          */
 
-      /*
-       * Add attributes and the main artifact content to the Word ML output
-       */
+         stringBuilder.append(" <UUID = ").append(artifact.getIdString()).append(">");
+      }
 
-      //@formatter:off
-      WordRenderUtil.processAttributes
-         (
-            this.formatIndicator,
-            this.attributeOptionsList,
-            ( lAttributeOptions, lAttributeType, lAllAttributes ) ->
-               this.processAttribute
-                  (
-                     artifact,
-                     wordMl,
-                     lAttributeOptions,
-                     lAttributeType,
-                     lAllAttributes,
-                     presentationType,
-                     publishInline,
-                     finalFooter
-                  ),
-            ( attributeName ) -> AttributeTypeManager.getType( attributeName ),
-            () -> RendererManager.getAttributeTypeOrderList( artifact ),
-            new WordRenderArtifactWrapperClientImpl( artifact ),
-            this.headingAttributeTypeToken,
-            this.renderer.isRendererOptionSetAndTrue(RendererOption.ALL_ATTRIBUTES),
-            this.outlining
-         );
+      if (mergeTag) {
 
-      //@formatter:on
+         /*
+          * Add Merge Tag
+          */
 
-      return startedSection;
+         stringBuilder.append(" [MERGED]");
+      }
+
+      return stringBuilder;
+
    }
 
-   public void setExcludedArtifactTypeForTest(List<ArtifactTypeToken> excludeTokens) {
-      excludeArtifactTypes.clear();
-      for (ArtifactTypeToken token : excludeTokens) {
-         excludeArtifactTypes.add(token);
-      }
+   void nonTemplateArtifactHandler(PublishingArtifact publishingArtifact) {
+      var artifact = ((WordRenderArtifactWrapperClientImpl) publishingArtifact).getArtifact();
+      this.nonTemplateArtifacts.add(artifact);
    }
 
-   private CharSequence startOutlineSubSectionOverride(PublishingAppender wordMl, Artifact artifact,
-      String headingText) {
-      String paragraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
-      if (paragraphNumber.isEmpty()) {
-         ArtifactHierarchyComparator comparator = new ArtifactHierarchyComparator();
-         paragraphNumber = comparator.getHierarchyPosition(artifact);
+   protected void paragraphNumberUpdater(String paragraphNumber, PublishingArtifact artifact) {
+      if (paragraphNumber == null) {
+         return;
       }
-      int outlineLevel = 1;
-      for (int i = 0; i < paragraphNumber.length(); i++) {
-         char charAt = paragraphNumber.charAt(i);
-         if (charAt == '.') {
-            outlineLevel++;
+      var localArtifact = ((WordRenderArtifactWrapperClientImpl) artifact).getArtifact();
+      if ((boolean) renderer.getRendererOptionValue(RendererOption.UPDATE_PARAGRAPH_NUMBERS)) {
+         if (localArtifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+            localArtifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
+
+            SkynetTransaction transaction =
+               (SkynetTransaction) renderer.getRendererOptionValue(RendererOption.TRANSACTION_OPTION);
+            if (transaction != null) {
+               localArtifact.persist(transaction);
+            } else {
+               localArtifact.persist(getClass().getSimpleName());
+            }
          }
       }
-      wordMl.startOutlineSubSection("Heading", outlineLevel, paragraphNumber, "Times New Roman", headingText);
-
-      return paragraphNumber;
    }
+
 }

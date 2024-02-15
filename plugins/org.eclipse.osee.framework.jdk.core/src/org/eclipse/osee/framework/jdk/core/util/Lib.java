@@ -238,31 +238,27 @@ public final class Lib {
       return stringWriter.toString();
    }
 
-   @SuppressWarnings("resource")
    public static void copyFile(File source, File destination) throws IOException {
-      final FileChannel in = new FileInputStream(source).getChannel();
-      try {
-         final FileChannel out;
+
+      try (final var fileInputStream = new FileInputStream(source)) {
+         final FileChannel in = fileInputStream.getChannel();
+         final FileOutputStream fileOutputStream;
          if (destination.isDirectory()) {
-            out = new FileOutputStream(new File(destination, source.getName())).getChannel();
+            fileOutputStream = new FileOutputStream(new File(destination, source.getName()));
          } else {
             if (destination.exists()) {
                destination.delete(); // to work around some file permission
             }
             // problems
-            out = new FileOutputStream(destination).getChannel();
+            fileOutputStream = new FileOutputStream(destination);
          }
-         try {
+         try (final var out = fileOutputStream.getChannel()) {
             long position = 0;
             long size = in.size();
             while (position < size) {
                position += in.transferTo(position, size, out);
             }
-         } finally {
-            Lib.close(out);
          }
-      } finally {
-         Lib.close(in);
       }
    }
 

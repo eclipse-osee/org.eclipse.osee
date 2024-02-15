@@ -50,15 +50,14 @@ public class BasicRelationshipSpecificationRecord implements RelationshipSpecifi
     * entry.
     */
 
-   public BasicRelationshipSpecificationRecord(@NonNull RelationTypeToken relationTypeToken, @NonNull List<@NonNull Integer> targetArtifactSpecificationRecordIdentifiers) {
+   public BasicRelationshipSpecificationRecord(@NonNull RelationTypeToken relationTypeToken,
+      @NonNull List<@NonNull Integer> targetArtifactSpecificationRecordIdentifiers) {
 
       //@formatter:off
       this.relationTypeToken =
          Conditions.requireNonNull
             (
                relationTypeToken,
-               "BasicRelationshipSpecificationRecord",
-               "new",
                "relationTypeToken"
             );
       //@formatter:on
@@ -69,8 +68,6 @@ public class BasicRelationshipSpecificationRecord implements RelationshipSpecifi
             (
                targetArtifactSpecificationRecordIdentifiers,
                ValueType.PARAMETER,
-               "BasicRelationshipSpecificationRecord",
-               "new",
                "targetArtifactSpecificationRecordIdentifiers",
                "cannot be null",
                Objects::isNull,

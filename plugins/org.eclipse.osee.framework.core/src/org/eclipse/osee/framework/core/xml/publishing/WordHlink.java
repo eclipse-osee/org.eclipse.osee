@@ -34,7 +34,7 @@ public class WordHlink extends AbstractElement {
     */
 
    public WordHlink(WordParagraph wordParagraph, Element wordHlinkElement) {
-      super(wordParagraph, wordHlinkElement, WordXmlTag.HLINK);
+      super(wordParagraph, wordHlinkElement, WordMlTag.HLINK);
    }
 
    /**

@@ -34,7 +34,7 @@ public class WordFieldCharacter extends AbstractElement {
     */
 
    public WordFieldCharacter(WordRun parent, Element wordFieldCharacterElement) {
-      super(parent, wordFieldCharacterElement, WordXmlTag.FIELD_CHARACTER);
+      super(parent, wordFieldCharacterElement, WordMlTag.FIELD_CHARACTER);
    }
 
    /**

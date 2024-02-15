@@ -18,29 +18,26 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A package prive super class encapsulating the parent and XML Element for part of a Word ML document.
+ * A super class encapsulating the parent and XML Element for part of a Word ML document.
  *
  * @author Loren K. Ashley
  */
 
-abstract class AbstractElement implements WordElement {
+public abstract class AbstractElement implements WordElement {
 
    /**
     * A {@link Map} for storing hierarchical children by type. Children maybe stored as {@link AbstractElement} objects
     * or as {@link AbstractElementList} objects.
     */
 
-   private final Map<Class<?>, Object> childMap;
-
-   /**
-    * Initially the list will be open. Once closed and attempts to add more children will result in an exception.
-    */
-
-   private boolean closed;
+   private final Map<Pair<Class<?>, Class<?>>, Object> childMap;
 
    /**
     * The XML DOM {@link Element} represented.
@@ -70,7 +67,7 @@ abstract class AbstractElement implements WordElement {
     * The Word ML XML tag for this element.
     */
 
-   private final WordXmlTag wordXmlTag;
+   private final XmlTagSpecification wordXmlTag;
 
    /**
     * Creates a new {@link AbstractElement}.
@@ -82,12 +79,11 @@ abstract class AbstractElement implements WordElement {
     * @throw NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   AbstractElement(WordElement parent, Element element, WordXmlTag wordXmlTag) {
+   AbstractElement(WordElement parent, Element element, XmlTagSpecification wordXmlTag) {
       this.parent = Objects.requireNonNull(parent);
       this.element = Objects.requireNonNull(element);
       this.wordXmlTag = Objects.requireNonNull(wordXmlTag);
       this.childMap = new HashMap<>();
-      this.closed = false;
       this.isLeaf = true;
       this.isRoot = Objects.isNull(this.parent);
    }
@@ -100,30 +96,13 @@ abstract class AbstractElement implements WordElement {
     * @throw NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   AbstractElement(Element element, WordXmlTag wordXmlTag) {
+   AbstractElement(Element element, XmlTagSpecification wordXmlTag) {
       this.parent = null;
       this.element = Objects.requireNonNull(element);
       this.wordXmlTag = Objects.requireNonNull(wordXmlTag);
       this.childMap = new HashMap<>();
-      this.closed = false;
       this.isLeaf = true;
       this.isRoot = Objects.isNull(this.parent);
-   }
-
-   /**
-    * Closes the {@link AbstractElement} to prevent any further modifications.
-    *
-    * @apiNote This method is package private. Sub-classes should only expose type specific hierarchy building methods.
-    * @throws IllegalStateException when the list has already been closed.
-    */
-
-   void close() {
-
-      if (this.closed) {
-         throw new IllegalStateException("AbstractElement::close, the Object has already been closed.");
-      }
-
-      this.closed = true;
    }
 
    /**
@@ -131,10 +110,10 @@ abstract class AbstractElement implements WordElement {
     */
 
    @Override
-   public <C> Optional<C> getChild(Class<C> childClass) {
+   public <C> Optional<C> getChild(Pair<Class<?>, Class<?>> childKey) {
 
       @SuppressWarnings("unchecked")
-      var child = (C) this.childMap.get(childClass);
+      var child = (C) this.childMap.get(childKey);
 
       return Optional.ofNullable(child);
    }
@@ -184,7 +163,7 @@ abstract class AbstractElement implements WordElement {
     */
 
    public String getTag() {
-      return this.wordXmlTag.getTagName();
+      return this.wordXmlTag.getFullname();
    };
 
    /**
@@ -206,13 +185,13 @@ abstract class AbstractElement implements WordElement {
     */
 
    @Override
-   public Optional<String> getAttribute(WordXmlAttribute wordXmlAttribute) {
+   public Optional<String> getAttribute(XmlAttributeSpecification wordXmlAttribute) {
 
       if (!this.wordXmlTag.isValidAttribute(wordXmlAttribute)) {
          return Optional.empty();
       }
 
-      var attributeNode = this.element.getAttributeNode(wordXmlAttribute.getName());
+      var attributeNode = this.element.getAttributeNode(wordXmlAttribute.getFullname());
 
       if (Objects.isNull(attributeNode)) {
          return Optional.empty();
@@ -253,22 +232,9 @@ abstract class AbstractElement implements WordElement {
     * been set.
     */
 
-   <C> void setChild(C child) {
+   <C> void setChild(@NonNull C child) {
 
-      if (this.closed) {
-         //@formatter:off
-         throw
-            new IllegalStateException
-                   (
-                      new StringBuilder( 1024 )
-                             .append( "AbstractElement::setChild, cannot add childern after Object has been closed." ).append( "\n" )
-                             .append( "   Child Class: " ).append( child.getClass().getName() ).append( "\n" )
-                             .toString()
-                   );
-         //@formatter:off
-      }
-
-      Objects.requireNonNull(child, "AbstractElementWithChildern::setChild, the parameter \"child\" cannot be null.");
+      Conditions.requireNonNull(child, "child");
 
       if (!(child instanceof AbstractElement) && !(child instanceof AbstractElementList)) {
          //@formatter:off
@@ -284,11 +250,24 @@ abstract class AbstractElement implements WordElement {
          //@formatter:on
       }
 
+      Pair<Class<?>, Class<?>> childKey;
+
+      if (child instanceof AbstractElementList) {
+
+         childKey =
+            Pair.createNullableImmutable(child.getClass(), ((AbstractElementList) child).getParent().getClass());
+
+      } else {
+
+         childKey = Pair.createNullableImmutable(child.getClass(), null);
+
+      }
+
       /*
        * Assume the map does not already have an entry for the child class
        */
 
-      var priorChild = this.childMap.put(child.getClass(), child);
+      var priorChild = this.childMap.put(childKey, child);
       this.isLeaf = false;
 
       if (Objects.nonNull(priorChild)) {
@@ -297,7 +276,7 @@ abstract class AbstractElement implements WordElement {
           * Ooops, an entry was already preset. Restore the prior map entry and throw an exception.
           */
 
-         this.childMap.put(child.getClass(), priorChild);
+         this.childMap.put(childKey, priorChild);
          //@formatter:off
          throw
             new IllegalStateException

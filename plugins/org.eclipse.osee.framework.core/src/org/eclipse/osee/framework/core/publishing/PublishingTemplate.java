@@ -93,11 +93,11 @@ public class PublishingTemplate implements ToMessage {
     * <code>publishingOptions</code> are <code>null</code>.
     */
 
-   public PublishingTemplate(@NonNull String identifier, @NonNull String name, @NonNull PublishOptions publishingOptions, @Nullable String templateContent) {
-      this.identifier = Conditions.requireNonNull(identifier, "PublishingTemplate", "new", "identifier");
-      this.name = Conditions.requireNonNull(name, "PublishingTemplate", "new", "name");
-      this.publishingOptions =
-         Conditions.requireNonNull(publishingOptions, "PublishingTemplate", "new", "publishingOptions");
+   public PublishingTemplate(@NonNull String identifier, @NonNull String name,
+      @NonNull PublishOptions publishingOptions, @Nullable String templateContent) {
+      this.identifier = Conditions.requireNonNull(identifier, "identifier");
+      this.name = Conditions.requireNonNull(name, "name");
+      this.publishingOptions = Conditions.requireNonNull(publishingOptions, "publishingOptions");
       this.templateContent = Objects.nonNull(templateContent) ? templateContent : Strings.EMPTY_STRING;
    }
 

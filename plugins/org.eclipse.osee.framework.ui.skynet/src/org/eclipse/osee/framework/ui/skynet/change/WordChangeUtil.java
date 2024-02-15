@@ -20,11 +20,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.ArtifactHierarchyComparator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactHierarchyComparator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -41,9 +42,10 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuis;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordRenderArtifactWrapperClientImpl;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 
 /**
@@ -54,7 +56,8 @@ import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
  */
 public final class WordChangeUtil {
 
-   public static void generateWordTemplateChangeReport(List<Change> changes, PresentationType presentationType, boolean addContextArtifacts, boolean wordChangesOnly) {
+   public static void generateWordTemplateChangeReport(List<Change> changes, PresentationType presentationType,
+      boolean addContextArtifacts, boolean wordChangesOnly) {
       try {
          if (!changes.isEmpty()) {
             Collection<Change> changesForReport = new ArrayList<>(changes.size());
@@ -160,25 +163,29 @@ public final class WordChangeUtil {
             }
          }
       }
+
       /**
        * Sort that list of artifacts that have been added by their location in the OSEE Hierarchy
        */
-      ArtifactHierarchyComparator comparator = new ArtifactHierarchyComparator();
-      artList.sort(comparator);
+
+      var publishingArtifacts = artList.stream().map( WordRenderArtifactWrapperClientImpl::new ).collect( Collectors.toList() );
+      var comparator = new ArtifactHierarchyComparator();
+      publishingArtifacts.sort(comparator);
 
       /**
        * Create a new list in sorted order of ArtifactDeltas. Either use the original deltas for those artifacts, or
        * create a new delta consisting of the same artifact for those that have not changed. After that, add in the
        * deleted artifact deltas.
        */
-      for (Artifact art : artList) {
-         ArtifactDelta delta = originalDeltaMap.get(art);
+
+      for (var art : publishingArtifacts) {
+         var delta = originalDeltaMap.get(art);
          if (delta == null) {
-            delta = new UnmodifiedArtifactDelta(art);
+            delta = new UnmodifiedArtifactDelta(art.getArtifact());
          }
          returnDeltas.add(delta);
       }
-      for (ArtifactDelta deletedDelta : deletedDeltas) {
+      for (var deletedDelta : deletedDeltas) {
          returnDeltas.add(deletedDelta);
       }
 

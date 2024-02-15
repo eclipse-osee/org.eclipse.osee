@@ -34,7 +34,7 @@ public class WordRunStyle extends AbstractElement {
     */
 
    public WordRunStyle(WordRun parent, Element wordRunStyleElement) {
-      super(parent, wordRunStyleElement, WordXmlTag.RUN_STYLE);
+      super(parent, wordRunStyleElement, WordMlTag.RUN_STYLE);
    }
 
    /**

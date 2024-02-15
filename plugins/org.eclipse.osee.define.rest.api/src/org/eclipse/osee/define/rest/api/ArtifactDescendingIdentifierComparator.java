@@ -14,30 +14,43 @@
 package org.eclipse.osee.define.rest.api;
 
 import java.util.Comparator;
-import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 
 /**
+ * A {@link Comparator} implementation for sorting artifacts in descending order by identifier.
+ *
  * @author Loren K. Ashley
  */
 
-public class ArtifactDescendingIdentifierComparator implements Comparator<PublishingArtifact> {
+public class ArtifactDescendingIdentifierComparator<T extends ArtifactReadable> implements Comparator<T> {
+
+   /**
+    * Creates a {@link Comparator} implementation for sorting artifacts in descending order by identifier. The
+    * implementation does not have any state and can be reused for other sorting operations.
+    */
 
    public ArtifactDescendingIdentifierComparator() {
 
    }
 
+   /**
+    * Sorts artifacts by identifier in descending order.
+    * <p>
+    * {@inheritDoc}
+    */
+
    @Override
-   public int compare(PublishingArtifact lhs, PublishingArtifact rhs) {
+   public int compare(T lhs, T rhs) {
       if (lhs == null && rhs == null) {
          return 0;
       } else if (lhs == null) {
-         return 1;
-      } else if (rhs == null) {
          return -1;
+      } else if (rhs == null) {
+         return 1;
       } else {
          long lhsId = lhs.getId();
          long rhsId = rhs.getId();
-         return lhsId == rhsId ? 0 : lhsId > rhsId ? 1 : -1;
+         return lhsId == rhsId ? 0 : lhsId > rhsId ? -1 : 1;
       }
 
    }

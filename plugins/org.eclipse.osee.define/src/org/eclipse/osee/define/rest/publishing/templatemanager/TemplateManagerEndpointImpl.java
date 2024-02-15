@@ -113,7 +113,8 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.templateManagerOperations.getPublishingTemplate(publishingTemplateRequest);
+         final var publishingTemplate = this.templateManagerOperations.getPublishingTemplate(publishingTemplateRequest);
+         return publishingTemplate;
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {

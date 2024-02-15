@@ -181,8 +181,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
             (
                identifier,
                ValueType.PARAMETER,
-               "BasicArtifactSpecificationRecord",
-               "new",
                "identifier",
                "cannot be null",
                Objects::isNull,
@@ -199,8 +197,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
             (
                hierarchicalParentIdentifier,
                ValueType.PARAMETER,
-               "BasicArtifactSpecificationRecord",
-               "new",
                "hierarchicalParentIdentifier",
                "cannot be null",
                Objects::isNull,
@@ -220,8 +216,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
                   Conditions.requireNonNull
                      (
                         artifactToken.getId(),
-                        "BasicArtifactSpecificationRecord",
-                        "new",
                         "artifactToken.getId()"
                      )
                );
@@ -233,8 +227,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
                (
                   artifactToken.getName(),
                   ValueType.PARAMETER,
-                  "BasicArtifactSpecificationRecord",
-                  "new",
                   "artifactToken.getName()",
                   "is valid and not blank",
                   Strings::isInvalidOrBlank,
@@ -247,8 +239,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
             Conditions.requireNonNull
             (
                artifactToken.getArtifactType(),
-               "BasicArtifactSpecificationRecord",
-               "new",
                "artifactToken.getArtifactType()"
             );
          //@formatter:on
@@ -263,8 +253,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
                (
                   name,
                   ValueType.PARAMETER,
-                  "BasicArtifactSpecificationRecord",
-                  "new",
                   "name",
                   "is valid and not blank",
                   Strings::isInvalidOrBlank,
@@ -277,8 +265,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
             Conditions.requireNonNull
                (
                   typeToken,
-                  "BasicArtifactSpecificationRecord",
-                  "new",
                   "typeToken"
                );
          //@formatter:on
@@ -290,8 +276,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
             (
                attributeSpecifications,
                ValueType.PARAMETER,
-               "BasicArtifactSpecificationRecord",
-               "new",
                "attributeSpecifications",
                "cannot be null",
                Objects::isNull,
@@ -308,8 +292,6 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
             (
                relationshipSpecifications,
                ValueType.PARAMETER,
-               "BasicArtifactSpecificationRecord",
-               "new",
                "relationshipSpecifications",
                "cannot be null",
                Objects::isNull,

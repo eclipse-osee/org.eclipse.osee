@@ -68,7 +68,6 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
       RendererMap.of
          (
             RendererOption.PUBLISH_IDENTIFIER, "Feature Impact Streaming Output",
-            RendererOption.EXCLUDE_FOLDERS,    false,
             RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
             RendererOption.MAX_OUTLINE_DEPTH,  9,
             RendererOption.PUBLISHING_FORMAT,  FormatIndicator.WORD_ML
@@ -82,7 +81,8 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
    private final List<ArtifactTypeToken> artTypes;
    private final List<AttributeTypeToken> attrTypes;
 
-   public FeatureImpactStreamingOutput(Branch branch, OrcsApi orcsApi, DefineOperations defineOperations, boolean publishUpdatedDocs, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
+   public FeatureImpactStreamingOutput(Branch branch, OrcsApi orcsApi, DefineOperations defineOperations,
+      boolean publishUpdatedDocs, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
       this.branchId = branch;
       this.orcsApi = orcsApi;
       this.publishingOperations = defineOperations.getPublisherOperations().getPublishingOperations();

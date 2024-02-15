@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -66,7 +67,7 @@ public final class Conditions {
                .append( predicateText )
                .append( " test." )
                .indentInc()
-               .segment( valueDescription, value )
+               .segmentIfNotNull( valueDescription, value )
                .indentDec();
             //@formatter:on
 
@@ -100,7 +101,7 @@ public final class Conditions {
                .append( predicateText )
                .append( " test." )
                .indentInc()
-               .segment( valueDescription, value )
+               .segmentIfNotNull( valueDescription, value )
                .indentDec();
             //@formatter:on
 
@@ -134,7 +135,7 @@ public final class Conditions {
                .append( predicateText )
                .append( " test." )
                .indentInc()
-               .segment( valueDescription, value )
+               .segmentIfNotNull( valueDescription, value )
                .indentDec();
             //@formatter:on
 
@@ -321,6 +322,52 @@ public final class Conditions {
 
    public static void assertFalse(boolean value, String message, Object... data) {
       assertTrue(!value, message, data);
+   }
+
+   public static <T> String assertMessage(ValueType valueType, T value, String valueDescription, String predicateText) {
+
+      var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
+      var className = stackFrame.getClassName();
+      var methodName = stackFrame.getMethodName();
+
+      //@formatter:off
+      return
+         valueType
+            .koPredicateMessage
+               (
+                  null,
+                  value,
+                  className,
+                  methodName,
+                  valueDescription,
+                  predicateText
+               )
+            .toString();
+      //@formatter:on
+
+   }
+
+   public static <T> String assertMessageNonNull(String valueDescription) {
+
+      var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
+      var className = stackFrame.getClassName();
+      var methodName = stackFrame.getMethodName();
+
+      //@formatter:off
+      return
+         ValueType.PARAMETER
+            .koPredicateMessage
+               (
+                  null,
+                  null,
+                  className,
+                  methodName,
+                  valueDescription,
+                  "not null"
+               )
+            .toString();
+      //@formatter:on
+
    }
 
    public static void assertNotEquals(int value1, int value2, String message) {
@@ -524,6 +571,27 @@ public final class Conditions {
       return (t) -> testCollectionMembers(t, elementPredicate);
    }
 
+   /**
+    * When the <code>supplier</code> is non-<code>null</code>, the <code>supplier</code> is used to obtain a value.
+    *
+    * @param <T> the return type of the supplier.
+    * @param supplier the {@link Supplier} to be used when non-<code>null</code>.
+    * @return when <code>supplier</code> is non-<code>null</code> the result of the <code>supplier</code>; otherwise,
+    * <code>null</code>.
+    */
+
+   public static <T, V> @Nullable T getWhenNonNull(@Nullable Supplier<@Nullable T> supplier) {
+
+      @Nullable
+      T result;
+      if (supplier != null) {
+         result = supplier.get();
+      } else {
+         result = null;
+      }
+      return result;
+   }
+
    public static <T> @NonNull T getNotNull(T obj, String message, Object... data) {
       if (obj == null) {
          throw new OseeArgumentException(message, data);
@@ -557,42 +625,22 @@ public final class Conditions {
       return false;
    }
 
-   public static <T> RuntimeException invalidCase(T value, String valueDescription,
-      Function<String, RuntimeException> exceptionFactory) {
-
-      var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
-      var className = stackFrame.getClassName();
-      var methodName = stackFrame.getMethodName();
-
-      //@formatter:off
-      var message =
-         Conditions.startTitle( null, className, methodName )
-            .append( "Unexpected switch case with parameter \"" )
-            .append( valueDescription )
-            .append( "\"." )
-            .indentInc()
-            .segment( valueDescription, value )
-            .indentDec()
-            .toString();
-      //@formatter:on
-
-      return exceptionFactory.apply(message);
-   }
-
    /**
     * Generates an exception message for an unexpected switch case and throws the exception produced by the
     * <code>exceptionFactory</code>.
     *
     * @param <T> the type of value that is the switch parameter.
     * @param value the switch value.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @param exceptionFactory a {@link Function} that creates a {@link RuntimeException} with an error message.
     */
 
-   public static <T> RuntimeException invalidCase(T value, String className, String methodName, String valueDescription,
+   public static <T> RuntimeException invalidCase(T value, String valueDescription,
       Function<String, RuntimeException> exceptionFactory) {
+
+      var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
+      var className = stackFrame.getClassName();
+      var methodName = stackFrame.getMethodName();
 
       //@formatter:off
       var message =
@@ -648,14 +696,36 @@ public final class Conditions {
     * Method creates a short circuit logical OR {@link Predicate} implementation from two predicates.
     *
     * @param <T> The type to be tested.
-    * @param firstPredicate the first predicate to be evaluated.
+    * @param predicates the predicates to be evaluated.
     * @param secondPredicate the second predicate to be evaluated.
-    * @return the logic OR of the results from the predicates <code>firstPredicate</code> and
-    * <code>secondPredicate</code>.
+    * @return the logic OR of the results from the <code>predicates</code>.
     */
 
-   public static <T> Predicate<T> or(Predicate<T> firstPredicate, Predicate<T> secondPredicate) {
-      return (t) -> firstPredicate.test(t) || secondPredicate.test(t);
+   @SafeVarargs
+   public static <T> Predicate<T> or(Predicate<? super T>... predicates) {
+
+      //@formatter:off
+      return new Predicate<T>() {
+
+         @Override
+         public boolean test(T t) {
+
+               assert
+                       ( predicates != null )
+                    && ( predicates.length > 0 )
+                    && !Conditions.arrayContainsNull( predicates )
+                  : "Conditions::or, predicates array cannot be null, empty, or contain nulls.";
+
+               for( final var predicate : predicates ) {
+
+                  if( predicate.test(t) ) {
+                     return true;
+                  }
+               }
+
+               return false;
+         }
+      };
    }
 
    /**
@@ -680,8 +750,6 @@ public final class Conditions {
     * otherwise a new {@link Message} will be created.
     * @param value the value to be tested.
     * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @param predicateText a description of the test the value is expected to pass.
     * @param isKo the {@link Predicate} used to test the value for a failure condition.
@@ -709,14 +777,16 @@ public final class Conditions {
             @Nullable Message      message,
             @Nullable T            value,
             @NonNull  ValueType    valueType,
-            @NonNull  String       className,
-            @NonNull  String       methodName,
             @NonNull  String       valueDescription,
             @NonNull  String       predicateText,
             @NonNull  Predicate<T> isKo
          ) {
 
       if( isKo.test( value ) ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          message =
             valueType
@@ -747,8 +817,6 @@ public final class Conditions {
     * otherwise a new {@link Message} will be created.
     * @param value the value to be tested.
     * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @param predicateTextFirst a description of the first test the value is expected to pass.
     * @param isKoFirst the first {@link Predicate} used to test the value for a failure condition.
@@ -778,8 +846,6 @@ public final class Conditions {
             @Nullable Message      message,
             @Nullable T            value,
             @NonNull  ValueType    valueType,
-            @NonNull  String       className,
-            @NonNull  String       methodName,
             @NonNull  String       valueDescription,
             @NonNull  String       predicateTextFirst,
             @NonNull  Predicate<T> isKoFirst,
@@ -788,6 +854,10 @@ public final class Conditions {
          ) {
 
       if( isKoFirst.test( value ) ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          message =
             valueType
@@ -805,6 +875,10 @@ public final class Conditions {
       }
 
       if( isKoSecond.test( value ) ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          message =
             valueType
@@ -882,63 +956,6 @@ public final class Conditions {
    //@formatter:on
 
    /**
-    * Tests a value with <code>isKo</code> {@link Predicate}. When the {@link Predicate} returns <code>true</code> a
-    * {@link RuntimeException} generated by the <code>exceptionFactory</code> is thrown. The exception message is
-    * generated according to the <code>valueType</code> and the <code>predicateText</code>.
-    *
-    * @param <T> the java type of the value being tested.
-    * @param value the value to be tested.
-    * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
-    * @param valueDescription the parameter, member, or method name for the value being tested.
-    * @param predicateText a description of the test the value is expected to pass.
-    * @param isKo the {@link Predicate} used to test the value for a failure condition.
-    * @param exceptionFactory a {@link Function} that creates a {@link RuntimeException} with an error message.
-    * @return the provided <code>value</code>.
-    * @throws RuntimeException when the {@link Predicate} <code>isKo</code> returns <code>true</code> a
-    * {@link RuntimeException} created by the <code>exceptionFactory</code> is thrown.
-    */
-
-   //@formatter:off
-   public static <T> @Nullable T
-      require
-         (
-            @Nullable T                                  value,
-            @NonNull  ValueType                          valueType,
-            @NonNull  String                             className,
-            @NonNull  String                             methodName,
-            @NonNull  String                             valueDescription,
-            @NonNull  String                             predicateText,
-            @NonNull  Predicate<T>                       isKo,
-            @NonNull  Function<String, RuntimeException> exceptionFactory
-         ) {
-
-      if( isKo.test( value ) ) {
-
-         throw
-            exceptionFactory.apply
-               (
-                  valueType
-                     .koPredicateMessage
-                        (
-                           null,
-                           value,
-                           className,
-                           methodName,
-                           valueDescription,
-                           predicateText
-                        )
-                     .toString()
-               );
-
-      }
-
-      return value;
-   }
-   //@formatter:on
-
-   /**
     * Tests the <code>value</code> with the <code>isKoFirst</code> {@link Predicate} and if it returns
     * <code>false</code> the value is then tested with the <code>isKoSecond</code> {@link Predicate}. When the predicate
     * <code>isKoFirst</code> returns <code>true</code> a {@link RuntimeException} created with the
@@ -950,8 +967,6 @@ public final class Conditions {
     * @param <T> the java type of the value being tested.
     * @param value the value to be tested.
     * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @param predicateTextFirst a description of the first test the value is expected to pass.
     * @param isKo the first {@link Predicate} used to test the value for a failure condition.
@@ -976,8 +991,6 @@ public final class Conditions {
          (
             @Nullable T                                  value,
             @NonNull  ValueType                          valueType,
-            @NonNull  String                             className,
-            @NonNull  String                             methodName,
             @NonNull  String                             valueDescription,
             @NonNull  String                             predicateTextFirst,
             @NonNull  Predicate<T>                       isKoFirst,
@@ -988,6 +1001,10 @@ public final class Conditions {
          ) {
 
       if( isKoFirst.test( value ) ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          throw
             exceptionFactoryFirst.apply
@@ -1008,6 +1025,10 @@ public final class Conditions {
       }
 
       if( isKoSecond.test( value ) ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          throw
             exceptionFactorySecond.apply
@@ -1043,8 +1064,6 @@ public final class Conditions {
     * @param <T> the java type of the value being tested.
     * @param value the value to be tested.
     * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @param predicateTextFirst a description of the first test the value is expected to pass.
     * @param isKo the first {@link Predicate} used to test the value for a failure condition. predicate
@@ -1063,8 +1082,6 @@ public final class Conditions {
          (
             @Nullable T                                  value,
             @NonNull  ValueType                          valueType,
-            @NonNull  String                             className,
-            @NonNull  String                             methodName,
             @NonNull  String                             valueDescription,
             @NonNull  String                             predicateTextFirst,
             @NonNull  Predicate<T>                       isKoFirst,
@@ -1074,6 +1091,10 @@ public final class Conditions {
          ) {
 
       if( isKoFirst.test( value ) ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          throw
             exceptionFactory.apply
@@ -1094,6 +1115,10 @@ public final class Conditions {
       }
 
       if( isKoSecond.test( value ) ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          throw
             exceptionFactory.apply
@@ -1126,8 +1151,6 @@ public final class Conditions {
     * @param message when not <code>null</code> failure messages will be appended to the provided {@link Message};
     * otherwise a new {@link Message} will be created.
     * @param value the value to be tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @return the following:
     * <dl>
@@ -1152,12 +1175,14 @@ public final class Conditions {
          (
             @Nullable Message message,
             @Nullable T       value,
-            @NonNull  String  className,
-            @NonNull  String  methodName,
             @NonNull  String  valueDescription
          ) {
 
       if (Objects.isNull(value)) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          ValueType.PARAMETER
             .koPredicateMessage
@@ -1185,8 +1210,6 @@ public final class Conditions {
     * otherwise a new {@link Message} will be created.
     * @param value the value to be tested.
     * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @return the following:
     * <dl>
@@ -1212,12 +1235,14 @@ public final class Conditions {
             @Nullable Message   message,
             @Nullable T         value,
             @NonNull  ValueType valueType,
-            @NonNull  String    className,
-            @NonNull  String    methodName,
             @NonNull  String    valueDescription
          ) {
 
       if (Objects.isNull(value)) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          valueType
             .koPredicateMessage
@@ -1299,54 +1324,6 @@ public final class Conditions {
    //@formatter:on
 
    /**
-    * Tests that a value is non-<code>null</code>. When the value is <code>null</code> a {@link NullPointerException} is
-    * thrown. The exception message is generated according to the {@link ValueType}.
-    *
-    * @param <T> the java type of the value being tested.
-    * @param value the value to be tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
-    * @param valueDescription the parameter, member, or method name for the value being tested.
-    * @return the provided <code>value</code>.
-    * @throws NullPointerException when the {@link Predicate} <code>Objects::isNull</code> returns <code>true</code>.
-    * @deprecated
-    */
-
-   //@formatter:off
-   @Deprecated
-   public static <T> @NonNull T
-      requireNonNull
-         (
-            @Nullable T      value,
-            @NonNull  String className,
-            @NonNull  String methodName,
-            @NonNull  String valueDescription
-         ) {
-
-      if ( value == null ) {
-
-         throw
-            new NullPointerException
-                   (
-                      ValueType.PARAMETER
-                         .koPredicateMessage
-                            (
-                               null,
-                               value,
-                               className,
-                               methodName,
-                               valueDescription,
-                               "cannot be null"
-                            )
-                         .toString()
-                   );
-      }
-
-      return value;
-   }
-   //@formatter:on
-
-   /**
     * Tests a value with the {@link Predicate} <code>Objects::isNull</code>. When the {@link Predicate} returns
     * <code>true</code> a {@link NullPointerException} is thrown. The exception message is generated according to the
     * <code>valueType</code>.
@@ -1354,8 +1331,6 @@ public final class Conditions {
     * @param <T> the java type of the value being tested.
     * @param value the value to be tested.
     * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @return the provided <code>value</code>.
     * @throws NullPointerException when the {@link Predicate} <code>Objects::isNull</code> returns <code>true</code>.
@@ -1367,12 +1342,14 @@ public final class Conditions {
          (
             @Nullable T         value,
             @NonNull  ValueType valueType,
-            @NonNull  String    className,
-            @NonNull  String    methodName,
             @NonNull  String    valueDescription
          ) {
 
       if ( value == null ) {
+
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
 
          throw
             new NullPointerException
@@ -1389,6 +1366,52 @@ public final class Conditions {
                             )
                          .toString()
                    );
+
+      }
+
+      return value;
+   }
+   //@formatter:on
+
+   /**
+    * Tests that a class member has been set and throws an {@link IllegalStateException} when it is <code>null</code>.
+    *
+    * @param <T> the type of the value to be tested.
+    * @param value the value to be tested.
+    * @param valueDescription a description of the value being tested.
+    * @return the tested value.
+    * @throws IllegalStateException when the <code>value</code> is <code>null</code>.
+    */
+
+   //@formatter:off
+   public static <T> @Nullable T
+      requireMemberSet
+         (
+            @Nullable T      value,
+            @NonNull  String valueDescription
+         ) {
+
+      if( value == null ) {
+
+         var stackFrame = StackWalker.getInstance().walk( (s) -> s.skip(1).findFirst() ).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
+
+         throw
+            new IllegalStateException
+               (
+                  ValueType.MEMBER
+                     .koPredicateMessage
+                        (
+                           null,
+                           value,
+                           className,
+                           methodName,
+                           valueDescription,
+                           "has not been set"
+                        )
+                     .toString()
+               );
 
       }
 
@@ -1438,61 +1461,24 @@ public final class Conditions {
    /**
     * Tests a value with the {@link Predicate} <code>Objects::nonnNull</code>. When the {@link Predicate} returns
     * <code>true</code> a {@link IllegalStateException} is thrown. The exception message is generated according to the
-    * {@link ValueType#PARAMETER}.
-    *
-    * @param <T> the java type of the value being tested.
-    * @param value the value to be tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
-    * @param valueDescription the parameter, member, or method name for the value being tested.
-    * @return the provided <code>value</code>.
-    * @throws IllegalStateException when the {@link Predicate} <code>Objects::nonNull</code> returns <code>true</code>.
-    */
-
-   public static <T> T requireNull(T value, String className, String methodName, String valueDescription) {
-
-      if (Objects.nonNull(value)) {
-         //@formatter:off
-         throw
-            new IllegalStateException
-                   (
-                      ValueType.MEMBER
-                         .koPredicateMessage
-                            (
-                               null,
-                               value,
-                               className,
-                               methodName,
-                               valueDescription,
-                               "cannot be set"
-                            )
-                         .toString()
-                   );
-         //@formatter:on
-      }
-
-      return value;
-   }
-
-   /**
-    * Tests a value with the {@link Predicate} <code>Objects::nonnNull</code>. When the {@link Predicate} returns
-    * <code>true</code> a {@link IllegalStateException} is thrown. The exception message is generated according to the
     * <code>valueType</code>.
     *
     * @param <T> the java type of the value being tested.
     * @param value the value to be tested.
     * @param valueType the {@link ValueType} of the value being tested.
-    * @param className the name of the class the value is being tested in.
-    * @param methodName the name of the method the value is being tested in.
     * @param valueDescription the parameter, member, or method name for the value being tested.
     * @return the provided <code>value</code>.
     * @throws IllegalStateException when the {@link Predicate} <code>Objects::nonNull</code> returns <code>true</code>.
     */
 
-   public static <T> T requireNull(T value, ValueType valueType, String className, String methodName,
-      String valueDescription) {
+   public static <T> T requireNull(T value, ValueType valueType, String valueDescription) {
 
       if (Objects.nonNull(value)) {
+
+         var stackFrame = StackWalker.getInstance().walk((s) -> s.skip(1).findFirst()).get();
+         var className = stackFrame.getClassName();
+         var methodName = stackFrame.getMethodName();
+
          //@formatter:off
          throw
             new IllegalStateException

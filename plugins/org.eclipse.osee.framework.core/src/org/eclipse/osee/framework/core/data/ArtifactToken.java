@@ -15,12 +15,14 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.Objects;
 import java.util.logging.Level;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -88,6 +90,31 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
    public static @NonNull ArtifactToken valueOf(long id, String guid, String name, BranchId branch,
       ArtifactTypeToken artifactType) {
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
+   }
+
+   public static @NonNull ArtifactToken valueOf(@NonNull ArtifactReadable artifactReadable) {
+      //@formatter:off
+      assert
+           artifactReadable != null
+         : Conditions.assertMessageNonNull( "artifactReadable" );
+
+      var branch = artifactReadable.getBranch();
+      var viewId = branch.getViewId();
+      viewId = ( Objects.nonNull(viewId) && viewId.isValid() )
+                  ? ArtifactId.valueOf( viewId.getId() )
+                  : ArtifactId.SENTINEL;
+      var branchId = BranchId.create(branch.getId(),viewId);
+
+      return
+         new ArtifactTokenImpl
+                (
+                   artifactReadable.getId(),
+                   artifactReadable.getGuid(),
+                   artifactReadable.getName(),
+                   branchId,
+                   artifactReadable.getArtifactType()
+                );
+      //@formatter:on
    }
 
    public static class ArtifactTokenImpl extends NamedIdBase implements ArtifactToken {

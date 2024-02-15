@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.util.Optional;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.w3c.dom.Element;
 
 /**
@@ -23,6 +24,11 @@ import org.w3c.dom.Element;
  */
 
 public class WordTableColumn extends AbstractElement {
+
+   //@formatter:off
+   private static Pair<Class<?>,Class<?>> wordTextListWithParentWordTableColumnChildKey =
+      Pair.createNonNullImmutable( WordTextList.class, WordTableColumn.class );
+   //@formatter:on
 
    /**
     * Creates a new {@link WordTableColumn}.
@@ -34,7 +40,7 @@ public class WordTableColumn extends AbstractElement {
     */
 
    public WordTableColumn(WordTableRow wordTableRow, Element wordTableColumnElement) {
-      super(wordTableRow, wordTableColumnElement, WordXmlTag.TABLE_COLUMN);
+      super(wordTableRow, wordTableColumnElement, WordMlTag.TABLE_COLUMN);
    }
 
    /**
@@ -60,8 +66,8 @@ public class WordTableColumn extends AbstractElement {
     * @return a {@link WordTextList} of all the text elements contained in the table column.
     */
 
-   public Optional<WordTextList> getWordTextList() {
-      return this.getChild(WordTextList.class);
+   public Optional<WordTextList<WordTableColumn>> getWordTextList() {
+      return this.getChild(WordTableColumn.wordTextListWithParentWordTableColumnChildKey);
    }
 }
 

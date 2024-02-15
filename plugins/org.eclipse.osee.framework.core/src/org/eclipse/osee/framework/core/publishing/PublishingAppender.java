@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Interface for publishing format specific appender.
  *
@@ -164,8 +166,6 @@ public interface PublishingAppender {
 
    public void endListPresentation();
 
-   public void endOutlineSubSection();
-
    public PublishingAppender endParagraph();
 
    public void endParagraphPresentation();
@@ -188,13 +188,7 @@ public interface PublishingAppender {
 
    public void endText();
 
-   public boolean okToStartSubsection();
-
    public void resetListValue();
-
-   public void setMaxOutlineLevel(int maxOutlineLevel);
-
-   public void setNextParagraphNumberTo(String outlineNumber);
 
    public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering);
 
@@ -205,7 +199,8 @@ public interface PublishingAppender {
     * @param pageType - Set to landscape if needed
     */
 
-   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering, WordCoreUtil.pageType pageType);
+   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering,
+      WordCoreUtil.pageType pageType);
 
    /**
     * Sets the page layout to either portrait/landscape depending on the artifacts pageType attribute value. Note: This
@@ -221,11 +216,29 @@ public interface PublishingAppender {
 
    public void startListPresentation();
 
-   public CharSequence startOutlineSubSection();
+   /**
+    * Appends the heading for a new outlining sub-section.
+    * 
+    * @param bookmark a two element array with the opening an closing strings to book mark the heading.
+    * @param headingNumber the heading number.
+    * @param headingLevel the level of the heading.
+    * @param headingText the heading text.
+    * @param outlineType a type string specific to the publishing format for the heading type.
+    * @param font the font to use for the heading.
+    */
 
-   public void startOutlineSubSection(CharSequence style, int outlineLevel, CharSequence outlineNumber, CharSequence font, CharSequence headingText);
-
-   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, CharSequence outlineType);
+   //@formatter:off
+   public void
+      startOutlineSubSection
+         (
+            @Nullable String[]        bookmark,
+            @Nullable CharSequence    headingNumber,
+                      int             headingLevel,
+            @Nullable CharSequence    headingText,
+            @Nullable CharSequence    outlineType,
+            @Nullable CharSequence    font
+         );
+   //@formatter:on
 
    public PublishingAppender startParagraph();
 

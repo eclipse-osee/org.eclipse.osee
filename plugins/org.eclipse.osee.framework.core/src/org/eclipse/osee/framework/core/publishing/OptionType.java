@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactReadableDeserializer;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchIdDeserializer;
 import org.eclipse.osee.framework.core.renderer.RenderLocation;
@@ -39,6 +40,15 @@ import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
 public enum OptionType {
 
 //@formatter:off
+     AllowedOutlineTypes
+        (
+           AllowedOutlineTypes.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
+        ),
+
      Artifact
         (
            ArtifactReadable.class,
@@ -66,7 +76,25 @@ public enum OptionType {
            ArtifactTypeToken.class,
            IsCollection.YES,
            CanCopy.YES,
-           null,
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
+        ),
+
+     ArtifactTypeToken
+        (
+           ArtifactTypeToken.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
+        ),
+
+     AttributeTypeToken
+        (
+           AttributeTypeToken.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           NO_DESERIALIZER(),
            NO_DEFAULT_VALUE()
         ),
 
@@ -104,6 +132,15 @@ public enum OptionType {
            CanCopy.YES,
            new FormatIndicatorDeserializer(),
            org.eclipse.osee.framework.core.publishing.FormatIndicator.WORD_ML
+        ),
+
+     IncludeHeadings
+        (
+           IncludeHeadings.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           new IncludeHeadingsDeserializer(),
+           NO_DEFAULT_VALUE()
         ),
 
      Integer

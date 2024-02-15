@@ -21,7 +21,22 @@ import java.util.Optional;
  * @author Loren K. Ashley
  */
 
-public class WordTextList extends AbstractElementList<AbstractElement, WordText> {
+public class WordTextList<P extends AbstractElement> extends AbstractElementList<P, WordText> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordTextList} with a {@link WordParagraph} parent.
+    */
+
+   public static WordElementParserFactory<WordParagraph, WordTextList<WordParagraph>, WordText> wordParagraphParentFactory =
+      new WordElementParserFactory<>(WordTextList::new, WordText::new, WordMlTag.TEXT);
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordTextList} with a {@link WordTableColumn}
+    * parent.
+    */
+
+   public static WordElementParserFactory<WordTableColumn, WordTextList<WordTableColumn>, WordText> wordTableColumnParentFactory =
+      new WordElementParserFactory<>(WordTextList::new, WordText::new, WordMlTag.TEXT);
 
    /**
     * Creates a new open and empty list for {@link WordText}s.
@@ -32,21 +47,13 @@ public class WordTextList extends AbstractElementList<AbstractElement, WordText>
     * @throws NullPointerException when the parameter <code>wordTableColumn</code> is <code>null</code>.
     */
 
-   public WordTextList(WordTableColumn wordTableColumn) {
-      super(wordTableColumn);
+   public WordTextList(P parent) {
+      super(parent);
    }
 
-   /**
-    * Creates a new open and empty list for {@link WordText}s.
-    *
-    * @apiNote This method is package private. Objects are created by package public methods in the class
-    * {@link PublishingXmlUtils}.
-    * @param WordParagrap the {@link WordParagraph} containing the texts.
-    * @throws NullPointerException when the parameter <code>wordParagraph</code> is <code>null</code>.
-    */
-
-   public WordTextList(WordParagraph wordParagraph) {
-      super(wordParagraph);
+   public Optional<WordText> getChild(int i) {
+      Optional<WordText> result = super.get(i);
+      return result;
    }
 
    /**

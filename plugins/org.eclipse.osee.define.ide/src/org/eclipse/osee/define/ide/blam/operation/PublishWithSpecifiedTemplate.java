@@ -13,24 +13,6 @@
 
 package org.eclipse.osee.define.ide.blam.operation;
 
-import static org.eclipse.osee.framework.core.publishing.RendererOption.BRANCH;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.COMPARE_BRANCH;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.EXCLUDE_ARTIFACT_TYPES;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.EXCLUDE_FOLDERS;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.FIRST_TIME;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.INCLUDE_UUIDS;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.LINK_TYPE;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.MAINTAIN_ORDER;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.OVERRIDE_DATA_RIGHTS;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.PROGRESS_MONITOR;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.PUBLISH_DIFF;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.PUBLISH_EMPTY_HEADERS;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.RECURSE;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.SKIP_ERRORS;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.TRANSACTION_OPTION;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.USE_TEMPLATE_ONCE;
-import static org.eclipse.osee.framework.core.publishing.RendererOption.VIEW;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -46,9 +28,12 @@ import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemp
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
+import org.eclipse.osee.framework.core.publishing.PublishIoException;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
@@ -62,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -251,7 +237,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
          RendererOption.USE_PARAGRAPH_NUMBERS.getKey()));
       builder.append(String.format("<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"%s\" />",
-         RendererOption.EXCLUDE_ARTIFACT_TYPES.getKey()));
+         RendererOption.OUTLINING_OPTION_OVERRIDE_EXCLUDE_ARTIFACT_TYPES.getKey()));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
       builder.append(publishingTemplateSafeNameCommaList);
@@ -397,25 +383,25 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
        * Inlcude UUIDs
        */
 
-      var includeUuids = variableMap.getBoolean(INCLUDE_UUIDS.getKey());
+      var includeUuids = variableMap.getBoolean(RendererOption.INCLUDE_UUIDS.getKey());
 
       /*
        * Update Paragraph Numbers
        */
 
-      var updateParagraphNumbers = variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS.getKey());
+      var updateParagraphNumbers = variableMap.getBoolean(RendererOption.UPDATE_PARAGRAPH_NUMBERS.getKey());
 
       /*
        * Publish Diff
        */
 
-      var publishDiff = variableMap.getValue(PUBLISH_DIFF.getKey());
+      var publishDiff = variableMap.getValue(RendererOption.PUBLISH_DIFF.getKey());
 
       /*
        * Override Data Rights
        */
 
-      var overrideDataRights = variableMap.getBoolean(OVERRIDE_DATA_RIGHTS.getKey());
+      var overrideDataRights = variableMap.getBoolean(RendererOption.OVERRIDE_DATA_RIGHTS.getKey());
 
       var classification = variableMap.getString(DATA_RIGHTS);
 
@@ -427,44 +413,44 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
        * Exclude Artifact Types List
        */
 
-      var excludeArtifactTypesList = variableMap.getArtifactTypes(EXCLUDE_ARTIFACT_TYPES.getKey());
+      var excludeArtifactTypesList =
+         variableMap.getArtifactTypes(RendererOption.OUTLINING_OPTION_OVERRIDE_EXCLUDE_ARTIFACT_TYPES.getKey());
 
       //@formatter:off
       RendererMap rendererOptionsMap =
          new EnumRendererMap
             (
-              BRANCH,                   branchId,
-              VIEW,                     viewId,
-              COMPARE_BRANCH,           wasBranchId,
-              TRANSACTION_OPTION,       transaction,
-              LINK_TYPE,                linkType,
-              INCLUDE_UUIDS,            includeUuids,
-              UPDATE_PARAGRAPH_NUMBERS, updateParagraphNumbers,
-              PUBLISH_DIFF,             publishDiff,
-              SKIP_ERRORS,              true,
-              EXCLUDE_FOLDERS,          true,
-              RECURSE,                  true,
-              MAINTAIN_ORDER,           true,
-              USE_TEMPLATE_ONCE,        true,
-              FIRST_TIME,               true,
-              PUBLISH_EMPTY_HEADERS,    false
+              RendererOption.BRANCH,                                           branchId,
+              RendererOption.VIEW,                                             viewId,
+              RendererOption.COMPARE_BRANCH,                                   wasBranchId,
+              RendererOption.TRANSACTION_OPTION,                               transaction,
+              RendererOption.LINK_TYPE,                                        linkType,
+              RendererOption.INCLUDE_UUIDS,                                    includeUuids,
+              RendererOption.UPDATE_PARAGRAPH_NUMBERS,                         updateParagraphNumbers,
+              RendererOption.PUBLISH_DIFF,                                     publishDiff,
+              RendererOption.SKIP_ERRORS,                                      true,
+              RendererOption.OUTLINING_OPTION_OVERRIDE_EXCLUDE_ARTIFACT_TYPES, List.of( CoreArtifactTypes.Folder ),
+              RendererOption.MAINTAIN_ORDER,                                   true,
+              RendererOption.USE_TEMPLATE_ONCE,                                true,
+              RendererOption.FIRST_TIME,                                       true,
+              RendererOption.OUTLINING_OPTION_OVERRIDE_INCLUDE_HEADINGS,       IncludeHeadings.ONLY_WITH_NON_HEADING_DESCENDANTS
             );
 
       if( Objects.nonNull( excludeArtifactTypesList ) && !excludeArtifactTypesList.isEmpty() ) {
-         rendererOptionsMap.setRendererOption(EXCLUDE_ARTIFACT_TYPES, excludeArtifactTypesList);
+         rendererOptionsMap.setRendererOption(RendererOption.OUTLINING_OPTION_OVERRIDE_EXCLUDE_ARTIFACT_TYPES, excludeArtifactTypesList);
       }
 
       if( Objects.nonNull( monitor ) ) {
-         rendererOptionsMap.setRendererOption( PROGRESS_MONITOR, monitor );
+         rendererOptionsMap.setRendererOption( RendererOption.PROGRESS_MONITOR, monitor );
       }
 
       if( overrideDataRights ) {
-         rendererOptionsMap.setRendererOption( OVERRIDE_DATA_RIGHTS, classification );
+         rendererOptionsMap.setRendererOption( RendererOption.OVERRIDE_DATA_RIGHTS, classification );
       }
 
       WordTemplateRenderer renderer = new WordTemplateRenderer(rendererOptionsMap);
 
-      Boolean isDiff = (Boolean) rendererOptionsMap.getRendererOptionValue(PUBLISH_DIFF);
+      Boolean isDiff = (Boolean) rendererOptionsMap.getRendererOptionValue(RendererOption.PUBLISH_DIFF);
 
       final AtomicInteger toProcessSize = new AtomicInteger(0);
       if (isDiff) {
@@ -495,20 +481,77 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       if (result.get()) {
 
-         renderer.publish(primaryPublishingTemplate, secondaryPublishingTemplate, artifacts);
+         try {
 
-         if( Objects.nonNull(transaction) ) {
-            transaction.execute();
-         }
+            renderer.publish(primaryPublishingTemplate, secondaryPublishingTemplate, artifacts);
 
-         if( Objects.nonNull(monitor) ) {
-            monitor.done();
+            if( Objects.nonNull(transaction) ) {
+               transaction.execute();
+            }
+
+         } catch( PublishIoException pie ) {
+
+            //@formatter:off
+            final var message =
+               new Message()
+                      .title( pie.getMessage() )
+                      .indentInc()
+                      .segment( "File", pie.getFilePath() )
+                      .indentDec()
+                      .title( "Ensure the file is not open in Word." )
+                      .toString();
+
+            final var longMessage =
+               new Message()
+                      .title( pie.getMessage() )
+                      .indentInc()
+                      .reasonFollowsWithTrace( pie )
+                      .toString();
+
+            AWorkbench.popup
+               (
+                  AWorkbench.MessageType.Error,
+                  "Publish With Specified Template Error",
+                  message,
+                  longMessage,
+                  null, /* button actions */
+                  AWorkbench.SCROLLING_TEXT_BOX
+               );
+            //@formatter:on
+
+         } catch (Exception e) {
+
+            //@formatter:off
+            final var message =
+               new Message()
+                      .title( "Publish Failed" )
+                      .reasonFollowsWithTrace( e )
+                      .toString();
+
+            AWorkbench.popup
+               (
+                  AWorkbench.MessageType.Error,
+                  "Publish With Specified Template Error",
+                  "Publish Failed",
+                  message,
+                  null, /* button actions */
+                  AWorkbench.SCROLLING_TEXT_BOX
+               );
+            //@formatter:on
+
+         } finally {
+
+            if (Objects.nonNull(monitor)) {
+               monitor.done();
+            }
+
          }
       }
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(RendererOption.WAS_BRANCH.getKey())) {
          branchWidget = (XBranchSelectWidget) xWidget;

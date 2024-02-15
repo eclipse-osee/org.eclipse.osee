@@ -216,7 +216,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-   public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers) {
+   public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification,
+      List<ArtifactId> artifactIdentifiers) {
 
       Message message = null;
 
@@ -227,13 +228,9 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
                message,
                branchIdentifier,
                ValueType.PARAMETER,
-               "DataRightsOperationsImpl",
-               "getDataRights",
-               "branch",
-               "cannot be null",
-               Objects::isNull,
-               "branch identifier is non-negative",
-               (p) -> p.getId() < 0L
+               "branchIdentifier",
+               "cannot be null or negative",
+               Conditions.or( Objects::isNull, (p) -> p.getId() < 0L )
             );
 
       message =
@@ -241,8 +238,6 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             (
                message,
                overrideClassification,
-               "DataRightsOperationsImpl",
-               "getDataRights",
                "overrideClassification"
             );
 
@@ -252,15 +247,15 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
                message,
                artifactIdentifiers,
                ValueType.PARAMETER,
-               "DataRightsOperationsImpl",
-               "getDataRights",
                "artifactIdentifiers",
-               "cannot be null",
-               Objects::isNull,
-               "artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier",
-               Conditions.<List<ArtifactId>>predicate( List::isEmpty )
-                  .or( Conditions.collectionContainsNull )
-                  .or( Conditions.collectionElementPredicate( ( p ) -> p.getId() < 0L ) )
+               "cannot be null, empty, have a null element, or contain a negative artifact identifier",
+               Conditions.<List<ArtifactId>>or
+                  (
+                     Objects::isNull,
+                     List::isEmpty,
+                     Conditions.collectionContainsNull,
+                     Conditions.<ArtifactId>collectionElementPredicate( ( p ) -> p.getId() < 0L )
+                  )
             );
 
       if (Objects.nonNull(message)) {
@@ -306,7 +301,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     */
 
    @Override
-   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
+   public DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers,
+      Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
 
       Message message = null;
 
@@ -317,8 +313,6 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
                message,
                artifactIdentifiers,
                ValueType.PARAMETER,
-               "DataRightsOperationsImpl",
-               "getDataRights",
                "artifactIdentifiers",
                "cannot be null",
                Objects::isNull,
@@ -333,8 +327,6 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             (
                message,
                artifactIdentifiers,
-               "DataRightsOperationsImpl",
-               "getDataRights",
                "artifacts"
             );
 
@@ -343,8 +335,6 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
             (
                message,
                overrideClassification,
-               "DataRightsOperationsImpl",
-               "getDataRights",
                "overrideClassification"
             );
 
@@ -354,8 +344,6 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
                message,
                artifactMap,
                ValueType.PARAMETER,
-               "DataRightsOperationsImpl",
-               "getDataRights",
                "artifactMap",
                "cannot be null",
                Objects::isNull,
@@ -492,7 +480,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @throws OseeCoreException when a failure occurs loading the publishing artifacts from the database.
     */
 
-   private Map<ArtifactId, ArtifactReadable> loadArtifactMap(BranchId branchIdentifier, List<ArtifactId> artifactIdentifiers) {
+   private Map<ArtifactId, ArtifactReadable> loadArtifactMap(BranchId branchIdentifier,
+      List<ArtifactId> artifactIdentifiers) {
 
       try {
          return this.queryFactory.fromBranch(branchIdentifier).andIds(artifactIdentifiers).asArtifactMap();
@@ -516,7 +505,8 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
     * @return a {@link DataRightEntryList}.
     */
 
-   private DataRightEntryList populateRequest(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
+   private DataRightEntryList populateRequest(List<ArtifactId> artifactIdentifiers,
+      Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification) {
 
       try (var dataRightEntryList = new DataRightEntryList(overrideClassification)) {
 

@@ -440,8 +440,9 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       File file) {
       Artifact systemReqMd = ArtifactQuery.getArtifactFromId(folderTok, branch);
 
-      IArtifactImportResolver artifactResolver = ArtifactResolverFactory.createAlwaysNewArtifacts(requirementType);
-      IArtifactExtractor extractor = new MarkdownOutlineExtractor();
+      IArtifactImportResolver artifactResolver =
+         ArtifactResolverFactory.createAlwaysNewArtifacts(ArtifactTypeToken.SENTINEL);
+      IArtifactExtractor extractor = new MarkdownOutlineExtractor(CoreArtifactTypes.HeadingMarkdown, requirementType);
 
       ArtifactImportOperationParameter importOptions = new ArtifactImportOperationParameter();
       importOptions.setSourceFile(file);

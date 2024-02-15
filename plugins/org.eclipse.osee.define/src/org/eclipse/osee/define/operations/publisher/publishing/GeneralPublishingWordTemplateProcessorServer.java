@@ -13,18 +13,16 @@
 
 package org.eclipse.osee.define.operations.publisher.publishing;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
+import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
-import org.eclipse.osee.framework.core.server.publishing.WordRenderArtifactWrapperServerImpl;
+import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -44,7 +42,8 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
     * @param atsApi handle to the {@link AtsApi} used by super class to access logging facilities.
     */
 
-   public GeneralPublishingWordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
+   public GeneralPublishingWordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi,
+      DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
       super(orcsApi, atsApi, dataAccessOperations, dataRightsOperations);
    }
 
@@ -64,21 +63,26 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
     * @param wordMl all WordMl is written to this object.
     */
 
+   //@formatter:off
    @Override
-   protected void processArtifactSet(List<ArtifactReadable> artifacts, PublishingAppender wordMl) {
+   protected void
+      processArtifactSet
+         (
+            List<PublishingArtifact> artifacts,
+            PublishingAppender       wordMl
+         ) {
 
-      var recurseChildren = this.publishingTemplate.getPublishOptions().getOutliningOptions()[0].isRecurseChildren();
-
-      var includeEmptyHeaders =
-         this.publishingTemplate.getPublishOptions().getOutliningOptions()[0].isIncludeEmptyHeaders();
-
-      if (Objects.isNull(includeEmptyHeaders)) {
-         includeEmptyHeaders = !this.renderer.isRendererOptionSetAndFalse(RendererOption.PUBLISH_EMPTY_HEADERS);
-      }
-
-      if (!includeEmptyHeaders && recurseChildren) {
-         this.populateEmptyHeaders(artifacts);
-      }
+      this.emptyFoldersArtifactAcceptor =
+         WordRenderUtil.populateEmptyHeaders
+            (
+               artifacts,
+               this.includeHeadings,
+               this.allowedOutlineTypes,
+               this.headingArtifactTypeToken,
+               this.contentAttributeType,
+               this.excludedArtifactTypeArtifactAcceptor,
+               ArtifactAcceptor.ok()
+            );
 
       /**
        * Setup Data Rights for the publish.
@@ -99,19 +103,19 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
                 * Publish artifact to analyze for data rights
                 */
 
-               artifacts.stream().map( WordRenderArtifactWrapperServerImpl::new ).collect( Collectors.toCollection( LinkedList::new ) ),
+               artifacts,
 
                /*
                 * The publishing branch
                 */
 
-               this.branchId,
+               this.branchSpecification.getBranchId(),
 
                /*
                 * Recursion logic
                 */
 
-               recurseChildren,
+               this.recurseChildren,
 
                /*
                 * Not Historical, false -> accept descendants of historical artifacts and historical descendants
@@ -126,10 +130,14 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
                this.overrideClassification,
 
                /*
-                * When recursing, this tester accepts all descendant artifacts
+                * When recursing, this tester accepts or rejects descendant artifacts
                 */
 
-               ( artifact ) -> true,
+               ArtifactAcceptor.and
+                  (
+                     this.wordRenderApplicabilityChecker,
+                     this.emptyFoldersArtifactAcceptor
+                  ),
 
                /*
                 * Client/Server calling of the Data Rights Manager is different.
@@ -148,32 +156,16 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
                                               (
                                                  artifact,
                                                  wordMl,
-                                                 datarightsContentBuilder
+                                                 ArtifactAcceptor.ok(),
+                                                 datarightsContentBuilder,
+                                                 PublishingArtifactLoader.CacheReadMode.LOAD_FROM_DATABASE,
+                                                 IncludeBookmark.YES.getArtifactAcceptor(),
+                                                 null   /* Artifact Post Processor */
                                               )
                         )
             );
-      //@formatter:on
    }
-
-   /**
-    * {@inheritDoc}
-    * <p>
-    * Performs the super class inclusion check and also excludes HeadingMsWord artifacts that do not have children
-    * artifacts.
-    */
-
-   @Override
-   protected boolean checkIncluded(ArtifactReadable artifactReadable) {
-
-      /*
-       * The super.checkIncluded adds ArtifactReadables of HeadingMsWord without children to the emptyFolders set. The
-       * super check must come first.
-       */
-
-      return super.checkIncluded(artifactReadable) && !emptyFolders.contains(artifactReadable);
-
-   }
-
+   //@formatter:on
 }
 
 /* EOF */

@@ -13,13 +13,22 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.util.Optional;
+
 /**
  * Class to encapsulate a list of the top level Word Sections in the body of a Word ML document.
  *
  * @author Loren K. Ashley
  */
 
-public class WordSectionList extends AbstractElementList<WordBody, WordSection> {
+public class WordSectionList<P extends AbstractElement> extends AbstractElementList<P, WordSection> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordSectionList} with a {@link WordBody} parent.
+    */
+
+   public static WordElementParserFactory<WordBody, WordSectionList<WordBody>, WordSection> wordBodyParentFactory =
+      new WordElementParserFactory<>(WordSectionList::new, WordSection::new, WordMlTag.SECTION);
 
    /**
     * Creates a new open and empty list for {@link WordSection}s.
@@ -28,8 +37,8 @@ public class WordSectionList extends AbstractElementList<WordBody, WordSection> 
     * @throws NullPointerException when the parameter <code>wordBody</code> is <code>null</code>.
     */
 
-   public WordSectionList(WordBody wordBody) {
-      super(wordBody);
+   public WordSectionList(P parent) {
+      super(parent);
    }
 
    /**
@@ -38,8 +47,15 @@ public class WordSectionList extends AbstractElementList<WordBody, WordSection> 
     * @return the containing {@link WordBody}.
     */
 
-   public WordBody getWordBody() {
-      return this.getParent();
+   public Optional<WordBody> getWordBody() {
+      final var parent = this.getParent();
+      //@formatter:off
+      return
+         (parent instanceof WordBody)
+            ? Optional.of((WordBody)parent)
+            : Optional.empty();
+      //@formatter:on
+
    }
 
 }

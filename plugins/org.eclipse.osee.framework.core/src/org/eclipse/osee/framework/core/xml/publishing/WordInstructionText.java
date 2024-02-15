@@ -34,7 +34,7 @@ public class WordInstructionText extends AbstractElement {
     */
 
    public WordInstructionText(WordRun parent, Element wordInstructionTextElement) {
-      super(parent, wordInstructionTextElement, WordXmlTag.INSTRUCTION_TEXT);
+      super(parent, wordInstructionTextElement, WordMlTag.INSTRUCTION_TEXT);
    }
 
    /**

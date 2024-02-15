@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -34,20 +35,21 @@ public interface WordElement {
     * {@link Optional}.
     */
 
-   Optional<String> getAttribute(WordXmlAttribute wordXmlAttribute);
+   Optional<String> getAttribute(XmlAttributeSpecification wordXmlAttribute);
 
    /**
     * Gets a hierarchical child by class.
     *
     * @param <C> Scalar children must be a sub-class of {@link AbstractElement} and vector children must be a sub-class
     * of {@link AbstractElementList}.
-    * @param childClass the class of the child to get.
+    * @param childKey for scalar children the name of the child's class and for vector children the type name of the
+    * child's generic super class actual type arguments.
     * @return when a child with the specified class has been set, an {@link Optional} containing the child; otherwise,
     * an empty {@link Optional}.
     * @throws NoSuchElementException when the {@link WordElement} is a leaf of the Word document.
     */
 
-   <C> Optional<C> getChild(Class<C> childClass);
+   <C> Optional<C> getChild(Pair<Class<?>, Class<?>> childKey);
 
    /**
     * Gets the {@link org.w3c.dom.Document} that owns the {@link org.w3c.dom.Element} that is represented by the

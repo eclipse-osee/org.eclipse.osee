@@ -34,6 +34,21 @@ public interface ArtifactId extends Id {
       return Id.valueOf(id, ArtifactId::valueOf);
    }
 
+   /**
+    * When the {@link Id} implementation is an instance of an {@link ArtifactId} it is cast to an {@link ArtifactId} and
+    * returned. When the {@link Id} implementation is not an instance of an {@link ArtifactId} the numeric identifier is
+    * extracted from the {@link Id} implementation and a new {@link ArtifactId} is created with just the numeric
+    * identifier.
+    *
+    * @param id the {@link Id} implementation to create a new {@link ArtifactId} from or to be casted to an
+    * {@link ArtifactId}.
+    * @return the <code>id</code> when it is an implementation of an {@link ArtifactId}; otherwise, a new
+    * {@link ArtifactId} with just the numeric identifier from <code>id</code>.
+    * @throws NullPointerException when <code>artifact</code> is <code>null</code>.
+    * @implNote This method is not type safe in that it does not prevent the creation of an {@link ArtifactId} from
+    * other identifier types such as {@link BranchId}, {@link TransactionId}, etc.
+    */
+
    public static ArtifactId valueOf(Id id) {
       if (id instanceof ArtifactId) {
          return (ArtifactId) id;
@@ -46,11 +61,19 @@ public interface ArtifactId extends Id {
    }
 
    /**
-    * @return Always returns a new ArtifactId even though the argument passed in is already an ArtifactToken (at least).
-    * This is used in the special case where the added information in the argument is undesirable. Such a case occurs
-    * with Artifact where its equals method takes into account the branchId if the object being compared to it
-    * implements HasBranch. Another possible case is with JSON serialization
+    * Always returns a new ArtifactId even though the argument passed in is already an ArtifactToken (at least). This is
+    * used in the special case where the added information in the argument is undesirable. Such a case occurs with
+    * Artifact where its equals method takes into account the branchId if the object being compared to it implements
+    * HasBranch. Another possible case is with JSON serialization.
+    *
+    * @param artifact the {@link Id} implementation to create an {@ArtifactId} implementation from that only contains
+    * the numeric identifier.
+    * @return an {@link ArtifactId} implementation that only contains the numeric identifier.
+    * @throws NullPointerException when <code>artifact</code> is <code>null</code>.
+    * @implNote This method is not type safe in that it does not prevent the creation of an {@link ArtifactId} from
+    * other identifier types such as {@link BranchId}, {@link TransactionId}, etc.
     */
+
    public static ArtifactId create(Id artifact) {
       return valueOf(artifact.getId());
    }

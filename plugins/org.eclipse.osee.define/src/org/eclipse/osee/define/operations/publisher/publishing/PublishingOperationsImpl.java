@@ -21,9 +21,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.operations.api.DefineOperations;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
@@ -35,16 +36,23 @@ import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateChange;
 import org.eclipse.osee.define.rest.api.publisher.publishing.WordUpdateData;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordMLApplicabilityHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordMlLinkHandler;
-import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.rest.internal.wordupdate.WordUpdateArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
+import org.eclipse.osee.framework.core.publishing.Cause;
+import org.eclipse.osee.framework.core.publishing.DataAccessException;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
+import org.eclipse.osee.framework.core.publishing.ProcessRecursively;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
+import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
@@ -68,6 +76,100 @@ import org.osgi.service.event.EventAdmin;
 public class PublishingOperationsImpl implements PublishingOperations {
 
    /**
+    * The estimated number of artifacts to be loaded for a small publish.
+    */
+
+   private static final int SMALL_PUBLISH_SIZE = 256;
+
+   /**
+    * Internal class encapsulating various publishing utility classes.
+    */
+
+   private class PublishingPack {
+
+      /**
+       * A lookup for artifacts in a publish that have been modified on the publishing branch.
+       */
+
+      @NonNull
+      ChangedArtifactsTracker changedArtifactsTracker;
+
+      /**
+       * Loads and caches artifacts for the publish.
+       */
+
+      @NonNull
+      PublishingArtifactLoader publishingArtifactLoader;
+
+      /**
+       * Records non-fatal publishing errors.
+       */
+
+      @NonNull
+      PublishingErrorLog publishingErrorLog;
+
+      /**
+       * A handler to process feature tags in an artifact's content.
+       */
+
+      @Nullable
+      WordMLApplicabilityHandler wordMlApplicabilityHandler;
+
+      /**
+       * Creates the publishing utility objects for the specified branch and view.
+       *
+       * @param branchSpecification The branch and optional view that is being published.
+       * @throws NullPointerException when <code>branchSpecification</code> is <code>null</code>.
+       */
+
+      PublishingPack(@NonNull BranchSpecification branchSpecification) {
+
+         final var safeBranchSpecification = Conditions.requireNonNull(branchSpecification, "branchSpecification");
+
+         //@formatter:off
+         this.publishingErrorLog =
+            new PublishingErrorLog();
+
+         this.changedArtifactsTracker =
+            new ChangedArtifactsTracker
+                   (
+                      PublishingOperationsImpl.this.atsApi,
+                      PublishingOperationsImpl.this.dataAccessOperations,
+                      publishingErrorLog
+                   );
+
+         this.publishingArtifactLoader =
+            new PublishingArtifactLoader
+                   (
+                      PublishingOperationsImpl.this.dataAccessOperations,
+                      publishingErrorLog,
+                      WordRenderArtifactWrapperServerImpl::new,
+                      WordRenderArtifactWrapperServerImpl::new,
+                      changedArtifactsTracker::loadByAtsTeamWorkflow
+                   )
+                .configure
+                   (
+                      safeBranchSpecification,
+                      PublishingOperationsImpl.SMALL_PUBLISH_SIZE
+                   );
+
+         try {
+            this.wordMlApplicabilityHandler =
+               new WordMLApplicabilityHandler
+                      (
+                         PublishingOperationsImpl.this.orcsApi,
+                         PublishingOperationsImpl.this.logger,
+                         safeBranchSpecification.getBranchIdWithOutViewId(),
+                         safeBranchSpecification.getViewId()
+                      );
+         } catch( Exception e ) {
+            this.wordMlApplicabilityHandler = null;
+         }
+
+      }
+   }
+
+   /**
     * Saves the single instance of the {@link PublishingOperationsImpl}.
     */
 
@@ -86,7 +188,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
     * @return the single {@link PublishingOperationsImpl} object.
     */
 
-   public synchronized static PublishingOperationsImpl create(OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, TemplateManagerOperations templateManagerOperations) {
+   public synchronized static PublishingOperationsImpl create(OrcsApi orcsApi, AtsApi atsApi, Log logger,
+      EventAdmin eventAdmin, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations,
+      TemplateManagerOperations templateManagerOperations) {
 
       //@formatter:off
       return
@@ -124,7 +228,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
    private final String permanentLinkUrl;
    private final TemplateManagerOperations templateManagerOperations;
 
-   private PublishingOperationsImpl(OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, TemplateManagerOperations templateManagerOperations) {
+   private PublishingOperationsImpl(OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin,
+      DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations,
+      TemplateManagerOperations templateManagerOperations) {
       this.orcsApi = orcsApi;
       this.atsApi = atsApi;
       this.logger = logger;
@@ -167,7 +273,9 @@ public class PublishingOperationsImpl implements PublishingOperations {
     */
 
    @Override
-   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
+   public List<PublishingArtifact> getSharedPublishingArtifacts(BranchId branch, ArtifactId view,
+      ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType,
+      String attributeValue) {
 
       Message message = null;
 
@@ -178,13 +286,13 @@ public class PublishingOperationsImpl implements PublishingOperations {
                message,
                branch,
                ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "getSharedPublishingArtifacts",
                "branch",
-               "cannot be null",
-               Objects::isNull,
-               "branch identifier is non-negative",
-               (p) -> p.getId() <  0l
+               "cannot be null or negative",
+               Conditions.or
+                  (
+                     Objects::isNull,
+                     (p) -> p.getId() <  0l
+                  )
             );
 
       message =
@@ -193,13 +301,13 @@ public class PublishingOperationsImpl implements PublishingOperations {
                message,
                view,
                ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "getSharedPublishingArtifacts",
                "view",
-               "cannot be null",
-               Objects::isNull,
-               "view artifact identifier is greater than or equal to minus one",
-               (p) -> p.getId() < -1l
+               "cannot be null or less than minus one",
+               Conditions.or
+                  (
+                    Objects::isNull,
+                    (p) -> p.getId() < -1l
+                  )
             );
 
       message =
@@ -208,13 +316,13 @@ public class PublishingOperationsImpl implements PublishingOperations {
                message,
                sharedFolder,
                ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "getSharedPublishingArtifacts",
                "sharedFolder",
-               "cannot be null",
-               Objects::isNull,
-               "shared folder artifact identifier is non-negative",
-               (p) -> p.getId() <  0l
+               "cannot be null or negative",
+               Conditions.or
+                  (
+                     Objects::isNull,
+                     (p) -> p.getId() <  0l
+                  )
             );
 
       message =
@@ -223,13 +331,13 @@ public class PublishingOperationsImpl implements PublishingOperations {
                message,
                artifactType,
                ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "getSharedPublishingArtifacts",
                "artifactType",
-               "cannot be null",
-               Objects::isNull,
-               "artifcat type identifier is greater than or equal to minus one",
-               (p) -> p.getId() < -1l
+               "cannot be null or less than minus one",
+               Conditions.or
+                  (
+                     Objects::isNull,
+                     (p) -> p.getId() < -1l
+                  )
             );
 
       message =
@@ -238,13 +346,13 @@ public class PublishingOperationsImpl implements PublishingOperations {
                message,
                attributeType,
                ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "getSharedPublishingArtifacts",
                "attributeType",
-               "cannot be null",
-               Objects::isNull,
-               "attribute type identifier is greater than or equal to minus one",
-               (p) -> p.getId() < -1l
+               "cannot be null or less than minus one",
+               Conditions.or
+                  (
+                     Objects::isNull,
+                     (p) -> p.getId() < -1l
+                  )
             );
 
       message =
@@ -253,13 +361,13 @@ public class PublishingOperationsImpl implements PublishingOperations {
                message,
                attributeValue,
                ValueType.PARAMETER,
-               "PublishingOperationsImpl",
-               "getSharedPublishingArtifacts",
                "attributeValue",
-               "cannot be null",
-               Objects::isNull,
-               "cannot be an empty string",
-               String::isEmpty
+               "cannot be null or an empty string",
+               Conditions.or
+                  (
+                     Objects::isNull,
+                     String::isEmpty
+                  )
             );
 
       if (Objects.nonNull(message)) {
@@ -276,48 +384,95 @@ public class PublishingOperationsImpl implements PublishingOperations {
       }
       //@formatter:on
 
-      var publishingErrorLog = new PublishingErrorLog();
+      PublishingPack publishingPack;
+
+      try {
+         final var branchSpecification = new BranchSpecification(branch, view);
+         publishingPack = new PublishingPack(branchSpecification);
+      } catch (DataAccessException dataAccessException) {
+         if (dataAccessException.getPublishingUtilCause().equals(Cause.NOT_FOUND)) {
+            //@formatter:off
+            throw
+               new OseeNotFoundException
+                      (
+                         new Message()
+                                .title( "PublishingOperationsImpl::getSharedPublishingArtifacts, Unable to locate the shared folder." )
+                                .indentInc()
+                                .segment( "Branch Identifier", branch         )
+                                .segment( "View Identifier",   view           )
+                                .segment( "Shared Folder",     sharedFolder   )
+                                .segment( "Artifact Type",     artifactType   )
+                                .segment( "Attribute Type",    attributeType  )
+                                .segment( "Attribute Value",   attributeValue )
+                                .indentDec()
+                                .reasonFollows( dataAccessException )
+                                .toString(),
+                         dataAccessException
+                      );
+            //@formatter:on
+         }
+
+         //@formatter:off
+         throw
+            new OseeCoreException
+                   (
+                      new Message()
+                             .title( "PublishingOperationsImpl::getSharedPublishingArtifacts, Failed to load the shared folder." )
+                             .indentInc()
+                             .segment( "Branch Identifier", branch         )
+                             .segment( "View Identifier",   view           )
+                             .segment( "Shared Folder",     sharedFolder   )
+                             .segment( "Artifact Type",     artifactType   )
+                             .segment( "Attribute Type",    attributeType  )
+                             .segment( "Attribute Value",   attributeValue )
+                             .indentDec()
+                             .reasonFollows( dataAccessException )
+                             .toString(),
+                      dataAccessException
+                   );
+         //@formatter:on
+      }
 
       //@formatter:off
       var publishingSharedArtifactsFolder =
          ArtifactTypeToken.SENTINEL.equals( artifactType )
             ? PublishingSharedArtifactsFolder.create
                  (
-                   this.dataAccessOperations,
-                   publishingErrorLog,
-                   BranchId.create( branch.getId(), view ),
+                   publishingPack.publishingArtifactLoader,
+                   publishingPack.publishingErrorLog,
+                   new BranchSpecification( branch, view ),
                    "Shared Artifacts Folder",
                    ArtifactToken.valueOf( sharedFolder.getId(), branch ),
-                   attributeType
+                   attributeType,
+                   ProcessRecursively.YES
                  )
             : PublishingSharedArtifactsFolder.create
                     (
-                      this.dataAccessOperations,
-                      publishingErrorLog,
-                      BranchId.create( branch.getId(), view ),
+                      publishingPack.publishingArtifactLoader,
+                      publishingPack.publishingErrorLog,
+                      new BranchSpecification( branch, view ),
                       "Shared Artifacts Folder",
                       ArtifactToken.valueOf( sharedFolder.getId(), branch ),
                       artifactType,
-                      attributeType
+                      attributeType,
+                      ProcessRecursively.YES
                     );
       //@formatter:on
 
       var sharedArtifacts = publishingSharedArtifactsFolder.getSharedArtifacts(attributeValue);
 
-      if (publishingErrorLog.size() > 0) {
+      if (publishingPack.publishingErrorLog.size() > 0) {
          var errorLogMessage = new StringBuilder(1024);
-         publishingErrorLog.publishErrorLog(errorLogMessage);
+         publishingPack.publishingErrorLog.publishErrorLog(errorLogMessage);
          throw new OseeNotFoundException(errorLogMessage.toString());
       }
 
-      @SuppressWarnings("unchecked")
-      var sharedArtifactTokens = (List<ArtifactToken>) (Object) sharedArtifacts;
-
-      return sharedArtifactTokens;
+      return sharedArtifacts;
    }
 
    @Override
-   public LinkHandlerResult link(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType) {
+   public LinkHandlerResult link(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
+      TransactionId transactionId, LinkType linkType, PresentationType presentationType) {
       return null;
    }
 
@@ -338,8 +493,6 @@ public class PublishingOperationsImpl implements PublishingOperations {
          (
             msWordPreviewRequestData,
             ValueType.PARAMETER,
-            "PublishingOperationsImpl",
-            "msWordPreview",
             "msWordPreviewRequestData",
             "cannot be null",
             Objects::isNull,
@@ -432,7 +585,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
    //@formatter:on
 
    @Override
-   public Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog) {
+   public Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
+      TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog) {
       return null;
    }
 
@@ -448,7 +602,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
       var dataCharSequence = WordCoreUtil.replaceBinaryDataIdentifiers(data);
       data = WordMlLinkHandler.renderPlainTextWithoutLinks(orcsApi.getQueryFactory(), branchId,
          dataCharSequence.toString());
-      data = WordCoreUtilServer.reassignBookMarkID(data).toString();
+      data = WordCoreUtil.reassignBookMarkID(data).toString();
       //data = WordCoreUtilServer.removeNewLines(data);
 
       // if no extra paragraphs have been added this will replace the normal footer
@@ -490,8 +644,6 @@ public class PublishingOperationsImpl implements PublishingOperations {
          (
             wordTemplateContentData,
             ValueType.PARAMETER,
-            "PublishingOperationsImpl",
-            "renderWordTemplateContent",
             "wordTemplateContentData",
             "cannot be null",
             Objects::isNull,
@@ -502,7 +654,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
          );
       //@formatter:on
 
-      WordTemplateContentRendererHandler wordRendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
+      WordTemplateContentRendererHandler wordRendererHandler =
+         new WordTemplateContentRendererHandler(this.orcsApi, this.dataAccessOperations, this.logger);
 
       return wordRendererHandler.renderWordML(wordTemplateContentData);
    }
@@ -515,7 +668,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
    }
 
    @Override
-   public LinkHandlerResult unlink(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType) {
+   public LinkHandlerResult unlink(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
+      TransactionId transactionId, LinkType linkType) {
       return null;
    }
 
@@ -539,8 +693,6 @@ public class PublishingOperationsImpl implements PublishingOperations {
          (
             wordUpdateData,
             ValueType.PARAMETER,
-            "PublishingOperationsImpl",
-            "updateWordArtifacts",
             "wordUpdateData",
             "cannot be null",
             Objects::isNull,

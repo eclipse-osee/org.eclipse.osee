@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 
 /**
@@ -402,7 +403,7 @@ public class EnumRendererMap implements RendererMap {
       assert
            ( value instanceof Boolean )
          : new Message()
-                  .title( "PublishingOptions::isRendererOptionSetAndFalse, the value associated with the \"key\" is not of the correct class." )
+                  .title( "EnumRendererMap::isRendererOptionSetAndFalse, the value associated with the \"key\" is not of the correct class." )
                   .segment( (message) -> EnumRendererMap.appendKeyValueMessage(key,value,message) )
                   .toString();
       //@formatter:on
@@ -447,7 +448,7 @@ public class EnumRendererMap implements RendererMap {
       assert
            ( value instanceof Boolean )
          : new Message()
-                  .title( "PublishingOptions::isRendererOptionSetAndTrue, the value associated with the \"key\" is not of the correct class." )
+                  .title( "EnumRendererMap::isRendererOptionSetAndTrue, the value associated with the \"key\" is not of the correct class." )
                   .segment( (message) -> EnumRendererMap.appendKeyValueMessage(key,value,message) )
                   .toString();
       //@formatter:on
@@ -482,7 +483,7 @@ public class EnumRendererMap implements RendererMap {
    @Override
    public <T> T removeRendererOption(RendererOption key) {
 
-      Objects.requireNonNull(key, "PublishingOptions::removeRendererOption, parameter \"key\" cannot be null.");
+      Objects.requireNonNull(key, "EnumRendererMap::removeRendererOption, parameter \"key\" cannot be null.");
 
       var value = this.rendererOptions.remove(key);
 
@@ -494,7 +495,7 @@ public class EnumRendererMap implements RendererMap {
       assert
            EnumRendererMap.checkKeyAndValue(key, value)
          : new Message()
-                  .title( "PublishingOptions::removeRendererOption,  the value associated with the \"key\" is not of the correct class." )
+                  .title( "EnumRendererMap::removeRendererOption,  the value associated with the \"key\" is not of the correct class." )
                   .segment( (message) -> EnumRendererMap.appendKeyValueMessage(key,value,message) )
                   .toString();
       //@formatter:on
@@ -515,20 +516,22 @@ public class EnumRendererMap implements RendererMap {
    @Override
    public <T> T setRendererOption(RendererOption key, T value) {
 
-      Objects.requireNonNull(key, "PublishingOptions::setRendererOption, parameter \"key\" cannot be null.");
-      Objects.requireNonNull(value, "PublishingOptions::setRendererOption, parameter \"value\" cannot be null.");
+      Message message = null;
+
+      message = Conditions.requireNonNull(message, key, "key");
+
+      message = Conditions.requireNonNull(message, value, "value");
 
       if (!EnumRendererMap.checkKeyAndValue(key, value)) {
-         //@formatter:off
-         throw
-            new IllegalArgumentException
-                   (
-                      new Message()
-                             .title( "PublishingOptions::setRendererOption, parameter \"value\" is not the correct class for the \"key\".")
-                             .segment( (message) -> EnumRendererMap.appendKeyValueMessage(key,value,message) )
-                             .toString()
-                   );
-         //@formatter:on
+         message = (message == null) ? new Message() : message;
+         message.title(
+            "EnumRendererMap::setRendererOption, parameter \"value\" is not the correct class for the \"key\".");
+         EnumRendererMap.appendKeyValueMessage(key, value, message);
+      }
+
+      if (message != null) {
+
+         throw new IllegalArgumentException(message.toString());
       }
 
       var priorValue = this.rendererOptions.put(key, value);
@@ -540,10 +543,13 @@ public class EnumRendererMap implements RendererMap {
       //@formatter:off
       assert
             EnumRendererMap.checkKeyAndValue(key, priorValue )
-         :  new Message()
-                  .title( "PublishingOptions::setRendererOption, the prior value associated with the \"key\" is not of the correct class." )
-                  .segment( (message) -> EnumRendererMap.appendKeyValueMessage(key,value,message) )
-                  .toString();
+         :  EnumRendererMap.appendKeyValueMessage
+               (
+                  key,
+                  value,
+                  new Message()
+                         .title( "EnumRendererMap::setRendererOption, the prior value associated with the \"key\" is not of the correct class." )
+               ).toString();
       //@formatter:on
 
       return value;
