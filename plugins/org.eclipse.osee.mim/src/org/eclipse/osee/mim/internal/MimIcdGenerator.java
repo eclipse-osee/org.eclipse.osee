@@ -416,45 +416,58 @@ public class MimIcdGenerator {
       String ordering =
          orcsApi.getJdbcService().getClient().getDbType().isPaginationOrderingSupported() ? "ORDER BY time DESC" : "";
       //@formatter:off
-      String query =
-         "WITH"+orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse()+" gammas (transaction_id, gamma_id, commit_art_id,time) AS "
-         + "(SELECT txd1.transaction_id, changedTxs.gamma_id,txd1.commit_art_id,txd1.time "
-         + "FROM osee_tx_details txd1, osee_txs attrTxs, osee_attribute attr, osee_txs changedTxs "
-         + "WHERE txd1.branch_id in (?,?) AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 AND "
-         + "attrTxs.gamma_id = attr.gamma_id AND attr.art_id = txd1.commit_art_id AND attr.attr_type_id = ? AND "
-         + "attr.value IN "
-         + "(SELECT DISTINCT "+orcsApi.getJdbcService().getClient().getDbType().getPostgresCastStart()+ " art.art_id "+ orcsApi.getJdbcService().getClient().getDbType().getPostgresCastVarCharEnd()
-         + "FROM osee_txs artTxs, osee_artifact art, osee_txs attrTxs, osee_attribute attr "
-         + "WHERE artTxs.branch_id = ? AND artTxs.tx_current = 1 AND art.art_type_id = ? "
-         + "AND artTxs.gamma_id = art.gamma_id AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 "
-         + "AND attrTxs.gamma_id = attr.gamma_id AND attr.art_id = art.art_id AND attr.attr_type_id = ? "
-         + "AND attr.value = 'MIM') AND txd1.transaction_id = changedTxs.transaction_id AND changedTxs.branch_id  in (?,?)), "
-         + "arts (commit_art_id, transaction_id, art_id,time) AS (SELECT commit_art_id, transaction_id, art_id,time FROM gammas, "
-         + "osee_artifact art WHERE gammas.gamma_id = art.gamma_id UNION SELECT commit_art_id, transaction_id,art_id, time "
-         + "FROM gammas, osee_attribute attr WHERE gammas.gamma_id = attr.gamma_id UNION SELECT commit_art_id, transaction_id, "
-         + "a_art_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id UNION SELECT commit_art_id, "
-         + "transaction_id,b_art_id,time FROM gammas, osee_relation rel WHERE gammas.gamma_id = rel.gamma_id ), "
-         + "allRels (a_art_id, b_art_id, gamma_id, rel_type) AS ( SELECT a_art_id, b_art_id, txs.gamma_id, rel_type "
-         + "FROM osee_txs txs, osee_relation rel WHERE txs.branch_id in (?,?) AND txs.tx_current = 1 AND "
-         + "txs.gamma_id = rel.gamma_id UNION SELECT a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type FROM "
-         + "osee_txs txs, osee_relation_link rel WHERE txs.branch_id in (?,?) AND txs.tx_current = 1 AND "
-         + "txs.gamma_id = rel.gamma_id), cte_query(a_art_id, b_art_id, rel_type) AS "
-         + "(SELECT a_art_id, b_art_id, rel_type FROM allRels WHERE a_art_id = ? "
-         + "UNION ALL SELECT e.a_art_id, e.b_art_id, e.rel_type FROM allRels e "
-         + "INNER JOIN cte_query c ON c.b_art_id = e.a_art_id) SELECT name,commit_art_id, atsid,time,row_number() over ("+ordering+") rn, relTw FROM (SELECT DISTINCT "
-         + "attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id FROM cte_query, "
-         + "arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 "
-         + "WHERE b_art_id = arts.art_id AND attrTxs.branch_id = ? AND attrTxs.tx_current = 1 "
-         + "AND attrTxs.gamma_id = attr.gamma_id AND attr.art_id = arts.commit_art_id AND attr.attr_type_id = ? "
-         + "AND attrTxs2.branch_id = ? AND attrTxs2.tx_current = 1 AND attrTxs2.gamma_id = attr2.gamma_id "
-         + "AND attr2.art_id = arts.commit_art_id AND attr2.attr_type_id = ?) t1 "
-         + "left outer join "
-         + "(select rel_link.a_art_id, attr3.value relTw ,  rel_link.b_art_id "
-         + "from osee_txs relTxs,osee_relation_link rel_link,osee_txs attrTxs3,osee_attribute attr3 "
-         + "where rel_link.rel_link_type_id = ? and relTxs.branch_id = ? "
-         + " and relTxs.gamma_id = rel_link.gamma_id and rel_link.b_art_id = attr3.art_id and relTxs.tx_current = 1 "
-         + "and attrTxs3.branch_id = ? and attrTxs3.gamma_id = attr3.gamma_id and attrTxs3.tx_current = 1 "
-         + "and attr3.attr_type_id = ?) t2 on t2.a_art_id = t1.commit_art_id";
+      String query ="WITH "+orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse()+" rootArtTime(time) AS ( SELECT min(time) FROM  osee_txs txs, osee_tx_details txd, osee_artifact art " + //
+         "WHERE  txs.branch_id IN (?,?) " + //branch,queryBranch
+         " AND txs.tx_current = 1 AND txs.gamma_id = art.gamma_id AND art.art_id = ?" + //connectionId
+         " AND txd.branch_id = txs.branch_id AND txd.transaction_id = txs.transaction_id), " + //
+         " allRels (a_art_id,b_art_id,gamma_id,rel_type) as ( select a_art_id, b_art_id, txs.gamma_id, rel_type from osee_txs txs, osee_relation rel " + //
+         "where txs.branch_id in (?,?) " + //branch,queryBranch
+         "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id " + //
+         "union select a_art_id,   b_art_id,   txs.gamma_id,  rel_link_type_id rel_type from osee_txs txs, osee_relation_link rel " + //
+         "where txs.branch_id in (?,?) " + //branch,queryBranch
+         "and txs.tx_current = 1 and txs.gamma_id = rel.gamma_id), " + //
+         "cte_query(a_art_id,b_art_id,rel_type,gamma_id) as ( " + //
+         "   select a_art_id,  b_art_id,   rel_type, gamma_id from allRels where a_art_id = ? " + //connectionId
+         "union all select e.a_art_id, e.b_art_id, e.rel_type, e.gamma_id from allRels e " + //
+         "inner join cte_query c on c.b_art_id = e.a_art_id), " + //
+         "gammas (transaction_id,gamma_id,commit_art_id,time) as ( select txd1.transaction_id,changedTxs.gamma_id,txd1.commit_art_id,txd1.time " + //
+         "from rootArtTime rat, osee_tx_details txd1, osee_txs attrTxs,osee_attribute attr,osee_txs changedTxs " + //
+         "where txd1.branch_id in (?,?) " + //branch, queryBranch
+         "and attrTxs.branch_id = ? " + //commonBranch
+         "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = txd1.commit_art_id and txd1.time > rat.time " + //
+         "and attr.attr_type_id = ? " + //AtsAttributeTypes.TeamDefinitionReference
+         "and attr.value in (select distinct "+orcsApi.getJdbcService().getClient().getDbType().getPostgresCastStart()+ " art.art_id "+ orcsApi.getJdbcService().getClient().getDbType().getPostgresCastVarCharEnd() + //
+         "from osee_txs artTxs, osee_artifact art, osee_txs attrTxs, osee_attribute attr " + //
+         "where artTxs.branch_id = ? " + //commonBranch
+         "and artTxs.tx_current = 1 and art.art_type_id = ? " + //AtsArtifactTypes.TeamDefinition
+         "and artTxs.gamma_id = art.gamma_id and attrTxs.branch_id = ? " + //commonBranch
+         "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = art.art_id " + //
+         "and attr.attr_type_id = ? " + //AtsAttributeTypes.WorkType
+         "and attr.value = 'MIM') and txd1.transaction_id = changedTxs.transaction_id and changedTxs.branch_id in (?,?)), " + //branch, queryBranch
+         "arts (commit_art_id,transaction_id,art_id,time) as (select commit_art_id,   transaction_id,   art_id,  time " + //
+         "from gammas, osee_artifact art where gammas.gamma_id = art.gamma_id " + //
+         "union select commit_art_id, transaction_id,   art_id,  time from gammas, osee_attribute attr where gammas.gamma_id = attr.gamma_id " + //
+         "union select gammas.commit_art_id,   gammas.transaction_id,  rel.a_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
+         "where cq.gamma_id = gammas.gamma_id and gammas.gamma_id = rel.gamma_id AND "+ //
+         "rel.rel_type in (6039606571486514300,6039606571486514298,6039606571486514301,6039606571486514302,126164394421696912,2455059983007225780,3899709087455064780,126164394421696914,2455059983007225781,3899709087455064781,2455059983007225794,2455059983007225795,5540416179400488807,8734224778892840579,1859749228181133209,2283114833979032380) " + //
+         "union select gammas.commit_art_id,   gammas.transaction_id,  rel.b_art_id,  gammas.time from gammas, cte_query cq, osee_relation rel " + //
+         "where cq.gamma_id = gammas.gamma_id and gammas.gamma_id = rel.gamma_id and "+ //
+         "rel.rel_type in (6039606571486514300,6039606571486514298,6039606571486514301,6039606571486514302,126164394421696912,2455059983007225780,3899709087455064780,126164394421696914,2455059983007225781,3899709087455064781,2455059983007225794,2455059983007225795,5540416179400488807,8734224778892840579,1859749228181133209,2283114833979032380) )" + //
+         "select name, commit_art_id, atsid, time, row_number() over (order by time desc) rn, relTw " + //
+         "from (select distinct attr.value name, attr2.value atsid, arts.time time, arts.commit_art_id from " + //
+         "cte_query, arts, osee_txs attrTxs, osee_attribute attr, osee_txs attrTxs2, osee_attribute attr2 " + //
+         "where b_art_id = arts.art_id and attrTxs.branch_id = ? " + //commonBranch
+         "and attrTxs.tx_current = 1 and attrTxs.gamma_id = attr.gamma_id and attr.art_id = arts.commit_art_id and attr.attr_type_id = ? " + //CoreAttributeTypes.Name
+         "and attrTxs2.branch_id = ? " + //CoreBranches.COMMON.getId()
+         "and attrTxs2.tx_current = 1 and attrTxs2.gamma_id = attr2.gamma_id and attr2.art_id = arts.commit_art_id " + //
+         "and attr2.attr_type_id = ? " + //AtsAttributeTypes.AtsId
+         ") t1 left outer join (select rel_link.a_art_id, attr3.value relTw, rel_link.b_art_id from osee_txs relTxs, osee_relation_link rel_link, osee_txs attrTxs3, " + //
+         "osee_attribute attr3 where rel_link.rel_link_type_id = ? " + //CoreRelationTypes.Dependency_Dependency
+         "and relTxs.branch_id = ? " + //CoreBranches.COMMON.getId()
+         "and relTxs.gamma_id = rel_link.gamma_id and rel_link.b_art_id = attr3.art_id and relTxs.tx_current = 1 " + //
+         "and attrTxs3.branch_id = ? " + //CoreBranches.COMMON.getId()
+         "and attrTxs3.gamma_id = attr3.gamma_id and attrTxs3.tx_current = 1 and attr3.attr_type_id = ? " + //AtsAttributeTypes.AtsId
+         ") t2 on t2.a_art_id = t1.commit_art_id";
       //@formatter:on
       Consumer<JdbcStatement> consumer = stmt -> {
 
@@ -471,12 +484,12 @@ public class MimIcdGenerator {
          writer.writeCell(row, 3, relTw);
       };
 
-      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, queryBranch, CoreBranches.COMMON.getId(),
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, branch, queryBranch, connectionId, branch,
+         queryBranch, branch, queryBranch, connectionId, branch, queryBranch, CoreBranches.COMMON.getId(),
          AtsAttributeTypes.TeamDefinitionReference, CoreBranches.COMMON.getId(), AtsArtifactTypes.TeamDefinition,
-         CoreBranches.COMMON.getId(), AtsAttributeTypes.WorkType, branch, queryBranch, branch, queryBranch, branch,
-         queryBranch, connectionId, CoreBranches.COMMON.getId(), CoreAttributeTypes.Name, CoreBranches.COMMON.getId(),
-         AtsAttributeTypes.AtsId, CoreRelationTypes.Dependency_Dependency, CoreBranches.COMMON, CoreBranches.COMMON,
-         AtsAttributeTypes.AtsId);
+         CoreBranches.COMMON.getId(), AtsAttributeTypes.WorkType, branch, queryBranch, CoreBranches.COMMON.getId(),
+         CoreAttributeTypes.Name, CoreBranches.COMMON.getId(), AtsAttributeTypes.AtsId,
+         CoreRelationTypes.Dependency_Dependency, CoreBranches.COMMON, CoreBranches.COMMON, AtsAttributeTypes.AtsId);
 
    }
 
