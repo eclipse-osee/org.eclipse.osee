@@ -371,11 +371,6 @@ app.factory('ColumnFactory', function() {
     var pairsTmpl = '<div class="ui-grid-cell-contents" title="TOOLTIP">{{ grid.appScope.getPairs(row.entity) }}</div>';
     var subGridOrigTmpl = '<div ng-class="{\'ui-grid-cell-contents\': true, annotationInput: true, invalid: grid.appScope.getInvalidLocRefs(row.entity), details: annotation.showDeets}" title="TOOLTIP">{{row.entity.locationRefs}}</div>';
     var codeTemplate = '<div class="method-number">{{ grid.appScope.selectedItem.methodNumber }}</div>';
-
-    var getInvalidRes = function getInvalidRes(annotation) {
-        return annotation.resolution != null && annotation.resolution != "" && !annotation.isResolutionValid;
-    }
-
     
     var subGridColumnsCoverage = [
 	{
