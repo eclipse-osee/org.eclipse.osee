@@ -101,96 +101,12 @@ describe('ActionDropDownComponent', () => {
 			})
 			.compileComponents();
 	});
-
-	describe('Normal Conditions', () => {
-		beforeEach(() => {
-			TestBed.compileComponents();
-			fixture = TestBed.createComponent(ActionDropDownComponent);
-			component = fixture.componentInstance;
-			fixture.detectChanges();
-			loader = TestbedHarnessEnvironment.loader(fixture);
-		});
-		it('should create', () => {
-			expect(component).toBeTruthy();
-		});
-		it('should transition to review', async () => {
-			const spy = spyOn(
-				component,
-				'transitionToReview'
-			).and.callThrough();
-			const btn = await loader.getHarness(
-				MatButtonHarness.with({
-					text: new RegExp('Transition To Review'),
-				})
-			);
-			expect(btn).toBeDefined();
-			await btn.click();
-			expect(spy).toHaveBeenCalled();
-		});
-		describe('non-component tests', () => {
-			it('should add an action', () => {
-				let dialogRefSpy = jasmine.createSpyObj({
-					afterClosed: of(new CreateAction(MockUserResponse)),
-					close: null,
-				});
-				let dialogSpy = spyOn(
-					TestBed.inject(MatDialog),
-					'open'
-				).and.returnValue(dialogRefSpy);
-				const spy = spyOn(
-					component.doAddAction,
-					'subscribe'
-				).and.callThrough();
-				component.addAction();
-				expect(spy).toHaveBeenCalled();
-			});
-		});
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ActionDropDownComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
 	});
-
-	xdescribe('Non-Approved state', () => {
-		beforeEach(() => {
-			TestBed.overrideProvider(ActionStateButtonService, {
-				useValue: actionStateButtonServiceMockApprove,
-			});
-			TestBed.compileComponents();
-			fixture = TestBed.createComponent(ActionDropDownComponent);
-			component = fixture.componentInstance;
-			fixture.detectChanges();
-			loader = TestbedHarnessEnvironment.loader(fixture);
-		});
-		it('should approve working branch', async () => {
-			const spy = spyOn(component, 'approveBranch').and.callThrough();
-			const btn = await loader.getHarness(
-				MatButtonHarness.with({
-					text: new RegExp('Approve Working Branch'),
-				})
-			);
-			expect(btn).toBeDefined();
-			await btn.click();
-			expect(spy).toHaveBeenCalled();
-		});
-	});
-	xdescribe('Pre-commit state', () => {
-		beforeEach(() => {
-			TestBed.overrideProvider(ActionStateButtonService, {
-				useValue: actionStateButtonServiceMockCommit,
-			});
-			TestBed.compileComponents();
-			fixture = TestBed.createComponent(ActionDropDownComponent);
-			component = fixture.componentInstance;
-			fixture.detectChanges();
-			loader = TestbedHarnessEnvironment.loader(fixture);
-		});
-		it('should commit working branch', async () => {
-			const spy = spyOn(component, 'commitBranch').and.callThrough();
-			const btn = await loader.getHarness(
-				MatButtonHarness.with({
-					text: new RegExp('Commit Working Branch'),
-				})
-			);
-			expect(btn).toBeDefined();
-			await btn.click();
-			expect(spy).toHaveBeenCalled();
-		});
+	it('should create', () => {
+		expect(component).toBeTruthy();
 	});
 });

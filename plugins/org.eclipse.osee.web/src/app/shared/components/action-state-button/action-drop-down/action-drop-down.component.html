@@ -10,45 +10,141 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<button
-	mat-raised-button
-	(click)="addAction()"
-	*ngIf="(branchInfo | async)?.branchType === '2'"
-	color="primary">
-	<mat-icon>add</mat-icon>Create Action
-</button>
-<button
-	mat-raised-button
-	(click)="transitionToReview()"
-	*ngIf="(branchTransitionable | async) === 'true'"
-	color="accent">
-	<mat-icon>feedback</mat-icon>Transition To Review
-</button>
-<ng-container *ngIf="branchApprovableOrCommittable | async as _state">
-	<ng-container *ngIf="_state === 'committable'">
+@if (
+	(branchInfo | async)?.branchType === '2' &&
+	(branchInfo | async)?.id !== '570'
+) {
+	<button
+		mat-raised-button
+		(click)="addAction()"
+		color="primary">
+		<mat-icon>add</mat-icon>Create Action
+	</button>
+} @else {
+	<button
+		mat-raised-button
+		[matMenuTriggerFor]="stateMenu"
+		class="tw-flex tw-justify-between tw-bg-primary tw-text-background">
+		{{ currentStateName | async
+		}}<mat-icon iconPositionEnd>expand_more</mat-icon>
+	</button>
+}
+<mat-menu #stateMenu="matMenu">
+	@for (state of previousStates | async; track state.state) {
+		<ng-container
+			[ngTemplateOutlet]="transitionButton"
+			[ngTemplateOutletContext]="{
+				$implicit: {
+					state: state,
+					isPrevious: true,
+					currentState: currentState | async
+				}
+			}"></ng-container>
+	}
+	@for (state of nextStates | async; track state.state) {
+		<ng-container
+			[ngTemplateOutlet]="transitionButton"
+			[ngTemplateOutletContext]="{
+				$implicit: {
+					state: state,
+					isPrevious: false,
+					currentState: currentState | async
+				}
+			}"></ng-container>
+	}
+</mat-menu>
+
+<ng-template
+	#transitionButton
+	let-ctx>
+	@if (
+		((!ctx.currentState.rules.includes('REQUIRED_FOR_TRANSITION') ||
+			(isApproved | async) === 'true' ||
+			ctx.isPrevious) &&
+			ctx.currentState.state !== 'Review') ||
+		ctx.state.state === 'Cancelled'
+	) {
 		<button
-			mat-raised-button
-			(click)="commitBranch()"
-			color="warn">
-			<mat-icon>call_merge</mat-icon>Commit Working Branch
-			{{ (branchInfo | async)?.name }}
+			mat-menu-item
+			(click)="transition(ctx.state)">
+			Transition to
+			<span
+				class="-tw-py-1 tw-rounded-md tw-px-4 tw-text-background dark:tw-text-foreground"
+				[ngClass]="{
+					'tw-bg-primary dark:tw-bg-primary-700':
+						ctx.state.state === 'Completed',
+					'tw-bg-warning dark:tw-bg-warning-700':
+						ctx.state.state === 'Cancelled',
+					'tw-bg-accent-800 dark:tw-bg-accent-700':
+						ctx.state.state === 'Review',
+					'tw-bg-foreground dark:tw-bg-background':
+						ctx.state.state !== 'Completed' &&
+						ctx.state.state !== 'Cancelled' &&
+						ctx.state.state !== 'Review'
+				}"
+				>{{ ctx.state.state }}</span
+			>
 		</button>
-	</ng-container>
-	<ng-container *ngIf="_state === 'approvable'">
+	} @else if (
+		(isApproved | async) === 'true' &&
+		ctx.currentState.commitable &&
+		!ctx.isPrevious
+	) {
 		<button
-			mat-raised-button
-			(click)="approveBranch()"
-			color="primary"
-			[matTooltip]="
-				'Approve Working Branch ' +
-				((branchInfo | async)?.name || '') +
-				' for merging into Baseline'
-			">
-			<mat-icon color="accent">check</mat-icon>
-			<mat-label>
-				Approve
-				{{ (branchInfo | async)?.name }}
-			</mat-label>
+			mat-menu-item
+			(click)="commitBranch()">
+			Commit Branch
+			<span
+				[ngClass]="{
+					'tw-bg-primary dark:tw-bg-primary-700':
+						ctx.state.state === 'Completed',
+					'tw-bg-warning dark:tw-bg-warning-700':
+						ctx.state.state === 'Cancelled',
+					'tw-bg-accent-800 dark:tw-bg-accent-700':
+						ctx.state.state === 'Review',
+					'tw-bg-foreground dark:tw-bg-background':
+						ctx.state.state !== 'Completed' &&
+						ctx.state.state !== 'Cancelled' &&
+						ctx.state.state !== 'Review'
+				}"
+				class="-tw-py-1 tw-rounded-md tw-px-4 tw-text-background dark:tw-text-foreground"
+				>{{ ctx.state.state }}</span
+			>
 		</button>
-	</ng-container>
-</ng-container>
+	} @else if (
+		(isTeamLead | async) === true &&
+		(isApproved | async) === 'false' &&
+		!ctx.isPrevious &&
+		ctx.state.state !== 'Cancelled'
+	) {
+		<button
+			mat-menu-item
+			(click)="approveBranch()">
+			Approve Transition to
+			<span
+				[ngClass]="{
+					'tw-bg-primary dark:tw-bg-primary-700':
+						ctx.state.state === 'Completed',
+					'tw-bg-warning dark:tw-bg-warning-700':
+						ctx.state.state === 'Cancelled',
+					'tw-bg-accent-800 dark:tw-bg-accent-700':
+						ctx.state.state === 'Review',
+					'tw-bg-foreground dark:tw-bg-background':
+						ctx.state.state !== 'Completed' &&
+						ctx.state.state !== 'Cancelled' &&
+						ctx.state.state !== 'Review'
+				}"
+				class="-tw-py-1 tw-rounded-md tw-px-4 tw-text-background dark:tw-text-foreground"
+				>{{ ctx.state.state }}</span
+			>
+		</button>
+	} @else if (
+		(isApproved | async) === 'true' && ctx.state.state === 'Completed'
+	) {
+		<button
+			mat-menu-item
+			(click)="commitBranch()">
+			Commit Branch
+		</button>
+	}
+</ng-template>

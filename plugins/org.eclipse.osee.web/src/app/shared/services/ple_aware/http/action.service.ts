@@ -130,9 +130,9 @@ export class ActionService {
 			null
 		);
 	}
-	public approveBranch(teamWf: string | number): Observable<response> {
-		return this.http.post<response>(
-			apiURL + '/ats/ple/action/' + teamWf + '/approval',
+	public approveBranch(teamWf: string | number): Observable<boolean> {
+		return this.http.post<boolean>(
+			apiURL + '/ats/action/' + teamWf + '/approval',
 			null
 		);
 	}
@@ -141,9 +141,9 @@ export class ActionService {
 			apiURL + '/ats/config/teamdef/' + teamDef + '/leads'
 		);
 	}
-	public getBranchApproved(teamWf: string | number): Observable<response> {
-		return this.http.get<response>(
-			apiURL + '/ats/ple/action/' + teamWf + '/approval'
+	public getBranchApproved(teamWf: string | number): Observable<boolean> {
+		return this.http.get<boolean>(
+			apiURL + '/ats/action/' + teamWf + '/approval'
 		);
 	}
 }
