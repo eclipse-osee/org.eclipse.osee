@@ -13,14 +13,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
-import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
-import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW_SERVER;
-import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATTRIBUTE;
 import static org.eclipse.osee.framework.core.enums.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
-import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import com.vladsch.flexmark.util.ast.IRender;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -219,7 +212,8 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
       //@formatter:on
    }
 
-   protected @NonNull MenuCmdDef getArtifactBasedMenuCommand(@NonNull MenuCmdDef menuCmdDef, @Nullable Artifact artifact) {
+   protected @NonNull MenuCmdDef getArtifactBasedMenuCommand(@NonNull MenuCmdDef menuCmdDef,
+      @Nullable Artifact artifact) {
 
       return Objects.requireNonNull(menuCmdDef);
    }
@@ -260,17 +254,81 @@ public class DefaultArtifactRenderer extends EnumRendererMap implements IRendere
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
-      if (presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE)) {
-         return PRESENTATION_TYPE;
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
+      //@formatter:off
+      /*
+       * Knock Outs, NO_MATCH (-1)
+       */
+
+      /*
+       * SPECIALIZED_KEY_MATCH (70)
+       */
+
+      /*
+       * SPECIALIZED_MATCH (60)
+       */
+
+      /*
+       * PRESENTATION_TYPE_OPTION_MATCH (55)
+       */
+
+      /*
+       * PRESENTATION_SUBTYPE_MATCH (50)
+       */
+
+      /*
+       * PRESENTATION_TYPE (40)
+       */
+
+      if(
+          presentationType.matches
+             (
+                PresentationType.GENERALIZED_EDIT,
+                PresentationType.GENERAL_REQUESTED,
+                PresentationType.PRODUCE_ATTRIBUTE
+             )
+        ) {
+         return IRenderer.PRESENTATION_TYPE;
       }
-      if (presentationType.matches(SPECIALIZED_EDIT, DEFAULT_OPEN)) {
-         return GENERAL_MATCH;
+
+      /*
+       * SUBTYPE_MATCH (30)
+       */
+
+      /*
+       * GENERAL_MATCH (10)
+       */
+
+      if(
+          presentationType.matches
+             (
+                PresentationType.DEFAULT_OPEN,
+                PresentationType.SPECIALIZED_EDIT
+             )
+        ) {
+         return IRenderer.GENERAL_MATCH;
       }
-      if (presentationType.matches(PREVIEW, PREVIEW_SERVER, RENDER_AS_HUMAN_READABLE_TEXT)) {
-         return BASE_MATCH;
+
+      /*
+       * BASE_MATCH (5)
+       */
+
+      if(
+          presentationType.matches
+             (
+                PresentationType.PREVIEW,
+                PresentationType.RENDER_AS_HUMAN_READABLE_TEXT
+             )
+        ) {
+         return IRenderer.BASE_MATCH;
       }
-      return NO_MATCH;
+
+      /*
+       * NO_MATCH (-1)
+       */
+
+      return IRenderer.NO_MATCH;
    }
 
    /**

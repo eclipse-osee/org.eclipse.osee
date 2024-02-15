@@ -27,6 +27,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -57,6 +59,98 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private static final ArtifactFileMonitor monitor = new ArtifactFileMonitor();
 
    /**
+    * {@link IRenderer} implementations extending {@link FileSystemRenderer} and using the method
+    * {@link #getBaseApplicabilityRating} must set this member to the artifact types to test for according to the the
+    * member {@link #artifactTypesAreRequired}. When {@link #artifactTypesAreRequired} is <code>true</code> the artifact
+    * being rendered is required to be of one of the artifact types in {@link #applicabilityTestArtifactTypes}. When
+    * {@link #artifactTypesAreRequired} is <code>false</code> the artifact being rendered must not be of one of the
+    * artifact types in {@link #applicabilityTestArtifactTypes}.
+    */
+
+   protected ArtifactTypeToken[] applicabilityTestArtifactTypes;
+
+   /**
+    * {@link IRenderer} implementations extending {@link FileSystemRenderer} and using the method
+    * {@link #getBaseApplicabilityRating} must set this member to the test sense for the artifact types in
+    * {@link #applicabilityTestArtifactTypes} as follows:
+    * <dl>
+    * <dt><code>true</code></dt>
+    * <dd>to require the artifact being rendered is of an artifact type in {@link #applicabilityTestArtifactTypes}.</dd>
+    * <dt><code>false</code></dt>
+    * <dd>to require the artifact being rendered is not of an artifact type in
+    * {@link #applicabilityTestArtifactTypes}.</dd>
+    * </dl>
+    */
+
+   protected boolean artifactTypesAreRequired;
+
+   /**
+    * The default file extension for the primary artifact type handled by the renderer.
+    *
+    * @implSpec {@link IRenderer} implementations that extend the {@link FileSystemRenderer} class that use the method
+    * {@link #getBaseApplicabilityRating} must set a value for this member when constructed.
+    */
+
+   protected String defaultFileExtension;
+
+   /**
+    * Amount to adjust the renderer applicability rating when the artifact being rendered is not of the type specified
+    * by {@link #rendererArtifactTypeToken}.
+    *
+    * @implSpec {@link IRenderer} implementations that extend the {@link FileSystemRenderer} class that use the method
+    * {@link #getBaseApplicabilityRating} must set a value for this member when constructed.
+    */
+
+   protected int notRendererArtifactTypeDelta;
+
+   /**
+    * The value of the optional {@link RendererOption#OPEN_OPTION} that will boost the renderer's applicability rating
+    * for {@link PresentationType#DIFF}.
+    *
+    * @implSpec {@link IRenderer} implementations that extend the {@link FileSystemRenderer} class that use the method
+    * {@link #getBaseApplicabilityRating} must set a value for this member when constructed.
+    */
+
+   protected String openInRendererOptionValue;
+
+   /**
+    * The {@link PresentationType}s the renderer is not applicable for.
+    *
+    * @implSpec {@link IRenderer} implementations that extend the {@link FileSystemRenderer} class that use the method
+    * {@link #getBaseApplicabilityRating} must set a value for this member when constructed.
+    */
+
+   protected PresentationType[] presentationTypeKnockOuts;
+
+   /**
+    * The attribute types that the renderer is not applicable for when the presentation type is
+    * {@link PresentationType#PREVIEW}.
+    *
+    * @implSpec {@link IRenderer} implementations that extend the {@link FileSystemRenderer} class that use the method
+    * {@link #getBaseApplicabilityRating} must set a value for this member when constructed.
+    */
+
+   protected AttributeTypeToken[] previewAttributeTypeKnockOuts;
+
+   /**
+    * The main type of artifact the renderer is for.
+    *
+    * @implSpec {@link IRenderer} implementations that extend the {@link FileSystemRenderer} class that use the method
+    * {@link #getBaseApplicabilityRating} must set a value for this member when constructed.
+    */
+
+   protected ArtifactTypeToken rendererArtifactTypeToken;
+
+   /**
+    * The expected main content attribute of the artifact being rendered.
+    *
+    * @implSpec {@link IRenderer} implementations that extend the {@link FileSystemRenderer} class that use the method
+    * {@link #getBaseApplicabilityRating} must set a value for this member when constructed.
+    */
+
+   protected AttributeTypeToken rendererContentAttributeType;
+
+   /**
     * If a renderer sub-thread's outer exception handler catches an exception, is is saved in this class global.
     */
 
@@ -85,49 +179,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       this.rendererThread = null;
       this.rendererException = null;
       this.rendererPipeCloseException = null;
-   }
-
-   /**
-    * Gets the the program icon for the application associated with the type for the <code>artifact</code> or the
-    * default icon for the artifact type.
-    *
-    * @param artifact the {@link Artifact} to get an application icon for.
-    * @return When a program icon is located for the {@link Artifact} an {@link Optional} containing the icon
-    * {@link ImageDescriptor}; otherwise, and empty {@link Optional}.
-    */
-
-   protected @NonNull Optional<ImageDescriptor> getArtifactBasedImageDescriptor(@Nullable Artifact artifact) {
-
-      if (Objects.isNull(artifact)) {
-         return Optional.empty();
-      }
-
-      var associatedExtension = this.getAssociatedExtension(artifact);
-
-      if (Objects.isNull(associatedExtension)) {
-         return Optional.empty();
-      }
-
-      //@formatter:off
-      return
-         ImageManager
-            .safeGetProgramImageDescriptor( associatedExtension )
-            .or( () -> ArtifactImageManager.getImageDescriptorNoDefault( artifact ) );
-      //@formatter:on
-   }
-
-   @Override
-   protected @NonNull MenuCmdDef getArtifactBasedMenuCommand(@NonNull MenuCmdDef menuCmdDef, @Nullable Artifact artifact) {
-
-      Objects.requireNonNull(menuCmdDef);
-
-      //@formatter:off
-      return
-         this
-            .getArtifactBasedImageDescriptor( artifact )
-            .map( menuCmdDef::newInstance )
-            .orElse( menuCmdDef );
-      //@formatter:on
    }
 
    /**
@@ -216,7 +267,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       this.rendererThread = null;
    }
 
-   public @NonNull IFile copyToNewFile(Artifact artifact, @NonNull PresentationType presentationType, @NonNull IFile file) {
+   public @NonNull IFile copyToNewFile(Artifact artifact, @NonNull PresentationType presentationType,
+      @NonNull IFile file) {
 
       Objects.requireNonNull(presentationType,
          "FileSystemRender::renderToFile, parameter \"presentationType\" cannot be null.");
@@ -260,6 +312,50 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                      e
                   );
       }
+   }
+
+   /**
+    * Gets the the program icon for the application associated with the type for the <code>artifact</code> or the
+    * default icon for the artifact type.
+    *
+    * @param artifact the {@link Artifact} to get an application icon for.
+    * @return When a program icon is located for the {@link Artifact} an {@link Optional} containing the icon
+    * {@link ImageDescriptor}; otherwise, and empty {@link Optional}.
+    */
+
+   protected @NonNull Optional<ImageDescriptor> getArtifactBasedImageDescriptor(@Nullable Artifact artifact) {
+
+      if (Objects.isNull(artifact)) {
+         return Optional.empty();
+      }
+
+      var associatedExtension = this.getAssociatedExtension(artifact);
+
+      if (Objects.isNull(associatedExtension)) {
+         return Optional.empty();
+      }
+
+      //@formatter:off
+      return
+         ImageManager
+            .safeGetProgramImageDescriptor( associatedExtension )
+            .or( () -> ArtifactImageManager.getImageDescriptorNoDefault( artifact ) );
+      //@formatter:on
+   }
+
+   @Override
+   protected @NonNull MenuCmdDef getArtifactBasedMenuCommand(@NonNull MenuCmdDef menuCmdDef,
+      @Nullable Artifact artifact) {
+
+      Objects.requireNonNull(menuCmdDef);
+
+      //@formatter:off
+      return
+         this
+            .getArtifactBasedImageDescriptor( artifact )
+            .map( menuCmdDef::newInstance )
+            .orElse( menuCmdDef );
+      //@formatter:on
    }
 
    /**
@@ -311,6 +407,238 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    public abstract Program getAssociatedProgram(Artifact artifact);
 
    /**
+    * Generates a Renderer applicability rating for an artifact, presentation type, and set of renderer options.
+    *
+    * @implNote This method is intended to be called by {@link IRenderer} implementations that extend the
+    * {@link FileSystemRenderer} class from their override of the method
+    * {@link DefaultArtifactRenderer#getApplicabilityRating}. This method is not provided as an override of
+    * {@link DefaultArtifactRenderer#getApplicabilityRating} so that implementations that do not override the method
+    * {@link DefaultArtifactRenderer#getApplicabilityRating} will generate their applicability rating with the default
+    * method.
+    * @implSpec {@link IRenderer} implementations that use this method must provide values for the following members
+    * during construction:
+    * <ul>
+    * <li>{@link #presentationTypeKnockOuts}</li>
+    * <li>{@link #previewAttributeTypeKnockOuts}</li>
+    * <li>{@link #artifactTypesAreRequired}</li>
+    * <li>{@link #applicabilityTestArtifactTypes}</li>
+    * <li>{@link #defaultFileExtension}</li>
+    * <li>{@link #openInRendererOptionValue}</li>
+    * <li>{@link #rendererArtifactTypeToken}</li>
+    * <li>{@link #notRendererArtifactTypeDelta}</li>
+    * <li>{@link #rendererContentAttributeType}</li>
+    * </ul>
+    * @param presentationType the type of presentation to be generated.
+    * @param artifact the artifact the presentation is to be generated for.
+    * @param rendererOptions the rendering options for the presentation.
+    * @return an integer applicability rating for the renderer.
+    */
+
+   //@formatter:off
+   protected int
+      getBaseApplicabilityRating
+         (
+            PresentationType     presentationType,
+            Artifact             artifact,
+            RendererMap          rendererOptions
+         ) {
+
+      var rating =
+         this.getBaseApplicabilityRatingInternal
+            (
+               presentationType,
+               artifact,
+               rendererOptions
+            );
+
+      if( !artifact.isOfType( rendererArtifactTypeToken ) ) {
+         rating += notRendererArtifactTypeDelta;
+      }
+
+      return rating;
+
+   }
+   //@formatter:on
+
+   /**
+    * Generates a Renderer applicability rating for an artifact, presentation type, and set of renderer options.
+    *
+    * @param presentationType the type of presentation to be generated.
+    * @param artifact the artifact the presentation is to be generated for.
+    * @param rendererOptions the rendering options for the presentation.
+    * @param rendererContentAttributeType the expected main content attribute of the artifact being rendered.
+    * @return an integer applicability rating for the renderer.
+    */
+
+   //@formatter:off
+   private int
+      getBaseApplicabilityRatingInternal
+         (
+            PresentationType     presentationType,
+            Artifact             artifact,
+            RendererMap          rendererOptions
+         ) {
+
+     /*
+      * Knock Outs, NO_MATCH (-1)
+      */
+
+     if(     presentationType.isOneOf( this.presentationTypeKnockOuts )
+         || this.artifactTypesAreRequired ^ artifact.isOfType( this.applicabilityTestArtifactTypes ) ) {
+
+        return IRenderer.NO_MATCH;
+     }
+
+
+     /*
+      * SPECIALIZED_KEY_MATCH (70)
+      */
+
+     /*
+      * SPECIALIZED_MATCH (60)
+      */
+
+     /*
+      * PRESENTATION_TYPE_OPTION_MATCH (55)
+      */
+
+     if(
+             presentationType.matches
+                (
+                   PresentationType.DIFF,
+                   PresentationType.PREVIEW
+                )
+         && !artifact.isAttributeTypeValid
+                (
+                   rendererContentAttributeType
+                )
+       )
+     {
+        switch( presentationType ) {
+           case DIFF:
+              if(
+                     rendererOptions.isRendererOptionSet( RendererOption.OPEN_OPTION )
+                  && this.openInRendererOptionValue.equals( rendererOptions.getRendererOptionValue( RendererOption.OPEN_OPTION ) )
+                ) {
+                 return IRenderer.PRESENTATION_TYPE_OPTION_MATCH;
+              }
+              break;
+           case PREVIEW:
+              if(
+                    artifact.areAllAttributeTypesInvalid( this.previewAttributeTypeKnockOuts )
+                ) {
+                     return IRenderer.PRESENTATION_TYPE_OPTION_MATCH;
+                  }
+              break;
+           default:
+        }
+     }
+
+     /*
+      * PRESENTATION_SUB_TYPE_MATCH (50)
+      */
+
+     if(
+            presentationType.matches
+               (
+                  PresentationType.DEFAULT_OPEN,
+                  PresentationType.PREVIEW
+               )
+         && artifact.isAttributeTypeValid( this.rendererContentAttributeType )
+         && ( artifact.getAttributeCount( this.rendererContentAttributeType ) > 0 )
+       )  {
+        return IRenderer.PRESENTATION_SUBTYPE_MATCH;
+     }
+
+     if(
+            !presentationType.matches
+                (
+                   PresentationType.DEFAULT_OPEN,
+                   PresentationType.PREVIEW
+                )
+         && artifact.isAttributeTypeValid( this.rendererContentAttributeType )
+       ) {
+        return IRenderer.PRESENTATION_SUBTYPE_MATCH;
+     }
+
+     if(
+        presentationType.matches
+           (
+              PresentationType.DIFF
+           )
+      )
+    {
+       try {
+          if(
+               artifact
+                  .getSoleAttributeValueAsString
+                     (
+                        CoreAttributeTypes.Extension,
+                        Strings.EMPTY_STRING
+                     )
+                  .contains( this.defaultFileExtension )
+            ) {
+             return IRenderer.PRESENTATION_SUBTYPE_MATCH;
+          }
+       } catch( Exception e ) {
+          //don't match
+       }
+    }
+
+     /*
+      * PRESENTATION_TYPE (40)
+      */
+
+     /*
+      * SUBTYPE_TYPE_MATCH (30)
+      */
+
+     if(
+             presentationType.matches
+                (
+                   PresentationType.DEFAULT_OPEN,
+                   PresentationType.PREVIEW
+                )
+          && artifact.isAttributeTypeValid
+                (
+                   this.rendererContentAttributeType
+                )
+          && ( artifact.getAttributeCount( this.rendererContentAttributeType ) == 0 )
+       ) {
+        return IRenderer.SUBTYPE_TYPE_MATCH;
+     }
+
+     /*
+      * GENERAL_MATCH (10)
+      */
+
+     /*
+      * BASE_MATCH (5)
+      */
+
+     if(
+             presentationType.matches
+                (
+                   PresentationType.DIFF
+                )
+         && !artifact.isAttributeTypeValid
+                (
+                   this.rendererContentAttributeType
+                )
+       ) {
+        return IRenderer.BASE_MATCH;
+     }
+
+     /*
+      * Anything Else, NO_MATCH (-1)
+      */
+
+     return IRenderer.NO_MATCH;
+     //@formatter:on
+
+   }
+
+   /**
     * Gets the file system extension for the type of file that would likely be used for the type of data stored in the
     * {@link Artifact} main content {@link Attribute} for the most common type of {@link Artifact} processed by the
     * {@link IRenderer} implementation.
@@ -324,15 +652,16 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
    public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts);
 
-   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType);
+   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType);
 
    /**
     * {@inheritDoc}
     * <p>
     *
     * @implNote When the {@link List} of {@link Artifact} is <code>null</code> or empty, processing still needs to
-    * occur. The {@link MSWordTemplateClientRenderer} needs to produce an empty Word document for artifact comparisons
-    * where there is a base artifact but not a compare to artifact.
+    * occur. The {@link WordTemplateRenderer} needs to produce an empty Word document for artifact comparisons where
+    * there is a base artifact but not a compare to artifact.
     */
 
    @Override
@@ -397,71 +726,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
          throw new OseeCoreException(message, e);
       }
-   }
-
-   private List<Artifact> setRendererOptions(List<Artifact> artifacts) {
-
-      /*
-       * Get the branch token and ensure all artifacts are from the same branch. artifactsNoNull will be an empty list
-       * if the input artifact list was null, empty, or only has null entries.
-       */
-
-      List<Artifact> artifactsNoNulls = new ArrayList<>(artifacts.size());
-
-      var branchTokens = RenderingUtil.getBranchTokens(artifacts, artifactsNoNulls);
-
-      if (branchTokens.size() > 1) {
-         //@formatter:off
-         throw
-            new IllegalArgumentException
-                   (
-                      new Message()
-                             .title( "FileSystemRenderer::renderToFile, All of the artifacts must be on the same branch for mass processing." )
-                             .indentInc()
-                             //.segment       ( "PresentationType", presentationType.name() )
-                             .segmentIndexed( "Branches Found",   branchTokens, BranchToken::getShortName )
-                             .toString()
-                   );
-         //@formatter:on
-      }
-
-      if (artifactsNoNulls.isEmpty()) {
-         this.setRendererOption(RendererOption.BRANCH, BranchId.valueOf(Id.SENTINEL));
-         this.setRendererOption(RendererOption.VIEW, ArtifactId.SENTINEL);
-         this.setRendererOption(RendererOption.BRANCH_NAME, "SENTINEL");
-
-         return artifactsNoNulls;
-      }
-
-      var branchTokenIterator = branchTokens.iterator();
-
-      //@formatter:off
-      var branchToken =
-         branchTokenIterator.hasNext()
-            ? branchTokenIterator.next()
-            : null;
-      //@formatter:on
-
-      var branchId = BranchId.valueOf(branchToken.getId());
-      var viewId = ArtifactId.valueOf(branchToken.getViewId());
-
-      //@formatter:off
-      var branchName =
-         Objects.nonNull( branchToken )
-            ? branchToken.getName()
-            : null;
-
-      branchName =
-         Strings.isValidAndNonBlank(branchName)
-            ? branchName
-            : branchId.getIdString();
-      //@formatter:on
-
-      this.setRendererOption(RendererOption.BRANCH, branchId);
-      this.setRendererOption(RendererOption.VIEW, viewId);
-      this.setRendererOption(RendererOption.BRANCH_NAME, branchName);
-
-      return artifactsNoNulls;
    }
 
    /**
@@ -659,7 +923,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * @throws OseeCoreException when unable to create the {@link IFile} handle or an error occurs writing the file.
     */
 
-   private IFile renderToFileInternal(List<Artifact> artifacts, PresentationType presentationType, String pathPrefix, InputStream renderInputStream) {
+   private IFile renderToFileInternal(List<Artifact> artifacts, PresentationType presentationType, String pathPrefix,
+      InputStream renderInputStream) {
 
       /*
        * Get a handle to the content file. This creates all the sub-directories in the user workspace to where the
@@ -723,7 +988,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          this.checkRenderThreadExceptions();
       }
 
-      if (presentationType.matches(PresentationType.PREVIEW, PresentationType.PREVIEW_SERVER)) {
+      if (presentationType.matches(PresentationType.PREVIEW)) {
 
          monitor.markAsReadOnly(contentFile);
 
@@ -753,6 +1018,71 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       }
 
       return contentFile;
+   }
+
+   private List<Artifact> setRendererOptions(List<Artifact> artifacts) {
+
+      /*
+       * Get the branch token and ensure all artifacts are from the same branch. artifactsNoNull will be an empty list
+       * if the input artifact list was null, empty, or only has null entries.
+       */
+
+      List<Artifact> artifactsNoNulls = new ArrayList<>(artifacts.size());
+
+      var branchTokens = RenderingUtil.getBranchTokens(artifacts, artifactsNoNulls);
+
+      if (branchTokens.size() > 1) {
+         //@formatter:off
+         throw
+            new IllegalArgumentException
+                   (
+                      new Message()
+                             .title( "FileSystemRenderer::renderToFile, All of the artifacts must be on the same branch for mass processing." )
+                             .indentInc()
+                             //.segment       ( "PresentationType", presentationType.name() )
+                             .segmentIndexed( "Branches Found",   branchTokens, BranchToken::getShortName )
+                             .toString()
+                   );
+         //@formatter:on
+      }
+
+      if (artifactsNoNulls.isEmpty()) {
+         this.setRendererOption(RendererOption.BRANCH, BranchId.valueOf(Id.SENTINEL));
+         this.setRendererOption(RendererOption.VIEW, ArtifactId.SENTINEL);
+         this.setRendererOption(RendererOption.BRANCH_NAME, "SENTINEL");
+
+         return artifactsNoNulls;
+      }
+
+      var branchTokenIterator = branchTokens.iterator();
+
+      //@formatter:off
+      var branchToken =
+         branchTokenIterator.hasNext()
+            ? branchTokenIterator.next()
+            : null;
+      //@formatter:on
+
+      var branchId = BranchId.valueOf(branchToken.getId());
+      var viewId = ArtifactId.valueOf(branchToken.getViewId());
+
+      //@formatter:off
+      var branchName =
+         Objects.nonNull( branchToken )
+            ? branchToken.getName()
+            : null;
+
+      branchName =
+         Strings.isValidAndNonBlank(branchName)
+            ? branchName
+            : branchId.getIdString();
+      //@formatter:on
+
+      this.setRendererOption(RendererOption.BRANCH, branchId);
+      this.setRendererOption(RendererOption.VIEW, viewId);
+      this.setRendererOption(RendererOption.BRANCH_NAME, branchName);
+
+      return artifactsNoNulls;
    }
 
 }

@@ -76,9 +76,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
@@ -181,7 +181,7 @@ public class WordTemplateProcessorClient {
     * Used to read publishing options from the parent renderer and to write back publishing parameters.
     */
 
-   private MSWordTemplateClientRenderer renderer;
+   private WordTemplateRenderer renderer;
 
    private PublishingTemplate secondaryPublishingTemplate;
 
@@ -206,7 +206,9 @@ public class WordTemplateProcessorClient {
       this.secondaryPublishingTemplate = null;
    }
 
-   public WordTemplateProcessorClient configure(MSWordTemplateClientRenderer renderer, PublishingTemplate publishingTemplate, PublishingTemplate secondaryPublishingTemplate, IContainer folder, String outlineNumber, PresentationType presentationType) {
+   public WordTemplateProcessorClient configure(WordTemplateRenderer renderer, PublishingTemplate publishingTemplate,
+      PublishingTemplate secondaryPublishingTemplate, IContainer folder, String outlineNumber,
+      PresentationType presentationType) {
 
       /*
        * Publishing Template
@@ -748,7 +750,8 @@ public class WordTemplateProcessorClient {
       }
    }
 
-   private void processArtifact(Artifact artifact, PublishingAppender wordMl, String outlineType, PresentationType presentationType, DataRightContentBuilder dataRightContentBuilder) {
+   private void processArtifact(Artifact artifact, PublishingAppender wordMl, String outlineType,
+      PresentationType presentationType, DataRightContentBuilder dataRightContentBuilder) {
 
       if (isWordTemplateContentValid(artifact)) {
 
@@ -934,7 +937,9 @@ public class WordTemplateProcessorClient {
       processedArtifactTracker.clear();
    }
 
-   private void processAttribute(Artifact artifact, PublishingAppender wordMl, AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) {
+   private void processAttribute(Artifact artifact, PublishingAppender wordMl, AttributeOptions attributeOptions,
+      AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine,
+      String footer) {
 
       renderer.setRendererOption(RendererOption.ALL_ATTRIBUTES, allAttrs);
 
@@ -1213,7 +1218,8 @@ public class WordTemplateProcessorClient {
 
    }
 
-   private boolean renderArtifact(Artifact artifact, PresentationType presentationType, PublishingAppender wordMl, String outlineType, DataRightContentBuilder dataRightContentBuilder) {
+   private boolean renderArtifact(Artifact artifact, PresentationType presentationType, PublishingAppender wordMl,
+      String outlineType, DataRightContentBuilder dataRightContentBuilder) {
 
       boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
 
@@ -1283,7 +1289,8 @@ public class WordTemplateProcessorClient {
       }
    }
 
-   private CharSequence startOutlineSubSectionOverride(PublishingAppender wordMl, Artifact artifact, String headingText) {
+   private CharSequence startOutlineSubSectionOverride(PublishingAppender wordMl, Artifact artifact,
+      String headingText) {
       String paragraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
       if (paragraphNumber.isEmpty()) {
          ArtifactHierarchyComparator comparator = new ArtifactHierarchyComparator();

@@ -13,13 +13,8 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.node.TextNode;
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.markdown.MarkdownPublishingAppender;
 import org.eclipse.osee.framework.core.publishing.wordml.ValidateWordMl;
 import org.eclipse.osee.framework.core.publishing.wordml.WordMlPublishingAppender;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
@@ -125,10 +119,10 @@ public enum FormatIndicator implements ToMessage {
    private static final @NonNull EnumMap<@NonNull FormatIndicator, @NonNull String> formatNames;
 
    /**
-    * The JSON object name used to specify a publishing format.
+    * The JSON field name used for serializations of {@link FormatIndicator} objects.
     */
 
-   private static final String jsonObjectName = "formatIndicator";
+   static final String jsonObjectName = "formatIndicator";
 
    static {
 
@@ -141,52 +135,6 @@ public enum FormatIndicator implements ToMessage {
       formatIndicators = new HashMap<>();
 
       formatNames.entrySet().forEach((entry) -> formatIndicators.put(entry.getValue(), entry.getKey()));
-   }
-
-   /**
-    * Finds the {@link FormatIndicator} enumeration member specified by the JSON contained in the
-    * <code>jsonParser</code>.
-    *
-    * @param jsonParser a {@link JsonParser} object containing the JSON to deserialize.
-    * @return when the
-    * @throws NullPointerException when <code>jsonParser</code> is <code>null</code>.
-    * @throws IOException when reading from the <code>jsonParser</code> fails.
-    * @throws OseeCoreException when unable to obtain a {@link JsonNode} read tree from the {@link JsonParser}.
-    * @throws OseeCoreExcetpion when the format name in the JSON is not a known format name.
-    */
-
-   public static @NonNull FormatIndicator deserialize(@NonNull JsonParser jsonParser) throws IOException {
-
-      Objects.requireNonNull(jsonParser);
-
-      JsonNode readTree = jsonParser.getCodec().readTree(jsonParser);
-
-      if (Objects.isNull(readTree)) {
-         throw new OseeCoreException("FormatIndicator::deserialize, failed to get JsonNode readTree.");
-      }
-
-      //@formatter:off
-      var formatName =
-         ( readTree instanceof TextNode )
-            ? ((TextNode) readTree).asText()
-            : readTree.get(FormatIndicator.jsonObjectName).asText();
-
-      var formatIndicator =
-         FormatIndicator
-            .ofFormatName( formatName )
-            .orElseThrow
-               (
-                  () -> new OseeCoreException
-                               (
-                                  new Message()
-                                         .title( "FormatIndicator::deserialize, unknown format name." )
-                                         .indentInc()
-                                         .segment( "format name", formatName )
-                                         .toString()
-                               )
-               );
-      //@formatter:on
-      return Conditions.requireNonNull(formatIndicator);
    }
 
    /**
@@ -301,7 +249,8 @@ public enum FormatIndicator implements ToMessage {
     * @return a {@link PublishingAppender} implementation for the format.
     */
 
-   public @NonNull PublishingAppender createPublishingAppender(@NonNull Appendable appendable, int maximumOutlineDepth) {
+   public @NonNull PublishingAppender createPublishingAppender(@NonNull Appendable appendable,
+      int maximumOutlineDepth) {
       //@formatter:off
       return
          this.publishingAppenderFactory.create
@@ -379,27 +328,6 @@ public enum FormatIndicator implements ToMessage {
 
    public boolean isWordMl() {
       return this == FormatIndicator.WORD_ML;
-   }
-
-   /**
-    * Creates the JSON serialized form of the enumeration member.
-    *
-    * <pre>
-    * { "formatIndicator" : "&lt;format-name&gt;" }
-    * </pre>
-    *
-    * Where format-name is the format name used in the publishing and data rights configuration artifacts.
-    *
-    * @param jsonGenerator the {@link JsonGenerator} used for the serialization.
-    * @throws NullPointerException when <code>jsonGenerator</code> is <code>null</code>.
-    * @throws IOException when serialization fails.
-    */
-
-   public void serialize(@NonNull JsonGenerator jsonGenerator) throws IOException {
-      Objects.requireNonNull(jsonGenerator);
-      jsonGenerator.writeStartObject();
-      jsonGenerator.writeStringField(FormatIndicator.jsonObjectName, this.getFormatName());
-      jsonGenerator.writeEndObject();
    }
 
    /**

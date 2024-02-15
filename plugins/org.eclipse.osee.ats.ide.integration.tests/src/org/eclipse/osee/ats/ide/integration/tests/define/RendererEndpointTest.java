@@ -338,9 +338,9 @@ public class RendererEndpointTest {
       var publishingTemplateRequest =
          new PublishingTemplateRequest
                 (
-                   "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
+                   "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer",
                    null,
-                   PresentationType.PREVIEW_SERVER.name(),
+                   PresentationType.PREVIEW.name(),
                    RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),
                    FormatIndicator.WORD_ML
                 );

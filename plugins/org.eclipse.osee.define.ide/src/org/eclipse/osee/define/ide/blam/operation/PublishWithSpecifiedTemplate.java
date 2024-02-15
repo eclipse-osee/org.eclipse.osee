@@ -67,7 +67,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -462,7 +462,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          rendererOptionsMap.setRendererOption( OVERRIDE_DATA_RIGHTS, classification );
       }
 
-      MSWordTemplateClientRenderer renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
+      WordTemplateRenderer renderer = new WordTemplateRenderer(rendererOptionsMap);
 
       Boolean isDiff = (Boolean) rendererOptionsMap.getRendererOptionValue(PUBLISH_DIFF);
 

@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils;
 
+import java.util.List;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 
 /**
@@ -59,6 +61,12 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
    private Branch testBranch;
 
    /**
+    * Saves the artifact specification to be applied to the branch.
+    */
+
+   List<? extends ArtifactSpecificationRecord> artifactSpecificationRecords;
+
+   /**
     * Creates a new {@link BranchSpecificationRecordWrapper} with the provided <code>branchSpecificationRecord</code>.
     *
     * @param branchSpecificationRecord the {@link BranchSpecificationRecord} implementation to be wrapped.
@@ -66,19 +74,26 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
     */
 
    BranchSpecificationRecordWrapper(@NonNull BranchSpecificationRecord branchSpecificationRecord) {
-      //@formatter:off
       this.branchSpecificationRecord =
-         Conditions.requireNonNull
-            (
-               branchSpecificationRecord,
-               "BranchSpecificationRecordWrapper",
-               "new",
-               "branchSpecificationRecord"
-            );
-      //@formatter:on
+         Conditions.requireNonNull(branchSpecificationRecord, "branchSpecificationRecord");
       this.relationEndpoint = null;
       this.parentTestBranch = null;
       this.testBranch = null;
+      this.artifactSpecificationRecords = null;
+   }
+
+   public void setArtifactSpecificationRecords(MapList<Integer, ? extends ArtifactSpecificationRecord> builderRecords) {
+      this.artifactSpecificationRecords = builderRecords.get(this.branchSpecificationRecord.getIdentifier());
+   }
+
+   /**
+    * Gets the {@link ArtifactSpecificationRecord}s to be applied to the branch.
+    *
+    * @return the {@link ArtifactSpecificationRecord}s to be applied to the branch.
+    */
+
+   public List<? extends ArtifactSpecificationRecord> getArtifactSpecificationRecords() {
+      return this.artifactSpecificationRecords;
    }
 
    /**
@@ -208,50 +223,13 @@ public class BranchSpecificationRecordWrapper implements BranchSpecificationReco
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public void setBranches(@NonNull Branch parentTestBranch, @NonNull Branch testBranch, @NonNull RelationEndpoint relationEndpoint) {
+   public void setBranches(@NonNull Branch parentTestBranch, @NonNull Branch testBranch,
+      @NonNull RelationEndpoint relationEndpoint) {
 
-      //@formatter:off
-      Conditions.requireNull
-         (
-            this.testBranch,
-            "BranchSpecificationRecordWrapper",
-            "setBranches",
-            "testBranch"
-         );
-      //@formatter:on
-
-      //@formatter:off
-      this.parentTestBranch =
-         Conditions.requireNonNull
-           (
-              parentTestBranch,
-              "BranchSpecificationRecordWrapper",
-              "setBranches",
-              "parentTestBranch"
-           );
-      //@formatter:on
-
-      //@formatter:off
-      this.testBranch =
-         Conditions.requireNonNull
-            (
-               testBranch,
-               "BranchSpecificationRecordWrapper",
-               "setBranches",
-               "testBranch"
-            );
-      //@formatter:on
-
-      //@formatter:off
-      this.relationEndpoint =
-         Conditions.requireNonNull
-            (
-               relationEndpoint,
-               "BranchSpecificationRecordWrapper",
-               "setBranches",
-               "relationEndpoint"
-            );
-      //@formatter:on
+      Conditions.requireNull(this.testBranch, "testBranch");
+      this.parentTestBranch = Conditions.requireNonNull(parentTestBranch, "parentTestBranch");
+      this.testBranch = Conditions.requireNonNull(testBranch, "testBranch");
+      this.relationEndpoint = Conditions.requireNonNull(relationEndpoint, "relationEndpoint");
    }
 
 }

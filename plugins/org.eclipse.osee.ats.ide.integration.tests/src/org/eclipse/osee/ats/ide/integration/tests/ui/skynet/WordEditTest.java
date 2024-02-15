@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
  * @author Paul K. Waldfogel
@@ -27,7 +27,7 @@ public class WordEditTest extends AbstractEditTest {
 
    public WordEditTest() {
       super(SAW_Bld_1, TEST_WORD_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirementMsWord,
-         new MSWordTemplateClientRenderer());
+         new WordTemplateRenderer());
    }
 
    @Override

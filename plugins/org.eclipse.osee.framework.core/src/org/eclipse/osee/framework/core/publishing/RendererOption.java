@@ -28,6 +28,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
+ * The Renderer Options that may be set via a Command Parameter Map are:
+ * <ul>
+ * <li>{@link RendererOption#TEMPLATE_OPTION}</li>
+ * <li>{@link RendererOption#OPEN_OPTION}</li>
+ * <li>{@link RendererOption#VIEW}</li>
+ * <li>{@link RendererOption#RENDER_LOCATION}</li>
+ * </ul>
+ *
  * @author Morgan E. Cook
  * @author Loren K. Ashley
  */
@@ -205,6 +213,12 @@ public enum RendererOption {
    RECURSE("Recurse", OptionType.Boolean),
 
    RECURSE_ON_LOAD("Recurse On Load", OptionType.Boolean),
+
+   /**
+    * This option is used to specify the desired rendering location.
+    */
+
+   RENDER_LOCATION("RenderLocation", OptionType.RenderLocation),
 
    RESULT_PATH_RETURN("resultPath", OptionType.String),
 

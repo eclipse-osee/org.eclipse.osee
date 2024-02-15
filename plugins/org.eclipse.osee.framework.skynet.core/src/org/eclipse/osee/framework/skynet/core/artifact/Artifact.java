@@ -342,13 +342,13 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       }
       return null;
    }
-   
+
    /**
     * @return return true if an with the given id exists on this artifact and is not deleted
     */
    public final boolean hasAttribute(Id id) {
       for (Attribute<?> attribute : attributes.getValues()) {
-         if(id.equals(attribute) && !attribute.getModificationType().isHardDeleted()) {
+         if (id.equals(attribute) && !attribute.getModificationType().isHardDeleted()) {
             return true;
          }
       }
@@ -544,6 +544,27 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          return true;
       }
       return artifactType.isValidAttributeType(attributeType);
+   }
+
+   /**
+    * Predicate to determine if all of the <code>attributeTypes</code> are invalid for the {@link Artifact}.
+    *
+    * @param attributeTypes the {@link AttributeTypeId}s to test.
+    * @return <code>true</code>, when all of the <code>attributeTypes</code> are invalid for the {@link Artifact};
+    * otherwise, <code>false</code>.
+    * @throws NullPointerException when <code>attributeTypes</code> is <code>null</code> or contains a <code>null</code>
+    * {@link AttributeTypeId}.
+    */
+
+   public final boolean areAllAttributeTypesInvalid(@NonNull AttributeTypeId... attributeTypes) {
+      Conditions.requireNonNull(attributeTypes);
+      for (var attributeType : attributeTypes) {
+         Conditions.requireNonNull(attributeType);
+         if (this.isAttributeTypeValid(attributeType)) {
+            return false;
+         }
+      }
+      return true;
    }
 
    /**
@@ -1788,7 +1809,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public final int getAttributeCount(AttributeTypeId attributeType) {
       return getAttributes(attributeType).size();
    }
-   
+
    public final int getAttributeCount() {
       return getAttributes().size();
    }

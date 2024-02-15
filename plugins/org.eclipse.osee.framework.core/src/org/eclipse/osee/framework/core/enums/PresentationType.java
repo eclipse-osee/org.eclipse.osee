@@ -14,11 +14,18 @@
 package org.eclipse.osee.framework.core.enums;
 
 import java.util.Objects;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
 /**
+ * An enumeration of the different types of presentations made to users by {@link IRenderer} implementations.
+ *
+ * @implSpec Members of this enumeration should be strictly limited to unique presentations. Do not add enumeration
+ * members to also specify how the data for a presentation is computed or where the computations for a presentation are
+ * performed.
  * @author Megumi Telles
  * @author Loren K. Ashley
  */
@@ -45,9 +52,11 @@ public enum PresentationType implements ToMessage {
    DIFF(PresentationType.COMPARE_FOLDER),
 
    /**
-    * Temporary files for comparison are created in the ".compare" sub-directory of the workspace.
+    * TODO: Publishing template selection determines whether attributes are contained within the output of rendered
+    * artifacts for the comparison. Remove this member and use the {@link RendererOption#TEMPLATE_OPTION} instead.
     */
 
+   @Deprecated
    DIFF_NO_ATTRIBUTES(PresentationType.COMPARE_FOLDER),
 
    F5_DIFF(null),
@@ -58,13 +67,6 @@ public enum PresentationType implements ToMessage {
     */
 
    PREVIEW(PresentationType.PREVIEW_FOLDER),
-
-   /**
-    * Open artifact read-only using an application specific editor with rendering done on the server. Temporary files
-    * are created in the ".compare" sub-directory of the workspace.
-    */
-
-   PREVIEW_SERVER(PresentationType.PREVIEW_FOLDER),
 
    /**
     * Temporary files for comparison are created in the ".compare" sub-directory of the workspace.
@@ -144,6 +146,30 @@ public enum PresentationType implements ToMessage {
    }
 
    /**
+    * Predicate to determine if the presentation type is one of the <code>presentationTypes</code>. This method does not
+    * throw an exception when <code>presentationTypes</code> is <code>null</code>.
+    *
+    * @param presentationTypes the {@link PresentationType}s to test for.
+    * @return <code>true</code> when this {@link PresentationType} member is one of the members in
+    * <code>presentationTypes</code>; otherwise, <code>false</code>.
+    */
+
+   public boolean isOneOf(PresentationType... presentationTypes) {
+
+      if (presentationTypes == null) {
+         return false;
+      }
+
+      for (var presentationType : presentationTypes) {
+         if (this == presentationType) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   /**
     * Predicate to determine if a workspace sub-directory is defined for the member.
     *
     * @return <code>true</code>, when a workspace sub-directory is defined for the member; otherwise,
@@ -153,6 +179,15 @@ public enum PresentationType implements ToMessage {
    public boolean isSubFolderDefined() {
       return Objects.nonNull(this.subFolder);
    }
+
+   /**
+    * Predicate to determine if the presentation type is one of the <code>presentationTypes</code>.
+    *
+    * @param presentationTypes the {@link PresentationType}s to test for.
+    * @return <code>true</code> when this {@link PresentationType} member is one of the members in
+    * <code>presentationTypes</code>; otherwise, <code>false</code>.
+    * @throws OseeArgumentException when <code>presentationTypes</code> is <code>null</code>.
+    */
 
    public boolean matches(PresentationType... presentationTypes) {
       Conditions.checkExpressionFailOnTrue(presentationTypes.length == 0, "presentationTypes to match cannot be empty");

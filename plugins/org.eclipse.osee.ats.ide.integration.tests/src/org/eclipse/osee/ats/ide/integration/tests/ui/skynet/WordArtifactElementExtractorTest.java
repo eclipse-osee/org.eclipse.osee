@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordExtractorData;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordImageArtifactElementExtractor;
 import org.junit.Assert;
@@ -94,7 +94,7 @@ public class WordArtifactElementExtractorTest {
       Assert.assertTrue(artElements.size() == 1);
 
       String actual = WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertEquals("Middle change", actual);
    }
 
@@ -106,7 +106,7 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
       String value = WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertTrue("I am change".equals(value));
    }
 
@@ -118,7 +118,7 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(artElements.size() == 1);
       Assert.assertTrue("End change".equals(WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
+         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
 
    @Test
@@ -141,7 +141,7 @@ public class WordArtifactElementExtractorTest {
       Assert.assertTrue(extractor.extractElements().size() == 1);
       Assert.assertTrue(
          "This is a test-x".equals(WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-            MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
+            WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
 
    @Test
@@ -152,7 +152,7 @@ public class WordArtifactElementExtractorTest {
       Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       String artContent = WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         MSWordTemplateClientRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
+         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertTrue("Got*" + artContent, "this This is a test that".equals(artContent));
    }
 
@@ -194,7 +194,7 @@ public class WordArtifactElementExtractorTest {
       throws IOException, XMLStreamException {
       for (int i = 0; i < actuals.size(); i++) {
          String artContent = WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-            MSWordTemplateClientRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
+            WordTemplateRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
          Assert.assertTrue("expected:*" + expected.get(i) + "* got:*" + artContent + "*",
             expected.get(i).equals(artContent));
       }

@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.core.data.ArtifactReadableDeserializer;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchIdDeserializer;
+import org.eclipse.osee.framework.core.renderer.RenderLocation;
+import org.eclipse.osee.framework.core.renderer.RenderLocationDeserializer;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
 
@@ -42,7 +44,7 @@ public enum OptionType {
            IsCollection.NO,
            CanCopy.NO,
            new ArtifactReadableDeserializer(),
-           null
+           NO_DEFAULT_VALUE()
         ),
 
      ArtifactId
@@ -64,7 +66,7 @@ public enum OptionType {
            IsCollection.YES,
            CanCopy.YES,
            null,
-           null
+           NO_DEFAULT_VALUE()
         ),
 
      Boolean
@@ -72,7 +74,7 @@ public enum OptionType {
            Boolean.class,
            IsCollection.NO,
            CanCopy.YES,
-           null,
+           NO_DESERIALIZER(),
            false
         ),
 
@@ -99,8 +101,8 @@ public enum OptionType {
            Integer.class,
            IsCollection.NO,
            CanCopy.YES,
-           null,
-           null
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
         ),
 
      LinkType
@@ -108,8 +110,8 @@ public enum OptionType {
            LinkType.class,
            IsCollection.NO,
            CanCopy.YES,
-           null,
-           null
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
         ),
 
      OutputStream
@@ -117,8 +119,8 @@ public enum OptionType {
            OutputStream.class,
            IsCollection.NO,
            CanCopy.NO,
-           null,
-           null
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
         ),
 
      ProgressMonitor
@@ -126,8 +128,17 @@ public enum OptionType {
            null,
            IsCollection.NO,
            CanCopy.NO,
-           null,
-           null
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
+        ),
+
+     RenderLocation
+        (
+           RenderLocation.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           new RenderLocationDeserializer(),
+           NO_DEFAULT_VALUE()
         ),
 
      String
@@ -135,8 +146,8 @@ public enum OptionType {
            String.class,
            IsCollection.NO,
            CanCopy.YES,
-           null,
-           null
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
         ),
 
      Transaction
@@ -144,8 +155,8 @@ public enum OptionType {
            null,
            IsCollection.NO,
            CanCopy.YES,
-           null,
-           null
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
         );
    //@formatter:on
 
@@ -181,6 +192,26 @@ public enum OptionType {
       boolean isYes() {
          return this == YES;
       }
+   }
+
+   /**
+    * Provides a named <code>null</code> for enumeration member initialization.
+    *
+    * @return <code>null</code>.
+    */
+
+   private static Object NO_DEFAULT_VALUE() {
+      return null;
+   }
+
+   /**
+    * Provides a named <code>null</code> for enumeration member initialization.
+    *
+    * @return <code>null</code>.
+    */
+
+   private static JsonDeserializer<?> NO_DESERIALIZER() {
+      return null;
    }
 
    /**
@@ -227,7 +258,8 @@ public enum OptionType {
     * @param defaultValue the default value for the {@link OptionType} member.
     */
 
-   private OptionType(Class<?> implementationClass, IsCollection isCollection, CanCopy canCopy, JsonDeserializer<?> jsonDeserializer, Object defaultValue) {
+   private OptionType(Class<?> implementationClass, IsCollection isCollection, CanCopy canCopy,
+      JsonDeserializer<?> jsonDeserializer, Object defaultValue) {
       this.implementationClass = implementationClass;
       this.isCollection = isCollection.isYes();
       this.canCopy = canCopy.isYes();

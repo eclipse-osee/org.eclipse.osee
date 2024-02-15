@@ -22,15 +22,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
+import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -54,7 +57,23 @@ import org.eclipse.swt.program.Program;
 
 public class HTMLRenderer extends FileSystemRenderer {
 
-   private final IComparator comparator;
+   /**
+    * The renderer will only be applicable for artifacts of the artifact types in this array.
+    */
+
+   //@formatter:off
+   private static final ArtifactTypeToken[]  APPLICABILITY_TEST_ARTIFACT_TYPES =
+      new ArtifactTypeToken[]
+      {
+         CoreArtifactTypes.HtmlArtifact
+      };
+   //@formatter:on
+
+   /**
+    * The type of the artifact being rendered must be in the {@link APPLICABILITY_TEST_ARTIFACT_TYPES} array.
+    */
+
+   private static final boolean ARTIFACT_TYPES_ARE_REQUIRED = true;
 
    /**
     * The likely file system extension for files that hold the same type of data as is stored in main content
@@ -62,6 +81,47 @@ public class HTMLRenderer extends FileSystemRenderer {
     */
 
    private static final String DEFAULT_ASSOCIATED_FILE_EXTENSION = "htm";
+
+   /**
+    * A delta applied to the renderer applicability rating when the artifact the rating was generated for is not of the
+    * {@link #RENDERER_ARTIFACT_TYPE_TOKEN} type.
+    */
+
+   private static final int NOT_RENDERER_ARTIFACT_TYPE_DELTA = -2;
+
+   /**
+    * The {@link PresentationType}s the renderer is not applicable for.
+    */
+
+   //@formatter:off
+   private static final PresentationType[]   PRESENTATION_TYPE_KNOCK_OUTS =
+      new PresentationType[]
+      {
+         PresentationType.GENERALIZED_EDIT,
+         PresentationType.GENERAL_REQUESTED
+      };
+   //@formatter:on
+
+   /**
+    * No attribute types are invalid when the presentation type is {@link PresentationType#PREVIEW}.
+    */
+
+   //@formatter:off
+   private static final AttributeTypeToken[] PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS =
+      new AttributeTypeToken[] {};
+   //@formatter:on
+
+   /**
+    * The preferred/expected type of artifact the renderer is for.
+    */
+
+   private static final ArtifactTypeToken RENDERER_ARTIFACT_TYPE_TOKEN = CoreArtifactTypes.HtmlArtifact;
+
+   /**
+    * The expected main content attribute for the artifact being rendered.
+    */
+
+   private static final AttributeTypeToken RENDERER_CONTENT_ATTRIBUTE_TYPE = CoreAttributeTypes.HtmlContent;
 
    /**
     * A short description of the type of documents processed by the renderer.
@@ -81,13 +141,33 @@ public class HTMLRenderer extends FileSystemRenderer {
 
    private static final String RENDERER_NAME = "HTML Renderer";
 
-   public HTMLRenderer(RendererMap rendererOptions) {
-      super(rendererOptions);
-      this.comparator = new HTMLDiffRenderer();
-   }
+   /**
+    * There is not boost value of the {@link RendererOption#OPEN_OPTION} that will be applied when the presentation type
+    * is {@link PresentationType#DIFF}.
+    */
+
+   private static final String RENDERER_OPTION_OPEN_IN_VALUE = Strings.EMPTY_STRING;
+
+   private final IComparator comparator;
 
    public HTMLRenderer() {
       this(null);
+   }
+
+   public HTMLRenderer(RendererMap rendererOptions) {
+      super(rendererOptions);
+      this.comparator = new HTMLDiffRenderer();
+      //@formatter:off
+      super.presentationTypeKnockOuts      = HTMLRenderer.PRESENTATION_TYPE_KNOCK_OUTS;
+      super.previewAttributeTypeKnockOuts  = HTMLRenderer.PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS;
+      super.artifactTypesAreRequired       = HTMLRenderer.ARTIFACT_TYPES_ARE_REQUIRED;
+      super.applicabilityTestArtifactTypes = HTMLRenderer.APPLICABILITY_TEST_ARTIFACT_TYPES;
+      super.defaultFileExtension           = HTMLRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+      super.openInRendererOptionValue      = HTMLRenderer.RENDERER_OPTION_OPEN_IN_VALUE;
+      super.rendererArtifactTypeToken      = HTMLRenderer.RENDERER_ARTIFACT_TYPE_TOKEN;
+      super.notRendererArtifactTypeDelta   = HTMLRenderer.NOT_RENDERER_ARTIFACT_TYPE_DELTA;
+      super.rendererContentAttributeType   = HTMLRenderer.RENDERER_CONTENT_ATTRIBUTE_TYPE;
+      //@formatter:on
    }
 
    @Override
@@ -96,26 +176,17 @@ public class HTMLRenderer extends FileSystemRenderer {
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "HTML Preview", icon));
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
-      InputStream stream = null;
-      StringBuilder content = new StringBuilder("");
-      try {
-         if (artifacts.size() == 1) {
-            Artifact artifact = artifacts.iterator().next();
-            renderHtmlArtifact(content, artifact);
-         } else {
-            for (Artifact artifact : artifacts) {
-               renderHtmlArtifact(content, artifact);
-               content.append("<br /><br /><br />");
-            }
-         }
-         stream = Streams.convertStringToInputStream(
-            NormalizeHtml.wrapAndNormalizeHTML(content.toString(), true, true, true), "UTF-8");
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-      return stream;
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
+
+      var rating = this.getBaseApplicabilityRating(presentationType, artifact, rendererOptions);
+
+      return rating;
    }
 
    @Override
@@ -128,15 +199,8 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
-      RendererMap rendererOptions) {
-      int toReturn = NO_MATCH;
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.HtmlContent)) {
-         if (presentationType.matches(PresentationType.PREVIEW, PresentationType.DIFF)) {
-            toReturn = PRESENTATION_SUBTYPE_MATCH;
-         }
-      }
-      return toReturn;
+   public IComparator getComparator() {
+      return comparator;
    }
 
    /**
@@ -146,27 +210,6 @@ public class HTMLRenderer extends FileSystemRenderer {
    @Override
    public String getDefaultAssociatedExtension() {
       return HTMLRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
-   }
-
-   @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
-      PresentationType presentationType) {
-      return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.PlainTextContent);
-   }
-
-   @Override
-   public HTMLRenderer newInstance() {
-      return new HTMLRenderer();
-   }
-
-   @Override
-   public HTMLRenderer newInstance(RendererMap rendererOptions) {
-      return new HTMLRenderer(rendererOptions);
-   }
-
-   @Override
-   public IComparator getComparator() {
-      return comparator;
    }
 
    /**
@@ -194,6 +237,44 @@ public class HTMLRenderer extends FileSystemRenderer {
    @Override
    public String getName() {
       return HTMLRenderer.RENDERER_NAME;
+   }
+
+   @Override
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
+      InputStream stream = null;
+      StringBuilder content = new StringBuilder("");
+      try {
+         if (artifacts.size() == 1) {
+            Artifact artifact = artifacts.iterator().next();
+            renderHtmlArtifact(content, artifact);
+         } else {
+            for (Artifact artifact : artifacts) {
+               renderHtmlArtifact(content, artifact);
+               content.append("<br /><br /><br />");
+            }
+         }
+         stream = Streams.convertStringToInputStream(
+            NormalizeHtml.wrapAndNormalizeHTML(content.toString(), true, true, true), "UTF-8");
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+      return stream;
+   }
+
+   @Override
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
+      return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.PlainTextContent);
+   }
+
+   @Override
+   public HTMLRenderer newInstance() {
+      return new HTMLRenderer();
+   }
+
+   @Override
+   public HTMLRenderer newInstance(RendererMap rendererOptions) {
+      return new HTMLRenderer(rendererOptions);
    }
 
    private void renderHtmlArtifact(StringBuilder output, Artifact artifact) throws Exception {

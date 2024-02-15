@@ -13,11 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
-import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATTRIBUTE;
-import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,14 +25,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -150,7 +149,84 @@ public class PlainTextRenderer extends FileSystemRenderer {
       this.comparator = new PlainTextDiffRenderer();
       this.menuCommands = PlainTextRenderer.menuCommandDefinitions;
       this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, PlainTextRenderer.CAN_STREAM);
+      //@formatter:off
+      super.presentationTypeKnockOuts      = PlainTextRenderer.PRESENTATION_TYPE_KNOCK_OUTS;
+      super.previewAttributeTypeKnockOuts  = PlainTextRenderer.PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS;
+      super.artifactTypesAreRequired       = PlainTextRenderer.ARTIFACT_TYPES_ARE_REQUIRED;
+      super.applicabilityTestArtifactTypes = PlainTextRenderer.APPLICABILITY_TEST_ARTIFACT_TYPES;
+      super.defaultFileExtension           = PlainTextRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+      super.openInRendererOptionValue      = PlainTextRenderer.RENDERER_OPTION_OPEN_IN_VALUE;
+      super.rendererArtifactTypeToken      = PlainTextRenderer.RENDERER_ARTIFACT_TYPE_TOKEN;
+      super.notRendererArtifactTypeDelta   = PlainTextRenderer.NOT_RENDERER_ARTIFACT_TYPE_DELTA;
+      super.rendererContentAttributeType   = PlainTextRenderer.RENDERER_CONTENT_ATTRIBUTE_TYPE;
+      //@formatter:on
    }
+
+   /**
+    * The {@link PresentationType}s the renderer is not applicable for.
+    */
+
+   //@formatter:off
+   private static final PresentationType[]   PRESENTATION_TYPE_KNOCK_OUTS =
+      new PresentationType[]
+      {
+         PresentationType.GENERALIZED_EDIT,
+         PresentationType.GENERAL_REQUESTED
+      };
+   //@formatter:on
+
+   /**
+    * No attribute types are invalid when the presentation type is {@link PresentationType#PREVIEW}.
+    */
+
+   //@formatter:off
+   private static final AttributeTypeToken[] PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS =
+      new AttributeTypeToken[] {};
+   //@formatter:on
+
+   /**
+    * The type of the artifact being rendered must be in the {@link APPLICABILITY_TEST_ARTIFACT_TYPES} array.
+    */
+
+   private static final boolean ARTIFACT_TYPES_ARE_REQUIRED = true;
+
+   /**
+    * The renderer will only be applicable for artifacts of the artifact types in this array.
+    */
+
+   //@formatter:off
+   private static final ArtifactTypeToken[]  APPLICABILITY_TEST_ARTIFACT_TYPES =
+      new ArtifactTypeToken[]
+      {
+         CoreArtifactTypes.PlainText
+      };
+   //@formatter:on
+
+   /**
+    * There is not boost value of the {@link RendererOption#OPEN_OPTION} that will be applied when the presentation type
+    * is {@link PresentationType#DIFF}.
+    */
+
+   private static final String RENDERER_OPTION_OPEN_IN_VALUE = Strings.EMPTY_STRING;
+
+   /**
+    * The preferred/expected type of artifact the renderer is for.
+    */
+
+   private static final ArtifactTypeToken RENDERER_ARTIFACT_TYPE_TOKEN = CoreArtifactTypes.PlainText;
+
+   /**
+    * A delta applied to the renderer applicability rating when the artifact the rating was generated for is not of the
+    * {@link #RENDERER_ARTIFACT_TYPE_TOKEN} type.
+    */
+
+   private static final int NOT_RENDERER_ARTIFACT_TYPE_DELTA = -2;
+
+   /**
+    * The expected main content attribute for the artifact being rendered.
+    */
+
+   private static final AttributeTypeToken RENDERER_CONTENT_ATTRIBUTE_TYPE = CoreAttributeTypes.PlainTextContent;
 
    /**
     * Renders the provided artifacts on the client by concatenating their plain text content. This render is not
@@ -164,14 +240,17 @@ public class PlainTextRenderer extends FileSystemRenderer {
       artifacts.stream().filter(Objects::nonNull).forEach((artifact) -> this.renderArtifact(artifact, writer));
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PlainTextContent)) {
-         if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN, PRODUCE_ATTRIBUTE, DIFF)) {
-            return PRESENTATION_SUBTYPE_MATCH;
-         }
-      }
-      return NO_MATCH;
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
+
+      var rating = this.getBaseApplicabilityRating(presentationType, artifact, rendererOptions);
+
+      return rating;
    }
 
    @Override
@@ -280,7 +359,8 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.PlainTextContent);
    }
 

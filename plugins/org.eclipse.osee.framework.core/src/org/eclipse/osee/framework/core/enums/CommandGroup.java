@@ -49,16 +49,6 @@ public enum CommandGroup {
       ),
 
    /**
-    * Group for commands that generate a preview using a server side generator.
-    */
-
-   PREVIEW_SERVER
-      (
-         PresentationType.PREVIEW_SERVER,
-         true                                       /* Read only commands */
-      ),
-
-   /**
     * Group for commands that show data using a specialized editor in read only mode.
     */
 
