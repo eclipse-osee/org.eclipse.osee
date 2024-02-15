@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,12 +19,14 @@ import { RouterLink } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { map, take } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
+import { UiService } from '@osee/shared/services';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-options',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		MatIconModule,
 		MatMenuModule,
 		MatButtonModule,
@@ -36,8 +38,13 @@ import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hier
 })
 export class ArtifactHierarchyOptionsComponent {
 	option$ = this.optionsService.options$;
+	branchId = toSignal(this.uiService.id);
+	branchType = toSignal(this.uiService.type);
 
-	constructor(private optionsService: ArtifactHierarchyOptionsService) {}
+	constructor(
+		private optionsService: ArtifactHierarchyOptionsService,
+		private uiService: UiService
+	) {}
 
 	toggleShowRelations() {
 		this.option$
