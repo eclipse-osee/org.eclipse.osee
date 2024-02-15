@@ -4,7 +4,7 @@ java_test(
         srcs = glob(["**/*.java"]),
         deps = ["java_deps",
 		"//org.eclipse.osee.framework.core.packages",
-		"//org.eclipse.osee.define.api",
+		"//org.eclipse.osee.define.rest.api",
 	        "//org.eclipse.osee.framework.skynet.core",
 		"//org.eclipse.osee.cache.admin",
 		"//org.eclipse.osee.jdbc",

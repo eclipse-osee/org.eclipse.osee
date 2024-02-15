@@ -10,7 +10,7 @@ java_library(
         resources = ["exsd_files","xml_files","xsd_files"],
         srcs = glob(["**/*.java"]),
         deps = ["java_deps",
-		"//org.eclipse.osee.framework.core.packages", "//org.eclipse.osee.define.api",
+		"//org.eclipse.osee.framework.core.packages", "//org.eclipse.osee.define.rest.api",
 		"//org.eclipse.osee.cache.admin",
 		"//org.eclipse.osee.jdbc",
 		"//org.eclipse.osee.jaxrs",

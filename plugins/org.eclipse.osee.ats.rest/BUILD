@@ -8,7 +8,7 @@ java_library(
 		"//org.eclipse.osee.ats.core",
                 "//org.eclipse.osee.framework.resource.management","//org.eclipse.osee.orcs",
 		"//org.eclipse.osee.orcs.core","//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.define",
-                "//org.eclipse.osee.define.api","//org.eclipse.osee.console.admin",
+                "//org.eclipse.osee.define.rest.api","//org.eclipse.osee.console.admin",
 		"//org.eclipse.osee.framework.core.server","//org.eclipse.osee.template.engine",
                 "//org.eclipse.osee.framework.core.model"],
         visibility = ["//visibility:public"]

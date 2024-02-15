@@ -8,7 +8,7 @@ java_test(
 	 	"//org.eclipse.osee.framework.ui.swt",
 	 	"//org.eclipse.osee.ote.define",
         	"//org.eclipse.osee.define.ide",
-	 	"//org.eclipse.osee.define.api",
+	 	"//org.eclipse.osee.define.rest.api",
 	 	"//org.eclipse.osee.ats.api",
 	 	"//org.eclipse.osee.app",
 	 	"//org.eclipse.osee.framework.server.ide",

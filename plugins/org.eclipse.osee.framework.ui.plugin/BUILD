@@ -30,7 +30,7 @@ java_library(
 	 	"//org.eclipse.osee.orcs.core",
 	 	"//org.eclipse.osee.orcs.rest",
 	 	"//org.eclipse.osee.activity",
-	 	"//org.eclipse.osee.define.api",
+	 	"//org.eclipse.osee.define.rest.api",
 	 	"//org.eclipse.osee.framework.resource.management"
 		],
 	visibility = ["//visibility:public"]
