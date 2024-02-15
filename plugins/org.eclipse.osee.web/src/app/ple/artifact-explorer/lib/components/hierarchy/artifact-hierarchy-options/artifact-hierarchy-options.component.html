@@ -10,19 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="option$ | async as options">
-	<div class="tw-flex tw-justify-end">
-		<a
-			routerLink="/ple/artifact/explorer"
-			target="_blank"
-			class="tw-pr-2 hover:tw-text-primary"
-			matTooltip="Click to open a new tab">
-			<mat-icon>open_in_new</mat-icon>
-		</a>
+@if (option$ | async; as options) {
+	<div class="tw-flex tw-justify-end tw-gap-2">
+		@if (branchId() && branchType()) {
+			<a
+				[routerLink]="'/ple/changes/' + branchType() + '/' + branchId()"
+				class="hover:tw-text-primary"
+				matTooltip="Open the change report for this branch">
+				<mat-icon>difference</mat-icon>
+			</a>
+		}
 		<button
-			class="tw-pr-2 hover:tw-text-primary"
+			class="hover:tw-text-primary"
 			[matMenuTriggerFor]="toggleHierarchyDisplaysMenu"
-			matTooltip="Click to view hierarchy display options">
+			matTooltip="Hierarchy display options">
 			<mat-icon>more_vert</mat-icon>
 		</button>
 	</div>
@@ -30,11 +31,8 @@
 		<button
 			mat-menu-item
 			(click)="toggleShowRelations()">
+			<span>{{ options.showRelations ? 'Hide' : 'Show' }} Relations</span>
 			<mat-icon>swap_horiz</mat-icon>
-			<span *ngIf="options.showRelations; else hideRel"
-				>Hide Relations</span
-			>
-			<ng-template #hideRel>Show Relations</ng-template>
 		</button>
 	</mat-menu>
-</ng-container>
+}
