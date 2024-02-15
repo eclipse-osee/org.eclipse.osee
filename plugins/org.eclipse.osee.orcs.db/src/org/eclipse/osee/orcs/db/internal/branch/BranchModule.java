@@ -100,24 +100,26 @@ public class BranchModule {
          }
 
          @Override
-         public void createBranch(CreateBranchData branchData, UserService userService) {
+         public void createBranch(CreateBranchData branchData, UserService userService, OrcsTokenService tokenService) {
             jdbcClient.runTransaction(new CreateBranchDatabaseTxCallable(jdbcClient, idManager, userService, branchData,
-               OseeCodeVersion.getVersionId()));
+               OseeCodeVersion.getVersionId(), tokenService));
             if (branchData.isInheritAccess()) {
                jdbcClient.runTransaction(new BranchInheritACLCallable(jdbcClient, branchData));
             }
          }
 
          @Override
-         public XResultData createBranchValidation(CreateBranchData branchData, UserService userService) {
+         public XResultData createBranchValidation(CreateBranchData branchData, UserService userService,
+            OrcsTokenService tokenService) {
             return new CreateBranchDatabaseTxCallable(jdbcClient, idManager, userService, branchData,
-               OseeCodeVersion.getVersionId()).checkPreconditions(jdbcClient.getConnection());
+               OseeCodeVersion.getVersionId(), tokenService).checkPreconditions(jdbcClient.getConnection());
          }
 
          @Override
-         public void createBranchCopyTx(CreateBranchData branchData, UserService userService) {
+         public void createBranchCopyTx(CreateBranchData branchData, UserService userService,
+            OrcsTokenService tokenService) {
             jdbcClient.runTransaction(new BranchCopyTxCallable(jdbcClient, idManager, userService, branchData,
-               OseeCodeVersion.getVersionId()));
+               OseeCodeVersion.getVersionId(), tokenService));
          }
 
          @Override

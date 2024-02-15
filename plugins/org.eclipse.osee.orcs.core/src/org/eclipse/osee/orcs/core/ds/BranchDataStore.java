@@ -41,9 +41,9 @@ public interface BranchDataStore {
 
    void addMissingApplicabilityFromParentBranch(BranchId branch);
 
-   void createBranch(CreateBranchData branchData, UserService userService);
+   void createBranch(CreateBranchData branchData, UserService userService, OrcsTokenService tokenService);
 
-   void createBranchCopyTx(CreateBranchData branchData, UserService userService);
+   void createBranchCopyTx(CreateBranchData branchData, UserService userService, OrcsTokenService tokenService);
 
    Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
@@ -73,5 +73,6 @@ public interface BranchDataStore {
 
    void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 
-   XResultData createBranchValidation(CreateBranchData branchData, UserService userService);
+   XResultData createBranchValidation(CreateBranchData branchData, UserService userService,
+      OrcsTokenService tokenService);
 }

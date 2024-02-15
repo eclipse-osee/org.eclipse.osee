@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -36,6 +37,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.orcs.OseeDb;
+import org.eclipse.osee.orcs.data.CommitBranchUtil;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
@@ -88,13 +90,15 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private final CreateBranchData newBranchData;
    private final Long buildVersionId;
    private final UserService userService;
+   private final OrcsTokenService tokenService;
 
-   public CreateBranchDatabaseTxCallable(JdbcClient jdbcClient, IdentityManager idManager, UserService userService, CreateBranchData branchData, Long buildVersionId) {
+   public CreateBranchDatabaseTxCallable(JdbcClient jdbcClient, IdentityManager idManager, UserService userService, CreateBranchData branchData, Long buildVersionId, OrcsTokenService tokenService) {
       this.jdbcClient = jdbcClient;
       this.idManager = idManager;
       this.newBranchData = branchData;
       this.buildVersionId = buildVersionId;
       this.userService = userService;
+      this.tokenService = tokenService;
    }
 
    public XResultData checkPreconditions(JdbcConnection connection) {
@@ -205,6 +209,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       populateBaseTransaction(0.30, connection, nextTransactionId, sourceTx);
 
       addMergeBranchEntry(0.20, connection);
+
    }
 
    private void addMergeBranchEntry(double workAmount, JdbcConnection connection) {
@@ -214,7 +219,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateBaseTransaction(double workAmount, JdbcConnection connection, TransactionId baseTxId, TransactionId sourceTxId) {
+   private void populateBaseTransaction(double workAmount, JdbcConnection connection, TransactionId baseTxId,
+      TransactionId sourceTxId) {
       if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
          HashSet<Long> gammas = new HashSet<>(100000);
          BranchId parentBranch = newBranchData.getParentBranch();
@@ -222,10 +228,25 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, OseeDb.TXS_TABLE.getInsertSql());
 
          if (newBranchData.getBranchType().isMergeBranch()) {
-            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
-               parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
-            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
-               parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
+            if (newBranchData.getMergeAddressingQueryId() == 0L) {
+               populateAddressingToCopy(connection, addressing, baseTxId, gammas,
+                  CommitBranchUtil.getAddressingConflictQuery(newBranchData.getParentBranch(),
+                     newBranchData.getMergeDestinationBranchId(), newBranchData.getMergeBaselineTransaction(),
+                     tokenService),
+                  newBranchData.getParentBranch(), newBranchData.getMergeBaselineTransaction(),
+                  newBranchData.getMergeDestinationBranchId(), newBranchData.getParentBranch(),
+                  newBranchData.getMergeBaselineTransaction(), newBranchData.getParentBranch(),
+                  newBranchData.getMergeBaselineTransaction(), newBranchData.getMergeDestinationBranchId(),
+                  newBranchData.getParentBranch(), newBranchData.getMergeBaselineTransaction(),
+                  newBranchData.getMergeDestinationBranchId(), newBranchData.getParentBranch(),
+                  newBranchData.getParentBranch(), newBranchData.getParentBranch(), newBranchData.getParentBranch(),
+                  newBranchData.getParentBranch());
+            } else {
+               populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
+                  parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
+               populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
+                  parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
+            }
          } else {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
                sourceTxId);
@@ -235,7 +256,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) {
+   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing,
+      TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQueryWithMaxFetchSize(query, parameters);
