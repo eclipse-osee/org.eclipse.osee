@@ -335,4 +335,13 @@ public interface AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<String> getPointValues();
 
+   @Path("{id}/approval")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public boolean checkApproval(@PathParam("id") String atsId);
+
+   @Path("{id}/approval")
+   @POST
+   @Produces(MediaType.APPLICATION_JSON)
+   public boolean setApproval(@PathParam("id") String atsId);
 }

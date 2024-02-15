@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -53,7 +54,9 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
@@ -85,6 +88,9 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -98,6 +104,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -800,6 +807,60 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public Collection<String> getPointValues() {
       return AtsAttributeTypes.Points.getEnumValues().stream().map(p -> p.getName()).collect(Collectors.toList());
+   }
+
+   @Override
+   public boolean checkApproval(String atsId) {
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(atsId);
+      //check the workItems layout for a REQUIRED_FOR_TRANSITION
+      Collection<AttributeTypeToken> attributes = getRequiredAttributesForCurrentState(workItem);
+
+      if (attributes.size() > 0) {
+         ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
+         //if any of the attributes are empty, return false
+         return attributes.stream().map(
+            attribute -> ops.getActionAttributeValues(attribute, workItem).getValues().isEmpty()).filter(
+               empty -> empty).collect(Collectors.toList()).size() == 0;
+      }
+
+      return false;
+   }
+
+   @Override
+   public boolean setApproval(String atsId) {
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(atsId);
+      Date resultDate = new Date(System.currentTimeMillis());
+      UserId account = orcsApi.userService().getUser();
+      Collection<AttributeTypeToken> attributes = getRequiredAttributesForCurrentState(workItem);
+      TransactionBuilder txBuilder =
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, String.format(
+            "Setting %s in %s state to approved.", workItem.getAtsId(), workItem.getStateDefinition().getName()));
+      //check the type of the attributes and set each attribute based on type
+      for (AttributeTypeToken attributeType : attributes) {
+         //currently only dates and longs are supported as sign-by attribute types
+         if (attributeType.isDate()) {
+            txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, resultDate);
+         }
+         if (attributeType.isLong()) {
+            txBuilder.setSoleAttributeValue(workItem.getArtifactId(), attributeType, account.getIdString());
+         }
+      }
+      TransactionToken results = txBuilder.commit();
+      return results.isValid();
+   }
+
+   private Collection<AttributeTypeToken> getRequiredAttributesForCurrentState(IAtsWorkItem workItem) {
+      Collection<WidgetDefinition> widgets =
+         atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(workItem.getStateDefinition()).stream().filter(
+            widget -> widget.getOptions().getXOptions().stream().filter(
+               option -> option.equals(WidgetOption.REQUIRED_FOR_TRANSITION)).collect(
+                  Collectors.toList()).size() > 0).collect(Collectors.toList());
+      Stream<AttributeTypeToken> attr1 = widgets.stream().map(
+         widget -> (widget.getAttributeType() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType());
+      Stream<AttributeTypeToken> attr2 = widgets.stream().map(
+         widget -> (widget.getAttributeType2() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType2());
+
+      return Stream.concat(attr1, attr2).collect(Collectors.toList());
    }
 
 }
