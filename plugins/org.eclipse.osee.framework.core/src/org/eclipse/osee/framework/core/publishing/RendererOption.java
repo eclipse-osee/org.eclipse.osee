@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,14 +47,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public enum RendererOption {
 
    /*
-    * Boolean
+    * Options
     */
 
    ADD_MERGE_TAG("Add Merge Tag", OptionType.Boolean),
 
    ALL_ATTRIBUTES("All Attributes", OptionType.Boolean),
-
-   ATTRIBUTE_NAME("Attribute Name", OptionType.String),
 
    /**
     * This option is set with the {@link BranchId} of the branch rendered artifacts are to be loaded from. The optional
@@ -80,17 +79,14 @@ public enum RendererOption {
 
    COMPARE_BRANCH("Compare Branch", OptionType.BranchId),
 
+   CONTENT_ARTIFACT_TYPE("Content Artifact Type", OptionType.ArtifactTypeToken),
+
    /**
-    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    * An override for the publishing template publish options that restricts the published attributes to the main
+    * content attribute only. This options is only effective for client side publishing.
     */
 
-   DIFF_NO_ATTRIBUTES_VALUE("DIFF_NO_ATTRIBUTES", OptionType.String),
-
-   DIFF_VALUE("DIFF", OptionType.String),
-
-   EXCLUDE_ARTIFACT_TYPES("Exclude Artifact Types", OptionType.ArtifactTypes),
-
-   EXCLUDE_FOLDERS("Exclude Folders", OptionType.Boolean),
+   CONTENT_ATTRIBUTE_ONLY("Template Only", OptionType.Boolean),
 
    EXECUTE_VB_SCRIPT("execute.vb.script", OptionType.String),
 
@@ -103,8 +99,6 @@ public enum RendererOption {
 
    FIRST_TIME("First Time", OptionType.Boolean),
 
-   ID("Id", OptionType.String),
-
    IN_PUBLISH_MODE("In Publish Mode", OptionType.Boolean),
 
    INCLUDE_UUIDS("Include Uuids", OptionType.Boolean),
@@ -115,23 +109,7 @@ public enum RendererOption {
 
    MAX_OUTLINE_DEPTH("Maximum Outlining Depth", OptionType.Integer),
 
-   NAME("Name", OptionType.String),
-
    NO_DISPLAY("No Display", OptionType.Boolean),
-
-   /**
-    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key for opening a
-    * document in a markdown editor.
-    */
-
-   OPEN_IN_MARKDOWN_EDITOR_VALUE("Markdown Editor", OptionType.String),
-
-   /**
-    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key for opening a
-    * document in MS Word.
-    */
-
-   OPEN_IN_MS_WORD_VALUE("MS Word", OptionType.String),
 
    /**
     * A key used in a {@link Map} of {@link RendererOption} key value pairs to specify how a rendered document is to be
@@ -140,49 +118,86 @@ public enum RendererOption {
 
    OPEN_OPTION("open.option", OptionType.String),
 
+   /**
+    * On the first call to the publisher this option should be <code>false</code>. On recursive calls it will be set to
+    * the value of {@link #PUBLISH_DIFF} by {@link WordTemplateFileDiffer#generateFileDifferences}.
+    * <p>
+    * Client Only
+    */
+
    ORIG_PUBLISH_AS_DIFF("Orig Publish As Diff", OptionType.Boolean),
+
+   /**
+    * This {@link RendererOption} is used to override the Outlining Option &quot;ExcludeArtifactTypes&quot; in the
+    * publishing template.
+    *
+    * @see OutliningOptions#excludeArtifactTypes
+    */
+
+   OUTLINING_OPTION_OVERRIDE_EXCLUDE_ARTIFACT_TYPES("ExcludeArtifactTypes", OptionType.ArtifactTypes),
+
+   /**
+    * This {@link RendererOption} is used to override the Outlining Option &quot;ContentAttributeType&quot; in the
+    * publishing template.
+    *
+    * @see OutliningOptions#contentAttributeType
+    */
+
+   OUTLINING_OPTION_OVERRIDE_CONTENT_ATTRIBUTE_TYPE("ContentAttributeType", OptionType.String),
+
+   /**
+    * This {@link RendererOption} is used to override the Outlining Option &quot;HeadingArtifactType&quot; in the
+    * publishing template.
+    *
+    * @see OutliningOptions#headingArtifactType
+    */
+
+   OUTLINING_OPTION_OVERRIDE_HEADING_ARTIFACT_TYPE("HeadingArtifactType", OptionType.String),
+
+   /**
+    * This {@link RendererOption} is used to override the Outlining Option &quot;HeadingAttributeType&quot; in the
+    * publishing template.
+    *
+    * @see OutliningOptions#headingAttributeType
+    */
+
+   OUTLINING_OPTION_OVERRIDE_HEADING_ATTRIBUTE_TYPE("HeadingAttributeType", OptionType.String),
+
+   /**
+    * This {@link RendererOption} is used to override the Outlining Option &quot;IncludeHeadings&quot; in the publishing
+    * template.
+    *
+    * @see OutliningOptions#includeHeadings
+    */
+
+   OUTLINING_OPTION_OVERRIDE_INCLUDE_HEADINGS("IncludeHeadings", OptionType.IncludeHeadings),
+
+   /**
+    * This {@link RendererOption} is used to override the Outlining Option &quot;OutlineNumber&quot; in the publishing
+    * template.
+    *
+    * @see OutliningOptions#outlineNumber
+    */
+
+   OUTLINING_OPTION_OVERRIDE_OUTLINE_NUMBER("OutlineNumber", OptionType.String),
 
    OUTLINE_TYPE("Outline Type", OptionType.String),
 
-   OUTPUT_STREAM("Output Stream", OptionType.OutputStream),
-
    OUTPUT_PATH("OutputPath", OptionType.Path),
+
+   OUTPUT_STREAM("Output Stream", OptionType.OutputStream),
 
    OVERRIDE_DATA_RIGHTS("Override Data Rights", OptionType.String),
 
    PARAGRAPH_NUMBER("Paragraph Number", OptionType.String),
 
-   /**
-    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
-    */
-
-   PREVIEW_ALL_NO_ATTRIBUTES_VALUE("PREVIEW_ALL_NO_ATTRIBUTES", OptionType.String),
-
-   /**
-    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
-    */
-
-   PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE("PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", OptionType.String),
-
-   /**
-    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
-    */
-
-   PREVIEW_ALL_RECURSE_VALUE("PREVIEW_ALL_RECURSE", OptionType.String),
-
-   /**
-    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
-    */
-
-   PREVIEW_ALL_VALUE("PreviewAll", OptionType.String),
-
-   /**
-    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
-    */
-
-   PREVIEW_WITH_RECURSE_VALUE("PREVIEW_WITH_RECURSE", OptionType.String),
-
    PROGRESS_MONITOR("Progress Monitor", OptionType.ProgressMonitor),
+
+   /**
+    * Set to <code>true</code> for a difference publish; otherwise, set to <code>false</code> for a regular publish.
+    * <p>
+    * Client Only
+    */
 
    PUBLISH_DIFF("Publish Diff", OptionType.Boolean),
 
@@ -191,7 +206,7 @@ public enum RendererOption {
     * excluded from the publish.
     */
 
-   PUBLISH_EMPTY_HEADERS("Push Empty Headers", OptionType.Boolean),
+   //PUBLISH_EMPTY_HEADERS("Push Empty Headers", OptionType.Boolean),
 
    /**
     * This option is used to specify an identifier for the publish.
@@ -217,7 +232,18 @@ public enum RendererOption {
 
    PUBLISHING_TEMPLATE_IDENTIFIER("Publishing Template Identifier", OptionType.String),
 
-   RECURSE("Recurse", OptionType.Boolean),
+   /**
+    * Overrides the publishing template option for recursively loading child artifacts when set.
+    * <p>
+    * Set by:
+    * <ul>
+    * <li>{@link WordTemplateRendererTest} sets this to <code>true</code>.</li>
+    * <li>{@link WordTemplateFileDiffer#generateFileDifferences} sets this to <code>false</code> before making recursive
+    * calls to the {@link WordTemplateProcessorClient}.</li>
+    * </ul>
+    * <p>
+    * Client Only
+    */
 
    RECURSE_ON_LOAD("Recurse On Load", OptionType.Boolean),
 
@@ -229,6 +255,10 @@ public enum RendererOption {
 
    RESULT_PATH_RETURN("resultPath", OptionType.String),
 
+   /*
+    * For client side streaming renderers, this option is set with the output stream for the render to use.
+    */
+
    /**
     * Flag used to track the number of Publishing Template requests when {@link #USE_TEMPLATE_ONCE} is
     * <code>true</code>.
@@ -237,18 +267,12 @@ public enum RendererOption {
    SECOND_TIME("SecondTime", OptionType.Boolean),
 
    /*
-    * For client side streaming renderers, this option is set with the output stream for the render to use.
+    * Open Option and Values
     */
 
    SKIP_DIALOGS("Skip Dialogs", OptionType.Boolean),
 
-   /*
-    * Open Option and Values
-    */
-
    SKIP_ERRORS("Skip Errors", OptionType.Boolean),
-
-   TEMPLATE_ONLY("Template Only", OptionType.Boolean),
 
    /*
     * Template Option and Values
@@ -284,7 +308,63 @@ public enum RendererOption {
 
    VIEW("View", OptionType.ArtifactId),
 
-   WAS_BRANCH("Was Branch", OptionType.BranchId);
+   WAS_BRANCH("Was Branch", OptionType.BranchId),
+
+   /*
+    * Values
+    */
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   DIFF_NO_ATTRIBUTES_VALUE("DIFF_NO_ATTRIBUTES", OptionType.String),
+
+   DIFF_VALUE("DIFF", OptionType.String),
+
+   /**
+    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key for opening a
+    * document in a markdown editor.
+    */
+
+   OPEN_IN_MARKDOWN_EDITOR_VALUE("Markdown Editor", OptionType.String),
+
+   /**
+    * A document display option value that may be used with the {@link RendererOption#OPEN_OPTION} key for opening a
+    * document in MS Word.
+    */
+
+   OPEN_IN_MS_WORD_VALUE("MS Word", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   PREVIEW_ALL_NO_ATTRIBUTES_VALUE("PREVIEW_ALL_NO_ATTRIBUTES", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE("PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   PREVIEW_ALL_RECURSE_VALUE("PREVIEW_ALL_RECURSE", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   PREVIEW_ALL_VALUE("PreviewAll", OptionType.String),
+
+   /**
+    * A Publishing Template selection option value that may be used with the {@link RenderOption#TEMPLATE_OPTION} key.
+    */
+
+   PREVIEW_WITH_RECURSE_VALUE("PREVIEW_WITH_RECURSE", OptionType.String);
 
    /**
     * Saves an {@link ObjectMapper} for JSON serialization and deserialization of Renderer Option values.
@@ -331,8 +411,8 @@ public enum RendererOption {
     */
 
    private static ObjectMapper createObjectMapper() {
-      var simpleModule = RendererOption.createSimpleModule();
       var objectMapper = new ObjectMapper();
+      var simpleModule = RendererOption.createSimpleModule(objectMapper);
       objectMapper.registerModule(simpleModule);
       return objectMapper;
    }
@@ -344,20 +424,24 @@ public enum RendererOption {
     * @return the created {@link SimpleModule}.
     */
 
-   private static SimpleModule createSimpleModule() {
+   private static SimpleModule createSimpleModule(ObjectMapper objectMapper) {
 
       var version = new Version(1, 0, 0, Strings.EMPTY_STRING, Strings.EMPTY_STRING, Strings.EMPTY_STRING);
 
       var simpleModule = new SimpleModule(RendererOption.class.getName(), version);
 
       for (var rendererOption : RendererOption.values()) {
+
          var optionType = rendererOption.getType();
+
          var jsonDeserializer = optionType.getJsonDeserializer();
-         if (Objects.isNull(jsonDeserializer)) {
-            continue;
-         }
          var optionClass = optionType.getImplementationClass();
-         RendererOption.addDeserializer(simpleModule, optionClass, jsonDeserializer);
+
+         if (jsonDeserializer != null) {
+
+            RendererOption.addDeserializer(simpleModule, optionClass, jsonDeserializer);
+         }
+
       }
 
       return simpleModule;
@@ -406,7 +490,25 @@ public enum RendererOption {
    public Object readValue(JsonNode jsonNode) {
 
       try {
-         return RendererOption.objectMapper.treeToValue(jsonNode, this.getType().getImplementationClass());
+
+         final var optionType = this.getType();
+
+         if (optionType.isCollection()) {
+
+            final var javaType = RendererOption.objectMapper.getTypeFactory().constructCollectionType(List.class,
+               optionType.getImplementationClass());
+
+            final var nodeText = jsonNode.toString();
+
+            final var vector = objectMapper.readValue(jsonNode.traverse(), javaType);
+
+            return vector;
+         }
+
+         final var scalar = RendererOption.objectMapper.treeToValue(jsonNode, this.getType().getImplementationClass());
+
+         return scalar;
+
       } catch (Exception e) {
          return null;
       }

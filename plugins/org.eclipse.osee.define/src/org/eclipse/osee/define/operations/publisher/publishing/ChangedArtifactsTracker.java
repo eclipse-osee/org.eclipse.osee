@@ -14,10 +14,9 @@
 package org.eclipse.osee.define.operations.publisher.publishing;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,13 +25,22 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactSpecification;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchSpecification;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
+import org.eclipse.osee.framework.core.publishing.FilterForView;
+import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.BranchIndicator;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.WhenNotFound;
+import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
+import org.eclipse.osee.framework.jdk.core.type.Result;
 import org.eclipse.osee.framework.jdk.core.util.ListMap;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 
@@ -78,13 +86,14 @@ public class ChangedArtifactsTracker {
     * Creates a new empty {@link ChangedArtifactsTracker}.
     *
     * @param atsApi a handle to the {@link AtsApi}.
-    * @param dataAccessOperations a handle to a {@link DataAccessOperations} object.
+    * @param dataAccessOperations a handle to a {@link DataAccessOperations} implementation.
     * @param publishingErrorLog a handle to the {@link PublishingErrorLog} for the publish.
     * @throws NullPointerException when any of the parameters <code>atsApi</code>, <code>dataAccessOperations</code>, or
     * <code>publishingErrorLog</code> are <code>node</code>.
     */
 
-   public ChangedArtifactsTracker(AtsApi atsApi, DataAccessOperations dataAccessOperations, PublishingErrorLog publishingErrorLog) {
+   public ChangedArtifactsTracker(AtsApi atsApi, DataAccessOperations dataAccessOperations,
+      PublishingErrorLog publishingErrorLog) {
       Objects.requireNonNull(atsApi, "ChangedArtifactsTracker::new, parameter \"atsApi\" cannot be null.");
       Objects.requireNonNull(dataAccessOperations,
          "ChangedArtifactsTracker::new, parameter \"dataAccessOperations\" cannot be null.");
@@ -95,16 +104,6 @@ public class ChangedArtifactsTracker {
       this.atsQueryService = Objects.requireNonNull(atsApi.getQueryService());
       this.publishingErrorLog = Objects.requireNonNull(publishingErrorLog);
       this.map = new ListMap<>();
-   }
-
-   /**
-    * Gets an unmodifiable list view of the changed artifacts for the publish.
-    *
-    * @return list of the changed artifacts.
-    */
-
-   public List<ArtifactReadable> getList() {
-      return Collections.unmodifiableList(this.map.listView());
    }
 
    /**
@@ -122,7 +121,7 @@ public class ChangedArtifactsTracker {
             .getWorkFlowArtifactIdentifiers( goalArtifactIdentifier )
             .orElseGet
                (
-                  () ->
+                  ( dataAccessException ) ->
                   {
                      this.publishingErrorLog.error
                         (
@@ -130,63 +129,15 @@ public class ChangedArtifactsTracker {
                            new Message()
                                   .title( "Failed to get ATS Team Workflows for the goal Artifact." )
                                   .segment( "Goal Artifact Identifier", goalArtifactIdentifier )
-                                  .segment( "Cause", this.dataAccessOperations.getLastCause() )
-                                  .reasonFollowsIfPresent( this.dataAccessOperations.getLastError() )
+                                  .reasonFollows( dataAccessException )
                                   .toString()
                         );
 
-                    return List.of();
-                  }
+                    return Result.ofValue( List.of() );
+                  },
+                  List::of
                )
             .stream();
-      //@formatter:on
-   }
-
-   /**
-    * Predicate to determine if an artifact for the publish has been changed.
-    *
-    * @param artifactId the identifier of the artifact to check.
-    * @return <code>true</code>, when the artifact has been changed; otherwise, <code>false</code>.
-    */
-
-   public boolean isChangedArtifact(ArtifactId artifactId) {
-
-      return this.map.mapView().containsKey(artifactId);
-   }
-
-   /**
-    * Predicate to determine if the <code>artifact</code> is a hierarchical descendant of an artifact in
-    * <code>goodParents</code>. When the <code>artifact</code> is found to be a hierarchical descendant, the artifact
-    * and it's hierarchical parents that are not in <code>goodParents</code> are added.
-    *
-    * @param goodParents the set of artifact's to test if <code>artifact</code> is a hierarchical descendant of one.
-    * @param artifact the artifact to test.
-    * @return <code>true</code>, when <code>artifact</code> is a hierarchical descendant of an artifact in
-    * <code>goodParents</code>; otherwise, <code>false</code>.
-    */
-
-   private boolean isRecursivelyRelated(HashSet<ArtifactReadable> goodParents, ArtifactReadable artifact) {
-      //@formatter:off
-      if( goodParents.contains( artifact ) ) {
-         return true;
-      }
-
-      var maybeParents = new LinkedList<ArtifactReadable>();
-      maybeParents.add( artifact );
-
-      for( var ancestor = artifact.getParent();
-               Objects.nonNull( ancestor );
-               ancestor = ancestor.getParent() ) {
-
-         maybeParents.add( ancestor );
-
-         if( goodParents.contains( ancestor ) ) {
-            goodParents.addAll(maybeParents);
-            return true;
-         }
-      }
-
-      return false;
       //@formatter:on
    }
 
@@ -200,7 +151,8 @@ public class ChangedArtifactsTracker {
     * otherwise, <code>null</code>.
     */
 
-   private boolean isTeamWorkflowBranchValidAndCommitted(IAtsTeamWorkflow teamWorkflow, BranchId goalArtifactBranchIdentifier) {
+   private boolean isTeamWorkflowBranchValidAndCommitted(IAtsTeamWorkflow teamWorkflow,
+      BranchId goalArtifactBranchIdentifier) {
 
       var workflowBranchToken = this.atsBranchService.getBranch(teamWorkflow);
 
@@ -251,19 +203,22 @@ public class ChangedArtifactsTracker {
     * and changes will not be included in the publish. Will move to MSWordTemplatePublisher when completed.
     */
 
-   public void loadByAtsTeamWorkflow(Collection<ArtifactReadable> headerArtifacts, ArtifactSpecification artifactSpecification) {
+   public void loadByAtsTeamWorkflow(Collection<? extends PublishingArtifact> headerArtifacts,
+      ArtifactId artifactIdentifier, PublishingArtifactLoader publishingArtifactLoader,
+      BranchSpecification branchSpecification, Map<ArtifactId, PublishingArtifact> map) {
 
       Objects.requireNonNull(headerArtifacts,
          "ChangedArtifactsTracker::loadByAtsTeamWorkflow, parameter \"headerArtifacts\" cannot be null.");
-      Objects.requireNonNull(artifactSpecification,
-         "ChangedArtifactsTracker::loadByAtsTeamWorkflow, parameter \"artifactSpecification\" cannot be null.");
+      Objects.requireNonNull(artifactIdentifier,
+         "ChangedArtifactsTracker::loadByAtsTeamWorkflow, parameter \"artifactIdentifier\" cannot be null.");
 
+      var artifactSpecification = new ArtifactSpecification(branchSpecification, artifactIdentifier);
       if (headerArtifacts.isEmpty()) {
          return;
       }
 
       //@formatter:off
-      var changedArtIds =
+      var changedArtifactIds =
          this.getTeamworkflowArtifactIdentifiers( artifactSpecification.getArtifactId() )
             .map( this.atsQueryService::getTeamWf )
             .filter( ( teamWorkflow ) -> this.isTeamWorkflowBranchValidAndCommitted( teamWorkflow, artifactSpecification.getBranchId() ) )
@@ -272,14 +227,26 @@ public class ChangedArtifactsTracker {
             .map( ChangeItem::getArtId )
             .collect( Collectors.toSet() );
 
-      if( changedArtIds.isEmpty() ) {
+      if( changedArtifactIds.isEmpty() ) {
          return;
       }
 
-      var goodParents = new HashSet<ArtifactReadable>(headerArtifacts);
+      var goodParents = new HashSet<PublishingArtifact>(headerArtifacts);
 
-      this.streamChangedArtifacts( artifactSpecification, changedArtIds )
-         .filter( ( artifactReadable ) -> this.isRecursivelyRelated(goodParents, artifactReadable ) )
+      //this.streamChangedArtifacts( artifactSpecification, changedArtIds )
+      publishingArtifactLoader
+         .getPublishingArtifactsByArtifactIdentifiers
+            (
+               BranchIndicator.PUBLISHING_BRANCH,
+               changedArtifactIds,
+               FilterForView.NO,
+               WhenNotFound.EMPTY,
+               TransactionId.SENTINEL,
+               IncludeDeleted.NO
+            )
+         .orElseThrow()
+         .stream()
+         .filter( ( artifactReadable ) -> publishingArtifactLoader.isRecursivelyRelated(goodParents, artifactReadable, FilterForView.NO ) )
          .collect
             (
                Collectors.toMap
@@ -293,103 +260,6 @@ public class ChangedArtifactsTracker {
       //@formatter:on
    }
 
-   /**
-    * Loads all artifacts from a branch with a transaction comment that indicates the artifact has been modified on the
-    * branch.
-    *
-    * @param branchSpecification the branch to load modified artifacts from.
-    * @throws NullPointerException when the parameter <code>branchSpecification</code> is <code>null</code>.
-    */
-
-   public void loadByTransactionComment(BranchSpecification branchSpecification) {
-
-      Objects.requireNonNull(branchSpecification,
-         "ChangedArtifactsTracker::loadByTransactionComment, parameter \"branchSpecification\" cannot be null.");
-
-      //@formatter:off
-      this.streamChangedArtifactReadables( branchSpecification )
-         .collect
-            (
-               Collectors.toMap
-                  (
-                     Function.identity(),
-                     Function.identity(),
-                     ( a, b ) -> a,
-                     () -> this.map.mapView()
-                  )
-            );
-      //@formatter:on
-   }
-
-   /**
-    * Streams all artifacts on the <code>branchSpecification</code> branch that have a transaction comment that
-    * indicates the artifact was modified on the branch.
-    *
-    * @param branchSpecification the branch to stream changed artifacts from.
-    * @return a {@link Stream} of the changed artifacts as {@link ArtifactReadable} objects.
-    */
-
-   private Stream<ArtifactReadable> streamChangedArtifactReadables(BranchSpecification branchSpecification) {
-      //@formatter:off
-      return
-         this.dataAccessOperations
-            .getArtifactReadablesFilterByTxCommentForChange(branchSpecification)
-            .orElseGet
-               (
-                  () ->
-                  {
-                     this.publishingErrorLog.error
-                        (
-                           new Message()
-                              .title( "Failed to get changed artifacts from branch by transaction comments." )
-                              .segmentToMessage( "Goal Branch", branchSpecification )
-                              .segment( "Cause", this.dataAccessOperations.getLastCause() )
-                              .reasonFollowsIfPresent( this.dataAccessOperations.getLastError() )
-                              .toString()
-                        );
-
-                     return List.of();
-                  }
-               )
-            .stream();
-      //@formatter:on
-   }
-
-   /**
-    * Streams artifacts from the <code>branchSpecification</code> branch whose identifier is in the
-    * <code>changedArtifactIds</code> collection.
-    *
-    * @param branchSpecification the branch to load artifacts from.
-    * @param changedArtifactIds the identifiers of the artifacts to load.
-    * @return a {@link Stream} of the {@link ArtifactReadable} objects loaded from the branch with an identifier in the
-    * collection.
-    */
-
-   private Stream<ArtifactReadable> streamChangedArtifacts(BranchSpecification branchSpecification, Collection<ArtifactId> changedArtifactIds) {
-      //@formatter:off
-      return
-         this.dataAccessOperations
-            .getArtifactReadablesByIdentifiers( branchSpecification, changedArtifactIds )
-            .orElseGet
-               (
-                  () ->
-                  {
-                     this.publishingErrorLog.error
-                        (
-                           new Message()
-                                  .title( "Failed to get changed artifacts identified from the ATS Team Workflow Artifacts for the goal Artifact." )
-                                  .segmentToMessage( "Goal Branch", branchSpecification )
-                                  .segment( "Cause", this.dataAccessOperations.getLastCause() )
-                                  .reasonFollowsIfPresent( this.dataAccessOperations.getLastError() )
-                                  .toString()
-                        );
-
-                     return List.of();
-                  }
-               )
-            .stream();
-      //@formatter:on
-   }
 }
 
 /* EOF */

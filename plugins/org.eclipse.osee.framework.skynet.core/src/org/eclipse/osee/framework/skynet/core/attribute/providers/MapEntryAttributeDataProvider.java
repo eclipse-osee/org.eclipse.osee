@@ -198,51 +198,17 @@ public class MapEntryAttributeDataProvider extends AbstractAttributeDataProvider
 
    @Override
    public Object[] getData() {
-      //@formatter:off
-      var state =
-           ( this.localData.isDataValid()    ? 1 : 0 )
-         + ( this.dataStore.isLocatorValid() ? 2 : 0 )
-         ;
-      //@formatter:on
-      switch (state) {
-         case 0: {
-            /*
-             * (none)
-             */
-            return EMPTY_VALUE_AND_URI_ARRAY;
-         }
-         case 1: {
-            /*
-             * Value
-             */
-            return new Object[] {this.localData.getStorageString(), Strings.EMPTY_STRING};
-         }
-         case 2: {
-            /*
-             * URI
-             */
-            return new Object[] {Strings.EMPTY_STRING, this.dataStore.getLocator()};
-         }
-         case 3: {
-            /*
-             * Value & URI
-             */
-            //@formatter:off
-            assert
-                 false
-               : "MapEntryAttributeDataProvider::getData, both valid local data valid and data store uri are unexpected.";
-            //@formatter:on
-            /*
-             * Eat the value and the URI when both are valid, this is an unexpected condition.
-             */
-            this.localData.clear();
-            this.dataStore.clear();
-            return EMPTY_VALUE_AND_URI_ARRAY;
-         }
-         default: {
-            throw Conditions.invalidCase(state, this.getClass().getName(), "loadData", "state", OseeCoreException::new);
-         }
+
+      if (this.dataStore.isDataValid()) {
+         return new Object[] {Strings.EMPTY_STRING, this.dataStore.getLocator()};
       }
+
+      if (this.localData.isDataValid()) {
+         return new Object[] {this.localData.getStorageString(), Strings.EMPTY_STRING};
+      }
+
+      return new Object[] {Strings.EMPTY_STRING, Strings.EMPTY_STRING};
+
    }
 
    /**
@@ -389,7 +355,7 @@ public class MapEntryAttributeDataProvider extends AbstractAttributeDataProvider
             return;
          }
          default: {
-            throw Conditions.invalidCase(state, this.getClass().getName(), "loadData", "state", OseeCoreException::new);
+            throw Conditions.invalidCase(state, "state", OseeCoreException::new);
          }
       }
    }

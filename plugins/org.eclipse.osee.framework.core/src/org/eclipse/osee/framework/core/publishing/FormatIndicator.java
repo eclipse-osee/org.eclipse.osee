@@ -23,7 +23,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.markdown.MarkdownPublishingAppender;
 import org.eclipse.osee.framework.core.publishing.wordml.ValidateWordMl;
@@ -48,9 +50,12 @@ public enum FormatIndicator implements ToMessage {
       (
          "markdown",
          ContentPosition.START,
+         CoreArtifactTypes.Markdown,
          CoreAttributeTypes.MarkdownContent,
+         CoreArtifactTypes.HeadingMarkdown,
+         CoreAttributeTypes.Name,
          6,
-         ( appender, maximumOutlineDepth ) -> new MarkdownPublishingAppender( appender, maximumOutlineDepth ),
+         ( appender, maximumOutlineDepth ) -> new MarkdownPublishingAppender( appender ),
          null
       ),
 
@@ -58,9 +63,12 @@ public enum FormatIndicator implements ToMessage {
       (
          "text",
          ContentPosition.END,
+         CoreArtifactTypes.PlainText,
          CoreAttributeTypes.PlainTextContent,
+         CoreArtifactTypes.HeadingPlainText,
+         CoreAttributeTypes.Name,
          -1,
-         ( appender, maximumOutlineDepth ) -> new WordMlPublishingAppender( appender, maximumOutlineDepth ),
+         ( appender, maximumOutlineDepth ) -> new WordMlPublishingAppender( appender ),
          null
       ),
 
@@ -68,9 +76,12 @@ public enum FormatIndicator implements ToMessage {
       (
          "word-ml",
          ContentPosition.END,
+         CoreArtifactTypes.MsWordTemplate,
          CoreAttributeTypes.WordTemplateContent,
+         CoreArtifactTypes.HeadingMsWord,
+         CoreAttributeTypes.Name,
          9,
-         ( appender, maximumOutlineDepth ) -> new WordMlPublishingAppender( appender, maximumOutlineDepth ),
+         ( appender, maximumOutlineDepth ) -> new WordMlPublishingAppender( appender ),
          ValidateWordMl::validateWordMl
       ),
 
@@ -78,9 +89,12 @@ public enum FormatIndicator implements ToMessage {
       (
          "xhtml",
          ContentPosition.END,
+         CoreArtifactTypes.HtmlArtifact,
          CoreAttributeTypes.HtmlContent,
+         CoreArtifactTypes.HeadingHtml,
+         CoreAttributeTypes.Name,
          -1,
-         ( appender, maximumOutlineDepth ) -> new WordMlPublishingAppender( appender, maximumOutlineDepth ),
+         ( appender, maximumOutlineDepth ) -> new WordMlPublishingAppender( appender ),
          null
       );
    //@formatter:on
@@ -174,7 +188,8 @@ public enum FormatIndicator implements ToMessage {
     * Saves the {@link AttributeTypeToken} for the attribute that contains the main publishing content.
     */
 
-   private final @NonNull AttributeTypeToken mainContentAttributeTypeToken;
+   private final @NonNull AttributeTypeToken contentAttributeTypeToken;
+   private final @NonNull ArtifactTypeToken contentArtifactTypeToken;
 
    /**
     * Saves the maximum number of outlining levels supported by the format.
@@ -189,6 +204,18 @@ public enum FormatIndicator implements ToMessage {
     */
 
    private final @NonNull PublishingAppenderFactory publishingAppenderFactory;
+
+   private final @NonNull ArtifactTypeToken defaultHeadingArtifactTypeToken;
+
+   public ArtifactTypeToken getDefaultHeadingArtifactTypeToken() {
+      return this.defaultHeadingArtifactTypeToken;
+   }
+
+   private final @NonNull AttributeTypeToken defaultHeadingContentAttributeTypeToken;
+
+   public AttributeTypeToken getDefaultHeadingContentAttributTypeToken() {
+      return this.defaultHeadingContentAttributeTypeToken;
+   }
 
    /**
     * Creates a {@link FormatIndicator} enumeration member with the configuration data for the publishing format.
@@ -208,7 +235,10 @@ public enum FormatIndicator implements ToMessage {
          (
             @NonNull  String                             formatName,
             @NonNull  ContentPosition                    contentPosition,
-            @Nullable AttributeTypeToken                 mainContentAttributeTypeToken,
+            @NonNull  ArtifactTypeToken                  contentArtifactTypeToken,
+            @NonNull  AttributeTypeToken                 contentAttributeTypeToken,
+            @NonNull  ArtifactTypeToken                  defaultHeadingArtifactTypeToken,
+            @NonNull  AttributeTypeToken                 defaultHeadingContentAttributeTypeToken,
                       int                                maximumOutlineDepth,
             @NonNull  PublishingAppenderFactory          publishingAppenderFactory,
             @Nullable Function<String, Message>          contentValidator
@@ -216,7 +246,10 @@ public enum FormatIndicator implements ToMessage {
    //@formatter:on
       this.formatName = Conditions.requireNonNull(formatName);
       this.contentPosition = Conditions.requireNonNull(contentPosition);
-      this.mainContentAttributeTypeToken = Conditions.requireNonNull(mainContentAttributeTypeToken);
+      this.contentArtifactTypeToken = Conditions.requireNonNull(contentArtifactTypeToken);
+      this.contentAttributeTypeToken = Conditions.requireNonNull(contentAttributeTypeToken);
+      this.defaultHeadingArtifactTypeToken = Conditions.requireNonNull(defaultHeadingArtifactTypeToken);
+      this.defaultHeadingContentAttributeTypeToken = Conditions.requireNonNull(defaultHeadingContentAttributeTypeToken);
       this.maximumOutlineDepth = maximumOutlineDepth;
       this.publishingAppenderFactory = Conditions.requireNonNull(publishingAppenderFactory);
       this.contentValidator = contentValidator;
@@ -294,8 +327,12 @@ public enum FormatIndicator implements ToMessage {
     * @return the {@link AttributeTypeToken} of the main content attribute.
     */
 
-   public @NonNull AttributeTypeToken getMainContentAttributeTypeToken() {
-      return this.mainContentAttributeTypeToken;
+   public @NonNull AttributeTypeToken getContentAttributeTypeToken() {
+      return this.contentAttributeTypeToken;
+   }
+
+   public @NonNull ArtifactTypeToken getContentArtifactTypeToken() {
+      return this.contentArtifactTypeToken;
    }
 
    /**

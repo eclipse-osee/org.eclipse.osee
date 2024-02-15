@@ -13,44 +13,64 @@
 
 package org.eclipse.osee.framework.core.xml.publishing;
 
+import java.util.Optional;
+
 /**
  * Class to encapsulate a list of the top level Word Paragraphs in the sub-section of a Word ML document.
  *
  * @author Loren K. Ashley
  */
 
-public class WordParagraphList extends AbstractElementList<AbstractElement, WordParagraph> {
+public class WordParagraphList<P extends AbstractElement> extends AbstractElementList<P, WordParagraph> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link ParagraphList} with a {@link WordSection} parent.
+    */
+
+   public static WordElementParserFactory<WordDocument, WordParagraphList<WordDocument>, WordParagraph> wordDocumentParentFactory =
+      new WordElementParserFactory<>(WordParagraphList::new, WordParagraph::new, WordMlTag.PARAGRAPH);
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link ParagraphList} with a {@link WordSection} parent.
+    */
+
+   public static WordElementParserFactory<WordSection, WordParagraphList<WordSection>, WordParagraph> wordSectionParentFactory =
+      new WordElementParserFactory<>(WordParagraphList::new, WordParagraph::new, WordMlTag.PARAGRAPH);
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link ParagraphList} with a {@link AuxHintSubSection}
+    * parent.
+    */
+
+   public static WordElementParserFactory<AuxHintSubSection, WordParagraphList<AuxHintSubSection>, WordParagraph> wordSubSectionParentFactory =
+      new WordElementParserFactory<>(WordParagraphList::new, WordParagraph::new, WordMlTag.PARAGRAPH);
 
    /**
     * Creates a new open and empty list for {@link WordParagraph}s.
     *
-    * @param wordSubSection the {@link WordSubSection} for the sub-section of the Word ML document.
+    * @param wordSubSection the {@link AuxHintSubSection} for the sub-section of the Word ML document.
     * @throws NullPointerException when the parameter <code>wordSubSection</code> is <code>null</code>.
     */
 
-   public WordParagraphList(WordSubSection wordSubSection) {
-      super(wordSubSection);
+   public WordParagraphList(P parent) {
+      super(parent);
    }
 
    /**
-    * Creates a new open and empty list for {@link WordParagraph}s.
+    * Gets the containing (parent) {@link AuxHintSubSection}.
     *
-    * @param wordSection the {@link WordSection} for the section of the Word ML document.
-    * @throws NullPointerException when the parameter <code>wordSection</code> is <code>null</code>.
+    * @return the containing {@link AuxHintSubSection}.
     */
 
-   public WordParagraphList(WordSection wordSection) {
-      super(wordSection);
-   }
+   public Optional<AuxHintSubSection> getWordSubSection() {
+      final var parent = this.getParent();
 
-   /**
-    * Gets the containing (parent) {@link WordSubSection}.
-    *
-    * @return the containing {@link WordSubSection}.
-    */
-
-   public WordSubSection getWordSubSection() {
-      return (WordSubSection) this.getParent();
+      //@formatter:off
+      return
+         (parent instanceof AuxHintSubSection)
+            ? Optional.of( (AuxHintSubSection) parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
    /**
@@ -59,8 +79,15 @@ public class WordParagraphList extends AbstractElementList<AbstractElement, Word
     * @return the containing {@link WordSection}.
     */
 
-   public WordSection getWordSection() {
-      return (WordSection) this.getParent();
+   public Optional<WordSection> getWordSection() {
+      final var parent = this.getParent();
+
+      //@formatter:off
+      return
+         (parent instanceof WordSection)
+            ? Optional.of( (WordSection) parent )
+            : Optional.empty();
+      //@formatter:on
    }
 
 }

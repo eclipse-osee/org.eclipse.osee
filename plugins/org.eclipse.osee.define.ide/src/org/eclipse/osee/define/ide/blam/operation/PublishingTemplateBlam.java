@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -428,7 +429,17 @@ public class PublishingTemplateBlam extends AbstractBlam {
             message.reasonFollows("Caused By", cause);
          }
 
-         AWorkbench.popup(message.toString());
+         //@formatter:off
+         AWorkbench.popup
+            (
+               MessageType.Informational,
+               "Publishing Template Blam Error",
+               "Failed to obtain the requested publishing template.",
+               message.toString(),
+               null, /* button actions */
+               AWorkbench.SCROLLING_TEXT_BOX
+            );
+         //@formatter:on
       }
    }
 
@@ -441,7 +452,8 @@ public class PublishingTemplateBlam extends AbstractBlam {
     * @param formatIndicator the selected publishing format.
     */
 
-   private void runByIdentifier(VariableMap variableMap, GetAs getAs, FormatIndicator formatIndicator) throws Exception {
+   private void runByIdentifier(VariableMap variableMap, GetAs getAs, FormatIndicator formatIndicator)
+      throws Exception {
 
       var identifier = variableMap.getString(PublishingTemplateBlam.variableIdentifier);
       if (identifier == null) {
@@ -533,7 +545,8 @@ public class PublishingTemplateBlam extends AbstractBlam {
     */
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art,
+      SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
 
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
 

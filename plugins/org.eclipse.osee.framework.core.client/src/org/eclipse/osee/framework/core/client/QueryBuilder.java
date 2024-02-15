@@ -18,10 +18,12 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
@@ -74,6 +76,16 @@ public interface QueryBuilder {
     * Search criteria that finds a given artifact types using type inheritance
     */
    QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactType);
+
+   /**
+    * Search criteria that finds artifacts with a transaction comment using the {@link AttributeTypeJoin}
+    * {@link CoreAttributeTypes#NameWord}.
+    *
+    * @param comment get artifacts with a comment matching this pattern.
+    * @return a {@link QueryBuilder} with a transaction comment query added.
+    */
+
+   QueryBuilder andTxComment(String comment);
 
    /**
     * Search criteria that finds a given artifact type by matching type exactly
@@ -170,7 +182,18 @@ public interface QueryBuilder {
     *
     * @param relationTypeSide the type-side to search on
     */
+
    QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds);
+
+   /**
+    * Search for recursively related artifacts
+    *
+    * @param relationTypeSide the type-side to search on
+    * @param artifactId the identifier of the artifact to get the recursive relations from.
+    * @return the {@link QueryBuilder} with a related recursive query added.
+    */
+
+   QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
    /**
     * Executes query

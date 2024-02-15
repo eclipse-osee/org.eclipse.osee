@@ -16,15 +16,15 @@ package org.eclipse.osee.define.operations.publisher;
 import java.util.Objects;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.operations.api.publisher.PublisherOperations;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
-import org.eclipse.osee.define.operations.publisher.dataaccess.DataAccessOperationsImpl;
+import org.eclipse.osee.define.operations.publisher.dataaccess.DataAccessOperationsImplArtifactReadOnlyImpl;
 import org.eclipse.osee.define.operations.publisher.datarights.DataRightsOperationsImpl;
 import org.eclipse.osee.define.operations.publisher.publishing.PublishingOperationsImpl;
 import org.eclipse.osee.define.operations.publisher.templatemanager.TemplateManagerOperationsImpl;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -97,7 +97,8 @@ public class PublisherOperationsImpl implements PublisherOperations {
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public synchronized static PublisherOperations create(OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin) {
+   public synchronized static PublisherOperations create(OrcsApi orcsApi, AtsApi atsApi, Log logger,
+      EventAdmin eventAdmin) {
 
       if (Objects.nonNull(PublisherOperationsImpl.publisherOperationsImpl)) {
          return PublisherOperationsImpl.publisherOperationsImpl;
@@ -110,7 +111,7 @@ public class PublisherOperationsImpl implements PublisherOperations {
 
       var jdbcService = Objects.requireNonNull(orcsApi.getJdbcService());
 
-      var dataAccessOperations = new DataAccessOperationsImpl(orcsApi);
+      var dataAccessOperations = DataAccessOperationsImplArtifactReadOnlyImpl.create(orcsApi);
 
       var dataRightsOperations = DataRightsOperationsImpl.create(/* dataAccessOperations */orcsApi);
 
@@ -119,7 +120,10 @@ public class PublisherOperationsImpl implements PublisherOperations {
        * template manager is not concerned with hierarchical ordering of artifact or with obtaining delete artifacts.
        */
 
-      var templateManagerOperations = TemplateManagerOperationsImpl.create(jdbcService, logger, dataAccessOperations);
+      final var orcsTokenService = orcsApi.tokenService();
+
+      var templateManagerOperations =
+         TemplateManagerOperationsImpl.create(jdbcService, logger, dataAccessOperations, orcsTokenService);
 
       var publishingOperations = PublishingOperationsImpl.create(orcsApi, atsApi, logger, eventAdmin,
          dataAccessOperations, dataRightsOperations, templateManagerOperations);
@@ -142,7 +146,8 @@ public class PublisherOperationsImpl implements PublisherOperations {
     * {@link DataAccessOperations} implementation using {@link ArtifactReadableImpl} objects.
     */
 
-   private PublisherOperationsImpl(DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, PublishingOperations publishingOperations, TemplateManagerOperations templateManagerOperations) {
+   private PublisherOperationsImpl(DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations,
+      PublishingOperations publishingOperations, TemplateManagerOperations templateManagerOperations) {
       this.dataAccessOperations = dataAccessOperations;
       this.dataRightsOperations = dataRightsOperations;
       this.publishingOperations = publishingOperations;
@@ -195,7 +200,7 @@ public class PublisherOperationsImpl implements PublisherOperations {
     */
 
    public synchronized static void free() {
-      //DataAccessOperationsImplArtifactReadOnlyImpl.free();
+      DataAccessOperationsImplArtifactReadOnlyImpl.free();
       DataRightsOperationsImpl.free();
       PublishingOperationsImpl.free();
       TemplateManagerOperationsImpl.free();

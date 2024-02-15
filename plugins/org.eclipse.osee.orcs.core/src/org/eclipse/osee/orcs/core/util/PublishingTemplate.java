@@ -21,9 +21,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.util.OseeInf;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.orcs.core.internal.SetupPublishing;
@@ -35,6 +38,166 @@ import org.eclipse.osee.orcs.core.internal.SetupPublishing;
  */
 
 public class PublishingTemplate {
+
+   /**
+    * A {@link Supplier} implementation that returns a saved string.
+    */
+
+   public static class StringSupplier implements Supplier<String> {
+
+      /**
+       * The string to be returned by the {@link Supplier}.
+       */
+
+      private final String string;
+
+      /**
+       * Creates the {@link Supplier} implementation and saves the string.
+       *
+       * @param string the {@link String} to be provided by the {@link Supplier}.
+       */
+
+      public StringSupplier(String string) {
+         this.string = string;
+      }
+
+      /**
+       * Implements the {@link Supplier#get} method.
+       *
+       * @return the saved string.
+       */
+
+      @Override
+      public String get() {
+         return this.string;
+      }
+   }
+
+   /**
+    * A {@link Supplier} implementation that reads a file from the OSEE INF directory and returns the file contents as a
+    * {@link String}.
+    */
+
+   public static class FileSupplierOseeInf implements Supplier<String> {
+
+      /**
+       * Saves the path to the file to be read.
+       */
+
+      private final String pathString;
+
+      /**
+       * Creates the {@link Supplier} implementation and saves the relative path to the file from the OSEE INF
+       * directory.
+       *
+       * @param pathString relative path to the file from the OSEE INF directory.
+       */
+
+      public FileSupplierOseeInf(String pathString) {
+         this.pathString = pathString;
+      }
+
+      /**
+       * Implements the {@link Supplier#get} method.
+       *
+       * @return the contents of the file specified to the constructor as a {@link String}.
+       * @throws AssertionError when the file cannot be read.
+       */
+
+      @Override
+      public String get() {
+
+         final var filePathString = Paths.get(this.pathString).toString();
+
+         try {
+
+            final var contents = OseeInf.getResourceContents(filePathString, SetupPublishing.class);
+
+            return contents;
+
+         } catch (Exception e) {
+
+            //@formatter:off
+            var message =
+               new Message()
+                      .title( "PublishingTemplate.FileSupplierOseeInf::get, Failed to load file." )
+                      .indentInc()
+                      .segment( "File Path", filePathString )
+                      .reasonFollows( e );
+
+            throw new AssertionError( message.toString(), e );
+            //@formatter:on
+         }
+
+      }
+   }
+
+   /**
+    * A {@link Supplier} implementation that reads a file from a &quot;support&quot; directory of a JAR file and returns
+    * the contents as a {@link String}.
+    */
+
+   public static class FileSupplierSupport implements Supplier<String> {
+
+      /**
+       * Save the relative path from the support directory to the file.
+       */
+
+      private final String pathString;
+
+      /**
+       * Save a {@link Class} reference to any class in the JAR file that contains the file to be read.
+       */
+
+      private final Class<?> locationClass;
+
+      /**
+       * Creates the {@link Supplier} implementation and saves the location of the file to be read.
+       *
+       * @param pathString the relative path from the &quot;support&quot; directory to the file.
+       * @param locationClass any class in the the JAR file containing the file to be read.
+       */
+
+      public FileSupplierSupport(String pathString, Class<?> locationClass) {
+         this.pathString = pathString;
+         this.locationClass = locationClass;
+      }
+
+      /**
+       * Implements the {@link Supplier#get} methods.
+       *
+       * @returns the contents of the file specified to the constructor as a {@link String}.
+       * @throws AssertionError when the file cannot be read.
+       */
+
+      @Override
+      public String get() {
+
+         final var filePathString = Paths.get("support", this.pathString).toString();
+
+         try {
+
+            final var contents = Lib.fileToString(locationClass, filePathString);
+
+            return contents;
+
+         } catch (Exception e) {
+
+            //@formatter:off
+            var message =
+               new Message()
+                      .title( "PublishingTemplate.FileSupplierSupport::get, Failed to load file." )
+                      .indentInc()
+                      .segment( "File Path",      filePathString          )
+                      .segment( "Location Class", locationClass.getName() )
+                      .reasonFollows( e );
+
+            throw new AssertionError( message.toString(), e );
+            //@formatter:on
+         }
+
+      }
+   }
 
    /**
     * A static factory method to load the content files and create a Publishing Template Artifact.
@@ -58,8 +221,8 @@ public class PublishingTemplate {
          (
             Supplier<List<PublishingTemplate>> publishingTemplatesSupplier,
             PublishingTemplateSetter           publishingTemplateSetter,
-            Class<?> locationClass,
-            boolean inOseeInf
+            Class<?>                           locationClass,
+            boolean                            inOseeInf
          )
    {
       return
@@ -109,17 +272,16 @@ public class PublishingTemplate {
    private final ArtifactToken parentArtifactToken;
 
    /**
-    * When specified, the file contents will be used as the value of the publishing template's publish options
-    * attribute.
+    * When specified, a supplier used to obtain the publish options JSON string.
     */
 
-   private final Path publishOptionsFileName;
+   private final @Nullable Supplier<String> publishOptionsSupplier;
 
    /**
-    * When specified, the file contents will be used as the value of the publishing template's Word ML.
+    * When specified, a supplier used to obtain the publishing template content..
     */
 
-   private final Path templateContentFileName;
+   private final @Nullable Supplier<String> templateContentSupplier;
 
    /**
     * When specified, will be used to create attribute values for the Publishing Template's Publishing Template Content
@@ -148,10 +310,14 @@ public class PublishingTemplate {
     *
     * @param parentArtifactToken the hierarchical parent of the publishing template artifact.
     * @param name the name of the publishing template artifact.
-    * @param publishOptionsFilename the publishing template renderer options filename. The parameter may be
+    * @param publishOptionsSupplier a supplier used to obtain the publish options JSON string. The parameter may be
     * <code>null</code>.
-    * @param templateContentFileName the filename of a file containing the Word ML publishing template content. The
-    * parameter maybe <code>null</code>.
+    * @param templateContentSupplier a supplier used to obtain the publishing template content. The parameter may be
+    * <code>null</code>. The supplied content will be added to the publishing template attribute
+    * {@link CoreAttributeTypes#WholeWordContent}.
+    * @param publishingTemplateContentMapEntries a list of {@link PublishingTemplateContentMapEntry} objects. The list
+    * entries will be added to the publishing template attribute
+    * {@link CoreAttributeTypes#PublishingTemplateContentByFormatMapEntry}.
     * @param matchCriteria a list of {@link PublishingTemplateMatchCriterion} for the publishing template. The parameter
     * maybe <code>null</code>.
     * @throws NullPointerException when either of the parameters <code>parentArtifactToken</code> or <code>name</code>
@@ -162,12 +328,12 @@ public class PublishingTemplate {
    public
       PublishingTemplate
          (
-            ArtifactToken                           parentArtifactToken,
-            String                                  name,
-            String                                  publishOptionsFileName,
-            String                                  templateContentFileName,
-            List<PublishingTemplateContentMapEntry> publishingTemplateContentMapEntries,
-            List<PublishingTemplateMatchCriterion>  matchCriteria
+                      ArtifactToken                           parentArtifactToken,
+                      String                                  name,
+            @Nullable Supplier<String>                        publishOptionsSupplier,
+            @Nullable Supplier<String>                        templateContentSupplier,
+                      List<PublishingTemplateContentMapEntry> publishingTemplateContentMapEntries,
+                      List<PublishingTemplateMatchCriterion>  matchCriteria
          ) {
    //@formatter:on
 
@@ -177,10 +343,9 @@ public class PublishingTemplate {
       this.name =
          Objects.requireNonNull(name, "SetupPublishing.PublishingTemplate::new, parameter \"name\" cannnot be null.");
 
-      this.publishOptionsFileName = Objects.nonNull(publishOptionsFileName) ? Paths.get(publishOptionsFileName) : null;
+      this.publishOptionsSupplier = publishOptionsSupplier;
 
-      this.templateContentFileName =
-         Objects.nonNull(templateContentFileName) ? Paths.get(templateContentFileName) : null;
+      this.templateContentSupplier = templateContentSupplier;
 
       this.publishingTemplateContentMapEntries = Objects.requireNonNull(publishingTemplateContentMapEntries);
 
@@ -205,9 +370,9 @@ public class PublishingTemplate {
     * @param inOseeInf when <code>true</code>, the files will be loaded from the OSEE-INF folder under the base path.
     * When <code>false</code>, the files will be loaded from the "support" sub-directory of the folder containing the
     * class file for the specified class.
+    * @param filePath a relative file path from the specified directory to the file to be loaded.
     * @param locationClass this class is used to generate the base path to the directory containing the files for the
     * project containing the specified class.
-    * @param filePath a relative file path from the specified directory to the file to be loaded.
     * @return A {@link String} with the contents of the loaded file.
     */
 
@@ -293,22 +458,17 @@ public class PublishingTemplate {
     * <code>publishingTemplateSetter</code> is <code>null</code>.
     */
 
-   public PublishingTemplate load(Class<?> locationClass, boolean inOseeInf, PublishingTemplateSetter publishingTemplateSetter) {
+   private PublishingTemplate load(Class<?> locationClass, boolean inOseeInf,
+      PublishingTemplateSetter publishingTemplateSetter) {
 
       Objects.requireNonNull(locationClass);
       Objects.requireNonNull(publishingTemplateSetter);
 
+      var templateContents = Conditions.getWhenNonNull(this.templateContentSupplier);
+
+      var publishOptionsContents = Conditions.getWhenNonNull(this.publishOptionsSupplier);
+
       //@formatter:off
-      var templateContents =
-         Objects.nonNull( this.templateContentFileName )
-            ? this.readTemplateFile(inOseeInf, this.templateContentFileName, locationClass)
-            : null;
-
-      var publishOptionsContents =
-         Objects.nonNull( this.publishOptionsFileName )
-            ? this.readFile( inOseeInf, this.publishOptionsFileName, locationClass )
-            : null;
-
       var publishingTemplateContentMapEntries =
          this.publishingTemplateContentMapEntries
             .stream()

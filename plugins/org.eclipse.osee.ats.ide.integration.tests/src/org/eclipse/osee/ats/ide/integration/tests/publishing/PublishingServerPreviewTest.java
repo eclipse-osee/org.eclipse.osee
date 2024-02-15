@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.publishing;
 
-import com.google.common.collect.Streams;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactSpecificationRecord;
@@ -47,16 +47,16 @@ import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.core.xml.publishing.AuxHintSubSection;
+import org.eclipse.osee.framework.core.xml.publishing.AuxHintSubSectionList;
 import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
 import org.eclipse.osee.framework.core.xml.publishing.WordBody;
 import org.eclipse.osee.framework.core.xml.publishing.WordDocument;
+import org.eclipse.osee.framework.core.xml.publishing.WordMlTag;
+import org.eclipse.osee.framework.core.xml.publishing.WordParagraph;
 import org.eclipse.osee.framework.core.xml.publishing.WordParagraphList;
-import org.eclipse.osee.framework.core.xml.publishing.WordSection;
 import org.eclipse.osee.framework.core.xml.publishing.WordSectionList;
-import org.eclipse.osee.framework.core.xml.publishing.WordSubSection;
-import org.eclipse.osee.framework.core.xml.publishing.WordSubSectionList;
 import org.eclipse.osee.framework.core.xml.publishing.WordTextList;
-import org.eclipse.osee.framework.core.xml.publishing.WordXmlTag;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.junit.Assert;
@@ -137,7 +137,6 @@ public class PublishingServerPreviewTest {
       RendererMap.of
          (
             RendererOption.PUBLISH_IDENTIFIER, "Publishing Preview Test",
-            RendererOption.EXCLUDE_FOLDERS,    false,
             RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
             RendererOption.MAX_OUTLINE_DEPTH,  9,
             RendererOption.PUBLISHING_FORMAT,  FormatIndicator.WORD_ML
@@ -460,9 +459,9 @@ public class PublishingServerPreviewTest {
                                                        .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
                                                        .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
                                                        .append( "  <w:body>" ).append( "\n" )
-                                                       .append( "     <wx:sect>" ).append( "\n" )
+                                                       .append( "     <w:sect>" ).append( "\n" )
                                                        .append( "        INSERT_ARTIFACT_HERE" ).append( "\n" )
-                                                       .append( "     </wx:sect>" ).append( "\n" )
+                                                       .append( "     </w:sect>" ).append( "\n" )
                                                        .append( "  </w:body>" ).append( "\n" )
                                                        .append( "</w:wordDocument>" ).append( "\n" )
                                                        .toString()
@@ -525,9 +524,9 @@ public class PublishingServerPreviewTest {
                                                        .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
                                                        .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
                                                        .append( "  <w:body>"                                                    ).append( "\n" )
-                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "     <w:sect>"                                                 ).append( "\n" )
                                                        .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "     </w:sect>"                                                ).append( "\n" )
                                                        .append( "  </w:body>"                                                   ).append( "\n" )
                                                        .append( "</w:wordDocument>"                                             ).append( "\n" )
                                                        .toString()
@@ -590,9 +589,9 @@ public class PublishingServerPreviewTest {
                                                        .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
                                                        .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
                                                        .append( "  <w:body>"                                                    ).append( "\n" )
-                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "     <w:sect>"                                                 ).append( "\n" )
                                                        .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "     </w:sect>"                                                ).append( "\n" )
                                                        .append( "  </w:body>"                                                   ).append( "\n" )
                                                        .append( "</w:wordDocument>"                                             ).append( "\n" )
                                                        .toString()
@@ -655,9 +654,9 @@ public class PublishingServerPreviewTest {
                                                        .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
                                                        .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
                                                        .append( "  <w:body>"                                                    ).append( "\n" )
-                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "     <w:sect>"                                                 ).append( "\n" )
                                                        .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "     </w:sect>"                                                ).append( "\n" )
                                                        .append( "  </w:body>"                                                   ).append( "\n" )
                                                        .append( "</w:wordDocument>"                                             ).append( "\n" )
                                                        .toString()
@@ -737,9 +736,9 @@ public class PublishingServerPreviewTest {
                                                        .append( "<w:wordDocument w:embeddedObjPresent=\"no\" w:macrosPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ns0=\"http://www.w3.org/2001/XMLSchema\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\">" ).append( "\n" )
                                                        .append( "  <w:ignoreElements w:val=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"/>" ).append( "\n" )
                                                        .append( "  <w:body>"                                                    ).append( "\n" )
-                                                       .append( "     <wx:sect>"                                                ).append( "\n" )
+                                                       .append( "     <w:sect>"                                                 ).append( "\n" )
                                                        .append( "        INSERT_ARTIFACT_HERE"                                  ).append( "\n" )
-                                                       .append( "     </wx:sect>"                                               ).append( "\n" )
+                                                       .append( "     </w:sect>"                                                ).append( "\n" )
                                                        .append( "  </w:body>"                                                   ).append( "\n" )
                                                        .append( "</w:wordDocument>"                                             ).append( "\n" )
                                                        .toString()
@@ -835,26 +834,26 @@ public class PublishingServerPreviewTest {
    WordDocument wordDocument;
 
    /**
-    * Saves an encapsulation of a list of the first level "&lt;wx:sect&gt;" elements from the Word ML preview.
+    * Saves an encapsulation of a list of the first level "&lt;w:sect&gt;" elements from the Word ML preview.
     */
 
-   WordSectionList wordSectionList;
+   WordSectionList<WordBody> wordSectionList;
 
    /**
     * Saves an encapsulation of a list of the first level "&lt;wx:sub-section&gt;" elements in each first level
-    * "&lt;wx:sect&gt;" of the Word ML preview.
+    * "&lt;w:sect&gt;" of the Word ML preview.
     */
 
-   List<WordSubSectionList> wordSubSectionList;
+   List<AuxHintSubSectionList<?>> wordSubSectionList;
 
-   WordSubSectionList firstWordSubSectionSubSectionList;
+   AuxHintSubSectionList<?> firstWordSubSectionSubSectionList;
 
    /**
     * Saves an encapsulation of a list of the first level "&lt;w:p&gt;" elements in each first level
-    * "&lt;wx:sub-section&gt;" of each first level "&lt;wx:sect&gt;" of the Word ML preview.
+    * "&lt;wx:sub-section&gt;" of each first level "&lt;w:sect&gt;" of the Word ML preview.
     */
 
-   List<List<WordParagraphList>> wordParagraphListForEachSubSection;
+   List<List<WordParagraphList<AuxHintSubSection>>> wordParagraphListForEachSubSection;
 
    /**
     * Requests the Word ML preview from the server, parses the received Word ML, and indexes some common elements of the
@@ -874,8 +873,6 @@ public class PublishingServerPreviewTest {
       this.wordSectionList = null;
       this.wordSubSectionList = null;
       this.wordParagraphListForEachSubSection = null;
-      String documentString = null;
-
       //@formatter:off
       var attachment = PublishingServerPreviewTest.publishingEndpoint.msWordPreview(msWordPreviewRequestData);
 
@@ -883,16 +880,18 @@ public class PublishingServerPreviewTest {
 
       try( var inputStream = attachment.getDataHandler().getInputStream() ) {
 
-        document = PublishingServerPreviewTest.publishingXmlUtils.parse( inputStream )
-                .orElseThrow
-                   (
-                     () -> PublishingServerPreviewTest.buildAssertionError
-                              (
-                                 PublishingServerPreviewTest.publishingXmlUtils,
-                                 "Failed to parse preview XML.",
-                                 null
-                              )
-                   );
+        document =
+           PublishingXmlUtils
+              .parse( inputStream )
+              .orElseThrow
+                  (
+                     ( throwable ) ->
+                        new AssertionError
+                               (
+                                  "Failed to parse preview XML.",
+                                  throwable
+                               )
+                  );
       } catch( Exception e )
       {
          throw
@@ -919,19 +918,20 @@ public class PublishingServerPreviewTest {
       this.printDocument( this.documentString );
 
       this.wordDocument =
-         PublishingServerPreviewTest.publishingXmlUtils.parseWordDocument( document )
+         PublishingXmlUtils
+            .parseWordDocument( document )
             .orElseThrow
                (
-                  () -> PublishingServerPreviewTest.buildAssertionError
-                           (
-                              PublishingServerPreviewTest.publishingXmlUtils,
-                              "Failed to parse Word Document from XML Document.",
-                              this.documentString
-                           )
+                  ( throwable ) ->
+                     new AssertionError
+                            (
+                               "Failed to parse Word Document from XML Document.",
+                               throwable
+                            )
                );
 
       this.wordBody =
-         PublishingServerPreviewTest.publishingXmlUtils.parseWordBody( wordDocument )
+         PublishingServerPreviewTest.publishingXmlUtils.parseChild( wordDocument, WordMlTag.BODY, WordBody::new )
             .orElseThrow
                (
                  () -> PublishingServerPreviewTest.buildAssertionError
@@ -943,22 +943,16 @@ public class PublishingServerPreviewTest {
                );
 
       this.wordSectionList =
-         PublishingServerPreviewTest.publishingXmlUtils
-            .parseChildListFromParent
-               (
-                  wordBody,
-                  WordXmlTag.SECTION,
-                  WordSectionList::new,
-                  WordSection::new
-               )
+         PublishingXmlUtils
+            .parseDescendantsList( wordBody, WordSectionList.wordBodyParentFactory )
             .orElseThrow
                (
-                  () -> PublishingServerPreviewTest.buildAssertionError
-                           (
-                              PublishingServerPreviewTest.publishingXmlUtils,
-                              "Failed to parse Word Section List from Word Body.",
-                              this.documentString
-                           )
+                  ( throwable ) ->
+                     new AssertionError
+                            (
+                               "Failed to parse Word Section List from Word Body.",
+                               throwable
+                            )
                );
 
       if( this.wordSectionList.size() == 0 ) {
@@ -969,25 +963,28 @@ public class PublishingServerPreviewTest {
          this.wordSectionList.stream()
             .map
                (
-                  ( wordSection ) -> PublishingServerPreviewTest.publishingXmlUtils
-                                        .parseChildListFromParent
-                                           (
-                                              wordSection,
-                                              WordXmlTag.SUBSECTION,
-                                              WordSubSectionList::new,
-                                              WordSubSection::new
-                                           )
-                                        .orElseThrow
-                                           (
-                                             () -> PublishingServerPreviewTest.buildAssertionError
-                                                      (
-                                                        PublishingServerPreviewTest.publishingXmlUtils,
-                                                        "Failed to parse Word Sub-Section List from Word Section.",
-                                                        this.documentString
-                                                      )
-                                           )
+                  ( wordSection ) ->
+                     PublishingXmlUtils
+                        .parseChildList( wordSection, AuxHintSubSectionList.wordSectionParentFactory )
+                        .orElseThrow
+                           (
+                              ( throwable ) ->
+                                 new AssertionError
+                                    (
+                                       new Message()
+                                              .title( "Failed to parse Word Sub-Section List from Word Section." )
+                                              .indentInc()
+                                              .segment( "Parent", wordSection )
+                                              .indentDec()
+                                              .reasonFollows( throwable )
+                                              .follows( "Document", this.documentString )
+                                              .toString(),
+                                       throwable
+                                    )
+                           )
                )
             .collect( Collectors.toList() );
+
 
       /*
        * If any sections were found
@@ -1008,22 +1005,23 @@ public class PublishingServerPreviewTest {
             var firstWordSubSection = firstWordSubSectionList.get(0).get();
 
             this.firstWordSubSectionSubSectionList =
-               PublishingServerPreviewTest.publishingXmlUtils
-                  .parseChildListFromParent
-                     (
-                        firstWordSubSection,
-                        WordXmlTag.SUBSECTION,
-                        WordSubSectionList::new,
-                        WordSubSection::new
-                     )
+               PublishingXmlUtils
+                  .parseChildList( firstWordSubSection, AuxHintSubSectionList.wordSubSectionParentFactory )
                   .orElseThrow
                      (
-                        () -> PublishingServerPreviewTest.buildAssertionError
-                                 (
-                                    PublishingServerPreviewTest.publishingXmlUtils,
-                                    "Failed to parse Word Sub-Section List from First Word Sub-Section.",
-                                    this.documentString
-                                 )
+                        ( throwable ) ->
+                           new AssertionError
+                               (
+                                    new Message()
+                                           .title( "Failed to parse Word Sub-Section List from First Word Sub-Section." )
+                                           .indentInc()
+                                           .segment( "Parent", firstWordSubSection )
+                                           .indentDec()
+                                           .reasonFollows( throwable )
+                                           .follows( "Document", this.documentString )
+                                           .toString(),
+                                    throwable
+                               )
                      );
          }
       }
@@ -1033,19 +1031,33 @@ public class PublishingServerPreviewTest {
             .map
                (
                   ( wordSubSectionList ) ->
-                     Streams.concat( wordSubSectionList.stream(), this.firstWordSubSectionSubSectionList.stream() )
+                     Stream
+                        .concat
+                           (
+                              wordSubSectionList.stream(),
+                              this.firstWordSubSectionSubSectionList.stream()
+                           )
                         .map
                            (
-                              ( wordSubSection ) -> PublishingServerPreviewTest.publishingXmlUtils.parseImmediateChildrenWordParagraphListFromWordSubSection( wordSubSection )
-                                                       .orElseThrow
-                                                          (
-                                                             () -> PublishingServerPreviewTest.buildAssertionError
-                                                                      (
-                                                                         PublishingServerPreviewTest.publishingXmlUtils,
-                                                                         "Failed to parse Word Sub-Section List from Word Section.",
-                                                                         documentString
-                                                                      )
-                                                          )
+                              ( wordSubSection ) ->
+                                 PublishingXmlUtils
+                                    .parseChildList( wordSubSection,  WordParagraphList.wordSubSectionParentFactory )
+                                    .orElseThrow
+                                       (
+                                          ( throwable ) ->
+                                             new AssertionError
+                                                    (
+                                                      new Message()
+                                                             .title( "Failed to parse Word Sub-Section List from Word Section." )
+                                                             .indentInc()
+                                                             .segment( "Parent", wordSubSection )
+                                                             .indentDec()
+                                                             .reasonFollows( throwable )
+                                                             .follows( "Document", this.documentString )
+                                                             .toString(),
+                                                      throwable
+                                                    )
+                                       )
                            )
                         .collect( Collectors.toList() )
                )
@@ -1061,20 +1073,22 @@ public class PublishingServerPreviewTest {
     * @return the {@link WordTextList}, possible empty, of the specified paragraph.
     */
 
-   private WordTextList getWordTextList( int sectionIndex, int subSectionIndex, int paragraphIndex ) {
+   private WordTextList<WordParagraph> getWordTextList( int sectionIndex, int subSectionIndex, int paragraphIndex ) {
       //@formatter:off
       return
-         PublishingServerPreviewTest.publishingXmlUtils.parseWordTextListFromWordParagraph
-            (
-               this.wordParagraphListForEachSubSection.get( sectionIndex ).get( subSectionIndex ).get( paragraphIndex ).get()
-            )
+         PublishingXmlUtils
+            .parseDescendantsList
+               (
+                  this.wordParagraphListForEachSubSection.get( sectionIndex ).get( subSectionIndex ).get( paragraphIndex ).get(),
+                  WordTextList.wordParagraphParentFactory
+               )
             .orElseThrow
                (
-                  () -> PublishingServerPreviewTest.buildAssertionError
-                           (
-                              PublishingServerPreviewTest.publishingXmlUtils,
-                              "Failed to parse Word Text List from Word Paragraph.",
-                              documentString
+                  ( throwable ) ->
+                     new AssertionError
+                            (
+                               "Failed to parse Word Text List from Word Paragraph.",
+                               throwable
                            )
                );
       //@formatter:on
@@ -1202,7 +1216,7 @@ public class PublishingServerPreviewTest {
 
       Assert.assertEquals
          (
-            "Only one un-nested \"<wx:sect>\" expected in the \"<w:body>\".",
+            "Only one un-nested \"<w:sect>\" expected in the \"<w:body>\".",
             1,
             this.wordSectionList.size()
          );
@@ -1217,7 +1231,7 @@ public class PublishingServerPreviewTest {
       Assert.assertEquals
          (
             "Two un-nested \"<w:p>\" expected in \"<wx:sub-section>\"( 0, 0 ).",
-            2,
+            3,
             this.wordParagraphListForEachSubSection.get( 0 ).get( 0 ).size()
          );
 
@@ -1234,7 +1248,7 @@ public class PublishingServerPreviewTest {
          (
             "Artifact title does not match.",
             "Preview Artifacts Folder",
-            wordTextList.get( 0 ).get().getText()
+            wordTextList.getChild( 0 ).get().getText()
          );
 
       wordTextList = this.getWordTextList( 0 /* section */, 0 /* sub-section */, 1 /* paragraph */ );
@@ -1283,7 +1297,7 @@ public class PublishingServerPreviewTest {
 
       Assert.assertEquals
          (
-            "Only one un-nested \"<wx:sect>\" expected in the \"<w:body>\".",
+            "Only one un-nested \"<w:sect>\" expected in the \"<w:body>\".",
             1,
             this.wordSectionList.size()
          );
@@ -1297,13 +1311,13 @@ public class PublishingServerPreviewTest {
 
       Assert.assertNotNull
          (
-            "Two nested \"<wx:sub-section>\" are expected in the first \"<wx:sub-section>\" of the first \"<wx:sect>\".",
+            "Two nested \"<wx:sub-section>\" are expected in the first \"<wx:sub-section>\" of the first \"<w:sect>\".",
             this.firstWordSubSectionSubSectionList
          );
 
       Assert.assertEquals
          (
-            "Two nested \"<wx:sub-section>\" are expected in the first \"<wx:sub-section>\" of the first \"<wx:sect>\".",
+            "Two nested \"<wx:sub-section>\" are expected in the first \"<wx:sub-section>\" of the first \"<w:sect>\".",
             2,
             this.firstWordSubSectionSubSectionList.size()
          );
@@ -1311,7 +1325,7 @@ public class PublishingServerPreviewTest {
       Assert.assertEquals
          (
             "One un-nested \"<w:p>\" expected in \"<wx:sub-section>\"( 0, 0 ).",
-            1,
+            2,
             this.wordParagraphListForEachSubSection.get( 0 ).get( 0 ).size()
          );
 
@@ -1509,7 +1523,7 @@ public class PublishingServerPreviewTest {
 
       Assert.assertEquals
          (
-            "Only one un-nested \"<wx:sect>\" expected in the \"<w:body>\".",
+            "Only one un-nested \"<w:sect>\" expected in the \"<w:body>\".",
             1,
             this.wordSectionList.size()
          );
@@ -1609,7 +1623,7 @@ public class PublishingServerPreviewTest {
 
       Assert.assertEquals
          (
-            "Only one un-nested \"<wx:sect>\" expected in the \"<w:body>\".",
+            "Only one un-nested \"<w:sect>\" expected in the \"<w:body>\".",
             1,
             wordSectionList.size()
          );
@@ -1624,7 +1638,7 @@ public class PublishingServerPreviewTest {
       Assert.assertEquals
          (
             "Four un-nested \"<w:p>\" expected in \"<wx:sub-section>\"( 0, 0 ).",
-            4,
+            5,
             this.wordParagraphListForEachSubSection.get( 0 ).get( 0 ).size()
          );
 

@@ -21,7 +21,15 @@ import java.util.Optional;
  * @author Loren K. Ashley
  */
 
-public class WordFieldCharacterList extends AbstractElementList<WordRun, WordFieldCharacter> {
+public class WordFieldCharacterList<P extends AbstractElement> extends AbstractElementList<P, WordFieldCharacter> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordFieldCharacterList} with a {@link WordRun}
+    * parent.
+    */
+
+   public static WordElementParserFactory<WordRun, WordFieldCharacterList<WordRun>, WordFieldCharacter> wordRunParentFactory =
+      new WordElementParserFactory<>(WordFieldCharacterList::new, WordFieldCharacter::new, WordMlTag.FIELD_CHARACTER);
 
    /**
     * Creates a new open and empty list for {@link WordFieldCharacter}s.
@@ -30,8 +38,8 @@ public class WordFieldCharacterList extends AbstractElementList<WordRun, WordFie
     * @throws NullPointerException when the parameter <code>wordRun</code> is <code>null</code>.
     */
 
-   public WordFieldCharacterList(WordRun wordRun) {
-      super(wordRun);
+   public WordFieldCharacterList(P parent) {
+      super(parent);
    }
 
    /**
@@ -40,13 +48,12 @@ public class WordFieldCharacterList extends AbstractElementList<WordRun, WordFie
     * @return the containing {@link WordRun}.
     */
 
-   @SuppressWarnings("cast")
    public Optional<WordRun> getWordRun() {
       var parent = this.getParent();
       //@formatter:off
       return
          (parent instanceof WordRun)
-            ? Optional.of(parent)
+            ? Optional.of((WordRun) parent)
             : Optional.empty();
       //@formatter:on
    }

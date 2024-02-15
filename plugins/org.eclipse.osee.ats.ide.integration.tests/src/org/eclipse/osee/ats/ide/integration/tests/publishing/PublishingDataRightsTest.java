@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.orcs.core.util.Artifacts;
@@ -791,18 +790,6 @@ public class PublishingDataRightsTest {
    private static DataRightsEndpoint dataRightsEndpoint;
 
    /**
-    * Save a reference to the {@link PublishingXmlUtils} helper object.
-    */
-
-   private static PublishingXmlUtils publishingXmlUtils;
-
-   /**
-    * Saves the {@link ArtifactId} of the root artifact of the test document.
-    */
-
-   private static ArtifactId rootArtifactId;
-
-   /**
     * Saves the {@link BranchId} of the root artifact of the test document.
     */
 
@@ -828,12 +815,6 @@ public class PublishingDataRightsTest {
    public static void testSetup() {
 
       /*
-       * Setup XML utils
-       */
-
-      PublishingDataRightsTest.publishingXmlUtils = new PublishingXmlUtils();
-
-      /*
        * Create the Test Artifacts
        */
 
@@ -855,15 +836,6 @@ public class PublishingDataRightsTest {
       PublishingDataRightsTest.rootBranchId =
          testDocumentBuilder
             .getBranchIdentifier( PublishingDataRightsTest.testBranchSpecificationRecordIdentifier )
-            .get();
-
-      PublishingDataRightsTest.rootArtifactId =
-         testDocumentBuilder
-            .getArtifactIdentifier
-               (
-                  PublishingDataRightsTest.testBranchSpecificationRecordIdentifier,
-                  1
-               )
             .get();
 
       //@formatter:off
@@ -1385,9 +1357,6 @@ public class PublishingDataRightsTest {
                expectedFlags.getIsContinuous()
             );
 
-         var builderRecordIdentifier = PublishingDataRightsTest.artifactIdMap.get( artifactId );
-         var builderRecord           = PublishingDataRightsTest.builderRecordByIdentifierMap.get( builderRecordIdentifier );
-
          var expectedClassification = "Unspecified";
          var classification = dataRightAnchor.getDataRight().getClassification();
 
@@ -1416,13 +1385,6 @@ public class PublishingDataRightsTest {
    public void testNullBranchId() {
 
       //@formatter:off
-      var expectedMessageRegex =
-         new StringBuilder( 1024 )
-            .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-            .append( "[ \\t]*" ).append( "Parameter \\\"branch\\\" cannot be null or with an Id less than zero." ).append( "\\R" )
-            .append( "[ \\t]*" ).append( "branch:" ).append( "[ \\t]*" ).append( "\\(null\\)" )
-            .toString();
-
       var artifactIds =
          List.of
             (
@@ -1552,8 +1514,7 @@ public class PublishingDataRightsTest {
       var expectedMessageRegex =
              new StringBuilder( 1024 )
                     .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed cannot be null test." ).append( "\\R" )
-                    .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\(null\\)" ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "org.eclipse.osee.define.operations.publisher.datarights.DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed cannot be null, empty, have a null element, or contain a negative artifact identifier test." ).append( "\\R" )
                     .toString();
 
 
@@ -1596,7 +1557,7 @@ public class PublishingDataRightsTest {
       var expectedMessageRegex =
              new StringBuilder( 1024 )
                     .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier test." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "org.eclipse.osee.define.operations.publisher.datarights.DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed cannot be null, empty, have a null element, or contain a negative artifact identifier test." ).append( "\\R" )
                     .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\[\\]" ).append( "\\R" )
                     .toString();
 
@@ -1640,7 +1601,7 @@ public class PublishingDataRightsTest {
       var expectedMessageRegex =
              new StringBuilder( 1024 )
                     .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier test." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "org.eclipse.osee.define.operations.publisher.datarights.DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed cannot be null, empty, have a null element, or contain a negative artifact identifier test." ).append( "\\R" )
                     .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\[null\\]" ).append( "\\R" )
                     .toString();
 
@@ -1687,7 +1648,7 @@ public class PublishingDataRightsTest {
       var expectedMessageRegex =
              new StringBuilder( 1024 )
                     .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-                    .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed artifact identifiers list is not empty, does not contain a null element, and does not contain a negative artifact identifier test." ).append( "\\R" )
+                    .append( "[ \\t]*" ).append( "org.eclipse.osee.define.operations.publisher.datarights.DataRightsOperationsImpl::getDataRights, Parameter \"artifactIdentifiers\" failed cannot be null, empty, have a null element, or contain a negative artifact identifier test." ).append( "\\R" )
                     .append( "[ \\t]*" ).append( "artifactIdentifiers:" ).append( "[ \\t]*" ).append( "\\[-1\\]" ).append( "\\R" )
                     .toString();
 
@@ -1731,8 +1692,8 @@ public class PublishingDataRightsTest {
       var expectedMessageRegex =
                new StringBuilder( 1024 )
                   .append( "DataRightsOperationsImpl::getDataRights, illegal arguments provided." ).append( "\\R" )
-                  .append( "[ \\t]*" ).append( "DataRightsOperationsImpl::getDataRights, Parameter \"branch\" failed branch identifier is non-negative test\\." ).append( "\\R" )
-                  .append( "[ \\t]*" ).append( "branch:" ).append( "[ \\t]*" ).append( "-1" ).append( "\\R" )
+                  .append( "[ \\t]*" ).append( "org.eclipse.osee.define.operations.publisher.datarights.DataRightsOperationsImpl::getDataRights, Parameter \"branchIdentifier\" failed cannot be null or negative test\\." ).append( "\\R" )
+                  .append( "[ \\t]*" ).append( "branchIdentifier:" ).append( "[ \\t]*" ).append( "-1" ).append( "\\R" )
                   .toString();
 
       var artifactIds =

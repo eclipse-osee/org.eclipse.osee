@@ -21,7 +21,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.AttachmentBuilder;
 import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
 import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactSpecification;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 import org.eclipse.osee.framework.core.publishing.FilenameFactory;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -165,7 +165,8 @@ public class AttachmentFactory {
     * @return the newly created {@link Attachment}.
     */
 
-   public Attachment create(InputStream inputStream, CharSequence id, BranchToken branchToken, ArtifactToken artifactToken, CharSequence... segments) {
+   public Attachment create(InputStream inputStream, CharSequence id, BranchToken branchToken,
+      ArtifactToken artifactToken, CharSequence... segments) {
       var branchName = Objects.nonNull(branchToken) ? branchToken.getName() : null;
       var artifactName = Objects.nonNull(artifactToken) ? artifactToken.getName() : null;
       var attachment = this.create(inputStream, id, branchName, artifactName, segments);
@@ -189,7 +190,8 @@ public class AttachmentFactory {
     * @return the newly created {@link Attachment}.
     */
 
-   public Attachment create(InputStream inputStream, CharSequence id, BranchId branchId, ArtifactId artifactId, CharSequence... segments) {
+   public Attachment create(InputStream inputStream, CharSequence id, BranchId branchId, ArtifactId artifactId,
+      CharSequence... segments) {
 
       //@formatter:off
       if(    Objects.isNull( this.dataAccessOperations )
@@ -218,15 +220,15 @@ public class AttachmentFactory {
          branchName =
             Objects.nonNull( branchId ) && branchId.isValid()
                ? this.dataAccessOperations.getBranchByIdentifier( branchId )
-                    .map( Branch::getShortName )
-                    .orElse( null )
+                    .mapValue( Branch::getShortName )
+                    .orElseGet( (String) null )
                : null;
 
          artifactName =
             Objects.nonNull( artifactId ) && artifactId.isValid()
                ? this.dataAccessOperations.getArtifactReadableByIdentifier( new ArtifactSpecification( branchId, branchId.getViewId(), artifactId ) )
-                    .map( ArtifactReadable::getName )
-                    .orElse( this.defaultName )
+                    .mapValue( ArtifactReadable::getName )
+                    .orElseGet( this.defaultName )
                : this.defaultName;
       }
       //@formatter:on
@@ -253,7 +255,8 @@ public class AttachmentFactory {
     * @return the newly created {@link Attachment}.
     */
 
-   public Attachment create(InputStream inputStream, CharSequence id, CharSequence branchName, CharSequence filename, CharSequence... segments) {
+   public Attachment create(InputStream inputStream, CharSequence id, CharSequence branchName, CharSequence filename,
+      CharSequence... segments) {
 
       var attachmentBuilder = new AttachmentBuilder();
 

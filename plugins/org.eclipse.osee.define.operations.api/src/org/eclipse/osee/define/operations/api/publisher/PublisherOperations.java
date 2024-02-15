@@ -13,10 +13,10 @@
 
 package org.eclipse.osee.define.operations.api.publisher;
 
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 
 /**
  * Interface used to obtain the define operations interface implementations used for publishing.

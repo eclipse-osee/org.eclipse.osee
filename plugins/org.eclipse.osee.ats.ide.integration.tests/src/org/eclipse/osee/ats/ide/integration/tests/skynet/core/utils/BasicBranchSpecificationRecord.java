@@ -77,8 +77,6 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
                   (
                      testBranchToken,
                      ValueType.PARAMETER,
-                     "BasicBranchSpecificationRecord",
-                     "new",
                      "testBranchToken",
                      "cannot be null",
                      Objects::isNull,
@@ -115,8 +113,6 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
                (
                   testBranchName,
                   ValueType.PARAMETER,
-                  "BasicBranchSpecificationRecord",
-                  "new",
                   "testBranchName",
                   "cannot be null or blank",
                   Strings::isInvalidOrBlank,
@@ -139,7 +135,8 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
     * @throws IllegalArgumentException when <code>testBranchName</code> is blank.
     */
 
-   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName, @NonNull String testBranchCreationComment) {
+   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName,
+      @NonNull String testBranchCreationComment) {
       //@formatter:off
       this
          (
@@ -165,7 +162,8 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
     * blank.
     */
 
-   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName, @NonNull String testBranchCreationComment, @NonNull Integer parentTestBranchIdentifier) {
+   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName,
+      @NonNull String testBranchCreationComment, @NonNull Integer parentTestBranchIdentifier) {
 
       //@formatter:off
       this.identifier =
@@ -173,8 +171,6 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
             (
                identifier,
                ValueType.PARAMETER,
-               "BasicBranchSpecificationRecord",
-               "new",
                "identifier",
                "cannot be null",
                Objects::isNull,
@@ -191,8 +187,6 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
             (
                testBranchName,
                ValueType.PARAMETER,
-               "BasicBranchSpecificationRecord",
-               "new",
                "testBranchName",
                "is valid and not blank",
                Strings::isInvalidOrBlank,
@@ -206,8 +200,6 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
             (
                testBranchCreationComment,
                ValueType.PARAMETER,
-               "BasicBranchSpecificationRecord",
-               "new",
                "testBranchCreationComment",
                "is valid and not blank",
                Strings::isInvalidOrBlank,
@@ -221,8 +213,6 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
             (
                parentTestBranchIdentifier,
                ValueType.PARAMETER,
-               "BasicBranchSpecificationRecord",
-               "new",
                "parentTestBranchIdentifier",
                "cannot be null",
                Objects::isNull,

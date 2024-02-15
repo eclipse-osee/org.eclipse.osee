@@ -14,7 +14,13 @@
 package org.eclipse.osee.framework.core.publishing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.OrcsTokenService;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
@@ -23,6 +29,47 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
  * @author Loren K. Ashley
  */
 public class AttributeOptions implements ToMessage {
+
+   /**
+    * Sets publishing processor values from {@link AttributeOptions}.
+    *
+    * @param attributeOptionsArray an array of {@link AttributeOptions}. When the array is empty an empty {@link List}
+    * will be returned.
+    * @param tokenService the {@link OrcsTokenService}. Used to lookup attribute types from attribute type names.
+    * @return A list of the {@link AttributeOptions} from the <code>attributeOptionsArray</code> with entries that
+    * reference invalid attribute types removed.
+    */
+
+   //@formatter:off
+   public static List<AttributeOptions>
+      setValues
+         (
+            @NonNull AttributeOptions[] attributeOptionsArray,
+            @NonNull OrcsTokenService   tokenService
+         ) {
+
+      final var safeAttributeOptionsArray = Conditions.requireNonNull( attributeOptionsArray, "attributeOptionsArray" );
+      final var safeTokenService          = Conditions.requireNonNull( tokenService,          "tokenService"          );
+
+      return
+         Arrays
+            .stream( safeAttributeOptionsArray )
+            .filter
+               (
+                  ( attributeOptionsElement ) ->
+                  {
+                     final var attributeTypeName = attributeOptionsElement.getAttributeName();
+
+                     return
+                           "*".equals( attributeTypeName )
+                        || "<format-content-attribute>".equals( attributeTypeName )
+                        || safeTokenService.getAttributeType( attributeTypeName ).isValid();
+                  }
+               )
+            .collect( Collectors.toList() );
+
+   }
+   //@formatter:on
 
    @JsonProperty("AttrType")
    private String attributeType;

@@ -47,8 +47,8 @@ public class ArtifactSpecification extends BranchSpecification {
    }
 
    /**
-    * Creates an {@link ArtifactSpecification} that only contains the artifact identifier, branch identifier, and branch
-    * view artifact identifier. All of the encapsulated identifiers are guaranteed to not be <code>null</code>.
+    * Creates an {@link ArtifactSpecification} that contains the artifact identifier, branch identifier, and branch view
+    * artifact identifier. All of the encapsulated identifiers are guaranteed to not be <code>null</code>.
     *
     * @param branchId the branch identifier with an optional view artifact identifier. This parameter may be
     * <code>null</code>.
@@ -74,8 +74,8 @@ public class ArtifactSpecification extends BranchSpecification {
    }
 
    /**
-    * Creates an {@link ArtifactSpecification} that only contains the artifact identifier, branch identifier, and branch
-    * view artifact identifier. All of the encapsulated identifiers are guaranteed to not be <code>null</code>.
+    * Creates an {@link ArtifactSpecification} that contains the artifact identifier, branch identifier, and branch view
+    * artifact identifier. All of the encapsulated identifiers are guaranteed to not be <code>null</code>.
     *
     * @param branchId the branch identifier with an optional view artifact identifier. This parameter may be
     * <code>null</code>.
@@ -100,6 +100,23 @@ public class ArtifactSpecification extends BranchSpecification {
       super(branchId, viewId);
       this.artifactId = BranchSpecification.cleanArtifactId(artifactId);
 
+   }
+
+   /**
+    * Creates an {@link ArtifactSpecification} that contains the artifact identifier, branch identifier, and branch view
+    * artifact identifier. All of the encapsulated identifiers are guaranteed to not be <code>null</code>.
+    *
+    * @param branchSpecification the branch identifier with an optional view artifact identifier. This parameter may be
+    * <code>null</code>.
+    * @return an {@link ArtifactSpecification} with the encapsulated {@link ArtifactId} set according to
+    * {@link BranchSpecification#cleanArtifactId} and the encapsulated {@link BranchId} set according to
+    * {@link BranchSpecification#cleanBranchId}.
+    * @throws NullPointerException when <code>branchSpecification</code> is <code>null</code>.
+    */
+
+   public ArtifactSpecification(BranchSpecification branchSpecification, ArtifactId artifactId) {
+      super(Objects.requireNonNull(branchSpecification).getBranchId(), branchSpecification.getViewId());
+      this.artifactId = BranchSpecification.cleanArtifactId(artifactId);
    }
 
    /**

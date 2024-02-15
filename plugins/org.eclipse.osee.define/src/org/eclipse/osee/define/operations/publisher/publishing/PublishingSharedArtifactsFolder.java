@@ -13,18 +13,28 @@
 
 package org.eclipse.osee.define.operations.publisher.publishing;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactSpecification;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchSpecification;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.publishing.DataAccessException;
+import org.eclipse.osee.framework.core.publishing.FilterForView;
+import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
+import org.eclipse.osee.framework.core.publishing.ProcessRecursively;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.BranchIndicator;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.WhenNotFound;
+import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 
 /**
  * A Shared Publishing Folder is an artifact with children that are selected by an attribute with a specified value and
@@ -50,11 +60,9 @@ public abstract class PublishingSharedArtifactsFolder {
     * This method will also add an error to the provided {@link PublishingErrorLog} that indicates the shared folder
     * cannot be found.
     *
-    * @param reason a description of why a non-error implementation was not created.
-    * @param dataAccessOperations a reference to a {@link DataAccessOperations} object used to perform database and
-    * token service queries.
+    * @param reason a description of why a error implementation was created.
     * @param publishingErrorLog errors are added to the provided {@link PublishingErrorLog}.
-    * @param publishingBranchId the branch and view to locate the shared folder on.
+    * @param publishingBranchSpecification the branch and view to locate the shared folder on.
     * @param sharedFolderDescription a textual description of the shared folder's purpose for error messages.
     * @param sharedFolderArtifactToken the token (identifier) of the shared folder.
     * @return an implementation of the {@link PublishingSharedArtifactsFolder} abstract class.
@@ -64,20 +72,19 @@ public abstract class PublishingSharedArtifactsFolder {
    private static PublishingSharedArtifactsFolder
       createErrorImplementation
          (
-            String             reason,
-            DataAccessOperations    dataAccessOperations,
-            PublishingErrorLog publishingErrorLog,
-            BranchId           publishingBranchId,
-            String             sharedFolderDescription,
-            ArtifactToken      sharedFolderArtifactToken
+            String                   reason,
+            PublishingErrorLog       publishingErrorLog,
+            BranchSpecification      publishingBranchSpecification,
+            String                   sharedFolderDescription,
+            ArtifactToken            sharedFolderArtifactToken
          ) {
 
-      var message = new StringBuilder( 1024 )
-                           .append( reason ).append( "\n" )
-                           .append( "   Shared Folder Description: " ).append( sharedFolderDescription ).append( "\n" )
-                           .append( "   Publishing Branch Id:      " ).append( publishingBranchId.getIdString() ).append( "\n" )
-                           .append( "   Publishing View Id:        " ).append( publishingBranchId.getViewId().getIdString() ).append( "\n" )
-                           .append( "   Shared Folder Id:          " ).append( sharedFolderArtifactToken.getIdString() ).append( "\n" )
+      var message = new Message( )
+                           .title( reason )
+                           .indentInc()
+                           .segment( "Shared Folder Description",       sharedFolderDescription )
+                           .segment( "Shared Folder Id",                sharedFolderArtifactToken.getIdString() )
+                           .segment( "Publishing Branch Specification", publishingBranchSpecification )
                            .toString();
 
       publishingErrorLog.error( sharedFolderArtifactToken, message );
@@ -91,12 +98,12 @@ public abstract class PublishingSharedArtifactsFolder {
             }
 
             @Override
-            public Optional<ArtifactReadable> getSharedPublishingFolder() {
+            public Optional<PublishingArtifact> getSharedPublishingFolder() {
                return Optional.empty();
             }
 
             @Override
-            public List<ArtifactReadable> getSharedArtifacts(String attributeValue) {
+            public List<PublishingArtifact> getSharedArtifacts(String attributeValue) {
                return List.of();
             }
       };
@@ -110,63 +117,83 @@ public abstract class PublishingSharedArtifactsFolder {
     * under the Shared Publishing Folder with an attribute of the specified type with a specified value. When the shared
     * folder cannot be found, an error is added to the provided {@link PublishingErrorLog}.
     *
-    * @param dataAccessOperations a reference to a {@link DataAccessOperations} object used to perform database and
-    * token service queries.
+    * @param publishingArtifactLoader a reference to a {@link PublishingArtifactLoader} object used to perform database
+    * and token service queries.
     * @param publishingErrorLog errors are added to the provided {@link PublishingErrorLog}.
-    * @param publishingBranchId the branch and view to locate the shared folder on.
+    * @param publishingBranchSpecification the branch and view to locate the shared folder on.
     * @param sharedFolderDescription a textual description of the shared folder's purpose for error messages.
     * @param sharedFolderArtifactToken the token (identifier) of the shared folder.
     * @param childAttributeTypeId the identifier of the attribute of the child artifacts to be checked for the specified
     * value.
     * @return an implementation of the {@link PublishingSharedArtifactsFolder} abstract class.
     * @throws NullPointerException when any of the input parameters are <code>null</code>.
+    * @throws DataAccessException when an error occurs loading the shared folder artifact.
     */
 
    //@formatter:off
    public static PublishingSharedArtifactsFolder
       create
          (
-            DataAccessOperations    dataAccessOperations,
-            PublishingErrorLog publishingErrorLog,
-            BranchId           publishingBranchId,
-            String             sharedFolderDescription,
-            ArtifactToken      sharedFolderArtifactToken,
-            AttributeTypeToken    childAttributeTypeId
+            PublishingArtifactLoader publishingArtifactLoader,
+            PublishingErrorLog       publishingErrorLog,
+            BranchSpecification      publishingBranchSpecification,
+            String                   sharedFolderDescription,
+            ArtifactToken            sharedFolderArtifactToken,
+            AttributeTypeToken       childAttributeTypeId,
+            ProcessRecursively       processRecursively
          ) {
 
-      Objects.requireNonNull( dataAccessOperations,           "PublishingSharedArtifactsFolder::create, parameter \"dataAccessOperations\" is null."           );
-      Objects.requireNonNull( publishingErrorLog,        "PublishingSharedArtifactsFolder::create, parameter \"publishingErrorLog\" is null."        );
-      Objects.requireNonNull( publishingBranchId,        "PublishingSharedArtifactsFolder::create, parameter \"publishingBranchId\" is null."        );
-      Objects.requireNonNull( sharedFolderDescription,   "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderDescription\" is null."   );
-      Objects.requireNonNull( sharedFolderArtifactToken, "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderArtifactToken\" is null." );
-      Objects.requireNonNull( childAttributeTypeId,      "PublishingSharedArtifactsFolder::create, parameter \"childAttributeTypeId\" is null."      );
+      Objects.requireNonNull( publishingArtifactLoader,      "PublishingSharedArtifactsFolder::create, parameter \"publishingArtifactLoader\" is null."      );
+      Objects.requireNonNull( publishingErrorLog,            "PublishingSharedArtifactsFolder::create, parameter \"publishingErrorLog\" is null."            );
+      Objects.requireNonNull( publishingBranchSpecification, "PublishingSharedArtifactsFolder::create, parameter \"publishingBranchSpecification\" is null." );
+      Objects.requireNonNull( sharedFolderDescription,       "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderDescription\" is null."       );
+      Objects.requireNonNull( sharedFolderArtifactToken,     "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderArtifactToken\" is null."     );
+      Objects.requireNonNull( childAttributeTypeId,          "PublishingSharedArtifactsFolder::create, parameter \"childAttributeTypeId\" is null."          );
 
       if( AttributeTypeId.SENTINEL.equals( childAttributeTypeId ) ) {
          return
             PublishingSharedArtifactsFolder.createErrorImplementation
                (
                   "Child Attribute Type Identifier is SENTINEL.",
-                  dataAccessOperations,
                   publishingErrorLog,
-                  publishingBranchId,
+                  publishingBranchSpecification,
                   sharedFolderDescription,
                   sharedFolderArtifactToken
                );
       }
 
-      var sharedFolderOptional =
-         ( sharedFolderArtifactToken instanceof ArtifactReadable )
-              ? Optional.of( (ArtifactReadable) sharedFolderArtifactToken )
-              : dataAccessOperations.getArtifactReadableByIdentifier( new ArtifactSpecification( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken ) );
+      var sharedFolder =
+         publishingArtifactLoader
+            .getPublishingArtifactByArtifactIdentifier
+               (
+                  BranchIndicator.PUBLISHING_BRANCH,
+                  sharedFolderArtifactToken,
+                  FilterForView.YES,
+                  WhenNotFound.SENTINEL,
+                  TransactionId.SENTINEL,
+                  IncludeDeleted.NO
+               )
+            .orElseThrow
+               (
+                  ( dataAccessException ) -> new OseeCoreException
+                                                    (
+                                                       new Message()
+                                                              .title( "PublishingSharedArtifactsFolder::create, failed to load shared folder artifact." )
+                                                              .indentInc()
+                                                              .segment( "Shared Folder Artifact", sharedFolderArtifactToken )
+                                                              .reasonFollows( dataAccessException )
+                                                              .toString(),
+                                                        dataAccessException
+                                                    )
+               );
 
-      if( sharedFolderOptional.isEmpty() ) {
+      if( sharedFolder.isInvalid() ) {
          return
             PublishingSharedArtifactsFolder.createErrorImplementation
                (
                   "Unable to locate the shared folder.",
-                  dataAccessOperations,
                   publishingErrorLog,
-                  publishingBranchId,
+                  publishingBranchSpecification,
                   sharedFolderDescription,
                   sharedFolderArtifactToken
                );
@@ -181,45 +208,42 @@ public abstract class PublishingSharedArtifactsFolder {
             }
 
             @Override
-            public Optional<ArtifactReadable> getSharedPublishingFolder() {
-               return Optional.of( sharedFolderOptional.get() );
+            public Optional<PublishingArtifact> getSharedPublishingFolder() {
+               return Optional.of( sharedFolder );
             }
 
             @Override
-            public List<ArtifactReadable> getSharedArtifacts(String attributeValue) {
+            public List<PublishingArtifact> getSharedArtifacts(String attributeValue) {
 
                return
-                  dataAccessOperations.getRecursiveChildenArtifactReadablesByAttributeTypeAndAttributeValue
-                     (
-                        new BranchSpecification( publishingBranchId ),
-                        sharedFolderArtifactToken,
-                        childAttributeTypeId,
-                        attributeValue
-                     )
-                     .orElseGet
+                  publishingArtifactLoader
+                     .getChildrenPublishingArtifacts
                         (
-                           () ->
-                           {
-                              var message = new StringBuilder( 1024 )
-                                                   .append( "Failed to get artifacts from the shared folder." ).append( "\n" )
-                                                   .append( "   Shared Folder Description: " ).append( sharedFolderDescription                      ).append( "\n" )
-                                                   .append( "   Publishing Branch Id:      " ).append( publishingBranchId.getIdString()             ).append( "\n" )
-                                                   .append( "   Publishing View Id:        " ).append( publishingBranchId.getViewId().getIdString() ).append( "\n" )
-                                                   .append( "   Shared Folder Id:          " ).append( sharedFolderArtifactToken.getIdString()      ).append( "\n" )
-                                                   .append( "   Search Attribute Type Id:  " ).append( childAttributeTypeId.getIdString()           ).append( "\n" )
-                                                   .append( "   Search Attribute Value:    " ).append( attributeValue                               ).append( "\n" );
-
-                              dataAccessOperations.getLastError().ifPresent
-                                 (
-                                    ( reason ) -> message
-                                                     .append( "   Reason Follows:" ).append( "\n" )
-                                                     .append( reason.getMessage() )
-                                 );
-
-                              publishingErrorLog.error(sharedFolderArtifactToken,message.toString());
-                              return List.of();
-                           }
-                        );
+                           sharedFolderArtifactToken,
+                           ArtifactTypeToken.SENTINEL,
+                           childAttributeTypeId,
+                           attributeValue,
+                           publishingBranchSpecification.hasView() ? FilterForView.YES : FilterForView.NO,
+                           processRecursively
+                        )
+                     .peekError
+                        (
+                           ( exception ) -> publishingErrorLog.error
+                                               (
+                                                  sharedFolderArtifactToken,
+                                                  new Message()
+                                                         .title( "Failed to get artifacts from the shared folder." )
+                                                         .indentInc()
+                                                         .segment( "Shared Folder Description",       sharedFolderDescription                 )
+                                                         .segment( "Shared Folder Id",                sharedFolderArtifactToken.getIdString() )
+                                                         .segment( "Publishing Branch Specification", publishingBranchSpecification           )
+                                                         .segment( "Search Attribute Type Id",        childAttributeTypeId.getIdString()      )
+                                                         .segment( "Search Attribute Value",          attributeValue                          )
+                                                         .reasonFollows( exception )
+                                                         .toString()
+                                               )
+                        )
+                     .orElseGet( new LinkedList<PublishingArtifact>() ); /* List must be mutable */
             }
          };
    }
@@ -232,10 +256,10 @@ public abstract class PublishingSharedArtifactsFolder {
     * of a specified type under the Shared Publishing Folder with an attribute of the specified type with a specified
     * value. When the shared folder cannot be found, an error is added to the provided {@link PublishingErrorLog}.
     *
-    * @param dataAccessOperations a reference to a {@link DataAccessOperations} object used to perform database and
-    * token service queries.
+    * @param publishingArtifactLoader a reference to a {@link PublishingArtifactLoader} object used to perform database
+    * and token service queries.
     * @param publishingErrorLog errors are added to the provided {@link PublishingErrorLog}.
-    * @param publishingBranchId the branch and view to locate the shared folder on.
+    * @param publishingBranchSpecification the branch and view to locate the shared folder on.
     * @param sharedFolderDescription a textual description of the shared folder's purpose for error messages.
     * @param sharedFolderArtifactToken the token (identifier) of the shared folder.
     * @param childArtifactTypeToken only child artifacts of this type will be included in the returned {@link List}.
@@ -243,37 +267,38 @@ public abstract class PublishingSharedArtifactsFolder {
     * value.
     * @return an implementation of the {@link PublishingSharedArtifactsFolder} interface.
     * @throws NullPointerException when any of the input parameters are <code>null</code>.
+    * @throws DataAccessException when an error occurs loading the shared folder artifact.
     */
 
    //@formatter:off
    public static PublishingSharedArtifactsFolder
       create
          (
-            DataAccessOperations    dataAccessOperations,
-            PublishingErrorLog publishingErrorLog,
-            BranchId           publishingBranchId,
-            String             sharedFolderDescription,
-            ArtifactToken      sharedFolderArtifactToken,
-            ArtifactTypeToken  childArtifactTypeToken,
-            AttributeTypeToken    childAttributeTypeId
+            PublishingArtifactLoader publishingArtifactLoader,
+            PublishingErrorLog       publishingErrorLog,
+            BranchSpecification      publishingBranchSpecification,
+            String                   sharedFolderDescription,
+            ArtifactToken            sharedFolderArtifactToken,
+            ArtifactTypeToken        childArtifactTypeToken,
+            AttributeTypeToken       childAttributeTypeId,
+            ProcessRecursively       processRecursively
          ) {
 
-      Objects.requireNonNull( dataAccessOperations,           "PublishingSharedArtifactsFolder::create, parameter \"dataAccessOperations\" is null."           );
-      Objects.requireNonNull( publishingErrorLog,        "PublishingSharedArtifactsFolder::create, parameter \"publishingErrorLog\" is null."        );
-      Objects.requireNonNull( publishingBranchId,        "PublishingSharedArtifactsFolder::create, parameter \"publishingBranchId\" is null."        );
-      Objects.requireNonNull( sharedFolderDescription,   "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderDescription\" is null."   );
-      Objects.requireNonNull( sharedFolderArtifactToken, "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderArtifactToken\" is null." );
-      Objects.requireNonNull( childArtifactTypeToken,    "PublishingSharedArtifactsFolder::create, parameter \"childArtifactTypeToken\" is null."    );
-      Objects.requireNonNull( childAttributeTypeId,      "PublishingSharedArtifactsFolder::create, parameter \"childAttributeTypeId\" is null."      );
+      Objects.requireNonNull( publishingArtifactLoader,      "PublishingSharedArtifactsFolder::create, parameter \"publishingArtifactLoader\" is null."      );
+      Objects.requireNonNull( publishingErrorLog,            "PublishingSharedArtifactsFolder::create, parameter \"publishingErrorLog\" is null."            );
+      Objects.requireNonNull( publishingBranchSpecification, "PublishingSharedArtifactsFolder::create, parameter \"publishingBranchSpecification\" is null." );
+      Objects.requireNonNull( sharedFolderDescription,       "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderDescription\" is null."       );
+      Objects.requireNonNull( sharedFolderArtifactToken,     "PublishingSharedArtifactsFolder::create, parameter \"sharedFolderArtifactToken\" is null."     );
+      Objects.requireNonNull( childArtifactTypeToken,        "PublishingSharedArtifactsFolder::create, parameter \"childArtifactTypeToken\" is null."        );
+      Objects.requireNonNull( childAttributeTypeId,          "PublishingSharedArtifactsFolder::create, parameter \"childAttributeTypeId\" is null."          );
 
       if( AttributeTypeId.SENTINEL.equals( childAttributeTypeId ) ) {
          return
             PublishingSharedArtifactsFolder.createErrorImplementation
                (
                   "Child Attribute Type Identifier is SENTINEL.",
-                  dataAccessOperations,
                   publishingErrorLog,
-                  publishingBranchId,
+                  publishingBranchSpecification,
                   sharedFolderDescription,
                   sharedFolderArtifactToken
                );
@@ -284,27 +309,45 @@ public abstract class PublishingSharedArtifactsFolder {
             PublishingSharedArtifactsFolder.createErrorImplementation
                (
                   "Child Artifact Type Token is SENTINEL.",
-                  dataAccessOperations,
                   publishingErrorLog,
-                  publishingBranchId,
+                  publishingBranchSpecification,
                   sharedFolderDescription,
                   sharedFolderArtifactToken
                );
       }
 
-      var sharedFolderOptional =
-         ( sharedFolderArtifactToken instanceof ArtifactReadable )
-              ? Optional.of( (ArtifactReadable) sharedFolderArtifactToken )
-              : dataAccessOperations.getArtifactReadableByIdentifier( new ArtifactSpecification( publishingBranchId, publishingBranchId.getViewId(), sharedFolderArtifactToken ) );
+      var sharedFolder =
+         publishingArtifactLoader
+            .getPublishingArtifactByArtifactIdentifier
+               (
+                  BranchIndicator.PUBLISHING_BRANCH,
+                  sharedFolderArtifactToken,
+                  FilterForView.YES,
+                  WhenNotFound.SENTINEL,
+                  TransactionId.SENTINEL,
+                  IncludeDeleted.NO
+               )
+            .orElseThrow
+               (
+                  ( dataAccessException ) -> new OseeCoreException
+                                                    (
+                                                       new Message()
+                                                              .title( "PublishingSharedArtifactsFolder::create, failed to load shared folder artifact." )
+                                                              .indentInc()
+                                                              .segment( "Shared Folder Artifact", sharedFolderArtifactToken )
+                                                              .reasonFollows( dataAccessException )
+                                                              .toString(),
+                                                        dataAccessException
+                                                    )
+               );
 
-      if( sharedFolderOptional.isEmpty() ) {
+      if( sharedFolder.isInvalid() ) {
          return
             PublishingSharedArtifactsFolder.createErrorImplementation
                (
                   "Unable to locate the shared folder.",
-                  dataAccessOperations,
                   publishingErrorLog,
-                  publishingBranchId,
+                  publishingBranchSpecification,
                   sharedFolderDescription,
                   sharedFolderArtifactToken
                );
@@ -319,47 +362,42 @@ public abstract class PublishingSharedArtifactsFolder {
             }
 
             @Override
-            public Optional<ArtifactReadable> getSharedPublishingFolder() {
-               return Optional.of( sharedFolderOptional.get() );
+            public Optional<PublishingArtifact> getSharedPublishingFolder() {
+               return Optional.of( sharedFolder );
             }
 
             @Override
-            public List<ArtifactReadable> getSharedArtifacts(String attributeValue) {
+            public List<PublishingArtifact> getSharedArtifacts(String attributeValue) {
 
                return
-                  dataAccessOperations.getRecursiveChildenArtifactReadablesOfTypeByAttributeTypeAndAttributeValue
-                     (
-                       new BranchSpecification( publishingBranchId ),
-                       sharedFolderArtifactToken,
-                       childArtifactTypeToken,
-                       childAttributeTypeId,
-                       attributeValue
-                     )
-                     .orElseGet
+                  publishingArtifactLoader
+                     .getChildrenPublishingArtifacts
                         (
-                           () ->
-                           {
-                              var message = new StringBuilder( 1024 )
-                                                   .append( "Failed to get artifacts from the shared folder." ).append( "\n" )
-                                                   .append( "   Shared Folder Description: " ).append( sharedFolderDescription                      ).append( "\n" )
-                                                   .append( "   Publishing Branch Id:      " ).append( publishingBranchId.getIdString()             ).append( "\n" )
-                                                   .append( "   Publishing View Id:        " ).append( publishingBranchId.getViewId().getIdString() ).append( "\n" )
-                                                   .append( "   Shared Folder Id:          " ).append( sharedFolderArtifactToken.getIdString()      ).append( "\n" )
-                                                   .append( "   Search Artifact Type:      " ).append( childArtifactTypeToken.getName()             ).append( "\n" )
-                                                   .append( "   Search Attribute Type Id:  " ).append( childAttributeTypeId.getIdString()           ).append( "\n" )
-                                                   .append( "   Search Attribute Value:    " ).append( attributeValue                               ).append( "\n" );
-
-                              dataAccessOperations.getLastError().ifPresent
-                                 (
-                                    ( reason ) -> message
-                                                     .append( "   Reason Follows:" ).append( "\n" )
-                                                     .append( reason.getMessage() )
-                                 );
-
-                              publishingErrorLog.error(sharedFolderArtifactToken,message.toString());
-                              return List.of();
-                           }
-                        );
+                           sharedFolderArtifactToken,
+                           childArtifactTypeToken,
+                           childAttributeTypeId,
+                           attributeValue,
+                           publishingBranchSpecification.hasView() ? FilterForView.YES : FilterForView.NO,
+                           processRecursively
+                        )
+                     .peekError
+                        (
+                           ( exception ) -> publishingErrorLog.error
+                                               (
+                                                  sharedFolderArtifactToken,
+                                                  new Message()
+                                                         .title( "Failed to get artifacts from the shared folder." )
+                                                         .segment( "Shared Folder Description",       sharedFolderDescription                 )
+                                                         .segment( "Shared Folder Id",                sharedFolderArtifactToken.getIdString() )
+                                                         .segment( "Publishing Branch Specification", publishingBranchSpecification           )
+                                                         .segment( "Search Artifact Type",            childArtifactTypeToken.getName()        )
+                                                         .segment( "Search Attribute Type Id",        childAttributeTypeId.getIdString()      )
+                                                         .segment( "Search Attribute Value",          attributeValue                          )
+                                                         .reasonFollows( exception )
+                                                         .toString()
+                                               )
+                        )
+                     .orElseGet( new LinkedList<PublishingArtifact>() ); /* List must be mutable */
             }
          };
    }
@@ -381,7 +419,7 @@ public abstract class PublishingSharedArtifactsFolder {
     * {@link ArtifactReadable}; otherwise, an empty {@link Optional}.
     */
 
-   public abstract Optional<ArtifactReadable> getSharedPublishingFolder();
+   public abstract Optional<PublishingArtifact> getSharedPublishingFolder();
 
    /**
     * Gets a list of the artifacts under the Shared Publishing Folder that have the specified
@@ -394,7 +432,7 @@ public abstract class PublishingSharedArtifactsFolder {
     * <code>attributeValue</code> set in the Child Attribute.
     */
 
-   public abstract List<ArtifactReadable> getSharedArtifacts(String attributeValue);
+   public abstract List<PublishingArtifact> getSharedArtifacts(String attributeValue);
 }
 
 /* EOF */

@@ -314,6 +314,7 @@ public class WordTemplateRenderer extends FileSystemRenderer {
                          )
                    ),
 
+
             new MenuCmdDef
                    (
                       CommandGroup.PREVIEW,
@@ -429,6 +430,7 @@ public class WordTemplateRenderer extends FileSystemRenderer {
 
       super.presentationTypeKnockOuts = WordTemplateRenderer.PRESENTATION_TYPE_KNOCK_OUTS;
       super.previewAttributeTypeKnockOuts = WordTemplateRenderer.PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS;
+      super.publishingFormat = FormatIndicator.WORD_ML;
       super.artifactTypesAreRequired = WordTemplateRenderer.ARTIFACT_TYPES_ARE_REQUIRED;
       super.applicabilityTestArtifactTypes = WordTemplateRenderer.APPLICABILITY_TEST_ARTIFACT_TYPES;
       super.defaultFileExtension = WordTemplateRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
@@ -655,7 +657,6 @@ public class WordTemplateRenderer extends FileSystemRenderer {
                   publishingTemplate,                                             /* Primary Publishing Template   */
                   null,                                                           /* Secondary Publishing Template */
                   null,                                                           /* Folder, IContainer            */
-                  null,                                                           /* Outline Number                */
                   presentationType                                                /* Presentation Type             */
                )
             .applyTemplate
@@ -721,16 +722,25 @@ public class WordTemplateRenderer extends FileSystemRenderer {
        * Create the server request data
        */
 
+      var publishingTemplateIdentifier =
+         (String) this.getRendererOptionValue(RendererOption.PUBLISHING_TEMPLATE_IDENTIFIER);
+
       //@formatter:off
       var publishingTemplateRequest =
-         new PublishingTemplateRequest
-                (
-                   this.getIdentifier(),                                                 /* Match Criteria: Renderer Id                */
-                   artifacts.get(0).getArtifactTypeName(),                               /* Match Criteria: Publish Artifact Type Name */
-                   presentationType.name(),                                              /* Match Criteria: Presentation Type          */
-                   (String) this.getRendererOptionValue(RendererOption.TEMPLATE_OPTION), /* Match Criteria: Option                     */
-                   formatIndicator                                                       /* Publish Format Indicator                   */
-                );
+         Strings.isValidAndNonBlank( publishingTemplateIdentifier)
+         ? new PublishingTemplateRequest
+                  (
+                     publishingTemplateIdentifier,
+                     formatIndicator
+                  )
+         : new PublishingTemplateRequest
+                  (
+                     this.getIdentifier(),                                                 /* Match Criteria: Renderer Id                */
+                     artifacts.get(0).getArtifactTypeName(),                               /* Match Criteria: Publish Artifact Type Name */
+                     presentationType.name(),                                              /* Match Criteria: Presentation Type          */
+                     (String) this.getRendererOptionValue(RendererOption.TEMPLATE_OPTION), /* Match Criteria: Option                     */
+                     formatIndicator                                                       /* Publish Format Indicator                   */
+                  );
 
       var artifactIdentifiers =
          artifacts
@@ -950,7 +960,6 @@ public class WordTemplateRenderer extends FileSystemRenderer {
                this,
                primaryPublishingTemplate,
                secondaryPublishingTemplate,
-               null,
                null,
                null
             )

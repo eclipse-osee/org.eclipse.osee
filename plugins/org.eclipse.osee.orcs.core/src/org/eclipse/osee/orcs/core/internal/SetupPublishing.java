@@ -106,24 +106,24 @@ public class SetupPublishing {
             (
                new PublishingTemplate
                       (
-                         CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
-                         "WordEditTemplate",                                                                    /* Name                       */
-                         "templates/EDIT_TEMPLATE.json",                                                        /* Publish Options File Name  */
-                         null,                                                                                  /* Template Content File Name */
-                         List.of                                                                                /* Publishing Template Content Map Entries */
+                         CoreArtifactTokens.DocumentTemplates,
+                         "WordEditTemplate",                                                                               /* Name                       */
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/EDIT_TEMPLATE.json" ),                     /* Publish Options Supplier   */
+                         null,                                                                                             /* Template Content File Name */
+                         List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
-                                         "templates/EDIT_TEMPLATE.xml"                                          /* Template Content File Path */
+                                         FormatIndicator.WORD_ML,                                                          /* Template Content Format    */
+                                         "templates/EDIT_TEMPLATE.xml"                                                     /* Template Content File Path */
                                       ),
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
-                                         "templates/EDIT_TEMPLATE.md"                                           /* Template Content File Path */
+                                         FormatIndicator.MARKDOWN,                                                         /* Template Content Format    */
+                                         "templates/EDIT_TEMPLATE.md"                                                      /* Template Content File Path */
                                       )
                             ),
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
+                         new PublishingTemplateMatchCriterionListBuilder                                                   /* Match Criteria      */
                                (
                                   SetupPublishing.matchPreviewTemplatesByName
                                )
@@ -131,16 +131,16 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
-                                            PresentationType.SPECIALIZED_EDIT.name()                            /* Presentation Type   */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                             /* Renderer Identifier */
+                                            PresentationType.SPECIALIZED_EDIT.name()                                       /* Presentation Type   */
                                          )
                                )
                             .appendAlways
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.SPECIALIZED_EDIT.name()                            /* Presentation Type   */
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                                  /* Renderer Identifier */
+                                            PresentationType.SPECIALIZED_EDIT.name()                                       /* Presentation Type   */
                                          )
                                )
                             .toList()
@@ -148,53 +148,53 @@ public class SetupPublishing {
 
                new PublishingTemplate
                       (
-                         CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
-                         "WordMergeTemplate",                                                                   /* Name                       */
-                         "templates/WordMergeTemplate.json",                                                    /* Publish Options File Name  */
-                         "templates/PREVIEW_ALL.xml",                                                           /* Template Content File Name */
-                         List.of                                                                                /* Publishing Template Content Map Entries */
+                         CoreArtifactTokens.DocumentTemplates,                                                             /* Parent Artifact Identifier */
+                         "WordMergeTemplate",                                                                              /* Name                       */
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/WordMergeTemplate.json" ),                 /* Publish Options Supplier   */
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL.xml" ),                        /* Template Content Supplier  */
+                         List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                             ),
-                         List.of                                                                                /* Match Criteria             */
+                         List.of                                                                                           /* Match Criteria             */
                             (
                                new PublishingTemplateMatchCriterion
                                       (
-                                         RENDERER_IDENTIFIER_WORD_TEMPLATE,                                     /* Renderer Identifier */
-                                         PresentationType.MERGE.name()                                          /* Presentation Type   */
+                                         RENDERER_IDENTIFIER_WORD_TEMPLATE,                                                /* Renderer Identifier */
+                                         PresentationType.MERGE.name()                                                     /* Presentation Type   */
                                       ),
 
                                new PublishingTemplateMatchCriterion
                                       (
-                                         RENDERER_IDENTIFIER_WORD_TEMPLATE,                                     /* Renderer Identifier */
-                                         PresentationType.DIFF.name(),                                          /* Presentation Type   */
-                                         RendererOption.THREE_WAY_MERGE.getKey()                                /* Option              */
+                                         RENDERER_IDENTIFIER_WORD_TEMPLATE,                                                /* Renderer Identifier */
+                                         PresentationType.DIFF.name(),                                                     /* Presentation Type   */
+                                         RendererOption.THREE_WAY_MERGE.getKey()                                           /* Option              */
                                       )
                             )
                       ),
 
                new PublishingTemplate
                       (
-                         CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
-                         SetupPublishing.previewTemplateName                                                    /* Name                       */
+                         CoreArtifactTokens.DocumentTemplates,                                                             /* Parent Artifact Identifier */
+                         SetupPublishing.previewTemplateName                                                               /* Name                       */
                             (
                                RendererOption.PREVIEW_ALL_VALUE.getKey()
                             ),
-                         null,                                                                                  /* Publish Options File Name */
-                         "templates/PREVIEW_ALL.xml",                                                           /* Template Content File Name */
-                         List.of                                                                                /* Publishing Template Content Map Entries */
+                         null,                                                                                             /* Publish Options File Name */
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL.xml" ),                        /* Template Content Supplier */
+                         List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                         FormatIndicator.WORD_ML,                                                          /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                                       /* Template Content File Path */
                                       ),
                                 new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                         FormatIndicator.MARKDOWN,                                                         /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                                        /* Template Content File Path */
                                       )
                             ),
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
+                         new PublishingTemplateMatchCriterionListBuilder                                                   /* Match Criteria      */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
                                 )
@@ -202,26 +202,26 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
-                                            PresentationType.DIFF.name()                                        /* Presentation Type   */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                             /* Renderer Identifier */
+                                            PresentationType.DIFF.name()                                                   /* Presentation Type   */
                                          )
                                )
                             .appendAlways
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_VALUE.getKey()                           /* Option              */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                             /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_VALUE.getKey()                                      /* Option              */
                                          )
                                )
                             .appendAlways
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_VALUE.getKey()                           /* Option              */
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                                  /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_VALUE.getKey()                                      /* Option              */
                                          )
                                )
                             .toList()
@@ -229,27 +229,27 @@ public class SetupPublishing {
 
                new PublishingTemplate
                       (
-                         CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
-                         SetupPublishing.previewTemplateName                                                    /* Name                       */
+                         CoreArtifactTokens.DocumentTemplates,                                                             /* Parent Artifact Identifier */
+                         SetupPublishing.previewTemplateName                                                               /* Name                       */
                             (
                                RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()
                             ),
-                         "templates/PREVIEW_ALL_NO_ATTRIBUTES.json",                                            /* Publish Options JSON       */
-                         null,                                                                                  /* Template Content File Name */
-                         List.of                                                                                /* Publishing Template Content Map Entries */
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_NO_ATTRIBUTES.json" ),         /* Publish Options Supplier */
+                         null,                                                                                             /* Template Content File Name */
+                         List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                         FormatIndicator.WORD_ML,                                                          /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                                       /* Template Content File Path */
                                       ),
                                 new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                         FormatIndicator.MARKDOWN,                                                         /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                                        /* Template Content File Path */
                                       )
                             ),
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
+                         new PublishingTemplateMatchCriterionListBuilder                                                   /* Match Criteria      */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
                                 )
@@ -257,26 +257,26 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
-                                            "DIFF_NO_ATTRIBUTES"                                                /* Match String        */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                             /* Renderer Identifier */
+                                            "DIFF_NO_ATTRIBUTES"                                                           /* Match String        */
                                          )
                                )
                             .appendAlways
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()             /* Option              */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                             /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()                        /* Option              */
                                          )
                                )
                             .appendAlways
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()             /* Option              */
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                                  /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()                        /* Option              */
                                          )
                                )
                             .toList()
@@ -284,27 +284,27 @@ public class SetupPublishing {
 
                new PublishingTemplate
                       (
-                         CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
-                         SetupPublishing.previewTemplateName                                                    /* Name                       */
+                         CoreArtifactTokens.DocumentTemplates,                                                             /* Parent Artifact Identifier */
+                         SetupPublishing.previewTemplateName                                                               /* Name                       */
                             (
                                RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()
                             ),
-                         "templates/PREVIEW_ALL_RECURSE.json",                                                  /* Publish Options File Name  */
-                         null,                                                                                  /* Template Content File Name */
-                         List.of                                                                                /* Publishing Template Content Map Entries */
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_RECURSE.json" ),               /* Publish Options Supplier   */
+                         null,                                                                                             /* Template Content File Name */
+                         List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                         FormatIndicator.WORD_ML,                                                          /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                                       /* Template Content File Path */
                                       ),
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                         FormatIndicator.MARKDOWN,                                                         /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                                        /* Template Content File Path */
                                       )
                             ),
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria      */
+                         new PublishingTemplateMatchCriterionListBuilder                                                   /* Match Criteria      */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
                                 )
@@ -312,18 +312,18 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* PresentationType    */
-                                            RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                   /* Option              */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                             /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* PresentationType    */
+                                            RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                              /* Option              */
                                          )
                                )
                             .appendAlways
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* PresentationType    */
-                                            RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                   /* Option              */
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                                  /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* PresentationType    */
+                                            RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                              /* Option              */
                                          )
                                )
                             .toList()
@@ -331,27 +331,27 @@ public class SetupPublishing {
 
                new PublishingTemplate
                       (
-                         CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
-                         SetupPublishing.previewTemplateName                                                    /* Name                       */
+                         CoreArtifactTokens.DocumentTemplates,                                                             /* Parent Artifact Identifier */
+                         SetupPublishing.previewTemplateName                                                               /* Name                       */
                             (
                                RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
                             ),
-                         "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.json",                                    /* Publish Options File Name  */
-                         null,                                                                                  /* Template Content File Name */
-                         List.of                                                                                /* Publishing Template Content Map Entries */
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/PREVIEW_ALL_RECURSE_NO_ATTRIBUTES.json" ), /* Publish Options Supplier */
+                         null,                                                                                             /* Template Content File Name */
+                         List.of                                                                                           /* Publishing Template Content Map Entries */
                             (
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.WORD_ML,                                               /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.xml"                                            /* Template Content File Path */
+                                         FormatIndicator.WORD_ML,                                                          /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.xml"                                                       /* Template Content File Path */
                                       ),
                                new PublishingTemplateContentMapEntry
                                       (
-                                         FormatIndicator.MARKDOWN,                                              /* Template Content Format    */
-                                         "templates/PREVIEW_ALL.md"                                             /* Template Content File Path */
+                                         FormatIndicator.MARKDOWN,                                                         /* Template Content Format    */
+                                         "templates/PREVIEW_ALL.md"                                                        /* Template Content File Path */
                                       )
                             ),
-                         new PublishingTemplateMatchCriterionListBuilder                                        /* Match Criteria             */
+                         new PublishingTemplateMatchCriterionListBuilder                                                   /* Match Criteria             */
                                 (
                                    SetupPublishing.matchPreviewTemplatesByName
                                 )
@@ -359,18 +359,18 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()     /* Option              */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                             /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()                /* Option              */
                                          )
                                )
                             .appendAlways
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()     /* Option              */
+                                            RENDERER_IDENTIFIER_MARKDOWN,                                                  /* Renderer Identifier */
+                                            PresentationType.PREVIEW.name(),                                               /* Presentation Type   */
+                                            RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()                /* Option              */
                                          )
                                )
                             .toList()

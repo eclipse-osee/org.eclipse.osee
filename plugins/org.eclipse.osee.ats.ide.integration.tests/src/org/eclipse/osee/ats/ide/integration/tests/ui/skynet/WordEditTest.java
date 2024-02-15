@@ -15,6 +15,9 @@ package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.xml.publishing.PublishingXmlUtils;
+import org.eclipse.osee.framework.core.xml.publishing.WordParagraphList;
+import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
@@ -24,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 public class WordEditTest extends AbstractEditTest {
 
    private static final String TEST_WORD_EDIT_FILE_NAME = "support/WordEditTest.xml";
+   private static final String TEST_WORD_EDIT_NEW_TEXT = "This is the new text for the edited artifact.";
 
    public WordEditTest() {
       super(SAW_Bld_1, TEST_WORD_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirementMsWord,
@@ -36,7 +40,77 @@ public class WordEditTest extends AbstractEditTest {
       String expected = testData.replaceAll("###ART_GUID###", guid);
       expected = expected.replaceAll("###TAG_GUID_START###", guid + "_START.jpg");
       expected = expected.replaceAll("###TAG_GUID_END###", guid + "_END.jpg");
+      expected = expected.replace("###NEW_TEXT###", TEST_WORD_EDIT_NEW_TEXT);
       return expected;
    }
 
+   //@formatter:off
+   @SuppressWarnings("resource")
+   @Override
+   protected void verifyModifiedArtifactContent(String editorSaveContent, String modifiedArtifactContent) {
+
+      final var document =
+         PublishingXmlUtils
+            .parse( modifiedArtifactContent )
+            .orElseThrow
+               (
+                  ( throwable) ->
+                     new AssertionError
+                            (
+                               new Message()
+                                      .title( "Failed to parse edited Word artifact." )
+                                      .reasonFollows( throwable )
+                                      .toString(),
+                               throwable
+                            )
+               );
+
+      final var wordDocument =
+         PublishingXmlUtils
+            .parseWordDocument( document )
+            .orElseThrow
+               (
+                  ( throwable) ->
+                     new AssertionError
+                            (
+                               new Message()
+                                      .title( "Failed to parse edited Word artifact." )
+                                      .reasonFollows( throwable )
+                                      .toString(),
+                               throwable
+                            )
+               );
+
+      final var wordParagraphList =
+         PublishingXmlUtils
+         .parseDescendantsList( wordDocument, WordParagraphList.wordDocumentParentFactory )
+         .orElseThrow
+            (
+               ( throwable) ->
+                  new AssertionError
+                         (
+                            new Message()
+                                   .title( "Failed to parse paragraphs from word document." )
+                                   .reasonFollows( throwable )
+                                   .toString(),
+                            throwable
+                         )
+            );
+
+      wordParagraphList
+         .stream()
+         .filter( ( paragraph ) -> paragraph.getText().contains(TEST_WORD_EDIT_NEW_TEXT) )
+         .findFirst()
+         .orElseThrow
+            (
+               ( ) ->
+                  new AssertionError
+                         (
+                            new Message()
+                                   .title( "Failed to find a paragraph with the expected edit text." )
+                                   .toString()
+                         )
+            );
+
+   }
 }

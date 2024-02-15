@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkU
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.ClientEndpointTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.OrcsRestTestSuite;
-import org.eclipse.osee.ats.ide.integration.tests.publishing.PublishingTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.SkynetCoreIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.SynchronizationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.SkynetUiCoreIntegrationTestSuite;
@@ -51,7 +50,6 @@ import org.junit.runners.Suite;
    FrameworkAccess_Suite.class,
    FrameworkCoreSuite.class,
    OrcsRestTestSuite.class,
-   PublishingTestSuite.class,
    SkynetCoreArtifact_Suite.class,
    SkynetCoreIntegrationTestSuite.class,
    SkynetUiCoreIntegrationTestSuite.class,

@@ -93,6 +93,28 @@ public final class Collectors {
    }
    //@formatter:on
 
+   /*
+    * Returns a {@link Collector} which collects the values and stores them in collection order into an {@link
+    * ArrayList} with a finisher {@link Function} that creates an array of the values.
+    * @param <T> the type of the elements being collected.
+    * @param arraySupplier a {@link Function} that creates an array of the type &lt;T&gt; of the specified size.
+    * @return a {@link Collector} which collects the values in collection order into an array.
+    */
+
+   //@formatter:off
+   public static <T> Collector<T,List<T>,T[]> toArray( Function<Integer,T[]> arraySupplier ) {
+
+      return
+         Collector.<T,List<T>,T[]>of
+                (
+                   LinkedList::new,
+                   List::add,
+                   ( a, b) -> { a.addAll( b ); return a; },
+                   ( l ) -> l.toArray( arraySupplier.apply( l.size() ) )
+                );
+   }
+   //@formatter:on
+
    /**
     * Returns a {@link Collector} which collects the value extracted with <code>valueMapper</code> and stores it into a
     * {@link MapSet} using the key extracted with <code>keyMapper</code> for each element being collected.

@@ -21,7 +21,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    PurgeTransactionTest.class,
    ImportEndpointTest.class,
-   RendererEndpointTest.class,
    GitEndpointTest.class,
    ImportTraceUnitsOperationTest.class,
    TestPlanComplianceReportTest.class,

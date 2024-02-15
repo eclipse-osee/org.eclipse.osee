@@ -36,7 +36,7 @@ public class WordText extends AbstractElement {
     */
 
    public WordText(WordElement parent, Element wordTextElement) {
-      super(parent, wordTextElement, WordXmlTag.TEXT);
+      super(parent, wordTextElement, WordMlTag.TEXT);
    }
 
    /**

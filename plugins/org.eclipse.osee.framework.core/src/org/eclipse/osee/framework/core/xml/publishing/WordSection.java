@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.util.Optional;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.w3c.dom.Element;
 
 /**
@@ -23,6 +24,11 @@ import org.w3c.dom.Element;
  */
 
 public class WordSection extends AbstractElement {
+
+   //@formatter:off
+   private static Pair<Class<?>,Class<?>> wordSubSectionListWithParentWordSectionChildKey =
+      Pair.createNonNullImmutable( WordTextList.class, WordTableColumn.class );
+   //@formatter:on
 
    /**
     * Creates a new {@link WordSection}.
@@ -34,7 +40,7 @@ public class WordSection extends AbstractElement {
     */
 
    public WordSection(WordElement parent, Element wordSectionElement) {
-      super(parent, wordSectionElement, WordXmlTag.SECTION);
+      super(parent, wordSectionElement, WordMlTag.SECTION);
    }
 
    /**
@@ -56,14 +62,14 @@ public class WordSection extends AbstractElement {
    }
 
    /**
-    * Gets the {@link WordSubSectionList} for the Section.
+    * Gets the {@link AuxHintSubSectionList} for the Section.
     *
     * @return when Sub-Sections have been parsed for the Section, a {@link Optional} containing a possibly empty
-    * {@link WordSubSectionList}; otherwise, a {@link Optional}.
+    * {@link AuxHintSubSectionList}; otherwise, a {@link Optional}.
     */
 
-   public Optional<WordSubSectionList> getWordSectionRowList() {
-      return this.getChild(WordSubSectionList.class);
+   public Optional<AuxHintSubSectionList<WordSection>> getWordSubSectionList() {
+      return this.getChild(WordSection.wordSubSectionListWithParentWordSectionChildKey);
    }
 }
 

@@ -36,9 +36,11 @@ public interface PredicateFactory {
 
    Predicate createTypeEqualsSearch(Collection<? extends ArtifactTypeId> artifactType);
 
-   Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options);
+   Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, String value,
+      QueryOption... options);
 
-   Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options);
+   Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, Collection<String> values,
+      QueryOption... options);
 
    Predicate createAttributeExistsSearch(Collection<? extends AttributeTypeId> attributeTypes);
 
@@ -53,5 +55,9 @@ public interface PredicateFactory {
    Predicate createRelationTypeSideExistsSearch(RelationTypeSide relationTypeSide);
 
    Predicate createRelatedToSearch(RelationTypeSide relationTypeSide, Collection<ArtifactId> ids);
+
+   Predicate createRelatedRecursiveSearch(RelationTypeSide relationTypeSide, ArtifactId artifactId);
+
+   Predicate createTransactionCommentSearch(String comment);
 
 }

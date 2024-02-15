@@ -21,20 +21,24 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyGroups;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyType;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateScalarKey;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateVectorKey;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchSpecification;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
+import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -60,7 +64,8 @@ class PublishingTemplateCache {
     * @return the single instance of the {@link PublsishingTemplateCache} implementation.
     */
 
-   synchronized static PublishingTemplateCache create(Log logger, DataAccessOperations dataAccessOperations) {
+   synchronized static PublishingTemplateCache create(Log logger, DataAccessOperations dataAccessOperations,
+      OrcsTokenService orcsTokenService) {
       //@formatter:off
       return
          Objects.isNull( PublishingTemplateCache.publishingTemplateCache )
@@ -68,7 +73,8 @@ class PublishingTemplateCache {
                  new PublishingTemplateCache
                         (
                            Objects.requireNonNull( logger ),
-                           Objects.requireNonNull( dataAccessOperations )
+                           Objects.requireNonNull( dataAccessOperations ),
+                           Objects.requireNonNull( orcsTokenService )
                         )
             : PublishingTemplateCache.publishingTemplateCache;
       //@formatter:on
@@ -110,6 +116,8 @@ class PublishingTemplateCache {
 
    protected Log logger;
 
+   private final OrcsTokenService orcsTokenService;
+
    /**
     * Creates a new empty instance of the {@link PublishingTemplateCache}. The constructor is private to prevent the
     * instantiation of more than instance.
@@ -118,9 +126,11 @@ class PublishingTemplateCache {
     * @param dataAccessOperations a handle to the {@link DataAccessOperations} for database access.
     */
 
-   private PublishingTemplateCache(Log logger, DataAccessOperations dataAccessOperations) {
+   private PublishingTemplateCache(Log logger, DataAccessOperations dataAccessOperations,
+      OrcsTokenService orcsTokenService) {
       this.logger = logger;
       this.dataAccessOperations = dataAccessOperations;
+      this.orcsTokenService = orcsTokenService;
       this.deleteCache();
    }
 
@@ -212,7 +222,7 @@ class PublishingTemplateCache {
       //@formatter:off
       var publishingTemplate =
          PublishingTemplate
-            .create( artifactReadable )
+            .create( this.orcsTokenService, artifactReadable )
             .getFirstIfPresentOthers( this.logger::error );
       //@formatter:on
 
@@ -350,10 +360,15 @@ class PublishingTemplateCache {
       //@formatter:off
       return
          this.dataAccessOperations
-            .getArtifactReadablesByType
+            .getArtifactReadables
                (
                   new BranchSpecification( CoreBranches.COMMON ),
-                  CoreArtifactTypes.RendererTemplateWholeWord
+                  List.of(),
+                  List.of(),
+                  Strings.EMPTY_STRING,
+                  CoreArtifactTypes.RendererTemplateWholeWord,
+                  TransactionId.SENTINEL,
+                  IncludeDeleted.NO
                )
             .orElseThrow
                (

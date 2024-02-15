@@ -34,4 +34,9 @@ public class PlainTextEditTest extends AbstractEditTest {
       return testData.replaceAll("###REPLACE_THIS_TEXT###", "***text has been updated***");
    }
 
+   @Override
+   protected void verifyModifiedArtifactContent(String editorSaveContent, String modifiedArtifactContent) {
+      this.compare(editorSaveContent, modifiedArtifactContent);
+   }
+
 }

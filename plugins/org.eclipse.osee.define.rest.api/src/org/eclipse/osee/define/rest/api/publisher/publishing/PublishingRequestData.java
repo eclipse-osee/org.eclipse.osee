@@ -68,7 +68,8 @@ public class PublishingRequestData implements ToMessage {
     * <code>branchId</code>, or <code>artifactId</code> is <code>null</code>.
     */
 
-   public PublishingRequestData(PublishingTemplateRequest publishingTemplateRequest, RendererMap publishingRendererOptions, List<ArtifactId> artifactIds) {
+   public PublishingRequestData(PublishingTemplateRequest publishingTemplateRequest,
+      RendererMap publishingRendererOptions, List<ArtifactId> artifactIds) {
 
       this.publishingTemplateRequest = Objects.requireNonNull(publishingTemplateRequest,
          "PublishingRequest::new, parameter \"publishingTemplateRequest\" cannot be null.");

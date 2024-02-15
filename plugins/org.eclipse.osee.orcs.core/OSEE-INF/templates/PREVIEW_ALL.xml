@@ -55,31 +55,80 @@
          <w:lsid w:val="2A5411A0"/>
          <w:plt w:val="Multilevel"/>
          <w:tmpl w:val="0D44492C"/>
+
          <w:lvl w:ilvl="0">
-            <w:start w:val="1"/><w:pStyle w:val="Heading1"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="461" w:hanging="461"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
+            <w:start w:val="1"/>
+               <w:pStyle w:val="Heading1"/>
+               <w:suff w:val="Nothing"/>
+               <w:lvlText w:val="%1.  "/>
+               <w:lvlJc w:val="left"/>
+               <w:pPr>
+                  <w:ind w:left="461" w:hanging="461"/>
+               </w:pPr>
+               <w:rPr>
+                  <w:rFonts w:cs="Times New Roman" w:hint="default"/>
+               </w:rPr>
          </w:lvl>
+
          <w:lvl w:ilvl="1">
-            <w:start w:val="1"/><w:pStyle w:val="Heading2"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="734" w:hanging="734"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
+            <w:start w:val="1"/>
+            <w:pStyle w:val="Heading2"/>
+            <w:suff w:val="Nothing"/>
+            <w:lvlText w:val="%1.%2  "/>
+            <w:lvlJc w:val="left"/>
+            <w:pPr>
+               <w:ind w:left="734" w:hanging="734"/>
+            </w:pPr>
+            <w:rPr>
+               <w:rFonts w:cs="Times New Roman" w:hint="default"/>
+            </w:rPr>
          </w:lvl>
-	 <w:lvl w:ilvl="2">
-            <w:start w:val="1"/><w:pStyle w:val="Heading3"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2.%3  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="1066" w:hanging="1066"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
+
+         <w:lvl w:ilvl="2">
+            <w:start w:val="1"/>
+            <w:pStyle w:val="Heading3"/>
+            <w:suff w:val="Nothing"/>
+            <w:lvlText w:val="%1.%2.%3  "/>
+            <w:lvlJc w:val="left"/>
+            <w:pPr>
+               <w:ind w:left="1066" w:hanging="1066"/>
+            </w:pPr>
+            <w:rPr>
+               <w:rFonts w:cs="Times New Roman" w:hint="default"/>
+            </w:rPr>
          </w:lvl>
-	 <w:lvl w:ilvl="3">
-            <w:start w:val="1"/><w:pStyle w:val="Heading4"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2.%3.%4  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="1397" w:hanging="1397"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
+
+         <w:lvl w:ilvl="3">
+            <w:start w:val="1"/>
+            <w:pStyle w:val="Heading4"/>
+            <w:suff w:val="Nothing"/>
+            <w:lvlText w:val="%1.%2.%3.%4  "/>
+            <w:lvlJc w:val="left"/>
+            <w:pPr>
+               <w:ind w:left="1397" w:hanging="1397"/>
+            </w:pPr>
+            <w:rPr>
+               <w:rFonts w:cs="Times New Roman" w:hint="default"/>
+            </w:rPr>
          </w:lvl>
-	 <w:lvl w:ilvl="4">
+
+         <w:lvl w:ilvl="4">
             <w:start w:val="1"/><w:pStyle w:val="Heading5"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2.%3.%4.%5  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="1742" w:hanging="1742"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
          </w:lvl>
-	 <w:lvl w:ilvl="5">
+
+         <w:lvl w:ilvl="5">
             <w:start w:val="1"/><w:pStyle w:val="Heading6"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2.%3.%4.%5.%6  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="2074" w:hanging="2074"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
          </w:lvl>
-	 <w:lvl w:ilvl="6">
+
+         <w:lvl w:ilvl="6">
             <w:start w:val="1"/><w:pStyle w:val="Heading7"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2.%3.%4.%5.%6.%7  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="2405" w:hanging="2405"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
          </w:lvl>
-	 <w:lvl w:ilvl="7">
+
+         <w:lvl w:ilvl="7">
             <w:start w:val="1"/><w:pStyle w:val="Heading8"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2.%3.%4.%5.%6.%7.%8  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="2736" w:hanging="2736"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
          </w:lvl>
-	 <w:lvl w:ilvl="8">
+
+         <w:lvl w:ilvl="8">
             <w:start w:val="1"/><w:pStyle w:val="Heading9"/><w:suff w:val="Nothing"/><w:lvlText w:val="%1.%2.%3.%4.%5.%6.%7.%8.%9  "/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="3082" w:hanging="3082"/></w:pPr><w:rPr><w:rFonts w:cs="Times New Roman" w:hint="default"/></w:rPr>
          </w:lvl>
       </w:listDef>
@@ -413,26 +462,129 @@
 
    </w:styles>
 
-   <w:docPr>
-      <w:view w:val="print"/>
-      <w:zoom w:percent="100"/>
-      <w:doNotEmbedSystemFonts/>
-      <w:validateAgainstSchema w:val="off"/>
-      <w:saveInvalidXML/>
-   </w:docPr>
-
    <w:body>
 
-         <w:sect>
-            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>_TEMPLATE_NAME_</w:t></w:r></w:p>
-            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Acme Corporation</w:t></w:r></w:p>
-            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>1234 W. World Road</w:t></w:r></w:p>
-            <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Jersey City, NJ 07002</w:t></w:r></w:p>
-         </w:sect>
+      <w:sect>
+         <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>_TEMPLATE_NAME_</w:t></w:r></w:p>
+         <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Acme Corporation</w:t></w:r></w:p>
+         <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>1234 W. World Road</w:t></w:r></w:p>
+         <w:p><w:pPr><w:jc w:val="center"/><w:rPr><w:b/></w:rPr></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>Jersey City, NJ 07002</w:t></w:r></w:p>
+            
+         <w:p><w:pPr><w:spacing w:after="0"/><w:sectPr><w:pgSz w:w="12240" w:h="15840" w:code="1" /><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="432" w:footer="432" w:gutter="0"/><w:cols w:space="720"/></w:sectPr></w:pPr></w:p>
+      </w:sect>
 
-         <w:sect>
-            INSERT_ARTIFACT_HERE
-         </w:sect>
+      <w:sect>
+         
+         INSERT_ARTIFACT_HERE
+            
+         <w:p>
+
+            <w:sectPr>
+            
+               <w:hdr w:type="even">
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="Header"/>
+                     </w:pPr>
+                     <w:r><w:t>Acme Corporation</w:t></w:r>
+                  </w:p>
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="Header"/>
+                     </w:pPr>
+                     <w:r><w:t>1234 W. World Road</w:t></w:r>
+                  </w:p>
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="Header"/>
+                     </w:pPr>
+                     <w:r><w:t>Jersey City, NJ 07002</w:t></w:r>
+                  </w:p>
+            
+               </w:hdr>
+            
+               <w:hdr w:type="odd">
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="Header"/>
+                     </w:pPr>
+                     <w:r><w:t>Acme Corporation</w:t></w:r>
+                  </w:p>
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="Header"/>
+                     </w:pPr>
+                     <w:r><w:t>1234 W. World Road</w:t></w:r>
+                  </w:p>
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="Header"/>
+                     </w:pPr>
+                     <w:r><w:t>Jersey City, NJ 07002</w:t></w:r>
+                  </w:p>
+            
+               </w:hdr>
+            
+               <w:ftr w:type="even">
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="Footer"/>
+                     </w:pPr>
+                  </w:p>
+            
+               </w:ftr>
+            
+               <w:ftr w:type="odd">
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:rPr>
+                           <w:rFonts w:cs="Arial"/>
+                           <w:b-cs/>
+                           <w:i-cs/>
+                           <w:sz w:val="16"/>
+                           <w:sz-cs w:val="16"/>
+                        </w:rPr>
+                     </w:pPr>
+                     <w:r><w:rPr><w:rFonts w:cs="Arial"/><w:b-cs/><w:i-cs/><w:sz w:val="16"/><w:sz-cs w:val="16"/></w:rPr><w:t>Acme Corporation, Technical Non-Sense.</w:t></w:r>
+                     <w:r><w:rPr><w:rFonts w:cs="Arial"/><w:i-cs/><w:sz w:val="16"/><w:sz-cs w:val="16"/></w:rPr><w:t>  </w:t></w:r>
+                     <w:r><w:rPr><w:rFonts w:cs="Arial"/><w:b-cs/><w:i-cs/><w:sz w:val="16"/><w:sz-cs w:val="16"/></w:rPr><w:t>Copyright 1966, Acme Corporation, Disseminate in accordance with provisions of the Prime Loony Directive</w:t></w:r>
+                     <w:r><w:rPr><w:rFonts w:cs="Arial"/><w:sz w:val="16"/><w:sz-cs w:val="16"/></w:rPr><w:t>.</w:t></w:r>
+                  </w:p>
+            
+                  <w:p>
+                     <w:pPr>
+                        <w:pStyle w:val="para8pt"/>
+                        <w:jc w:val="center"/>
+                     </w:pPr>
+                     <w:r><w:rPr><w:rStyle w:val="PageNumber"/><w:color w:val="000000"/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r>
+                     <w:r><w:rPr><w:rStyle w:val="PageNumber"/><w:color w:val="000000"/></w:rPr><w:instrText> PAGE </w:instrText></w:r>
+                     <w:r><w:rPr><w:rStyle w:val="PageNumber"/><w:color w:val="000000"/></w:rPr><w:fldChar w:fldCharType="separate"/></w:r>
+                     <w:r><w:rPr><w:rStyle w:val="PageNumber"/><w:noProof/><w:color w:val="000000"/></w:rPr><w:t>1</w:t></w:r>
+                     <w:r><w:rPr><w:rStyle w:val="PageNumber"/><w:color w:val="000000"/></w:rPr><w:fldChar w:fldCharType="end"/></w:r>
+                  </w:p>
+            
+               </w:ftr>
+            
+               <w:pgSz w:w="12240" w:h="15840" w:code="1"/>
+               <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="432" w:footer="432" w:gutter="0"/>
+               <w:pgNumType w:start="1"/>
+               <w:cols w:space="475"/>
+               <w:noEndnote/>
+               <w:docGrid w:line-pitch="360"/>
+            
+            </w:sectPr>
+
+         </w:p>
+            
+      </w:sect>
 
    </w:body>
 

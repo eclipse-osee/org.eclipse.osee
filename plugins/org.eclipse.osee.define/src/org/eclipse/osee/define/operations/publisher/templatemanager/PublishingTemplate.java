@@ -28,6 +28,7 @@ import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemp
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateScalarKey;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateVectorKey;
 import org.eclipse.osee.define.util.AttributeUtils;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.InvalidPublishOptionsException;
+import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.core.publishing.PublishOptions;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -61,7 +63,8 @@ class PublishingTemplate implements ToMessage {
     * describing the failure.
     */
 
-   private static @NonNull Pair<@NonNull PublishingTemplateVectorKey, @Nullable Message> buildTemplateMatchCriteriaList(@NonNull ArtifactReadable artifactReadable) {
+   private static @NonNull Pair<@NonNull PublishingTemplateVectorKey, @Nullable Message> buildTemplateMatchCriteriaList(
+      @NonNull ArtifactReadable artifactReadable) {
       try {
 
          var matchCriteriaObjectList = artifactReadable.getAttributeValues(CoreAttributeTypes.TemplateMatchCriteria);
@@ -104,13 +107,14 @@ class PublishingTemplate implements ToMessage {
     * be checked for Word ML content.
     */
 
-   static @NonNull Pair<@NonNull PublishingTemplate, @Nullable String> create(@NonNull final ArtifactReadable artifactReadable) {
+   static @NonNull Pair<@NonNull PublishingTemplate, @Nullable String> create(OrcsTokenService orcsTokenService,
+      @NonNull final ArtifactReadable artifactReadable) {
 
       /*
        * Validate the template artifact
        */
 
-      Conditions.requireNonNull(artifactReadable, "PublishingTemplate", "create", "artifactReadable");
+      Conditions.requireNonNull(artifactReadable, "artifactReadable");
 
       var message = new Message();
 
@@ -136,7 +140,7 @@ class PublishingTemplate implements ToMessage {
       //@formatter:off
       var publishOptions =
          PublishingTemplate
-            .loadPublishOptions( artifactReadable, identifier.getKey(), name.getKey() )
+            .loadPublishOptions( orcsTokenService, artifactReadable, identifier.getKey(), name.getKey() )
             .getFirstNonNullIfPresentOthers( message::copy );
       //@formatter:on
 
@@ -222,7 +226,8 @@ class PublishingTemplate implements ToMessage {
     * otherwise, a {@link Pair} with <code>null</code> content and a {@link Message} describing the error.
     */
 
-   private static @NonNull Pair<@Nullable String, @Nullable Message> loadLegacyWordMlTemplateContent(ArtifactReadable artifactReadable) {
+   private static @NonNull Pair<@Nullable String, @Nullable Message> loadLegacyWordMlTemplateContent(
+      ArtifactReadable artifactReadable) {
 
       try {
 
@@ -272,12 +277,90 @@ class PublishingTemplate implements ToMessage {
     * {@link Pair} with default {@link PublishingOptions} and a {@link Message} describing the loading errors.
     */
 
-   private static @NonNull Pair<@NonNull PublishOptions, @Nullable Message> loadPublishOptions(ArtifactReadable artifactReadable, String templateIdentifier, String templateName) {
+   private static @NonNull Pair<@NonNull PublishOptions, @Nullable Message> loadPublishOptions(
+      OrcsTokenService orcsTokenService, ArtifactReadable artifactReadable, String templateIdentifier,
+      String templateName) {
 
       try {
 
          var publishOptions =
             PublishOptions.create(artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.RendererOptions));
+
+         publishOptions.defaults();
+
+         final var outliningOptionsArray = publishOptions.getOutliningOptions();
+
+         if (outliningOptionsArray.length == 1) {
+
+            final var outliningOptions = outliningOptionsArray[0];
+
+            final var headingArtifactTypeTokenName = outliningOptions.getHeadingArtifactType();
+
+            switch (headingArtifactTypeTokenName) {
+
+               case OutliningOptions.HEADING_ARTIFACT_TYPE_ANY:
+               case OutliningOptions.HEADING_ARTIFACT_TYPE_FOLDERS_AND_HEADERS_ONLY:
+               case OutliningOptions.HEADING_ARTIFACT_TYPE_FOLDERS_ONLY:
+               case OutliningOptions.HEADING_ARTIFACT_TYPE_FORMAT:
+               case OutliningOptions.HEADING_ARTIFACT_TYPE_HEADERS_ONLY:
+                  break;
+
+               default:
+
+                  try {
+
+                     orcsTokenService.getArtifactType(headingArtifactTypeTokenName);
+
+                  } catch (Exception e) {
+                     //@formatter:off
+                     var message = new Message()
+                                          .title( "PublishingTemplate::create, outlining options heading artifact type name not found." )
+                                          .indentInc()
+                                          .segment( "Heading Artifact Type Name", headingArtifactTypeTokenName )
+                                          .indentDec()
+                                          .reasonFollowsWithTrace( e );
+                     //@formatter:on
+
+                     return Pair.createNullableImmutable(new PublishOptions().defaults(), message);
+                  }
+            }
+
+            final var headingAttributeTypeTokenName = outliningOptions.getHeadingAttributeType();
+
+            switch (headingAttributeTypeTokenName) {
+
+               case "<format-heading-attribute-type>":
+                  break;
+
+               default:
+                  try {
+
+                     orcsTokenService.getAttributeType(headingAttributeTypeTokenName);
+
+                  } catch (Exception e) {
+                     //@formatter:off
+                     var message = new Message()
+                                          .title( "PublishingTemplate::create, outlining options heading content attribute type name not found." )
+                                          .indentInc()
+                                          .segment( "Heading Arttribute Type Name", headingAttributeTypeTokenName )
+                                          .indentDec()
+                                          .reasonFollowsWithTrace( e );
+                     //@formatter:on
+
+                     return Pair.createNullableImmutable(new PublishOptions().defaults(), message);
+                  }
+            }
+         } else if (outliningOptionsArray.length > 1) {
+
+            //@formatter:off
+            var message = new Message()
+                                 .title( "PublishingTemplate::create, publish options array should not contain more than one entry." )
+                                 .indentInc()
+                                 .segment( "Publish Options", publishOptions );
+            //@formatter:on
+
+            return Pair.createNullableImmutable(new PublishOptions().defaults(), message);
+         }
 
          return Pair.createNullableImmutable(publishOptions, null);
 
@@ -291,7 +374,14 @@ class PublishingTemplate implements ToMessage {
             );
          //@formatter:on
 
-         var message = new Message().block(e.getMessage());
+         final var cause = e.getCause();
+
+         //@formatter:off
+         final var message =
+            new Message()
+                   .block( e.getMessage() )
+                   .reasonFollowsIfNonNull(cause);
+         //@formatter:on
 
          return Pair.createNullableImmutable(new PublishOptions().defaults(), message);
 
@@ -327,7 +417,8 @@ class PublishingTemplate implements ToMessage {
     * the loading errors.
     */
 
-   private static Pair<@NonNull Map<FormatIndicator, String>, @Nullable Message> loadTemplateContentMap(@NonNull ArtifactReadable artifactReadable) {
+   private static Pair<@NonNull Map<FormatIndicator, String>, @Nullable Message> loadTemplateContentMap(
+      @NonNull ArtifactReadable artifactReadable) {
 
       var outMessage = new Message();
 
@@ -395,7 +486,8 @@ class PublishingTemplate implements ToMessage {
     * </dl>
     */
 
-   private static Pair<CharSequence, Message> updateWithAlternateStyles(final @NonNull ArtifactReadable artifactReadable, @NonNull CharSequence templateContentWordMl) {
+   private static Pair<CharSequence, Message> updateWithAlternateStyles(
+      final @NonNull ArtifactReadable artifactReadable, @NonNull CharSequence templateContentWordMl) {
 
       /*
        * Check for alternate styles
@@ -645,7 +737,8 @@ class PublishingTemplate implements ToMessage {
     * @return a populated {@link PublishingTemplate} object.
     */
 
-   public org.eclipse.osee.framework.core.publishing.PublishingTemplate getBean(@NonNull FormatIndicator formatIndicator) {
+   public org.eclipse.osee.framework.core.publishing.PublishingTemplate getBean(
+      @NonNull FormatIndicator formatIndicator) {
       //@formatter:off
       return
          new org.eclipse.osee.framework.core.publishing.PublishingTemplate
@@ -791,7 +884,7 @@ class PublishingTemplate implements ToMessage {
                 .segment( "Artifact Name",              this.artifactReadable.getName()           )
                 .segment( "Artifact Identifier",        this.artifactReadable.getIdString()       )
                 .segment( "Artifact Branch Identifier", this.artifactReadable.getBranchIdString() )
-                .segment( "Formats",                    this.templateContentMap.keySet(),           FormatIndicator::getFormatName )
+                .segmentIndexed( "Formats", this.templateContentMap.keySet(), FormatIndicator::getFormatName )
                 .segment( "Match Criteria",             this.matchCriteria                        )
                 .segment( "Publish Options",            this.publishOptions                       )
                 ;
@@ -853,7 +946,8 @@ class PublishingTemplate implements ToMessage {
     * @return an {@link Iterator} that returns keys on the key vector provided by the <code>keyListSupplier</code>.
     */
 
-   Iterable<PublishingTemplateScalarKey> makeVectorKeyIterable(Supplier<PublishingTemplateVectorKey> vectorKeySupplier) {
+   Iterable<PublishingTemplateScalarKey> makeVectorKeyIterable(
+      Supplier<PublishingTemplateVectorKey> vectorKeySupplier) {
       //@formatter:off
       return
          new Iterable<PublishingTemplateScalarKey> () {

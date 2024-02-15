@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
@@ -41,6 +42,8 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactBase;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Message;
@@ -55,7 +58,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Loren K. Ashley
  */
 
-public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
+public class WordRenderArtifactWrapperClientImpl extends PublishingArtifactBase {
+
+   /**
+    * Saves the status of the artifact's applicability as yes, no, or unknown.
+    */
+
+   PublishingArtifact.Applicability applicable;
 
    /**
     * The wrapped {@link Artifact}.
@@ -64,34 +73,99 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
    private final Artifact artifact;
 
    /**
-    * Set <code>false</code> when this artifact is the last artifact at it's hierarchy level.
+    * Saves the branch the wrapped {@link Artifact} is from. The {@link BranchToken} will be set to {@link Id#SENTINEL}
+    * when the applicability status of the artifact is no or unknown.
     */
 
-   boolean endsSection;
-
-   /**
-    * Set to the hierarchical depth of the artifact.
-    */
-
-   int outlineLevel;
-
-   /**
-    * Set <code>true</code> when this artifact is the first artifact at it's hierarchy level.
-    */
-
-   boolean startsSection;
+   private BranchToken branchToken;
 
    /**
     * Creates a new client/server agnostic wrapper for the {@link Artifact}.
     *
     * @param artifact the {@link Artifact} to wrap.
+    * @throws NullPointerException when <code>artifact</code> is <code>null</code>.
+    * @throws IllegalArgumentException when <code>artifact</code> is not an instance of {@link Artifact} or is sentinel.
     */
 
-   public WordRenderArtifactWrapperClientImpl(Artifact artifact) {
-      this.artifact = artifact;
-      this.outlineLevel = 0;
-      this.startsSection = false;
-      this.endsSection = false;
+   public WordRenderArtifactWrapperClientImpl(Object artifact) {
+
+      Objects.requireNonNull(artifact,
+         "WordRenderArtifactWrapperClientImpl::new, parameter \"artifact\" cannont be null.");
+
+      if (artifact instanceof Artifact) {
+         this.artifact = (Artifact) artifact;
+      } else if (artifact instanceof WordRenderArtifactWrapperClientImpl) {
+         this.artifact = ((WordRenderArtifactWrapperClientImpl) artifact).getArtifact();
+      } else {
+         throw new IllegalArgumentException(
+            "WordRenderArtifactWrapperClientImpl::new, parameter \"artifact\" must be an instance of \"Artifact\" or \"WordRenderArtifactWrapperClientImpl\".");
+      }
+
+      if (this.artifact.isInvalid()) {
+         throw new IllegalArgumentException(
+            "WordRenderArtifactWrapperClientImpl::new, parameter \"artifact\" cannont be sentinel.");
+      }
+
+      var artifactBranchToken = this.artifact.getBranch();
+
+      this.branchToken =
+         BranchToken.create(artifactBranchToken.getId(), artifactBranchToken.getName(), ArtifactId.SENTINEL);
+
+      this.applicable = PublishingArtifact.Applicability.YES;
+   }
+
+   /**
+    * Creates a new client/server agnostic wrapper for the {@link Artifact} implementation. This constructor implements
+    * the functional interface {@link PublishingArtifactLoader.PublishingArtifactFactoryWithView}.
+    *
+    * @param artifact the {@link Artifact} to wrap.
+    * @param branchSpecification the {@link BranchSpecification} the artifact was loaded with.
+    * @throws NullPointerException when <code>artifact</code> is <code>null</code>.
+    * @throws IllegalArgumentException when <code>artifact</code> is not an implementation of {@link Artifact} or is
+    * sentinel.
+    */
+
+   public WordRenderArtifactWrapperClientImpl(Object artifact, BranchSpecification branchSpecification) {
+
+      Objects.requireNonNull(artifact,
+         "WordRenderArtifactWrapperClientImpl::new, parameter \"artifact\" cannont be null.");
+
+      if (artifact instanceof Artifact) {
+         this.artifact = (Artifact) artifact;
+      } else if (artifact instanceof WordRenderArtifactWrapperClientImpl) {
+         this.artifact = ((WordRenderArtifactWrapperClientImpl) artifact).getArtifact();
+      } else {
+         throw new IllegalArgumentException(
+            "WordRenderArtifactWrapperClientImpl::new, parameter \"artifact\" must be an instance of \"Artifact\" or \"WordRenderArtifactWrapperClientImpl\".");
+      }
+
+      if (this.artifact.isInvalid()) {
+         throw new IllegalArgumentException(
+            "WordRenderArtifactWrapperClientImpl::new, parameter \"artifact\" cannont be sentinel.");
+      }
+
+      Objects.requireNonNull(branchSpecification);
+
+      var artifactBranchToken = this.artifact.getBranch();
+
+      //@formatter:off
+      assert
+           artifactBranchToken.isSameBranch( branchSpecification.getBranchId() )
+         : new Message()
+                  .title( "WordRenderArtifactWrapperServerImpl::new, parameter \"branchSpecification\" is for a different branch than the parameter \"artifact\"." )
+                  .indentInc()
+                  .segment( "Artifact Branch",             this.artifact.getBranch().getIdString()         )
+                  .segment( "Branch Specification Branch", branchSpecification.getBranchId().getIdString() )
+                  .toString();
+
+      this.branchToken = BranchToken.create(artifactBranchToken.getId(), artifactBranchToken.getName(), branchSpecification.getViewId() );
+
+      //@formatter:off
+      this.applicable =
+         branchSpecification.getViewId().isValid()
+            ? PublishingArtifact.Applicability.YES
+            : PublishingArtifact.Applicability.UNKNOWN;
+      //@formatter:on
    }
 
    /**
@@ -110,8 +184,14 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
-   public void clearEndOfSection() {
-      this.endsSection = false;
+   public boolean branchHasView() {
+      var viewId = this.artifact.getBranch().getViewId();
+      return Objects.nonNull(viewId) && viewId.isValid();
+   }
+
+   @Override
+   public void clearApplicable() {
+      this.applicable = PublishingArtifact.Applicability.NO;
    }
 
    /**
@@ -119,8 +199,8 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
-   public void clearStartOfSection() {
-      this.startsSection = false;
+   public void clearBranchView() {
+      throw new UnsupportedOperationException();
    }
 
    /**
@@ -210,13 +290,11 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    /**
     * {@inheritDoc}
-    *
-    * @throws UnsupportedOperationException method has not been implemented.
     */
 
    @Override
    public int getAttributeCount(AttributeTypeToken type) {
-      throw new UnsupportedOperationException();
+      return this.artifact.getAttributeCount(type);
    }
 
    /**
@@ -294,6 +372,11 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    @Override
    public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       throw new UnsupportedOperationException();
    }
 
@@ -527,16 +610,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
-   public int getOutlineLevel() {
-      return this.outlineLevel;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public ArtifactReadable getParent() {
+   public PublishingArtifact getParent() {
       var parent = this.artifact.getParent();
 
       return (Objects.nonNull(parent)) ? new WordRenderArtifactWrapperClientImpl(parent) : null;
@@ -550,6 +624,16 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    @Override
    public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
 
@@ -726,6 +810,11 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
       return this.artifact.getTransaction();
    }
 
+   @Override
+   public TransactionDetails getTxDetails() {
+      throw new UnsupportedOperationException();
+   }
+
    /**
     * {@inheritDoc}
     */
@@ -751,8 +840,27 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
+   public boolean hasAttributeContent(AttributeTypeToken attributeTypeToken) {
+      //@formatter:off
+      return
+            ( attributeTypeToken != null )
+         && this.artifact.isAttributeTypeValid(attributeTypeToken)
+         && ( this.artifact.getAttributeCount(attributeTypeToken) > 0 );
+      //@formatter:on
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public int hashCode() {
       return this.artifact.hashCode();
+   }
+
+   @Override
+   public PublishingArtifact.Applicability isApplicable() {
+      return this.applicable;
    }
 
    /**
@@ -782,8 +890,8 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     */
 
    @Override
-   public boolean isEndOfSection() {
-      return this.endsSection;
+   public boolean isFound() {
+      return true;
    }
 
    /**
@@ -815,38 +923,39 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    /**
     * {@inheritDoc}
+    *
+    * @implNote For a loaded artifact {@link PublishingArtifact} there is no need to reload the artifact.
     */
 
    @Override
-   public boolean isStartOfSection() {
-      return this.startsSection;
+   public PublishingArtifact.TryReload isReloadable() {
+      return PublishingArtifact.TryReload.NO;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
-   public void setEndOfSection() {
-      this.endsSection = true;
+   public void setApplicable() {
+      this.applicable = PublishingArtifact.Applicability.YES;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-
    @Override
-   public void setOutlineLevel(int level) {
-      this.outlineLevel = level;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   public void setStartOfSection() {
-      this.startsSection = true;
+   public void setBranchView(BranchSpecification branchSpecification) {
+      //@formatter:off
+      assert
+              Objects.nonNull( branchSpecification )
+           && branchSpecification.hasView()
+           && (    Objects.isNull( this.branchToken )
+                || (    ( Objects.isNull( this.branchToken.getViewId() ) || this.branchToken.getViewId().isInvalid() )
+                     && ( branchSpecification.getBranchId().getId().equals( this.branchToken.getId() ) ) ) )
+         : new Message()
+                  .title( "PublishingArtifact.PublishingArtifactNotFound::setBranchView, Artifact and/or branchSpecification have unexpected values." )
+                  .indentInc()
+                  .segment( "Not Found Publishing Artifact Branch Token Identifier",      this.branchToken.getId() )
+                  .segment( "Not Found Publishing Artifact Branch Token View Identifier", Objects.nonNull( this.branchToken.getViewId() ) ? this.branchToken.getViewId().getId() : "(null)" )
+                  .segment( "Branch Specification With View",             branchSpecification )
+                  .toString();
+      //@formatter:on
+      this.branchToken = BranchToken.create(branchSpecification.getBranchId().getId(), this.branchToken.getName(),
+         branchSpecification.getViewId());
    }
 
    /**
@@ -861,12 +970,16 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
          .indent( indent )
          .title( "PublishingArtifact (WordRenderArtifactWrapperClientImpl)" )
          .indentInc()
-         .segment( "Identifier",    this.getIdString()         )
-         .segment( "Name",          this.getName()             )
-         .segment( "Type",          this.getArtifactTypeName() )
-         .segment( "Start Section", this.startsSection         )
-         .segment( "End Section",   this.endsSection           )
-         .segment( "Outline Level", this.outlineLevel          )
+         .segment( "Identifier",                   this.getIdString()                 )
+         .segment( "GUID",                         this.getGuid()                     )
+         .segment( "Name",                         this.getName()                     )
+         .segment( "Type",                         this.getArtifactTypeName()         )
+         .segment( "Processed",                    this.isProcessed()                 )
+         .segment( "Publishing Content Cached",    this.isPublishingContentCached()   )
+         .segment( "Branch Identifier",            this.branchToken.getId()           )
+         .segment( "Branch View",                  this.branchToken.getViewId()       )
+         .segment( "Applicable",                   this.applicable                    )
+         .segment( "Wrapped Implementation Class", this.artifact.getClass().getName() )
          .indentDec()
          ;
       //@formatter:on
@@ -881,26 +994,6 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
    @Override
    public String toString() {
       return this.toMessage(0, null).toString();
-   }
-
-   @Override
-   public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public TransactionDetails getTxDetails() {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
-      throw new UnsupportedOperationException();
    }
 
 }

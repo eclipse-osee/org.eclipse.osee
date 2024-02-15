@@ -14,12 +14,15 @@
 package org.eclipse.osee.framework.core.publishing;
 
 import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.LinkType;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 
@@ -35,27 +38,17 @@ public class WordTemplateContentData implements ToMessage {
    private String footer;
    private boolean isEdit;
 
-   /**
-    * This member is optional and maybe <code>null</code>.
-    */
+   private @Nullable IncludeBookmark includeBookmark;
 
-   private LinkType linkType;
+   private @Nullable LinkType linkType;
 
-   /**
-    * This member is optional and maybe <code>null</code>.
-    */
-
-   private String oseeLink;
+   private @Nullable String oseeLink;
 
    private String permanentLinkUrl;
 
    private PresentationType presentationType;
 
-   /**
-    * This member is optional and maybe <code>null</code>.
-    */
-
-   private String sessionId;
+   private @Nullable String sessionId;
 
    /**
     * This member is required and maybe {@link TransactionToken#SENTINEL}.
@@ -87,6 +80,15 @@ public class WordTemplateContentData implements ToMessage {
 
    public boolean getIsEdit() {
       return isEdit;
+   }
+
+   public @NonNull IncludeBookmark getIncludeBookmark() {
+      //@formatter:off
+      return
+         this.includeBookmark != null
+            ? this.includeBookmark
+            : IncludeBookmark.YES;
+      //@formatter:on
    }
 
    public LinkType getLinkType() {
@@ -234,6 +236,10 @@ public class WordTemplateContentData implements ToMessage {
 
    public void setLinkType(LinkType linkType) {
       this.linkType = linkType;
+   }
+
+   public void setIncludeBookmark(@NonNull IncludeBookmark includeBookmark) {
+      this.includeBookmark = Conditions.requireNonNull(includeBookmark, "includeBookmark");
    }
 
    public void setOseeLink(String oseeLink) {

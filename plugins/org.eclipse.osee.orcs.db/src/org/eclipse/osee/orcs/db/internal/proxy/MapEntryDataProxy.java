@@ -167,7 +167,7 @@ public class MapEntryDataProxy extends AbstractDataProxy<Map.Entry<String, Strin
             return;
          }
          default: {
-            throw Conditions.invalidCase(state, this.getClass().getName(), "loadData", "state", OseeCoreException::new);
+            throw Conditions.invalidCase(state, "state", OseeCoreException::new);
          }
       }
 

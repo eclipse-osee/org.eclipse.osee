@@ -14,6 +14,8 @@
 package org.eclipse.osee.framework.core.publishing.wordml;
 
 import java.util.Objects;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingAppenderBase;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
@@ -37,8 +39,8 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
     * @throws NullPointerException when <code>appendable</code> is <code>null</code>.
     */
 
-   public WordMlPublishingAppender(Appendable appendable, int maxOutlineLevel) {
-      super(appendable, maxOutlineLevel);
+   public WordMlPublishingAppender(Appendable appendable) {
+      super(appendable);
    }
 
    @Override
@@ -396,23 +398,6 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
    }
 
    @Override
-   public void endOutlineSubSection() {
-      endOutlineSubSection(false);
-   }
-
-   private void endOutlineSubSection(boolean force) {
-      if (!force && this.flattenedLevelCount > 0) {
-         this.flattenedLevelCount--;
-      } else {
-         this.endSubSection();
-         if (this.outlineLevel + 1 < this.outlineNumber.length) {
-            this.outlineNumber[this.outlineLevel + 1] = 0;
-         }
-         this.outlineLevel--;
-      }
-   }
-
-   @Override
    public PublishingAppender endParagraph() {
       this.append(WordCoreUtil.PARAGRAPH_END);
       return this;
@@ -469,21 +454,6 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
       this.append(WordCoreUtil.TEXT_END);
    }
 
-   private CharSequence getOutlineNumber() {
-      StringBuilder strB = new StringBuilder();
-      for (int i = 1; i < this.outlineLevel; i++) {
-         strB.append(String.valueOf(this.outlineNumber[i]));
-         strB.append(".");
-      }
-      strB.append(String.valueOf(this.outlineNumber[this.outlineLevel]));
-      return strB;
-   }
-
-   @Override
-   public boolean okToStartSubsection() {
-      return this.outlineLevel < this.maxOutlineLevel;
-   }
-
    @Override
    public void resetListValue() {
       // extra paragraph needed to support WORD's bug to add in a trailing zero when using field codes
@@ -510,7 +480,8 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
     * @param pageType - Set to landscape if needed
     */
    @Override
-   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering, WordCoreUtil.pageType pageType) {
+   public void setPageBreak(boolean chapterNumbering, int chapterStyle, boolean restartNumbering,
+      WordCoreUtil.pageType pageType) {
 
       this.startParagraph();
       this.startParagraphPresentation();
@@ -577,61 +548,79 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
       this.append(WordCoreUtil.LIST_PRESENTATION);
    }
 
-   @Override
-   public CharSequence startOutlineSubSection() {
-      CharSequence paragraphNumber = startOutlineSubSection(WordCoreUtil.DEFAULT_FONT, null, null);
-      return paragraphNumber;
-   }
+   /**
+    * {@inheritDoc}
+    * <p>
+    * Appends the Word ML for a heading to the output {@link Appendable}.
+    */
 
    @Override
-   public void startOutlineSubSection(CharSequence style, int outlineLevel, CharSequence outlineNumber, CharSequence font, CharSequence headingText) {
+   //@formatter:off
+   public void
+      startOutlineSubSection
+         (
+            @Nullable String[]        bookmark,
+            @Nullable CharSequence    headingNumber,
+                      int             headingLevel,
+            @Nullable CharSequence    headingText,
+            @Nullable CharSequence    outlineType,
+            @Nullable CharSequence    font
+         ) {
+      //@formatter:on
+
+      String openBookmark;
+      String closeBookmark;
+      IncludeBookmark includeBookmark;
+
+      //@formatter:off
+      if(    ( bookmark != null )
+          && ( bookmark.length == 2 )
+          && Strings.isValidAndNonBlank( bookmark[0] )
+          && Strings.isValidAndNonBlank( bookmark[1] ) ) {
+      //@formatter:on
+
+         includeBookmark = IncludeBookmark.YES;
+         openBookmark = bookmark[0];
+         closeBookmark = bookmark[1];
+
+      } else {
+
+         includeBookmark = IncludeBookmark.NO;
+         openBookmark = Strings.EMPTY_STRING;
+         closeBookmark = Strings.EMPTY_STRING;
+
+      }
+
       this.startSubSection();
-      if (Strings.isValid(headingText)) {
+
+      if (includeBookmark.isYes()) {
+         this.append(openBookmark);
+      }
+
+      if (Strings.isValid(headingText) && Strings.isValid(headingNumber)) {
+
+         var safeFont = Strings.isValidAndNonBlank(font) ? font : WordCoreUtil.DEFAULT_FONT;
+         var safeOutlineType = Strings.isValidAndNonBlank(outlineType) ? outlineType : "Heading";
+
          this.startParagraph();
          this.startParagraphPresentation();
-         this.addParagraphStyle(style, outlineLevel);
+         this.addParagraphStyle(safeOutlineType, headingLevel);
          this.startListPresentation();
          this.append("<wx:t wx:val=\"");
-         this.append(outlineNumber);
+         this.append(headingNumber);
          this.append("\" wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"/><wx:font wx:val=\"");
-         this.append(font);
+         this.append(safeFont);
          this.append("\"/>");
          this.endListPresentation();
          this.endParagraphPresentation();
          this.addTextInsideParagraph(headingText);
          this.endParagraph();
       }
-   }
 
-   @Override
-   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, CharSequence outlineType) {
-
-      if (this.okToStartSubsection()) {
-
-         this.outlineNumber[++this.outlineLevel]++;
-
-         var paragraphNumber = this.getOutlineNumber();
-         //@formatter:off
-         this.startOutlineSubSection
-            (
-               Objects.nonNull( outlineType ) ? outlineType : "Heading",
-               this.outlineLevel,
-               paragraphNumber,
-               font,
-               headingText
-            );
-         //@formatter:on
-         return paragraphNumber;
-
-      } else {
-
-         this.flattenedLevelCount++;
-
-         this.endOutlineSubSection(true);
-
-         return this.startOutlineSubSection(font, headingText, outlineType);
-
+      if (includeBookmark.isYes()) {
+         this.append(closeBookmark);
       }
+
    }
 
    @Override

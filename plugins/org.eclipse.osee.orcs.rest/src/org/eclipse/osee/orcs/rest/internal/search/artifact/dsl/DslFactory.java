@@ -22,7 +22,9 @@ import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistenceTy
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.GuidsPredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IdsPredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IsOfTypePredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.RelatedRecursiveToPredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.RelatedToPredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.TransactionCommentPredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.TypeEqualsPredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 
@@ -51,6 +53,8 @@ public class DslFactory {
       handlers.put(SearchMethod.NOT_EXISTS_TYPE, new ExistenceTypePredicateHandler());
       handlers.put(SearchMethod.ATTRIBUTE_TYPE, new AttributeTypePredicateHandler());
       handlers.put(SearchMethod.RELATED_TO, new RelatedToPredicateHandler());
+      handlers.put(SearchMethod.RELATED_RECURSIVE_TO, new RelatedRecursiveToPredicateHandler());
+      handlers.put(SearchMethod.TRANSACTION_COMMENT, new TransactionCommentPredicateHandler());
       return handlers;
    }
 }

@@ -21,7 +21,15 @@ import java.util.Optional;
  * @author Loren K. Ashley
  */
 
-public class WordHlinkList extends AbstractElementList<WordParagraph, WordHlink> {
+public class WordHlinkList<P extends AbstractElement> extends AbstractElementList<P, WordHlink> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordHlinkList} with a {@link WordParagraph}
+    * parent.
+    */
+
+   public static WordElementParserFactory<WordParagraph, WordHlinkList<WordParagraph>, WordHlink> wordParagraphParentFactory =
+      new WordElementParserFactory<>(WordHlinkList::new, WordHlink::new, WordMlTag.HLINK);
 
    /**
     * Creates a new open and empty list for {@link WordHlink}s.
@@ -30,8 +38,8 @@ public class WordHlinkList extends AbstractElementList<WordParagraph, WordHlink>
     * @throws NullPointerException when the parameter <code>wordParagraph</code> is <code>null</code>.
     */
 
-   public WordHlinkList(WordParagraph wordParagraph) {
-      super(wordParagraph);
+   public WordHlinkList(P parent) {
+      super(parent);
    }
 
    /**
@@ -40,13 +48,12 @@ public class WordHlinkList extends AbstractElementList<WordParagraph, WordHlink>
     * @return the containing {@link WordParagraph}.
     */
 
-   @SuppressWarnings("cast")
    public Optional<WordParagraph> getWordParagraph() {
       var parent = this.getParent();
       //@formatter:off
       return
          (parent instanceof WordParagraph)
-            ? Optional.of( parent )
+            ? Optional.of( (WordParagraph) parent )
             : Optional.empty();
       //@formatter:on
    }

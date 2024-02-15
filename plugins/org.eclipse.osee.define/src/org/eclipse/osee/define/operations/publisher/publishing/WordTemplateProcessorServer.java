@@ -13,14 +13,7 @@
 
 package org.eclipse.osee.define.operations.publisher.publishing;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.HeadingMsWord;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.NativeContent;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ParagraphNumber;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PublishInline;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,17 +23,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.define.operations.api.publisher.dataaccess.DataAccessOperations;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
 import org.eclipse.osee.define.rest.api.ArtifactUrlServer;
 import org.eclipse.osee.define.rest.api.AttributeAlphabeticalComparator;
 import org.eclipse.osee.define.rest.api.OseeHierarchyComparator;
-import org.eclipse.osee.define.rest.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -49,28 +41,44 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactSpecification;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchSpecification;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.AllowedOutlineTypes;
 import org.eclipse.osee.framework.core.publishing.AttributeOptions;
+import org.eclipse.osee.framework.core.publishing.DataAccessOperations;
 import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
+import org.eclipse.osee.framework.core.publishing.FilterForView;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
+import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
+import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
+import org.eclipse.osee.framework.core.publishing.IncludeMetadataAttributes;
+import org.eclipse.osee.framework.core.publishing.OutlineNumber;
+import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.core.publishing.ProcessedArtifactTracker;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.BranchIndicator;
+import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader.WhenNotFound;
+import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.SectionNumberWhenMaximumOutlineLevelExceeded;
+import org.eclipse.osee.framework.core.publishing.TrailingDot;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.WordRenderApplicabilityChecker;
 import org.eclipse.osee.framework.core.publishing.WordRenderUtil;
-import org.eclipse.osee.framework.core.server.publishing.WordRenderArtifactWrapperServerImpl;
+import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -80,7 +88,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Loren K. Ashley
  */
 
-public class WordTemplateProcessorServer {
+public class WordTemplateProcessorServer implements ToMessage {
 
    protected static final String APPLICABILITY = "Applicability";
 
@@ -92,27 +100,53 @@ public class WordTemplateProcessorServer {
 
    protected static final String FONT = "Times New Roman";
 
+   /**
+    * The initial size for the collections used to track the artifacts.
+    */
+
+   private static final int initialMapSize = 2048;
+
    protected final ActivityLog activityLog;
+
+   protected boolean allAttributes;
+
+   /**
+    * Saves the types of artifacts that may be used for outlining.
+    */
+
+   protected AllowedOutlineTypes allowedOutlineTypes;
 
    protected final Map<ApplicabilityId, Boolean> applicabilityMap = new HashMap<>();
 
    protected Map<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
 
+   protected List<AttributeOptions> attributeOptionsList;
+
    protected final Map<ArtifactReadable, CharSequence> artParagraphNumbers = new HashMap<>();
 
    protected final AtsApi atsApi;
 
-   protected BranchId branchId;
+   /**
+    * Saves the branch and view artifacts are to be published from.
+    */
+
+   protected BranchSpecification branchSpecification;
+
+   protected final ArtifactTypeToken contentArtifactType;
+
+   protected AttributeTypeToken contentAttributeType;
+
+   protected ChangedArtifactsTracker changedArtifactsTracker;
+
+   protected final DataAccessOperations dataAccessOperations;
 
    protected DataRightsOperations dataRightsOperations;
 
    private String elementType;
 
-   protected final Set<ArtifactId> emptyFolders = new HashSet<>();
+   protected ArtifactAcceptor emptyFoldersArtifactAcceptor;
 
-   protected final List<ArtifactTypeToken> excludeArtifactTypes = new LinkedList<>();
-
-   private Boolean excludeFolders;
+   protected ArtifactAcceptor excludedArtifactTypeArtifactAcceptor;
 
    /**
     * Saves the output format for the publish.
@@ -120,11 +154,13 @@ public class WordTemplateProcessorServer {
 
    protected FormatIndicator formatIndicator;
 
-   protected final Set<ArtifactReadable> headerArtifacts = new HashSet<>();
+   protected final Set<PublishingArtifact> headerArtifacts;
 
    protected final Set<String> headerGuids = new HashSet<>();
 
-   protected AttributeTypeToken headingAttributeType;
+   protected ArtifactTypeToken headingArtifactTypeToken;
+
+   protected AttributeTypeToken headingAttributeTypeToken;
 
    protected final OseeHierarchyComparator hierarchyComparator;
 
@@ -135,6 +171,8 @@ public class WordTemplateProcessorServer {
 
    protected HashMap<String, ArtifactReadable> hyperlinkedIds = new HashMap<>();
 
+   protected IncludeHeadings includeHeadings;
+
    /**
     * Flag used to control whether the error log is appended to the publish.
     *
@@ -144,17 +182,23 @@ public class WordTemplateProcessorServer {
 
    protected boolean includeErrorLog;
 
+   protected IncludeMetadataAttributes includeMetadataAttributes;
+
+   protected String initialOutlineNumber;
+
    protected final Log logger;
 
    private Integer maximumOutlineDepth;
 
    protected final OrcsApi orcsApi;
 
-   protected final Map<ArtifactTypeToken, List<ArtifactReadable>> oseeLinkedArtifactMap = new HashMap<>();
+   protected final Map<ArtifactTypeToken, List<PublishingArtifact>> oseeLinkedArtifactMap = new HashMap<>();
 
-   protected String outlineNumber;
+   protected OutlineNumber outlineNumber;
 
    protected String overrideClassification;
+
+   protected boolean overrideOutlineNumber;
 
    protected final String permanentLinkUrl;
 
@@ -164,62 +208,113 @@ public class WordTemplateProcessorServer {
 
    protected ProcessedArtifactTracker processedArtifactTracker;
 
+   protected final PublishingArtifactLoader publishingArtifactLoader;
+
    protected final PublishingErrorLog publishingErrorLog;
 
    protected PublishingTemplate publishingTemplate;
 
-   protected final DataAccessOperations dataAccessOperations;
+   protected Boolean recurseChildren;
 
    protected RendererMap renderer;
 
+   /**
+    * Used to track the time required for the publish.
+    *
+    * @implNote (SERVER ONLY)
+    */
+
+   long startTime;
+
+   boolean templateFooter;
+
+   protected WordRenderApplicabilityChecker wordRenderApplicabilityChecker;
+
+   protected WordTemplateContentRendererHandler wordTemplateContentRendererHandler;
+
+   protected boolean contentAttributeOnly;
+
    protected final OrcsTokenService tokenService;
 
-   protected ArtifactId viewId;
+   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations,
+      DataRightsOperations dataRightsOperations) {
 
-   protected ChangedArtifactsTracker changedArtifactsTracker;
+      this.startTime = System.currentTimeMillis();
 
-   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
       this.publishingErrorLog = new PublishingErrorLog();
       this.dataAccessOperations = dataAccessOperations;
-
       this.activityLog = orcsApi.getActivityLog();
-      this.branchId = null;
+
+      this.allAttributes = false;
+      this.attributeOptionsList = null;
+      this.allowedOutlineTypes = AllowedOutlineTypes.ANYTHING;
+      this.branchSpecification = null;
       this.changedArtifactsTracker =
          new ChangedArtifactsTracker(this.atsApi, this.dataAccessOperations, this.publishingErrorLog);
+      this.contentArtifactType = null;
+      this.contentAttributeType = null;
       this.dataRightsOperations = dataRightsOperations;
       this.elementType = null;
-      this.excludeFolders = null;
+      this.emptyFoldersArtifactAcceptor = null;
+      this.excludedArtifactTypeArtifactAcceptor = null;
       this.formatIndicator = null;
-      this.headingAttributeType = null;
+      this.headerArtifacts = new HashSet<>();
+      this.headingArtifactTypeToken = null;
+      this.headingAttributeTypeToken = null;
       this.hierarchyComparator = new OseeHierarchyComparator(this.activityLog);
+      this.includeHeadings = null;
       this.includeErrorLog = true;
+      this.initialOutlineNumber = null;
+      this.includeMetadataAttributes = null;
       this.logger = atsApi.getLogger();
       this.maximumOutlineDepth = null;
       this.outlineNumber = null;
       this.overrideClassification = null;
+      this.overrideOutlineNumber = false;
       this.permanentLinkUrl = new ArtifactUrlServer(this.orcsApi).getSelectedPermanentLinkUrl();
       this.processedArtifactTracker = new ProcessedArtifactTracker();
+      //@formatter:off
+      this.publishingArtifactLoader =
+         new PublishingArtifactLoader
+                (
+                   this.dataAccessOperations,
+                   this.publishingErrorLog,
+                   WordRenderArtifactWrapperServerImpl::new,
+                   WordRenderArtifactWrapperServerImpl::new,
+                   this.changedArtifactsTracker::loadByAtsTeamWorkflow
+                );
+      //@formatter:on
       this.publishingTemplate = null;
+      this.recurseChildren = null;
       this.renderer = null;
+      this.contentAttributeOnly = false;
+      this.templateFooter = false;
       this.tokenService = orcsApi.tokenService();
-      this.viewId = null;
+      this.wordRenderApplicabilityChecker = null;
+
    }
 
    /**
     * Given a list of artifacts, this method will loop through and add ancestors and sibling artifacts to the list
     */
 
-   protected List<ArtifactReadable> addContextToArtifactList(List<ArtifactReadable> changedArtifacts) {
-      List<ArtifactReadable> artifactsWithContext = new LinkedList<>();
-      for (ArtifactReadable artifact : changedArtifacts) {
+   protected List<PublishingArtifact> addContextToArtifactList(List<PublishingArtifact> changedArtifacts) {
+      final var artifactsWithContext = new LinkedList<PublishingArtifact>();
+      for (final var artifact : changedArtifacts) {
          if (!artifactsWithContext.contains(artifact)) {
             artifactsWithContext.add(artifact);
          }
 
-         List<ArtifactReadable> ancestors = artifact.getAncestors();
-         for (ArtifactReadable ancestor : ancestors) {
+         //@formatter:off
+         var ancestors =
+            this.publishingArtifactLoader
+               .loadAncestors( artifact, FilterForView.YES )
+               .orElseThrow();
+         //@formatter:on
+
+         for (final var ancestor : ancestors) {
             if (!artifactsWithContext.contains(ancestor) && ancestor.notEqual(
                CoreArtifactTokens.DefaultHierarchyRoot)) {
                artifactsWithContext.add(ancestor);
@@ -228,9 +323,15 @@ public class WordTemplateProcessorServer {
             }
          }
 
-         List<ArtifactReadable> siblings = artifact.getParent().getChildren();
-         for (ArtifactReadable sibling : siblings) {
-            if (!artifactsWithContext.contains(sibling) && !sibling.isOfType(CoreArtifactTypes.HeadingMsWord)) {
+         //@formatter:off
+         var siblings =
+            this.publishingArtifactLoader
+               .getSiblings( artifact, FilterForView.YES )
+               .orElseThrow();
+         //@formatter:on
+
+         for (final var sibling : siblings) {
+            if (!artifactsWithContext.contains(sibling) && !sibling.isOfType(this.headingArtifactTypeToken)) {
                artifactsWithContext.add(sibling);
             }
          }
@@ -263,10 +364,26 @@ public class WordTemplateProcessorServer {
                            ? "Artifact contains a link to an unbookmarked artifact."
                            : "Artifact contains a link to a processed artifact that was excluded from the publish."
                         : ( WordCoreUtil.isLinkReferenceAnArtifactId( linkReference )
-                               ? this.dataAccessOperations.getArtifactReadableByIdentifier( new ArtifactSpecification( this.branchId, ArtifactId.SENTINEL, ArtifactId.valueOf( linkReference ) ) )
-                               : this.dataAccessOperations.getArtifactReadableByGuid( new BranchSpecification( this.branchId ), linkReference )
-                          ).map( ( artifactReadable ) -> "Artifact contains a link to an artifact that is not contained in the document." )
-                           .orElse( "Artifact contains a link to an unknown artifact. ");
+                               ? this.dataAccessOperations.getArtifactReadableByIdentifier
+                                    (
+                                       new ArtifactSpecification
+                                              (
+                                                 this.branchSpecification,
+                                                 ArtifactId.valueOf( linkReference )
+                                              )
+                                     )
+                               : this.dataAccessOperations.getArtifactReadables
+                                    (
+                                       this.branchSpecification,
+                                       null,
+                                       List.of( linkReference ),
+                                       null,
+                                       ArtifactTypeToken.SENTINEL,
+                                       TransactionId.SENTINEL,
+                                       IncludeDeleted.NO
+                                    )
+                          ).mapValue( ( artifactReadable ) -> "Artifact contains a link to an artifact that is not contained in the document." )
+                           .orElseGet( "Artifact contains a link to an unknown artifact. ");
 
                   this.publishingErrorLog.error
                      (
@@ -283,55 +400,13 @@ public class WordTemplateProcessorServer {
    }
 
    /**
-    * Second step of the publishing process. This method is where the WordMLProducer is set up and the word xml starts
-    * to be written. The default version changes some elements of the template first. Then is the start of the template
-    * up until the marking where the artifact content should be. The artifacts/content is then inserted in the middle
-    * via processContent. Finally the rest of the template's word content is placed at the end to finish off the
-    * published document.
-    */
-
-   protected void applyContentToTemplate(List<ArtifactReadable> artifacts, CharSequence templateContent, PublishingAppender publishingAppender) {
-
-      //@formatter:off
-      WordRenderUtil.setupPublishingTemplate
-         (
-            this.formatIndicator,
-            this.publishingTemplate,
-            artifacts.get(0),
-            publishingAppender,
-            this.outlineNumber,
-            null,
-            this.maximumOutlineDepth
-         );
-
-      WordCoreUtil.processPublishingTemplate
-         (
-            templateContent,
-            ( segment ) ->
-            {
-               publishingAppender.append( segment );
-               this.processArtifactSet(artifacts,publishingAppender);
-               if( this.formatIndicator.isWordMl() && this.includeErrorLog ) {
-                  this.addLinkNotInPublishErrors();
-                  this.publishingErrorLog.publishErrorLog(publishingAppender);
-               }
-            },
-            ( tail ) ->
-            {
-               var cleanFooterText =
-                  this.formatIndicator.isWordMl()
-                     ? WordCoreUtil.cleanupFooter( tail )
-                     : tail;
-               publishingAppender.append( cleanFooterText );
-            }
-         );
-      //@formatter:on
-   }
-
-   /**
     * Beginning method of the publishing process. Default version takes in the list of artifact ids to be published, and
     * then the artifact id for the template. This method is where the artifact readable's are gathered, and the template
-    * options are set up. If everything is valid, move onto the next step for publishing.
+    * options are set up. If everything is valid, move onto the next step for publishing. Second step of the publishing
+    * process. This method is where the WordMLProducer is set up and the word xml starts to be written. The default
+    * version changes some elements of the template first. Then is the start of the template up until the marking where
+    * the artifact content should be. The artifacts/content is then inserted in the middle via processContent. Finally
+    * the rest of the template's word content is placed at the end to finish off the published document.
     */
 
    public void applyTemplate(List<ArtifactId> publishArtifactIds, @NonNull Writer writer) {
@@ -342,6 +417,19 @@ public class WordTemplateProcessorServer {
           */
          return;
       }
+
+      /*
+       * Get Applicability Tokens
+       */
+
+      //@formatter:off
+      this.applicabilityTokens =
+         WordCoreUtilServer.getApplicabilityTokens
+            (
+               this.orcsApi,
+               this.branchSpecification.getBranchIdWithOutViewId()
+            );
+      //@formatter:on
 
       //@formatter:off
       var templateContent =
@@ -357,36 +445,63 @@ public class WordTemplateProcessorServer {
       var publishArtifacts = this.getSelectedArtifacts(publishArtifactIds);
 
       /*
-       * Setup the Output Stream
+       * Get the initial outline number
+       */
+
+      final var firstArtifact = publishArtifacts.get(0);
+
+      //@formatter:off
+      this.initialOutlineNumber =
+         this.outlineNumber.isValidOutlineNumber( this.initialOutlineNumber )
+            ? this.initialOutlineNumber
+            : WordRenderUtil.getStartingParagraphNumber(firstArtifact, publishingTemplate);
+      //@formatter:on
+
+      this.outlineNumber.setOutlineNumber(this.initialOutlineNumber);
+
+      /*
+       * Setup the Publishing Appender
        */
 
       var publishingAppender = this.formatIndicator.createPublishingAppender(writer, this.maximumOutlineDepth);
 
-      this.applyContentToTemplate(publishArtifacts, templateContent, publishingAppender);
+      /*
+       * Setup Publishing Template
+       */
 
-   }
+      //@formatter:off
+      WordRenderUtil.setupPublishingTemplate
+         (
+            this.formatIndicator,
+            this.publishingTemplate,
+            publishingAppender,
+            this.initialOutlineNumber,
+            null
+         );
 
-   /**
-    * Checks to see whether this artifact should be included in the publish or not. Default implementation checks to see
-    * if the artifact has/can have valid word template content. Also checks if it's a folder and whether or not the
-    * options specify to print folders or not.
-    */
+      WordCoreUtil.processPublishingTemplate
+         (
+            templateContent,
+            ( segment ) ->
+            {
+               publishingAppender.append( segment );
+               this.processArtifactSet(publishArtifacts,publishingAppender);
+               if( this.formatIndicator.isWordMl() && this.includeErrorLog ) {
+                  this.addLinkNotInPublishErrors();
+                  this.publishingErrorLog.publishErrorLog(publishingAppender);
+               }
+            },
+            ( tail ) ->
+            {
+               var cleanFooterText =
+                  this.formatIndicator.isWordMl()
+                     ? WordCoreUtil.cleanupFooter( tail )
+                     : tail;
+               publishingAppender.append( cleanFooterText );
+            }
+         );
+      //@formatter:on
 
-   protected boolean checkIncluded(ArtifactReadable artifact) {
-      boolean validWordTemplateContent =
-         !artifact.isAttributeTypeValid(WholeWordContent) && !artifact.isAttributeTypeValid(NativeContent);
-      boolean excludeFolder = this.excludeFolders && artifact.isOfType(Folder);
-
-      if (!excludeFolder && checkIsArtifactApplicable(artifact)) {
-         if (validWordTemplateContent) {
-            return true;
-         } else {
-            this.publishingErrorLog.error(artifact,
-               "Only artifacts of type Word Template Content are supported in this case");
-            return false;
-         }
-      }
-      return false;
    }
 
    /**
@@ -396,23 +511,32 @@ public class WordTemplateProcessorServer {
     */
 
    protected boolean checkIsArtifactApplicable(ArtifactReadable artifact) {
-      boolean isApplicable = this.viewId.equals(ArtifactId.SENTINEL);
-      if (isApplicable) {
-         return isApplicable;
-      } else {
-         ApplicabilityId applicability = artifact.getApplicability();
-         if (applicabilityMap.containsKey(applicability)) {
-            isApplicable = applicabilityMap.get(applicability);
-         } else {
-            List<ArtifactId> validViews = orcsApi.getQueryFactory().applicabilityQuery().getBranchViewsForApplicability(
-               this.branchId, applicability);
-            if (validViews.contains(this.viewId)) {
-               isApplicable = true;
-            }
-            applicabilityMap.put(applicability, isApplicable);
-         }
-         return isApplicable;
+
+      if (!this.branchSpecification.hasView()) {
+         return true;
       }
+
+      ApplicabilityId applicability = artifact.getApplicability();
+
+      if (applicabilityMap.containsKey(applicability)) {
+
+         return applicabilityMap.get(applicability);
+
+      }
+
+      var isApplicable = false;
+
+      final var validViews = orcsApi.getQueryFactory().applicabilityQuery().getBranchViewsForApplicability(
+         this.branchSpecification.getBranchIdWithOutViewId(), applicability);
+
+      if (validViews.contains(this.branchSpecification.getViewId())) {
+         isApplicable = true;
+      }
+
+      applicabilityMap.put(applicability, isApplicable);
+
+      return isApplicable;
+
    }
 
    public WordTemplateProcessorServer configure(PublishingTemplate publishingTemplate, RendererMap publishingOptions) {
@@ -430,10 +554,22 @@ public class WordTemplateProcessorServer {
       this.renderer = publishingOptions;
 
       /*
+       * All Attributes
+       */
+
+      this.allAttributes = this.renderer.isRendererOptionSetAndTrue(RendererOption.ALL_ATTRIBUTES);
+
+      /*
        * Publishing Format
        */
 
       this.formatIndicator = this.renderer.getRendererOptionValue(RendererOption.PUBLISHING_FORMAT);
+
+      /*
+       * Content Attribute Only
+       */
+
+      this.contentAttributeOnly = renderer.getRendererOptionValue(RendererOption.CONTENT_ATTRIBUTE_ONLY);
 
       /*
        * Element Type
@@ -463,41 +599,6 @@ public class WordTemplateProcessorServer {
        */
 
       /*
-       * Exclude Folders
-       */
-
-      this.excludeFolders = this.renderer.isRendererOptionSetAndTrue(RendererOption.EXCLUDE_FOLDERS);
-
-      /*
-       * Heading Attribute Type
-       */
-
-      var outliningOptionsArray = this.publishingTemplate.getPublishOptions().getOutliningOptions();
-
-      //@formatter:off
-      var outliningOptions =
-         Objects.nonNull( outliningOptionsArray ) && ( outliningOptionsArray.length >= 1 )
-            ? outliningOptionsArray[0]
-            : null;
-      //@formatter:on
-
-      if (outliningOptions == null) {
-         //@formatter:off
-         throw
-            new OseeCoreException
-                   (
-                      new Message()
-                             .title( "WordTemplateProcessorServer::applyTemplate, publishing outlining options must be provided in the template publishing options.")
-                             .indentInc()
-                             .segment( "Publishing Template", this.publishingTemplate.getName() )
-                             .toString()
-                   );
-         //@formatter:on
-      }
-
-      this.headingAttributeType = this.tokenService.getAttributeType(outliningOptions.getHeadingAttributeType());
-
-      /*
        * Maximum outline depth
        */
 
@@ -522,11 +623,18 @@ public class WordTemplateProcessorServer {
       }
       //@formatter:on
 
-      /*
+      /**
        * Outline Number
        */
 
-      this.outlineNumber = outliningOptions.getOutlineNumber();
+      this.outlineNumber = new OutlineNumber(this.maximumOutlineDepth, 1, TrailingDot.NO,
+         SectionNumberWhenMaximumOutlineLevelExceeded.INCREMENT_CURRENT_LEVEL);
+
+      /**
+       * Outline Type
+       * <p>
+       * Client Only
+       */
 
       /*
        * Override Classification
@@ -537,26 +645,126 @@ public class WordTemplateProcessorServer {
       this.overrideClassification =
          DataRightsClassification.isValid(overrideDataRights) ? overrideDataRights : "invalid";
 
-      /*
-       * Presentation Type <p> Server Only
+      /**
+       * Presentation Type
+       * <p>
+       * Client Only
        */
 
       /*
-       * Branch Identifier
+       * Branch Specification
        */
 
-      this.branchId = this.renderer.getRendererOptionValue(RendererOption.BRANCH);
+      //@formatter:off
+      this.branchSpecification =
+         new BranchSpecification
+                (
+                   this.renderer.getRendererOptionValue(RendererOption.BRANCH),
+                   this.renderer.getRendererOptionValue(RendererOption.VIEW)
+                );
+      //@formatter:on
 
       /*
-       * View Identifier
+       * Configure Publishing Artifact Loader
        */
 
-      this.viewId = this.renderer.getRendererOptionValue(RendererOption.VIEW);
+      //@formatter:off
+      this.publishingArtifactLoader.configure
+         (
+            this.branchSpecification,
+            WordTemplateProcessorServer.initialMapSize
+         );
+      //@formatter:on
+
+      /*
+       * Applicability Checker
+       */
+
+      //@formatter:off
+      this.wordRenderApplicabilityChecker =
+         new WordRenderApplicabilityChecker
+                (
+                   (branchId, viewId) -> WordCoreUtilServer.getNonApplicableArtifacts
+                                            (
+                                               this.orcsApi,
+                                               this.branchSpecification.getBranchIdWithOutViewId(),
+                                               this.branchSpecification.getViewId()
+                                            )
+                );
+      //@formatter:on
+      this.wordRenderApplicabilityChecker.load(this.branchSpecification.getBranchId(),
+         this.branchSpecification.getViewId());
+
+      /*
+       * Word Template Content Renderer Handler
+       */
+
+      //@formatter:off
+      this.wordTemplateContentRendererHandler =
+         new WordTemplateContentRendererHandler
+                (
+                   this.orcsApi,
+                   this.dataAccessOperations,
+                   this.logger
+                );
+      //@formatter:on
+
+      /*
+       * Content Options
+       */
+
+      final var publishOptions = publishingTemplate.getPublishOptions();
+
+      /*
+       * Content Artifact Type
+       */
+
+      /*
+       * Content Attribute Type
+       */
+
+      /*
+       * Outlining Options
+       */
+
+      //@formatter:off
+      OutliningOptions.setValues
+         (
+            publishOptions.getOutliningOptions(),
+            this.formatIndicator,
+            this.renderer,
+            this.tokenService,
+            ( allowedOutlineTypes   ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
+            ( contentAttributeType  ) -> this.contentAttributeType                 = contentAttributeType,
+            ( excludedArtifactTypes ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludedArtifactTypes ),
+            ( headingArtifactType   ) -> this.headingArtifactTypeToken             = headingArtifactType,
+            ( headingAttributeType  ) -> this.headingAttributeTypeToken            = headingAttributeType,
+            ( includeHeadings       ) -> this.includeHeadings                      = includeHeadings,
+            ( initialOutlineNumber  ) -> this.initialOutlineNumber                 = initialOutlineNumber,
+            ( overrideOutlineNumber ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
+            ( recurseChildren       ) -> this.recurseChildren                      = recurseChildren,
+            ( templateFooter        ) -> this.templateFooter                       = templateFooter
+         );
+      //@formatter:on
+
+      /*
+       * Attribute Options
+       */
+
+      //@formatter:off
+      this.attributeOptionsList =
+         AttributeOptions.setValues
+            (
+               publishOptions.getAttributeOptions(),
+               this.tokenService
+            );
+      //@formatter:on
+
+      this.includeMetadataAttributes = IncludeMetadataAttributes.ALWAYS;
 
       return this;
-   }
 
-   //--- Publish Helper Methods ---//
+   }
 
    /**
     * This method returns the class HashMap variable applicabilityTokens to ensure that the map is loaded once needed.
@@ -568,7 +776,8 @@ public class WordTemplateProcessorServer {
       if (applicabilityTokens == null) {
          applicabilityTokens = new HashMap<>();
          HashMap<Long, ApplicabilityToken> tokens =
-            orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(this.branchId);
+            orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(
+               this.branchSpecification.getBranchIdWithOutViewId());
          for (Map.Entry<Long, ApplicabilityToken> entry : tokens.entrySet()) {
             applicabilityTokens.put(ApplicabilityId.valueOf(entry.getKey()), entry.getValue());
          }
@@ -600,8 +809,6 @@ public class WordTemplateProcessorServer {
       return artifact.getAttributeValuesAsString(token);
    }
 
-   //--- ProcessContent Helper Methods ---//
-
    /**
     * Orders the attribute and moves any word/plain text content to the end of the attributes.
     */
@@ -609,7 +816,7 @@ public class WordTemplateProcessorServer {
    protected List<AttributeTypeToken> getOrderedAttributeTypes(Collection<AttributeTypeToken> attributeTypes) {
 
       var orderedAttributeTypes = new LinkedList<AttributeTypeToken>();
-      var contentAttributeType = this.formatIndicator.getMainContentAttributeTypeToken();
+      var contentAttributeType = this.formatIndicator.getContentAttributeTypeToken();
 
       AttributeTypeToken contentType = null;
 
@@ -648,11 +855,40 @@ public class WordTemplateProcessorServer {
     * @return a {@link List} of {@link ArtifactReadble} objects.
     */
 
-   protected List<ArtifactReadable> getSelectedArtifacts(List<ArtifactId> artifactIds) {
-      List<ArtifactReadable> artifacts =
-         orcsApi.getQueryFactory().fromBranch(this.branchId).andIds(artifactIds).getResults().getList();
-      artifacts.sort(hierarchyComparator);
+   protected List<PublishingArtifact> getSelectedArtifacts(List<? extends ArtifactId> artifactIdentifiers) {
+
+      //@formatter:off
+      var artifacts =
+         this.publishingArtifactLoader
+            .getPublishingArtifactsByArtifactIdentifiers
+               (
+                  BranchIndicator.PUBLISHING_BRANCH,
+                  artifactIdentifiers,
+                  FilterForView.YES,
+                  WhenNotFound.EMPTY,
+                  TransactionId.SENTINEL,
+                  IncludeDeleted.NO
+               )
+            .orElseThrow
+               (
+                  ( dataAccessException ) -> new OseeCoreException
+                                                    (
+                                                       new Message()
+                                                              .title( "WordTemplateProcessorServer::getSelectedArtifacts, failed to load artifacts." )
+                                                              .indentInc()
+                                                              .segment( "Branch Identifier", this.branchSpecification.getBranchId().getIdString() )
+                                                              .segment( "View Identifier",   this.branchSpecification.getViewId().getIdString()   )
+                                                              .segmentIndexed( "Artifact Identifiers", artifactIdentifiers, ( v ) -> v, 20 )
+                                                              .reasonFollows( dataAccessException )
+                                                              .toString(),
+                                                       dataAccessException
+                                                    )
+               );
+      //@formatter:on
+      this.publishingArtifactLoader.sort(artifacts);
+
       return artifacts;
+
    }
 
    /**
@@ -660,12 +896,13 @@ public class WordTemplateProcessorServer {
     * list of the artifacts that are a descendant of that header. Any artifacts before the first header are dropped out
     */
 
-   protected Map<ArtifactReadable, List<ArtifactReadable>> getSortedArtifactsInHeaderMap(List<ArtifactReadable> artifacts) {
-      Map<ArtifactReadable, List<ArtifactReadable>> headerMap = new HashMap<>();
-      ArtifactReadable lastHeader = null;
-      List<ArtifactReadable> artList = new LinkedList<>();
+   protected Map<PublishingArtifact, List<PublishingArtifact>> getSortedArtifactsInHeaderMap(
+      List<PublishingArtifact> artifacts) {
+      final var headerMap = new HashMap<PublishingArtifact, List<PublishingArtifact>>();
+      PublishingArtifact lastHeader = null;
+      var artList = new LinkedList<PublishingArtifact>();
 
-      for (ArtifactReadable art : artifacts) {
+      for (final var art : artifacts) {
          if (headerArtifacts.contains(art)) {
             if (lastHeader == null) {
                lastHeader = art;
@@ -684,95 +921,55 @@ public class WordTemplateProcessorServer {
    }
 
    /**
-    * Uses the in place getWordMlBookmark but splits the results into a length 2 string array. The regex used to split
-    * the string is a positive lookbehind on a closing tag, this technically retrieves 2 matches but due to the split
-    * limit, only the first one will be used. This works assuming the bookmark only has a start and end aml:annotation
-    * tag. TODO: use precompiled regex
-    */
-
-   protected String[] getSplitWordMlBookmark(ArtifactReadable artifact) {
-      String wordMlBookmark = getWordMlBookmark(artifact).toString();
-      return wordMlBookmark.split("(?<=>)", 2);
-   }
-
-   /**
-    * Creates a new bookmark using a given artifact for use in the document as necessary. This method will handle the
-    * bookmark/hyperlink storages to reflect that the given artifact has a bookmark.
-    */
-   protected CharSequence getWordMlBookmark(ArtifactReadable artifact) {
-
-      CharSequence bookmark = WordCoreUtil.getWordMlBookmark(artifact.getId());
-      bookmark = WordCoreUtilServer.reassignBookMarkID(bookmark);
-
-      String guid = artifact.getGuid();
-      this.processedArtifactTracker.setBookmarked(guid);
-      if (hyperlinkedIds.containsKey(guid)) {
-         hyperlinkedIds.remove(guid);
-      }
-
-      return bookmark;
-   }
-
-   //--- ProcessArtifact Helper Methods ---//
-
-   /**
-    * Takes a list of artifacts and loops through finding which headers should not be published. Takes an artifact and
-    * loops through its' children. On each set of grandchildren, the method is called recursively.<br/>
-    * <br/>
-    * case1: Any MS Word Header that has only excluded children is not published<br/>
-    * case2: Any MS Word Header that has only excluded children, but has included grandchildren, is published<br/>
-    * case3: Non MS Word Header artifacts are still published even if all children/grandchildren are excluded<br/>
-    * case4: Any MS Word Header that has no children is not published<br/>
-    * case5: Any MS Word Header with only excluded header children, should not be published<br/>
-    */
-   protected boolean populateEmptyHeaders(List<ArtifactReadable> artifacts) {
-      boolean hasIncludedChildren = false;
-      boolean includeParent = false;
-      List<ArtifactReadable> children = null;
-      for (ArtifactReadable artifact : artifacts) {
-         children = artifact.getChildren();
-         if (!children.isEmpty()) {
-            hasIncludedChildren = populateEmptyHeaders(children);
-            if (!hasIncludedChildren) {
-               if (artifact.isOfType(HeadingMsWord)) {
-                  emptyFolders.add(artifact);
-               }
-            }
-         } else if (children.isEmpty() && artifact.isOfType(HeadingMsWord)) {
-            emptyFolders.add(artifact);
-         }
-         if (!excludeArtifactTypes.contains(artifact.getArtifactType()) && !artifact.isOfType(HeadingMsWord)) {
-            includeParent = true;
-         }
-         if (hasIncludedChildren) {
-            includeParent = true;
-         }
-      }
-      return includeParent;
-   }
-
-   /**
     * This method can be used to look through the OSEE hyperlinkIds that have not been found yet in the publish, and
     * populate them into a map given a set of Artifact Types that are of interest. Currently searches using guids.
     */
 
    protected void populateOseeLinkedArtifacts(ArtifactTypeToken... typeTokens) {
-      List<ArtifactReadable> linkedArts =
-         orcsApi.getQueryFactory().fromBranch(this.branchId).andGuids(hyperlinkedIds.keySet()).getResults().getList();
 
-      for (ArtifactReadable artifact : linkedArts) {
-         if (artifact.isOfType(typeTokens)) {
-            ArtifactTypeToken artifactType = artifact.getArtifactType();
-            if (oseeLinkedArtifactMap.containsKey(artifactType)) {
-               oseeLinkedArtifactMap.get(artifactType).add(artifact);
-            } else {
-               List<ArtifactReadable> artList = new LinkedList<>();
-               artList.add(artifact);
-               oseeLinkedArtifactMap.put(artifactType, artList);
-            }
-            hyperlinkedIds.remove(artifact.getGuid());
-         }
-      }
+      //@formatter:off
+         this.publishingArtifactLoader
+            .getPublishingArtifactsByGuids
+               (
+                  BranchIndicator.PUBLISHING_BRANCH,
+                  this.hyperlinkedIds.keySet(),
+                  FilterForView.NO,
+                  WhenNotFound.ERROR,
+                  TransactionId.SENTINEL,
+                  IncludeDeleted.NO
+               )
+            .orElseThrow
+               (
+                  ( dataAccessException ) ->
+                     new OseeCoreException
+                            (
+                               new Message()
+                                      .title( "WordTemplateProcessorServer::populateOseeLinkedArtifacts, failed to load hyperlinked artifacts" )
+                                      .indentInc()
+                                      .segmentIndexed( "Hyperlinked Artifacts", this.hyperlinkedIds.keySet() )
+                                      .toString(),
+                               dataAccessException
+                            )
+               )
+            .forEach
+               (
+                  ( artifact ) ->
+                  {
+                     if (artifact.isOfType(typeTokens)) {
+                        ArtifactTypeToken artifactType = artifact.getArtifactType();
+                        if (oseeLinkedArtifactMap.containsKey(artifactType)) {
+                           oseeLinkedArtifactMap.get(artifactType).add(artifact);
+                        } else {
+                           final var artList = new LinkedList<PublishingArtifact>();
+                           artList.add(artifact);
+                           oseeLinkedArtifactMap.put(artifactType, artList);
+                        }
+                        hyperlinkedIds.remove(artifact.getGuid());
+                     }
+
+                  }
+               );
+      //@formatter:on
    }
 
    /**
@@ -782,7 +979,19 @@ public class WordTemplateProcessorServer {
     * attributes are published.
     */
 
-   protected void processArtifact(ArtifactReadable artifact, PublishingAppender publishingAppender, DataRightContentBuilder dataRightContentBuilder) {
+   //@formatter:off
+   protected void
+      processArtifact
+         (
+            PublishingArtifact                     artifact,
+            PublishingAppender                     publishingAppender,
+            ArtifactAcceptor                       artifactAcceptor,
+            DataRightContentBuilder                dataRightContentBuilder,
+            //server-only
+            PublishingArtifactLoader.CacheReadMode cacheReadMode,
+            ArtifactAcceptor                       includeBookmarkArtifactAcceptor,
+            Consumer<PublishingArtifact>           artifactPostProcess
+         ) {
 
       if (this.processedArtifactTracker.isOk(artifact)) {
          return;
@@ -790,54 +999,116 @@ public class WordTemplateProcessorServer {
 
       this.processedArtifactTracker.add(artifact);
 
-      boolean startedSection = false;
+      boolean startedSection =
+         WordRenderUtil.renderArtifact
+            (
+               this.allAttributes,
+               this.allowedOutlineTypes,
+               this.applicabilityTokens,
+               this.attributeOptionsList,
+               this::processAttribute,
+               artifact,
+               artifactAcceptor,
+               artifactPostProcess,
+               this.contentAttributeOnly,
+               this.contentAttributeType,
+               dataRightContentBuilder,
+               this.emptyFoldersArtifactAcceptor,
+               this.excludedArtifactTypeArtifactAcceptor,
+               this.formatIndicator,
+               this.headingArtifactTypeToken,
+               this.headingAttributeTypeToken,
+               ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
+               IncludeBookmark.NO.getArtifactAcceptor(),
+               this.includeHeadings,
+               this.includeMetadataAttributes,
+               this::nonTemplateArtifactHandler,
+               this.publishingTemplate.getPublishOptions().getMetadataOptions(),
+               this.tokenService,
+               PresentationType.PREVIEW,
+               publishingAppender,
+               false, /*publishInline*/
+               () -> this.getOrderedAttributeTypes( artifact.getValidAttributeTypes() ),
+               this.outlineNumber,
+               this.overrideOutlineNumber,
+               ( lambdaArtifact, lambdaParagraphNumber ) -> this.paragraphNumberUpdater(lambdaParagraphNumber.toString(), lambdaArtifact),
+               this.wordRenderApplicabilityChecker
+            );
 
-      if (this.checkIncluded(artifact)) {
+      var children = List.<PublishingArtifact> of();
 
-         startedSection |= this.renderArtifact(artifact, publishingAppender, dataRightContentBuilder);
+      if (this.recurseChildren) {
 
-      }
+         //@formatter:off
+         children =
+            this.publishingArtifactLoader
+               .getChildren( artifact, FilterForView.YES, cacheReadMode )
+               .orElseThrow
+                  (
+                     ( dataAccessException ) -> new OseeCoreException
+                                                       (
+                                                          new Message()
+                                                                 .title( "WordTemplateProcessorServer::processArtifact, failed to load children of artifact." )
+                                                                 .indentInc()
+                                                                 .segment( "Artifact", artifact.getIdString() )
+                                                                 .reasonFollows( dataAccessException )
+                                                                 .toString(),
+                                                          dataAccessException
+                                                       )
+                  );
 
-      var recurse = this.publishingTemplate.getPublishOptions().getOutliningOptions()[0].isRecurseChildren();
+         if (!children.isEmpty()) {
 
-      if (recurse) {
+            if (startedSection) {
+               this.outlineNumber.startLevel();
+            }
 
-         List<ArtifactReadable> children = new LinkedList<>();
+            for (final var childArtifact : children) {
 
-         try {
+               if (childArtifact == null) {
 
-            children = artifact.getChildren();
+                  this.publishingErrorLog.error(artifact, "Artifact has an empty child relation");
+                  continue;
+               }
 
-         } catch (OseeCoreException ex) {
-
-            this.publishingErrorLog.error(artifact,
-               "There is an error when finding children for this artifact. Possible Cause: Empty Relation Order Attribute");
-
-         }
-
-         for (ArtifactReadable childArtifact : children) {
-
-            if (childArtifact != null) {
-
-               this.processArtifact(childArtifact, publishingAppender, dataRightContentBuilder);
-
-            } else {
-
-               this.publishingErrorLog.error(artifact, "Artifact has an empty child relation");
+               this.processArtifact
+                  (
+                     childArtifact,
+                     publishingAppender,
+                     artifactAcceptor,
+                     dataRightContentBuilder,
+                     //server-only
+                     cacheReadMode,
+                     includeBookmarkArtifactAcceptor,
+                     artifactPostProcess
+                  );
 
             }
+
+            if (startedSection) {
+               this.outlineNumber.endLevel();
+            }
+
          }
+
       }
 
       if (startedSection) {
-         publishingAppender.endOutlineSubSection();
+
+         this.outlineNumber.nextSection();
+
+         if (!this.outlineNumber.isAboveMaximumOutlingLevel()) {
+
+            publishingAppender.endSubSection();
+
+         }
+
       }
 
       this.processedArtifactTracker.setOk(artifact);
 
    }
-
-   //--- RenderArtifact Helper Methods ---//
+   //@formatter:on
 
    /**
     * Third step of the publishing process, this is where the processed content of the publish is handled in between the
@@ -846,9 +1117,33 @@ public class WordTemplateProcessorServer {
     * be overridden by subclasses.
     */
 
-   protected void processArtifactSet(List<ArtifactReadable> artifacts, PublishingAppender wordMl) {
-      artifacts.forEach((artifact) -> processArtifact(artifact, wordMl, null));
+   //@formatter:off
+   protected void
+      processArtifactSet
+         (
+            List<PublishingArtifact> artifacts,
+            PublishingAppender       publishingAppender
+         ) {
+
+      this.emptyFoldersArtifactAcceptor = ArtifactAcceptor.ok();
+
+      artifacts.forEach
+         (
+            (artifact) -> processArtifact
+                             (
+                                artifact,
+                                publishingAppender,
+                                ArtifactAcceptor.ok(),
+                                (DataRightContentBuilder) null,
+                                //server-only
+                                PublishingArtifactLoader.CacheReadMode.LOAD_FROM_DATABASE,
+                                IncludeBookmark.NO.getArtifactAcceptor(),
+                                null
+                             )
+         );
+
    }
+   //@formatter:on
 
    /**
     * The default implementation does not render word ole data or relation order. This method gets the values for the
@@ -856,13 +1151,25 @@ public class WordTemplateProcessorServer {
     * valid attribute
     */
 
-   protected void processAttribute(ArtifactReadable artifactReadable, PublishingAppender publishingAppender, AttributeOptions attributeOptions, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, String footer) {
+   //@formatter:off
+   protected void
+      processAttribute
+         (
+            PublishingArtifact artifact,
+            PublishingAppender publishingAppender,
+            AttributeOptions   attributeOptions,
+            AttributeTypeToken attributeType,
+            boolean            allAttrs,
+            PresentationType   presentationType,
+            boolean            publishInLine,
+            String             footer,
+            IncludeBookmark    includeBookmark
+         ) {
 
       /*
        * Do not publish empty, invalid attribute types, OleData, or RelationOrder
        */
 
-      //@formatter:off
       if(
             /*
              * If WordOleData, the attribute is skipped
@@ -880,29 +1187,30 @@ public class WordTemplateProcessorServer {
               * Skip invalid attribute types
               */
 
-          || !artifactReadable.isAttributeTypeValid( attributeType )
+          || !artifact.isAttributeTypeValid( attributeType )
 
              /*
               * If there are not attribute values of the attribute type for the artifact, skip it.
               */
 
-          || artifactReadable.getAttributeValues(attributeType).isEmpty()) {
+          || artifact.getAttributeValues(attributeType).isEmpty()) {
 
          return;
       }
 
-      this.processedArtifactTracker.incrementAttributeCount(artifactReadable);
+      this.processedArtifactTracker.incrementAttributeCount(artifact);
 
-      if( attributeType.equals(this.formatIndicator.getMainContentAttributeTypeToken())) {
+      if( attributeType.equals(this.formatIndicator.getContentAttributeTypeToken())) {
 
-         this.renderWordTemplateContent
+         this.renderMainContent
             (
-               artifactReadable,
+               artifact,
                presentationType,
                publishingAppender,
                attributeOptions.getFormat(),
                attributeOptions.getLabel(),
-               footer
+               footer,
+               includeBookmark
            );
 
          return;
@@ -913,12 +1221,129 @@ public class WordTemplateProcessorServer {
             this.formatIndicator,
             attributeType,
             null,
-            artifactReadable,
+            artifact,
             publishingAppender,
             attributeOptions.getLabel(),
             attributeOptions.getFormat()
          );
+
+   }
+   //@formatter:on
+
+   protected CharSequence headingTextProcessor(CharSequence headingText, PublishingArtifact artifact) {
+
+      if (this.publishingArtifactLoader.isChangedArtifact(artifact)) {
+         headingText = WordCoreUtil.appendInlineChangeTagToHeadingText(headingText);
+      }
+
+      return headingText;
+
+   }
+
+   protected void nonTemplateArtifactHandler(PublishingArtifact publishingArtifact) {
+      this.publishingErrorLog.error(publishingArtifact, "WholeWordContent and NativeContent are not supported.");
+   }
+
+   protected void paragraphNumberUpdater(String paragraphNumber, PublishingArtifact artifact) {
+      if (this.renderer.isRendererOptionSetAndTrue(RendererOption.UPDATE_PARAGRAPH_NUMBERS)) {
+         this.artParagraphNumbers.put(artifact, paragraphNumber);
+      }
+   }
+
+   /**
+    * This method derives from the WordTemplateRenderer on the client, used to render word template content attribute.
+    * Uses WordTemplateContentRendererHandler to render the word ml. Also handles OSEE_Link errors if there are
+    * artifacts that are linking to artifacts that aren't included in the publish.
+    */
+
+   protected void renderMainContent(PublishingArtifact artifact, PresentationType presentationType,
+      PublishingAppender publishingAppender, String format, String label, String footer,
+      IncludeBookmark includeBookmark) {
+
+      if (this.formatIndicator.isMarkdown()) {
+
+         var markdownContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.MarkdownContent);
+
+         //@formatter:off
+         publishingAppender
+            .append( "\n\n" )
+            .append( markdownContent )
+            .append( "\n\n" );
+         //@formatter:on
+
+         return;
+      }
+
+      //@formatter:off
+      assert
+           Objects.nonNull( footer )
+         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
       //@formatter:on
+
+      var unknownGuids = new HashSet<String>();
+
+      //@formatter:off
+      var wordMlContentDataAndFooter =
+         WordRenderUtil.renderWordAttribute
+            (
+              artifact,
+              this.branchSpecification.getViewId(),
+              publishingAppender,
+              this.renderer,
+              presentationType,
+              label,
+              footer,
+              this.permanentLinkUrl,
+              this.publishingArtifactLoader.isChangedArtifact(artifact),
+              includeBookmark,
+              artifact.isHistorical()
+                 ? this.orcsApi.getTransactionFactory().getTx( artifact.getTransaction() )
+                 : TransactionToken.SENTINEL,
+              unknownGuids,
+              ( wordTemplateContentData ) -> this.wordTemplateContentRendererHandler
+                                                .renderWordMLForArtifact
+                                                   (
+                                                      artifact,
+                                                      wordTemplateContentData
+                                                   ),
+              ( exception ) -> this.publishingErrorLog.error( artifact, exception.getMessage() )
+            );
+
+         this.trackDocumentLinks(artifact, wordMlContentDataAndFooter, unknownGuids);
+      //@formatter:on
+   }
+
+   protected void sortQueryListByAttributeAlphabetical(List<PublishingArtifact> artifacts,
+      AttributeTypeToken attributeToken) {
+
+      try {
+
+         artifacts.sort(new AttributeAlphabeticalComparator(activityLog, attributeToken));
+
+      } catch (Exception ex) {
+
+         String errorMessage = String.format("There was an error when sorting the list on %s by alphabetical order",
+            attributeToken.getName());
+
+         this.publishingErrorLog.error(errorMessage);
+      }
+   }
+
+   /**
+    * Sorts the given artifact list by the OseeHierarchyComparator, logs errors gathered by the comparator.
+    */
+
+   protected void sortQueryListByHierarchy(List<PublishingArtifact> artifacts) {
+
+      artifacts.sort(hierarchyComparator);
+
+      for (final var entry : hierarchyComparator.errors.entrySet()) {
+
+         final var artifact = entry.getKey();
+         final var description = entry.getValue();
+
+         this.publishingErrorLog.error(artifact, description);
+      }
    }
 
    /**
@@ -947,8 +1372,8 @@ public class WordTemplateProcessorServer {
          //@formatter:on
       }
 
-      Pattern bookmarkHyperlinkPattern =
-         Pattern.compile("(" + WordCoreUtil.OSEE_BOOKMARK_REGEX + ")|(" + WordCoreUtil.OSEE_HYPERLINK_REGEX + ")");
+      Pattern bookmarkHyperlinkPattern = Pattern.compile(
+         "(" + WordCoreUtil.OSEE_BOOKMARK_START_REGEX + ")|(" + WordCoreUtil.OSEE_HYPERLINK_REGEX + ")");
 
       Matcher match = bookmarkHyperlinkPattern.matcher(data);
 
@@ -985,239 +1410,76 @@ public class WordTemplateProcessorServer {
       }
    }
 
-   private boolean processOutlining(ArtifactReadable artifact, PublishingAppender wordMl) {
+   /**
+    * While processing the Word Template Content of an artifact, this method is used for keeping track of OSEE links
+    * inside that content and how it relates to the other artifacts that are in this published document.
+    * <p>
+    * {@link #hyperlinkedIds} tracks the artifacts that have been linked to from another artifact.
+    */
 
-      var outlining = this.publishingTemplate.getPublishOptions().getOutliningOptions()[0].isOutlining();
-      var publishInline = artifact.getSoleAttributeValue(PublishInline, false);
+   protected void trackHyperLinks(ArtifactReadable artifact, String data, Set<String> unknownIds) {
 
-      if (outlining && !publishInline) {
-
-         this.setArtifactOutlining(artifact, wordMl);
-         return true;
+      if (!unknownIds.isEmpty()) {
+         //@formatter:off
+         this.publishingErrorLog.error
+            (
+               artifact,
+               String.format
+                  (
+                     "Artifact contains the following unknown GUIDs: %s (Delete or fix OSEE Link from Artifact)",
+                     unknownIds
+                  )
+            );
+         //@formatter:on
       }
 
-      return false;
+      Pattern bookmarkHyperlinkPattern = Pattern.compile(WordCoreUtil.OSEE_HYPERLINK_REGEX);
 
-   }
-
-   protected String removeUnusedBookmark(CharSequence input) {
-      String data = input.toString();
-      Pattern bookmarkHyperlinkPattern = Pattern.compile(WordCoreUtil.OSEE_BOOKMARK_REGEX);
       Matcher match = bookmarkHyperlinkPattern.matcher(data);
-      String id = "";
 
       while (match.find()) {
-         String foundMatch = match.group(0);
-         if (Strings.isValid(foundMatch)) {
-            id = match.group(1);
-            if (!hyperlinkedIds.containsKey(id)) {
-               data = data.substring(match.end(0));
-            }
+
+         /*
+          * Artifact Identifier or GUID of the artifact being linked to
+          */
+
+         var hyperlinkIdentifier = match.group(1);
+
+         if (!hyperlinkedIds.containsKey(hyperlinkIdentifier)) {
+            hyperlinkedIds.put(hyperlinkIdentifier, artifact);
          }
-      }
 
-      return data;
+      }
    }
 
-   /**
-    * This is the fifth level in the main process of publishing. This is where any processing needed happens once it is
-    * determined that the artifact will be included in the publish. In the default implementation, we just check
-    * outlining and publishInLine to see whether or not to print the header and start the outlining. Then metadata and
-    * attributes are processed. The reason this method returns a boolean is to say whether or not the MS Word section
-    * was begun with a header.
-    */
+   @Override
+   public Message toMessage(int indent, Message message) {
+      var outMessage = Objects.nonNull(message) ? message : new Message();
 
-   protected boolean renderArtifact(ArtifactReadable artifact, PublishingAppender publishingAppender, DataRightContentBuilder dataRightContentBuilder) {
+      long currentTime = System.currentTimeMillis();
+      long elapsedTime = currentTime - this.startTime;
+      long hours = elapsedTime / 3600000;
+      elapsedTime %= 3600000;
+      long minutes = elapsedTime / 60000;
+      elapsedTime %= 60000;
+      long seconds = elapsedTime / 1000;
 
       //@formatter:off
-      var startedSection =
-         this.formatIndicator.isWordMl()
-            ? this.processOutlining(artifact, publishingAppender)
-            : false;
+      outMessage
+         .indent( indent )
+         .title( "WordTemplateProcessorServer, publish summary." )
+         .indentInc()
+         .segment( "Time", String.format( "%s:%s:%s", hours, minutes, seconds ) )
+         .toMessage( this.publishingArtifactLoader )
+         ;
 
-      String footer = "";
-
-      if (this.formatIndicator.isWordMl() /* this.templatePublishingData.getAttributeElements() does not support template footer */ ) {
-         var orientation = WordRenderUtil.getPageOrientation(new WordRenderArtifactWrapperServerImpl(artifact));
-         //@formatter:off
-         footer =
-            Objects.nonNull( dataRightContentBuilder )
-               ? dataRightContentBuilder.getContent( artifact, orientation )
-               : "";
-      }
-
-      final var finalFooter = footer;
-
-      /*
-       * Get Applicability Tokens
-       */
-
-      if (Objects.isNull(this.applicabilityTokens)) {
-         this.applicabilityTokens = WordCoreUtilServer.getApplicabilityTokens(this.orcsApi, this.branchId);
-      }
-
-      /*
-       * Add metadata attributes to the Word ML output
-       */
-
-      //@formatter:off
-      WordRenderUtil.processMetadataOptions
-         (
-            this.formatIndicator,
-            this.publishingTemplate.getPublishOptions().getMetadataOptions(),
-            this.applicabilityTokens,
-            new WordRenderArtifactWrapperServerImpl( artifact ),
-            publishingAppender
-         );
-      //@formatter:on
-
-      /*
-       * Add attributes and the main artifact content to the Word ML output
-       */
-
-      //@formatter:off
-      WordRenderUtil.processAttributes
-         (
-            this.formatIndicator,
-            Arrays.asList(this.publishingTemplate.getPublishOptions().getAttributeOptions()),
-            ( lAttributeOptions, lAttributeType, lAllAttributes ) ->
-               this.processAttribute
-                  (
-                     artifact,
-                     publishingAppender,
-                     lAttributeOptions,
-                     lAttributeType,
-                     lAllAttributes,
-                     PresentationType.PREVIEW,
-                     finalFooter
-                  ),
-            ( attributeName ) -> this.tokenService.getAttributeType(attributeName),
-            () -> this.getOrderedAttributeTypes(artifact.getValidAttributeTypes()),
-            artifact,
-            this.headingAttributeType,
-            this.renderer.isRendererOptionSetAndTrue(RendererOption.ALL_ATTRIBUTES),
-            this.publishingTemplate.getPublishOptions().getOutliningOptions()[0].isOutlining()
-         );
-      //@formatter:on
-
-      return startedSection;
+      return outMessage;
    }
 
-   /**
-    * This method derives from the WordTemplateRenderer on the client, used to render word template content attribute.
-    * Uses WordTemplateContentRendererHandler to render the word ml. Also handles OSEE_Link errors if there are
-    * artifacts that are linking to artifacts that aren't included in the publish.
-    */
+   @Override
+   public String toString() {
 
-   protected void renderWordTemplateContent(ArtifactReadable artifact, PresentationType presentationType, PublishingAppender publishingAppender, String format, String label, String footer) {
-
-      if (this.formatIndicator.isMarkdown()) {
-
-         var markdownContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.MarkdownContent);
-
-         //@formatter:off
-         publishingAppender
-            .append( "\n\n" )
-            .append( markdownContent )
-            .append( "\n\n" );
-         //@formatter:on
-
-         return;
-      }
-
-      //@formatter:off
-      assert
-           Objects.nonNull( footer )
-         : "MSWordTemplatePublisher::renderWordTemplateContent, an artifact's footer must never be null.";
-      //@formatter:on
-
-      var unknownGuids = new HashSet<String>();
-
-      //@formatter:off
-      var wordMlContentDataAndFooter =
-         WordRenderUtil.renderWordAttribute
-            (
-              artifact,
-              this.viewId,
-              publishingAppender,
-              this.renderer,
-              presentationType,
-              label,
-              footer,
-              this.permanentLinkUrl,
-              this.changedArtifactsTracker.isChangedArtifact(artifact),
-              artifact.isHistorical()
-                 ? this.orcsApi.getTransactionFactory().getTx( artifact.getTransaction() )
-                 : TransactionToken.SENTINEL,
-              unknownGuids,
-              ( wordTemplateContentData ) -> new WordTemplateContentRendererHandler( this.orcsApi, this.logger )
-                                                    .renderWordML( wordTemplateContentData ),
-              ( exception ) -> this.publishingErrorLog.error( artifact, exception.getMessage() )
-            );
-
-         this.trackDocumentLinks(artifact, wordMlContentDataAndFooter, unknownGuids);
-      //@formatter:on
-   }
-
-   /**
-    * If outlining is enabled, this default method inserts the heading with the paragraph number for the artifact. This
-    * will also add a change tag to the heading text if this artifact is included into the populated list of changed
-    * artifacts. Also puts the artifact and paragraph number into a hashmap together for potential updating of paragraph
-    * numbers
-    */
-
-   protected void setArtifactOutlining(ArtifactReadable artifact, PublishingAppender wordMl) {
-
-      CharSequence headingText = artifact.getSoleAttributeAsString(this.headingAttributeType, "");
-
-      if (this.changedArtifactsTracker.isChangedArtifact(artifact)) {
-         headingText = WordCoreUtil.appendInlineChangeTagToHeadingText(headingText);
-      }
-
-      CharSequence paragraphNumber = null;
-
-      paragraphNumber = wordMl.startOutlineSubSection(FONT, headingText, null);
-
-      if (paragraphNumber == null) {
-         paragraphNumber = wordMl.startOutlineSubSection();
-      }
-
-      if (this.renderer.isRendererOptionSetAndTrue(RendererOption.UPDATE_PARAGRAPH_NUMBERS)) {
-         this.artParagraphNumbers.put(artifact, paragraphNumber);
-      }
-   }
-
-   protected void sortQueryListByAttributeAlphabetical(List<ArtifactReadable> artifacts, AttributeTypeToken attributeToken) {
-      try {
-         artifacts.sort(new AttributeAlphabeticalComparator(activityLog, attributeToken));
-      } catch (Exception ex) {
-         String errorMessage = String.format("There was an error when sorting the list on %s by alphabetical order",
-            attributeToken.getName());
-         this.publishingErrorLog.error(errorMessage);
-      }
-   }
-
-   /**
-    * Sorts the given artifact list by the OseeHierarchyComparator, logs errors gathered by the comparator.
-    */
-
-   protected void sortQueryListByHierarchy(List<ArtifactReadable> artifacts) {
-      artifacts.sort(hierarchyComparator);
-
-      for (Map.Entry<ArtifactReadable, String> entry : hierarchyComparator.errors.entrySet()) {
-         ArtifactReadable art = entry.getKey();
-         String description = entry.getValue();
-         this.publishingErrorLog.error(art, description);
-      }
-   }
-
-   protected void startOutlineSubSectionAndBookmark(PublishingAppender wordMl, ArtifactReadable artifact) {
-      this.processedArtifactTracker.add(artifact);
-      String[] splitBookmark = getSplitWordMlBookmark(artifact);
-      wordMl.append(splitBookmark[0]);
-      wordMl.startOutlineSubSection(FONT, artifact.getName(), null);
-      wordMl.append(splitBookmark[1]);
-      this.processedArtifactTracker.setOk(artifact);
+      return this.toMessage( 0,  null ).toString();
    }
 
    /**
@@ -1226,13 +1488,13 @@ public class WordTemplateProcessorServer {
     */
 
    protected void updateParagraphNumbers() {
-      TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(this.branchId, "Update paragraph number on artifact");
+      TransactionBuilder transaction = orcsApi.getTransactionFactory().createTransaction(
+         this.branchSpecification.getBranchIdWithOutViewId(), "Update paragraph number on artifact");
       int count = 0;
 
       for (Map.Entry<ArtifactReadable, CharSequence> art : artParagraphNumbers.entrySet()) {
-         if (art.getKey().isAttributeTypeValid(ParagraphNumber)) {
-            transaction.setSoleAttributeValue(art.getKey(), ParagraphNumber, art.getValue());
+         if (art.getKey().isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
+            transaction.setSoleAttributeValue(art.getKey(), CoreAttributeTypes.ParagraphNumber, art.getValue());
          }
          if (count++ > 500) {
             transaction.commit();

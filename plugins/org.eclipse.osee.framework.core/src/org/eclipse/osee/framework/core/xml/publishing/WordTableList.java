@@ -21,7 +21,21 @@ import java.util.Optional;
  * @author Loren K. Ashley
  */
 
-public class WordTableList extends AbstractElementList<WordBody, WordTable> {
+public class WordTableList<P extends AbstractElement> extends AbstractElementList<P, WordTable> {
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordTableList} with a {@link WordBody} parent.
+    */
+
+   public static WordElementParserFactory<WordBody, WordTableList<WordBody>, WordTable> wordBodyParentFactory =
+      new WordElementParserFactory<>(WordTableList::new, WordTable::new, WordMlTag.TABLE);
+
+   /**
+    * {@link WordElementParserFactory} instance for creating a {@link WordTableList} with a {@link WordDocument} parent.
+    */
+
+   public static WordElementParserFactory<WordDocument, WordTableList<WordDocument>, WordTable> wordDocumentParentFactory =
+      new WordElementParserFactory<>(WordTableList::new, WordTable::new, WordMlTag.TABLE);
 
    /**
     * Creates a new open and empty list for {@link WordTable}s.
@@ -32,8 +46,8 @@ public class WordTableList extends AbstractElementList<WordBody, WordTable> {
     * @throws NullPointerException when the parameter <code>wordBody</code> is <code>null</code>.
     */
 
-   public WordTableList(WordBody wordBody) {
-      super(wordBody);
+   public WordTableList(P parent) {
+      super(parent);
    }
 
    /**
@@ -42,13 +56,12 @@ public class WordTableList extends AbstractElementList<WordBody, WordTable> {
     * @return the containing {@link WordBody}.
     */
 
-   @SuppressWarnings("cast")
    public Optional<WordBody> getWordBody() {
-      var parent = this.getParent();
+      final var parent = this.getParent();
       //@formatter:off
       return
          (parent instanceof WordBody)
-            ? Optional.of( parent )
+            ? Optional.of( (WordBody) parent )
             : Optional.empty();
       //@formatter:on
    }

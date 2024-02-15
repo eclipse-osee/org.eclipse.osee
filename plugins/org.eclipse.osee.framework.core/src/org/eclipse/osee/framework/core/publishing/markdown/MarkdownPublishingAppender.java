@@ -13,15 +13,17 @@
 
 package org.eclipse.osee.framework.core.publishing.markdown;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.publishing.PublishingAppender;
 import org.eclipse.osee.framework.core.publishing.PublishingAppenderBase;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil.pageType;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil.tablePresentation;
 import org.eclipse.osee.framework.core.publishing.wordml.WordMlPublishingAppender;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * An implementation of the {@link PublishingAppender} interface for Markdown publishing.
- * 
+ *
  * @author Loren K. Ashley
  */
 
@@ -35,8 +37,8 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
     * @throws NullPointerException when <code>appendable</code> is <code>null</code>.
     */
 
-   public MarkdownPublishingAppender(Appendable appendable, int maxOutlineLevel) {
-      super(appendable, maxOutlineLevel);
+   public MarkdownPublishingAppender(Appendable appendable) {
+      super(appendable);
    }
 
    @Override
@@ -152,10 +154,6 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
    }
 
    @Override
-   public void endOutlineSubSection() {
-   }
-
-   @Override
    public PublishingAppender endParagraph() {
       this.append("<br>");
       return this;
@@ -202,11 +200,6 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
    }
 
    @Override
-   public boolean okToStartSubsection() {
-      return false;
-   }
-
-   @Override
    public void resetListValue() {
    }
 
@@ -234,23 +227,77 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
    public void startListPresentation() {
    }
 
-   @Override
-   public CharSequence startOutlineSubSection() {
-      return null;
-   }
+   /**
+    * A lookup array of hash mark strings used for markdown heading.
+    */
+
+   //@formatter:off
+   private static String[] outlinePounds =
+      new String[]
+      {
+         Strings.EMPTY_STRING,
+         "#",
+         "##",
+         "###",
+         "####",
+         "#####",
+         "######"
+      };
+   //@formatter:on
+
+   /**
+    * {@inheritDoc}
+    * <p>
+    * This implementation inserts a heading with a <code>headingLevel</code> up to level 6 (number of leading
+    * &quot;#&quot;s) with the <code>headingNumber</code> and <code>headingText</code>.
+    * <p>
+    * The following parameters are ignored:
+    * <ul>
+    * <li><code>bookmark</code>,</li>
+    * <li><code>outlineType</code>, and</li>
+    * <li><code>font</code>.</li>
+    * </ul>
+    */
 
    @Override
-   public void startOutlineSubSection(CharSequence style, int outlineLevel, CharSequence outlineNumber, CharSequence font, CharSequence headingText) {
-   }
+   //@formatter:off
+   public void
+      startOutlineSubSection
+         (
+            @Nullable String[]     bookmark,
+            @Nullable CharSequence headingNumber,
+                      int          headingLevel,
+            @Nullable CharSequence headingText,
+            @Nullable CharSequence outlineType,
+            @Nullable CharSequence font
+         ) {
+   //@formatter:on
 
-   @Override
-   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, CharSequence outlineType) {
-      return null;
+      final var safeHeadingNumber = (headingNumber != null) ? headingNumber : Strings.EMPTY_STRING;
+      final var safeHeadingText = (headingText != null) ? headingText : Strings.EMPTY_STRING;
+
+      //@formatter:off
+      final var safeHeadingLevel =
+         ( headingLevel >= 1 )
+            ? ( headingLevel < outlinePounds.length )
+                 ? headingLevel
+                 : outlinePounds.length - 1
+            : outlinePounds.length - 1;
+
+      this
+         .append( "\n\n" )
+         .append( MarkdownPublishingAppender.outlinePounds[safeHeadingLevel] )
+         .append( " " )
+         .append( safeHeadingNumber )
+         .append( " " )
+         .append( safeHeadingText )
+         .append( "\n\n" )
+         ;
+      //@formatter:on
    }
 
    @Override
    public PublishingAppender startParagraph() {
-      //this.append("<p>");
       return this;
    }
 

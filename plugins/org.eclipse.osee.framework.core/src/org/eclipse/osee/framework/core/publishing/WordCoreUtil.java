@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.ToMessage;
@@ -217,7 +218,7 @@ public class WordCoreUtil {
 
    //@formatter:off
    private static final String BOOKMARK_TEMPLATE_PART_C =
-      "\"/><aml:annotation aml:id=\"";
+      "\"/>";
    //@formatter:on
 
    /**
@@ -226,19 +227,39 @@ public class WordCoreUtil {
 
    //@formatter:off
    private static final String BOOKMARK_TEMPLATE_PART_D =
+      "<aml:annotation aml:id=\"";
+   //@formatter:on
+
+   /**
+    * Part E of the WORDML BOOKMARK template.
+    */
+
+   //@formatter:off
+   private static final String BOOKMARK_TEMPLATE_PART_E =
       "\" w:type=\"Word.Bookmark.End\"/>";
    //@formatter:on
 
    /**
-    * Size of the WORDML BOOKMARK template parts for {@link StringBuilder} allocation.
+    * Size of the Word ML book mark open template parts for {@link StringBuilder} allocation.
     */
 
    //@formatter:off
-   private static final int BOOKMARK_TEMPLATE_SIZE =
+   private static final int BOOKMARK_TEMPLATE_OPEN_SIZE =
         WordCoreUtil.BOOKMARK_TEMPLATE_PART_A.length()
       + WordCoreUtil.BOOKMARK_TEMPLATE_PART_B.length()
       + WordCoreUtil.BOOKMARK_TEMPLATE_PART_C.length()
-      + WordCoreUtil.BOOKMARK_TEMPLATE_PART_D.length();
+      ;
+   //@formatter:on
+
+   /**
+    * Size of the Word ML book mark close template parts for {@link StringBuilder} allocation.
+    */
+
+   //@formatter:off
+   private static final int BOOKMARK_TEMPLATE_CLOSE_SIZE =
+        WordCoreUtil.BOOKMARK_TEMPLATE_PART_D.length()
+      + WordCoreUtil.BOOKMARK_TEMPLATE_PART_E.length()
+      ;
    //@formatter:on
 
    /**
@@ -583,8 +604,32 @@ public class WordCoreUtil {
 
    private static final String OLE_START = "<w:docOleData>";
 
-   public static final String OSEE_BOOKMARK_REGEX =
-      "^<aml:annotation[^<>]+w:name=\"OSEE\\.([^\"]*)\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/><aml:annotation[^<>]+Word.Bookmark.End\\\"/>";
+   /**
+    * {@link Pattern} used to remove the starting tag of a book mark.
+    */
+
+   //@formatter:off
+   private static final Pattern OSEE_BOOKMARK_START_REMOVAL_PATTERN =
+      Pattern.compile
+         (
+            "^<aml:annotation[^<>]+w:name=\"OSEE\\.([^\"]*)\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/>"
+         );
+   //@formatter:on
+
+   /**
+    * {@link Pattern} used to remove the ending tag of a book mark.
+    */
+
+   //@formatter:off
+   private static final Pattern OSEE_BOOKMARK_END_REMOVAL_PATTERN =
+      Pattern.compile
+         (
+            "<aml:annotation[^<>]+Word.Bookmark.End\\\"/>"
+         );
+   //@formatter:on
+
+   public static final String OSEE_BOOKMARK_START_REGEX =
+      "^<aml:annotation[^<>]+w:name=\"OSEE\\.([^\"]*)\"[^<>]+w:type=\"Word\\.Bookmark\\.Start\\\"/>";
 
    public static final String OSEE_HYPERLINK_REGEX =
       "<w:instrText>\\s+HYPERLINK[^<>]+\"OSEE\\.([^\"]*)\"\\s+</w:instrText>";
@@ -1067,6 +1112,12 @@ public class WordCoreUtil {
       "<v:shape id=\"_x0000_i1025\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\">" +
       "<v:imagedata src=\"wordml://%s\" o:title=\"%s\"/></v:shape></w:pict></w:r>";
    // @formatter:on
+
+   /**
+    * {@link Pattern} used to remove Word proof reading error tags.
+    */
+
+   private static final Pattern PROOF_ERR_REMOVAL_PATTERN = Pattern.compile("<w:proofErr[^>]+>|</w:proofErr>");
 
    /**
     * REFERENCE INTERNAL DOC template used by {@link #changeHyperlinksToReferences} to change a hyperlink into an
@@ -1596,7 +1647,10 @@ public class WordCoreUtil {
     * @return the provided Word ML with updated table and figure captions.
     */
 
-   public static CharSequence addChapterNumToCaptionAndBookmark(CharSequence input, CharSequence amlBookmarkStart, CharSequence amlBookmarkEnd) {
+   public static CharSequence addChapterNumToCaptionAndBookmark(CharSequence input, CharSequence amlBookmarkStart,
+      CharSequence amlBookmarkEnd) {
+
+      final var modified = new MutableBoolean(false);
 
       //@formatter:off
       var replacerText =
@@ -1633,12 +1687,28 @@ public class WordCoreUtil {
                            paraEnd
                         );
 
+                  modified.setValue(true);
+
                   return newCaption;
                }
             );
       //@formatter:on
 
-      return replacerText;
+      if (modified.getValue()) {
+         return replacerText;
+      }
+
+      final var size = input.length() + amlBookmarkStart.length() + amlBookmarkEnd.length();
+      //@formatter:off
+         final var output =
+            new StringBuilder( size )
+                   .append( amlBookmarkStart )
+                   .append( amlBookmarkEnd   )
+                   .append( input            );
+      //@formatter:on
+
+      return output;
+
    }
 
    /**
@@ -1704,7 +1774,9 @@ public class WordCoreUtil {
       //@formatter:on
    }
 
-   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations, Set<String> allValidConfigurationGroups) {
+   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch,
+      HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations,
+      Set<String> allValidConfigurationGroups) {
 
       Matcher matcher = FULL_PATTERN.matcher(wordml);
       Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
@@ -2201,22 +2273,34 @@ public class WordCoreUtil {
     * @return a {@link StringBuilder} with the WordML for the bookmark.
     */
 
-   public static StringBuilder getWordMlBookmark(Long uuid) {
-      var size = WordCoreUtil.BOOKMARK_TEMPLATE_SIZE + 1 + 19 + 1;
+   public static String[] getWordMlBookmark(Long uuid) {
+
+      final var bookmarkId = WordCoreUtil.updateBookmarkIds.incrementBookmarkId();
+
+      final var openSize = WordCoreUtil.BOOKMARK_TEMPLATE_OPEN_SIZE + 16;
+      final var closeSize = WordCoreUtil.BOOKMARK_TEMPLATE_CLOSE_SIZE + 16;
 
       //@formatter:off
-      var output = new StringBuilder( size * 2 )
-                          .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_A )
-                          .append( "0" )
-                          .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_B )
-                          .append( uuid )
-                          .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_C )
-                          .append( "0" )
-                          .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_D )
-                          ;
+      final var openBookmark =
+         new StringBuilder( openSize )
+                .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_A )
+                .append( bookmarkId )
+                .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_B )
+                .append( uuid )
+                .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_C )
+                .toString();
       //@formatter:on
 
-      return output;
+      //@formatter:off
+      final var closeBookmark =
+         new StringBuilder( closeSize )
+                .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_D )
+                .append( bookmarkId )
+                .append( WordCoreUtil.BOOKMARK_TEMPLATE_PART_E )
+                .toString();
+      //@formatter:on
+
+      return new String[] {openBookmark, closeBookmark};
    }
 
    /**
@@ -2278,7 +2362,8 @@ public class WordCoreUtil {
     * @return a {@link CharSequence} of the updated publishing template.
     */
 
-   public static CharSequence initializePublishingTemplateOutliningNumbers(String outlineNumber, CharSequence template, String outlineType) {
+   public static CharSequence initializePublishingTemplateOutliningNumbers(String outlineNumber, CharSequence template,
+      String outlineType) {
 
       if (Objects.isNull(outlineNumber)) {
          return template;
@@ -2306,7 +2391,8 @@ public class WordCoreUtil {
       return template;
    }
 
-   public static boolean isExpressionInvalid(String expression, BranchId branch, HashCollection<String, String> validFeatureValues) {
+   public static boolean isExpressionInvalid(String expression, BranchId branch,
+      HashCollection<String, String> validFeatureValues) {
       ApplicabilityGrammarLexer lex = new ApplicabilityGrammarLexer(new ANTLRStringStream(expression.toUpperCase()));
       ApplicabilityGrammarParser parser = new ApplicabilityGrammarParser(new CommonTokenStream(lex));
 
@@ -2371,7 +2457,8 @@ public class WordCoreUtil {
       return false;
    }
 
-   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch, HashCollection<String, String> validFeatureValues) {
+   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch,
+      HashCollection<String, String> validFeatureValues) {
 
       if (applicabilityBlock.getType() != ApplicabilityType.Feature) {
          return true;
@@ -2415,7 +2502,8 @@ public class WordCoreUtil {
       return true;
    }
 
-   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup, Set<String> allValidConfigurationGroups) {
+   private static boolean isValidConfigurationGroupBracket(String beginConfigGroup,
+      Set<String> allValidConfigurationGroups) {
       beginConfigGroup = WordCoreUtil.textOnly(beginConfigGroup);
       int start = beginConfigGroup.indexOf("[") + 1;
       int end = beginConfigGroup.indexOf("]");
@@ -2445,7 +2533,8 @@ public class WordCoreUtil {
     * @param tailProcessor a {@link Consumer} used to process the final section of the <code>templateContent</code>.
     */
 
-   public static void processPublishingTemplate(CharSequence templateContent, Consumer<CharSequence> segmentProcessor, Consumer<CharSequence> tailProcessor) {
+   public static void processPublishingTemplate(CharSequence templateContent, Consumer<CharSequence> segmentProcessor,
+      Consumer<CharSequence> tailProcessor) {
 
       var tokenMatcher = WordCoreUtil.TOKEN_PATTERN_PROCESS_PUBLISHING_TEMPLATE.tokenMatcher(templateContent);
       int lastEndIndex = 0;
@@ -2476,6 +2565,35 @@ public class WordCoreUtil {
    public static CharSequence removeAnnotations(CharSequence input) {
 
       var newText = WordCoreUtil.cleaner(input, WordCoreUtil.ANNOTATIONS_REMOVAL_PATTERN);
+
+      return newText;
+   }
+
+   /**
+    * Removes all AML annotation book mark starting and ending tags from the <code>input</code>.
+    *
+    * @param input the Word ML to be processed.
+    * @return the provided Word ML with all starting and ending book marks removed.
+    */
+
+   public static CharSequence removeUnusedBookmark(CharSequence input) {
+
+      var newText = WordCoreUtil.cleaner(input, WordCoreUtil.OSEE_BOOKMARK_START_REMOVAL_PATTERN,
+         WordCoreUtil.OSEE_BOOKMARK_END_REMOVAL_PATTERN);
+
+      return newText;
+
+   }
+
+   /**
+    * Removes Word proof reading error tags from the provided <code>input</code>.
+    *
+    * @param input the Word ML to be processed.
+    * @return the Word ML with proof reading error tags removed.
+    */
+
+   public static CharSequence removeProofErrors(CharSequence input) {
+      var newText = WordCoreUtil.cleaner(input, WordCoreUtil.PROOF_ERR_REMOVAL_PATTERN);
 
       return newText;
    }
@@ -2549,7 +2667,8 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, Pattern pattern, Function<Matcher, StringBuilder> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, Pattern pattern,
+      Function<Matcher, StringBuilder> newTextFunction) {
 
       var matcher = pattern.matcher(input);
       var changeSet = new ChangeSet(input);
@@ -2597,7 +2716,8 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, Supplier<Pattern> patternFunction, BiFunction<Matcher, ChangeSet, Boolean> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, Supplier<Pattern> patternFunction,
+      BiFunction<Matcher, ChangeSet, Boolean> newTextFunction) {
 
       var changeSet = new ChangeSet(input);
       var done = false;
@@ -2643,7 +2763,8 @@ public class WordCoreUtil {
     * {@link CharSequence}, <code>input</code>, is returned.
     */
 
-   private static CharSequence replacer(CharSequence input, TokenPattern tokenPattern, Function<TokenMatcher, StringBuilder> newTextFunction) {
+   private static CharSequence replacer(CharSequence input, TokenPattern tokenPattern,
+      Function<TokenMatcher, StringBuilder> newTextFunction) {
 
       var tokenMatcher = tokenPattern.tokenMatcher(input);
       var changeSet = new ChangeSet(input);
@@ -2766,7 +2887,8 @@ public class WordCoreUtil {
     * of the provided <code>text</code>.
     */
 
-   public static CharSequence replaceRendererOptionToken(FormatIndicator formatIndicator, String labelTemplate, String formatTemplate, CharSequence name, CharSequence value) {
+   public static CharSequence replaceRendererOptionToken(FormatIndicator formatIndicator, String labelTemplate,
+      String formatTemplate, CharSequence name, CharSequence value) {
 
       //@formatter:off
       int x = labelTemplate.indexOf( WordCoreUtil.RENDERER_OPTION_FORMAT_TOKEN );
@@ -3148,6 +3270,17 @@ public class WordCoreUtil {
    @Deprecated
    public static String textOnly(String str) {
       return XmlEncoderDecoder.xmlToText(str, XmlEncoderDecoder.REMOVE_TAGS).toString();
+   }
+
+   private static int bookMarkId = 1000;
+   private static UpdateBookmarkIds updateBookmarkIds = new UpdateBookmarkIds(bookMarkId);
+
+   /**
+    * @return the content with the ending bookmark IDs being reassigned to a unique number. This is done to ensure all
+    * versions of MS Word will function correctly.
+    */
+   public static CharSequence reassignBookMarkID(CharSequence content) {
+      return WordCoreUtil.updateBookmarkIds.fixTags(content);
    }
 
 }

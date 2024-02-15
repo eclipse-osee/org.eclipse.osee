@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.util.Optional;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.w3c.dom.Element;
 
 /**
@@ -23,6 +24,11 @@ import org.w3c.dom.Element;
  */
 
 public class WordBody extends AbstractElement {
+
+   //@formatter:off
+   private static Pair<Class<?>,Class<?>> wordTableListWithParentWordBodyChildKey =
+      Pair.createNullableImmutable( WordTableList.class, WordBody.class );
+   //@formatter:on
 
    /**
     * Creates a new {@link WordBody}.
@@ -34,7 +40,7 @@ public class WordBody extends AbstractElement {
     */
 
    public WordBody(WordDocument wordDocument, Element wordBodyElement) {
-      super(wordDocument, wordBodyElement, WordXmlTag.BODY);
+      super(wordDocument, wordBodyElement, WordMlTag.BODY);
    }
 
    /**
@@ -60,8 +66,8 @@ public class WordBody extends AbstractElement {
     * @return a {@link WordTableList} of the top level Word tables.
     */
 
-   public Optional<WordTableList> getWordTableList() {
-      return this.getChild(WordTableList.class);
+   public Optional<WordTableList<WordBody>> getWordTableList() {
+      return this.getChild(WordBody.wordTableListWithParentWordBodyChildKey);
    }
 }
 

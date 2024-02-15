@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.xml.publishing;
 
 import java.util.Optional;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.w3c.dom.Element;
 
 /**
@@ -24,18 +25,10 @@ import org.w3c.dom.Element;
 
 public class WordParagraph extends AbstractElement {
 
-   /**
-    * Creates a new {@link WordParagraph}.
-    *
-    * @param parent the {@link WordElement} implementation that is considered the parent by the parser implementation.
-    * @param wordParagraphElement the {@link org.w3c.dom.Element} with the tag "w:p" in the Word ML.
-    * @throws NullPointerException when either of the parameters <code>wordSubSection</code> or
-    * <code>wordParagraphElement</code> are <code>null</code>.
-    */
-
-   public WordParagraph(WordSubSection wordSubSection, Element wordParagraphElement) {
-      super(wordSubSection, wordParagraphElement, WordXmlTag.PARAGRAPH);
-   }
+   //@formatter:off
+   private static Pair<Class<?>,Class<?>> wordTextListWithParentWordParagraphChildKey =
+      Pair.createNonNullImmutable( WordTextList.class, WordTableColumn.class );
+   //@formatter:on
 
    /**
     * Creates a new {@link WordParagraph}.
@@ -46,24 +39,24 @@ public class WordParagraph extends AbstractElement {
     * <code>wordParagraphElement</code> are <code>null</code>.
     */
 
-   public WordParagraph(WordSection wordSection, Element wordParagraphElement) {
-      super(wordSection, wordParagraphElement, WordXmlTag.PARAGRAPH);
+   public WordParagraph(WordElement parent, Element wordParagraphElement) {
+      super(parent, wordParagraphElement, WordMlTag.PARAGRAPH);
    }
 
    /**
-    * For top level Word paragraphs, gets the containing (parent) {@link WordSubSection}.
+    * For top level Word paragraphs, gets the containing (parent) {@link AuxHintSubSection}.
     *
     * @return when the {@link WordParagraph} is for a top level Word Sub-Section, a {@link Optional} containing the
-    * parent {@link WordSubSection}; otherwise, an empty {@link Optional}.
+    * parent {@link AuxHintSubSection}; otherwise, an empty {@link Optional}.
     */
 
-   public Optional<WordSubSection> getWordSubSection() {
+   public Optional<AuxHintSubSection> getWordSubSection() {
       var parent = this.getParent();
 
       //@formatter:off
       return
-         (parent instanceof WordSubSection)
-            ? Optional.of( (WordSubSection) this.getParent() )
+         (parent instanceof AuxHintSubSection)
+            ? Optional.of( (AuxHintSubSection) this.getParent() )
             : Optional.empty();
       //@formatter:on
    }
@@ -93,8 +86,8 @@ public class WordParagraph extends AbstractElement {
     * {@link WordTextList}; otherwise, a {@link Optional}.
     */
 
-   public Optional<WordTextList> getWordTextList() {
-      return this.getChild(WordTextList.class);
+   public Optional<WordTextList<WordParagraph>> getWordTextList() {
+      return this.getChild(WordParagraph.wordTextListWithParentWordParagraphChildKey);
    }
 }
 

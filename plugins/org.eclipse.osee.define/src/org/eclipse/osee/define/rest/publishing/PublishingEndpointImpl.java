@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchSpecification;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
@@ -105,7 +107,10 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
                      artifactType,
                      attributeType,
                      attributeValue
-                  );
+                  )
+               .stream()
+               .map( ArtifactToken::valueOf )
+               .collect( Collectors.toList() );
          //@formatter:on
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
@@ -191,7 +196,6 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
             RendererMap.of
                (
                   RendererOption.PUBLISH_IDENTIFIER, "Publish Preview With Folders",
-                  RendererOption.EXCLUDE_FOLDERS,    false,
                   RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
                   RendererOption.MAX_OUTLINE_DEPTH,  9,
                   RendererOption.PUBLISHING_FORMAT,  FormatIndicator.WORD_ML,
@@ -255,7 +259,6 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
             RendererMap.of
                (
                   RendererOption.PUBLISH_IDENTIFIER, "Publish Preview With Folders",
-                  RendererOption.EXCLUDE_FOLDERS,    false,
                   RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
                   RendererOption.MAX_OUTLINE_DEPTH,  9,
                   RendererOption.PUBLISHING_FORMAT,  FormatIndicator.WORD_ML,
@@ -357,13 +360,13 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
          var publishingRendererOptions =
             RendererMap.of
                (
-                  RendererOption.PUBLISH_IDENTIFIER, "Publish Preview Without Folders",
-                  RendererOption.EXCLUDE_FOLDERS,    true,
-                  RendererOption.LINK_TYPE,          LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
-                  RendererOption.MAX_OUTLINE_DEPTH,  9,
-                  RendererOption.PUBLISHING_FORMAT,  FormatIndicator.WORD_ML,
-                  RendererOption.BRANCH,             branchSpecification.getBranchIdWithOutViewId(),
-                  RendererOption.VIEW,               branchSpecification.getViewId()
+                  RendererOption.PUBLISH_IDENTIFIER,                               "Publish Preview Without Folders",
+                  RendererOption.OUTLINING_OPTION_OVERRIDE_EXCLUDE_ARTIFACT_TYPES, List.of( CoreArtifactTypes.Folder ),
+                  RendererOption.LINK_TYPE,                                        LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+                  RendererOption.MAX_OUTLINE_DEPTH,                                9,
+                  RendererOption.PUBLISHING_FORMAT,                                FormatIndicator.WORD_ML,
+                  RendererOption.BRANCH,                                           branchSpecification.getBranchIdWithOutViewId(),
+                  RendererOption.VIEW,                                             branchSpecification.getViewId()
                );
 
          var msWordPreviewRequestData =

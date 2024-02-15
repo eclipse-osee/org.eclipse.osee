@@ -27,7 +27,9 @@ public enum SearchMethod {
    EXISTS_TYPE("exists"),
    NOT_EXISTS_TYPE("notExists"),
    ATTRIBUTE_TYPE("attrType"),
-   RELATED_TO("related");
+   RELATED_TO("related"),
+   RELATED_RECURSIVE_TO("relatedRecursive"),
+   TRANSACTION_COMMENT("transactionComment");
 
    private final String token;
 

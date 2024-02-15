@@ -329,8 +329,6 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ParagraphNumber)
       .zeroOrOne(PublishInline));
 
-   ArtifactTypeToken HeadingHtml = osee.add(osee.artifactType(804L, "Heading - HTML", false, AbstractHeading, HtmlArtifact));
-
    ArtifactTypeToken ImageArtifact = osee.add(osee.artifactType(800L, "Image Artifact", false, Controlled)
       .any(ImageContent)
       .zeroOrOne(ParagraphNumber));
@@ -372,9 +370,17 @@ public interface CoreArtifactTypes {
       .exactlyOne(SeverityCategory, SeverityCategory.Unspecified)
       .zeroOrOne(SoftwareSafetyImpact));
 
-   ArtifactTypeToken HeadingMsWord = osee.add(osee.artifactType(56L, "Heading - MS Word", false, new MaterialIcon("view_headline"), MsWordTemplate, AbstractHeading));
+   ArtifactTypeToken PlainText = osee.add(osee.artifactType(784L, "Plain Text", false, new MaterialIcon("text_fields"), Artifact)
+      .zeroOrOne(ParagraphNumber)
+      .zeroOrOne(PlainTextContent));
+
+   ArtifactTypeToken HeadingHtml = osee.add(osee.artifactType(804L, "Heading - HTML", false, AbstractHeading, HtmlArtifact));
 
    ArtifactTypeToken HeadingMarkdown = osee.add(osee.artifactType(627313452145850781L, "Heading - Markdown", false, Markdown, AbstractHeading));
+
+   ArtifactTypeToken HeadingMsWord = osee.add(osee.artifactType(56L, "Heading - MS Word", false, new MaterialIcon("view_headline"), MsWordTemplate, AbstractHeading));
+
+   ArtifactTypeToken HeadingPlainText = osee.add(osee.artifactType(8720229470842826115L, "Heading - PlainText", false, PlainText, AbstractHeading));
 
    ArtifactTypeToken ImplementationDetailsMsWord = osee.add(osee.artifactType(26L, "Implementation Details - MS Word", false, new MaterialIcon("details"),MsWordTemplate, AbstractImplementationDetails));
 
@@ -407,10 +413,6 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken OseeTypeEnum = osee.add(osee.artifactType(5447805027409642344L, "Osee Type Enum", false, EnumeratedArtifact)
       .any(IdValue));
-
-   ArtifactTypeToken PlainText = osee.add(osee.artifactType(784L, "Plain Text", false, new MaterialIcon("text_fields"), Artifact)
-      .zeroOrOne(ParagraphNumber)
-      .zeroOrOne(PlainTextContent));
 
    ArtifactTypeToken AcronymPlainText = osee.add(osee.artifactType(5034328852220100337L, "Acronym Plain Text", false, PlainText)
       .zeroOrOne(Acronym)

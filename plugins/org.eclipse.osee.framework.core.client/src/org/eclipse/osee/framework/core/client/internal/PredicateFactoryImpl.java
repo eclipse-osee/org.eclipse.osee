@@ -72,12 +72,14 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options) {
+   public Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, String value,
+      QueryOption... options) {
       return createAttributeTypeSearch(attributeTypes, Collections.singleton(value), options);
    }
 
    @Override
-   public Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
+   public Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes,
+      Collection<String> values, QueryOption... options) {
       List<String> typeIds = getLongIds(attributeTypes);
       return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, new LinkedList<>(values), options);
    }
@@ -135,6 +137,39 @@ public class PredicateFactoryImpl implements PredicateFactory {
          toReturn.add(type.getIdString());
       }
       return toReturn;
+   }
+
+   @Override
+   public Predicate createRelatedRecursiveSearch(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
+      //@formatter:off
+      return
+         new Predicate
+                (
+                   SearchMethod.RELATED_RECURSIVE_TO,
+                   List.of
+                      (
+                           ( relationTypeSide.getSide().isSideA() ? "A" : "B" )
+                         + relationTypeSide.getIdString()
+                      ),
+                   List.of
+                      (
+                         artifactId.getIdString()
+                      )
+                );
+      //@formatter:on
+   }
+
+   @Override
+   public Predicate createTransactionCommentSearch(String comment) {
+      //@formatter:off
+      return
+         new Predicate
+                (
+                   SearchMethod.TRANSACTION_COMMENT,
+                   List.of(),
+                   List.of( comment )
+                );
+      //@formatter:on
    }
 
    private List<String> getLongIds(Id type) {

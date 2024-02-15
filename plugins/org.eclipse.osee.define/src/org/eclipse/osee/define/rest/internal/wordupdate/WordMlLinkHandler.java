@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
@@ -112,7 +113,8 @@ public class WordMlLinkHandler {
     * @return processed input
     */
 
-   public static String unlink(QueryFactory queryFactory, LinkType sourceLinkType, ArtifactReadable source, String content) {
+   public static String unlink(QueryFactory queryFactory, LinkType sourceLinkType, ArtifactReadable source,
+      String content) {
       LinkType linkType = checkLinkType(sourceLinkType);
       String modified = content;
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
@@ -130,7 +132,10 @@ public class WordMlLinkHandler {
     * @return processed input
     */
 
-   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl) {
+   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content,
+      TransactionId txId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl,
+      IncludeBookmark includeBookmark) {
+
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -151,9 +156,10 @@ public class WordMlLinkHandler {
             presentationType, permanentUrl);
       }
 
-      if (linkType != LinkType.OSEE_SERVER_LINK) {
+      if (includeBookmark.isYes() && (linkType != LinkType.OSEE_SERVER_LINK)) {
          // Add a bookmark to the start of the content so internal links can link later
-         modified = WordCoreUtil.getWordMlBookmark(source.getId()) + modified;
+         final var bookmark = WordCoreUtil.getWordMlBookmark(source.getId());
+         modified = bookmark[0] + bookmark[1] + modified;
       }
 
       return modified;
@@ -274,25 +280,43 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks, TransactionId txId) {
+   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch,
+      List<String> guidsFromLinks, TransactionId txId) {
       QueryBuilder query;
       Matcher matcher = IS_GUID.matcher(guidsFromLinks.get(0));
       if (matcher.find()) {
-         query = queryFactory.fromBranch(branch).andGuids(
-            guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes();
+
+         //@formatter:off
+         query =
+            queryFactory
+               .fromBranch( BranchId.valueOf( branch.getId() ) )
+               .andGuids( guidsFromLinks )
+               .includeDeletedArtifacts()
+               .includeDeletedAttributes();
+         //@formatter:on
+
       } else {
          List<ArtifactId> artIdsFromLinks = new LinkedList<>();
          for (String link : guidsFromLinks) {
             artIdsFromLinks.add(ArtifactId.valueOf(link));
          }
-         query = queryFactory.fromBranch(branch).andIds(
-            artIdsFromLinks).includeDeletedArtifacts().includeDeletedAttributes();
+
+         //@formatter:off
+         query =
+            queryFactory
+               .fromBranch( BranchId.valueOf( branch.getId() ) )
+               .andIds( artIdsFromLinks )
+               .includeDeletedArtifacts()
+               .includeDeletedAttributes();
       }
 
       if (txId.isValid()) {
          query.fromTransaction(txId);
       }
-      return query.getResults().getList();
+
+      final var artifacts = query.getResults().getList();
+
+      return artifacts;
    }
 
    private static List<String> getGuidsNotFound(List<String> guidsFromLinks, List<ArtifactReadable> artifactsFound) {
@@ -303,7 +327,9 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId, Set<String> unknown, PresentationType presentationType, String permanentUrl) {
+   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source,
+      String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId,
+      Set<String> unknown, PresentationType presentationType, String permanentUrl) {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;

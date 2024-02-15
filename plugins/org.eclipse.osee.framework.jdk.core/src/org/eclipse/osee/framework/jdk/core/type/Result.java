@@ -130,6 +130,27 @@ public final class Result<V, E> implements ToMessage {
    public interface ErrorToThrowableMapper<E, T extends Throwable> {
 
       public @NonNull T apply(@NonNull E errorObject);
+
+      /**
+       * Method that returns an {@link ErrorToThrowableMapper} that just returns the input parameter without any change.
+       * This method can be used when the {@link Result} error object is a {@link Throwable} implementation.
+       *
+       * @param <E> The type of the {@link Result} error object.
+       * @param <T> The type of the {@link Throwable} returned by the method.
+       * @return the {@link Result} error object cast to the type &lt;T&gt;.
+       */
+
+      public static <E extends T, T extends Throwable> ErrorToThrowableMapper<E, T> identity() {
+
+         return new ErrorToThrowableMapper<E, T>() {
+
+            @Override
+            public @NonNull T apply(@NonNull E errorObject) {
+               return errorObject;
+            }
+
+         };
+      }
    }
 
    /**
@@ -380,7 +401,8 @@ public final class Result<V, E> implements ToMessage {
     */
 
    @SafeVarargs
-   public static <E> Optional<E> getMergedError(@NonNull ErrorMerger<E> errorMerger, @Nullable Result<?, E>... results) {
+   public static <E> Optional<E> getMergedError(@NonNull ErrorMerger<E> errorMerger,
+      @Nullable Result<?, E>... results) {
 
       if (Objects.isNull(results) || results.length == 0) {
          return Optional.empty();
@@ -547,7 +569,9 @@ public final class Result<V, E> implements ToMessage {
     */
 
    @SafeVarargs
-   public static <E, T extends Throwable> void throwIfError(@NonNull ErrorMerger<E> errorMerger, @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper, @Nullable Result<?, E>... results) throws Throwable {
+   public static <E, T extends Throwable> void throwIfError(@NonNull ErrorMerger<E> errorMerger,
+      @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper, @Nullable Result<?, E>... results)
+      throws Throwable {
 
       if (Objects.isNull(results) || results.length == 0) {
          return;
@@ -658,7 +682,8 @@ public final class Result<V, E> implements ToMessage {
     * </ul>
     */
 
-   public @NonNull Result<V, E> filterError(@NonNull Predicate<? super E> errorPredicate, @NonNull ErrorToValueMapper<? extends V, ? super E> failedPredicateErrorToValueMapper) {
+   public @NonNull Result<V, E> filterError(@NonNull Predicate<? super E> errorPredicate,
+      @NonNull ErrorToValueMapper<? extends V, ? super E> failedPredicateErrorToValueMapper) {
       //@formatter:off
       return
         ( Objects.nonNull( this.error ) && !Objects.requireNonNull( errorPredicate ).test( this.error ) )
@@ -705,7 +730,8 @@ public final class Result<V, E> implements ToMessage {
     * </ul>
     */
 
-   public @NonNull Result<V, E> filterValue(@NonNull Predicate<? super V> valuePredicate, @NonNull ValueToErrorMapper<? super V, ? extends E> failedPredicateValueToErrorMapper) {
+   public @NonNull Result<V, E> filterValue(@NonNull Predicate<? super V> valuePredicate,
+      @NonNull ValueToErrorMapper<? super V, ? extends E> failedPredicateValueToErrorMapper) {
       //@formatter:off
       return
         ( Objects.nonNull( this.value ) && !Objects.requireNonNull( valuePredicate ).test( this.value ) )
@@ -729,7 +755,6 @@ public final class Result<V, E> implements ToMessage {
     * @return a {@link Result}<code>&lt;V,EM&gt;</code>.
     * @throws NullPointerException when <code>errorToResultMapper</code> is <code>null</code> and this {@link Result}
     * contains an error.
-    * @throws IllegalStateException when <code>errorToResultMapper</code> returns a {@link Result} with a value.
     */
 
    public <EM> @NonNull Result<V, EM> flatMapError(@NonNull ErrorToResultMapper<V, E, EM> errorToResultMapper) {
@@ -741,10 +766,6 @@ public final class Result<V, E> implements ToMessage {
       }
 
       var result = Objects.requireNonNull(errorToResultMapper).apply(this.error);
-
-      if (result.isPresentValue()) {
-         throw new IllegalStateException();
-      }
 
       return result;
    }
@@ -775,10 +796,10 @@ public final class Result<V, E> implements ToMessage {
     * <li><code>errorToResultMapper</code> throws an exception and <code>throwableToErrorMapper</code> is
     * <code>null</code>.</li>
     * </ul>
-    * @throws IllegalStateException when <code>errorToResultMapper</code> returns a {@link Result} with a value.
     */
 
-   public <EM> @NonNull Result<V, EM> flatMapError(@NonNull ErrorToResultMapper<V, E, EM> errorToResultMapper, @NonNull ThrowableToErrorMapper<E, EM> throwableToErrorMapper) {
+   public <EM> @NonNull Result<V, EM> flatMapError(@NonNull ErrorToResultMapper<V, E, EM> errorToResultMapper,
+      @NonNull ThrowableToErrorMapper<E, EM> throwableToErrorMapper) {
 
       if (Objects.isNull(this.error)) {
          @SuppressWarnings("unchecked")
@@ -796,10 +817,6 @@ public final class Result<V, E> implements ToMessage {
 
          result = Result.ofErrorNullable(Objects.requireNonNull(throwableToErrorMapper).apply(this.error, t));
 
-      }
-
-      if (result.isPresentValue()) {
-         throw new IllegalStateException();
       }
 
       return result;
@@ -823,7 +840,8 @@ public final class Result<V, E> implements ToMessage {
     * contains a value.
     */
 
-   public <VM> @NonNull Result<VM, E> flatMapOptionalValue(@NonNull ValueToOptionalMapper<V, VM> valueToOptionalMapper) {
+   public <VM> @NonNull Result<VM, E> flatMapOptionalValue(
+      @NonNull ValueToOptionalMapper<V, VM> valueToOptionalMapper) {
 
       if (Objects.isNull(this.value)) {
          @SuppressWarnings("unchecked")
@@ -871,7 +889,8 @@ public final class Result<V, E> implements ToMessage {
     * </ul>
     */
 
-   public <VM> @NonNull Result<VM, E> flatMapOptionalValue(@NonNull ValueToOptionalMapper<V, VM> valueToOptionalMapper, @NonNull ThrowableToErrorMapper<V, E> throwableToErrorMapper) {
+   public <VM> @NonNull Result<VM, E> flatMapOptionalValue(@NonNull ValueToOptionalMapper<V, VM> valueToOptionalMapper,
+      @NonNull ThrowableToErrorMapper<V, E> throwableToErrorMapper) {
 
       if (Objects.isNull(this.value)) {
          @SuppressWarnings("unchecked")
@@ -957,7 +976,8 @@ public final class Result<V, E> implements ToMessage {
     * </ul>
     */
 
-   public <VM> @NonNull Result<VM, E> flatMapValue(@NonNull ValueToResultMapper<V, VM, E> valueToResultMapper, @NonNull ThrowableToErrorMapper<V, E> throwableToErrorMapper) {
+   public <VM> @NonNull Result<VM, E> flatMapValue(@NonNull ValueToResultMapper<V, VM, E> valueToResultMapper,
+      @NonNull ThrowableToErrorMapper<V, E> throwableToErrorMapper) {
 
       if (Objects.isNull(this.value)) {
          @SuppressWarnings("unchecked")
@@ -993,7 +1013,8 @@ public final class Result<V, E> implements ToMessage {
     * object and the resulting exception is thrown.
     */
 
-   public <T extends Throwable> Optional<V> getAsOptionalOrElseThrow(@NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
+   public <T extends Throwable> Optional<V> getAsOptionalOrElseThrow(
+      @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
 
       if (this.error == null) {
          return Optional.ofNullable(this.value);
@@ -1061,7 +1082,8 @@ public final class Result<V, E> implements ToMessage {
     * @throws T when the {@link Result} is empty.
     */
 
-   public <T extends Throwable> @NonNull Result<V, E> ifEmptyThrow(@NonNull ThrowableSupplier<T> throwableSupplier) throws T {
+   public <T extends Throwable> @NonNull Result<V, E> ifEmptyThrow(@NonNull ThrowableSupplier<T> throwableSupplier)
+      throws T {
       if (Objects.isNull(this.error) && Objects.isNull(this.value)) {
          throw Objects.requireNonNull(throwableSupplier).get();
       }
@@ -1129,7 +1151,8 @@ public final class Result<V, E> implements ToMessage {
     * @throws T when the {@link Result} contains an error.
     */
 
-   public <T extends Throwable> @NonNull Result<V, E> ifErrorThrow(@NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
+   public <T extends Throwable> @NonNull Result<V, E> ifErrorThrow(
+      @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
 
       if (Objects.nonNull(this.error)) {
          throw Objects.requireNonNull(errorToThrowableMapper).apply(this.error);
@@ -1184,7 +1207,8 @@ public final class Result<V, E> implements ToMessage {
     * error is present and <code>errorToThrowableMapper</code> is <code>null</code>.
     */
 
-   public <T extends Throwable> void ifValueActionElseThrow(@NonNull ValueAction<V> valueAction, @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
+   public <T extends Throwable> void ifValueActionElseThrow(@NonNull ValueAction<V> valueAction,
+      @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
 
       if (Objects.nonNull(this.value)) {
          Objects.requireNonNull(valueAction).accept(this.value);
@@ -1212,7 +1236,9 @@ public final class Result<V, E> implements ToMessage {
     * error is present and <code>errorToThrowableMapper</code> is <code>null</code>.
     */
 
-   public <T extends Throwable> void ifValueActionElseThrow(@NonNull ValueAction<V> valueAction, @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper, @NonNull ThrowableSupplier<T> throwableSupplier) throws T {
+   public <T extends Throwable> void ifValueActionElseThrow(@NonNull ValueAction<V> valueAction,
+      @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper, @NonNull ThrowableSupplier<T> throwableSupplier)
+      throws T {
 
       if (Objects.nonNull(this.value)) {
          Objects.requireNonNull(valueAction).accept(this.value);
@@ -1239,7 +1265,8 @@ public final class Result<V, E> implements ToMessage {
     * and <code>emptyAction</code> is <code>null</code>.
     */
 
-   public void ifValueActionIfErrorActionElseAction(@NonNull ValueAction<V> valueAction, @NonNull ErrorAction<E> errorAction, @NonNull Runnable emptyAction) {
+   public void ifValueActionIfErrorActionElseAction(@NonNull ValueAction<V> valueAction,
+      @NonNull ErrorAction<E> errorAction, @NonNull Runnable emptyAction) {
 
       if (Objects.nonNull(this.value)) {
          Objects.requireNonNull(valueAction).accept(this.value);
@@ -1267,7 +1294,8 @@ public final class Result<V, E> implements ToMessage {
     * {@link Result} is empty and <code>emptyAction</code> is <code>null</code>.
     */
 
-   public <T extends Throwable> void ifValueActionIfErrorThrowElseAction(@NonNull ValueAction<V> valueAction, @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper, @NonNull Runnable emptyAction) throws T {
+   public <T extends Throwable> void ifValueActionIfErrorThrowElseAction(@NonNull ValueAction<V> valueAction,
+      @NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper, @NonNull Runnable emptyAction) throws T {
 
       if (Objects.nonNull(this.value)) {
          Objects.requireNonNull(valueAction).accept(this.value);
@@ -1402,7 +1430,8 @@ public final class Result<V, E> implements ToMessage {
     * <code>mapExceptionMapper</code> is <code>null</code>.
     */
 
-   public <VM> @NonNull Result<VM, E> mapValue(@NonNull ValueMapper<V, VM> valueMapper, @NonNull ThrowableToErrorMapper<? super V, ? extends E> throwableToErrorMapper) {
+   public <VM> @NonNull Result<VM, E> mapValue(@NonNull ValueMapper<V, VM> valueMapper,
+      @NonNull ThrowableToErrorMapper<? super V, ? extends E> throwableToErrorMapper) {
 
       if (Objects.isNull(this.value)) {
          @SuppressWarnings("unchecked")
@@ -1428,7 +1457,7 @@ public final class Result<V, E> implements ToMessage {
     * <code>null</code>.
     */
 
-   public <EM> @NonNull Result<V, EM> mapValue(@NonNull ValueToErrorMapper<V, EM> valueToErrorMapper) {
+   public <EM> @NonNull Result<V, EM> mapValueToError(@NonNull ValueToErrorMapper<V, EM> valueToErrorMapper) {
 
       if (Objects.isNull(this.value)) {
          @SuppressWarnings("unchecked")
@@ -1484,7 +1513,8 @@ public final class Result<V, E> implements ToMessage {
     * <li>the {@link Result} is empty and <code>valueSupplier</code> is <code>null</code>.
     */
 
-   public @Nullable V orElseGet(@NonNull ErrorToResultMapper<V, E, E> errorToResultMapper, @NonNull ValueSupplier<V> valueSupplier) {
+   public @Nullable V orElseGet(@NonNull ErrorToResultMapper<V, E, E> errorToResultMapper,
+      @NonNull ValueSupplier<V> valueSupplier) {
 
       //@formatter:off
       var result =
@@ -1585,7 +1615,8 @@ public final class Result<V, E> implements ToMessage {
     * <code>null</code>.
     */
 
-   public <T extends Throwable> @NonNull V orElseThrow(@NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper) throws T {
+   public <T extends Throwable> @NonNull V orElseThrow(@NonNull ErrorToThrowableMapper<E, T> errorToThrowableMapper)
+      throws T {
 
       if (Objects.nonNull(this.value)) {
          return this.value;

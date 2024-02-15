@@ -34,7 +34,7 @@ public class WordRun extends AbstractElement {
     */
 
    public WordRun(WordParagraph wordParagraph, Element wordRunElement) {
-      super(wordParagraph, wordRunElement, WordXmlTag.RUN);
+      super(wordParagraph, wordRunElement, WordMlTag.RUN);
    }
 
    /**
