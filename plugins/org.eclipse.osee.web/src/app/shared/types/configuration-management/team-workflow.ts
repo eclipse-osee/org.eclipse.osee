@@ -40,6 +40,16 @@ export interface teamWorkflow {
 	CreatedDate: string;
 	CreatedBy: string;
 	TargetedVersion: string;
+	previousStates: teamWorkflowState[];
+	toStates: teamWorkflowState[];
+
+	currentState: teamWorkflowState;
+}
+
+export interface teamWorkflowState {
+	state: string;
+	rules: string[];
+	committable: boolean;
 }
 export class teamWorkflowImpl implements teamWorkflow {
 	id: number = 0;
@@ -71,4 +81,11 @@ export class teamWorkflowImpl implements teamWorkflow {
 	CreatedDate: string = '';
 	CreatedBy: string = '';
 	TargetedVersion: string = '';
+	previousStates: teamWorkflowState[] = [];
+	toStates: teamWorkflowState[] = [];
+	currentState: teamWorkflowState = {
+		state: '',
+		rules: [],
+		committable: false,
+	};
 }

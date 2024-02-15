@@ -15,11 +15,11 @@
 	<mat-form-field class="tw-text-lg">
 		<mat-label>Select a User</mat-label>
 		<mat-select [(ngModel)]="data.selectedUser">
-			<mat-option
-				*ngFor="let user of users | async"
-				[value]="user">
-				{{ user.name }}
-			</mat-option>
+			@for (user of users | async; track user) {
+				<mat-option [value]="user">
+					{{ user.name }}
+				</mat-option>
+			}
 		</mat-select>
 	</mat-form-field>
 </div>

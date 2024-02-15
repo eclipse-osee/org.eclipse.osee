@@ -192,7 +192,7 @@ describe('ActionService', () => {
 	it('should approve branch', () => {
 		service.approveBranch('0').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/ats/ple/action/' + 0 + '/approval'
+			apiURL + '/ats/action/' + 0 + '/approval'
 		);
 		expect(req.request.method).toEqual('POST');
 		req.flush(MockXResultData);
@@ -218,7 +218,7 @@ describe('ActionService', () => {
 	it('should get branch approval', () => {
 		service.getBranchApproved('0').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/ats/ple/action/' + 0 + '/approval'
+			apiURL + '/ats/action/' + 0 + '/approval'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(MockXResultData);

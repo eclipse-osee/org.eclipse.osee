@@ -74,6 +74,13 @@ export const testWorkFlow: teamWorkflow = {
 	CreatedDate: '03/08/2021',
 	CreatedBy: 'Example User',
 	TargetedVersion: 'SAW PL ARB',
+	previousStates: [],
+	toStates: [],
+	currentState: {
+		state: '',
+		rules: [],
+		committable: false,
+	},
 };
 export const testARB = [
 	{

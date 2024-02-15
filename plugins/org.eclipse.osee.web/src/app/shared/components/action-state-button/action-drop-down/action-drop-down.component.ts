@@ -12,15 +12,20 @@
  **********************************************************************/
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
-import { CreateAction } from '@osee/shared/types/configuration-management';
+import {
+	CreateAction,
+	teamWorkflowState,
+} from '@osee/shared/types/configuration-management';
 import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatMenuModule } from '@angular/material/menu';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 /**
  * Allows users to create and manage the state of a branch from within a page.
@@ -39,6 +44,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 		CreateActionDialogComponent,
 		MatTooltipModule,
 		MatFormFieldModule,
+		MatMenuModule,
+		NgClass,
+		NgTemplateOutlet,
 	],
 })
 export class ActionDropDownComponent implements OnChanges {
@@ -48,7 +56,20 @@ export class ActionDropDownComponent implements OnChanges {
 
 	branchTransitionable = this.actionService.branchTransitionable;
 
-	branchApprovableOrCommittable = this.actionService.approvedState;
+	nextStates = this.actionService.nextStates;
+
+	previousStates = this.actionService.previousStates;
+
+	currentState = this.actionService.currentState;
+	currentStateName = this.currentState.pipe(
+		map((state) => state.state),
+		map((name) => name.replace(/([a-z])([A-Z])/g, '$1 $2')) //yucky regex to convert camelcase to spaced out
+	);
+
+	isTeamLead = this.actionService.isTeamLead;
+
+	isApproved = this.actionService.branchApproved.pipe(takeUntilDestroyed());
+
 	doAddAction = this.actionService.addActionInitialStep.pipe(
 		switchMap((thisUser) =>
 			this.dialog
@@ -69,7 +90,6 @@ export class ActionDropDownComponent implements OnChanges {
 
 	doApproveBranch = this.actionService.doApproveBranch;
 
-	doTransition = this.actionService.doTransition;
 	doCommitBranch = this.actionService.doCommitBranch;
 
 	constructor(
@@ -83,8 +103,8 @@ export class ActionDropDownComponent implements OnChanges {
 	addAction(): void {
 		this.doAddAction.subscribe();
 	}
-	transitionToReview(): void {
-		this.doTransition.subscribe();
+	transition(state: teamWorkflowState) {
+		this.actionService.transition(state).subscribe();
 	}
 	approveBranch(): void {
 		this.doApproveBranch.subscribe();

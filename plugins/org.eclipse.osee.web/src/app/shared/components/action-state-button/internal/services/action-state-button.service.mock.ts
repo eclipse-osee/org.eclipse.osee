@@ -45,7 +45,7 @@ export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
 	},
 	doCommitBranch: of(testDataTransitionResponse),
 	doTransition: of(testDataTransitionResponse),
-	doApproveBranch: of(MockXResultData),
+	doApproveBranch: of(true),
 	doAddAction(value: CreateAction, category: string) {
 		return of(testnewActionResponse);
 	},
@@ -60,6 +60,9 @@ export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
 		},
 	]),
 	workTypes: of([testWorkType]),
+	nextStates: of([]),
+	previousStates: of([]),
+	currentState: of({ state: '', rules: [], committable: false }),
 };
 export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonService> =
 	{
@@ -76,7 +79,7 @@ export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonServi
 		},
 		doCommitBranch: of(testDataTransitionResponse),
 		doTransition: of(testDataTransitionResponse),
-		doApproveBranch: of(MockXResultData),
+		doApproveBranch: of(true),
 		doAddAction(value: CreateAction, category: string) {
 			return of(testnewActionResponse);
 		},
@@ -91,6 +94,9 @@ export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonServi
 			},
 		]),
 		workTypes: of([testWorkType]),
+		nextStates: of([]),
+		previousStates: of([]),
+		currentState: of({ state: '', rules: [], committable: false }),
 	};
 export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonService> =
 	{
@@ -107,7 +113,7 @@ export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonServic
 		},
 		doCommitBranch: of(testDataTransitionResponse),
 		doTransition: of(testDataTransitionResponse),
-		doApproveBranch: of(MockXResultData),
+		doApproveBranch: of(true),
 		doAddAction(value: CreateAction, category: string) {
 			return of(testnewActionResponse);
 		},
@@ -122,4 +128,7 @@ export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonServic
 			},
 		]),
 		workTypes: of([testWorkType]),
+		nextStates: of([]),
+		previousStates: of([]),
+		currentState: of({ state: '', rules: [], committable: false }),
 	};

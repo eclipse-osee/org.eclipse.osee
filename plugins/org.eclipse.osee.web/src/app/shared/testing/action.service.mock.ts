@@ -64,12 +64,12 @@ export const actionServiceMock: Partial<ActionService> = {
 		return of(testDataVersion);
 	},
 	approveBranch(teamWf: string | number) {
-		return of(MockXResultData);
+		return of(true);
 	},
 	getTeamLeads(teamDef: string | number) {
 		return of(MockNamedId);
 	},
 	getBranchApproved(teamWf: string | number) {
-		return of(MockXResultData);
+		return of(true);
 	},
 };

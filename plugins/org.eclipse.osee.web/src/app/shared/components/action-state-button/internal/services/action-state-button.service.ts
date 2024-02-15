@@ -27,6 +27,8 @@ import {
 	transitionAction,
 	CreateAction,
 	CreateNewAction,
+	teamWorkflowState,
+	workType,
 } from '@osee/shared/types/configuration-management';
 
 @Injectable({
@@ -112,18 +114,13 @@ export class ActionStateButtonService {
 					.getBranchApproved(action[0]?.TeamWfAtsId)
 					.pipe(
 						shareReplay({ bufferSize: 1, refCount: true }),
-						switchMap((approval) =>
-							iif(
-								() => approval.errorCount > 0,
-								of('false'),
-								of('true')
-							)
-						),
+						switchMap((approval) => of(`${approval}`)),
 						shareReplay({ bufferSize: 1, refCount: true })
 					),
 				of('false')
 			)
-		)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 	private _teamsLeads = this.currentActionService.teamsLeads;
 
@@ -134,6 +131,14 @@ export class ActionStateButtonService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
+
+	private _nextStates = this.branchWorkFlow.pipe(map((tw) => tw.toStates));
+
+	private _previousStates = this.branchWorkFlow.pipe(
+		map((tw) => tw.previousStates.slice(0, -1))
+	);
+
+	private _state = this.branchWorkFlow.pipe(map((tw) => tw.currentState));
 
 	get isTeamLead() {
 		return this._isATeamLead;
@@ -160,9 +165,73 @@ export class ActionStateButtonService {
 		return this._branchTransitionable;
 	}
 
+	public get nextStates() {
+		return this._nextStates;
+	}
+
+	public get previousStates() {
+		return this._previousStates;
+	}
+
+	public get currentState() {
+		return this._state;
+	}
+
 	private _addActionInitialStep = this._user.pipe(take(1));
 	public get addActionInitialStep() {
 		return this._addActionInitialStep;
+	}
+	public transitionValidate(state: teamWorkflowState) {
+		return combineLatest([this.branchAction, this._user]).pipe(
+			take(1),
+			switchMap(([actions, user]) =>
+				this.actionService.validateTransitionAction(
+					new transitionAction(
+						state.state,
+						'Transition to ' + state.state,
+						actions,
+						user
+					)
+				)
+			)
+		);
+	}
+
+	performTransition(state: teamWorkflowState) {
+		return combineLatest([this.branchAction, this._user]).pipe(
+			take(1),
+			switchMap(([actions, user]) =>
+				this.actionService
+					.transitionAction(
+						new transitionAction(
+							state.state,
+							'Transition to ' + state.state,
+							actions,
+							user
+						)
+					)
+					.pipe(
+						tap((response) => {
+							if (response.results.length > 0) {
+								this.uiService.ErrorText = response.results[0];
+							} else {
+								this.uiService.updated = true;
+							}
+						})
+					)
+			)
+		);
+	}
+	public transition(state: teamWorkflowState) {
+		return this.transitionValidate(state).pipe(
+			switchMap((validation) =>
+				iif(
+					() => validation.results.length === 0,
+					this.performTransition(state),
+					of()
+				)
+			)
+		);
 	}
 
 	private _doApproveBranch = this.branchAction.pipe(
@@ -172,8 +241,8 @@ export class ActionStateButtonService {
 				() => actions.length > 0,
 				this.actionService.approveBranch(actions[0].TeamWfAtsId).pipe(
 					tap((response) => {
-						if (response.results.length > 0) {
-							this.uiService.ErrorText = response.results[0];
+						if (!response) {
+							this.uiService.ErrorText = `Failed to approve branch ${actions[0].TeamWfAtsId}`;
 						} else {
 							this.uiService.updated = true;
 						}

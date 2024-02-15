@@ -99,7 +99,7 @@ describe('ActionStateButtonService', () => {
 	it('should approve current branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(service.doApproveBranch).toBe('(a|)', {
-				a: MockXResultData,
+				a: true,
 			});
 		});
 	});
