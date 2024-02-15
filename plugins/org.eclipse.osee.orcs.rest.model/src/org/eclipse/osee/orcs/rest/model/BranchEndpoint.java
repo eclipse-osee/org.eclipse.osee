@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.rest.model;
 
 import java.util.Collection;
 import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -28,17 +27,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.ConflictData;
+import org.eclipse.osee.framework.core.data.ConflictUpdateData;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelations;
+import org.eclipse.osee.framework.core.data.MergeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.data.UpdateBranchData;
+import org.eclipse.osee.framework.core.data.ValidateCommitResult;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -172,6 +174,33 @@ public interface BranchEndpoint {
       @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
 
    @GET
+   @Path("{branch}/validate_commit/{destination-branch}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   ValidateCommitResult validateCommitBranch(@PathParam("branch") BranchId branch,
+      @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
+
+   @GET
+   @Path("{branch}/mergedata")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<MergeData> getMergeData(@PathParam("branch") BranchId mergeBranch);
+
+   @POST
+   @Path("{branch}/conflicts/{destination-branch}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ConflictData> getConflicts(@PathParam("branch") BranchId branch,
+      @PathParam("destination-branch") BranchId destinationBranch,
+      @QueryParam("load") @DefaultValue("false") boolean load);
+
+   @PUT
+   @Path("{branch}/updateconflicts/{destination-branch}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   int updateConflictStatus(@PathParam("branch") BranchId branch,
+      @PathParam("destination-branch") BranchId destinationBranch, List<ConflictUpdateData> updates);
+
+   @GET
    @Path("{branch1}/diff/{branch2}")
    @Produces({MediaType.APPLICATION_JSON})
    List<ChangeItem> compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
@@ -267,8 +296,9 @@ public interface BranchEndpoint {
 
    @DELETE
    @Path("purgeDeletedBranches")
-   Response purgeDeletedBranches(@QueryParam("expireTimeInDays") @DefaultValue("90") int expireTimeInDays, @QueryParam("branchCount") @DefaultValue("25") int branchCount);
-   
+   Response purgeDeletedBranches(@QueryParam("expireTimeInDays") @DefaultValue("90") int expireTimeInDays,
+      @QueryParam("branchCount") @DefaultValue("25") int branchCount);
+
    @DELETE
    @Path("{branch}/associated-artifact")
    Response unassociateBranch(@PathParam("branch") BranchId branch);

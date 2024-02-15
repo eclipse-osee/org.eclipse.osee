@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 public class CreateBranchData {
    private final BranchId MERGE_DESTINATION_BRANCH_ID = BranchId.SENTINEL; // only used on merge branches
    private final Long MERGE_ADDRESSING_QUERY_ID = Id.SENTINEL; // only used on merge branches
-
+   private TransactionToken mergeBaselineTransaction;
    private String branchName;
    private final BranchId branch;
    private BranchType branchType;
@@ -38,7 +38,6 @@ public class CreateBranchData {
    private TransactionId savedTransaction;
    private ArtifactId associatedArtifact;
    private List<BranchCategoryToken> categories;
-
    // Merge Branch Legacy Support
    private Long mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
    private BranchId mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
@@ -173,6 +172,14 @@ public class CreateBranchData {
 
    public void setCategories(List<BranchCategoryToken> categories) {
       this.categories = categories;
+   }
+
+   public TransactionToken getMergeBaselineTransaction() {
+      return mergeBaselineTransaction;
+   }
+
+   public void setMergeBaselineTransaction(TransactionToken mergeBaselineTransaction) {
+      this.mergeBaselineTransaction = mergeBaselineTransaction;
    }
 
 }

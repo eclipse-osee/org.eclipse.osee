@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -49,13 +50,15 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
    private final JdbcClient jdbcClient;
    private final IdentityManager idManager;
    private final UserService userService;
+   private final OrcsTokenService tokenService;
    private final Long buildVersionId;
 
-   public BranchCopyTxCallable(JdbcClient jdbcClient, IdentityManager idManager, UserService userService, CreateBranchData branchData, Long buildVersionId) {
+   public BranchCopyTxCallable(JdbcClient jdbcClient, IdentityManager idManager, UserService userService, CreateBranchData branchData, Long buildVersionId, OrcsTokenService tokenService) {
       this.jdbcClient = jdbcClient;
       this.branchData = branchData;
       this.idManager = idManager;
       this.userService = userService;
+      this.tokenService = tokenService;
       this.buildVersionId = buildVersionId;
    }
 
@@ -66,8 +69,8 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       // transaction available on the new branch for merging or comparison purposes
       // first set aside the transaction
 
-      new CreateBranchDatabaseTxCallable(jdbcClient, idManager, userService, branchData, buildVersionId).handleTxWork(
-         connection);
+      new CreateBranchDatabaseTxCallable(jdbcClient, idManager, userService, branchData, buildVersionId,
+         tokenService).handleTxWork(connection);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       TransactionId nextTransactionId = idManager.getNextTransactionId();
@@ -85,7 +88,8 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       updater.updateTxNotCurrentsFromTx(nextTransactionId);
    }
 
-   private void populateTransaction(double workAmount, JdbcConnection connection, TransactionId intoTx, BranchId parentBranch, TransactionId copyTxId) {
+   private void populateTransaction(double workAmount, JdbcConnection connection, TransactionId intoTx,
+      BranchId parentBranch, TransactionId copyTxId) {
       List<Object[]> data = new ArrayList<>();
       HashSet<Long> gammas = new HashSet<>(100000);
 
@@ -96,7 +100,8 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) {
+   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, TransactionId baseTxId,
+      HashSet<Long> gammas, String query, Object... parameters) {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQueryWithMaxFetchSize(query, parameters);

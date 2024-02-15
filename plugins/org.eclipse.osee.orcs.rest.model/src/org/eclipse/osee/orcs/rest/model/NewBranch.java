@@ -30,6 +30,7 @@ public class NewBranch {
    private String creationComment;
    private Long mergeAddressingQueryId;
    private BranchId mergeDestinationBranchId;
+   private TransactionToken mergeBaselineTransaction;
    private boolean txCopyBranchType;
 
    public String getBranchName() {
@@ -108,4 +109,13 @@ public class NewBranch {
    public String toString() {
       return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifact + ", branchType=" + branchType + ", sourceTransactionId=" + sourceTransaction + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
    }
+
+   public TransactionToken getMergeBaselineTransaction() {
+      return mergeBaselineTransaction;
+   }
+
+   public void setMergeBaselineTransaction(TransactionToken mergeBaselineTransaction) {
+      this.mergeBaselineTransaction = mergeBaselineTransaction;
+   }
+
 }

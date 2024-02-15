@@ -76,7 +76,7 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public XResultData createBranchValidation(CreateBranchData branchData) {
-      return branchStore.createBranchValidation(branchData, userService);
+      return branchStore.createBranchValidation(branchData, userService, orcsApi.tokenService());
    }
 
    @Override
@@ -94,7 +94,7 @@ public class OrcsBranchImpl implements OrcsBranch {
          branchData.setSavedTransaction(givenTx);
          TransactionToken priorTx = txQuery.andIsPriorTx(givenTx).getResults().getExactlyOne();
          branchData.setFromTransaction(priorTx);
-         branchStore.createBranchCopyTx(branchData, userService);
+         branchStore.createBranchCopyTx(branchData, userService, orcsApi.tokenService());
       } else {
          TransactionToken txData = null;
          if (branchData.getParentBranch().isValid()) {
@@ -105,7 +105,7 @@ public class OrcsBranchImpl implements OrcsBranch {
          }
          Conditions.checkNotNull(txData, "sourceTransaction");
          branchData.setFromTransaction(txData);
-         branchStore.createBranch(branchData, userService);
+         branchStore.createBranch(branchData, userService, orcsApi.tokenService());
       }
       if (branchData.getCategories() != null) {
          for (BranchCategoryToken bc : branchData.getCategories()) {
