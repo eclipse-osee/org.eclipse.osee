@@ -19,7 +19,7 @@ java_library(
         	"//org.eclipse.osee.ats.core",
         	"//org.eclipse.osee.define.ide",
         	"//org.eclipse.osee.framework.database.init",
-	 	"//org.eclipse.osee.define.api",
+	 	"//org.eclipse.osee.define.rest.api",
 	 	"//org.eclipse.osee.ats.api",
 	 	"//org.eclipse.osee.app",
 	 	"//org.eclipse.osee.framework.server.ide",

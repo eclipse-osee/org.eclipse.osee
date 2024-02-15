@@ -12,8 +12,8 @@ java_library(
     deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.orcs",
             "//org.eclipse.osee.jaxrs","//org.eclipse.osee.orcs.core",
             "//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.template.engine",
-            "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.define.api",
-	    "//org.eclipse.osee.ats.api","//org.eclipse.osee.activity.api","//org.eclipse.osee.app","//org.eclipse.osee.framework.core.model"],
+            "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.define.rest.api",
+	    "//org.eclipse.osee.ats.api","//org.eclipse.osee.activity.api","//org.eclipse.osee.define.operations.api","//org.eclipse.osee.app","//org.eclipse.osee.framework.core.model"],
     visibility = ["//visibility:public"]
 
 )

@@ -9,7 +9,7 @@ java_library(
         name = "org.eclipse.osee.framework.core.client",
         resources = ["xml_files","manifest"],
         srcs = glob(["**/*.java"]),
-        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.jaxrs","//org.eclipse.osee.define.api",
+        deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.jdbc","//org.eclipse.osee.jaxrs","//org.eclipse.osee.define.rest.api",
                 "//org.eclipse.osee.cache.admin", "//org.eclipse.osee.framework.messaging","//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.framework.core.model",
                 "//org.eclipse.osee.framework.plugin.core","//org.eclipse.osee.activity.api","//org.eclipse.osee.framework.server.ide.api"],
         visibility = ["//visibility:public"]

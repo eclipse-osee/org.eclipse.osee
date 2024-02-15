@@ -13,7 +13,7 @@ java_library(
                 "//org.eclipse.osee.jaxrs","//org.eclipse.osee.orcs", 
                 "//org.eclipse.osee.orcs.core","//org.eclipse.osee.activity.api",
                 "//org.eclipse.osee.framework.resource.management",
-                "//org.eclipse.osee.define.api","//org.eclipse.osee.orcs.rest.model",
+                "//org.eclipse.osee.define.rest.api","//org.eclipse.osee.orcs.rest.model",
                 "//org.eclipse.osee.framework.core.model"],
         visibility = ["//visibility:public"]
 )

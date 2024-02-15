@@ -1,16 +1,16 @@
 
 java_library(
-   name       = "define_operations_api",
+   name       = "org.eclipse.osee.define.operations.api",
    srcs       = glob(["**/*.java"]),
    deps       = [ 
                    "java_deps", 
                    "//framework_core_packages",
-                   "//:jdbc",
-                   "//:orcs",
-                   "//:framework_core_model",
-                   "//:console_admin",
-                   "//:cache_admin",
-                   "//:activity_api"
+                   "//org.eclipse.osee.jdbc",
+                   "//org.eclipse.osee.orcs",
+                   "//org.eclipse.osee.console.admin",
+                   "//org.eclipse.osee.cache.admin",
+                   "//org.eclipse.osee.activity.api",
+		   "//org.eclipse.osee.define.rest.api"
                 ],
    visibility = [
                    "//visibility:public"

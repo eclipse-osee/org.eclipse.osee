@@ -7,7 +7,7 @@ java_library(
                 "//org.eclipse.osee.orcs", "//org.eclipse.osee.framework.core.model",
                 "//org.eclipse.osee.activity.api","//org.eclipse.osee.console.admin",
                 "//org.eclipse.osee.framework.resource.management",
-	        "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.define.api",
+	        "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.define.rest.api",
 		"//org.eclipse.osee.account.admin","//org.eclipse.osee.jaxrs.server",
 		"//org.eclipse.osee.account.rest.model"],
         visibility = ["//visibility:public"]
