@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.publishing;
+package org.eclipse.osee.framework.core.renderer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -19,15 +19,16 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 import java.io.IOException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
- * JSON Serializer for {@link FormatIndicator} objects.
+ * JSON Serializer for {@link RenderLocation} objects.
  *
  * @author Loren K. Ashley
  */
 
-public class FormatIndicatorSerializer extends StdScalarSerializer<@NonNull FormatIndicator> {
+public class RenderLocationSerializer extends StdScalarSerializer<@NonNull RenderLocation> {
 
    /**
     * Serialization identifier
@@ -39,35 +40,35 @@ public class FormatIndicatorSerializer extends StdScalarSerializer<@NonNull Form
     * Creates a new JSON serializer for the {@link FormatIndicator} class.
     */
 
-   public FormatIndicatorSerializer() {
-      super(FormatIndicator.class);
+   public RenderLocationSerializer() {
+      super(RenderLocation.class);
    }
 
    /**
-    * Serializes a {@link FormatIndicator} member as a JSON object with a single field as follows:
+    * Serializes a {@link RenderLocation} member as a JSON object with a single field as follows:
     *
     * <pre>
-    * { "formatIndicator" : "&lt;format-name&gt;" }
+    * { "renderLocation" : "&lt;render-location&gt;" }
     * </pre>
     *
-    * Where format-name is the format name used in the publishing and data rights configuration artifacts.
+    * Where render-location is the Java code name of the {@link RenderLocation} enumeration member given by
+    * {@link RenderLocation#name}.
     *
-    * @param formatIndicator the enumeration member to be serialized.
+    * @param renderLocation the enumeration member to be serialized.
     * @param jsonGenerator the {@link JsonGenerator} used to build the serialized form.
     * @param serializerProvider this parameter is not used.
-    * @throws NullPointerException when <code>formatIndicator</code> or <code>jsonGenerator</code> are
-    * <code>null</code>.
+    * @throws NullPointerException when <code>renderLocation</code> or <code>jsonGenerator</code> are <code>null</code>.
     * @throws IOException when an error occurs writing to the {@link JsonGenerator}.
     */
 
    @Override
-   public void serialize(@NonNull FormatIndicator formatIndicator, @Nullable JsonGenerator jsonGenerator,
+   public void serialize(@NonNull RenderLocation renderLocation, @Nullable JsonGenerator jsonGenerator,
       @Nullable SerializerProvider serializerProvider) throws IOException {
       final var safeJsonGenerator = Conditions.requireNonNull(jsonGenerator);
-      final var safeFormatIndicator = Conditions.requireNonNull(formatIndicator);
+      final var safeRenderLocation = Conditions.requireNonNull(renderLocation);
 
       safeJsonGenerator.writeStartObject();
-      safeJsonGenerator.writeStringField(FormatIndicator.jsonObjectName, safeFormatIndicator.getFormatName());
+      safeJsonGenerator.writeStringField(RenderLocation.jsonObjectName, safeRenderLocation.name());
       safeJsonGenerator.writeEndObject();
    }
 

@@ -371,7 +371,9 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken HeadingMsWord = osee.add(osee.artifactType(56L, "Heading - MS Word", false, new ArtifactTypeIcon("view_headline"), MsWordTemplate, AbstractHeading));
 
-   ArtifactTypeToken ImplementationDetailsMsWord = osee.add(osee.artifactType(26L, "Implementation Details - MS Word", false, new ArtifactTypeIcon("details"), MsWordTemplate, AbstractImplementationDetails));
+   ArtifactTypeToken HeadingMarkdown = osee.add(osee.artifactType(627313452145850781L, "Heading - Markdown", false, Markdown, AbstractHeading));
+
+   ArtifactTypeToken ImplementationDetailsMsWord = osee.add(osee.artifactType(26L, "Implementation Details - MS Word", false, new ArtifactTypeIcon("details"),MsWordTemplate, AbstractImplementationDetails));
 
    ArtifactTypeToken ImplementationDetailsDataDefinitionMsWord = osee.add(osee.artifactType(279578L, "Implementation Details Data Definition - MS Word", false, ImplementationDetailsMsWord));
 

@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.junit.After;
@@ -791,7 +791,7 @@ public class PreviewAndMultiPreviewTest {
             );
       //@formatter:on
 
-      this.publishPreview(new MSWordTemplateClientRenderer(), artifacts, "PreviewAndMultiPreviewTest-PREVIEW");
+      this.publishPreview(new WordTemplateRenderer(), artifacts, "PreviewAndMultiPreviewTest-PREVIEW");
    }
 
    @Test
@@ -817,7 +817,7 @@ public class PreviewAndMultiPreviewTest {
             );
       //@formatter:on
 
-      this.publishPreview(new MSWordTemplateClientRenderer(), artifacts, "PreviewAndMultiPreviewTest-PREVIEW_RECURSE");
+      this.publishPreview(new WordTemplateRenderer(), artifacts, "PreviewAndMultiPreviewTest-PREVIEW_RECURSE");
    }
 
    @Test
@@ -869,7 +869,7 @@ public class PreviewAndMultiPreviewTest {
             );
       //@formatter:on
 
-      this.publishPreview(new MSWordTemplateClientRenderer(), artifacts, "PreviewAndMultiPreviewTest-PREVIEW_RECURSE");
+      this.publishPreview(new WordTemplateRenderer(), artifacts, "PreviewAndMultiPreviewTest-PREVIEW_RECURSE");
    }
 
    @Test

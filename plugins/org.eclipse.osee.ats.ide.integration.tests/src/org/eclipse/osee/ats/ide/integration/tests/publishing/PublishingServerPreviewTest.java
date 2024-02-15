@@ -794,7 +794,8 @@ public class PublishingServerPreviewTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement, String documentString) {
+   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement,
+      String documentString) {
 
       var error = publishingXmlUtils.getLastError();
 
@@ -1187,9 +1188,9 @@ public class PublishingServerPreviewTest {
                 (
                    new PublishingTemplateRequest
                           (
-                             "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
+                             "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer",
                              CoreArtifactTypes.Folder.getName(),
-                             PresentationType.PREVIEW_SERVER.name(),
+                             PresentationType.PREVIEW.name(),
                              "SERVER_PREVIEW_TEST_A",
                              FormatIndicator.WORD_ML
                           ),
@@ -1268,9 +1269,9 @@ public class PublishingServerPreviewTest {
                 (
                    new PublishingTemplateRequest
                           (
-                             "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
+                             "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer",
                              CoreArtifactTypes.Folder.getName(),
-                             PresentationType.PREVIEW_SERVER.name(),
+                             PresentationType.PREVIEW.name(),
                              "SERVER_PREVIEW_TEST_D",
                              FormatIndicator.WORD_ML
                           ),
@@ -1494,9 +1495,9 @@ public class PublishingServerPreviewTest {
                 (
                    new PublishingTemplateRequest
                           (
-                             "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
+                             "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer",
                              CoreArtifactTypes.Folder.getName(),
-                             PresentationType.PREVIEW_SERVER.name(),
+                             PresentationType.PREVIEW.name(),
                              "SERVER_PREVIEW_TEST_B",
                              FormatIndicator.WORD_ML
                           ),
@@ -1594,9 +1595,9 @@ public class PublishingServerPreviewTest {
                 (
                    new PublishingTemplateRequest
                           (
-                             "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer",
+                             "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer",
                              CoreArtifactTypes.Folder.getName(),
-                             PresentationType.PREVIEW_SERVER.name(),
+                             PresentationType.PREVIEW.name(),
                              "SERVER_PREVIEW_TEST_METADATAOPTIONS_ALL",
                              FormatIndicator.WORD_ML
                           ),

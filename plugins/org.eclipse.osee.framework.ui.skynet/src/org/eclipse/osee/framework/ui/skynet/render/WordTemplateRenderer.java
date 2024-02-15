@@ -27,16 +27,21 @@ import java.util.stream.Collectors;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -47,6 +52,7 @@ import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
+import org.eclipse.osee.framework.core.renderer.RenderLocation;
 import org.eclipse.osee.framework.core.util.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -75,7 +81,31 @@ import org.w3c.dom.Element;
  * @author Loren K. Ashley
  */
 
-public class MSWordTemplateClientRenderer extends FileSystemRenderer {
+public class WordTemplateRenderer extends FileSystemRenderer {
+
+   /**
+    * To be applicable the artifact being tested must not be of one of these types.
+    */
+
+   //@formatter:off
+   private static ArtifactTypeToken[] APPLICABILITY_TEST_ARTIFACT_TYPES =
+      new ArtifactTypeToken[]
+      {
+         CoreArtifactTypes.HtmlArtifact,
+         CoreArtifactTypes.Markdown,
+         CoreArtifactTypes.PlainText,
+         CoreArtifactTypes.UserGroup,
+         AtsArtifactTypes.AtsArtifact,
+         AtsArtifactTypes.AtsConfigArtifact
+      };
+   //@formatter:on
+
+   /**
+    * To be applicable the artifact being tested must not be of one of the types in
+    * {@link #APPLICABILITY_TEST_ARTIFACT_TYPES}.
+    */
+
+   private static boolean ARTIFACT_TYPES_ARE_REQUIRED = false;
 
    /**
     * When set to <code>true</code> the renderer will write to the output stream provided to it via the renderer options
@@ -96,26 +126,26 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
     * The context menu command title for the Preview command.
     */
 
-   private static final String COMMAND_TITLE_PREVIEW = "MS Word Preview (Client)";
+   private static final String COMMAND_TITLE_PREVIEW = "MS Word Preview";
 
    /**
     * The context menu command title for the Preview No Attributes command.
     */
 
-   private static final String COMMAND_TITLE_PREVIEW_NO_ATTRIBUTES = "MS Word Preview No Attributes (Client)";
+   private static final String COMMAND_TITLE_PREVIEW_NO_ATTRIBUTES = "MS Word Preview No Attributes";
 
    /**
     * The context menu command title for the Preview With Children No Attributes command.
     */
 
-   private static final String COMMAND_TITLE_PREVIEW_WITH_CHILDREN = "MS Word Preview With Children (Client)";
+   private static final String COMMAND_TITLE_PREVIEW_WITH_CHILDREN = "MS Word Preview With Children";
 
    /**
     * The context menu command title for the Preview With Children No Attributes command.
     */
 
    private static final String COMMAND_TITLE_PREVIEW_WITH_CHILDREN_NO_ATTRIBUTES =
-      "MS Word Preview With Children No Attributes (Client)";
+      "MS Word Preview With Children No Attributes";
 
    /**
     * The likely file system extension for files that hold the same type of data as is stored in main content
@@ -137,11 +167,56 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    private static List<MenuCmdDef> menuCommandDefinitions;
 
    /**
+    * A delta value added to the renderer rating when the artifact being rendered is not of the type specified by
+    * {@link #RENDERER_ARTIFACT_TYPE_TOKEN}.
+    */
+
+   private static final int NOT_RENDERER_ARTIFACT_TYPE_DELTA = 0;
+
+   /**
+    * The {@link PresentationType}s that this renderer is not applicable for.
+    */
+
+   //@formatter:off
+   private static PresentationType[] PRESENTATION_TYPE_KNOCK_OUTS =
+      new PresentationType[]
+      {
+         PresentationType.GENERALIZED_EDIT,
+         PresentationType.GENERAL_REQUESTED
+      };
+   //@formatter:on
+
+   /**
+    * The attribute types that the renderer is not applicable for when the presentation type is
+    * {@link PresentationType#PREVIEW}.
+    */
+
+   //@formatter:off
+   private static AttributeTypeToken[] PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS =
+      new AttributeTypeToken[]
+         {
+            CoreAttributeTypes.WholeWordContent,
+            CoreAttributeTypes.NativeContent
+         };
+   //@formatter:on
+
+   /**
     * The program extension for MS Word documents.
     */
 
    private static final String PROGRAM_EXTENSION_WORD = "doc";
 
+   /**
+    * The preferred/expected type of the artifact being rendered.
+    */
+
+   private static final ArtifactTypeToken RENDERER_ARTIFACT_TYPE_TOKEN = CoreArtifactTypes.MsWord;
+
+   /**
+    * The main content attribute for the preferred/expected type of artifact being rendered.
+    */
+
+   private static final AttributeTypeToken RENDERER_CONTENT_ATTRIBUTE_TYPE = CoreAttributeTypes.WordTemplateContent;
    /**
     * A short description of the type of documents processed by the renderer.
     */
@@ -158,7 +233,17 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
     * The {@link IRenderer} implementation's name.
     */
 
-   private static final String RENDERER_NAME = "Client Side MS Word Edit";
+   private static final String RENDERER_NAME = "MS Word";
+
+   /**
+    * The preferred/expected {@link RendererOption#OPEN_OPTION} for the renderer.
+    */
+
+   private static final String RENDERER_OPTION_OPEN_IN_VALUE = RendererOption.OPEN_IN_MS_WORD_VALUE.getKey();
+
+   /*
+    * Build menu commands
+    */
 
    /**
     * The {@link Program} used to invoke MS Word.
@@ -166,82 +251,149 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    private static Program wordApplication;
 
-   /*
-    * Build menu commands
-    */
-
    static {
 
-      MSWordTemplateClientRenderer.imageDescriptor =
-         ImageManager.getProgramImageDescriptor(MSWordTemplateClientRenderer.PROGRAM_EXTENSION_WORD);
+      WordTemplateRenderer.imageDescriptor =
+         ImageManager.getProgramImageDescriptor(WordTemplateRenderer.PROGRAM_EXTENSION_WORD);
 
-      MSWordTemplateClientRenderer.wordApplication =
-         Program.findProgram(MSWordTemplateClientRenderer.PROGRAM_EXTENSION_WORD);
+      WordTemplateRenderer.wordApplication =
+         Program.findProgram(WordTemplateRenderer.PROGRAM_EXTENSION_WORD);
 
       //@formatter:off
-      MSWordTemplateClientRenderer.menuCommandDefinitions =
+      WordTemplateRenderer.menuCommandDefinitions =
       List.of
          (
             new MenuCmdDef
                    (
                      CommandGroup.EDIT,
-                     MSWordTemplateClientRenderer.COMMAND_TITLE_EDIT,
-                     MSWordTemplateClientRenderer.imageDescriptor,
+                     WordTemplateRenderer.COMMAND_TITLE_EDIT,
+                     WordTemplateRenderer.imageDescriptor,
                      Map.of
                         (
-                          RendererOption.OPEN_OPTION.getKey(), RendererOption.OPEN_IN_MS_WORD_VALUE.getKey()
+                          RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
+                          RendererOption.RENDER_LOCATION.getKey(), RenderLocation.CLIENT.name()
                         )
                    ),
 
             new MenuCmdDef
                    (
                       CommandGroup.PREVIEW,
-                      MSWordTemplateClientRenderer.COMMAND_TITLE_PREVIEW,
-                      MSWordTemplateClientRenderer.imageDescriptor,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW, RenderLocation.CLIENT ),
+                      WordTemplateRenderer.imageDescriptor,
                       Map.of
                          (
                             RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
-                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_VALUE.getKey()
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.CLIENT.name()
                          )
                    ),
 
             new MenuCmdDef
                    (
                       CommandGroup.PREVIEW,
-                      MSWordTemplateClientRenderer.COMMAND_TITLE_PREVIEW_NO_ATTRIBUTES,
-                      MSWordTemplateClientRenderer.imageDescriptor,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW_NO_ATTRIBUTES, RenderLocation.CLIENT ),
+                      WordTemplateRenderer.imageDescriptor,
                       Map.of
                          (
                             RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
-                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.CLIENT.name()
+                         )
+                   ),
+
+
+            new MenuCmdDef
+                   (
+                      CommandGroup.PREVIEW,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN, RenderLocation.CLIENT ),
+                      WordTemplateRenderer.imageDescriptor,
+                      Map.of
+                         (
+                            RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.CLIENT.name()
                          )
                    ),
 
             new MenuCmdDef
                    (
                       CommandGroup.PREVIEW,
-                      MSWordTemplateClientRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN,
-                      MSWordTemplateClientRenderer.imageDescriptor,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN_NO_ATTRIBUTES, RenderLocation.CLIENT ),
+                      WordTemplateRenderer.imageDescriptor,
                       Map.of
                          (
                             RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
-                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.CLIENT.name()
                          )
                    ),
 
             new MenuCmdDef
                    (
                       CommandGroup.PREVIEW,
-                      MSWordTemplateClientRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN_NO_ATTRIBUTES,
-                      MSWordTemplateClientRenderer.imageDescriptor,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW, RenderLocation.SERVER ),
+                      WordTemplateRenderer.imageDescriptor,
                       Map.of
                          (
                             RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
-                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.SERVER.name()
+                         )
+                   ),
+
+            new MenuCmdDef
+                   (
+                      CommandGroup.PREVIEW,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW_NO_ATTRIBUTES, RenderLocation.SERVER ),
+                      WordTemplateRenderer.imageDescriptor,
+                      Map.of
+                         (
+                            RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.SERVER.name()
+                         )
+                   ),
+
+            new MenuCmdDef
+                   (
+                      CommandGroup.PREVIEW,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN, RenderLocation.SERVER ),
+                      WordTemplateRenderer.imageDescriptor,
+                      Map.of
+                         (
+                            RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.SERVER.name()
+                         )
+                   ),
+
+            new MenuCmdDef
+                   (
+                      CommandGroup.PREVIEW,
+                      WordTemplateRenderer.commandTitle( WordTemplateRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN_NO_ATTRIBUTES, RenderLocation.SERVER ),
+                      WordTemplateRenderer.imageDescriptor,
+                      Map.of
+                         (
+                            RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MS_WORD_VALUE.getKey(),
+                            RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey(),
+                            RendererOption.RENDER_LOCATION.getKey(), RenderLocation.SERVER.name()
                          )
                    )
+
          );
    //@formatter:on
+   }
+
+   /**
+    * Adds an annotation to the menu command for where the render is to be performed.
+    *
+    * @param commandTitle the title of the menu command.
+    * @param renderLocation the location where the render will be performed.
+    * @return an annotated command title.
+    */
+
+   private static String commandTitle(String commandTitle, RenderLocation renderLocation) {
+      return commandTitle + renderLocation.getMenuCommandAnnotation();
    }
 
    public static byte[] getFormattedContent(Element formattedItemElement) throws XMLStreamException {
@@ -260,29 +412,31 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
       }
       return data.toByteArray();
    }
+
    private final IComparator comparator;
 
    private final WordTemplateProcessorClient templateProcessor;
 
-   public MSWordTemplateClientRenderer() {
+   public WordTemplateRenderer() {
       this(null);
    }
 
-   public MSWordTemplateClientRenderer(RendererMap options) {
+   public WordTemplateRenderer(RendererMap options) {
       super(options);
       this.comparator = new WordTemplateCompare(this);
       this.templateProcessor = new WordTemplateProcessorClient();
-      this.menuCommands = MSWordTemplateClientRenderer.menuCommandDefinitions;
-      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, MSWordTemplateClientRenderer.CAN_STREAM);
-   }
+      this.menuCommands = WordTemplateRenderer.menuCommandDefinitions;
+      this.setRendererOption(RendererOption.CLIENT_RENDERER_CAN_STREAM, WordTemplateRenderer.CAN_STREAM);
 
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
-   protected @NonNull Optional<ImageDescriptor> getArtifactBasedImageDescriptor(@Nullable Artifact artifact) {
-      return Optional.empty();
+      super.presentationTypeKnockOuts = WordTemplateRenderer.PRESENTATION_TYPE_KNOCK_OUTS;
+      super.previewAttributeTypeKnockOuts = WordTemplateRenderer.PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS;
+      super.artifactTypesAreRequired = WordTemplateRenderer.ARTIFACT_TYPES_ARE_REQUIRED;
+      super.applicabilityTestArtifactTypes = WordTemplateRenderer.APPLICABILITY_TEST_ARTIFACT_TYPES;
+      super.defaultFileExtension = WordTemplateRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+      super.openInRendererOptionValue = WordTemplateRenderer.RENDERER_OPTION_OPEN_IN_VALUE;
+      super.rendererArtifactTypeToken = WordTemplateRenderer.RENDERER_ARTIFACT_TYPE_TOKEN;
+      super.notRendererArtifactTypeDelta = WordTemplateRenderer.NOT_RENDERER_ARTIFACT_TYPE_DELTA;
+      super.rendererContentAttributeType = WordTemplateRenderer.RENDERER_CONTENT_ATTRIBUTE_TYPE;
    }
 
    /**
@@ -301,12 +455,15 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
       }
    }
 
+   /**
+    * {@inheritDoc}
+    */
+
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
-      var rating = MSWordTemplateRendererUtils.getApplicabilityRating(presentationType, artifact, rendererOptions);
-      if (!PresentationType.PREVIEW.equals(presentationType)) {
-         rating--;
-      }
+
+      var rating = this.getBaseApplicabilityRating(presentationType, artifact, rendererOptions);
+
       return rating;
    }
 
@@ -315,8 +472,17 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
     */
 
    @Override
+   protected @NonNull Optional<ImageDescriptor> getArtifactBasedImageDescriptor(@Nullable Artifact artifact) {
+      return Optional.empty();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+
+   @Override
    public Program getAssociatedProgram(Artifact artifact) {
-      return MSWordTemplateClientRenderer.wordApplication;
+      return WordTemplateRenderer.wordApplication;
    }
 
    @Override
@@ -330,7 +496,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    @Override
    public String getDefaultAssociatedExtension() {
-      return MSWordTemplateClientRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+      return WordTemplateRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
    }
 
    /**
@@ -339,7 +505,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    @Override
    public String getDocumentTypeDescription() {
-      return MSWordTemplateClientRenderer.RENDERER_DOCUMENT_TYPE_DESCRIPTION;
+      return WordTemplateRenderer.RENDERER_DOCUMENT_TYPE_DESCRIPTION;
    }
 
    /**
@@ -348,7 +514,7 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    @Override
    public String getIdentifier() {
-      return MSWordTemplateClientRenderer.RENDERER_IDENTIFIER;
+      return WordTemplateRenderer.RENDERER_IDENTIFIER;
    }
 
    /**
@@ -357,11 +523,30 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
 
    @Override
    public String getName() {
-      return MSWordTemplateClientRenderer.RENDERER_NAME;
+      return WordTemplateRenderer.RENDERER_NAME;
    }
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
+
+      if (this.isRendererOptionSet(RendererOption.RENDER_LOCATION)) {
+
+         RenderLocation renderLocation = this.getRendererOptionValue(RendererOption.RENDER_LOCATION);
+
+         switch (renderLocation) {
+            default:
+            case CLIENT:
+               return this.getRenderInputStreamClient(presentationType, artifacts);
+            case SERVER:
+               return this.getRenderInputStreamServer(presentationType, artifacts);
+         }
+
+      }
+
+      return this.getRenderInputStreamClient(presentationType, artifacts);
+   }
+
+   public InputStream getRenderInputStreamClient(PresentationType presentationType, List<Artifact> artifacts) {
 
       /*
        * Validate Inputs
@@ -470,6 +655,120 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
                   outputStream                                                    /* Output Stream */
                );
       //@formatter:on
+   }
+
+   /**
+    * Sends a MsWord document publishing request to the OSEE server and returns the response content as an
+    * {@link Attachment}.
+    *
+    * @param presentationType enumeration describing how the results will be presented to the user and used for the
+    * publishing template selection.
+    * @param publishArtifacts a list of the {@link Artifact} objects to be published.
+    * @return an {@link Attachment} containing the MsWord content of the published artifacts.
+    * @throws NullPointerException when <code>presentationType</code> is <code>null</code>, <code>artifacts</code> is
+    * <code>null</code>, or <code>artifacts</code> contains a <code>null</code> element.
+    * @throws NullPointerException when the parameter <code>presentationType</code> is <code>null</code>.
+    * @throws IllegalArgumentException when the parameter <code>artifacts</code> is <code>null</code>, empty, or
+    * contains a <code>null</code>.
+    * @throws OseeCoreException when the publish fails.
+    */
+
+   private InputStream getRenderInputStreamServer(PresentationType presentationType, List<Artifact> artifacts) {
+
+      /*
+       * Validate Inputs
+       */
+
+      //@formatter:off
+      Conditions.require
+         (
+            presentationType,
+            ValueType.PARAMETER,
+            MarkdownRenderer.class.getName(),
+            "getRenderInputStream",
+            "presentationType",
+            "must be non-null",
+            Objects::isNull,
+            NullPointerException::new
+         );
+
+      Conditions.require
+         (
+            artifacts,
+            ValueType.PARAMETER,
+            MarkdownRenderer.class.getName(),
+            "getRenderInputStream",
+            "artifacts",
+            "must be non-null and non-empty",
+            Conditions.or( Objects::isNull, Collection::isEmpty ),
+            "must not contain null elements",
+            Conditions::collectionContainsNull,
+            IllegalArgumentException::new
+         );
+      //@formatter:on
+
+      /*
+       * Set Publishing Format
+       */
+
+      var formatIndicator = FormatIndicator.WORD_ML;
+      this.setRendererOption(RendererOption.PUBLISHING_FORMAT, formatIndicator);
+
+      /*
+       * Create the server request data
+       */
+
+      //@formatter:off
+      var publishingTemplateRequest =
+         new PublishingTemplateRequest
+                (
+                   this.getIdentifier(),                                                 /* Match Criteria: Renderer Id                */
+                   artifacts.get(0).getArtifactTypeName(),                               /* Match Criteria: Publish Artifact Type Name */
+                   presentationType.name(),                                              /* Match Criteria: Presentation Type          */
+                   (String) this.getRendererOptionValue(RendererOption.TEMPLATE_OPTION), /* Match Criteria: Option                     */
+                   formatIndicator                                                       /* Publish Format Indicator                   */
+                );
+
+      var artifactIdentifiers =
+         artifacts
+            .stream()
+            .map( Artifact::getId )
+            .map( ArtifactId::valueOf )
+            .collect( Collectors.toList() );
+
+      var publishingRequestData =
+         new PublishingRequestData
+                (
+                   publishingTemplateRequest, /* Publishing Template Request */
+                   this,                      /* Renderer Options            */
+                   artifactIdentifiers        /* Artifact To Publish         */
+                );
+      //@formatter:on
+
+      /*
+       * Make the server call for the publish
+       */
+
+      var attachment = PublishingRequestHandler.msWordPreview(publishingRequestData);
+
+      try {
+
+         return attachment.getDataHandler().getInputStream();
+
+      } catch (Exception e) {
+         //@formatter:off
+         throw
+            new OseeCoreException
+                   (
+                      new Message()
+                             .title( "MSWordTemplateServerRenderer::getRenderInputStream, failed to obtain publishing stream." )
+                             .reasonFollows( e )
+                             .toString(),
+                      e
+                   );
+         //@formatter:on
+      }
+
    }
 
    /**
@@ -630,13 +929,13 @@ public class MSWordTemplateClientRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public MSWordTemplateClientRenderer newInstance() {
-      return new MSWordTemplateClientRenderer();
+   public WordTemplateRenderer newInstance() {
+      return new WordTemplateRenderer();
    }
 
    @Override
-   public MSWordTemplateClientRenderer newInstance(RendererMap rendererOptions) {
-      return new MSWordTemplateClientRenderer(rendererOptions);
+   public WordTemplateRenderer newInstance(RendererMap rendererOptions) {
+      return new WordTemplateRenderer(rendererOptions);
    }
 
 

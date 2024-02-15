@@ -33,7 +33,10 @@ import org.junit.Assert;
  * Internal implementation of the {@link BuidlerRecord} interface that wraps an unknown implementation of the
  * {@link ArtifactSpecificationRecord} interface with some additional members used in the test document building
  * process.
+ *
+ * @author Loren K. Ashley
  */
+
 public class ArtifactSpecificationRecordWrapper implements ArtifactSpecificationRecord {
 
    /**
@@ -62,6 +65,12 @@ public class ArtifactSpecificationRecordWrapper implements ArtifactSpecification
    private final Map<AttributeTypeGeneric<?>, List<Attribute<?>>> attributeValueListByAttributeTypeMap;
 
    /**
+    * Flag to indicate if attributes are modified.
+    */
+
+   private boolean attributesModified;
+
+   /**
     * Wraps a {@link ArtifactSpecificationRecord} with additional members for the test document building process.
     *
     * @param builderRecord {@link ArtifactSpecificationRecord} to be wrapped.
@@ -69,20 +78,21 @@ public class ArtifactSpecificationRecordWrapper implements ArtifactSpecification
 
    ArtifactSpecificationRecordWrapper(@NonNull ArtifactSpecificationRecord builderRecord) {
 
-      //@formatter:off
-      this.builderRecord =
-         Conditions.requireNonNull
-            (
-               builderRecord,
-               "ArtifactSpecificationRecordWrapper",
-               "new",
-               "builderRecord"
-            );
-      //@formatter:on
-
+      this.builderRecord = Conditions.requireNonNull(builderRecord, "builderRecord");
       this.artifact = null;
       this.artifactToken = null;
       this.attributeValueListByAttributeTypeMap = new HashMap<>();
+      this.attributesModified = false;
+   }
+
+   /**
+    * Predicate to determine if the Artfiact's attributes have been modified.
+    *
+    * @return <code>true</code>, when the artifact's attributes are modified; otherwise, <code>false</code>.
+    */
+
+   boolean areAttributesModified() {
+      return this.attributesModified;
    }
 
    /**
@@ -187,7 +197,10 @@ public class ArtifactSpecificationRecordWrapper implements ArtifactSpecification
     * @param attributeList the {@link List} of {@Attribute}} values for the test attribute type.
     */
 
-   void setAttributeValueList(AttributeTypeGeneric<?> attributeType, List<Attribute<?>> attributeList) {
+   void setAttributeValueList(boolean modified, AttributeTypeGeneric<?> attributeType,
+      List<Attribute<?>> attributeList) {
+
+      this.attributesModified |= modified;
       //@formatter:off
       this.attributeValueListByAttributeTypeMap.put
          (

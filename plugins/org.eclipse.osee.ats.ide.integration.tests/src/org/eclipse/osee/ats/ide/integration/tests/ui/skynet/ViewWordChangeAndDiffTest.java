@@ -13,16 +13,13 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
-import static java.lang.Thread.sleep;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.junit.Assert.assertTrue;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
@@ -42,15 +39,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.change.CompareData;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -59,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -413,63 +405,6 @@ public final class ViewWordChangeAndDiffTest {
       this.rendererOptions = new EnumRendererMap(RendererOption.NO_DISPLAY, true);
    }
 
-   @Test
-   public void testCompareTwoArtifacts() throws Exception {
-      Collection<Change> changes = getChanges(ViewWordChangeAndDiffTest.rootBranchId);
-      ArrayList<Artifact> artifacts = asArtifacts(changes);
-
-      checkPermissions(artifacts);
-      TransactionDelta txDelta = changes.iterator().next().getTxDelta();
-      Artifact newerArtifact = loadHistorical(artifacts.get(0));
-      Artifact baseArtifact = loadHistorical(artifacts.get(1));
-
-      final Collection<CompareData> testDatas = new ArrayList<>();
-
-      CompareDataCollector collector = new CompareDataCollector() {
-
-         @Override
-         public void onCompare(CompareData data) {
-            testDatas.add(data);
-         }
-      };
-
-      var testFolder = this.testName.getMethodName();
-
-      //@formatter:off
-      RendererManager.diff
-         (
-            collector,
-            new ArtifactDelta( txDelta, baseArtifact, newerArtifact ),
-            testFolder,
-            rendererOptions
-         );
-      //@formatter:on
-
-      /*
-       * Have to provide time for the Visual Basic Script and Word to complete the differences.
-       */
-
-      sleep(8000);
-
-      Assert.assertEquals(1, testDatas.size());
-      CompareData testData = testDatas.iterator().next();
-
-      Assert.assertEquals(1, testData.size());
-      Entry<String, String> fileSet = testData.entrySet().iterator().next();
-
-      File vbScript = new File(testData.getGeneratorScriptPath());
-      File outPut = new File(testData.getOutputPath());
-      File file1 = new File(fileSet.getKey());
-      File file2 = new File(fileSet.getValue());
-
-      Assert.assertTrue(vbScript.exists());
-      Assert.assertTrue(file1.exists());
-      Assert.assertTrue(file2.exists());
-
-      if (Lib.isWindows()) {
-         Assert.assertTrue(outPut.exists());
-      }
-   }
 
    @Test
    public void testViewWordChangeReport() throws Exception {
@@ -518,9 +453,9 @@ public final class ViewWordChangeAndDiffTest {
    }
 
    private static Collection<Change> getChanges(BranchId testBranch) {
-      Collection<Change> changes = new ArrayList<>();
-      IOperation operation =
-         ChangeManager.comparedToPreviousTx(TransactionManager.getHeadTransaction(testBranch), changes);
+      final var changes = new ArrayList<Change>();
+      final var transaction = TransactionManager.getHeadTransaction(testBranch);
+      final var operation = ChangeManager.comparedToPreviousTx(transaction, changes);
       Operations.executeWorkAndCheckStatus(operation);
       return changes;
    }

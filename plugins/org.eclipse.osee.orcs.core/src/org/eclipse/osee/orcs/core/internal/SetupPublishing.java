@@ -131,7 +131,7 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
                                             PresentationType.SPECIALIZED_EDIT.name()                            /* Presentation Type   */
                                          )
                                )
@@ -159,13 +159,13 @@ public class SetupPublishing {
                             (
                                new PublishingTemplateMatchCriterion
                                       (
-                                         RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                               /* Renderer Identifier */
+                                         RENDERER_IDENTIFIER_WORD_TEMPLATE,                                     /* Renderer Identifier */
                                          PresentationType.MERGE.name()                                          /* Presentation Type   */
                                       ),
 
                                new PublishingTemplateMatchCriterion
                                       (
-                                         RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                               /* Renderer Identifier */
+                                         RENDERER_IDENTIFIER_WORD_TEMPLATE,                                     /* Renderer Identifier */
                                          PresentationType.DIFF.name(),                                          /* Presentation Type   */
                                          RendererOption.THREE_WAY_MERGE.getKey()                                /* Option              */
                                       )
@@ -202,7 +202,7 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
                                             PresentationType.DIFF.name()                                        /* Presentation Type   */
                                          )
                                )
@@ -210,7 +210,7 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
                                             PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
                                             RendererOption.PREVIEW_ALL_VALUE.getKey()                           /* Option              */
                                          )
@@ -219,17 +219,8 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD,                            /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_VALUE.getKey()                           /* Option              */
-                                         )
-                               )
-                            .appendAlways
-                               (
-                                  new PublishingTemplateMatchCriterion
-                                         (
                                             RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
+                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
                                             RendererOption.PREVIEW_ALL_VALUE.getKey()                           /* Option              */
                                          )
                                )
@@ -266,7 +257,7 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
                                             "DIFF_NO_ATTRIBUTES"                                                /* Match String        */
                                          )
                                )
@@ -274,7 +265,7 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
                                             PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
                                             RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()             /* Option              */
                                          )
@@ -283,17 +274,8 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD,                            /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()             /* Option              */
-                                         )
-                               )
-                            .appendAlways
-                               (
-                                  new PublishingTemplateMatchCriterion
-                                         (
                                             RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
+                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
                                             RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()             /* Option              */
                                          )
                                )
@@ -330,7 +312,7 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
                                             PresentationType.PREVIEW.name(),                                    /* PresentationType    */
                                             RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                   /* Option              */
                                          )
@@ -339,17 +321,8 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD,                            /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* PresentationType    */
-                                            RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                   /* Option              */
-                                         )
-                               )
-                            .appendAlways
-                               (
-                                  new PublishingTemplateMatchCriterion
-                                         (
                                             RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* PresentationType    */
+                                            PresentationType.PREVIEW.name(),                                    /* PresentationType    */
                                             RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                   /* Option              */
                                          )
                                )
@@ -386,7 +359,7 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD,                            /* Renderer Identifier */
+                                            RENDERER_IDENTIFIER_WORD_TEMPLATE,                                  /* Renderer Identifier */
                                             PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
                                             RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()     /* Option              */
                                          )
@@ -395,17 +368,8 @@ public class SetupPublishing {
                                (
                                   new PublishingTemplateMatchCriterion
                                          (
-                                            RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD,                            /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
-                                            RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()     /* Option              */
-                                         )
-                               )
-                            .appendAlways
-                               (
-                                  new PublishingTemplateMatchCriterion
-                                         (
                                             RENDERER_IDENTIFIER_MARKDOWN,                                       /* Renderer Identifier */
-                                            PresentationType.PREVIEW_SERVER.name(),                             /* Presentation Type   */
+                                            PresentationType.PREVIEW.name(),                                    /* Presentation Type   */
                                             RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()     /* Option              */
                                          )
                                )
@@ -420,15 +384,8 @@ public class SetupPublishing {
     * The name of the client side Word Markup Language renderer for publishing previews.
     */
 
-   private static String RENDERER_IDENTIFIER_CLIENT_SIDE_MS_WORD =
+   private static String RENDERER_IDENTIFIER_WORD_TEMPLATE =
       "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer";
-
-   /**
-    * The name of the server side Word Markup Language renderer for publishing previews.
-    */
-
-   private static String RENDERER_IDENTIFIER_SERVER_SIDE_MS_WORD =
-      "org.eclipse.osee.framework.ui.skynet.render.MSWordRestRenderer";
 
    /**
     * The name of the Markdown renderer for publishing previews.

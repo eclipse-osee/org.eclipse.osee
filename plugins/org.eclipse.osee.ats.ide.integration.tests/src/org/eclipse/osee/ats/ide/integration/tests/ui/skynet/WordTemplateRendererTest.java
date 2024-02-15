@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ui.skynet;
 
-import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.BRANCH;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.COMPARE_BRANCH;
 import static org.eclipse.osee.framework.core.publishing.RendererOption.LINK_TYPE;
@@ -26,15 +25,22 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.ArtifactSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.AttributeSetters;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicArtifactSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicAttributeSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BasicBranchSpecificationRecord;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.BranchSpecificationRecord;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.PublishingTemplateSetterImpl;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestDocumentBuilder;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.utils.TestUtil;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.TestUserRules;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.ExitDatabaseInitializationRule;
@@ -44,7 +50,10 @@ import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
-import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.client.OseeClient;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -56,10 +65,11 @@ import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.util.LinkType;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.MapList;
 import org.eclipse.osee.framework.jdk.core.util.Message;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -69,7 +79,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHand
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
-import org.eclipse.osee.framework.ui.skynet.render.MSWordTemplateClientRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.orcs.core.util.PublishingTemplate;
 import org.eclipse.osee.orcs.core.util.PublishingTemplateMatchCriterion;
 import org.junit.After;
@@ -90,6 +100,41 @@ import org.junit.rules.TestRule;
 
 public class WordTemplateRendererTest {
 
+   /**
+    * Set this flag to <code>false</code> to prevent the test setup code from altering attribute values in the database.
+    * The default (normal for testing) value is <code>true</code>.
+    */
+
+   private static boolean setValues = true;
+
+   /**
+    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
+    * the following:
+    * <dl>
+    * <dt>Not Production Data Store Rule</dt>
+    * <dd>This rule is used to prevent modification of a production database.</dd>
+    * <dt>ExitDatabaseInitializationRule</dt>
+    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
+    * <dt>In Publishing Group Test Rule</dt>
+    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
+    * {@Link UserToken} cache has been flushed.</dd>
+    * <dt>NoPopUpsRule</dt>
+    * <dd>Prevents word documents from being launched for the user during tests.</dd>
+    * </dl>
+    */
+
+   //@formatter:off
+   @ClassRule
+   public static TestRule classRuleChain =
+      RuleChain
+         .outerRule( new NotProductionDataStoreRule() )
+         .around( new ExitDatabaseInitializationRule() )
+         .around( TestUserRules.createInPublishingGroupTestRule() )
+         .around( new NoPopUpsRule() )
+         .around( new NotForEclipseOrgRule() ) //<--ToDo: Remove with TW22315
+         ;
+   //@formatter:on
+
    private static class Check {
 
       CheckFilter checkFilter;
@@ -104,12 +149,14 @@ public class WordTemplateRendererTest {
          this.testIsRegex = false;
       }
 
-      Check(ErrorTitleSupplier errorTitleSupplier, CheckStringSupplier checkStringSupplier, CheckFilter checkFilter, boolean testIsRegex) {
+      Check(ErrorTitleSupplier errorTitleSupplier, CheckStringSupplier checkStringSupplier, CheckFilter checkFilter,
+         boolean testIsRegex) {
          this(errorTitleSupplier, checkStringSupplier, checkFilter);
          this.testIsRegex = testIsRegex;
       }
 
-      void perform(String testName, String filePath, String document, String period, String altString, String pubString, Boolean mergeFlag, Boolean fieldcodeFlag) {
+      void perform(String testName, String filePath, String document, String period, String altString, String pubString,
+         Boolean mergeFlag, Boolean fieldcodeFlag) {
 
          if (this.checkFilter.apply(mergeFlag, fieldcodeFlag)) {
 
@@ -155,33 +202,6 @@ public class WordTemplateRendererTest {
 
    private static final String beginLinkInsert = "</w:t></w:r>OSEE_LINK(";
    private static final String beginWordString = "<w:p><w:r><w:t>";
-   /**
-    * Class level testing rules are applied before the {@link #testSetup} method is invoked. These rules are used for
-    * the following:
-    * <dl>
-    * <dt>Not Production Data Store Rule</dt>
-    * <dd>This rule is used to prevent modification of a production database.</dd>
-    * <dt>ExitDatabaseInitializationRule</dt>
-    * <dd>This rule will exit database initialization mode and re-authenticate as the test user when necessary.</dd>
-    * <dt>In Publishing Group Test Rule</dt>
-    * <dd>This rule is used to ensure the test user has been added to the OSEE publishing group and the server
-    * {@Link UserToken} cache has been flushed.</dd>
-    * <dt>NoPopUpsRule</dt>
-    * <dd>Prevents word documents from being launched for the user during tests.</dd>
-    * </dl>
-    */
-
-   //@formatter:off
-   @ClassRule
-   public static TestRule classRuleChain =
-      RuleChain
-         .outerRule( new NotProductionDataStoreRule() )
-         .around( new ExitDatabaseInitializationRule() )
-         .around( TestUserRules.createInPublishingGroupTestRule() )
-         .around( new NoPopUpsRule() )
-         .around( new NotForEclipseOrgRule() ) //<--ToDo: Remove with TW22315
-         ;
-   //@formatter:on
    private static final String endLinkInsert = ")<w:r><w:t>";
    private static final String endWordString = "</w:t></w:r></w:p>";
    private static final Pattern findBlankPage = Pattern.compile("This page is intentionally left blank");
@@ -246,6 +266,20 @@ public class WordTemplateRendererTest {
                       WordTemplateRendererTest.SINGLE_TEMPLATE,                                              /* Name                       */
                       "SingleRendererOptions.json",                                                          /* Renderer Options File Name */
                       "wordrenderer_single.xml",                                                             /* Template Content File Name */
+                      List.of
+                         (
+                         ),
+                      List.of                                                                                /* Match Criteria             */
+                        (
+                        )
+                   ),
+
+            new PublishingTemplate
+                   (
+                      CoreArtifactTokens.DocumentTemplates,                                                  /* Parent Artifact Identifier */
+                      WordTemplateRendererTest.TEST_PUBLISH_WITH_DIFF_LINKS_TEMPLATE,                        /* Name                       */
+                      "TestPublishWithDiffLinks.json",                                                       /* Renderer Options File Name */
+                      "TestPublishWithDiffLinks.xml",                                                        /* Template Content File Name */
                       List.of
                          (
                          ),
@@ -340,6 +374,8 @@ public class WordTemplateRendererTest {
 
    private static final String SINGLE_TEMPLATE = "Single Template";
 
+   private static final String TEST_PUBLISH_WITH_DIFF_LINKS_TEMPLATE = "Single X";
+
    private static final String SINGLE_TEMPLATE_ATTRIBUTES = "Single With Attributes";
 
    private static final String tabString = "wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"";
@@ -433,60 +469,58 @@ public class WordTemplateRendererTest {
 
             new Check
                    (
-                     (testName)                     -> String.format("%s, Expected 2. Notes", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
+                     (testName)                     -> String.format("%s, Expected 2. Subsystem", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
                      (mergeFlag, fieldcodeFlag)     -> true
                    ),
 
             new Check
                    (
-                     (testName)                     -> String.format("%s, Expected 2.1 More Notes", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
-                   ),
-
-            new Check
-                   (
-                     (testName)                     -> String.format("%s, Expected 3. Subsystem", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true
-                   ),
-
-            new Check
-                   (
-                     (testName)                     -> String.format("%s, Expected 3.1 Hardware", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
+                     (testName)                     -> String.format("%s, Expected 2.1 Hardware", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>",
                      (mergeFlag, fieldcodeFlag)     -> !fieldcodeFlag
                    ),
 
             new Check
                    (
-                     (testName)                     -> String.format("%s, Expected 3.1.1 Hardware Functions", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
+                     (testName)                     -> String.format("%s, Expected 2.1.1 Hardware Functions", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>",
                      (mergeFlag, fieldcodeFlag)     -> true
                    ),
 
             new Check
                    (
-                     (testName)                     -> String.format("%s, Expected 3.2 Software", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
+                     (testName)                     -> String.format("%s, Expected 2.2 Software", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>",
                      (mergeFlag, fieldcodeFlag)     -> true
                    ),
 
             new Check
                    (
-                     (testName)                     -> String.format("%s, Expected 3.2.1 Software Functions", testName),
-                     (period, altString, pubString) -> "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
-                     (mergeFlag, fieldcodeFlag)     -> true)
-                   );
+                     (testName)                     -> String.format("%s, Expected 2.2.1 Software Functions", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"2.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 3. Notes", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   ),
+
+            new Check
+                   (
+                     (testName)                     -> String.format("%s, Expected 3.1 More Notes", testName),
+                     (period, altString, pubString) -> "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>",
+                     (mergeFlag, fieldcodeFlag)     -> true
+                   )
+         );
     //@formatter:on
 
    private String content;
 
    private String contentPath;;
-
-   private Artifact docFolder;
-   private Artifact childDocFolder;
 
    @Rule
    public TestInfo method = new TestInfo();
@@ -497,17 +531,534 @@ public class WordTemplateRendererTest {
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
 
-   private MSWordTemplateClientRenderer renderer;
+   private WordTemplateRenderer renderer;
 
-   private BranchToken rootBranch;
+   private BranchId baselineBranch;
+   private BranchId workingBranch;
+   private ArtifactId documentFolderArtifactId;
+   private ArtifactId softwareRequirementFolderArtifactId;
 
-   private Artifact swReqFolder;
+   /**
+    * Saves a {@link Map} of the artifacts associated with each {@link ArtifactSpecificationRecord}.
+    */
 
-   private Artifact templateFolder;
+   private static Map<Integer, Optional<Artifact>> builderRecordMap;
 
-   private BranchToken updateBranch;
+   private static int baselineBranchSpecificationRecordIdentifier = 1;
+   private static int workingBranchSpecificationRecordIdentifier = 2;
 
-   private void basicDocumentCheck(String filePath, String document, String pubString, boolean merge, boolean fieldcode) {
+   //@formatter:off
+   private static final List<BranchSpecificationRecord> branchSpecifications =
+      List.of
+         (
+            new BasicBranchSpecificationRecord
+                   (
+                      WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier,  /* BranchSpecificationRecord Identifier */
+                      "Word Template Renderer Test Baseline Branch",                         /* Branch Name                          */
+                      "Branch for Word Template Renderer Testing"                            /* Branch Creation Comment              */
+                   ),
+            new BasicBranchSpecificationRecord
+                   (
+                      WordTemplateRendererTest.workingBranchSpecificationRecordIdentifier,   /* BranchSpecificationRecord Identifier */
+                      "Word Template Renderer Test Working Branch",                          /* Branch Name                          */
+                      "Branch for Word Template Renderer Testing",                           /* Branch Creation Comment              */
+                      WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier   /* Parent Branch Identifier             */
+                   )
+         );
+   //@formatter:on
+
+   //@formatter:off
+   /*
+    root
+    |
+    |----Document Folder
+    |    |
+    |    |----Introduction
+    |         |---- Background
+    |         |---- Scope
+    |         |
+    |         Subsystem
+    |         |---- Hardware
+    |         |     |---- Hardware Functions
+    |         |---- Software
+    |         |     |---- Software Functions
+    |         |
+    |         Notes
+    |         |---- More Notes
+    |
+    |----Software Requirements
+    |    |
+    |    |----Crew Station Requirements
+    |         |---- Communication Subsystem Crew Interface
+    |         |---- Navigation Subsystem Crew Interface
+    |         |---- Aircraft Systems Management Subsystem Crew Interface
+    |               |---- Aircraft Drawing
+    |               |---- Ventilation
+    |
+    |----Templates
+    */
+   //@formatter:on
+
+   //@formatter:off
+   private static MapList<Integer,ArtifactSpecificationRecord> artifactSpecifications =
+      MapList.ofEntries
+         (
+            /*
+             * Artifacts for the test branch.
+             */
+
+            Map.entry
+               (
+                  WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier,                         /* Test Branch Identifier                 (Integer)                               */
+                  List.of
+                     (
+                        new BasicArtifactSpecificationRecord
+                           (
+                              1,                                                                                /* Identifier                             (Integer)                               */
+                              0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Document Folder",                                                                /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              2,                                                                                /* Identifier                             (Integer)                               */
+                              1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Introduction",                                                                   /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "1"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "Introduction section of the document." + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              3,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Background",                                                                     /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SubsystemDesignMsWord,                                          /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "1.1"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "This is the background of the doc" + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                     new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.SeverityCategory,                               /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "III"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              4,                                                                                /* Identifier                             (Integer)                               */
+                              2,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Scope",                                                                          /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SubsystemDesignMsWord,                                          /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "1.2"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "The scope is the entire test" + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              5,                                                                                /* Identifier                             (Integer)                               */
+                              1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Subsystem",                                                                      /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SubsystemDesignMsWord,                                          /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "2"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "The following are SubSystems of the test document" + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              6,                                                                                /* Identifier                             (Integer)                               */
+                              5,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                             // "Hardware",                                                                       /* Artifact Name                          (String)                                */
+                              //CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              ArtifactToken.valueOf
+                                     (
+                                        232323L,
+                                        "Hardware",
+                                        CoreArtifactTypes.HeadingMsWord
+                                     ),
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "2.1"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "Hardware is an important Sub System" + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              7,                                                                                /* Identifier                             (Integer)                               */
+                              6,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Hardware Functions",                                                             /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HardwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "2.1.1"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "The first hardware function is power on switch" + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              8,                                                                                /* Identifier                             (Integer)                               */
+                              5,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Software",                                                                       /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "2.2"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "Software is crucial to be running correctly" + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              9,                                                                                /* Identifier                             (Integer)                               */
+                              8,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Software Functions",                                                             /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareDesignMsWord,                                           /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "2.2.1"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "Hello World, is basic software." + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              10,                                                                               /* Identifier                             (Integer)                               */
+                              1,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Notes",                                                                          /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "3"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + "232323" + endLinkInsert + " too." + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              11,                                                                               /* Identifier                             (Integer)                               */
+                              10,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "More Notes",                                                                     /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.ParagraphNumber,                                /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   "3.1"
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           ),
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "More notes to read!" + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              12,                                                                               /* Identifier                             (Integer)                               */
+                              0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Software Requirements",                                                          /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              13,                                                                               /* Identifier                             (Integer)                               */
+                              12,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Crew Station Requirements",                                                      /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              14,                                                                               /* Identifier                             (Integer)                               */
+                              13,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Communication Subsystem Crew Interface",                                         /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "This is the list of Communication crew station requirements." + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              15,                                                                               /* Identifier                             (Integer)                               */
+                              13,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Navigation Subsystem Crew Interface",                                            /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "This is the list of Navigation crew station requirements." + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              16,                                                                               /* Identifier                             (Integer)                               */
+                              13,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Aircraft Systems Management Subsystem Crew Interface",                           /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "This is the list of Aircraft Management crew station requirements." + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              17,                                                                               /* Identifier                             (Integer)                               */
+                              16,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Aircraft Drawing",                                                               /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              18,                                                                               /* Identifier                             (Integer)                               */
+                              16,                                                                               /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Ventilation",                                                                    /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.SoftwareRequirementMsWord,                                      /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                    new BasicAttributeSpecificationRecord
+                                           (
+                                             CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
+                                             List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
+                                                (
+                                                   beginWordString + "This is the Ventilation crew station requirements." + endWordString
+                                                ),
+                                             AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
+                                           )
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           ),
+                        new BasicArtifactSpecificationRecord
+                           (
+                              19,                                                                               /* Identifier                             (Integer)                               */
+                              0,                                                                                /* Hierarchical Parent Identifier         (Integer)                               */
+                              "Templates",                                                                      /* Artifact Name                          (String)                                */
+                              CoreArtifactTypes.Folder,                                                         /* Artifact Type                          (ArtifactTypeToken)                     */
+                              List.of                                                                           /* Attribute Specifications               (List<AttributeSpecificationRecord>)    */
+                                 (
+                                 ),
+                              List.of()                                                                         /* BuilderRelationshipRecords             (List<BuilderRelationshipRecords>)      */
+                           )
+                     )
+               )
+         );
+
+
+   private void basicDocumentCheck(String filePath, String document, String pubString, boolean merge,
+      boolean fieldcode) {
 
       //@formatter:off
       var testName  = method.getQualifiedTestName();
@@ -690,6 +1241,109 @@ public class WordTemplateRendererTest {
 
    @Before
    public void setUp() {
+
+      /*
+       * Try to cleanup any old branches
+       */
+
+      final var oseeClient = OsgiUtil.getService(WordTemplateRendererTest.class, OseeClient.class);
+
+      Assert.assertNotNull("TestDocumentBuilder::buildDocument, Failed to get OSEE Client.", oseeClient);
+
+      /*
+       * Get Branch end point for test data setup
+       */
+
+      final var branchEndpoint = oseeClient.getBranchEndpoint();
+
+      //@formatter:off
+      for (var branch  = TestUtil.getBranchByName(branchEndpoint, "Word Template Renderer Test Working Branch").orElse(null);
+               branch != null;
+               branch  = TestUtil.getBranchByName(branchEndpoint, "Word Template Renderer Test Working Branch").orElse(null) ) {
+
+         BranchManager.purgeBranch(branch);
+      }
+
+      for (var branch  = TestUtil.getBranchByName(branchEndpoint, "Word Template Renderer Test Baseline Branch").orElse(null);
+               branch != null;
+               branch  = TestUtil.getBranchByName(branchEndpoint, "Word Template Renderer Test Baseline Branch").orElse(null) ) {
+
+         BranchManager.purgeBranch(branch);
+      }
+
+      //@formatter:on
+
+      /*
+       * Create the Test Artifacts
+       */
+
+      var testDocumentBuilder = new TestDocumentBuilder(WordTemplateRendererTest.setValues);
+
+      //@formatter:off
+      testDocumentBuilder.buildDocument
+         (
+            WordTemplateRendererTest.branchSpecifications,
+            WordTemplateRendererTest.artifactSpecifications
+         );
+      //@formatter:on
+
+      /*
+       * Save identifiers of test document root
+       */
+
+      //@formatter:off
+      this.baselineBranch =
+         testDocumentBuilder
+            .getBranchIdentifier
+               (
+                  WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier
+               )
+            .get();
+
+      this.workingBranch =
+         testDocumentBuilder
+            .getBranchIdentifier
+               (
+                  WordTemplateRendererTest.workingBranchSpecificationRecordIdentifier
+               )
+            .get();
+
+      this.documentFolderArtifactId =
+         testDocumentBuilder
+            .getArtifactIdentifier
+               (
+                  WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier,
+                  1
+               )
+            .get();
+
+      this.softwareRequirementFolderArtifactId =
+         testDocumentBuilder
+            .getArtifactIdentifier
+               (
+                  WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier,
+                  8
+               )
+            .get();
+
+      WordTemplateRendererTest.builderRecordMap =
+         WordTemplateRendererTest
+            .artifactSpecifications
+            .stream( WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier )
+            .map( ArtifactSpecificationRecord::getIdentifier )
+            .collect
+               (
+                  Collectors.toMap
+                     (
+                        Function.identity(),
+                        ( builderRecordIdentifier ) -> testDocumentBuilder.getArtifact
+                                                     (
+                                                        WordTemplateRendererTest.baselineBranchSpecificationRecordIdentifier,
+                                                        builderRecordIdentifier
+                                                     )
+                     )
+               );
+
       // Establish default option settings
       //@formatter:off
       EnumRendererMap rendererOptionsMap =
@@ -708,69 +1362,48 @@ public class WordTemplateRendererTest {
                   RendererOption.PUBLISH_EMPTY_HEADERS,    true
                 );
       //@formatter:on
-      this.renderer = new MSWordTemplateClientRenderer(rendererOptionsMap);
+      this.renderer = new WordTemplateRenderer(rendererOptionsMap);
 
-      String branchName = method.getQualifiedTestName();
-      rootBranch = BranchManager.createTopLevelBranch(branchName);
-      ServiceUtil.getOseeClient().getAccessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-         rootBranch, PermissionEnum.FULLACCESS);
+      final var documentFolderArtifact =
+         ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.baselineBranch);
 
-      Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(rootBranch);
-
-      templateFolder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, rootBranch, "Templates");
-      swReqFolder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, rootBranch, "Software Requirements");
-      docFolder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, rootBranch, "Document Folder");
-
-      programRoot.addChild(docFolder);
-      programRoot.addChild(templateFolder);
-      programRoot.addChild(swReqFolder);
-
-      templateFolder.persist("TEMPLATE FOLDER SETUP");
-
-      setUpDocFolder(docFolder, rootBranch);
-      docFolder.persist("DOCUMENT FOLDER SETUP");
-
-      setUpSWReq(swReqFolder, rootBranch);
-      swReqFolder.persist("SOFTWARE REQUIREMENTS SETUP");
-
-      String workingBranchName = String.format("%s.child_branch", method.getQualifiedTestName());
-      updateBranch = BranchManager.createWorkingBranch(rootBranch, workingBranchName);
-      setUpDocChanges(docFolder);
+      this.setUpDocChanges(documentFolderArtifact);
    }
 
    // Add changes to the Document
    // 1. Change just the original branch
    // 2. Change to both the original branch and working branch
    // 3. Change to just the working branch
-   private void setUpDocChanges(Artifact folder) {
+   private void setUpDocChanges(Artifact documentFolderArtifact) {
       // 1.
-      SkynetTransaction onRootTx = TransactionManager.createTransaction(rootBranch, "ORIG UPDATE");
+      SkynetTransaction onRootTx = TransactionManager.createTransaction(this.baselineBranch, "ORIG UPDATE");
 
-      Artifact intro = folder.getDescendant("Introduction");
+      Artifact intro = documentFolderArtifact.getDescendant("Introduction");
       Assert.assertNotNull("Cant find Introduction on branch", intro);
       intro.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "Introduction section of the test document." + endWordString);
       intro.persist(onRootTx);
 
       // 2.
-      Artifact bckgrd = folder.getDescendant("Introduction").getDescendant("Background");
+      Artifact bckgrd = documentFolderArtifact.getDescendant("Introduction").getDescendant("Background");
       Assert.assertNotNull("Cant find Background on branch", bckgrd);
       bckgrd.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "This is the background of the document" + endWordString);
       bckgrd.persist(onRootTx);
       onRootTx.execute();
 
-      SkynetTransaction onChildTx = TransactionManager.createTransaction(updateBranch, "WORKING UPDATE");
+      SkynetTransaction onChildTx = TransactionManager.createTransaction(this.workingBranch, "WORKING UPDATE");
 
-      Artifact background = ArtifactQuery.getArtifactFromId(bckgrd, updateBranch);
+      Artifact background = ArtifactQuery.getArtifactFromId(bckgrd, this.workingBranch);
       Assert.assertNotNull("Cant find Background on update branch", background);
       background.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "This paragraph describes the background of the doc" + endWordString);
       background.persist(onChildTx);
 
       // 3.
-      Artifact hw = folder.getDescendant("Subsystem").getDescendant("Hardware").getDescendant("Hardware Functions");
-      Artifact hdwrFunc = ArtifactQuery.getArtifactFromId(hw, updateBranch);
+      Artifact hw = documentFolderArtifact.getDescendant("Subsystem").getDescendant("Hardware").getDescendant(
+         "Hardware Functions");
+      Artifact hdwrFunc = ArtifactQuery.getArtifactFromId(hw, this.workingBranch);
       Assert.assertNotNull("Cant find Hardware Functions on update branch", hdwrFunc);
       hdwrFunc.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "The first hardware function of importance is the power on switch." + endWordString);
@@ -779,148 +1412,30 @@ public class WordTemplateRendererTest {
       onChildTx.execute();
    }
 
-   // Create the generic test document artifact structure
-   //@formatter:off
-   /*
-    Document Folder
-    |
-    |----Introduction
-         |---- Background
-         |---- Scope
-         |
-         Subsystem
-         |---- Hardware
-         |     |---- Hardware Functions
-         |---- Software
-         |     |---- Software Functions
-         |
-         Notes
-         |---- More Notes
-    */
-   //@formatter:on
-   private void setUpDocFolder(Artifact docFolder, BranchToken branch) {
-      Artifact intro = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Introduction");
-      Artifact background =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesignMsWord, branch, "Background");
-      Artifact scope = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesignMsWord, branch, "Scope");
-      Artifact subSystem =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesignMsWord, branch, "Subsystem");
-      Artifact hardware = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Hardware");
-      Artifact hardwareFunc =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HardwareRequirementMsWord, branch, "Hardware Functions");
-      Artifact software = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Software");
-      Artifact softwareFunc =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareDesignMsWord, branch, "Software Functions");
-      Artifact notes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Notes");
-      Artifact morenotes = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "More Notes");
-
-      docFolder.addChild(intro);
-      intro.addChild(background);
-      intro.addChild(scope);
-      docFolder.addChild(subSystem);
-      subSystem.addChild(hardware);
-      hardware.addChild(hardwareFunc);
-      subSystem.addChild(software);
-      software.addChild(softwareFunc);
-      docFolder.addChild(notes);
-      notes.addChild(morenotes);
-
-      intro.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "Introduction section of the document." + endWordString);
-      intro.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1");
-      background.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "This is the background of the doc" + endWordString);
-      background.setSoleAttributeValue(CoreAttributeTypes.SeverityCategory, "III");
-      background.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1.1");
-      scope.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "The scope is the entire test" + endWordString);
-      scope.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1.2");
-      subSystem.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "The following are SubSystems of the test document" + endWordString);
-      subSystem.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2");
-      hardware.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "Hardware is an important Sub System" + endWordString);
-      hardware.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2.1");
-      hardwareFunc.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "The first hardware function is power on switch" + endWordString);
-      hardwareFunc.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2.1.1");
-      software.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "Software is crucial to be running correctly" + endWordString);
-      software.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2.2");
-      softwareFunc.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "Hello World, is basic software." + endWordString);
-      softwareFunc.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2.2.1");
-      notes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + hardware.getGuid() + endLinkInsert + " too." + endWordString);
-      notes.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "3");
-      morenotes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "More notes to read!" + endWordString);
-      morenotes.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "3.1");
-   }
-
    // Add a change to use a different hyperlink for field code diff testing
    private void setupFieldCodeChange() {
-      SkynetTransaction onChildTx = TransactionManager.createTransaction(updateBranch, "WORKING UPDATE");
-      String hdwrGuid =
-         docFolder.getDescendant("Subsystem").getDescendant("Hardware").getDescendant("Hardware Functions").getGuid();
-      Artifact notes = ArtifactQuery.getArtifactFromId(docFolder.getDescendant("Notes"), updateBranch);
+      final var documentFolderArtifact =
+         ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch);
+      SkynetTransaction onChildTx = TransactionManager.createTransaction(this.workingBranch, "WORKING UPDATE");
+      String hdwrGuid = documentFolderArtifact.getDescendant("Subsystem").getDescendant("Hardware").getDescendant(
+         "Hardware Functions").getGuid();
+      Artifact notes =
+         ArtifactQuery.getArtifactFromId(documentFolderArtifact.getDescendant("Notes"), this.workingBranch);
       notes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "Notes are great for small topics, and the link " + beginLinkInsert + hdwrGuid + endLinkInsert + " too." + endWordString);
       notes.persist(onChildTx);
       onChildTx.execute();
    }
 
-   // Create the SW Requirement test artifact structure
-   //@formatter:off
-   /*
-    Software Requirements
-    |
-    |----Crew Station Requirements
-         |---- Communication Subsystem Crew Interface
-         |---- Navigation Subsystem Crew Interface
-         |---- Aircraft Systems Management Subsystem Crew Interface
-         |     |---- Aircraft Drawing
-         |     |---- Ventilation
-    */
-   //@formatter:on
-   private void setUpSWReq(Artifact swReqFolder, BranchToken branch) {
-      Artifact crewReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Crew Station Requirements");
-      Artifact commReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch,
-         "Communication Subsystem Crew Interface");
-      Artifact navReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch,
-         "Navigation Subsystem Crew Interface");
-      Artifact airReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch,
-         "Aircraft Systems Management Subsystem Crew Interface");
-      Artifact airDrawReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMsWord, branch, "Aircraft Drawing");
-      Artifact ventReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, branch, "Ventilation");
-
-      swReqFolder.addChild(crewReq);
-      crewReq.addChild(USER_DEFINED, commReq);
-      crewReq.addChild(USER_DEFINED, navReq);
-      crewReq.addChild(USER_DEFINED, airReq);
-      airReq.addChild(USER_DEFINED, airDrawReq);
-      airReq.addChild(USER_DEFINED, ventReq);
-
-      commReq.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "This is the list of Communication crew station requirements." + endWordString);
-      navReq.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "This is the list of Navigation crew station requirements." + endWordString);
-      airReq.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "This is the list of Aircraft Management crew station requirements." + endWordString);
-      ventReq.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "This is the Ventilation crew station requirements." + endWordString);
-   }
-
    @After
    public void tearDown() throws Exception {
-      if (BranchManager.branchExists(updateBranch)) {
-         BranchManager.purgeBranch(updateBranch);
+
+      if ((this.workingBranch != null) && BranchManager.branchExists(this.workingBranch)) {
+         //BranchManager.purgeBranch(this.workingBranch);
       }
-      if (BranchManager.branchExists(rootBranch)) {
-         BranchManager.purgeBranch(rootBranch);
+
+      if ((this.baselineBranch != null) && BranchManager.branchExists(this.baselineBranch)) {
+         //BranchManager.purgeBranch(this.baselineBranch);
       }
    }
 
@@ -1088,12 +1603,12 @@ public class WordTemplateRendererTest {
             );
       //@formatter:on
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, true);
 
       this.setupFieldCodeChange();
 
-      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
 
@@ -1124,13 +1639,13 @@ public class WordTemplateRendererTest {
       //@formatter:on
 
       try {
-         this.modifyOption(BRANCH, updateBranch);
+         this.modifyOption(BRANCH, this.workingBranch);
          this.modifyOption(PUBLISH_DIFF, true);
 
          setupFieldCodeChange();
          UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
 
-         var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+         var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
          var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
 
@@ -1150,10 +1665,11 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishSoftwareRequirements() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, false);
 
-      var artifacts = List.of(this.swReqFolder);
+      var artifacts =
+         List.of(ArtifactQuery.getArtifactFromId(this.softwareRequirementFolderArtifactId, this.workingBranch));
 
       var primaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.PRIMARY_TEMPLATE);
       var secondaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SECONDARY_TEMPLATE);
@@ -1168,10 +1684,11 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishUsingIdAndName() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, false);
 
-      var artifacts = List.of(this.swReqFolder);
+      var artifacts =
+         List.of(ArtifactQuery.getArtifactFromId(this.softwareRequirementFolderArtifactId, this.workingBranch));
 
       var primaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.PRIMARY_TEMPLATE_ID_NAME);
       var secondaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SECONDARY_TEMPLATE);
@@ -1186,10 +1703,11 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishUsingIds() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, false);
 
-      var artifacts = List.of(this.swReqFolder);
+      var artifacts =
+         List.of(ArtifactQuery.getArtifactFromId(this.softwareRequirementFolderArtifactId, this.workingBranch));
 
       var primaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.PRIMARY_TEMPLATE_ID);
       var secondaryTemplate = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SECONDARY_TEMPLATE);
@@ -1204,10 +1722,10 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishWithDiff() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, true);
 
-      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
 
@@ -1221,12 +1739,12 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishWithDiffDontUseTemplateOnce() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, true);
       this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       this.modifyOption(USE_TEMPLATE_ONCE, false);
 
-      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES);
 
@@ -1255,27 +1773,28 @@ public class WordTemplateRendererTest {
                 new Check
                       (
                           ( testName ) ->                     "Original Paragram Numbering for Notes is incorrect",
-                          ( period, altString, pubString ) -> "<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t>Paragraph Number: 3</w:t></w:r>",
+                          ( period, altString, pubString ) -> "<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t>Paragraph Number: 3</w:t></w:r>",
                           ( mergeFlag, fieldcodeFlag )     -> true,
                           true
                       ),
                 new Check
                       (
                           ( testName )                     -> "Original Paragram Numbering for More Notes is incorrect",
-                          ( period, altString, pubString ) -> "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t>Paragraph Number: 3.1</w:t></w:r>",
+                          ( period, altString, pubString ) -> "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p><w:r><w:t>Paragraph Number: 3.1</w:t></w:r>",
                           ( mergeFlag, fieldcodeFlag )     -> true,
                           true
                       )
       );
       //@formatter:on
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, true);
       this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
 
-      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
-      var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES);
+      var template =
+         WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.TEST_PUBLISH_WITH_DIFF_LINKS_TEMPLATE);
 
       this.renderer.publish(template, null, artifacts);
 
@@ -1340,12 +1859,12 @@ public class WordTemplateRendererTest {
             );
       //@formatter:on
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, true);
-      this.modifyOption(COMPARE_BRANCH, rootBranch);
+      this.modifyOption(COMPARE_BRANCH, baselineBranch);
       this.modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
 
-      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
 
@@ -1361,10 +1880,10 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishWithDiffRecurseTemplate() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, true);
 
-      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.RECURSE_TEMPLATE);
 
@@ -1378,10 +1897,10 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishWithoutDiff() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, false);
 
-      var artifacts = List.of(this.docFolder);
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE);
 
@@ -1395,10 +1914,10 @@ public class WordTemplateRendererTest {
    @Test
    public void testPublishWithoutDiffRecurseTemplate() {
 
-      this.modifyOption(BRANCH, updateBranch);
+      this.modifyOption(BRANCH, this.workingBranch);
       this.modifyOption(PUBLISH_DIFF, false);
 
-      var artifacts = List.of(this.docFolder);
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var template = WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.RECURSE_TEMPLATE);
 
@@ -1439,15 +1958,16 @@ public class WordTemplateRendererTest {
       );
       //@formatter:on
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(updateBranch, method.getQualifiedTestName());
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(this.workingBranch, method.getQualifiedTestName());
 
-      this.modifyOption(RendererOption.BRANCH, updateBranch);
+      this.modifyOption(RendererOption.BRANCH, this.workingBranch);
       this.modifyOption(RendererOption.TRANSACTION_OPTION, transaction);
       this.modifyOption(RendererOption.PUBLISH_DIFF, false);
       this.modifyOption(RendererOption.LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       this.modifyOption(RendererOption.UPDATE_PARAGRAPH_NUMBERS, true);
 
-      var artifacts = List.of(ArtifactQuery.getArtifactFromId(docFolder, updateBranch));
+      var artifacts = List.of(ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.workingBranch));
 
       var publishingTemplate =
          WordTemplateRendererTest.templateMap.get(WordTemplateRendererTest.SINGLE_TEMPLATE_ATTRIBUTES);

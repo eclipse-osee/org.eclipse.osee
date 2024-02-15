@@ -24,6 +24,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -147,7 +149,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
 
                new MenuCmdDef
                       (
-                         CommandGroup.PREVIEW_SERVER,
+                         CommandGroup.PREVIEW,
                          MarkdownRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN,
                          MarkdownRenderer.imageDescriptor,
                          Map.of
@@ -159,7 +161,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
 
                new MenuCmdDef
                       (
-                         CommandGroup.PREVIEW_SERVER,
+                         CommandGroup.PREVIEW,
                          MarkdownRenderer.COMMAND_TITLE_PREVIEW_WITH_CHILDREN_NO_ATTRIBUTES,
                          MarkdownRenderer.imageDescriptor,
                          Map.of
@@ -183,65 +185,96 @@ public class MarkdownRenderer extends FileSystemRenderer {
       super(rendererOptions);
       this.comparator = new MarkdownCompare();
       this.menuCommands = MarkdownRenderer.menuCommandDefinitions;
+      //@formatter:off
+      super.presentationTypeKnockOuts      = MarkdownRenderer.PRESENTATION_TYPE_KNOCK_OUTS;
+      super.previewAttributeTypeKnockOuts  = MarkdownRenderer.PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS;
+      super.artifactTypesAreRequired       = MarkdownRenderer.ARTIFACT_TYPES_ARE_REQUIRED;
+      super.applicabilityTestArtifactTypes = MarkdownRenderer.APPLICABILITY_TEST_ARTIFACT_TYPES;
+      super.defaultFileExtension           = MarkdownRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+      super.openInRendererOptionValue      = MarkdownRenderer.RENDERER_OPTION_OPEN_IN_VALUE;
+      super.rendererArtifactTypeToken      = MarkdownRenderer.RENDERER_ARTIFACT_TYPE_TOKEN;
+      super.notRendererArtifactTypeDelta   = MarkdownRenderer.NOT_RENDERER_ARTIFACT_TYPE_DELTA;
+      super.rendererContentAttributeType   = MarkdownRenderer.RENDERER_CONTENT_ATTRIBUTE_TYPE;
+      //@formatter:on
    }
 
    /**
-    * Generates a Renderer applicability rating for an {@link Artifact}.
-    *
-    * @param presentationType the type of presentation to be made.
-    * @param artifact the {@link Artifact} to be presented.
-    * @param rendererOptions a {@link Map} of {@link RendererOption} key value pairs.
-    * @return the determined applicability rating.
+    * The {@link PresentationType}s the renderer is not applicable for.
+    */
+
+   //@formatter:off
+   private static final PresentationType[]   PRESENTATION_TYPE_KNOCK_OUTS =
+      new PresentationType[]
+      {
+         PresentationType.GENERALIZED_EDIT,
+         PresentationType.GENERAL_REQUESTED
+      };
+   //@formatter:on
+
+   /**
+    * No attribute types are invalid when the presentation type is {@link PresentationType#PREVIEW}.
+    */
+
+   //@formatter:off
+   private static final AttributeTypeToken[] PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS =
+      new AttributeTypeToken[] {};
+   //@formatter:on
+
+   /**
+    * The type of the artifact being rendered must be in the {@link APPLICABILITY_TEST_ARTIFACT_TYPES} array.
+    */
+
+   private static final boolean ARTIFACT_TYPES_ARE_REQUIRED = true;
+
+   /**
+    * The renderer will only be applicable for artifacts of the artifact types in this array.
+    */
+
+   //@formatter:off
+   private static final ArtifactTypeToken[]  APPLICABILITY_TEST_ARTIFACT_TYPES =
+      new ArtifactTypeToken[]
+      {
+         CoreArtifactTypes.Markdown
+      };
+   //@formatter:on
+
+   /**
+    * The value of the {@link RendererOption#OPEN_OPTION} that will boost the renderer's applicability rating when the
+    * presentation type is {@link PresentationType#DIFF}.
+    */
+
+   private static final String RENDERER_OPTION_OPEN_IN_VALUE = RendererOption.OPEN_IN_MARKDOWN_EDITOR_VALUE.getKey();
+
+   /**
+    * The preferred/expected type of artifact the renderer is for.
+    */
+
+   private static final ArtifactTypeToken RENDERER_ARTIFACT_TYPE_TOKEN = CoreArtifactTypes.Markdown;
+
+   /**
+    * A delta applied to the renderer applicability rating when the artifact the rating was generated for is not of the
+    * {@link #RENDERER_ARTIFACT_TYPE_TOKEN} type.
+    */
+
+   private static final int NOT_RENDERER_ARTIFACT_TYPE_DELTA = -2;
+
+   /**
+    * The expected main content attribute for the artifact being rendered.
+    */
+
+   private static final AttributeTypeToken RENDERER_CONTENT_ATTRIBUTE_TYPE = CoreAttributeTypes.MarkdownContent;
+
+   /**
+    * {@inheritDoc}
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
-      //@formatter:off
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
 
-      /*
-       * Knock Outs, NO_MATCH (-1)
-       */
+      var rating = this.getBaseApplicabilityRating(presentationType, artifact, rendererOptions);
 
-      if(
-             presentationType.matches
-                (
-                   PresentationType.GENERALIZED_EDIT,
-                   PresentationType.GENERAL_REQUESTED
-                )
-          || (    !artifact.isOfType( CoreArtifactTypes.Markdown )
-               && !artifact.isAttributeTypeValid( CoreAttributeTypes.PrimaryAttribute ) )
-        ) {
-         return NO_MATCH;
-      }
-
-      /*
-       * PRESENTATION_SUBTYPE_MATCH (50)
-       */
-
-      if(    presentationType.matches
-                (
-                   PresentationType.DEFAULT_OPEN,
-                   PresentationType.SPECIALIZED_EDIT,
-                   PresentationType.PREVIEW_SERVER
-                )
-          || (    presentationType.matches( PresentationType.DIFF )
-               && artifact
-                     .getSoleAttributeValueAsString
-                        (
-                           CoreAttributeTypes.Extension,
-                           MarkdownRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION
-                        )
-                     .contains( MarkdownRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION ) ) ) {
-
-         return PRESENTATION_SUBTYPE_MATCH;
-      }
-
-      /*
-       * Anything Else, NO_MATCH (-1)
-       */
-
-      return NO_MATCH;
-      //@formatter:on
+      return rating;
    }
 
    @Override
@@ -307,7 +340,8 @@ public class MarkdownRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public InputStream getRenderInputStream(@NonNull PresentationType presentationType, @NonNull List<@NonNull Artifact> artifacts) {
+   public InputStream getRenderInputStream(@NonNull PresentationType presentationType,
+      @NonNull List<@NonNull Artifact> artifacts) {
 
       /*
        * Validate Inputs
@@ -413,7 +447,8 @@ public class MarkdownRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch,
+      PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.MarkdownContent);
    }
 

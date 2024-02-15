@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -119,7 +120,8 @@ public final class TestUtil {
     * @return The {@link ArtifactToken} (identifier) for the newly created artifact.
     */
 
-   private static ArtifactToken createChildArtifactToken(BranchId parentBranchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+   private static ArtifactToken createChildArtifactToken(BranchId parentBranchId, ArtifactId parentArtifactId,
+      ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
 
       //@formatter:off
       Artifact parentArtifact;
@@ -163,7 +165,9 @@ public final class TestUtil {
     * @return a list of all the artifact's attributes of the specified type.
     */
 
-   public static List<Attribute<?>> createAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric, int count) {
+   public static List<Attribute<?>> createAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric,
+      int count) {
+
       for (int i = 0; i < count; i++) {
          artifact.addAttribute(attributeTypeGeneric);
       }
@@ -184,7 +188,8 @@ public final class TestUtil {
       return links;
    }
 
-   public static RelationLink createRelationLink(RelationId relationId, ArtifactId artA, ArtifactId artB, BranchId branch, RelationTypeToken relationType) {
+   public static RelationLink createRelationLink(RelationId relationId, ArtifactId artA, ArtifactId artB,
+      BranchId branch, RelationTypeToken relationType) {
       return new RelationLink(ArtifactToken.valueOf(artA, BranchToken.valueOf(branch)),
          ArtifactToken.valueOf(artB, BranchToken.valueOf(branch)), branch, relationType, relationId, GammaId.valueOf(0),
          "relation: " + relationId, ModificationType.MODIFIED, ApplicabilityId.BASE);
@@ -205,7 +210,8 @@ public final class TestUtil {
       return softArt;
    }
 
-   public static Collection<Artifact> createSimpleArtifacts(ArtifactTypeToken artifactType, int numArts, String name, BranchToken branch) {
+   public static Collection<Artifact> createSimpleArtifacts(ArtifactTypeToken artifactType, int numArts, String name,
+      BranchToken branch) {
       List<Artifact> arts = new ArrayList<>();
       for (int x = 1; x < numArts + 1; x++) {
          arts.add(createSimpleArtifact(artifactType, name + " " + x, branch));
@@ -224,7 +230,8 @@ public final class TestUtil {
     * @return The newly created {@link Branch}.
     */
 
-   public static Branch createTestBranch(BranchEndpoint branchEndpoint, BranchId parentBranchIdentifier, String branchName, String creationComment) {
+   public static Branch createTestBranch(BranchEndpoint branchEndpoint, BranchId parentBranchIdentifier,
+      String branchName, String creationComment) {
 
       Objects.requireNonNull(branchEndpoint);
 
@@ -237,6 +244,7 @@ public final class TestUtil {
          parentBranchIdentifier = CoreBranches.SYSTEM_ROOT;
       }
       //@formatter:on
+      var sourceTransactionId = TransactionManager.getHeadTransaction(parentBranchIdentifier);
 
       newBranch.setAssociatedArtifact(ArtifactId.SENTINEL);
       newBranch.setBranchName(branchName);
@@ -245,7 +253,7 @@ public final class TestUtil {
       newBranch.setMergeAddressingQueryId(0L);
       newBranch.setMergeDestinationBranchId(null);
       newBranch.setParentBranchId(parentBranchIdentifier);
-      newBranch.setSourceTransactionId(TransactionManager.getHeadTransaction(CoreBranches.SYSTEM_ROOT));
+      newBranch.setSourceTransactionId(sourceTransactionId);
       newBranch.setTxCopyBranchType(false);
 
       var newBranchId = branchEndpoint.createBranch(newBranch);
@@ -264,13 +272,14 @@ public final class TestUtil {
     * @return a {@link Branch} handle for the fetched or created branch.
     */
 
-   public static Branch getOrCreateTestBranch(BranchEndpoint branchEndpoint, BranchId parentBranchIdentifier, String branchName, String creationComment) {
+   public static Branch getOrCreateTestBranch(BranchEndpoint branchEndpoint, BranchId parentBranchIdentifier,
+      String branchName, String creationComment) {
 
       //@formatter:off
       var testBranch =
          TestUtil
             .getBranchByName( branchEndpoint, branchName )
-            .orElse( TestUtil.createTestBranch(branchEndpoint, parentBranchIdentifier, branchName, creationComment ) );
+            .orElseGet( () -> TestUtil.createTestBranch(branchEndpoint, parentBranchIdentifier, branchName, creationComment ) );
       //@formatter:on
 
       return testBranch;
@@ -285,7 +294,9 @@ public final class TestUtil {
     * {@link Attribute<?>} objects; otherwise, an empty {@link Optional}.
     */
 
-   public static Optional<List<Attribute<?>>> getAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric) {
+   public static Optional<List<Attribute<?>>> getAttributes(Artifact artifact,
+      AttributeTypeGeneric<?> attributeTypeGeneric) {
+
       @SuppressWarnings("unchecked")
       var attributes = (List<Attribute<?>>) (Object) artifact.getAttributes(attributeTypeGeneric);
 
@@ -303,13 +314,26 @@ public final class TestUtil {
    public static Optional<Branch> getBranchByName(BranchEndpoint branchEndpoint, String branchName) {
 
       //@formatter:off
-      return
+      var result =
          branchEndpoint
-            .getBranches( "", "", "", false, false, branchName, "", null, null, null )
+            .getBranches
+               (
+                  Strings.EMPTY_STRING, /* branchUuids  */
+                  Strings.EMPTY_STRING, /* branchTypes  */
+                  Strings.EMPTY_STRING, /* branchStates */
+                  false,                /* deleted      */
+                  false,                /* archived     */
+                  branchName,           /* nameEquals   */
+                  Strings.EMPTY_STRING, /* namePattern  */
+                  null,                 /* childOf      */
+                  null,                 /* ancestorOf   */
+                  null                  /* category     */
+               )
             .stream()
             .filter( branch -> branch.getName().equals(branchName) )
             .findFirst();
       //@formatter:on
+      return result;
    }
 
    /**
@@ -322,9 +346,17 @@ public final class TestUtil {
     * {@link Optional}.
     */
 
-   public static Optional<ArtifactToken> getChildArtifactTokenByName(RelationEndpoint relationEndpoint, ArtifactId parentArtifactId, String childName) {
-      return relationEndpoint.getRelatedHierarchy(parentArtifactId, ArtifactId.SENTINEL).stream().filter(
-         artifact -> artifact.getName().equals(childName)).findFirst();
+   public static Optional<ArtifactToken> getChildArtifactTokenByName(RelationEndpoint relationEndpoint,
+      ArtifactId parentArtifactId, String childName) {
+      //@formatter:off
+      var result =
+         relationEndpoint
+            .getRelatedHierarchy( parentArtifactId, ArtifactId.SENTINEL )
+            .stream()
+            .filter( artifact -> artifact.getName().equals(childName) )
+            .findFirst();
+      //@formatter:on
+      return result;
    }
 
    /**
@@ -338,9 +370,15 @@ public final class TestUtil {
     * attributes.
     */
 
-   public static List<Attribute<?>> getOrCreateAttributes(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric, int count) {
-      return TestUtil.getAttributes(artifact, attributeTypeGeneric).orElseGet(
-         () -> TestUtil.createAttributes(artifact, attributeTypeGeneric, count));
+   public static List<Attribute<?>> getOrCreateAttributes(Artifact artifact,
+      AttributeTypeGeneric<?> attributeTypeGeneric, int count) {
+      //@formatter:off
+      var result =
+         TestUtil
+            .getAttributes( artifact, attributeTypeGeneric )
+            .orElseGet( () -> TestUtil.createAttributes( artifact, attributeTypeGeneric, count ) );
+      //@formatter:on
+      return result;
    }
 
    /**
@@ -356,9 +394,11 @@ public final class TestUtil {
     * @return the {@link ArtifactToken} of the existing or newly created hierarchical child with the specified name.
     */
 
-   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, BranchId branchId, ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
+   public static ArtifactToken getOrCreateChildArtifactTokenByName(RelationEndpoint relationEndpoint, BranchId branchId,
+      ArtifactId parentArtifactId, ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken,
+      String childName) {
       //@formatter:off
-      return
+      var artifactToken =
          TestUtil
             .getChildArtifactTokenByName(relationEndpoint, parentArtifactId, childName)
             .orElseGet
@@ -373,6 +413,7 @@ public final class TestUtil {
                            )
                );
       //@formatter:on
+      return artifactToken;
    }
 
    private static int getTableRowCount(String tableName) {
@@ -438,9 +479,11 @@ public final class TestUtil {
     * @param attributeTypeGeneric the attribute type to set the values for
     * @param expectedValueList a list of the expected attribute values
     * @param attributeSetter a {@link BiConsumer} used to assign an attribute's value
+    * @return <code>true</code> when an attribute is add, deleted, or changed; otherwise, <code>false</code>.
     */
 
-   public static void setAttributeValues(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric, List<Object> expectedValueList, BiConsumer<Attribute<?>, Object> attributeSetter) {
+   public static boolean setAttributeValues(Artifact artifact, AttributeTypeGeneric<?> attributeTypeGeneric,
+      List<Object> expectedValueList, BiConsumer<Attribute<?>, Object> attributeSetter) {
       var attributeList = TestUtil.getOrCreateAttributes(artifact, attributeTypeGeneric, expectedValueList.size());
 
       /*
@@ -451,10 +494,10 @@ public final class TestUtil {
 
       if ((attributeList.size() == 0) && (expectedValueList.size() == 0)) {
          /*
-          * Noting missing, nothing extra, done
+          * Nothing missing, nothing extra, done
           */
 
-         return;
+         return false;
       }
 
       /*
@@ -482,6 +525,8 @@ public final class TestUtil {
       for (int i = 0, l = expectedValueList.size(); i < l; i++) {
          artifact.addAttribute(attributeTypeGeneric, expectedValueList.get(i));
       }
+
+      return true;
 
    }
 

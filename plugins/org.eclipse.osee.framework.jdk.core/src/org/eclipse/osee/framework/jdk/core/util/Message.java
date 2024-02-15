@@ -1537,9 +1537,11 @@ public class Message {
 
    public Message segmentToMessage(CharSequence title, ToMessage toMessage) {
       this.title(title);
-      this.indentInc();
-      toMessage.toMessage(this.indent, this);
-      this.indentDec();
+      if (toMessage != null) {
+         this.indentInc();
+         toMessage.toMessage(this.indent, this);
+         this.indentDec();
+      }
       return this;
    }
 
@@ -1551,7 +1553,10 @@ public class Message {
     */
 
    public Message segmentToMessage(ToMessage toMessage) {
-      return toMessage.toMessage(this.indent, this);
+      if (toMessage != null) {
+         toMessage.toMessage(this.indent, this);
+      }
+      return this;
    }
 
    /**
