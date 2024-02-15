@@ -227,6 +227,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
       if (workItem.isTeamWorkflow()) {
          writeReviews(atsApi, writer, teamWf);
+         writeCurrentState(atsApi, writer, teamWf);
          writeToStates(atsApi, writer, teamWf);
          writePreviousStates(atsApi, writer, teamWf);
       }
@@ -441,6 +442,13 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeEndArray();
    }
 
+   private static void writeCurrentState(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf)
+      throws IOException {
+      writer.writeObjectFieldStart("currentState");
+      writeStateInner(atsApi, writer, teamWf.getStateDefinition());
+      writer.writeEndObject();
+   }
+
    private static void writeToStates(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf) throws IOException {
       writer.writeArrayFieldStart("toStates");
       for (StateDefinition state : teamWf.getStateDefinition().getToStates()) {
@@ -464,6 +472,11 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
    private static void writeState(AtsApi atsApi, JsonGenerator writer, StateDefinition state) throws IOException {
       writer.writeStartObject();
+      writeStateInner(atsApi, writer, state);
+      writer.writeEndObject();
+   }
+
+   private static void writeStateInner(AtsApi atsApi, JsonGenerator writer, StateDefinition state) throws IOException {
       writer.writeObjectField("state", state.getName());
       writer.writeArrayFieldStart("rules");
       for (String rule : atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().flatMap(
@@ -472,6 +485,5 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeString(rule);
       }
       writer.writeEndArray();
-      writer.writeEndObject();
    }
 }
