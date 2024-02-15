@@ -52,11 +52,23 @@ public interface AtsProductLineEndpointApi {
       @QueryParam("category") @DefaultValue("-1") BranchCategoryToken category,
       @QueryParam("filter") @DefaultValue("") String filter);
 
+   /**
+    * @deprecated This method only will check approval on PLE-workflows. Users should use
+    * {@link org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi#checkApproval(String)} instead, as it is
+    * significantly more flexible.
+    */
+   @Deprecated
    @GET
    @Path("action/{id}/approval")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData checkPlarbApproval(@PathParam("id") String id);
 
+   /**
+    * @deprecated This method only will perform approval on PLE-workflows. Users should use
+    * {@link org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi#setApproval(String)} instead, as it is significantly
+    * more flexible.
+    */
+   @Deprecated
    @POST
    @Path("action/{id}/approval")
    @Produces(MediaType.APPLICATION_JSON)
