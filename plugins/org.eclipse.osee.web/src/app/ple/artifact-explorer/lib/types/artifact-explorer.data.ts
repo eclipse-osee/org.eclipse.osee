@@ -59,6 +59,8 @@ export interface attribute {
 }
 
 export interface tab {
+	tabType: TabType;
+	tabTitle: string;
 	artifact: artifact;
 	branchId: string;
 	viewId: string;
@@ -67,6 +69,15 @@ export interface tab {
 export interface artifactHierarchyOptions {
 	showRelations: boolean;
 }
+
+export const artifactSentinel: artifact = {
+	id: '-1',
+	name: '',
+	typeId: '',
+	typeName: '',
+	attributes: [],
+	editable: false,
+};
 
 // Legacy Icon Dictionary - Replace with adding artifact type angular/material icon names to the core artifact tokens
 const ARTIFACT_TYPE_ICON_DICTIONARY: { [id: string]: string } = {
@@ -123,3 +134,7 @@ const ARTIFACT_TYPE_ICON_DEFAULT = 'padding';
 export function fetchIconFromDictionary(key: string): string {
 	return ARTIFACT_TYPE_ICON_DICTIONARY[key] || ARTIFACT_TYPE_ICON_DEFAULT;
 }
+
+export const TABTYPES = ['Artifact', 'ChangeReport'] as const;
+
+export type TabType = (typeof TABTYPES)[number];

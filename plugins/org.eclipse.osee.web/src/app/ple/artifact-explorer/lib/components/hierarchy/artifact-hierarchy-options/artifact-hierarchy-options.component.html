@@ -13,12 +13,12 @@
 @if (option$ | async; as options) {
 	<div class="tw-flex tw-justify-end tw-gap-2">
 		@if (branchId() && branchType()) {
-			<a
-				[routerLink]="'/ple/changes/' + branchType() + '/' + branchId()"
+			<button
 				class="hover:tw-text-primary"
-				matTooltip="Open the change report for this branch">
-				<mat-icon>difference</mat-icon>
-			</a>
+				(click)="openChangeReport()"
+				matTooltip="Change Report">
+				<mat-icon>differences</mat-icon>
+			</button>
 		}
 		<button
 			class="hover:tw-text-primary"

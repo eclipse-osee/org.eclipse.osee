@@ -98,7 +98,7 @@ export class ArtifactHierarchyRelationSideComponent {
 	}
 
 	addTab(artifact: artifact) {
-		this.tabService.addArtifact(artifact);
+		this.tabService.addArtifactTab(artifact);
 	}
 
 	trackArtifacts(index: number, item: artifact) {

@@ -18,7 +18,7 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs';
-import { UiService, HeaderService } from '@osee/shared/services';
+import { HeaderService } from '@osee/shared/services';
 import { changeReportRow } from '@osee/shared/types/change-report';
 import { ChangeReportService } from '../../services/change-report.service';
 import { changeReportHeaders } from './change-report-table-headers';
@@ -37,8 +37,7 @@ export class ChangeReportTableComponent implements OnChanges {
 
 	constructor(
 		private headerService: HeaderService,
-		private crService: ChangeReportService,
-		private uiService: UiService
+		private crService: ChangeReportService
 	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -63,13 +62,8 @@ export class ChangeReportTableComponent implements OnChanges {
 
 	branchId$ = new BehaviorSubject<string>('');
 
-	branch = combineLatest([this.branchId$, this.uiService.id]).pipe(
-		switchMap(([localBranchId, uiBranchId]) =>
-			this.crService.getBranchInfo(
-				localBranchId !== '' ? localBranchId : uiBranchId
-			)
-		),
-		shareReplay(1)
+	branch = this.branchId$.pipe(
+		switchMap((branchId) => this.crService.getBranchInfo(branchId))
 	);
 
 	parentBranch = this.branch.pipe(

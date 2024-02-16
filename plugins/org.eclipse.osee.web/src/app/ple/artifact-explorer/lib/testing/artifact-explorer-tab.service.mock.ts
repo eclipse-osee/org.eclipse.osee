@@ -16,6 +16,8 @@ import { tab } from '../types/artifact-explorer.data';
 
 export const tabsMock: tab[] = [
 	{
+		tabType: 'Artifact',
+		tabTitle: '',
 		artifact: {
 			name: 'Mock Artifact',
 			id: '123',

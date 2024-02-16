@@ -14,7 +14,12 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject, signal } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { tab, artifact } from '../types/artifact-explorer.data';
+import {
+	tab,
+	artifact,
+	TabType,
+	artifactSentinel,
+} from '../types/artifact-explorer.data';
 
 @Injectable({
 	providedIn: 'root',
@@ -26,18 +31,33 @@ export class ArtifactExplorerTabService {
 	branchId = toSignal(this.uiService.id, { initialValue: '' });
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
 
-	addArtifact(artifact: artifact) {
+	addTab(tabType: TabType, tabTitle: string) {
+		this.tabs.update((rows) => [
+			...rows,
+			{
+				tabType,
+				tabTitle,
+				artifact: artifactSentinel,
+				branchId: this.branchId(),
+				viewId: this.viewId(),
+			},
+		]);
+	}
+
+	addArtifactTab(artifact: artifact) {
 		// don't open a tab for the same artifact on the same branch
 		if (
 			!this.tabs().some(
 				(existingTab) =>
 					existingTab.branchId === this.uiService.id.value &&
-					existingTab.artifact.id === artifact.id
+					existingTab.artifact?.id === artifact.id
 			)
 		)
 			this.tabs.update((rows) => [
 				...rows,
 				{
+					tabType: 'Artifact',
+					tabTitle: artifact.name,
 					artifact: artifact,
 					branchId: this.branchId(),
 					viewId: this.viewId(),
