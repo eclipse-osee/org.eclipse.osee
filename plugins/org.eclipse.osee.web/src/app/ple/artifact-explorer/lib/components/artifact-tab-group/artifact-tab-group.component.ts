@@ -20,6 +20,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-editor.component';
 import { ArtifactInfoPanelComponent } from '../editor/artifact-info-panel/artifact-info-panel.component';
 import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/relations-editor-panel.component';
+import { ChangeReportTableComponent } from '@osee/change-report';
 
 @Component({
 	selector: 'osee-artifact-tab-group',
@@ -33,6 +34,7 @@ import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/
 		ArtifactInfoPanelComponent,
 		RelationsEditorPanelComponent,
 		ArtifactEditorComponent,
+		ChangeReportTableComponent,
 	],
 	templateUrl: './artifact-tab-group.component.html',
 })

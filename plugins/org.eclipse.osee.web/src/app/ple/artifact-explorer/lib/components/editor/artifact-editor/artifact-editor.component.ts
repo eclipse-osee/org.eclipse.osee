@@ -32,6 +32,8 @@ import { RelationsEditorPanelComponent } from '../relations-editor-panel/relatio
 export class ArtifactEditorComponent implements OnChanges {
 	@Input() tab!: tab;
 	private _tab = new BehaviorSubject<tab>({
+		tabType: 'Artifact',
+		tabTitle: '',
 		artifact: {
 			name: '',
 			id: '0',

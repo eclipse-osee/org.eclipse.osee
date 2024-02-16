@@ -10,40 +10,61 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-tab-group
-	[animationDuration]="0"
-	mat-stretch-tabs="false"
-	mat-align-tabs="start">
-	<mat-tab
-		*ngFor="let tab of tabs(); let i = index; trackBy: trackByIndex"
-		#matTab>
-		<ng-template mat-tab-label>
-			<div
-				(cdkDropListDropped)="onTabDropped($event)"
-				[cdkDropListConnectedTo]="getAllDropListConnections(i)()"
-				cdkDropListOrientation="horizontal"
-				cdkDropList
-				[id]="'' + i">
-				<div
-					class="tw-flex tw-items-center tw-rounded-t-md"
-					[ngClass]="{
-						'tw-bg-primary tw-text-background': matTab.isActive,
-						'tw-bg-background-app-bar tw-text-foreground-base':
-							!matTab.isActive
-					}"
-					cdkDrag>
-					<div class="tw-pl-4">
-						{{ tab.artifact.name }}
+@if (tabs().length === 0) {
+	<div
+		class="tw-flex tw-h-[85%] tw-w-full tw-items-center tw-justify-center tw-opacity-70">
+		<span
+			class="tw-select-none tw-text-4xl tw-font-bold tw-text-background-status-bar"
+			>No open tabs</span
+		>
+	</div>
+} @else {
+	<mat-tab-group
+		[animationDuration]="0"
+		mat-stretch-tabs="false"
+		mat-align-tabs="start"
+		fitInkBarToContent>
+		@for (tab of tabs(); track $index) {
+			<mat-tab #matTab>
+				<ng-template mat-tab-label>
+					<div
+						(cdkDropListDropped)="onTabDropped($event)"
+						[cdkDropListConnectedTo]="
+							getAllDropListConnections($index)()
+						"
+						cdkDropListOrientation="horizontal"
+						cdkDropList
+						[id]="'' + $index">
+						<div
+							class="tw-flex tw-items-center tw-rounded-t-md"
+							cdkDrag>
+							<div class="tw-pl-4">
+								{{ tab.tabTitle }}
+							</div>
+							<button
+								mat-icon-button
+								(click)="removeTab($index)">
+								<mat-icon>clear</mat-icon>
+							</button>
+						</div>
 					</div>
-					<button
-						mat-icon-button
-						(click)="removeTab(i)">
-						<mat-icon>clear</mat-icon>
-					</button>
-				</div>
-			</div>
-		</ng-template>
+				</ng-template>
 
-		<osee-artifact-editor [tab]="tab" />
-	</mat-tab>
-</mat-tab-group>
+				@switch (tab.tabType) {
+					@case ('Artifact') {
+						<osee-artifact-editor [tab]="tab" />
+					}
+					@case ('ChangeReport') {
+						<osee-change-report-table
+							[branchId]="
+								tab.branchId
+							"></osee-change-report-table>
+					}
+					@default {
+						No tab defined for this type
+					}
+				}
+			</mat-tab>
+		}
+	</mat-tab-group>
+}

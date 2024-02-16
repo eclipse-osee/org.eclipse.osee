@@ -29,15 +29,12 @@ import { ActionUserService } from '../internal/services/action-user.service';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 import {
 	actionableItem,
-	targetedVersion,
 	PRIORITIES,
 	CreateAction,
 	WorkType,
-	CreateActionField,
 } from '@osee/shared/types/configuration-management';
 import { user } from '@osee/shared/types/auth';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { NamedId } from '@osee/shared/types';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */

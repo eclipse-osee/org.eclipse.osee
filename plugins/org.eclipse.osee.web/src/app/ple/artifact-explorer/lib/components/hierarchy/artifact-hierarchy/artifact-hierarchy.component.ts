@@ -167,7 +167,7 @@ export class ArtifactHierarchyComponent implements OnChanges {
 	}
 
 	addTab(artifact: artifact) {
-		this.tabService.addArtifact(artifact);
+		this.tabService.addArtifactTab(artifact);
 	}
 
 	@Input() set paths(value: string[][]) {

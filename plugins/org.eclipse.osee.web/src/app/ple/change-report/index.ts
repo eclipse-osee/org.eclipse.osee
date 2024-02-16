@@ -1,5 +1,5 @@
-<!--
- * Copyright (c) 2022 Boeing
+/*********************************************************************
+ * Copyright (c) 2023 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,10 +9,5 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
- -->
-<div class="tw-min-w-[350px] tw-max-w-lg tw-p-4">
-	<osee-branch-picker></osee-branch-picker>
-</div>
-@if (branchId | async; as _branchId) {
-	<osee-change-report-table [branchId]="_branchId"></osee-change-report-table>
-}
+ **********************************************************************/
+export * from './public-api';
