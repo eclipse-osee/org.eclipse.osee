@@ -40,6 +40,10 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
    private Artifact artifact;
    private AttributeTypeToken attributeType;
 
+   public XHyperlabelMemberSelectionDam() {
+      this("Select User");
+   }
+
    public XHyperlabelMemberSelectionDam(String displayLabel) {
       super(displayLabel);
    }
@@ -70,7 +74,7 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
    public Set<User> getStoredUsers() {
       Set<User> users = new HashSet<>();
       try {
-         for (Object artIdObj : artifact.getAttributes(attributeType)) {
+         for (Object artIdObj : artifact.getAttributeValues(attributeType)) {
             try {
                users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
             } catch (OseeCoreException ex) {

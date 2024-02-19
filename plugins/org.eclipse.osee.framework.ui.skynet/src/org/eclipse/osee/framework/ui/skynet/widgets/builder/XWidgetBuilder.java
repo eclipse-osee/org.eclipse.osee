@@ -416,4 +416,11 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andSpace() {
+      newXWidget();
+      currItem.setName("     ");
+      currItem.setXWidgetName("XLabel");
+      return this;
+   }
+
 }

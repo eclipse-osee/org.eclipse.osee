@@ -75,6 +75,8 @@ public abstract class XAbstractSignByAndDateButton extends XButtonWithLabelDam i
    public XAbstractSignByAndDateButton(AttributeTypeToken attrType1, AttributeTypeToken attrType2) {
       super((attrType1.isDate() ? attrType2.getUnqualifiedName() : attrType1.getUnqualifiedName()), "Sign or Clear",
          ImageManager.getImage(FrameworkImage.RUN_EXC));
+      setAttributeType(attrType1);
+      setAttributeType2(attrType2);
       this.dateAttrType = attrType1.isDate() ? attrType1 : attrType2;
       this.byAttrType = attrType1.isDate() ? attrType2 : attrType1;
       addListener();
@@ -201,7 +203,7 @@ public abstract class XAbstractSignByAndDateButton extends XButtonWithLabelDam i
 
    @Override
    public IStatus isValid() {
-      if (isRequiredEntry() && artifact.getSoleAttributeValue(getSignDateAttrType(), null) != null) {
+      if (isRequiredEntry() && artifact.getSoleAttributeValue(getSignDateAttrType(), null) == null) {
          Date date = getArtifact().getSoleAttributeValue(dateAttrType, null);
          if (date == null) {
             return new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel() + " must be signed");
@@ -229,6 +231,7 @@ public abstract class XAbstractSignByAndDateButton extends XButtonWithLabelDam i
 
    @Override
    public void setAttributeType(AttributeTypeToken attributeType) {
+      super.setAttributeType(attributeType);
       if (attributeType.isDate()) {
          this.dateAttrType = attributeType;
       } else {
@@ -238,6 +241,7 @@ public abstract class XAbstractSignByAndDateButton extends XButtonWithLabelDam i
 
    @Override
    public void setAttributeType2(AttributeTypeToken attributeType2) {
+      super.setAttributeType2(attributeType2);
       if (attributeType2.isDate()) {
          this.dateAttrType = attributeType2;
       } else {

@@ -77,6 +77,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean AllowCreateBranch = ats.createBoolean(1152921504606847161L, "ats.Allow Create Branch", TEXT_PLAIN, "", Config);
    AttributeTypeBoolean AllowUserActionCreation = ats.createBoolean(1322118789779953012L, "ats.Allow User Action Creation", TEXT_PLAIN, "", Config);
    AttributeTypeBoolean AllowWebExport = ats.createBoolean(1244831604424847172L, "ats.Allow Web Export", TEXT_PLAIN, "", Config);
+   AttributeTypeString Analysis = ats.createString(5980740481166850750L, "ats.Analysis", TEXT_PLAIN, "", MultiLine, Edit);
    AttributeTypeBoolean ApplicabilityWorkflow = ats.createBoolean(1152922022510067882L, "ats.Applicability Workflow", TEXT_PLAIN, "", Read);
    ApplicableToProgramAttributeType ApplicableToProgram = ats.createEnum(new ApplicableToProgramAttributeType(), Read);
    AttributeTypeString Assumptions = ats.createString(593196463063939110L, "ats.Assumptions", TEXT_PLAIN, "", MultiLine, Edit);
