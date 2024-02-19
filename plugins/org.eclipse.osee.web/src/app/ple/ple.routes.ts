@@ -59,10 +59,6 @@ const routes: Routes = [
 		loadChildren: () => import('./asciidoc/asciidoc.routes'),
 	},
 	{
-		path: 'changes',
-		loadChildren: () => import('./change-report/change-report.routes'),
-	},
-	{
 		path: 'artifact/explorer',
 		loadChildren: () =>
 			import('./artifact-explorer/artifact-explorer.routes'),
