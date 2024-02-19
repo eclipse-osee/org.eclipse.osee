@@ -484,6 +484,10 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             Collectors.toList())) {
          writer.writeString(rule);
       }
+
       writer.writeEndArray();
+      boolean hasCommitManager = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().map(
+         widget -> widget.getName()).anyMatch(name -> name.equals("Commit Manager"));
+      writer.writeObjectField("committable", hasCommitManager);
    }
 }
