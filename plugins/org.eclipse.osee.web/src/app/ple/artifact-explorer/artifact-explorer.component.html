@@ -23,18 +23,49 @@
 		opened="true">
 		<osee-artifact-hierarchy-panel />
 	</mat-drawer>
-	<button
-		mat-icon-button
-		color="primary"
-		class="tw-float-right -tw-rotate-90 hover:tw-bg-primary hover:tw-text-white"
-		(click)="drawer.toggle()">
-		<mat-icon>
-			{{
-				drawer.opened
-					? 'keyboard_double_arrow_down'
-					: 'keyboard_double_arrow_up'
-			}}
-		</mat-icon>
-	</button>
+	<div class="tw-float-right tw-flex tw-flex-col">
+		@if (openTabs().length > 0) {
+			<button
+				mat-icon-button
+				[matMenuTriggerFor]="tabList"
+				matTooltip="View open tabs">
+				<mat-icon>more_horiz</mat-icon>
+			</button>
+		}
+		<button
+			mat-icon-button
+			color="primary"
+			class="-tw-rotate-90 hover:tw-bg-primary hover:tw-text-white"
+			(click)="drawer.toggle()">
+			<mat-icon>
+				{{
+					drawer.opened
+						? 'keyboard_double_arrow_down'
+						: 'keyboard_double_arrow_up'
+				}}
+			</mat-icon>
+		</button>
+	</div>
 	<osee-artifact-tab-group />
 </mat-drawer-container>
+<mat-menu
+	#tabList="matMenu"
+	class="tw-max-w-none">
+	<div class="tw-max-h-96">
+		@for (tab of openTabs(); track $index) {
+			<div class="tw-flex tw-px-2">
+				<button
+					mat-menu-item
+					(click)="setSelectedTab($index)">
+					<mat-icon>{{ fetchIcon(tab) }}</mat-icon>
+					<span>{{ tab.tabTitle }}</span>
+				</button>
+				<button
+					mat-icon-button
+					(click)="removeTab($event, $index)">
+					<mat-icon>clear</mat-icon>
+				</button>
+			</div>
+		}
+	</div>
+</mat-menu>

@@ -19,6 +19,7 @@ import {
 	artifact,
 	TabType,
 	artifactSentinel,
+	fetchIconFromDictionary,
 } from '../types/artifact-explorer.data';
 
 @Injectable({
@@ -26,6 +27,7 @@ import {
 })
 export class ArtifactExplorerTabService {
 	private tabs = signal<tab[]>([]);
+	private _selectedIndex = signal<number>(0);
 
 	private uiService = inject(UiService);
 	branchId = toSignal(this.uiService.id, { initialValue: '' });
@@ -42,6 +44,7 @@ export class ArtifactExplorerTabService {
 				viewId: this.viewId(),
 			},
 		]);
+		this.SelectedIndex = this.tabs().length - 1;
 	}
 
 	addArtifactTab(artifact: artifact) {
@@ -63,14 +66,32 @@ export class ArtifactExplorerTabService {
 					viewId: this.viewId(),
 				},
 			]);
+		this.SelectedIndex = this.tabs().length - 1;
 	}
 
 	removeTab(index: number) {
 		this.tabs.update((rows) => rows.filter((_, i) => index !== i));
 	}
 
+	getTabIcon(tab: tab) {
+		if (tab.tabType === 'Artifact' && tab.artifact) {
+			return fetchIconFromDictionary(tab.artifact.typeName);
+		} else if (tab.tabType === 'ChangeReport') {
+			return 'differences';
+		}
+		return '';
+	}
+
 	get Tabs() {
 		return this.tabs;
+	}
+
+	get selectedIndex() {
+		return this._selectedIndex;
+	}
+
+	set SelectedIndex(index: number) {
+		this._selectedIndex.set(index);
 	}
 
 	onTabDropped(event: CdkDragDrop<any[]>) {
