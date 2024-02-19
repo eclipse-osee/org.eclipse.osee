@@ -164,7 +164,10 @@ public class WfeOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedPriorities) {
             items.addAll(((WrappedPriorities) element).getPriorities());
          } else if (element instanceof WorkflowEditor) {
-            items.add(((WorkflowEditor) element).getWorkItem());
+            AbstractWorkflowArtifact workItem = ((WorkflowEditor) element).getWorkItem();
+            if (workItem != null) {
+               items.add(workItem);
+            }
             items.add(new WrappedStateItems(AtsApiService.get().getWorkItemService().getWorkItemHooks()));
          } else if (element instanceof AbstractWorkflowArtifact) {
             items.add(((AbstractWorkflowArtifact) element).getWorkDefinition());
