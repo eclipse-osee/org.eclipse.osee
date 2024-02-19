@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Component, Input } from '@angular/core';
-import { ChangeReportTableComponent } from '../components/change-report-table/change-report-table.component';
+import { ChangeReportTableComponent } from '../change-report-table.component';
 
 @Component({
 	selector: 'osee-change-report-table',

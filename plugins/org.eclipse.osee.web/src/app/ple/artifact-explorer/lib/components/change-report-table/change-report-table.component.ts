@@ -20,7 +20,7 @@ import {
 } from 'rxjs';
 import { HeaderService } from '@osee/shared/services';
 import { changeReportRow } from '@osee/shared/types/change-report';
-import { ChangeReportService } from '../../services/change-report.service';
+import { ChangeReportService } from './services/change-report.service';
 import { changeReportHeaders } from './change-report-table-headers';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
