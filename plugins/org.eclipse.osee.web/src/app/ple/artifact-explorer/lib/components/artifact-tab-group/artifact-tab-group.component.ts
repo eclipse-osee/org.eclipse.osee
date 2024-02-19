@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed } from '@angular/core';
+import { Component, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +21,7 @@ import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-edit
 import { ArtifactInfoPanelComponent } from '../editor/artifact-info-panel/artifact-info-panel.component';
 import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/relations-editor-panel.component';
 import { ChangeReportTableComponent } from '@osee/change-report';
+import { tab } from '../../types/artifact-explorer.data';
 
 @Component({
 	selector: 'osee-artifact-tab-group',
@@ -43,6 +44,8 @@ export class ArtifactTabGroupComponent {
 
 	connections = computed(() => this.tabs().map((_, i) => '' + i));
 
+	selectedIndex = this.tabService.selectedIndex;
+
 	constructor(private tabService: ArtifactExplorerTabService) {}
 
 	removeTab(index: number) {
@@ -61,5 +64,13 @@ export class ArtifactTabGroupComponent {
 
 	trackByIndex(index: number): number {
 		return index;
+	}
+
+	selectIndex(index: number) {
+		this.tabService.SelectedIndex = index;
+	}
+
+	getTabIcon(tab: tab) {
+		return this.tabService.getTabIcon(tab);
 	}
 }

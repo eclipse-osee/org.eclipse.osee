@@ -19,6 +19,13 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { UiService } from '@osee/shared/services';
 import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/artifact-tab-group.component';
 import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
+import {
+	fetchIconFromDictionary,
+	tab,
+} from './lib/types/artifact-explorer.data';
 
 @Component({
 	selector: 'osee-artifact-explorer',
@@ -31,6 +38,8 @@ import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/arti
 		MatIconModule,
 		ArtifactTabGroupComponent,
 		DragDropModule,
+		MatMenuModule,
+		MatTooltipModule,
 	],
 	templateUrl: './artifact-explorer.component.html',
 })
@@ -58,7 +67,24 @@ export class ArtifactExplorerComponent {
 		}
 	}
 
-	constructor(private uiService: UiService) {}
+	openTabs = this.tabService.Tabs;
+
+	constructor(
+		private uiService: UiService,
+		private tabService: ArtifactExplorerTabService
+	) {}
+
+	setSelectedTab(index: number) {
+		this.tabService.SelectedIndex = index;
+	}
+	removeTab(event: MouseEvent, index: number) {
+		event.stopPropagation();
+		this.tabService.removeTab(index);
+	}
+
+	fetchIcon(tab: tab) {
+		return this.tabService.getTabIcon(tab);
+	}
 }
 
 export default ArtifactExplorerComponent;

@@ -12,7 +12,7 @@
  -->
 @if (tabs().length === 0) {
 	<div
-		class="tw-flex tw-h-[85%] tw-w-full tw-items-center tw-justify-center tw-opacity-70">
+		class="tw-flex tw-h-[80%] tw-w-full tw-items-center tw-justify-center tw-opacity-70">
 		<span
 			class="tw-select-none tw-text-4xl tw-font-bold tw-text-background-status-bar"
 			>No open tabs</span
@@ -21,6 +21,8 @@
 } @else {
 	<mat-tab-group
 		[animationDuration]="0"
+		[selectedIndex]="selectedIndex()"
+		(selectedIndexChange)="selectIndex($event)"
 		mat-stretch-tabs="false"
 		mat-align-tabs="start"
 		fitInkBarToContent>
@@ -38,6 +40,7 @@
 						<div
 							class="tw-flex tw-items-center tw-rounded-t-md"
 							cdkDrag>
+							<mat-icon>{{ getTabIcon(tab) }}</mat-icon>
 							<div class="tw-pl-4">
 								{{ tab.tabTitle }}
 							</div>
