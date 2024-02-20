@@ -334,15 +334,8 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 	}
 
 	downloadChangeReports(url: string) {
-		var rpcrNums = '';
-		var icdDiffs = '';
-		this.dataSource.data.forEach((element) => {
-			if (element.changeReport)
-				rpcrNums = rpcrNums + ',' + element.changeReport;
-			if (element.icdDiff) icdDiffs = icdDiffs + ',' + element.icdDiff;
-		});
 		this.reportService
-			.downloadChangeReports(url, rpcrNums, icdDiffs)
+			.downloadChangeReports(url)
 			.subscribe((data: any) => this.getZipFile(data)),
 			() => console.log('Completed file download.');
 	}
