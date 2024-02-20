@@ -46,11 +46,12 @@ import {
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
 import {
-	fetchIconFromDictionary,
 	artifact,
 	relationSide,
 	relation,
+	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
+import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
@@ -131,12 +132,17 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		takeUntilDestroyed()
 	);
 
-	fetchIcon(key: string): string {
-		return fetchIconFromDictionary(key);
+	getIconClasses(icon: artifactTypeIcon) {
+		return (
+			this.tabService.getIconClass(icon) +
+			' ' +
+			this.tabService.getIconVariantClass(icon)
+		);
 	}
 
 	constructor(
 		private artExpHttpService: ArtifactExplorerHttpService,
+		private tabService: ArtifactExplorerTabService,
 		private builder: TransactionBuilderService,
 		private transaction: TransactionService,
 		private uiService: UiService,

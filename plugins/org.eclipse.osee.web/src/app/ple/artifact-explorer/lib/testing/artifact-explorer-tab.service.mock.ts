@@ -23,6 +23,13 @@ export const tabsMock: tab[] = [
 			id: '123',
 			typeId: '456',
 			typeName: 'Mock Type',
+			icon: {
+				icon: 'folder',
+				color: 'accent',
+				lightShade: '400',
+				darkShade: '400',
+				variant: '',
+			},
 			attributes: [
 				{
 					name: 'Attribute 1',

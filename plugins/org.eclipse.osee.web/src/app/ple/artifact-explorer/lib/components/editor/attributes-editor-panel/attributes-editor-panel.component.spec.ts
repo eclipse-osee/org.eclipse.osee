@@ -38,6 +38,13 @@ describe('AttributesEditorPanelComponent', () => {
 				id: '123',
 				typeId: '456',
 				typeName: 'Mock Type',
+				icon: {
+					icon: '',
+					color: '',
+					lightShade: '',
+					darkShade: '',
+					variant: '',
+				},
 				attributes: [
 					{
 						name: 'Attribute 1',

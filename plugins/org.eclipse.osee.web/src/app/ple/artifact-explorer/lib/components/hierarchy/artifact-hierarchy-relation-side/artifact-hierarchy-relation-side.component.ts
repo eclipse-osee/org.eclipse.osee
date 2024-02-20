@@ -29,8 +29,8 @@ import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hiera
 import {
 	relationSide,
 	relationTypeToken,
-	fetchIconFromDictionary,
 	artifact,
+	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { BehaviorSubject } from 'rxjs';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
@@ -93,16 +93,20 @@ export class ArtifactHierarchyRelationSideComponent {
 		this.isOpen.set(false);
 	}
 
-	fetchIcon(key: string): string {
-		return fetchIconFromDictionary(key);
-	}
-
 	addTab(artifact: artifact) {
 		this.tabService.addArtifactTab(artifact);
 	}
 
 	trackArtifacts(index: number, item: artifact) {
 		return item.id;
+	}
+
+	getIconClasses(icon: artifactTypeIcon) {
+		return (
+			this.tabService.getIconClass(icon) +
+			' ' +
+			this.tabService.getIconVariantClass(icon)
+		);
 	}
 
 	@Input() set paths(value: string[][]) {

@@ -153,10 +153,11 @@
 											class="tw-h-auto tw-px-0 tw-py-1">
 											<div
 												class="tw-flex tw-items-center">
-												<mat-icon>
-													{{
-														fetchIcon(art.typeName)
-													}}
+												<mat-icon
+													[class]="
+														getIconClasses(art.icon)
+													">
+													{{ art.icon.icon }}
 												</mat-icon>
 												<div class="tw-pl-2">
 													{{ art.name }}

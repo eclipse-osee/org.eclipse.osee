@@ -21,7 +21,7 @@ import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-edit
 import { ArtifactInfoPanelComponent } from '../editor/artifact-info-panel/artifact-info-panel.component';
 import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/relations-editor-panel.component';
 import { ChangeReportTableComponent } from '../change-report-table/change-report-table.component';
-import { tab } from '../../types/artifact-explorer.data';
+import { artifactTypeIcon, tab } from '../../types/artifact-explorer.data';
 
 @Component({
 	selector: 'osee-artifact-tab-group',
@@ -52,7 +52,7 @@ export class ArtifactTabGroupComponent {
 		this.tabService.removeTab(index);
 	}
 
-	onTabDropped(event: CdkDragDrop<any[]>) {
+	onTabDropped(event: CdkDragDrop<unknown[]>) {
 		this.tabService.onTabDropped(event);
 	}
 
@@ -72,5 +72,13 @@ export class ArtifactTabGroupComponent {
 
 	getTabIcon(tab: tab) {
 		return this.tabService.getTabIcon(tab);
+	}
+
+	getTabIconClasses(tab: tab) {
+		return (
+			this.tabService.getTabIconClass(tab) +
+			' ' +
+			this.tabService.getTabIconVariantClass(tab)
+		);
 	}
 }

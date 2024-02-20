@@ -66,7 +66,8 @@ public class OrcsTypeTokens {
        * @return the newly created {@link AttributeTypeEnum} object.
        */
 
-      T apply(Long identifier, String name, String description, TaggerTypeToken taggerTypeToken, String mediaType, NamespaceToken namespaceToken);
+      T apply(Long identifier, String name, String description, TaggerTypeToken taggerTypeToken, String mediaType,
+         NamespaceToken namespaceToken);
    }
 
    /**
@@ -96,7 +97,8 @@ public class OrcsTypeTokens {
        * @return the newly created {@link AttributeTypeEnum} object.
        */
 
-      T apply(Long identifier, String name, TaggerTypeToken taggerType, String mediaType, NamespaceToken namespaceToken);
+      T apply(Long identifier, String name, TaggerTypeToken taggerType, String mediaType,
+         NamespaceToken namespaceToken);
    }
 
    /**
@@ -151,11 +153,23 @@ public class OrcsTypeTokens {
       return namespace;
    }
 
-   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, OseeImage image, ArtifactTypeToken... superTypes) {
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, OseeImage image,
+      ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, image, superTypes);
    }
 
-   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeIcon icon,
+      ArtifactTypeToken... superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, icon, superTypes);
+   }
+
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, OseeImage image,
+      ArtifactTypeIcon icon, ArtifactTypeToken... superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, icon, superTypes);
+   }
+
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract,
+      ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes);
    }
 
@@ -184,19 +198,25 @@ public class OrcsTypeTokens {
       }
    }
 
-   public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
+   public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity,
+      RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB,
+      String sideBName) {
       validateString(name);
       return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
          artifactTypeA, sideAName, artifactTypeB, sideBName, ArtifactTypeToken.SENTINEL, true));
    }
 
-   public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName, ArtifactTypeToken relationArtifactType) {
+   public RelationTypeToken addNewRelationType(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity,
+      RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB,
+      String sideBName, ArtifactTypeToken relationArtifactType) {
       validateString(name);
       return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
          artifactTypeA, sideAName, artifactTypeB, sideBName, relationArtifactType, true));
    }
 
-   public RelationTypeToken add(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity, RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB, String sideBName) {
+   public RelationTypeToken add(long id, String name, RelationTypeMultiplicity relationTypeMultiplicity,
+      RelationSorter order, ArtifactTypeToken artifactTypeA, String sideAName, ArtifactTypeToken artifactTypeB,
+      String sideBName) {
       validateString(name);
       return relationTypes.addAndReturn(RelationTypeToken.create(id, name, relationTypeMultiplicity, order,
          artifactTypeA, sideAName, artifactTypeB, sideBName));
@@ -223,7 +243,8 @@ public class OrcsTypeTokens {
    /**
     * Methods for creating ArtifactId AttributeType
     */
-   public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
       AttributeTypeArtifactId attrType = attributeTypes.addAndReturn(
          new AttributeTypeArtifactId(id, namespace, name, mediaType, description, taggerType));
@@ -236,35 +257,41 @@ public class OrcsTypeTokens {
       return attrType;
    }
 
-   public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeArtifactId createArtifactId(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createArtifactId(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeArtifactId createArtifactIdNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeArtifactId createArtifactIdNoTag(Long id, String name, String mediaType,
+      String description, DisplayHint... displayHints) {
       return createArtifactId(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**
     * Methods for creating Boolean AttributeType
     */
-   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeBoolean(id, namespace, name, mediaType, description, taggerType, displayHints));
    }
 
-   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeBoolean createBoolean(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createBoolean(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeBoolean createBooleanNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeBoolean createBooleanNoTag(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createBoolean(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**
     * Methods for creating BranchId AttributeType
     */
-   public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType) {
+   public @NonNull AttributeTypeBranchId createBranchId(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType) {
       validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeBranchId(id, namespace, name, mediaType, description, taggerType));
@@ -274,14 +301,16 @@ public class OrcsTypeTokens {
       return createBranchId(id, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   public @NonNull AttributeTypeBranchId createBranchIdNoTag(Long id, String name, String mediaType, String description) {
+   public @NonNull AttributeTypeBranchId createBranchIdNoTag(Long id, String name, String mediaType,
+      String description) {
       return createBranchId(id, name, mediaType, description, TaggerTypeToken.SENTINEL);
    }
 
    /**
     * Methods for creating Date AttributeType
     */
-   public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
       AttributeTypeDate type =
          attributeTypes.addAndReturn(new AttributeTypeDate(id, namespace, name, mediaType, description, taggerType));
@@ -292,18 +321,21 @@ public class OrcsTypeTokens {
 
    }
 
-   public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeDate createDate(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createDate(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeDate createDateNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeDate createDateNoTag(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createDate(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**
     * Methods for creating Double AttributeType
     */
-   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
       AttributeTypeDouble attrType = attributeTypes.addAndReturn(
          new AttributeTypeDouble(id, namespace, name, mediaType, description, taggerType, displayHints));
@@ -313,45 +345,53 @@ public class OrcsTypeTokens {
       return attrType;
    }
 
-   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeDouble createDouble(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createDouble(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeDouble createDoubleNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeDouble createDoubleNoTag(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createDouble(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**
     * Methods for creating InputStream AttributeType
     */
-   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
+   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType,
+      String description, TaggerTypeToken taggerType, String fileExtension) {
       validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeInputStream(id, namespace, name, mediaType, description, taggerType, fileExtension));
    }
 
-   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description) {
+   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType,
+      String description) {
       return createInputStream(id, name, mediaType, description, determineTaggerType(mediaType),
          defaultFileExtension(mediaType));
    }
 
-   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType, String description, String fileExtension) {
+   public @NonNull AttributeTypeInputStream createInputStream(Long id, String name, String mediaType,
+      String description, String fileExtension) {
       return createInputStream(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension);
    }
 
-   public @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, String name, String mediaType, String description) {
+   public @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, String name, String mediaType,
+      String description) {
       return createInputStream(id, name, mediaType, description, TaggerTypeToken.SENTINEL,
          defaultFileExtension(mediaType));
    }
 
-   public @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, String name, String mediaType, String description, String fileExtension) {
+   public @NonNull AttributeTypeInputStream createInputStreamNoTag(Long id, String name, String mediaType,
+      String description, String fileExtension) {
       return createInputStream(id, name, mediaType, description, TaggerTypeToken.SENTINEL, fileExtension);
    }
 
    /**
     * Methods for creating Integer AttributeType
     */
-   public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
       AttributeTypeInteger attrType =
          attributeTypes.addAndReturn(new AttributeTypeInteger(id, namespace, name, mediaType, description, taggerType));
@@ -364,18 +404,21 @@ public class OrcsTypeTokens {
       return attrType;
    }
 
-   public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeInteger createInteger(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createInteger(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeInteger createIntegerNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeInteger createIntegerNoTag(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createInteger(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
    /**
     * Methods for creating Long AttributeType
     */
-   public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
       AttributeTypeLong attrType =
          attributeTypes.addAndReturn(new AttributeTypeLong(id, namespace, name, mediaType, description, taggerType));
@@ -388,11 +431,13 @@ public class OrcsTypeTokens {
       return attrType;
    }
 
-   public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeLong createLong(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createLong(id, name, mediaType, description, determineTaggerType(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeLong createLongNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeLong createLongNoTag(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createLong(id, name, mediaType, description, TaggerTypeToken.SENTINEL, displayHints);
    }
 
@@ -400,7 +445,8 @@ public class OrcsTypeTokens {
     * Methods for creating Enumerated AttributeType
     */
 
-   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(T attributeType, DisplayHint... displayHints) {
+   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(T attributeType,
+      DisplayHint... displayHints) {
       T type = attributeTypes.addAndReturn(attributeType);
       for (DisplayHint hint : displayHints) {
          type.addDisplayHint(hint);
@@ -408,7 +454,8 @@ public class OrcsTypeTokens {
       return type;
    }
 
-   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(T attributeType, DisplayHint... displayHints) {
+   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnumNoTag(T attributeType,
+      DisplayHint... displayHints) {
       T type = attributeTypes.addAndReturn(attributeType);
       for (DisplayHint hint : displayHints) {
          type.addDisplayHint(hint);
@@ -416,7 +463,8 @@ public class OrcsTypeTokens {
       return type;
    }
 
-   public @NonNull DynamicEnumAttributeType createEnum(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
+   public @NonNull DynamicEnumAttributeType createEnum(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, DisplayHint... displayHints) {
       validateString(name);
       DynamicEnumAttributeType type = attributeTypes.addAndReturn(
          new DynamicEnumAttributeType(id, namespace, name, mediaType, description, taggerType));
@@ -430,7 +478,9 @@ public class OrcsTypeTokens {
       return createEnum(id, name, mediaType, description, determineTaggerType(mediaType));
    }
 
-   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(AttributeEnumConstructor<T> attributeEnumConstructor, Long identifier, String name, String description, String mediaType, NamespaceToken namespaceToken, TaggerTypeToken taggerTypeToken, DisplayHint... displayHints) {
+   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(
+      AttributeEnumConstructor<T> attributeEnumConstructor, Long identifier, String name, String description,
+      String mediaType, NamespaceToken namespaceToken, TaggerTypeToken taggerTypeToken, DisplayHint... displayHints) {
       validateString(name);
       @NonNull
       T type = attributeTypes.addAndReturn(
@@ -441,7 +491,9 @@ public class OrcsTypeTokens {
       return type;
    }
 
-   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(AttributeEnumConstructorNoDescription<T> attributeEnumConstructor, Long identifier, String name, String mediaType, DisplayHint... displayHints) {
+   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(
+      AttributeEnumConstructorNoDescription<T> attributeEnumConstructor, Long identifier, String name, String mediaType,
+      DisplayHint... displayHints) {
       validateString(name);
       T type = attributeTypes.addAndReturn(attributeEnumConstructor.apply(identifier, name,
          OrcsTypeTokens.determineTaggerType(mediaType), mediaType, this.namespace));
@@ -451,7 +503,10 @@ public class OrcsTypeTokens {
       return type;
    }
 
-   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(AttributeEnumConstructor<T> attributeEnumConstructor, AttributeDisplayNameAndDescriptionSupplier attributeDisplayNameAndDescriptionSupplier, Long identifier, String mediaType, NamespaceToken namespaceToken, TaggerTypeToken taggerTypeToken) {
+   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(
+      AttributeEnumConstructor<T> attributeEnumConstructor,
+      AttributeDisplayNameAndDescriptionSupplier attributeDisplayNameAndDescriptionSupplier, Long identifier,
+      String mediaType, NamespaceToken namespaceToken, TaggerTypeToken taggerTypeToken) {
       var nameAndDescription = attributeDisplayNameAndDescriptionSupplier.get();
       var attrType = attributeTypes.addAndReturn(attributeEnumConstructor.apply(identifier,
          nameAndDescription.getFirst(), nameAndDescription.getSecond(), taggerTypeToken, mediaType, namespaceToken));
@@ -459,7 +514,10 @@ public class OrcsTypeTokens {
       return attrType;
    }
 
-   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(AttributeEnumConstructorNoDescription<T> attributeEnumConstructorNoDescription, AttributeDisplayNameSupplier attributeDisplayNameSupplier, Long identifier, String mediaType, NamespaceToken namespaceToken, TaggerTypeToken taggerTypeToken, DisplayHint... displayHints) {
+   public @NonNull <T extends AttributeTypeEnum<? extends EnumToken>> T createEnum(
+      AttributeEnumConstructorNoDescription<T> attributeEnumConstructorNoDescription,
+      AttributeDisplayNameSupplier attributeDisplayNameSupplier, Long identifier, String mediaType,
+      NamespaceToken namespaceToken, TaggerTypeToken taggerTypeToken, DisplayHint... displayHints) {
       var name = attributeDisplayNameSupplier.get();
       var attrType = attributeTypes.addAndReturn(
          attributeEnumConstructorNoDescription.apply(identifier, name, taggerTypeToken, mediaType, namespaceToken));
@@ -474,32 +532,40 @@ public class OrcsTypeTokens {
     * Methods for creating String AttributeType
     */
 
-   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
+      TaggerTypeToken taggerType, String fileExtension, DisplayHint... displayHints) {
       validateString(name);
       return attributeTypes.addAndReturn(
          new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension, displayHints));
    }
 
-   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, determineTaggerType(mediaType),
          defaultFileExtension(mediaType), displayHints);
    }
 
-   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description, String fileExtension, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
+      String fileExtension, DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension,
          displayHints);
    }
 
-   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description,
+      DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, defaultFileExtension(mediaType),
          displayHints);
    }
 
-   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description, String fileExtension, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description,
+      String fileExtension, DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, fileExtension, displayHints);
    }
 
-   public @NonNull AttributeTypeString createString(AttributeDisplayNameAndDescriptionSupplier attributeNameAndDescriptionSupplier, Long identifier, String mediaType, TaggerTypeToken taggerTypeToken, NamespaceToken namespaceToken, String fileExtension, DisplayHint... displayHints) {
+   public @NonNull AttributeTypeString createString(
+      AttributeDisplayNameAndDescriptionSupplier attributeNameAndDescriptionSupplier, Long identifier, String mediaType,
+      TaggerTypeToken taggerTypeToken, NamespaceToken namespaceToken, String fileExtension,
+      DisplayHint... displayHints) {
       var nameAndDescription = attributeNameAndDescriptionSupplier.get();
       return attributeTypes.addAndReturn(
          new AttributeTypeString(identifier, namespaceToken, nameAndDescription.getFirst(), mediaType,
@@ -525,7 +591,9 @@ public class OrcsTypeTokens {
     * circular dependencies during static initialization.
     */
 
-   public @NonNull AttributeTypeMapEntry createMapEntry(Long id, String name, String description, Supplier<String> keyDescriptionSupplier, Supplier<String> valueDescriptionSupplier, String defaultKey, String defaultValue) {
+   public @NonNull AttributeTypeMapEntry createMapEntry(Long id, String name, String description,
+      Supplier<String> keyDescriptionSupplier, Supplier<String> valueDescriptionSupplier, String defaultKey,
+      String defaultValue) {
       validateString(name);
       return attributeTypes.addAndReturn(new AttributeTypeMapEntry(id, this.namespace, name, description,
          keyDescriptionSupplier, valueDescriptionSupplier, defaultKey, defaultValue));
@@ -535,25 +603,33 @@ public class OrcsTypeTokens {
     * Methods for creating Computed Characteristics
     */
 
-   public <T, U extends ComputedCharacteristic<T>> U createComp(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
+   public <T, U extends ComputedCharacteristic<T>> U createComp(
+      SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor,
+      Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
       validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.PlainTextTagger, namespace, description, Arrays.asList(typesToCompute)));
    }
 
-   public <T, U extends ComputedCharacteristic<T>> U createCompNoTag(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
+   public <T, U extends ComputedCharacteristic<T>> U createCompNoTag(
+      SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<T>>, U> computationCharacteristicConstructor,
+      Long id, String name, String description, AttributeTypeGeneric<T>... typesToCompute) {
       validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.SENTINEL, namespace, description, Arrays.asList(typesToCompute)));
    }
 
-   public <U extends ComputedCharacteristic<EnumToken>> U createComp(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
+   public <U extends ComputedCharacteristic<EnumToken>> U createComp(
+      SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor,
+      Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
       validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.PlainTextTagger, namespace, description, createEnumList(typesToCompute)));
    }
 
-   public <U extends ComputedCharacteristic<EnumToken>> U createCompNoTag(SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor, Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
+   public <U extends ComputedCharacteristic<EnumToken>> U createCompNoTag(
+      SexFunction<Long, String, TaggerTypeToken, NamespaceToken, String, List<AttributeTypeGeneric<EnumToken>>, U> computationCharacteristicConstructor,
+      Long id, String name, String description, AttributeTypeEnum<?>... typesToCompute) {
       validateString(name);
       return computedCharacteristics.addAndReturn(computationCharacteristicConstructor.apply(id, name,
          TaggerTypeToken.SENTINEL, namespace, description, createEnumList(typesToCompute)));

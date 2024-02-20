@@ -19,8 +19,9 @@ import {
 	artifact,
 	TabType,
 	artifactSentinel,
-	fetchIconFromDictionary,
+	artifactTypeIcon,
 } from '../types/artifact-explorer.data';
+import { twColorClasses } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -75,7 +76,7 @@ export class ArtifactExplorerTabService {
 
 	getTabIcon(tab: tab) {
 		if (tab.tabType === 'Artifact' && tab.artifact) {
-			return fetchIconFromDictionary(tab.artifact.typeName);
+			return tab.artifact.icon.icon;
 		} else if (tab.tabType === 'ChangeReport') {
 			return 'differences';
 		}
@@ -94,11 +95,55 @@ export class ArtifactExplorerTabService {
 		this._selectedIndex.set(index);
 	}
 
-	onTabDropped(event: CdkDragDrop<any[]>) {
-		moveItemInArray(
-			this.tabs(),
-			parseInt(event.previousContainer.id),
-			parseInt(event.container.id)
-		);
+	getIconClass(icon: artifactTypeIcon): twColorClasses {
+		if (
+			icon.color === '' ||
+			icon.lightShade === '' ||
+			icon.darkShade === ''
+		) {
+			return '';
+		}
+		if (icon.lightShade === icon.darkShade) {
+			return `tw-text-${icon.color}-${icon.lightShade}`;
+		}
+		return `tw-text-${icon.color}-${icon.lightShade} dark:tw-text-${icon.color}-${icon.darkShade}`;
+	}
+
+	getIconVariantClass(icon: artifactTypeIcon) {
+		switch (icon.variant) {
+			case 'outlined':
+				return 'material-icons-outlined';
+			case 'round':
+				return 'material-icons-round';
+			case 'sharp':
+				return 'material-icons-sharp';
+			case 'two-tone':
+				return 'material-icons-two-tone';
+			default:
+				return '';
+		}
+	}
+
+	getTabIconClass(tab: tab) {
+		if (tab.tabType === 'Artifact') {
+			return this.getIconClass(tab.artifact.icon);
+		} else if (tab.tabType === 'ChangeReport') {
+			return 'tw-text-success-600';
+		}
+		return '';
+	}
+
+	getTabIconVariantClass(tab: tab) {
+		if (tab.tabType === 'Artifact') {
+			return this.getIconVariantClass(tab.artifact.icon);
+		}
+		return '';
+	}
+
+	onTabDropped(event: CdkDragDrop<unknown[]>) {
+		moveItemInArray(this.tabs(), event.previousIndex, event.currentIndex);
+		if (this.selectedIndex() === event.previousIndex) {
+			this.selectedIndex.set(event.currentIndex);
+		}
 	}
 }

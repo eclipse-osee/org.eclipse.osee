@@ -16,7 +16,10 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.data.AttributeTypeToken.DEFAULT_DATE;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
+import org.eclipse.osee.framework.core.data.ArtifactTypeIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.MaterialColors;
+import org.eclipse.osee.framework.core.data.MaterialShades;
 import org.eclipse.osee.framework.core.publishing.RequiredIndicator;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.toggles.CuiNamesConfiguration;
@@ -50,7 +53,7 @@ public interface CoreArtifactTypes {
     * </dl>
     */
 
-   ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false)
+   ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, new ArtifactTypeIcon("article"))
       .any(Annotation)
       .zeroOrOne(ContentUrl)
       .zeroOrOne(Description)
@@ -143,17 +146,17 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken AbstractTestResult = osee.add(osee.artifactType(38L, "Abstract Test Result", true, Controlled));
 
-   ArtifactTypeToken BranchView = osee.add(osee.artifactType(5849078277209560034L, "Branch View", false, Artifact)
+   ArtifactTypeToken BranchView = osee.add(osee.artifactType(5849078277209560034L, "Branch View", false, new ArtifactTypeIcon("fork_right"), Artifact)
       .any(ProductApplicability, "Unspecified"));
 
-   ArtifactTypeToken Breaker = osee.add(osee.artifactType(188458869981236L, "Breaker", false, Controlled)
+   ArtifactTypeToken Breaker = osee.add(osee.artifactType(188458869981236L, "Breaker", false, new ArtifactTypeIcon("pause_circle_outline"), Controlled)
       .exactlyOne(CircuitBreakerId)
       .exactlyOne(DisplayText, "unset")
       .zeroOrOne(FunctionalGrouping, FunctionalGrouping.Avionics)
       .exactlyOne(MaintainerText, "unset")
       .exactlyOne(RequireConfirmation));
 
-   ArtifactTypeToken CertificationBaselineEvent = osee.add(osee.artifactType(99L, "Certification Baseline Event", false, Controlled)
+   ArtifactTypeToken CertificationBaselineEvent = osee.add(osee.artifactType(99L, "Certification Baseline Event", false, new ArtifactTypeIcon("emoji_events"), Controlled)
       .zeroOrOne(BaselinedBy)
       .zeroOrOne(BaselinedTimestamp)
       .zeroOrOne(GitChangeId)
@@ -164,7 +167,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(FileSystemPath)
       .zeroOrOne(SubjectMatterExpert));
 
-   ArtifactTypeToken Component = osee.add(osee.artifactType(57L, "Component", false, Controlled)
+   ArtifactTypeToken Component = osee.add(osee.artifactType(57L, "Component", false, new ArtifactTypeIcon("settings_input_component"), Controlled)
       .exactlyOne(Developmental, Boolean.TRUE)
       .exactlyOne(GfeCfe, GfeCfe.Unspecified)
       .exactlyOne(IDAL, IDAL.Unspecified)
@@ -278,24 +281,24 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken EnumeratedArtifact = osee.add(osee.artifactType(4619295485563766003L, "Enumerated Artifact", false, Controlled));
 
-   ArtifactTypeToken Feature = osee.add(osee.artifactType(87L, "Feature", false, Artifact)
+   ArtifactTypeToken Feature = osee.add(osee.artifactType(87L, "Feature", false, new ArtifactTypeIcon("stars", MaterialColors.BLUE, MaterialShades.S700), Artifact)
       .zeroOrOne(DefaultValue)
       .any(ProductApplicability, "Unspecified")
       .exactlyOne(FeatureMultivalued)
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
 
-   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder", false, Artifact));
+   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new ArtifactTypeIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Artifact));
 
-   ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, Controlled)
+   ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, new ArtifactTypeIcon("dataset"), Controlled)
       .any(GeneralStringData)
       .zeroOrOne(PublishInline));
 
    ArtifactTypeToken AccessControlModel = osee.add(osee.artifactType(2L, "Access Control Model", false, GeneralData));
 
-   ArtifactTypeToken FeatureDefinition = osee.add(osee.artifactType(5849078290088170402L, "Feature Definition", false, GeneralData));
+   ArtifactTypeToken FeatureDefinition = osee.add(osee.artifactType(5849078290088170402L, "Feature Definition", false, new ArtifactTypeIcon("description", MaterialColors.BLUE, MaterialShades.S700), GeneralData));
 
-   ArtifactTypeToken GitCommit = osee.add(osee.artifactType(100L, "Git Commit", false, Controlled)
+   ArtifactTypeToken GitCommit = osee.add(osee.artifactType(100L, "Git Commit", false, new ArtifactTypeIcon("commit"), Controlled)
       .zeroOrOne(GitChangeId)
       .zeroOrOne(GitCommitAuthorDate)
       .zeroOrOne(GitCommitMessage)
@@ -308,14 +311,14 @@ public interface CoreArtifactTypes {
       .zeroOrOne(FileSystemPath)
       .zeroOrOne(RepositoryUrl));
 
-   ArtifactTypeToken GlobalPreferences = osee.add(osee.artifactType(3L, "Global Preferences", false, Artifact)
+   ArtifactTypeToken GlobalPreferences = osee.add(osee.artifactType(3L, "Global Preferences", false, new ArtifactTypeIcon("settings"), Artifact)
       .zeroOrOne(DefaultMailServer)
       .zeroOrOne(Dictionary)
       .any(GeneralStringData)
       .zeroOrOne(ProductLinePreferences)
       .zeroOrOne(WebPreferences));
 
-   ArtifactTypeToken GroupArtifact = osee.add(osee.artifactType(6L, "Group Artifact", false, Artifact));
+   ArtifactTypeToken GroupArtifact = osee.add(osee.artifactType(6L, "Group Artifact", false, new ArtifactTypeIcon("group_work"), Artifact));
 
    ArtifactTypeToken HtmlArtifact = osee.add(osee.artifactType(798L, "HTML Artifact", false, Controlled)
       .any(HtmlContent)
@@ -366,9 +369,9 @@ public interface CoreArtifactTypes {
       .exactlyOne(SeverityCategory, SeverityCategory.Unspecified)
       .zeroOrOne(SoftwareSafetyImpact));
 
-   ArtifactTypeToken HeadingMsWord = osee.add(osee.artifactType(56L, "Heading - MS Word", false, MsWordTemplate, AbstractHeading));
+   ArtifactTypeToken HeadingMsWord = osee.add(osee.artifactType(56L, "Heading - MS Word", false, new ArtifactTypeIcon("view_headline"), MsWordTemplate, AbstractHeading));
 
-   ArtifactTypeToken ImplementationDetailsMsWord = osee.add(osee.artifactType(26L, "Implementation Details - MS Word", false, MsWordTemplate, AbstractImplementationDetails));
+   ArtifactTypeToken ImplementationDetailsMsWord = osee.add(osee.artifactType(26L, "Implementation Details - MS Word", false, new ArtifactTypeIcon("details"), MsWordTemplate, AbstractImplementationDetails));
 
    ArtifactTypeToken ImplementationDetailsDataDefinitionMsWord = osee.add(osee.artifactType(279578L, "Implementation Details Data Definition - MS Word", false, ImplementationDetailsMsWord));
 
@@ -378,7 +381,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken ImplementationDetailsProcedureMsWord = osee.add(osee.artifactType(69914L, "Implementation Details Procedure - MS Word", false, ImplementationDetailsMsWord));
 
-   ArtifactTypeToken MsWordWholeDocument = osee.add(osee.artifactType(18L, "MS Word Whole Document", false, MsWord)
+   ArtifactTypeToken MsWordWholeDocument = osee.add(osee.artifactType(18L, "MS Word Whole Document", false, new ArtifactTypeIcon("article"), MsWord)
       .zeroOrOne(IaPlan)
       .zeroOrOne(WholeWordContent, "<?xml version= '1.0' encoding= 'UTF-8' standalone= 'yes'?><?mso-application progid= 'Word.Document'?><w:wordDocument xmlns:w= 'http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v= 'urn:schemas-microsoft-com:vml' xmlns:w10= 'urn:schemas-microsoft-com:office:word' xmlns:sl= 'http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml= 'http://schemas.microsoft.com/aml/2001/core' xmlns:wx= 'http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o= 'urn:schemas-microsoft-com:office:office' xmlns:dt= 'uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp= 'http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0= 'http://www.w3.org/2001/XMLSchema' xmlns:ns1= 'http://eclipse.org/artifact.xsd' xmlns:st1= 'urn:schemas-microsoft-com:office:smarttags' w:macrosPresent= 'no' w:embeddedObjPresent= 'no' w:ocxPresent= 'no' xml:space= 'preserve'><w:body></w:body></w:wordDocument>"));
 
@@ -388,19 +391,19 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Extension)
       .zeroOrOne(NativeContent));
 
-   ArtifactTypeToken GeneralDocument = osee.add(osee.artifactType(14L, "General Document", false, NativeArtifact));
+   ArtifactTypeToken GeneralDocument = osee.add(osee.artifactType(14L, "General Document", false, new ArtifactTypeIcon("text_snippet"), NativeArtifact));
 
    ArtifactTypeToken OseeApp = osee.add(osee.artifactType(89L, "OSEE App", false, Artifact)
       .zeroOrOne(OseeAppDefinition));
 
-   ArtifactTypeToken OseeTypeDefinition = osee.add(osee.artifactType(60L, "Osee Type Definition", false, Artifact)
+   ArtifactTypeToken OseeTypeDefinition = osee.add(osee.artifactType(60L, "Osee Type Definition", false, new ArtifactTypeIcon("description"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
       .any(UriGeneralStringData));
 
    ArtifactTypeToken OseeTypeEnum = osee.add(osee.artifactType(5447805027409642344L, "Osee Type Enum", false, EnumeratedArtifact)
       .any(IdValue));
 
-   ArtifactTypeToken PlainText = osee.add(osee.artifactType(784L, "Plain Text", false, Artifact)
+   ArtifactTypeToken PlainText = osee.add(osee.artifactType(784L, "Plain Text", false, new ArtifactTypeIcon("text_fields"), Artifact)
       .zeroOrOne(ParagraphNumber)
       .zeroOrOne(PlainTextContent));
 
@@ -443,7 +446,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken RendererTemplateWholeWord =
       osee.add
          (
-            osee.artifactType(9L, "Renderer Template - Whole Word", false, Artifact)
+            osee.artifactType(9L, "Renderer Template - Whole Word", false, new ArtifactTypeIcon("dynamic_form"), Artifact)
                .exactlyOne( RendererOptions, "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}" )
                .any( TemplateMatchCriteria )
                .zeroOrOne( WholeWordContent, "<w:p xmlns:w= \"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>" )
@@ -454,7 +457,7 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken ReportTemplate = osee.add(osee.artifactType(63228787744062L, "Report Template", false, Artifact)
       .zeroOrOne(CoreAttributeTypes.JavaCode));
 
-   ArtifactTypeToken Requirement = osee.add(osee.artifactType(21L, "Requirement", false, Controlled)
+   ArtifactTypeToken Requirement = osee.add(osee.artifactType(21L, "Requirement", false, new ArtifactTypeIcon("description", MaterialColors.GREEN, MaterialShades.S400), Controlled)
       .zeroOrOne(SubjectMatterExpert)
       .zeroOrOne(MarkdownContent)
       .zeroOrOne(Extension));
@@ -497,7 +500,7 @@ public interface CoreArtifactTypes {
       .atLeastOne(VerificationEvent, VerificationEvent.Unspecified)
       .zeroOrOne(VerificationLevel, VerificationLevel.Unspecified));
 
-   ArtifactTypeToken CustomerRequirementMsWord = osee.add(osee.artifactType(809L, "Customer Requirement - MS Word", false, MsWordTemplate, AbstractSpecRequirement));
+   ArtifactTypeToken CustomerRequirementMsWord = osee.add(osee.artifactType(809L, "Customer Requirement - MS Word", false, new ArtifactTypeIcon("rule"), MsWordTemplate, AbstractSpecRequirement));
 
    ArtifactTypeToken DirectSoftwareRequirement = osee.add(osee.artifactType(22L, "Direct Software Requirement", true, AbstractSoftwareRequirement));
 
@@ -659,23 +662,23 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ParagraphNumber)
       .zeroOrOne(SFHA));
 
-   ArtifactTypeToken SoftwareDesignMsWord = osee.add(osee.artifactType(45L, "Software Design - MS Word", false, DesignMsWord));
+   ArtifactTypeToken SoftwareDesignMsWord = osee.add(osee.artifactType(45L, "Software Design - MS Word", false, new ArtifactTypeIcon("design_services"), DesignMsWord));
 
    ArtifactTypeToken SoftwareRequirementMarkdown = osee.add(osee.artifactType(3525883482323L, "Software Requirement - Markdown", false, SoftwareRequirement, Markdown));
 
-   ArtifactTypeToken SoftwareRequirementMsWord = osee.add(osee.artifactType(24L, "Software Requirement - MS Word", false, MsWordTemplate, SoftwareRequirement));
+   ArtifactTypeToken SoftwareRequirementMsWord = osee.add(osee.artifactType(24L, "Software Requirement - MS Word", false, new ArtifactTypeIcon("rule"), MsWordTemplate, SoftwareRequirement));
 
    ArtifactTypeToken SoftwareRequirementDataDefinitionMsWord = osee.add(osee.artifactType(793L, "Software Requirement Data Definition - MS Word", false, IndirectSoftwareRequirementMsWord));
 
    ArtifactTypeToken SoftwareRequirementDrawingMsWord = osee.add(osee.artifactType(29L, "Software Requirement Drawing - MS Word", false, IndirectSoftwareRequirementMsWord));
 
-   ArtifactTypeToken SoftwareRequirementFunctionMsWord = osee.add(osee.artifactType(28L, "Software Requirement Function - MS Word", false, IndirectSoftwareRequirementMsWord));
+   ArtifactTypeToken SoftwareRequirementFunctionMsWord = osee.add(osee.artifactType(28L, "Software Requirement Function - MS Word", false, new ArtifactTypeIcon("rule"), IndirectSoftwareRequirementMsWord));
 
-   ArtifactTypeToken SoftwareRequirementHtml = osee.add(osee.artifactType(42L, "Software Requirement - HTML", false, AbstractSoftwareRequirement, HtmlArtifact));
+   ArtifactTypeToken SoftwareRequirementHtml = osee.add(osee.artifactType(42L, "Software Requirement - HTML", false, new ArtifactTypeIcon("rule"), AbstractSoftwareRequirement, HtmlArtifact));
 
-   ArtifactTypeToken SoftwareRequirementPlainText = osee.add(osee.artifactType(792L, "Software Requirement Plain Text", false, PlainText, DirectSoftwareRequirement));
+   ArtifactTypeToken SoftwareRequirementPlainText = osee.add(osee.artifactType(792L, "Software Requirement Plain Text", false, new ArtifactTypeIcon("rule"), PlainText, DirectSoftwareRequirement));
 
-   ArtifactTypeToken SoftwareRequirementProcedureMsWord = osee.add(osee.artifactType(27L, "Software Requirement Procedure - MS Word", false, IndirectSoftwareRequirementMsWord));
+   ArtifactTypeToken SoftwareRequirementProcedureMsWord = osee.add(osee.artifactType(27L, "Software Requirement Procedure - MS Word", false, new ArtifactTypeIcon("rule"), IndirectSoftwareRequirementMsWord));
 
    ArtifactTypeToken SubsystemDesignMsWord = osee.add(osee.artifactType(43L, "Subsystem Design - MS Word", false, DesignMsWord)
       .exactlyOne(Subsystem, Subsystem.Unspecified));
@@ -691,7 +694,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken SubsystemRequirementMarkdown = osee.add(osee.artifactType(2257709917691903205L, "Subsystem Requirement - Markdown", false, AbstractSubsystemRequirement, Markdown));
 
-   ArtifactTypeToken SubsystemRequirementMsWord = osee.add(osee.artifactType(31L, "Subsystem Requirement - MS Word", false, MsWordTemplate, AbstractSubsystemRequirement)
+   ArtifactTypeToken SubsystemRequirementMsWord = osee.add(osee.artifactType(31L, "Subsystem Requirement - MS Word", false, new ArtifactTypeIcon("rule"), MsWordTemplate, AbstractSubsystemRequirement)
       .zeroOrOne(CoreAttributeTypes.Hazard));
 
    ArtifactTypeToken SupportDocumentMsWord = osee.add(osee.artifactType(13L, "Support Document - MS Word", false, MsWordTemplate));
@@ -723,14 +726,14 @@ public interface CoreArtifactTypes {
       .zeroOrOne(DoorsHierarchy)
       .any(DoorsId));
 
-   ArtifactTypeToken TestCase = osee.add(osee.artifactType(82L, "Test Case", false, TestUnit));
+   ArtifactTypeToken TestCase = osee.add(osee.artifactType(82L, "Test Case", false, new ArtifactTypeIcon("fact_check"), TestUnit));
 
    ArtifactTypeToken TestInformationSheetMsWord = osee.add(osee.artifactType(41L, "Test Information Sheet - MS Word", false, MsWordTemplate, TestUnit)
       .exactlyOne(TisTestCategory, TisTestCategory.DEV)
       .zeroOrOne(TisTestNumber)
       .atLeastOne(TisTestType,TisTestType.StationaryVehicle));
 
-   ArtifactTypeToken TestProcedure = osee.add(osee.artifactType(46L, "Test Procedure", false, TestUnit)
+   ArtifactTypeToken TestProcedure = osee.add(osee.artifactType(46L, "Test Procedure", false, new ArtifactTypeIcon("assignment"), TestUnit)
       .exactlyOne(Subsystem, Subsystem.Unspecified)
       .zeroOrOne(TestProcedureStatus, TestProcedureStatus.NotPerformed));
 
@@ -746,13 +749,13 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken TestSupport = osee.add(osee.artifactType(83L, "Test Support", false, TestUnit));
 
-   ArtifactTypeToken UniversalGroup = osee.add(osee.artifactType(8L, "Universal Group", false, GroupArtifact));
+   ArtifactTypeToken UniversalGroup = osee.add(osee.artifactType(8L, "Universal Group", false, new ArtifactTypeIcon("group_work"), GroupArtifact));
 
    ArtifactTypeToken Url = osee.add(osee.artifactType(15L, "Url", false, Artifact));
 
    ArtifactTypeToken SupportingContent = osee.add(osee.artifactType(49L, "Supporting Content", false, Url));
 
-   ArtifactTypeToken User = osee.add(osee.artifactType(5L, "User", false, Artifact)
+   ArtifactTypeToken User = osee.add(osee.artifactType(5L, "User", false, new ArtifactTypeIcon("person_outline"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
       .any(AtsActionSearch)
       .any(AtsUserConfig)
@@ -780,7 +783,7 @@ public interface CoreArtifactTypes {
       .any(MimBranchPreferences)
       .any(MimColumnPreferences));
 
-   ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, AbstractAccessControlled, GroupArtifact)
+   ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, new ArtifactTypeIcon("supervised_user_circle"), AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup)
       .any(Email));
 
@@ -804,7 +807,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(StartPage)
       .any(WorkTransition));
 
-   ArtifactTypeToken XViewerGlobalCustomization = osee.add(osee.artifactType(55L, "XViewer Global Customization", false, Artifact)
+   ArtifactTypeToken XViewerGlobalCustomization = osee.add(osee.artifactType(55L, "XViewer Global Customization", false, new ArtifactTypeIcon("dashboard_customize"), Artifact)
       .any(XViewerCustomization));
 
    ArtifactTypeToken Context = osee.add(osee.artifactType(3962411134691320126L, "Context", false, Artifact)

@@ -36,8 +36,8 @@
 						class="tw-flex tw-flex-grow tw-items-center hover:tw-text-primary"
 						(click)="addTab(artifact)">
 						<div class="tw-pl-4">
-							<mat-icon>
-								{{ fetchIcon(artifact.typeName) }}
+							<mat-icon [class]="getIconClasses(artifact.icon)">
+								{{ artifact.icon.icon }}
 							</mat-icon>
 						</div>
 						<div class="tw-pl-2">

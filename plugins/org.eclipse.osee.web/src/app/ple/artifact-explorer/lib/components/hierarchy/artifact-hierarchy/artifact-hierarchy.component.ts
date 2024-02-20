@@ -42,9 +42,10 @@ import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import {
 	artifact,
-	fetchIconFromDictionary,
+	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
+
 @Component({
 	selector: 'osee-artifact-hierarchy',
 	standalone: true,
@@ -162,10 +163,6 @@ export class ArtifactHierarchyComponent implements OnChanges {
 		takeUntilDestroyed()
 	);
 
-	fetchIcon(key: string): string {
-		return fetchIconFromDictionary(key);
-	}
-
 	addTab(artifact: artifact) {
 		this.tabService.addArtifactTab(artifact);
 	}
@@ -175,6 +172,14 @@ export class ArtifactHierarchyComponent implements OnChanges {
 	}
 
 	protected _paths = new BehaviorSubject<string[][]>([[]]);
+
+	getIconClasses(icon: artifactTypeIcon) {
+		return (
+			this.tabService.getIconClass(icon) +
+			' ' +
+			this.tabService.getIconVariantClass(icon)
+		);
+	}
 
 	latestPaths = combineLatest([
 		this._paths.asObservable(),

@@ -39,6 +39,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitRepoName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
+import org.eclipse.osee.framework.core.data.ArtifactTypeIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
@@ -72,13 +73,13 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Actionable, Boolean.TRUE)
       .any(AtsAttributeTypes.RuleDefinition));
 
-   ArtifactTypeToken ActionableItem = ats.add(ats.artifactType(69L, "Actionable Item", false, ACTIONABLE_ITEM, AbstractAccessControlled, AtsTeamDefinitionOrAi)
+   ArtifactTypeToken ActionableItem = ats.add(ats.artifactType(69L, "Actionable Item", false, ACTIONABLE_ITEM, new ArtifactTypeIcon("call_to_action"), AbstractAccessControlled, AtsTeamDefinitionOrAi)
       .zeroOrOne(AllowUserActionCreation)
       .any(CSCI)
       .zeroOrOne(ProgramId)
       .any(WorkType));
 
-   ArtifactTypeToken Country = ats.add(ats.artifactType(4955822638391722788L, "Country", false, AtsConfigArtifact));
+   ArtifactTypeToken Country = ats.add(ats.artifactType(4955822638391722788L, "Country", false, new ArtifactTypeIcon("map"), AtsConfigArtifact));
 
    ArtifactTypeToken Insertion = ats.add(ats.artifactType(1735587136604728792L, "Insertion", false, INSERTION,  AtsConfigArtifact)
       .zeroOrOne(Description)
@@ -89,7 +90,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken InsertionActivity = ats.add(ats.artifactType(3943415539127781884L, "Insertion Activity", false, INSERTION_ACTIVITY, AtsConfigArtifact)
       .zeroOrOne(Description));
 
-   ArtifactTypeToken Program = ats.add(ats.artifactType(52374361342017540L, "Program", false, PROGRAM, AtsConfigArtifact)
+   ArtifactTypeToken Program = ats.add(ats.artifactType(52374361342017540L, "Program", false, PROGRAM, new ArtifactTypeIcon("code"), AtsConfigArtifact)
       .any(CSCI)
       .zeroOrOne(ClosureState, null)
       .zeroOrOne(Description)
@@ -102,7 +103,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken ReleaseArtifact = ats.add(ats.artifactType(61L, "ats.Release Artifact", false, Artifact)
       .zeroOrOne(Released));
 
-   ArtifactTypeToken TeamDefinition = ats.add(ats.artifactType(68L, "Team Definition", false, TEAM_DEFINITION, AbstractAccessControlled, ResponsibleTeam)
+   ArtifactTypeToken TeamDefinition = ats.add(ats.artifactType(68L, "Team Definition", false, TEAM_DEFINITION, new ArtifactTypeIcon("description"), AbstractAccessControlled, ResponsibleTeam)
       .zeroOrOne(ActionDetailsFormat)
       .zeroOrOne(AllowCommitBranch, Boolean.TRUE)
       .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
@@ -143,7 +144,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(LegacyBuildId));
    ArtifactTypeToken WorkDefinition = ats.add(ats.artifactType(62L, "Work Definition", false, WORKFLOW_DEFINITION, Artifact)
       .zeroOrOne(DslSheet));
-   ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, Artifact)
+   ArtifactTypeToken WorkPackage = ats.add(ats.artifactType(802L, "Work Package", false, WORK_PACKAGE, new ArtifactTypeIcon("cases"), Artifact)
       .exactlyOne(Active, Boolean.TRUE)
       .zeroOrOne(ActivityId)
       .zeroOrOne(ActivityName)
@@ -337,31 +338,31 @@ public interface AtsArtifactTypes {
 
 
    // ATS Agile
-   ArtifactTypeToken AgileFeatureGroup = ats.add(ats.artifactType(560322181883393633L, "Agile Feature Group", false, AtsConfigArtifact)
+   ArtifactTypeToken AgileFeatureGroup = ats.add(ats.artifactType(560322181883393633L, "Agile Feature Group", false, new ArtifactTypeIcon("group_work"), AtsConfigArtifact)
       .zeroOrOne(Description));
 
-   ArtifactTypeToken AgileProgram = ats.add(ats.artifactType(7844993694062372L, "Agile Program", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileProgram = ats.add(ats.artifactType(7844993694062372L, "Agile Program", false, new ArtifactTypeIcon("code"), AtsConfigArtifact));
 
-   ArtifactTypeToken AgileProgramBacklog = ats.add(ats.artifactType(7844994687943135L, "Agile Program Backlog", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileProgramBacklog = ats.add(ats.artifactType(7844994687943135L, "Agile Program Backlog", false, new ArtifactTypeIcon("list_alt"), AtsConfigArtifact));
 
-   ArtifactTypeToken AgileProgramBacklogItem = ats.add(ats.artifactType(11221316461321645L, "Agile Program Backlog Item", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileProgramBacklogItem = ats.add(ats.artifactType(11221316461321645L, "Agile Program Backlog Item", false, new ArtifactTypeIcon("bookmark_border"), AtsConfigArtifact));
 
-   ArtifactTypeToken AgileProgramFeature = ats.add(ats.artifactType(99876313545914L, "Agile Program Feature", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileProgramFeature = ats.add(ats.artifactType(99876313545914L, "Agile Program Feature", false, new ArtifactTypeIcon("stars"), AtsConfigArtifact));
 
-   ArtifactTypeToken AgileStory = ats.add(ats.artifactType(33216462134454L, "Agile Story", false, AtsConfigArtifact));
+   ArtifactTypeToken AgileStory = ats.add(ats.artifactType(33216462134454L, "Agile Story", false, new ArtifactTypeIcon("history_edu"), AtsConfigArtifact));
 
-   ArtifactTypeToken AgileTeam = ats.add(ats.artifactType(7553778770333667393L, "Agile Team", false, AtsConfigArtifact)
+   ArtifactTypeToken AgileTeam = ats.add(ats.artifactType(7553778770333667393L, "Agile Team", false, new ArtifactTypeIcon("groups"), AtsConfigArtifact)
       .zeroOrOne(Description)
       .zeroOrOne(KanbanIgnoreStates)
       .zeroOrOne(PointsAttributeType));
 
-   ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, AbstractWorkflowArtifact)
+   ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, new ArtifactTypeIcon("loop"), AbstractWorkflowArtifact)
       .any(Holiday)
       .any(KanbanStoryName)
       .zeroOrOne(PlannedPoints)
       .zeroOrOne(UnplannedPoints));
 
-   ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, Goal));
+   ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, new ArtifactTypeIcon("list"), Goal));
 
 
    //iCTeam Types

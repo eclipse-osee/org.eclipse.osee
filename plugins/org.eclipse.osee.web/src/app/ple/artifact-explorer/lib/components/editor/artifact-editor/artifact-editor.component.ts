@@ -39,6 +39,13 @@ export class ArtifactEditorComponent implements OnChanges {
 			id: '0',
 			typeId: '',
 			typeName: '',
+			icon: {
+				icon: '',
+				color: '',
+				lightShade: '',
+				darkShade: '',
+				variant: '',
+			},
 			attributes: [],
 			editable: false,
 		},
