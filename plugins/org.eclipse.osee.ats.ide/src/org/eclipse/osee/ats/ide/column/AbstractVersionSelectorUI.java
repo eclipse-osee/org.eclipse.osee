@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -122,15 +123,20 @@ public abstract class AbstractVersionSelectorUI extends XViewerAtsCoreCodeXColum
       }
 
       //call prompt on first version, set rest as same that was selected
-      IAtsVersion selectedVersion =
+      Pair<IAtsVersion, Boolean> result =
          promptVersionSelectorDialog(awas.get(0), versionReleaseType, versionLockType, teamDefHoldingVersions);
-      if (selectedVersion == null) {
+      IAtsVersion selectedVersion = result.getFirst();
+      Boolean removeAllSelected = result.getSecond();
+      if (selectedVersion == null && !removeAllSelected) {
          return false;
       }
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("ATS Prompt Change Version");
       for (TeamWorkFlowArtifact sma : awas) {
+         if (removeAllSelected) {
+            changes.unrelateAll(sma, getRelation());
+         }
          // TargetedVerison colUI, use interface method
-         if (isTargetedVersionRelation()) {
+         else if (isTargetedVersionRelation()) {
             AtsApiService.get().getVersionService().setTargetedVersion(sma, selectedVersion, changes);
          } else {
             //If foundInVersion and selected == oldVersion
@@ -152,8 +158,9 @@ public abstract class AbstractVersionSelectorUI extends XViewerAtsCoreCodeXColum
       return true;
    }
 
-   public IAtsVersion promptVersionSelectorDialog(TeamWorkFlowArtifact teamArt, VersionReleaseType versionReleaseType,
-      VersionLockedType versionLockType, IAtsTeamDefinition teamDefHoldingVersions) {
+   public Pair<IAtsVersion, Boolean> promptVersionSelectorDialog(TeamWorkFlowArtifact teamArt,
+      VersionReleaseType versionReleaseType, VersionLockedType versionLockType,
+      IAtsTeamDefinition teamDefHoldingVersions) {
       if (teamDefHoldingVersions == null) {
          teamDefHoldingVersions = AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(
             teamArt.getTeamDefinition());
@@ -171,27 +178,31 @@ public abstract class AbstractVersionSelectorUI extends XViewerAtsCoreCodeXColum
             AtsApiService.get().getVersionService().getVersions(teamDefHoldingVersions, versionReleaseType,
                versionLockType));
       }
+      dialog.setRemoveAllAllowed(true);
       if (AtsApiService.get().getVersionService().hasTargetedVersion(teamArt)) {
          dialog.setInitialSelections(
             Arrays.asList(AtsApiService.get().getVersionService().getTargetedVersion(teamArt)));
       }
+      IAtsVersion newVersion = null;
+      Boolean removeAllSelected = false;
       int result = dialog.open();
-      if (result != 0) {
-         return null;
-      }
-      Object obj = dialog.getSelectedFirst();
-      IAtsVersion newVersion = (IAtsVersion) obj;
-      //now check selected version
-      if (newVersion != null && newVersion.isLocked()) {
-         String error = "Version \"" + getCommitFullDisplayName(newVersion) + "\" is locked or already released.";
-         if (AtsApiService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(),
-            "Change Version", error + "\n\nOverride?")) {
-            return null;
-         } else if (!AtsApiService.get().getUserService().isAtsAdmin()) {
-            AWorkbench.popup("ERROR", error);
+      if (dialog.isRemoveAllSelected()) {
+         removeAllSelected = true;
+      } else if (result == 0) {
+         Object obj = dialog.getSelectedFirst();
+         newVersion = (IAtsVersion) obj;
+         //now check selected version
+         if (newVersion != null && newVersion.isLocked()) {
+            String error = "Version \"" + getCommitFullDisplayName(newVersion) + "\" is locked or already released.";
+            if (AtsApiService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
+               Displays.getActiveShell(), "Change Version", error + "\n\nOverride?")) {
+               newVersion = null;
+            } else if (!AtsApiService.get().getUserService().isAtsAdmin()) {
+               AWorkbench.popup("ERROR", error);
+            }
          }
       }
-      return newVersion;
+      return new Pair<IAtsVersion, Boolean>(newVersion, removeAllSelected);
    }
 
    public String getCommitFullDisplayName(IAtsVersion version) {
