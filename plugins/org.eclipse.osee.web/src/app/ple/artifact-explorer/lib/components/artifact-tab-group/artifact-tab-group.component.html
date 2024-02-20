@@ -25,22 +25,21 @@
 		(selectedIndexChange)="selectIndex($event)"
 		mat-stretch-tabs="false"
 		mat-align-tabs="start"
-		fitInkBarToContent>
+		fitInkBarToContent
+		cdkDropList
+		(cdkDropListDropped)="onTabDropped($event)"
+		cdkDropListOrientation="horizontal">
 		@for (tab of tabs(); track $index) {
 			<mat-tab #matTab>
 				<ng-template mat-tab-label>
 					<div
-						(cdkDropListDropped)="onTabDropped($event)"
-						[cdkDropListConnectedTo]="
-							getAllDropListConnections($index)()
-						"
-						cdkDropListOrientation="horizontal"
-						cdkDropList
-						[id]="'' + $index">
-						<div
-							class="tw-flex tw-items-center tw-rounded-t-md"
-							cdkDrag>
-							<mat-icon>{{ getTabIcon(tab) }}</mat-icon>
+						[id]="'' + $index"
+						cdkDrag
+						cdkDragLockAxis="x">
+						<div class="tw-flex tw-items-center">
+							<mat-icon [class]="getTabIconClasses(tab)">{{
+								getTabIcon(tab)
+							}}</mat-icon>
 							<div class="tw-pl-4">
 								{{ tab.tabTitle }}
 							</div>

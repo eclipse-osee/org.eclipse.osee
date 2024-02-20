@@ -37,6 +37,12 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this.artifactType = artifactType;
    }
 
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeIcon icon, List<ArtifactTypeToken> superTypes) {
+      ArtifactTypeToken artifactType =
+         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, icon, superTypes);
+      this.artifactType = artifactType;
+   }
+
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, List<ArtifactTypeToken> superTypes) {
       ArtifactTypeToken artifactType = ArtifactTypeToken.create(id, namespace, name, isAbstract, this, superTypes);
       this.artifactType = artifactType;
@@ -44,6 +50,10 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
 
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, ArtifactTypeToken... superTypes) {
       this(id, namespace, name, isAbstract, image, Arrays.asList(superTypes));
+   }
+
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeIcon icon, ArtifactTypeToken... superTypes) {
+      this(id, namespace, name, isAbstract, icon, Arrays.asList(superTypes));
    }
 
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {

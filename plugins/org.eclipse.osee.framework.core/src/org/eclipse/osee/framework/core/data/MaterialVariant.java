@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,15 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './named-id';
-export * from './viewed-id';
-export * from './transaction';
-export * from './branch';
-export * from './responses';
-export * from './http-methods';
-export * from './files';
-export * from './header-detail';
-export * from './http-params';
-export * from './navigation-element';
-export * from './help';
-export * from './tw-colors';
+package org.eclipse.osee.framework.core.data;
+
+/**
+ * @author Ryan T. Baldwin
+ */
+public enum MaterialVariant {
+   NONE(""),
+   OUTLINED("outlined"),
+   ROUND("round"),
+   SHARP("sharp"),
+   TWOTONE("two-tone");
+
+   String value;
+
+   MaterialVariant(String value) {
+      this.value = value;
+   }
+
+   String getValue() {
+      return this.value;
+   }
+}

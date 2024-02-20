@@ -170,6 +170,10 @@ public class ArtifactRelatedDirectPojo {
       public String getTypeName() {
          return this.art.getArtifactType().getName();
       }
+
+      public ArtifactTypeIcon getIcon() {
+         return this.art.getArtifactType().getIcon();
+      }
    }
 
    public class PojoAttribute {

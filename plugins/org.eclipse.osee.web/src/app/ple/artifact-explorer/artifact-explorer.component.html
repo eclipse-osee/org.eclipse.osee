@@ -53,11 +53,18 @@
 	class="tw-max-w-none">
 	<div class="tw-max-h-96">
 		@for (tab of openTabs(); track $index) {
-			<div class="tw-flex tw-px-2">
+			<div
+				[ngClass]="{
+					'tw-bg-primary-100 dark:tw-bg-primary-200':
+						$index === selectedTabIndex()
+				}"
+				class="tw-flex tw-px-2">
 				<button
 					mat-menu-item
 					(click)="setSelectedTab($index)">
-					<mat-icon>{{ fetchIcon(tab) }}</mat-icon>
+					<mat-icon [class]="getTabIconClasses(tab)">{{
+						fetchIcon(tab)
+					}}</mat-icon>
 					<span>{{ tab.tabTitle }}</span>
 				</button>
 				<button

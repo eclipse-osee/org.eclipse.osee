@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div>
+<div class="tw-h-[88vh]">
 	<ng-container *ngIf="viewData | async as _viewData">
 		<div class="tw-pl-4 tw-pt-4">
 			<p>
@@ -61,7 +61,7 @@
 			</ng-container>
 			<tr
 				mat-header-row
-				*matHeaderRowDef="headers"></tr>
+				*matHeaderRowDef="headers; sticky: true"></tr>
 			<tr
 				mat-row
 				*matRowDef="let row; let i = index; columns: headers"

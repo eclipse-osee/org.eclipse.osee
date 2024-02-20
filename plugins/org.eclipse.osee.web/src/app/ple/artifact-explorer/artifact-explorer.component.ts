@@ -22,10 +22,7 @@ import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/arti
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
-import {
-	fetchIconFromDictionary,
-	tab,
-} from './lib/types/artifact-explorer.data';
+import { tab } from './lib/types/artifact-explorer.data';
 
 @Component({
 	selector: 'osee-artifact-explorer',
@@ -68,6 +65,7 @@ export class ArtifactExplorerComponent {
 	}
 
 	openTabs = this.tabService.Tabs;
+	selectedTabIndex = this.tabService.selectedIndex;
 
 	constructor(
 		private uiService: UiService,
@@ -84,6 +82,14 @@ export class ArtifactExplorerComponent {
 
 	fetchIcon(tab: tab) {
 		return this.tabService.getTabIcon(tab);
+	}
+
+	getTabIconClasses(tab: tab) {
+		return (
+			this.tabService.getTabIconClass(tab) +
+			' ' +
+			this.tabService.getTabIconVariantClass(tab)
+		);
 	}
 }
 
