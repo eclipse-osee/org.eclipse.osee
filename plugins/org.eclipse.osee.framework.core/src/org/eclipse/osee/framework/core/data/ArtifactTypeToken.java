@@ -164,14 +164,11 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
             // since each superType has already run the following loop, they already have all their inherited multiplicity
             for (ArtifactTypeToken superType : superTypes) {
                attributeTypes.putAll(((ArtifactTypeTokenImpl) superType).attributeTypes);
+               ((ArtifactTypeTokenImpl) superType).addDirectDescendantType(this);
 
                if (this.icon == null && superType.getIcon() != null) {
                   this.icon = superType.getIcon();
                }
-            }
-
-            for (ArtifactTypeToken superType : superTypes) {
-               ((ArtifactTypeTokenImpl) superType).addDirectDescendantType(this);
             }
          }
 
