@@ -135,7 +135,7 @@ export class ReportService {
 		var program = this._searchOptions$.value.program;
 		var build = this._searchOptions$.value.build;
 		if (program && build) {
-			return this.http.get<String>(url + '/downloadAllDataToCsv?', {
+			return this.http.get<String>(url + '/downloadAllDataToCsv', {
 				params: {
 					build: build,
 					program: program,
@@ -156,15 +156,9 @@ export class ReportService {
 		);
 	}
 
-	downloadChangeReports(url: string, rpcrNums: string, icdDiff: string): any {
-		if (rpcrNums) {
-			return this.http.get(url + '/download?' + 'rpcrNums=' + rpcrNums, {
-				responseType: 'blob',
-			});
-		} else if (icdDiff) {
-			return this.http.get(url + '/download?' + 'cdbSystem=' + icdDiff, {
-				responseType: 'blob',
-			});
-		} else return of();
+	downloadChangeReports(url: string): any {
+		return this.http.get(url + '/downloadChangeReports', {
+			responseType: 'blob',
+		});
 	}
 }
