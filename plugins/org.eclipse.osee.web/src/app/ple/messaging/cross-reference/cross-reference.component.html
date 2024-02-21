@@ -13,7 +13,8 @@
 <osee-messaging-controls [actionControls]="true">
 	<ng-container *ngIf="connections | async as _connections">
 		<mat-form-field
-			class="form-field [&>.mat-mdc-form-field-subscript-wrapper]:tw-hidden"
+			class="form-field"
+			subscriptSizing="dynamic"
 			appearance="fill">
 			<mat-label>{{ connectionSelectionText | async }}</mat-label>
 			<mat-select
