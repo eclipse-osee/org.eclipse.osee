@@ -124,7 +124,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString DuplicatedPcrId = ats.createString(1152922093378076842L, "ats.Duplicated PCR Id", TEXT_PLAIN, "", Read);
    AttributeTypeDate EndDate = ats.createDate(1152921504606847383L, "ats.End Date", TEXT_CALENDAR, "", Read);
    AttributeTypeString EstimateAssumptions = ats.createString(7714952282787917834L, "ats.Estimate Assumptions", TEXT_PLAIN, "", MultiLine, Edit);
-   AttributeTypeDate EstimatedCompletionDate = ats.createDate(1152921504606847165L, "ats.Estimated Completion Date", TEXT_CALENDAR, "Date the changes will be completed.", Read);
+   AttributeTypeDate EstimatedCompletionDate = ats.createDate(1152921504606847165L, "ats.Estimated Completion Date", TEXT_CALENDAR, "Date the changes will be completed.", Edit);
    AttributeTypeDouble EstimatedHours = ats.createDouble(1152921504606847182L, "ats.Estimated Hours", TEXT_PLAIN, "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.", DisplayHint.SingleLine, Edit);
    AttributeTypeDate EstimatedReleaseDate = ats.createDate(1152921504606847164L, "ats.Estimated Release Date", TEXT_CALENDAR, "Date the changes will be made available to the users.", Edit);
    AttributeTypeString ExternalReference = ats.createString(52148954699L, "ats.External Reference", TEXT_PLAIN, "Associated External PCR Number", Edit);
