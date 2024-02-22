@@ -16,10 +16,11 @@ import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
 import {
 	artifact,
+	artifactTokenWithIcon,
 	artifactWithDirectRelations,
 	attribute,
 } from '../types/artifact-explorer.data';
-import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { HttpParamsType } from '@osee/shared/types';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
 
 @Injectable({
@@ -57,14 +58,14 @@ export class ArtifactExplorerHttpService {
 		filter: string,
 		viewId: string,
 		searchCriteria?: AdvancedSearchCriteria
-	): Observable<NamedId[]> {
+	): Observable<artifactTokenWithIcon[]> {
 		const params = this.createParams(
 			branchId,
 			filter,
 			viewId,
 			searchCriteria
 		);
-		return this.http.get<NamedId[]>(
+		return this.http.get<artifactTokenWithIcon[]>(
 			apiURL + '/orcs/branch/' + branchId + '/artifact/search/token',
 			{
 				params: params,
@@ -89,6 +90,17 @@ export class ArtifactExplorerHttpService {
 			{
 				params: params,
 			}
+		);
+	}
+
+	public getArtifactForTab(branchId: string, artifactId: string) {
+		return this.http.get<artifact>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/artifact/' +
+				artifactId +
+				'/load'
 		);
 	}
 
@@ -127,6 +139,12 @@ export class ArtifactExplorerHttpService {
 				params = {
 					...params,
 					exact: searchCriteria.exactMatch,
+				};
+			}
+			if (searchCriteria.searchById) {
+				params = {
+					...params,
+					searchById: searchCriteria.searchById,
 				};
 			}
 		}

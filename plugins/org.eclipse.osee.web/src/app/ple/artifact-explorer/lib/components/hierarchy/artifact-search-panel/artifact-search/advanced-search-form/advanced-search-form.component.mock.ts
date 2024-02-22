@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Component, Input } from '@angular/core';
-import { AdvancedSearchCriteria } from '../../../../types/artifact-search';
+import { AdvancedSearchCriteria } from '../../../../../types/artifact-search';
 
 @Component({
 	selector: 'osee-advanced-search-form',

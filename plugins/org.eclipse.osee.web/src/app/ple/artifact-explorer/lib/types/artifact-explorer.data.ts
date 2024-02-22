@@ -82,6 +82,12 @@ export interface tab {
 	viewId: string;
 }
 
+export type artifactTokenWithIcon = {
+	id: `${number}`;
+	name: string;
+	icon: artifactTypeIcon;
+};
+
 export interface artifactHierarchyOptions {
 	showRelations: boolean;
 }

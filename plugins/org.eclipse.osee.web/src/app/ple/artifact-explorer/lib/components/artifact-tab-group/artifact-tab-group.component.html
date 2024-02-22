@@ -52,20 +52,22 @@
 					</div>
 				</ng-template>
 
-				@switch (tab.tabType) {
-					@case ('Artifact') {
-						<osee-artifact-editor [tab]="tab" />
+				<div class="tw-max-h-[88vh] tw-overflow-auto">
+					@switch (tab.tabType) {
+						@case ('Artifact') {
+							<osee-artifact-editor [tab]="tab" />
+						}
+						@case ('ChangeReport') {
+							<osee-change-report-table
+								[branchId]="
+									tab.branchId
+								"></osee-change-report-table>
+						}
+						@default {
+							No tab defined for this type
+						}
 					}
-					@case ('ChangeReport') {
-						<osee-change-report-table
-							[branchId]="
-								tab.branchId
-							"></osee-change-report-table>
-					}
-					@default {
-						No tab defined for this type
-					}
-				}
+				</div>
 			</mat-tab>
 		}
 	</mat-tab-group>

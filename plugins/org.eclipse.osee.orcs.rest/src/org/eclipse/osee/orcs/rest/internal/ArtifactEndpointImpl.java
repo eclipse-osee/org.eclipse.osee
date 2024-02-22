@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -28,7 +29,9 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactRelatedDirect;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTokenWithIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
@@ -87,20 +90,26 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
 
    @Override
    public List<ArtifactReadable> getSearchResults(String search, ArtifactId viewId,
-      List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch) {
-      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch).asArtifacts();
+      List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch,
+      boolean searchById) {
+      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch, searchById).asArtifacts();
    }
 
    @Override
-   public List<ArtifactToken> getSearchResultTokens(String search, ArtifactId viewId,
-      List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch) {
-      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch).asArtifactTokens();
+   public List<ArtifactTokenWithIcon> getSearchResultTokens(String search, ArtifactId viewId,
+      List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch,
+      boolean searchById) {
+      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch,
+         searchById).asArtifactTokens().stream().map(a -> new ArtifactTokenWithIcon(a)).collect(Collectors.toList());
    }
 
    private QueryBuilder getSearchQueryBuilder(String search, ArtifactId viewId, List<ArtifactTypeToken> artifactTypes,
-      List<AttributeTypeToken> attributeTypes, boolean exactMatch) {
+      List<AttributeTypeToken> attributeTypes, boolean exactMatch, boolean searchById) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
+      if (searchById && Strings.isNumeric(search)) {
+         return query.andId(ArtifactId.valueOf(search));
+      }
       if (!artifactTypes.isEmpty()) {
          query.andTypeEquals(artifactTypes);
       }
@@ -265,6 +274,12 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public List<ArtifactToken> getArtifactTokensByType(ArtifactTypeToken artifactType) {
       return orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(artifactType).asArtifactTokens();
+   }
+
+   @Override
+   public ArtifactRelatedDirectArtifact getArtifact(@PathParam("artifactId") ArtifactId artifactId) {
+      ArtifactReadable artReadable = orcsApi.getQueryFactory().fromBranch(branch).andId(artifactId).asArtifact();
+      return new ArtifactRelatedDirectArtifact(artReadable, orcsApi.tokenService());
    }
 
    @Override

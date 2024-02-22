@@ -32,7 +32,9 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactRelatedDirect;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTokenWithIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -53,14 +55,16 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactReadable> getSearchResults(@QueryParam("search") String search, @QueryParam("viewId") ArtifactId viewId,
       @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
-      @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch);
+      @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
+      @QueryParam("searchById") boolean searchById);
 
    @GET
    @Path("search/token")
    @Produces(MediaType.APPLICATION_JSON)
-   List<ArtifactToken> getSearchResultTokens(@QueryParam("search") String search,
+   List<ArtifactTokenWithIcon> getSearchResultTokens(@QueryParam("search") String search,
       @QueryParam("viewId") ArtifactId viewId, @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
-      @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch);
+      @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
+      @QueryParam("searchById") boolean searchById);
 
    @POST
    @Path("search/v1")
@@ -94,6 +98,11 @@ public interface ArtifactEndpoint {
    @Path("{artifactId}/tokenOrSentinal")
    @Produces(MediaType.APPLICATION_JSON)
    ArtifactToken getArtifactTokenOrSentinel(@PathParam("artifactId") ArtifactId artifactId);
+
+   @GET
+   @Path("{artifactId}/load")
+   @Produces(MediaType.APPLICATION_JSON)
+   ArtifactRelatedDirectArtifact getArtifact(@PathParam("artifactId") ArtifactId artifactId);
 
    @Path("{artifactId}/attribute")
    AttributeEndpoint getAttributes(@PathParam("artifactId") ArtifactId artifactId);

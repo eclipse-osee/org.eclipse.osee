@@ -1,0 +1,156 @@
+<!--
+ * Copyright (c) 2023 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div class="tw-flex tw-flex-col">
+	<!-- search autocomplete -->
+	<form class="tw-flex-grow">
+		@if (advancedSearchCriteria | async; as _criteria) {
+			@if (
+				_criteria.artifactTypes.length > 0 ||
+				_criteria.attributeTypes.length > 0 ||
+				_criteria.exactMatch ||
+				_criteria.searchById
+			) {
+				<div class="tw-flex tw-items-center tw-gap-2 tw-py-1 tw-pl-2">
+					<span>Filters:</span>
+					<mat-chip-set>
+						@if (_criteria.artifactTypes.length > 0) {
+							<mat-chip
+								[matTooltip]="
+									getToolTip(_criteria.artifactTypes)
+								"
+								matTooltipClass="tw-whitespace-pre"
+								>Artifact Types<button
+									matChipRemove
+									[attr.aria-label]="
+										'remove artifact type filter'
+									"
+									(click)="removeArtTypeFilter(_criteria)">
+									<mat-icon>cancel</mat-icon>
+								</button></mat-chip
+							>
+						}
+						@if (_criteria.attributeTypes.length > 0) {
+							<mat-chip
+								[matTooltip]="
+									getToolTip(_criteria.attributeTypes)
+								"
+								matTooltipClass="tw-whitespace-pre"
+								>Attribute Types<button
+									matChipRemove
+									[attr.aria-label]="
+										'remove attribute type filter'
+									"
+									(click)="removeAttrTypeFilter(_criteria)">
+									<mat-icon>cancel</mat-icon>
+								</button></mat-chip
+							>
+						}
+						@if (_criteria.exactMatch) {
+							<mat-chip
+								>Exact Match<button
+									matChipRemove
+									[attr.aria-label]="
+										'remove exact match filter'
+									"
+									(click)="removeExactMatchFilter(_criteria)">
+									<mat-icon>cancel</mat-icon>
+								</button></mat-chip
+							>
+						}
+						@if (_criteria.searchById) {
+							<mat-chip
+								>Search by ID<button
+									matChipRemove
+									[attr.aria-label]="
+										'remove search by ID criteria'
+									"
+									(click)="removeSearchByIdFilter(_criteria)">
+									<mat-icon>cancel</mat-icon>
+								</button></mat-chip
+							>
+						}
+					</mat-chip-set>
+				</div>
+			}
+		}
+		<mat-form-field
+			class="tw-w-full"
+			subscriptSizing="dynamic">
+			<mat-label> Search for Artifact </mat-label>
+			<input
+				matInput
+				type="text"
+				[ngModel]="searchText | async"
+				name="artifactSearch"
+				(keyup)="updateFilter($event)"
+				(keydown.enter)="performSearch($event)" />
+			<div
+				matSuffix
+				class="tw-flex">
+				<button
+					mat-icon-button
+					[disabled]="searchDisabled | async"
+					(click)="performSearch($event)">
+					<mat-icon>search</mat-icon>
+				</button>
+				<button
+					mat-icon-button
+					(click)="openAdvancedSearchDialog($event)">
+					<mat-icon>more_horiz</mat-icon>
+				</button>
+			</div>
+		</mat-form-field>
+	</form>
+	@if (searchResults | async; as _searchResults) {
+		<mat-list
+			role="list"
+			class="tw-max-h-80 tw-overflow-auto">
+			@for (artifact of _searchResults; track $index) {
+				<mat-list-item
+					role="listitem"
+					class="hover:tw-bg-background-app-bar [&>span>span]:tw-h-full [&>span]:tw-h-full"
+					(contextmenu)="openContextMenu($event, artifact)"
+					><button
+						class="tw-flex tw-h-full tw-w-full tw-items-center tw-gap-2 tw-text-left"
+						(click)="selectSearchResult(artifact)">
+						<mat-icon [class]="getIconClasses(artifact.icon)">{{
+							artifact.icon.icon
+						}}</mat-icon>
+						{{ artifact.name }}
+					</button></mat-list-item
+				>
+			} @empty {
+				<div class="tw-px-4">
+					<span>No results found</span>
+				</div>
+			}
+		</mat-list>
+	}
+</div>
+<mat-menu #searchResultMenu="matMenu">
+	<ng-template
+		matMenuContent
+		let-artifact="artifact">
+		<button
+			mat-menu-item
+			(click)="showInHierarchy(artifact)">
+			<span>Show in Artifact Hierarchy</span>
+			<mat-icon>segment</mat-icon>
+		</button>
+	</ng-template>
+</mat-menu>
+<div
+	style="visibility: hidden; position: fixed"
+	[style.left]="menuPosition.x"
+	[style.top]="menuPosition.y"
+	[matMenuTriggerFor]="searchResultMenu"></div>

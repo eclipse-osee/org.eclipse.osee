@@ -71,10 +71,18 @@
 			}
 		</mat-autocomplete>
 	</mat-form-field>
-	<mat-checkbox
-		[(ngModel)]="data.exactMatch"
-		name="exactMatch"
-		color="primary">
-		<mat-label>Exact Match</mat-label>
-	</mat-checkbox>
+	<div class="tw-flex tw-flex-col">
+		<mat-checkbox
+			[(ngModel)]="data.exactMatch"
+			name="exactMatch"
+			color="primary">
+			<mat-label>Exact Match</mat-label>
+		</mat-checkbox>
+		<mat-checkbox
+			[(ngModel)]="data.searchById"
+			name="searchById"
+			color="primary">
+			<mat-label>Search by ID</mat-label>
+		</mat-checkbox>
+	</div>
 </form>

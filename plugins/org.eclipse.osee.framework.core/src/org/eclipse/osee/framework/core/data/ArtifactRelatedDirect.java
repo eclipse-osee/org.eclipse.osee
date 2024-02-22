@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
@@ -137,46 +136,6 @@ public class ArtifactRelatedDirect {
 
       public RelationTypeToken getRelationTypeToken() {
          return this.relationTypeToken;
-      }
-   }
-
-   public class ArtifactRelatedDirectArtifact {
-      private final ArtifactReadable artRead;
-      private final List<ArtifactRelatedDirectAttribute> attributes = new ArrayList<>();
-      private final OrcsTokenService tokenService;
-
-      public ArtifactRelatedDirectArtifact(ArtifactReadable artRead, OrcsTokenService tokenService) {
-         this.artRead = artRead;
-         this.tokenService = tokenService;
-         List<IAttribute<?>> attrs = artRead.getAttributesHashCollection().getValues();
-         List<ArtifactRelatedDirectAttribute> pojoAttributes = attrs.stream().filter(attr -> attr != null).map(
-            attr -> new ArtifactRelatedDirectAttribute(attr, artRead.getArtifactType(), tokenService)).collect(
-               Collectors.toList());
-         this.attributes.addAll(pojoAttributes);
-      }
-
-      public List<ArtifactRelatedDirectAttribute> getAttributes() {
-         return this.attributes;
-      }
-
-      public String getId() {
-         return this.artRead.getIdString();
-      }
-
-      public String getName() {
-         return this.artRead.getName();
-      }
-
-      public String getTypeId() {
-         return this.artRead.getArtifactType().getIdString();
-      }
-
-      public String getTypeName() {
-         return this.artRead.getArtifactType().getName();
-      }
-
-      public ArtifactTypeIcon getIcon() {
-         return this.artRead.getArtifactType().getIcon();
       }
    }
 

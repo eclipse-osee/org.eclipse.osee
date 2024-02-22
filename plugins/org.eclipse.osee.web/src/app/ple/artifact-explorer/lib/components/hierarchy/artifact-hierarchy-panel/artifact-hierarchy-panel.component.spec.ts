@@ -23,11 +23,12 @@ import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarc
 import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hierarchy-path.service.mock';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { ArtifactHierarchyComponent } from 'src/app/ple/artifact-explorer/lib/components/hierarchy/artifact-hierarchy/artifact-hierarchy.component';
+import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
-import { ArtifactSearchComponent } from '../artifact-search/artifact-search.component';
+import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-search/artifact-search.component';
 import { ArtifactHeirarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-heirarchy-oprions.component.mock';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -50,7 +51,11 @@ describe('ArtifactHierarchyPanelComponent', () => {
 				],
 			},
 		}).configureTestingModule({
-			imports: [ArtifactHierarchyPanelComponent, NoopAnimationsModule],
+			imports: [
+				ArtifactHierarchyPanelComponent,
+				NoopAnimationsModule,
+				HttpClientTestingModule,
+			],
 			providers: [
 				{
 					provide: ArtifactHierarchyPathService,

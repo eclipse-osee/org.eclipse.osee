@@ -69,6 +69,10 @@ import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context
 })
 export class ArtifactHierarchyComponent implements OnChanges {
 	@Input() artifactId!: `${number}`;
+	@Input() set paths(value: string[][]) {
+		this._paths.next(value);
+	}
+
 	private _artifactId = new BehaviorSubject<string>('');
 
 	branchId$ = this.uiService.id;
@@ -171,10 +175,6 @@ export class ArtifactHierarchyComponent implements OnChanges {
 
 	addTab(artifact: artifact) {
 		this.tabService.addArtifactTab(artifact);
-	}
-
-	@Input() set paths(value: string[][]) {
-		this._paths.next(value);
 	}
 
 	protected _paths = new BehaviorSubject<string[][]>([[]]);

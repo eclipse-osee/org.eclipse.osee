@@ -12,14 +12,6 @@
  -->
 @if (option$ | async; as options) {
 	<div class="tw-flex tw-justify-end tw-gap-2">
-		@if (branchId() && branchType()) {
-			<button
-				class="hover:tw-text-primary"
-				(click)="openChangeReport()"
-				matTooltip="Change Report">
-				<mat-icon>differences</mat-icon>
-			</button>
-		}
 		<button
 			class="hover:tw-text-primary"
 			[matMenuTriggerFor]="toggleHierarchyDisplaysMenu"
@@ -30,7 +22,7 @@
 	<mat-menu #toggleHierarchyDisplaysMenu="matMenu">
 		<button
 			mat-menu-item
-			(click)="toggleShowRelations()">
+			(click)="toggleShowRelations($event)">
 			<span>{{ options.showRelations ? 'Hide' : 'Show' }} Relations</span>
 			<mat-icon>swap_horiz</mat-icon>
 		</button>

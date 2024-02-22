@@ -10,51 +10,61 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-expansion-panel
-	[expanded]="panelOpen.value"
-	class="tw-w-auto tw-overflow-hidden [&>div>div]:tw-px-0"
-	hideToggle>
-	<mat-expansion-panel-header
-		(click)="togglePanel()"
-		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
-		class="tw-px-0 hover:tw-bg-background-hover">
-		<mat-panel-title>
-			<mat-icon class="tw-mx-4">
-				{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
-			</mat-icon>
-			<div class="tw-font-bold">Artifact Hierarchy</div>
-		</mat-panel-title>
-	</mat-expansion-panel-header>
-
-	<div class="tw-relative tw-pt-2">
-		<osee-artifact-hierarchy-options
-			class="tw-absolute tw-right-0 tw-top-0 tw-pr-2 tw-pt-3" />
+<div class="tw-max-h-94vh">
+	<div class="tw-relative tw-py-2">
+		@if ((branchId | async) && (branchType | async)) {
+			<button
+				class="tw-absolute tw-right-0 tw-top-0 tw-pr-4 tw-pt-3 hover:tw-text-primary"
+				(click)="openChangeReport()"
+				matTooltip="Change Report">
+				<mat-icon class="material-icons-outlined">differences</mat-icon>
+			</button>
+		}
 		<osee-branch-picker></osee-branch-picker>
-		<div *ngIf="changedBranchId() && (branchType | async)">
-			<div class="tw-flex tw-pt-4">
-				<osee-view-selector />
-				<div
-					class="tw-flex tw-w-full tw-items-center tw-justify-center tw-px-2">
-					<osee-action-dropdown />
-				</div>
-			</div>
-			<div class="tw-pt-4">
-				<osee-artifact-search />
-			</div>
+		<div class="tw-flex tw-pt-4">
+			<osee-view-selector />
 			<div
-				class="tw-pt-4"
-				cdkDropList
-				cdkDropListConnectedTo="relationList">
-				<div *ngIf="paths | async as paths; else emptyPath">
-					<osee-artifact-hierarchy
-						[paths]="paths"
-						artifactId="197818"></osee-artifact-hierarchy>
-				</div>
-				<ng-template #emptyPath>
-					<osee-artifact-hierarchy
-						artifactId="197818"></osee-artifact-hierarchy>
-				</ng-template>
+				class="tw-flex tw-w-full tw-items-center tw-justify-center tw-px-2">
+				<osee-action-dropdown />
 			</div>
 		</div>
 	</div>
-</mat-expansion-panel>
+	<osee-artifact-search-panel></osee-artifact-search-panel>
+	<mat-expansion-panel
+		[expanded]="panelOpen.value"
+		class="[&>div>div]:tw-px-0"
+		hideToggle>
+		<mat-expansion-panel-header
+			(click)="togglePanel()"
+			[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''">
+			<mat-panel-title class="tw-flex tw-gap-4">
+				<mat-icon>
+					{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
+				</mat-icon>
+				<div class="tw-font-bold">Artifact Hierarchy</div>
+			</mat-panel-title>
+		</mat-expansion-panel-header>
+
+		<div class="tw-pt-2">
+			@if (changedBranchId() && (branchType | async)) {
+				<div class="tw-flex tw-w-full tw-justify-end tw-px-2">
+					<osee-artifact-hierarchy-options />
+				</div>
+				<div
+					class="tw-h-full"
+					cdkDropList
+					cdkDropListConnectedTo="relationList">
+					<div *ngIf="paths | async as paths; else emptyPath">
+						<osee-artifact-hierarchy
+							[paths]="paths"
+							artifactId="197818"></osee-artifact-hierarchy>
+					</div>
+					<ng-template #emptyPath>
+						<osee-artifact-hierarchy
+							artifactId="197818"></osee-artifact-hierarchy>
+					</ng-template>
+				</div>
+			}
+		</div>
+	</mat-expansion-panel>
+</div>
