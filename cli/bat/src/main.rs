@@ -72,7 +72,11 @@ struct CliOptions {
     /// For a C style language you should not fill this out, unless you are intending to use multi-line, in which case
     /// you should use */
     #[clap(short, long, default_value=None,verbatim_doc_comment)]
-    end_comment_syntax:Option<String>
+    end_comment_syntax:Option<String>,
+
+    ///use bazel-out as the output directory
+    #[clap(short, long, verbatim_doc_comment)]
+    use_bazel_out:bool
 }
 
 fn main() {
@@ -96,6 +100,7 @@ fn main() {
     thread::scope(|scope| {
         for input in &args.srcs {
             let applic_config_for_file = applic_config.clone();
+            let use_bazel_out = args.use_bazel_out;
             let _outer_thread = scope.spawn(move ||{
                 
                 println!("Processing input {}", input.to_str().unwrap_or(""));
@@ -123,10 +128,13 @@ fn main() {
                     let _s2 = scope.spawn(move||{
         
                         // make sure the folders are available
-                        match create_dir_all(out_dir){
-                            Ok(dir) => dir,
-                            Err(e) => panic!("Failed to create output directory {:#?}! Error: {:#?}",out_dir,e),
-                        };
+                        if !use_bazel_out{
+
+                            match create_dir_all(out_dir){
+                                Ok(dir) => dir,
+                                Err(e) => panic!("Failed to create output directory {:#?}! Error: {:#?}",out_dir,e),
+                            };
+                        }
                         //convert any relative paths to absolute paths
                         let out_dirs = match fs:: canonicalize(out_dir){
                             Ok(i) => i,
@@ -139,12 +147,31 @@ fn main() {
                         let prefix = common_path(&input_path,&out_dirs).unwrap();
                         let config_path = Path::new("config").join(Path::new(&cloned_config.normalized_name));
                         let output_config_path = out_dirs.join(config_path);
-                        let processed_path =output_config_path.join(match input_path.strip_prefix(prefix){
-                            Ok(i) => i,
-                            Err(e) => {println!("Error stripping input prefix {:?} from input {:?}",e, input); input},
+                        let localized_output= match use_bazel_out{
+                            true => Path::new("./bazel-out/k8-fastbuild/bin/").join(out_dir),
+                            false => output_config_path,
+                        };
+                        let processed_path = localized_output.join(match use_bazel_out{
+                            true => input,
+                            false => match input_path.strip_prefix(prefix){
+                                Ok(i) => i, 
+                                Err(e) => {println!("Error stripping input prefix {:?} from input {:?}",e, input); input}
+                            },
                         });
                         let parent = &processed_path.parent().unwrap();
                         let _create_dir_all = create_dir_all(parent);
+                        let parent_path_buf = parent.to_path_buf();
+                        if !use_bazel_out{
+                            
+                            let create_directory=match use_bazel_out{
+                                true => &localized_output,
+                                false => &parent_path_buf,
+                            };
+                            match create_dir_all(create_directory){
+                                Ok(i) => println!("created: {:#?}", i),
+                                Err(e) => println!("Failed to create : {:#}",e.to_string()),
+                            };
+                        }
                         let _f = match File::create(&processed_path){
                             Ok(fc) => fc,
                             Err(e) => panic!("Problem creating the file: {:?}", e),
