@@ -128,13 +128,11 @@ fn main() {
                     let _s2 = scope.spawn(move||{
         
                         // make sure the folders are available
-                        if !use_bazel_out{
 
-                            match create_dir_all(out_dir){
-                                Ok(dir) => dir,
-                                Err(e) => panic!("Failed to create output directory {:#?}! Error: {:#?}",out_dir,e),
-                            };
-                        }
+                        match create_dir_all(out_dir){
+                            Ok(dir) => dir,
+                            Err(e) => panic!("Failed to create output directory {:#?}! Error: {:#?}",out_dir,e),
+                        };
                         //convert any relative paths to absolute paths
                         let out_dirs = match fs:: canonicalize(out_dir){
                             Ok(i) => i,
