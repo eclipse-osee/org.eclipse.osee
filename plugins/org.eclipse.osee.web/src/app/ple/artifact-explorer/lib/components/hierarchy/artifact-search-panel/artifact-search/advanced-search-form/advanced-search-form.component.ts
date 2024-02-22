@@ -24,7 +24,7 @@ import {
 import {
 	AdvancedSearchCriteria,
 	defaultAdvancedSearchCriteria,
-} from '../../../../types/artifact-search';
+} from '../../../../../types/artifact-search';
 import { NamedId } from '@osee/shared/types';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, switchMap } from 'rxjs';

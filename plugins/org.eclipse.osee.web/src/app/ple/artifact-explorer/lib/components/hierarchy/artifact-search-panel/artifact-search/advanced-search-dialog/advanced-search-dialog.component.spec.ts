@@ -14,7 +14,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AdvancedSearchDialogComponent } from './advanced-search-dialog.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { defaultAdvancedSearchCriteria } from '../../../../types/artifact-search';
+import { defaultAdvancedSearchCriteria } from '../../../../../types/artifact-search';
 import { AdvancedSearchFormMockComponent } from '../advanced-search-form/advanced-search-form.component.mock';
 import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-search-form.component';
 

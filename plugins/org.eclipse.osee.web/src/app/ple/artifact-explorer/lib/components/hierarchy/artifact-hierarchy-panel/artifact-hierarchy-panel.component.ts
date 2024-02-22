@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
@@ -21,12 +21,14 @@ import {
 import { MatExpansionModule } from '@angular/material/expansion';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
-import { UiService } from '@osee/shared/services';
+import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
-import { ArtifactSearchComponent } from '../artifact-search/artifact-search.component';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
+import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
@@ -40,8 +42,9 @@ import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarc
 		ArtifactHierarchyOptionsComponent,
 		ViewSelectorComponent,
 		MatIconModule,
-		ArtifactSearchComponent,
+		MatTooltipModule,
 		ActionDropDownComponent,
+		ArtifactSearchPanelComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })
@@ -50,6 +53,11 @@ export class ArtifactHierarchyPanelComponent {
 	protected branchType = this.uiService.type;
 	protected branchId = this.uiService.id;
 	protected paths = this.artHierPathService.getPaths();
+	branchName = toSignal(
+		this.currentBranchService.currentBranch.pipe(
+			map((branch) => branch.name)
+		)
+	);
 
 	_branchId = toSignal(this.branchId, { initialValue: '' });
 	changedBranchId = computed(
@@ -59,11 +67,22 @@ export class ArtifactHierarchyPanelComponent {
 			this._branchId() !== '0'
 	);
 
-	constructor(private artHierPathService: ArtifactHierarchyPathService) {}
+	constructor(
+		private artHierPathService: ArtifactHierarchyPathService,
+		private tabService: ArtifactExplorerTabService,
+		private currentBranchService: CurrentBranchInfoService
+	) {}
 
 	// panel open/close state handling
 	panelOpen = new BehaviorSubject<boolean>(true);
 	togglePanel() {
 		this.panelOpen.next(!this.panelOpen.value);
+	}
+
+	openChangeReport() {
+		this.tabService.addTab(
+			'ChangeReport',
+			'Change Report - ' + this.branchName()
+		);
 	}
 }

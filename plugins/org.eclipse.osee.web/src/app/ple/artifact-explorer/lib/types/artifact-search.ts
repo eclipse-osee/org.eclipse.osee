@@ -16,10 +16,12 @@ export type AdvancedSearchCriteria = {
 	artifactTypes: NamedId[];
 	attributeTypes: NamedId[];
 	exactMatch: boolean;
+	searchById: boolean;
 };
 
 export const defaultAdvancedSearchCriteria: AdvancedSearchCriteria = {
 	artifactTypes: [],
 	attributeTypes: [],
 	exactMatch: false,
+	searchById: false,
 };

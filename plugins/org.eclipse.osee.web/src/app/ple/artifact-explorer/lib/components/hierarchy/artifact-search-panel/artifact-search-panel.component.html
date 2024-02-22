@@ -1,0 +1,28 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-expansion-panel
+	class="[&>div>div]:tw-px-0"
+	[expanded]="panelOpen()"
+	hideToggle>
+	<mat-expansion-panel-header
+		(click)="togglePanel()"
+		[class]="panelOpen() ? 'tw-shadow-md' : ''">
+		<mat-panel-title class="tw-flex tw-gap-4">
+			<mat-icon>
+				{{ panelOpen() ? 'expand_more' : 'chevron_right' }}
+			</mat-icon>
+			<div class="tw-font-bold">Artifact Search</div>
+		</mat-panel-title>
+	</mat-expansion-panel-header>
+	<osee-artifact-search class="tw-w-full" />
+</mat-expansion-panel>

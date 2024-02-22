@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { AdvancedSearchCriteria } from '../../../../types/artifact-search';
+import { AdvancedSearchCriteria } from '../../../../../types/artifact-search';
 import { MatButtonModule } from '@angular/material/button';
 import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-search-form.component';
 

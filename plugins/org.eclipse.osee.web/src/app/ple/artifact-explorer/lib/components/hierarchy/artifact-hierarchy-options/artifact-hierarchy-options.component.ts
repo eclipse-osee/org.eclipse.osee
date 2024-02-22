@@ -19,9 +19,6 @@ import { RouterLink } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { map, take } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
-import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-options',
@@ -39,29 +36,11 @@ import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-
 })
 export class ArtifactHierarchyOptionsComponent {
 	option$ = this.optionsService.options$;
-	branchId = toSignal(this.uiService.id);
-	branchType = toSignal(this.uiService.type);
-	branchName = toSignal(
-		this.currentBranchService.currentBranch.pipe(
-			map((branch) => branch.name)
-		)
-	);
 
-	constructor(
-		private optionsService: ArtifactHierarchyOptionsService,
-		private tabService: ArtifactExplorerTabService,
-		private uiService: UiService,
-		private currentBranchService: CurrentBranchInfoService
-	) {}
+	constructor(private optionsService: ArtifactHierarchyOptionsService) {}
 
-	openChangeReport() {
-		this.tabService.addTab(
-			'ChangeReport',
-			'Change Report - ' + this.branchName()
-		);
-	}
-
-	toggleShowRelations() {
+	toggleShowRelations(event: Event) {
+		event.stopPropagation();
 		this.option$
 			.pipe(
 				take(1),
