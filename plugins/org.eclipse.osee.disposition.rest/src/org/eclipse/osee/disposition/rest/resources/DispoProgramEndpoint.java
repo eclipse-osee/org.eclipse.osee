@@ -219,7 +219,8 @@ public class DispoProgramEndpoint {
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoSetByName(@PathParam("programName") String programName, @PathParam("setName") String setName,
-      String importPath, @QueryParam("sourceSet") @DefaultValue("") String sourceSet) {
+      String importPath, @QueryParam("sourceSet") @DefaultValue("") String sourceSet,
+      @QueryParam("sourceProgram") @DefaultValue("") String sourceProgram) {
       programName = String.format("(DISPO)%s", programName);
       importPath = importPath.replaceAll("\"", "");
       BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
@@ -232,14 +233,21 @@ public class DispoProgramEndpoint {
          dispoApi.importDispoSet(programId, setId, importPath);
       }
       if (!sourceSet.isEmpty()) {
-         String sourceSetId = dispoApi.getDispoSetIdByName(programId, sourceSet);
+         String sourceSetId;
+         if (!sourceProgram.isEmpty()) {
+            BranchToken sourceProgramId = dispoApi.getDispoProgramIdByName(sourceProgram);
+            sourceSetId = dispoApi.getDispoSetIdByName(sourceProgramId, sourceSet);
+         } else {
+            sourceSetId = dispoApi.getDispoSetIdByName(programId, sourceSet);
+         }
+
          if (sourceSetId != null) {
             CopySetParams params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
                CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
             dispoApi.copyDispoSet(programId, setId, programId, sourceSetId, params);
          } else {
-            return Response.status(Status.EXPECTATION_FAILED).entity(String.format(
-               "Vectorcast Update Successful. Failed to import manual dispositions from [%s].", sourceSet)).build();
+            return Response.status(Status.PRECONDITION_FAILED).entity(String.format(
+               "Data Import Successful. Failed to import manual dispositions from [%s].", sourceSet)).build();
          }
       }
       return Response.status(Status.OK).build();
