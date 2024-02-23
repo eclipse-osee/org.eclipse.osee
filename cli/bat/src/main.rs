@@ -15,7 +15,6 @@ use applicability_parser::{parse_applicability,sanitize_applicability::SanitizeA
 use clap::Parser;
 use std::{ thread::{ self }, fs::{File, create_dir_all, self}, sync::mpsc::channel, path::Path, io::ErrorKind };
 use common_path::common_path;
-
 mod applic_config;
 
 /// Block Applicability Tool(BAT)
@@ -74,9 +73,9 @@ struct CliOptions {
     #[clap(short, long, default_value=None,verbatim_doc_comment)]
     end_comment_syntax:Option<String>,
 
-    ///use bazel-out as the output directory
+    ///use output directly as specified instead of looking for a common path
     #[clap(short, long, verbatim_doc_comment)]
-    use_bazel_out:bool
+    use_direct_output:bool
 }
 
 fn main() {
@@ -100,7 +99,7 @@ fn main() {
     thread::scope(|scope| {
         for input in &args.srcs {
             let applic_config_for_file = applic_config.clone();
-            let use_bazel_out = args.use_bazel_out;
+            let use_direct_output = args.use_direct_output;
             let _outer_thread = scope.spawn(move ||{
                 
                 println!("Processing input {}", input.to_str().unwrap_or(""));
@@ -126,7 +125,6 @@ fn main() {
                     });
     
                     let _s2 = scope.spawn(move||{
-        
                         // make sure the folders are available
 
                         match create_dir_all(out_dir){
@@ -145,11 +143,8 @@ fn main() {
                         let prefix = common_path(&input_path,&out_dirs).unwrap();
                         let config_path = Path::new("config").join(Path::new(&cloned_config.normalized_name));
                         let output_config_path = out_dirs.join(config_path);
-                        let localized_output= match use_bazel_out{
-                            true => Path::new("./bazel-out/k8-fastbuild/bin/").join(out_dir),
-                            false => output_config_path,
-                        };
-                        let processed_path = localized_output.join(match use_bazel_out{
+                        let localized_output=&output_config_path;
+                        let processed_path = localized_output.join(match use_direct_output{
                             true => input,
                             false => match input_path.strip_prefix(prefix){
                                 Ok(i) => i, 
@@ -159,17 +154,11 @@ fn main() {
                         let parent = &processed_path.parent().unwrap();
                         let _create_dir_all = create_dir_all(parent);
                         let parent_path_buf = parent.to_path_buf();
-                        if !use_bazel_out{
-                            
-                            let create_directory=match use_bazel_out{
-                                true => &localized_output,
-                                false => &parent_path_buf,
-                            };
-                            match create_dir_all(create_directory){
-                                Ok(i) => println!("created: {:#?}", i),
-                                Err(e) => println!("Failed to create : {:#}",e.to_string()),
-                            };
-                        }
+                        let create_directory=&parent_path_buf;
+                        match create_dir_all(create_directory){
+                             Ok(i) => println!("created: {:#?}", i),
+                            Err(e) => println!("Failed to create : {:#}",e.to_string()),
+                        };
                         let _f = match File::create(&processed_path){
                             Ok(fc) => fc,
                             Err(e) => panic!("Problem creating the file: {:?}", e),
