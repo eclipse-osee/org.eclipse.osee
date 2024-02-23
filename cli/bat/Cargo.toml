@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "bat"
-version = "1.0.1"
+version = "1.0.2"
 description="The Block Applicability Tool(BAT) is a CLI processor for features,configurations and substitutions on arbitrary files."
 edition = "2021"
 authors=["Luciano Vaglienti <luciano.t.vaglienti@boeing.com>"]
