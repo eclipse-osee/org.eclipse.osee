@@ -248,6 +248,9 @@ public class ExportSet {
                }
             });
 
+            //For Level A coverage, helps in determining if we've already accounted for full or partial level B coverage
+            Map<String, Boolean> mcdcBranchCoverage = new HashMap<>();
+
             Map<String, List<Integer>> itemWithPairs = new HashMap<>();
             Map<String, Map<Boolean, String>> hitForLevelC = new HashMap<>();
 
@@ -290,10 +293,29 @@ public class ExportSet {
                      }
                      itemWithPairs.put(annotationLocRef, pairRows);
 
+                     if (annotation.getIsResolutionValid()) {
+                        mcdcBranchCoverage.put(annotationLocRef, true);
+                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                           getNormalizedName(item.getName()), annotation.getResolutionType());
+                        uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                           leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                           getNormalizedName(item.getName()), annotation.getResolutionType());
+                     } else {
+                        mcdcBranchCoverage.put(annotationLocRef, false);
+                     }
+
                   } else if (annotation.getIsPairAnnotation()) {
                      int dotIndex = annotationLocRef.lastIndexOf(".");
                      if (dotIndex != -1) {
                         String parentLocRef = annotationLocRef.substring(0, dotIndex);
+                        if (!mcdcBranchCoverage.get(parentLocRef) && annotation.getIsResolutionValid()) {
+                           mcdcBranchCoverage.put(parentLocRef, true);
+                           uptickCoverage(levelToResolutionTypesToCount.get(CoverageLevel.B),
+                              leveltoUnitToCovered.get(CoverageLevel.B), levelToCoveredTotalCount.get(CoverageLevel.B),
+                              getNormalizedName(item.getName()), annotation.getResolutionType());
+                        }
+
                         if (!itemWithPairs.get(parentLocRef).contains(annotation.getRow())) {
                            continue;
                         }
@@ -808,6 +830,10 @@ public class ExportSet {
             uptickCoverage(levelToResolutionToCount.get(thisAnnotationsLevel),
                levelToUnitsToCovered.get(thisAnnotationsLevel), levelToCoveredTotalCount.get(thisAnnotationsLevel),
                unit, resolutionType);
+
+            //When level A is hit, there is a level b for each side of the pair.
+            levelToTotalCount.get(CoverageLevel.B).inc();
+            levelToTotalCount.get(CoverageLevel.B).inc();
             break;
          case B:
             levelsInSet.add(CoverageLevel.B);
