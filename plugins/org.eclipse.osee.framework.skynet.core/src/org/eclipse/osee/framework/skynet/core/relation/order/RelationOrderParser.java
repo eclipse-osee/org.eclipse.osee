@@ -64,21 +64,21 @@ public class RelationOrderParser {
       }
    };
    private final OrcsTokenService tokenService;
-   
-   
+
+
    public RelationOrderParser() {
-      if(!System.getenv().toString().contains("bazel-out")) {
-         tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
-      }
-      else {
+      String builtByBazel = System.getProperty("built_by_bazel");
+      if(builtByBazel != null && builtByBazel.equals("yes")) {
          BundleContext context = OsgiUtil.createOsgiBundleContext();
          ServiceRegistration<OrcsTokenService> servReg = context.registerService(OrcsTokenService.class, new OrcsTokenServiceImpl(), new Hashtable());
          ServiceReference<OrcsTokenService> servRef = servReg.getReference();
-         tokenService = context.getService(servRef);    
-         
+         tokenService = context.getService(servRef);
       }
-   }  
-   
+      else {
+         tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
+      }
+   }
+
    public synchronized void loadFromXml(RelationOrderData data, String value) {
       if (data == null) {
          throw new OseeArgumentException("RelationOrderData object cannot be null");
