@@ -1,4 +1,5 @@
 build --java_language_version=11
+build --define=built_by_bazel=yes
 build --javacopt="-XepDisableAllChecks"
 build --test_output=all
 build --java_runtime_version=remotejdk_11
