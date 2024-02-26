@@ -46,6 +46,7 @@ public class WorkDefBuilder {
    XResultData rd;
    List<StateDefBuilder> stateDefBuilders = new ArrayList<>();
    List<Integer> stateOrdinals = new ArrayList<>();
+   private HeaderDefinitionBuilder headerBuilder;
 
    public WorkDefBuilder(AtsWorkDefinitionToken workDefToken) {
       this(workDefToken, null);
@@ -82,6 +83,9 @@ public class WorkDefBuilder {
    }
 
    public WorkDefinition getWorkDefinition() {
+
+      workDef.setHeaderDefinition(getHeaderDefBuildr().getHeaderDefinition());
+
       // Validate state ordinals
       int numStates = stateDefBuilders.size();
       for (int x = 1; x <= numStates; x++) {
@@ -172,10 +176,15 @@ public class WorkDefBuilder {
       return peerRevBldr;
    }
 
+   public HeaderDefinitionBuilder getHeaderDefBuildr() {
+      if (headerBuilder == null) {
+         headerBuilder = new HeaderDefinitionBuilder(workDef);
+      }
+      return headerBuilder;
+   }
+
    public HeaderDefinitionBuilder andHeader() {
-      HeaderDefinitionBuilder bldr = new HeaderDefinitionBuilder(workDef);
-      workDef.setHeaderDefinition(bldr.getHeaderDefinition());
-      return bldr;
+      return getHeaderDefBuildr();
    }
 
    public void isShowStateMetrics() {
