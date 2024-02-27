@@ -546,7 +546,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * return size of element using array and type size
     */
    public double getElementSizeInBytes() {
-      if (this.getInterfaceElementArrayHeader()) {
+      if (this.getInterfaceElementArrayHeader() && getArrayElements().size() > 0) {
          return getArrayLength() * getArrayElements().stream().filter(e -> e.isIncludedInCounts()).collect(
             Collectors.summingDouble(InterfaceStructureElementToken::getElementSizeInBytes));
       }
