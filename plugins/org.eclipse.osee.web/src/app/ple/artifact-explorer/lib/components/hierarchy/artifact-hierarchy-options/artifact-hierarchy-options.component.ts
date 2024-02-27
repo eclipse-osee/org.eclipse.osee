@@ -39,8 +39,7 @@ export class ArtifactHierarchyOptionsComponent {
 
 	constructor(private optionsService: ArtifactHierarchyOptionsService) {}
 
-	toggleShowRelations(event: Event) {
-		event.stopPropagation();
+	toggleShowRelations() {
 		this.option$
 			.pipe(
 				take(1),

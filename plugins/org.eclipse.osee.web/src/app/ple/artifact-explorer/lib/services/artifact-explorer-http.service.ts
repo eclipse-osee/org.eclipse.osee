@@ -57,13 +57,17 @@ export class ArtifactExplorerHttpService {
 		branchId: string,
 		filter: string,
 		viewId: string,
+		count: number,
+		pageNum: number | string,
 		searchCriteria?: AdvancedSearchCriteria
 	): Observable<artifactTokenWithIcon[]> {
 		const params = this.createParams(
 			branchId,
 			filter,
 			viewId,
-			searchCriteria
+			searchCriteria,
+			count,
+			pageNum
 		);
 		return this.http.get<artifactTokenWithIcon[]>(
 			apiURL + '/orcs/branch/' + branchId + '/artifact/search/token',
@@ -77,13 +81,17 @@ export class ArtifactExplorerHttpService {
 		branchId: string,
 		filter: string,
 		viewId: string,
+		count: number,
+		pageNum: number | string,
 		searchCriteria?: AdvancedSearchCriteria
 	) {
 		const params = this.createParams(
 			branchId,
 			filter,
 			viewId,
-			searchCriteria
+			searchCriteria,
+			count,
+			pageNum
 		);
 		return this.http.get<artifact[]>(
 			apiURL + '/orcs/branch/' + branchId + '/artifact/search',
@@ -93,14 +101,29 @@ export class ArtifactExplorerHttpService {
 		);
 	}
 
+	public getArtifactsByFilterCount(
+		branchId: string,
+		filter: string,
+		viewId: string,
+		searchCriteria?: AdvancedSearchCriteria
+	) {
+		const params = this.createParams(
+			branchId,
+			filter,
+			viewId,
+			searchCriteria
+		);
+		return this.http.get<number>(
+			apiURL + '/orcs/branch/' + branchId + '/artifact/search/count',
+			{
+				params: params,
+			}
+		);
+	}
+
 	public getArtifactForTab(branchId: string, artifactId: string) {
 		return this.http.get<artifact>(
-			apiURL +
-				'/orcs/branch/' +
-				branchId +
-				'/artifact/' +
-				artifactId +
-				'/load'
+			apiURL + '/orcs/branch/' + branchId + '/artifact/load/' + artifactId
 		);
 	}
 
@@ -108,7 +131,9 @@ export class ArtifactExplorerHttpService {
 		branchId: string,
 		filter: string,
 		viewId: string,
-		searchCriteria?: AdvancedSearchCriteria
+		searchCriteria?: AdvancedSearchCriteria,
+		count?: number,
+		pageNum?: number | string
 	) {
 		let params: HttpParamsType = {};
 		if (branchId && branchId !== '') {
@@ -119,6 +144,9 @@ export class ArtifactExplorerHttpService {
 		}
 		if (viewId && viewId !== '') {
 			params = { ...params, viewId: viewId };
+		}
+		if (pageNum && count) {
+			params = { ...params, pageNum: pageNum, count: count };
 		}
 		if (searchCriteria) {
 			if (searchCriteria.attributeTypes.length > 0) {
