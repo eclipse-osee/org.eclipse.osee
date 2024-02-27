@@ -32,20 +32,20 @@ public class HealthBalancers {
 
       List<String> balancerNames = HealthUtils.getBalancers(jdbcClient);
       if (balancerNames.size() == 0) {
-         balancers.add(new HealthBalancer("No application.servers configured in osee.json file", false));
+         balancers.add(new HealthBalancer("", false, "No balancers configured in osee_info"));
          return balancers;
       }
       for (String balancerName : balancerNames) {
          try {
-            String urlStr = String.format("https://" + balancerName + "/balancer-manager");
+            String urlStr = balancerName + "/balancer-manager";
             Boolean reachable = HealthUtils.isUrlReachable(urlStr, auth);
             if (reachable) {
-               balancers.add(new HealthBalancer(balancerName, true));
+               balancers.add(new HealthBalancer(balancerName, true, HealthUtils.getErrorMsg()));
             } else {
-               balancers.add(new HealthBalancer(balancerName, false));
+               balancers.add(new HealthBalancer(balancerName, false, HealthUtils.getErrorMsg()));
             }
          } catch (Exception ex) {
-            balancers.add(new HealthBalancer(balancerName, false));
+            balancers.add(new HealthBalancer(balancerName, false, HealthUtils.getErrorMsg()));
          }
       }
       return balancers;
@@ -54,10 +54,12 @@ public class HealthBalancers {
    public class HealthBalancer {
       private final String name;
       private final Boolean alive;
+      private final String errorMsg;
 
-      public HealthBalancer(String name, Boolean alive) {
+      public HealthBalancer(String name, Boolean alive, String errorMsg) {
          this.name = name;
          this.alive = alive;
+         this.errorMsg = errorMsg;
       }
 
       public String getName() {
@@ -66,6 +68,10 @@ public class HealthBalancers {
 
       public Boolean getAlive() {
          return this.alive;
+      }
+
+      public String getErrorMsg() {
+         return this.errorMsg;
       }
    }
 }

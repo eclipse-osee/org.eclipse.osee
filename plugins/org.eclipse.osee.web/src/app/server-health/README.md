@@ -15,18 +15,44 @@ Populate **osee_info** table with:
 
 |key|value (these are examples)|description|
 |-|-|-|
-|osee.health.servers|[serverName1]:[port1],[serverName1]:[port2],[serverName2]:[port1],...|list of all servers with their port numbers|
-|osee.health.curl.server|[serverName1]:[port1]|designated server that will be used by all other servers to run machine-scoped commands such as 'top'|
-|osee.activemq.url|[serverUrl]:[activeMqPort]/admin|url for activemq|
+|osee.health.servers|http://[serverName1]:[port1],http://[serverName1]:[port2],http://[serverName2]:[port1],...|list of all servers with their port numbers|
+|osee.heatlh.balancers|https://[serverName1], https://[serverName2],...|list of all balancers|
+|osee.health.curl.server|http://[serverName1]|designated server that will be used by all other servers to run machine-scoped commands such as 'top'|
+|osee.activemq.url|http://[serverAlias]:[activeMqPort]/admin|url for activemq|
 |osee.health.view.password (oracle only)||password used to set role necessary to access custom database roles (oracle only)|
-|osee.health.prometheus.url|[serverUrl]:[prometheusPort]|url for prometheus|
+|osee.health.prometheus.url|https://[serverAlias]:[prometheusPort]|url for prometheus|
 
-If using oracle, there are two custom views that will need to be set up in order to populate database page:
+The database page supports monitoring oracle and postgres databases. There are two custom views that will need to be set up in order to populate database page. A view password is required for oracle and must be set in the view defined in the oracle database as well as the **osee_info** table entry **osee.health.view.password** (detailed in the table above). These are the 2 views:
+
 1. osee_sql_monitoring
     - Requirements:
         - View name:
-            - osee
+            - osee_sql_monitoring
+        - Column names (same for oracle and postgres):
+            - sql_fulltext
+            - elapsed_time
+            - executions
+            - elapsed_time_avg
+            - percent
 2. osee_db_tablespace_summary
+    - Requirements:
+        - View name:
+            - osee_db_tablespace_summary
+        - Column names:
+            - oracle
+                - tabelspace_name
+                - max_ts_pct_used
+                - auto_ext
+                - ts_pct_used
+                - ts_pct_free
+                - used_ts_size
+                - free_ts_size
+                - curr_ts_size
+                - max_ts_size
+            - postgres
+                - tablespace_name
+                - tablespace_size
+
 
 ## Features
 

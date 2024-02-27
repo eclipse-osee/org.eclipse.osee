@@ -32,21 +32,16 @@ public class HealthStatus {
       List<String> serverStrings = HealthUtils.getServers(jdbcClient);
 
       for (String server : serverStrings) {
-         HealthServer link = new HealthServer(server, false, false);
+         HealthServer link = new HealthServer();
          // Check server + db alive
-         try {
-            String urlStr = String.format("http://%s%s", server, "/orcs/branches?branchUuids=1");
-            String res = HealthUtils.getUrlResults(urlStr, auth);
-            if (res.contains("\"System Root Branch\"")) {
-               link.setServerAlive(true);
-               link.setDbAlive(true);
-            } else {
-               link.setServerAlive(true);
-               link.setDbAlive(false);
-            }
-         } catch (Exception ex) {
-            link.setServerAlive(false);
-            link.setDbAlive(false);
+         String urlStr = server + "/orcs/branches?branchUuids=1";
+         String res = HealthUtils.makeHttpRequestWithStringResult(urlStr, auth);
+         if (res.contains("\"System Root Branch\"")) {
+            link = new HealthServer(server, true, true, HealthUtils.getErrorMsg());
+         } else if (HealthUtils.getErrorMsg() == "") {
+            link = new HealthServer(server, true, false, HealthUtils.getErrorMsg());
+         } else {
+            link = new HealthServer(server, false, false, HealthUtils.getErrorMsg());
          }
          servers.add(link);
       }
@@ -55,22 +50,19 @@ public class HealthStatus {
    }
 
    public class HealthServer {
-      private final String name;
-      private Boolean serverAlive;
-      private Boolean dbAlive;
+      private String name = "";
+      private Boolean serverAlive = false;
+      private Boolean dbAlive = false;
+      private String errorMsg = "";
 
-      public HealthServer(String name, Boolean serverAlive, Boolean dbAlive) {
+      public HealthServer() {
+      }
+
+      public HealthServer(String name, Boolean serverAlive, Boolean dbAlive, String errorMsg) {
          this.name = name;
          this.serverAlive = serverAlive;
          this.dbAlive = dbAlive;
-      }
-
-      public void setServerAlive(Boolean serverAlive) {
-         this.serverAlive = serverAlive;
-      }
-
-      public void setDbAlive(Boolean dbAlive) {
-         this.dbAlive = dbAlive;
+         this.errorMsg = errorMsg;
       }
 
       public String getName() {
@@ -83,6 +75,10 @@ public class HealthStatus {
 
       public Boolean getDbAlive() {
          return this.dbAlive;
+      }
+
+      public String getErrorMsg() {
+         return this.errorMsg;
       }
    }
 }

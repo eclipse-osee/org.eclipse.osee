@@ -32,7 +32,7 @@ public class HealthActiveMq {
 
    public void setActiveMqInfo() {
       String fetchedActiveMQUrl =
-         jdbcClient.fetch("", "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?", "osee.activemq.url");
+         jdbcClient.fetch("", "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?", "osee.health.activemq.url");
       if (Strings.isValid(fetchedActiveMQUrl)) {
          this.activeMqUrl = fetchedActiveMQUrl;
          try {
@@ -42,7 +42,7 @@ public class HealthActiveMq {
             this.errorMsg = e.getMessage();
          }
       } else {
-         this.activeMqUrl = "osee.activemq.url not set in osee_info";
+         this.activeMqUrl = "osee.health.activemq.url not set in osee_info";
       }
    }
 

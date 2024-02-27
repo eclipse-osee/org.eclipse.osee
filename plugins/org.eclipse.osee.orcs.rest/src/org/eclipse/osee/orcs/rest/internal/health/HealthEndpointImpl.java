@@ -121,6 +121,8 @@ public final class HealthEndpointImpl {
    @Path("balancers")
    @Produces(MediaType.APPLICATION_JSON)
    public HealthBalancers getHealthBalancers() {
+      HealthBalancers bal = new HealthBalancers(getJdbcClient(), orcsApi);
+      bal.getBalancers();
       return new HealthBalancers(getJdbcClient(), orcsApi);
    }
 
@@ -213,17 +215,30 @@ public final class HealthEndpointImpl {
    }
 
    @GET
-   @Path("servers")
+   @Path("osee.health.servers")
    @Produces(MediaType.TEXT_PLAIN)
-   public String getServers(@QueryParam("servers") String servers) {
-      if (servers != null) {
-         if (servers.length() > 0) {
-            OseeInfo.setValue(getJdbcClient(), "osee.health.servers", servers);
-         }
+   public String getServersTableEntry(@QueryParam("servers") String servers) {
+      if (servers != null && servers.length() > 0) {
+         OseeInfo.setValue(getJdbcClient(), "osee.health.servers", servers);
       }
       try {
          String updatedServers = OseeInfo.getValue(getJdbcClient(), "osee.health.servers");
          return "Value for key [osee.health.servers] in table [osee_info]: " + updatedServers;
+      } catch (Exception e) {
+         return "Error: key [osee.health.servers] is NOT SET in table [osee_info]";
+      }
+   }
+
+   @GET
+   @Path("osee.health.balancers")
+   @Produces(MediaType.TEXT_PLAIN)
+   public String getBalancersTableEntry(@QueryParam("balancers") String balancers) {
+      if (balancers != null && balancers.length() > 0) {
+         OseeInfo.setValue(getJdbcClient(), "osee.health.balancers", balancers);
+      }
+      try {
+         String updatedBalancers = OseeInfo.getValue(getJdbcClient(), "osee.health.balancers");
+         return "Value for key [osee.health.balancers] in table [osee_info]: " + updatedBalancers;
       } catch (Exception e) {
          return "Error: key [osee.health.servers] is NOT SET in table [osee_info]";
       }

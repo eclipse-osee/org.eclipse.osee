@@ -10,10 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="remoteHealthJava | async as remoteHealthJava; else noData">
+@if (remoteHealthJava | async; as remoteHealthJava) {
 	<div class="tw-flex tw-items-center tw-justify-center tw-pl-16">
 		@if (remoteHealthJava.errorMsg != '') {
-			<div>{{ remoteHealthJava.errorMsg }}</div>
+			<div class="tw-p-4 tw-text-warning">
+				{{ remoteHealthJava.errorMsg }}
+			</div>
 		} @else {
 			<mat-table [dataSource]="dataSource">
 				<ng-container matColumnDef="key">
@@ -41,7 +43,6 @@
 			</mat-table>
 		}
 	</div>
-</ng-container>
-<ng-template #noData>
+} @else {
 	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
-</ng-template>
+}

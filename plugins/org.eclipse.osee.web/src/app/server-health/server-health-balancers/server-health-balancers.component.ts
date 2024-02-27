@@ -77,7 +77,7 @@ export class ServerHealthBalancersComponent {
 	buildBalancerManagerUrl(name: string) {
 		// Mark the url as safe for iframe
 		return this.sanitizer.bypassSecurityTrustResourceUrl(
-			'http://' + name + '/balancer-manager'
+			name + '/balancer-manager'
 		);
 	}
 

@@ -83,26 +83,31 @@ export const healthStatusMock: healthStatus = {
 			name: 'osee.com:1111',
 			serverAlive: true,
 			dbAlive: true,
+			errorMsg: '',
 		},
 		{
 			name: 'osee.com:2222',
 			serverAlive: true,
 			dbAlive: true,
+			errorMsg: '',
 		},
 		{
 			name: 'osee.com:3333',
 			serverAlive: true,
 			dbAlive: true,
+			errorMsg: '',
 		},
 		{
 			name: 'osee.com:4444',
 			serverAlive: false,
 			dbAlive: false,
+			errorMsg: '',
 		},
 		{
 			name: 'osee.com:5555',
 			serverAlive: false,
 			dbAlive: false,
+			errorMsg: '',
 		},
 	],
 };
@@ -167,10 +172,12 @@ export const healthBalancersMock: healthBalancers = {
 		{
 			name: '',
 			alive: true,
+			errorMsg: '',
 		},
 		{
 			name: '',
 			alive: false,
+			errorMsg: '',
 		},
 	],
 };

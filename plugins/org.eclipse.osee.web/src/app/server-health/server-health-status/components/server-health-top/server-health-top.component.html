@@ -10,11 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="remoteHealthTop | async as remoteHealthTop; else noData">
-	<div class="tw-whitespace-pre-line tw-p-4 tw-pl-16 tw-text-xs">
-		{{ remoteHealthTop.healthTop.top }}
-	</div>
-</ng-container>
-<ng-template #noData>
+@if (remoteHealthTop | async; as remoteHealthTop) {
+	@if (remoteHealthTop.errorMsg != '') {
+		<div class="tw-whitespace-pre-line tw-p-4 tw-pl-16 tw-text-warning">
+			{{ remoteHealthTop.errorMsg }}
+		</div>
+	} @else {
+		<div class="tw-whitespace-pre-line tw-p-4 tw-pl-16 tw-text-xs">
+			{{ remoteHealthTop.healthTop.top }}
+		</div>
+	}
+} @else {
 	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
-</ng-template>
+}

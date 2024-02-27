@@ -18,6 +18,7 @@ export interface healthServer {
 	serverAlive: Boolean;
 	dbAlive: Boolean;
 	name: string;
+	errorMsg: string;
 }
 
 export interface remoteHealthDetails {
@@ -113,6 +114,7 @@ export interface healthBalancers {
 export interface healthBalancer {
 	name: string;
 	alive: boolean;
+	errorMsg: string;
 }
 
 export interface healthActiveMq {
