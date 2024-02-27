@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ViewChild, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
@@ -23,8 +23,6 @@ import {
 	debounceTime,
 	filter,
 	map,
-	repeat,
-	shareReplay,
 	switchMap,
 	take,
 	tap,
@@ -42,7 +40,6 @@ import { AdvancedSearchCriteria } from '../../../../types/artifact-search';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import {
-	artifact,
 	artifactTokenWithIcon,
 	artifactTypeIcon,
 } from '../../../../types/artifact-explorer.data';
@@ -54,7 +51,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 	selector: 'osee-artifact-search',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		MatFormFieldModule,
 		MatAutocompleteModule,
 		MatButtonModule,
@@ -81,6 +78,8 @@ export class ArtifactSearchComponent {
 	viewId = toSignal(this.uiService.viewId);
 	advancedSearchCriteria = this.advancedSearchService.advancedSearchCriteria;
 
+	pageNum = new BehaviorSubject<number>(1);
+	pageSize = 100;
 	menuPosition = {
 		x: '0',
 		y: '0',
@@ -97,7 +96,49 @@ export class ArtifactSearchComponent {
 		)
 	);
 
-	searchResults = combineLatest([
+	allSearchResults = signal<artifactTokenWithIcon[]>([]);
+
+	paginatedSearchResults = combineLatest([
+		this.pageNum,
+		this.uiService.id,
+		this.uiService.viewId,
+		this.searchText,
+		this.advancedSearchCriteria,
+		this.searchTrigger,
+	]).pipe(
+		filter(
+			([_, branchId, viewId, filter, criteria, trigger]) =>
+				branchId != '-1' &&
+				branchId != '0' &&
+				branchId != '' &&
+				viewId != '' &&
+				!(filter === '' && criteria.artifactTypes.length === 0) &&
+				!(filter === '' && criteria.attributeTypes.length > 0) &&
+				trigger === true
+		),
+		debounceTime(200),
+		switchMap(([pageNum, branchId, viewId, filter, criteria, _]) =>
+			this.artExpHttpService
+				.getArtifactTokensByFilter(
+					branchId,
+					filter,
+					viewId,
+					this.pageSize,
+					pageNum,
+					criteria
+				)
+				.pipe(
+					tap((results) => {
+						this.allSearchResults.update((current) => [
+							...current,
+							...results,
+						]);
+					})
+				)
+		)
+	);
+
+	searchResultsCount = combineLatest([
 		this.uiService.id,
 		this.uiService.viewId,
 		this.searchText,
@@ -116,11 +157,13 @@ export class ArtifactSearchComponent {
 		),
 		debounceTime(200),
 		switchMap(([branchId, viewId, filter, criteria, _]) =>
-			this.artExpHttpService
-				.getArtifactTokensByFilter(branchId, filter, viewId, criteria)
-				.pipe(repeat({ delay: () => this.uiService.update }))
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
+			this.artExpHttpService.getArtifactsByFilterCount(
+				branchId,
+				filter,
+				viewId,
+				criteria
+			)
+		)
 	);
 
 	constructor(
@@ -134,6 +177,8 @@ export class ArtifactSearchComponent {
 
 	performSearch(e: Event) {
 		e.stopPropagation();
+		this.allSearchResults.set([]);
+		this.pageNum.next(1);
 		this.searchTrigger.next(true);
 		this.searchTrigger.next(false);
 	}
@@ -219,6 +264,12 @@ export class ArtifactSearchComponent {
 			artifact: artifact,
 		};
 		this.matMenuTrigger.openMenu();
+	}
+
+	nextPage() {
+		this.pageNum.next(this.pageNum.getValue() + 1);
+		this.searchTrigger.next(true);
+		this.searchTrigger.next(false);
 	}
 
 	openAdvancedSearchDialog(event?: Event) {

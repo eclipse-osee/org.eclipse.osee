@@ -28,7 +28,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
 import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-search/artifact-search.component';
 import { ArtifactHeirarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-heirarchy-oprions.component.mock';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ArtifactSearchMockComponent } from '../artifact-search-panel/artifact-search-panel.component.mock';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { of } from 'rxjs';
+import { testBranchInfo } from '@osee/shared/testing';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -48,18 +51,23 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					ActionDropdownStub,
 					BranchPickerStub,
 					ViewSelectorMockComponent,
+					ArtifactSearchMockComponent,
 				],
 			},
 		}).configureTestingModule({
-			imports: [
-				ArtifactHierarchyPanelComponent,
-				NoopAnimationsModule,
-				HttpClientTestingModule,
-			],
+			imports: [ArtifactHierarchyPanelComponent, NoopAnimationsModule],
 			providers: [
 				{
 					provide: ArtifactHierarchyPathService,
 					useValue: artifactHierarchyPathServiceMock,
+				},
+				{
+					provide: CurrentBranchInfoService,
+					useValue: {
+						get currentBranch() {
+							return of(testBranchInfo);
+						},
+					} as Partial<CurrentBranchInfoService>,
 				},
 			],
 		});

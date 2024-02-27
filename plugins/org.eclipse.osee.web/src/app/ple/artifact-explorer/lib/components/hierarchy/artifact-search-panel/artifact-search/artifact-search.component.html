@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  -->
 <div class="tw-flex tw-flex-col">
-	<!-- search autocomplete -->
 	<form class="tw-flex-grow">
 		@if (advancedSearchCriteria | async; as _criteria) {
 			@if (
@@ -111,30 +110,56 @@
 			</div>
 		</mat-form-field>
 	</form>
-	@if (searchResults | async; as _searchResults) {
-		<mat-list
-			role="list"
-			class="tw-max-h-80 tw-overflow-auto">
-			@for (artifact of _searchResults; track $index) {
-				<mat-list-item
-					role="listitem"
-					class="hover:tw-bg-background-app-bar [&>span>span]:tw-h-full [&>span]:tw-h-full"
-					(contextmenu)="openContextMenu($event, artifact)"
-					><button
-						class="tw-flex tw-h-full tw-w-full tw-items-center tw-gap-2 tw-text-left"
-						(click)="selectSearchResult(artifact)">
-						<mat-icon [class]="getIconClasses(artifact.icon)">{{
-							artifact.icon.icon
-						}}</mat-icon>
-						{{ artifact.name }}
-					</button></mat-list-item
-				>
-			} @empty {
-				<div class="tw-px-4">
+	@if ({ count: searchResultsCount | async }; as _count) {
+		@if (paginatedSearchResults | async) {
+			@if (
+				_count !== undefined &&
+				_count.count !== null &&
+				_count.count > 0
+			) {
+				<mat-list
+					role="list"
+					class="tw-max-h-80 tw-overflow-auto">
+					@for (artifact of allSearchResults(); track $index) {
+						<mat-list-item
+							role="listitem"
+							class="hover:tw-bg-background-app-bar [&>span>span]:tw-h-full [&>span]:tw-h-full"
+							(contextmenu)="openContextMenu($event, artifact)"
+							><button
+								class="tw-flex tw-h-full tw-w-full tw-items-center tw-gap-2 tw-text-left"
+								(click)="selectSearchResult(artifact)">
+								<mat-icon
+									[class]="getIconClasses(artifact.icon)"
+									>{{ artifact.icon.icon }}</mat-icon
+								>
+								{{ artifact.name }}
+							</button></mat-list-item
+						>
+					}
+					@if (_count.count > allSearchResults().length) {
+						<mat-list-item>
+							<span class="tw-pr-2"
+								>Showing {{ allSearchResults().length }} of
+								{{ _count.count }} results</span
+							>
+							<button
+								class="tw-rounded-md tw-border tw-border-primary tw-px-2 tw-py-1 hover:tw-text-primary"
+								(click)="nextPage()">
+								Show More
+							</button>
+						</mat-list-item>
+					}
+				</mat-list>
+			} @else if (
+				_count !== undefined &&
+				_count.count !== null &&
+				_count.count === 0
+			) {
+				<div class="tw-px-4 tw-pt-4">
 					<span>No results found</span>
 				</div>
 			}
-		</mat-list>
+		}
 	}
 </div>
 <mat-menu #searchResultMenu="matMenu">

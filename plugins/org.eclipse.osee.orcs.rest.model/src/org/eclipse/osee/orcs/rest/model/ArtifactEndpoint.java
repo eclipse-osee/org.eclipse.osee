@@ -56,13 +56,23 @@ public interface ArtifactEndpoint {
    List<ArtifactReadable> getSearchResults(@QueryParam("search") String search, @QueryParam("viewId") ArtifactId viewId,
       @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
       @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
-      @QueryParam("searchById") boolean searchById);
+      @QueryParam("searchById") boolean searchById, @QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize);
 
    @GET
    @Path("search/token")
    @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactTokenWithIcon> getSearchResultTokens(@QueryParam("search") String search,
       @QueryParam("viewId") ArtifactId viewId, @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
+      @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
+      @QueryParam("searchById") boolean searchById, @QueryParam("pageNum") long pageNum,
+      @QueryParam("count") long pageSize);
+
+   @GET
+   @Path("search/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getSearchResultCount(@QueryParam("search") String search, @QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("artifactType") List<ArtifactTypeToken> artifactTypes,
       @QueryParam("attributeType") List<AttributeTypeToken> attributeTypes, @QueryParam("exact") boolean exactMatch,
       @QueryParam("searchById") boolean searchById);
 
@@ -100,7 +110,7 @@ public interface ArtifactEndpoint {
    ArtifactToken getArtifactTokenOrSentinel(@PathParam("artifactId") ArtifactId artifactId);
 
    @GET
-   @Path("{artifactId}/load")
+   @Path("load/{artifactId}")
    @Produces(MediaType.APPLICATION_JSON)
    ArtifactRelatedDirectArtifact getArtifact(@PathParam("artifactId") ArtifactId artifactId);
 

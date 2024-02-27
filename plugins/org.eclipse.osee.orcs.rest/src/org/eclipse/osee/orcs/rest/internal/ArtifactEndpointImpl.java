@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
@@ -91,20 +92,28 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public List<ArtifactReadable> getSearchResults(String search, ArtifactId viewId,
       List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch,
-      boolean searchById) {
-      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch, searchById).asArtifacts();
+      boolean searchById, long pageNum, long pageSize) {
+      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch, searchById, pageNum,
+         pageSize).asArtifacts();
    }
 
    @Override
    public List<ArtifactTokenWithIcon> getSearchResultTokens(String search, ArtifactId viewId,
       List<ArtifactTypeToken> artifactTypes, List<AttributeTypeToken> attributeTypes, boolean exactMatch,
-      boolean searchById) {
-      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch,
-         searchById).asArtifactTokens().stream().map(a -> new ArtifactTokenWithIcon(a)).collect(Collectors.toList());
+      boolean searchById, long pageNum, long pageSize) {
+      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch, searchById, pageNum,
+         pageSize).asArtifactTokens().stream().map(a -> new ArtifactTokenWithIcon(a)).collect(Collectors.toList());
+   }
+
+   @Override
+   public int getSearchResultCount(String search, ArtifactId viewId, List<ArtifactTypeToken> artifactTypes,
+      List<AttributeTypeToken> attributeTypes, boolean exactMatch, boolean searchById) {
+      return getSearchQueryBuilder(search, viewId, artifactTypes, attributeTypes, exactMatch, searchById, 0,
+         0).getCount();
    }
 
    private QueryBuilder getSearchQueryBuilder(String search, ArtifactId viewId, List<ArtifactTypeToken> artifactTypes,
-      List<AttributeTypeToken> attributeTypes, boolean exactMatch, boolean searchById) {
+      List<AttributeTypeToken> attributeTypes, boolean exactMatch, boolean searchById, long pageNum, long pageSize) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
       if (searchById && Strings.isNumeric(search)) {
@@ -128,6 +137,10 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
             query =
                query.and(Arrays.asList(QueryBuilder.ANY_ATTRIBUTE_TYPE), search, options.toArray(QueryOption[]::new));
          }
+      }
+      query.setOrderByAttribute(CoreAttributeTypes.Name);
+      if (pageNum != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageNum, pageSize);
       }
       return query;
    }
