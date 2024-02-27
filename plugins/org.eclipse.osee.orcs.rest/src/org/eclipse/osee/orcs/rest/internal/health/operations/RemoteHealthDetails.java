@@ -13,11 +13,6 @@
  */
 package org.eclipse.osee.orcs.rest.internal.health.operations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -35,23 +30,10 @@ public class RemoteHealthDetails {
    }
 
    public void fetchRemoteHealthDetails() {
-      HttpClient httpClient = HttpClient.newHttpClient();
-      HttpRequest request =
-         HttpRequest.newBuilder().uri(URI.create("http://" + remoteServerName + "/health/details")).header("Accept",
-            "application/json").header("Authorization",
-               "Basic " + orcsApi.userService().getUser().getLoginIds().get(0)).build();
-
-      try {
-         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-         if (response.statusCode() >= 200 && response.statusCode() < 300) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            this.healthDetails = objectMapper.readValue(response.body(), HealthDetails.class);
-         } else {
-            this.errorMsg = response.body();
-         }
-      } catch (Exception e) {
-         this.errorMsg = e.getMessage();
-      }
+      String detailsUrl = remoteServerName + "/health/details";
+      this.healthDetails = HealthUtils.makeHttpRequest(detailsUrl, orcsApi.userService().getUser().getLoginIds().get(0),
+         HealthDetails.class, new HealthDetails());
+      this.errorMsg = HealthUtils.getErrorMsg();
    }
 
    public HealthDetails getHealthDetails() {

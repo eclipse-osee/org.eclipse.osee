@@ -33,7 +33,14 @@
 						mat-cell
 						*matCellDef="let server"
 						(click)="toggleRow(server, server.name)">
-						{{ server.name }}
+						<div class="tw-flex tw-flex-row tw-justify-between">
+							{{ server.name }}
+							@if (server.errorMsg != '') {
+								<div class="tw-text-warning">
+									{{ server.errorMsg }}
+								</div>
+							}
+						</div>
 					</td>
 				</ng-container>
 				<ng-container matColumnDef="serverAlive">

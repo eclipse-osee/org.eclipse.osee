@@ -33,7 +33,14 @@
 						mat-cell
 						*matCellDef="let balancer"
 						(click)="toggleRow(balancer)">
-						{{ balancer.name }}
+						<div class="tw-flex tw-flex-row tw-justify-between">
+							{{ balancer.name }}
+							@if (balancer.errorMsg != '') {
+								<div class="tw-text-warning">
+									{{ balancer.errorMsg }}
+								</div>
+							}
+						</div>
 					</td>
 				</ng-container>
 				<ng-container matColumnDef="alive">
