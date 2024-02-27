@@ -19,7 +19,20 @@ mod applic_config;
 
 /// Block Applicability Tool(BAT)
 /// Supported Default Formats:
-/// *.md: Starting Syntax: `` Ending Syntax: ``
+///     *.md:           Starting Syntax: `` Ending Syntax: ``
+///     *.cpp           Starting Syntax: // Ending Syntax:
+///     *.cxx           Starting Syntax: // Ending Syntax:
+///     *.cc            Starting Syntax: // Ending Syntax:
+///     *.c             Starting Syntax: // Ending Syntax:
+///     *.hpp           Starting Syntax: // Ending Syntax:
+///     *.hxx           Starting Syntax: // Ending Syntax:
+///     *.hh            Starting Syntax: // Ending Syntax:
+///     *.h             Starting Syntax: // Ending Syntax:
+///     *.rs            Starting Syntax: // Ending Syntax:
+///     *.bzl           Starting Syntax: # Ending Syntax:
+///     *.bazel         Starting Syntax: # Ending Syntax:
+///     WORKSPACE       Starting Syntax: # Ending Syntax:
+///     BUILD           Starting Syntax: # Ending Syntax:
 #[derive(Parser)]
 #[clap(author="Luciano Vaglienti",version,verbatim_doc_comment)]
 struct CliOptions {
@@ -156,7 +169,7 @@ fn main() {
                         let parent_path_buf = parent.to_path_buf();
                         let create_directory=&parent_path_buf;
                         match create_dir_all(create_directory){
-                             Ok(i) => println!("created: {:#?}", i),
+                             Ok(_) => {},
                             Err(e) => println!("Failed to create : {:#}",e.to_string()),
                         };
                         let _f = match File::create(&processed_path){
@@ -206,14 +219,37 @@ fn get_file_contents(file:&Path) ->String{
 /// Currently supported:
 /// 
 ///     .md
+///     .cpp
+///     .cxx
+///     .cc
+///     .c
+///     .hpp
+///     .hxx
+///     .hh
+///     .h
+///     .rs
+///     .bzl
+///     .bazel
+///     WORKSPACE
+///     BUILD
 fn get_comment_syntax(file: &Path, start_comment_syntax:& str,end_comment_syntax:& str) ->(String,String){
     let file_ref_copy = file;
     let ext = match file_ref_copy.extension(){
         Some(extension) => extension.to_str(),
         None => None,//do nothing
     };
+    let name = match file_ref_copy.file_name(){
+        Some(file_name) => file_name.to_str(),
+        None => None,
+    };
     let (start_comment_syntax, end_comment_syntax) = match ext{
         Some("md")=>("``","``"),
+        Some("cpp"|"cxx"|"cc"|"c"|"hpp"|"hxx"|"hh"|"h"|"rs")=>("//",""),
+        Some("bzl"|"bazel")=>("#",""),
+        None=>{match name{
+            Some("WORKSPACE"|"BUILD") => ("#",""),
+            _rest=> (start_comment_syntax,end_comment_syntax),
+        }},
         _rest=> (start_comment_syntax,end_comment_syntax),
     };
     println!("start comment syntax {:#?}\r\n end comment syntax {:#?}",start_comment_syntax,end_comment_syntax);
