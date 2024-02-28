@@ -16,16 +16,18 @@ package org.eclipse.osee.framework.core.data;
 public class ValidateCommitResult {
    private boolean commitable = false;
    private int conflictCount = 0;
+   private int conflictsResolved = 0;
    private TransactionToken tx = TransactionToken.SENTINEL;
    private BranchId sourceBranch = BranchId.SENTINEL;
    private BranchId destinationBranch = BranchId.SENTINEL;
 
-   public ValidateCommitResult(int conflictCount, TransactionToken tx, boolean commitable, BranchId sourceBranch, BranchId destBranch) {
+   public ValidateCommitResult(int conflictCount, int conflictsResolved, TransactionToken tx, boolean commitable, BranchId sourceBranch, BranchId destBranch) {
       this.setConflictCount(conflictCount);
       this.setTx(tx);
       this.setCommitable(commitable);
       this.setSourceBranch(sourceBranch);
       this.setDestinationBranch(destBranch);
+      this.setConflictsResolved(conflictsResolved);
    }
 
    public ValidateCommitResult() {
@@ -70,5 +72,13 @@ public class ValidateCommitResult {
 
    public void setDestinationBranch(BranchId destinationBranch) {
       this.destinationBranch = destinationBranch;
+   }
+
+   public int getConflictsResolved() {
+      return conflictsResolved;
+   }
+
+   public void setConflictsResolved(int conflictsResolved) {
+      this.conflictsResolved = conflictsResolved;
    }
 }
