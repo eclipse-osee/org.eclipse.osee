@@ -267,20 +267,25 @@ public class CommitBranchUtil {
       validateCommit.setDestinationBranch(destBranch);
       if (sourceBranch.isValid()) {
          TransactionId baselineTx = sourceBranch.getBaselineTx();
-         String allQuery = "with " + artQuery + " , " + attrQuery + //
+         String allQuery = "with savedConflicts(conflict_count, resolved_count) as (" + //
+            "select distinct count(conflict_id) over () conflict_count, sum(case when c.status = " + ConflictStatus.RESOLVED.getValue() + " then 1 else 0 end) over () resolved_count " + //
+            "from osee_merge m, osee_conflict c where m.source_branch_id = ? and m.dest_branch_id = ? and commit_transaction_id = 0 and m.merge_branch_id = c.merge_branch_id), " + //
+            artQuery + " , " + attrQuery + //
             "select count('x') value, 'conflicts' value_type from (select 'x' from attrConflicts t4 where currentDestGammaId is null and baselineTxGammaId is null " + //
             "and exists (select null from osee_txs txs, osee_attribute attr where txs.branch_id = ? and txs.gamma_id = attr.gamma_id and attr.attr_type_id in (" + //
             singleAttrTypes + ") and attr.art_id = t4.art_id " + //
             "and tx_current = 1) union all " + //
             "select 'x' from attrConflicts t5, " + String.format(ARTJOIN, "t5") + " union all " + //
             "select 'x' from artConflicts t7, " + String.format(ARTJOIN, "t7") + ") t8 union all " + //
-            "select txId value, 'commit_transaction_id' value_type from (" + GET_COMMIT_TRANSACTION + ") t9";
+            "select txId value, 'commit_transaction_id' value_type from (" + GET_COMMIT_TRANSACTION + ") t9 " + //
+            "union all select resolved_count value, 'resolved_count' value_type from savedConflicts";
 
          try (JdbcStatement stmt = orcsApi.getJdbcService().getClient().getStatement()) {
-            stmt.runPreparedQuery(allQuery, branch.getId(), baselineTx.getId(), destinationBranch.getId(),
-               branch.getId(), baselineTx.getId(), branch.getId(), baselineTx.getId(), destinationBranch.getId(),
-               branch.getId(), baselineTx.getId(), destinationBranch.getId(), branch.getId(), branch.getId(),
-               branch.getId(), destinationBranch.getId(), branch.getId(), destinationBranch.getId());
+            stmt.runPreparedQuery(allQuery, branch.getId(), destinationBranch.getId(), branch.getId(),
+               baselineTx.getId(), destinationBranch.getId(), branch.getId(), baselineTx.getId(), branch.getId(),
+               baselineTx.getId(), destinationBranch.getId(), branch.getId(), baselineTx.getId(),
+               destinationBranch.getId(), branch.getId(), branch.getId(), branch.getId(), destinationBranch.getId(),
+               branch.getId(), destinationBranch.getId());
             while (stmt.next()) {
                String value = stmt.getString("value");
                String value_type = stmt.getString("value_type");
@@ -294,11 +299,14 @@ public class CommitBranchUtil {
                      validateCommit.setTx(TransactionToken.valueOf(Long.parseLong(value), destinationBranch));
                      break;
                   }
+                  case "resolved_count": {
+                     validateCommit.setConflictsResolved(Integer.parseInt(value));
+                  }
                }
             }
          }
       }
-      if (validateCommit.getSourceBranch().isValid() && validateCommit.getDestinationBranch().isValid() && !validateCommit.getTx().isValid() && validateCommit.getConflictCount() == 0) {
+      if (validateCommit.getSourceBranch().isValid() && validateCommit.getDestinationBranch().isValid() && !validateCommit.getTx().isValid() && (validateCommit.getConflictCount() == 0 || validateCommit.getConflictCount() == validateCommit.getConflictsResolved())) {
          validateCommit.setCommitable(true);
       }
       return validateCommit;
