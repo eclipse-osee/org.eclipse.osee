@@ -43,7 +43,8 @@
 			</div>
 			<div
 				class="tw-pt-4"
-				cdkDropList>
+				cdkDropList
+				cdkDropListConnectedTo="relationList">
 				<div *ngIf="paths | async as paths; else emptyPath">
 					<osee-artifact-hierarchy
 						[paths]="paths"
