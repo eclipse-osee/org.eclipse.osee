@@ -6,12 +6,14 @@ osgi_jar_converter(
     visibility = ["//visibility:public"]
 )
 
+
 java_library(
 	name = "org.eclipse.osee.logger",
- 	resources = ["manifest"],
+	resources = ["manifest"],
 	srcs = ["src/org/eclipse/osee/logger/Log.java"],
  	visibility = ["//visibility:public"]
 )	
+
 
 filegroup(
     name = "manifest",

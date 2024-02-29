@@ -1,4 +1,81 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+
+http_jar(
+      name = "eclipse_core_net",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.net_1.3.900.v20200428-1255.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.net_1.3.900.v20200428-1255.jar"
+)
+
+http_jar(
+      name = "equinox_security",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.security_1.3.500.v20200114-1637.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.security_1.3.500.v20200114-1637.jar"        
+)
+
+http_jar(
+      name = "jcraft",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/com.jcraft.jsch_0.1.55.v20190404-1902.jar&r=1",
+      downloaded_file_name = "com.jcraft.jsch_0.1.55.v20190404-1902.jar"
+)
+
+http_jar(
+      name = "javax_annotation",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.annotation_1.3.5.v20200504-1837.jar&r=1",
+)
+
+http_jar(
+      name = "javax_activation",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.activation_1.1.0.v201211130549.jar&r=1",
+)
+
+http_jar(
+      name = "javax_transaction",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.transaction_1.1.1.v201105210645.jar&r=1"
+)
+
+http_jar(
+      name = "javax_ws_rs",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.ws.rs_2.1.6.v20221203-1659.jar&r=1"
+)
+
+http_jar(
+      name = "javax_xml",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml_1.4.1.v20220503-2331.jar&r=1"
+)
+
+http_jar(
+      name = "javax_xml_bind",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.bind_2.2.0.v201105210648.jar&r=1"
+)
+
+http_jar(
+      name = "javax_xml_ws",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.ws_2.1.0.v200902101523.jar&r=1"
+)
+
+http_jar(
+      name = "javax_xml_soap",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.soap_1.3.0.v201105210645.jar&r=1"
+)
+
+http_jar(
+      name = "javax_servlet",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.servlet_3.1.0.v201410161800.jar&r=1"
+)
+
+http_jar(
+      name = "javax_validation",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.validation_1.1.0.v20221112-0806.jar&r=1"
+)
+
+http_jar(
+      name = "javax_mail",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.mail_1.4.0.v201005080615.jar&r=1"
+)
+
 
 
 http_archive(
@@ -9,6 +86,8 @@ http_archive(
     ],
     sha256 = "8f9ee2dc10c1ae514ee599a8b42ed99fa262b757058f65ad3c384289ff70c4b8",
 )
+
+
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 rules_pkg_dependencies()
 
@@ -21,7 +100,6 @@ http_archive(
     sha256 = RULES_JVM_EXTERNAL_SHA,
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
 )
-
 
 
 local_repository(
@@ -51,32 +129,45 @@ maven_install(
         "com.fasterxml.jackson.core:jackson-annotations:2.10.3",
         "com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.12.1",
 	"com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.12.1",
+	"com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.0",
+	"com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0",
+	"org.yaml:snakeyaml:1.33",
 	"com.vladsch.flexmark:flexmark:0.64.8",
 	"com.vladsch.flexmark:flexmark-ext-tables:0.64.8",
 	"com.vladsch.flexmark:flexmark-util-data:0.64.8",
 	"com.vladsch.flexmark:flexmark-util-ast:0.64.8",
 	"com.vladsch.flexmark:flexmark-ext-gfm-tasklist:0.64.8",
         "commons-codec:commons-codec:1.6",
+	"io.github.classgraph:classgraph:4.8.149",
 	"org.apache.sling:org.apache.sling.testing.osgi-mock.junit5:3.3.8",
 	"org.apache.sling:org.apache.sling.testing.osgi-mock.core:3.3.8",
         "org.eclipse.jdt:org.eclipse.jdt.core:3.22.0",
         "org.eclipse.jdt:org.eclipse.jdt.annotation:2.2.600",
         "javax.ws.rs:javax.ws.rs-api:2.1",
+	"jakarta.ws.rs:jakarta.ws.rs-api:2.1.6",
+	"jakarta.activation:jakarta.activation-api:2.1.0",
         "javax.activation:activation:1.1",
         "jakarta.xml.bind:jakarta.xml.bind-api:3.0.1",
-        "org.slf4j:slf4j-api:1.7.2",
+	"com.googlecode.javaewah:JavaEWAH:1.1.7",
+        "org.slf4j:slf4j-api:1.7.30",
         "org.osgi:org.osgi.service.log:1.5.0",
         "org.osgi:org.osgi.service.component:1.5.0",
         "org.osgi:org.osgi.framework:1.10.0",
         "org.eclipse.core:org.eclipse.core.resources:3.7.100",
         "javax.mail:mail:1.4.1",
+	#"javax.transaction:javax.transaction-api:1.2",
         "org.antlr:antlr-runtime:3.2",
-        "com.google.guava:guava:27.1-jre",
+        "com.google.guava:guava:30.1-jre",
 	"org.apache.poi:poi:4.1.1",
         "org.apache.poi:poi-ooxml:4.1.1",
+	"org.apache.poi:poi-ooxml-schemas:4.1.1",
         "org.mockito:mockito-core:2.23.0",
        	"org.hamcrest:hamcrest-core:1.3",
         "org.junit:junit5-api:5.0.0-ALPHA",
+	"org.apache.felix:org.apache.felix.gogo.runtime:1.1.0",
+	"org.apache.felix:org.apache.felix.gogo.command:1.0.2",
+	"org.apache.felix:org.apache.felix.gogo.shell:1.1.0",
+	"org.apache.felix:org.apache.felix.scr:2.1.16",
         "org.apache.cxf:cxf-core:3.3.12",
 	"org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.12",
 	"org.apache.cxf:cxf-rt-rs-client:3.3.12",
@@ -85,6 +176,8 @@ maven_install(
 	"org.apache.cxf:cxf-rt-security:3.3.12",
 	"org.apache.cxf:cxf-rt-transports-http:3.3.12",
 	"org.apache.cxf:cxf-rt-rs-service-description:3.3.12",
+	"org.apache.cxf:cxf-rt-rs-security-jose:3.3.12",
+	"org.apache.cxf:cxf-rt-rs-security-jose-jaxrs:3.3.12",
 	"org.apache.cxf:cxf-tools-wadlto-jaxrs:2.6.17",
 	"org.hsqldb:hsqldb:2.6.1",
 	"javax.servlet:javax.servlet-api:3.1.0",
@@ -96,20 +189,23 @@ maven_install(
 	"io.swagger.core.v3:swagger-core:2.2.7",
         "io.swagger.core.v3:swagger-jaxrs2:2.2.7",
         "io.swagger.core.v3:swagger-models:2.2.7",
+	"io.swagger.core.v3:swagger-annotations:2.2.7",
+	"io.swagger.core.v3:swagger-integration:2.2.7",
         "org.eclipse.jgit:org.eclipse.jgit:5.8.0.202006091008-r",
         "org.jsoup:jsoup:1.8.3",
         "com.jcraft:jsch:0.1.55",
-        "com.google.guava:guava:27.1-jre",
         "org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1",
         "org.apache.activemq:activemq-all:5.14.0",
-	"org.glassfish.jaxb:jaxb-runtime:3.0.1"
-        ],
+	"org.glassfish.jaxb:jaxb-runtime:3.0.1",
+	"org.apache.commons:commons-lang3:3.12.0",
+	"net.oauth.core:oauth:20090531"
+	],
 
     repositories = [
         # Private repositories are supported through HTTP Basic auth
-        "https://repo1.maven.org/maven2",
-        
+        "https://repo1.maven.org/maven2",   
         "https://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/",
-        "https://download.eclipse.org/releases/2020-06/202006171000/"
-    ],
+        "https://download.eclipse.org/releases/2020-06/202006171000/plugins"
+    ]
+    ,
 )

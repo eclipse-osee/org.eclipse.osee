@@ -17,7 +17,7 @@ java_library(
 
 filegroup(
     name = "manifest",
-    srcs = ["META-INF/MANIFEST.MF"]
+    srcs = glob(["**/*"])
 )
 
 java_library(
