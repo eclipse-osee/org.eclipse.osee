@@ -36,7 +36,7 @@
 `    $  cd /c/Code/`
 `    $  mkdir git_main`
 `    $  cd git_main`
-`    $  git clone `<https://>{username}`@git.eclipse.org/r/osee/org.eclipse.osee.git --branch dev --depth 1`
+`    $  git clone https://{username}@git.eclipse.org/r/osee/org.eclipse.osee git --branch dev --depth 1`
 
   - Note: Replace {username} with your eclipse username
   - Download and install the org.eclipse version of OSEE from the OSEE
@@ -61,8 +61,9 @@
   - Make a folder to use for your first workspace.
       - For example: /c/Code/Eclipse/workspaces/first_git_main
 
-## OSEE Initialization
+## OSEE Workspace Setup
 
+### Import Projects
   - Run the eclipse instance by switching to its directory and double
     clicking ‘osee.exe’
       - For example: ‘osee.exe’ would be located in
@@ -92,13 +93,61 @@
 
 ![image:8_-_import_projects.png](/docs/images/8_-_import_projects.png "image:8_-_import_projects.png")
 
-  - Uncheck these folders (click ‘Finish’ upon completion):
-      - org.eclipse.osee
-          - \\\*.mbse
-          - \\\*.icteam
-          - \\\*.doors
+  - Uncheck the following folders if present (click ‘Finish’ upon completion):
+    - org.eclipse.osee
+    - org.eclipse.osee\plugins\org.eclipse.osee.icteam.ui
+
 
 ![image:9_-_deselect_folders.png](/docs/images/9_-_deselect_folders.png "image:9_-_deselect_folders.png")
+
+### Set Preferences
+
+1.  Double check to make sure the OSEE environment you are pulling code
+    into matches the code you have.
+      - e.g. if you are developing for the dev line, make sure your osee
+        is a dev version.
+2.  Import OSEE Team Preferences
+      - Switch back to the Java Perspective, then File → Import, in the
+        import wizard, select General → Preferences and click Next
+      - In the From preference file: input box, enter the path to the
+        preferences (substitute your directory for {git dir}) in the
+        From preference file:
+      - Browse to
+        {git dir}\\org.eclipse.osee\\plugins\\org.eclipse.osee.support.config
+        then select the preference file: osee_team_preferences.epf and
+        click Open.
+      - Leave "Import All" checked and Choose Finish. Accept the prompt
+        to restart the IDE.
+3.  Set Target Platform
+    1.  Select Window → Preferences
+    2.  Expand Plug-in Development → Target Platform
+    3.  Check OSEE Client Server Target Platform
+    4.  Click Apply then Apply and Close
+4.  Turn Project → Build Automatically back on
+5.  Remove errors that we do not care about
+      - In the Problems tab at the bottom of OSEE, select the white
+        triangle icon on the right side
+      - Choose Filters...
+      - Uncheck Show all items
+      - Choose New under Configurations
+      - Deselect "Errors / Warnings on Project", then make sure New
+        Configuration is both selected and highlighted
+      - Under Types, click Deselect All for the errors
+      - Go through the list of types selecting all Java, Javascript, and
+        Plug-in Problems
+      - Click Apply and Close
+6.  Remove Null Analysis Errors
+      - Choose Window → Preferences → Java → Compiler → Errors/Warnings
+      - Expand Null Analysis and set the following to Warning instead of
+        Error
+      - Null pointer access
+      - Potential null pointer access
+      - Redundant null check
+      - Uncheck Enable annotation-based null analysis
+      - Click Apply (which will prompt to rebuild all) then Apply and
+        Close
+      - After the rebuild there should no longer be any errors,
+        otherwise ask your Mentor
 
 ## Running the Application Server
 
@@ -343,8 +392,8 @@ and Configuration](#Launch_.26_Configuration "wikilink").
         2.  Set **host all all 0.0.0.0/0 trust** in **pg_hba.conf** (located in the \PostgreSQL\[version]\data directory)
         3.  You may need to set all METHODs to trust
 4.  Configure PostgreSQL for OSEE
-    1.  Launch pgAdmin (in windows Start-\>All
-        Programs-\>PostgreSQL\*-\>pgAdmin \*)
+    1.  Launch pgAdmin (in windows Start→All
+        Programs→PostgreSQL\*→pgAdmin \*)
     2.  Double click on PostgreSQL Database Server (listed under Servers
         on the left hand side)
         1.  If you are prompted for a password type the password
@@ -352,7 +401,7 @@ and Configuration](#Launch_.26_Configuration "wikilink").
             default)
     3.  Create an "osee" user
         1.  Right-click on Login/Group Roles (in the tree on the left
-            hand side) and select "Create -\> Login/Group Role..."
+            hand side) and select "Create → Login/Group Role..."
         2.  Enter the following in the dialog:
             1.  General Tab
                 1.  Name: osee
@@ -368,7 +417,7 @@ and Configuration](#Launch_.26_Configuration "wikilink").
         4.  You should now have an "osee" user under Login Roles
     4.  Expand the "Databases" item in the tree
         1.  Create the "osee" database by right-clicking on "Databases"
-            and selecting "Create -\> Database..."
+            and selecting "Create → Database..."
         2.  Enter the following in the dialog:
             1.  General Tab
                 1.  Database: osee
@@ -379,7 +428,7 @@ and Configuration](#Launch_.26_Configuration "wikilink").
         4.  You should now have an "osee" Database under Databases
     5.  Click on "osee" and then expand it, then expand "Schemas"
         1.  Create the "osee" schema:
-            1.  Right click on "Schemas" and select "Create -\>
+            1.  Right click on "Schemas" and select "Create →
                 Schema..."
             2.  Enter the following in the dialog:
                 1.  General Tab
@@ -538,10 +587,10 @@ cellspacing=0 width=80% | runPostgresqlLocal.sh |}
 ## Configure a New Project in OSEE
 
 1.  Create baseline branch
-    1.  From the Branch Manager's select parent branch -\> open context
-        menu -\> select "branch" and enter new branch name
-    2.  From the Branch Manager's select new branch -\> open context
-        menu -\> access control
+    1.  From the Branch Manager's select parent branch → open context
+        menu → select "branch" and enter new branch name
+    2.  From the Branch Manager's select new branch → open context
+        menu → access control
         1.  Add system administrators with Full Access
         2.  Add Everyone with Read Access
 
