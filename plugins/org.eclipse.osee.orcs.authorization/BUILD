@@ -1,3 +1,10 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.orcs.authorization",
+    visibility = ["//visibility:public"]
+)
 
 java_library(
         name = "org.eclipse.osee.orcs.authorization",
@@ -15,7 +22,7 @@ java_library(
 
 filegroup(
     name = "xml_files",
-    srcs = glob(["**/*.xml"]),
+    srcs = glob(["**/*"]),
 )
 
 java_library(
@@ -26,7 +33,7 @@ java_library(
                 "@maven//:com_fasterxml_jackson_core_jackson_annotations",
                 "@maven//:commons_codec_commons_codec",
                 "@maven//:org_eclipse_jdt_org_eclipse_jdt_annotation",
-                "@maven//:javax_ws_rs_javax_ws_rs_api",
+                "@maven//:jakarta_ws_rs_jakarta_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
                 "@maven//:org_slf4j_slf4j_api",

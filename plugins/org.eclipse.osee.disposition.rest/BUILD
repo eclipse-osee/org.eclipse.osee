@@ -39,7 +39,7 @@ java_library(
                 "@maven//:com_fasterxml_jackson_core_jackson_annotations",
                 "@maven//:commons_codec_commons_codec",
                 "@maven//:org_eclipse_jdt_org_eclipse_jdt_annotation",
-                "@maven//:javax_ws_rs_javax_ws_rs_api",
+                "@maven//:jakarta_ws_rs_jakarta_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
                 "@maven//:org_slf4j_slf4j_api",
@@ -49,7 +49,7 @@ java_library(
                 "@maven//:io_swagger_core_v3_swagger_annotations",
                 "@maven//:io_swagger_core_v3_swagger_jaxrs2",
                 "@maven//:io_swagger_core_v3_swagger_models",
-                "@ext_jars//:javax.annotation",
+                "@ext_jars//:javax",
 		"@ext_jars//:apache_commons_lang"
                 ],
 )

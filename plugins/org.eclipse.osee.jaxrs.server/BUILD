@@ -50,7 +50,7 @@ java_library(
 		        "@maven//:com_fasterxml_jackson_jaxrs_jackson_jaxrs_base",
 		        "@maven//:com_fasterxml_jackson_jaxrs_jackson_jaxrs_json_provider",
 		        "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
-		        "@maven//:javax_ws_rs_javax_ws_rs_api",
+		        "@maven//:jakarta_ws_rs_jakarta_ws_rs_api",
 		        "@maven//:org_apache_cxf_cxf_core",
 		        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
 		        "@maven//:org_apache_cxf_cxf_rt_rs_client",
@@ -66,11 +66,10 @@ java_library(
 		        "@maven//:javax_mail_mail",
 		        "@maven//:org_antlr_antlr_runtime",
 		        "@maven//:com_google_guava_guava",
-		        "@maven//:org_apache_poi_poi",
-		        "@maven//:org_apache_poi_poi_ooxml",
 		        "@maven//:javax_servlet_javax_servlet_api",
 		        "@maven//:javax_annotation_javax_annotation_api",
-		"@ext_jars//:eclipse_osgi_services"
+		        "@ext_jars//:eclipse_osgi_services",
+		        "@ext_jars//:poi"
                 ],
 )
 

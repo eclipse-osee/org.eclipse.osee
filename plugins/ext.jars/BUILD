@@ -8,10 +8,42 @@ java_import(
 )
 
 java_import(
-        name = "javax.annotation",
+        name = "javax",
         jars = [
                 "javax.annotation_1.3.5.v20200504-1837.jar",
+		"javax.transaction_1.1.1.v201105210645.jar",
+		"javax.ws.rs_2.1.6.v20221203-1659.jar",
+                "javax.xml.bind_2.2.0.v201105210648.jar",
+                "javax.xml_1.4.1.v20220503-2331.jar",
+                "javax.activation_1.1.0.v201211130549.jar",
+                "javax.xml.ws_2.1.0.v200902101523.jar",
+                "javax.xml.soap_1.3.0.v201105210645.jar",
+                "javax.servlet_3.1.0.v201410161800.jar",
+                "javax.validation_1.1.0.v20221112-0806.jar",
+                "javax.mail_1.4.0.v201005080615.jar"
+                
        ],
+)
+
+
+java_import(
+    name = "swagger",
+    jars = [
+	    "swagger-annotations_2.2.7.jar",
+	    "swagger-core_2.2.7.jar",
+            "swagger-integration_2.2.7.jar",
+	    "swagger-jaxrs2_2.2.7.jar",
+	    "swagger-models_2.2.7.jar"
+     ]
+)
+
+java_import(
+       name = "poi",
+       jars = [
+         	"org.apache.poi.ooxml.schemas_4.1.1.v20221112-0806.jar",
+		"org.apache.poi.ooxml_4.1.1.v20221112-0806.jar",
+		"org.apache.poi_4.1.1.v20221112-0806.jar" 
+       ]
 )
 
 java_import(
@@ -29,15 +61,21 @@ java_import(
                 "org.eclipse.core.resources_3.13.700.v20200209-1624.jar",
                 "org.eclipse.core.jobs_3.10.800.v20200421-0950.jar",
                 "org.eclipse.core.commands_3.9.700.v20191217-1850.jar",
+                "org.eclipse.core.contenttype_3.7.700.v20200517-1644.jar",
                 "org.eclipse.debug.core_3.15.100.v20200514-0816.jar",
 		"org.eclipse.core.filesystem_1.7.700.v20200110-1734.jar",
 		"org.eclipse.core.filebuffers_3.6.1000.v20200409-1035.jar",
+		"org.eclipse.core.variables_3.4.800.v20200120-1101.jar",
 		"org.eclipse.compare_3.7.1000.v20200511-1203.jar",
+		"org.eclipse.text_3.10.200.v20200428-0633.jar",
 		"org.eclipse.search_3.11.1000.v20200410-1852.jar",
 		"org.eclipse.zest.core_1.5.300.201606061308.jar",
 		"org.eclipse.zest.layouts_1.1.300.201606061308.jar",
 		"org.eclipse.draw2d_3.10.100.201606061308.jar",
-		"org.eclipse.gef_3.11.0.201606061308.jar"
+		"org.eclipse.gef_3.11.0.201606061308.jar",
+		"org.apache.ws.xmlschema.core_2.2.5.jar",
+		"org.apache.xerces_2.12.2.v20220131-0835.jar",
+		"org.apache.xml.resolver_1.2.0.v20220715-1206.jar"
        ],
 )
 
@@ -46,6 +84,7 @@ java_import(
         jars = [
                 "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar",
                	"org.eclipse.osgi_3.15.300.v20200520-1959.jar",
+		"org.eclipse.osgi.util_3.5.300.v20190708-1141.jar"
        ],
 )
 
@@ -56,7 +95,9 @@ java_import(
                 "org.eclipse.equinox.registry_3.8.800.v20200406-0956.jar",
                 "org.eclipse.equinox.preferences_3.8.0.v20200422-1833.jar",
                 "org.eclipse.equinox.app_1.4.500.v20200422-1833.jar",
-
+		"org.eclipse.equinox.console_1.4.100.v20200525-1407.jar",
+                "org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar",
+                "org.eclipse.core.expressions_3.6.800.v20200319-0911.jar"
        ],
 )
 
@@ -75,7 +116,9 @@ java_import(
                 "org.apache.commons.lang_2.6.0.v201404270220.jar",
                 "org.apache.commons.io_2.6.0.v20190123-2029.jar",
 		"org.apache.commons.dbcp_1.4.0.v201204271417.jar",
-		"org.apache.commons.pool_1.6.0.v201204271246.jar"
+		"org.apache.commons.pool_1.6.0.v201204271246.jar",
+		"org.apache.commons.collections4_4.4.0.v20221112-0806.jar",
+		"org.apache.commons.math3_3.6.1.v20221112-0806.jar"
        ],
 )
 
@@ -86,6 +129,18 @@ java_import(
                 "org.eclipse.rmf.reqif10_0.13.0.201509161042.jar",
                 "org.eclipse.rmf.reqif10.xhtml_0.13.0.201509161042.jar",
                 "org.eclipse.rmf.reqif10.serialization_0.13.0.201509161042.jar"
+       ],
+)
+
+
+java_import(
+        name = "misc",
+        jars = [
+                "com.google.guava_30.1.0.v20221112-0806.jar",
+                "org.apache.commons.codec_1.14.0.v20221112-0806.jar",
+		"org.slf4j.api_1.7.30.v20200204-2150.jar",
+		"org.antlr.runtime_3.2.0.v201101311130.jar"
+                
        ],
 )
 
@@ -161,5 +216,4 @@ java_import(
 )
 
        
-#)
 
