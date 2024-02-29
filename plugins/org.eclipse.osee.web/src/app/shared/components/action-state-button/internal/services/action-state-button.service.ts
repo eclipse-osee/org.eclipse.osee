@@ -37,6 +37,7 @@ import {
 	transitionAction,
 	CreateAction,
 	CreateNewAction,
+	workType,
 } from '@osee/shared/types/configuration-management';
 
 @Injectable({
@@ -70,13 +71,8 @@ export class ActionStateButtonService {
 	private _user = this.accountService.user;
 
 	private _actionableItems = this.workType.pipe(
-		filter((val) => val !== ''),
-		distinctUntilChanged(),
 		switchMap((workType) =>
-			this.actionService.getActionableItems(workType).pipe(
-				repeatWhen((_) => this.uiService.update),
-				share()
-			)
+			this.actionService.getActionableItems(workType)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);

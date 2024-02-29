@@ -96,7 +96,7 @@ describe('ActionService', () => {
 	it('should get ARB actionable item', () => {
 		service.getActionableItems('ARB').subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/ats/ai/worktype/ARB'
+			apiURL + '/ats/ai/all?orderByName=true&workType=ARB'
 		);
 		expect(req.request.method).toEqual('GET');
 		req.flush(testARB);

@@ -22,42 +22,68 @@
 			required
 			data-cy="action-title" />
 	</mat-form-field>
-	@if (workTypes | async; as _workTypes) {
-		@if (data.defaultWorkType == '') {
-			<mat-form-field class="tw-w-full">
-				<mat-label>Work Type</mat-label>
-				<mat-select
-					[(ngModel)]="workType"
-					(selectionChange)="selectWorkType($event)"
-					required
-					data-cy="select-work-type">
+	@if (data.defaultWorkType == '') {
+		<mat-form-field class="tw-w-full">
+			<mat-label>Work Type</mat-label>
+			<input
+				type="text"
+				matInput
+				[(ngModel)]="workType"
+				[matAutocomplete]="workTypesAuto"
+				(keyup)="updateWorkTypeFilter($event)"
+				name="autocomplete-text" />
+			@if (workType.name !== '') {
+				<button
+					mat-icon-button
+					matSuffix
+					(click)="clearWorkType($event)">
+					<mat-icon>clear</mat-icon>
+				</button>
+			}
+			<mat-autocomplete
+				#workTypesAuto="matAutocomplete"
+				(optionSelected)="selectWorkType($event)"
+				[displayWith]="displayFn">
+				@for (item of filteredWorkTypes() || []; track $index) {
 					<mat-option
-						*ngFor="let item of _workTypes"
 						[value]="item"
 						[attr.data-cy]="'option-' + item.name">
 						{{ item.humanReadableName }}
 					</mat-option>
-				</mat-select>
-			</mat-form-field>
-		}
+				}
+			</mat-autocomplete>
+		</mat-form-field>
 	}
-	@if (workType.name != '') {
-		<mat-form-field class="tw-w-full">
-			<mat-label>Actionable Item</mat-label>
-			<mat-select
-				[(ngModel)]="data.actionableItem"
-				(selectionChange)="selectActionableItem()"
-				required
-				data-cy="select-actionable-item">
+	<mat-form-field class="tw-w-full">
+		<mat-label>Actionable Item</mat-label>
+		<input
+			type="text"
+			matInput
+			[ngModel]="data.actionableItem"
+			[matAutocomplete]="aiAuto"
+			(keyup)="updateActionableItemsFilter($event)"
+			name="autocomplete-text" />
+		@if (data.actionableItem.name !== '') {
+			<button
+				mat-icon-button
+				matSuffix
+				(click)="clearActionableItem($event)">
+				<mat-icon>clear</mat-icon>
+			</button>
+		}
+		<mat-autocomplete
+			#aiAuto="matAutocomplete"
+			(optionSelected)="selectActionableItem($event)"
+			[displayWith]="displayFn">
+			@for (item of filteredActionableItems() || []; track $index) {
 				<mat-option
-					*ngFor="let item of actionableItems | async"
 					[value]="item"
 					[attr.data-cy]="'option-' + item.name">
 					{{ item.name }}
 				</mat-option>
-			</mat-select>
-		</mat-form-field>
-	}
+			}
+		</mat-autocomplete>
+	</mat-form-field>
 	<mat-form-field class="tw-w-full">
 		<mat-label>Description</mat-label>
 		<input
@@ -74,12 +100,13 @@
 			[(ngModel)]="data.priority"
 			required
 			data-cy="select-priority">
-			<mat-option
-				*ngFor="let item of priorities"
-				[value]="item.value"
-				[attr.data-cy]="'option-' + item.name">
-				{{ item.name }}
-			</mat-option>
+			@for (item of priorities; track $index) {
+				<mat-option
+					[value]="item.value"
+					[attr.data-cy]="'option-' + item.name">
+					{{ item.name }}
+				</mat-option>
+			}
 		</mat-select>
 	</mat-form-field>
 	@if (data.actionableItem.id.length !== 0) {
@@ -89,12 +116,13 @@
 				[(ngModel)]="data.changeType"
 				required
 				data-cy="select-change-type">
-				<mat-option
-					*ngFor="let item of changeTypes | async"
-					[value]="item"
-					[attr.data-cy]="'option-' + item.name">
-					{{ item.name }}
-				</mat-option>
+				@for (item of changeTypes | async; track $index) {
+					<mat-option
+						[value]="item"
+						[attr.data-cy]="'option-' + item.name">
+						{{ item.name }}
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 		@for (field of additionalFields | async; track $index) {
@@ -104,12 +132,13 @@
 					<mat-select
 						[(ngModel)]="data.targetedVersion"
 						data-cy="select-targeted-version">
-						<mat-option
-							*ngFor="let item of targetedVersions | async"
-							[value]="item"
-							[attr.data-cy]="'option-' + item.name">
-							{{ item.name }}
-						</mat-option>
+						@for (item of targetedVersions | async; track $index) {
+							<mat-option
+								[value]="item"
+								[attr.data-cy]="'option-' + item.name">
+								{{ item.name }}
+							</mat-option>
+						}
 					</mat-select>
 				</mat-form-field>
 			} @else if (field.name === 'Originator') {
@@ -119,12 +148,13 @@
 						[(ngModel)]="data.originator"
 						[compareWith]="compareUsers"
 						data-cy="select-originator">
-						<mat-option
-							*ngFor="let item of users | async"
-							[value]="item"
-							[attr.data-cy]="'option-' + item.name">
-							{{ item.name }}
-						</mat-option>
+						@for (item of users | async; track $index) {
+							<mat-option
+								[value]="item"
+								[attr.data-cy]="'option-' + item.name">
+								{{ item.name }}
+							</mat-option>
+						}
 					</mat-select>
 				</mat-form-field>
 			} @else if (field.name === 'Assignees') {
@@ -135,12 +165,13 @@
 						(selectionChange)="selectAssignees($event)"
 						multiple
 						data-cy="select-assignees">
-						<mat-option
-							*ngFor="let item of users | async"
-							[value]="item"
-							[attr.data-cy]="'option-' + item.name">
-							{{ item.name }}
-						</mat-option>
+						@for (item of users | async; track $index) {
+							<mat-option
+								[value]="item"
+								[attr.data-cy]="'option-' + item.name">
+								{{ item.name }}
+							</mat-option>
+						}
 					</mat-select>
 				</mat-form-field>
 			} @else if (field.name === 'Points') {
@@ -149,12 +180,13 @@
 					<mat-select
 						[(ngModel)]="data.points"
 						data-cy="select-points">
-						<mat-option
-							*ngFor="let item of points | async"
-							[value]="item"
-							[attr.data-cy]="'option-' + item">
-							{{ item }}
-						</mat-option>
+						@for (item of points | async; track $index) {
+							<mat-option
+								[value]="item"
+								[attr.data-cy]="'option-' + item">
+								{{ item }}
+							</mat-option>
+						}
 					</mat-select>
 				</mat-form-field>
 			} @else if (field.name === 'Unplanned Work') {
@@ -183,12 +215,13 @@
 							[(ngModel)]="data.featureGroup"
 							[disabled]="_featureGroups.length === 0"
 							data-cy="select-feature-group">
-							<mat-option
-								*ngFor="let item of _featureGroups"
-								[value]="item.id"
-								[attr.data-cy]="'option-' + item.name">
-								{{ item.name }}
-							</mat-option>
+							@for (item of _featureGroups; track $index) {
+								<mat-option
+									[value]="item.id"
+									[attr.data-cy]="'option-' + item.name">
+									{{ item.name }}
+								</mat-option>
+							}
 						</mat-select>
 					</mat-form-field>
 				}
@@ -204,12 +237,13 @@
 							[(ngModel)]="data.sprint"
 							[disabled]="_sprints.length === 0"
 							data-cy="select-sprint">
-							<mat-option
-								*ngFor="let item of _sprints"
-								[value]="item.id"
-								[attr.data-cy]="'option-' + item.name">
-								{{ item.name }}
-							</mat-option>
+							@for (item of _sprints; track $index) {
+								<mat-option
+									[value]="item.id"
+									[attr.data-cy]="'option-' + item.name">
+									{{ item.name }}
+								</mat-option>
+							}
 						</mat-select>
 					</mat-form-field>
 				}

@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, Inject, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -24,7 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
-import { filter, share, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { filter, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 import {
@@ -35,6 +35,12 @@ import {
 } from '@osee/shared/types/configuration-management';
 import { user } from '@osee/shared/types/auth';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
+import {
+	MatAutocompleteModule,
+	MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */
@@ -44,7 +50,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgFor,
 		AsyncPipe,
 		FormsModule,
 		MatDialogModule,
@@ -54,23 +59,52 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 		MatInputModule,
 		MatButtonModule,
 		MatCheckboxModule,
+		MatIconModule,
+		MatAutocompleteModule,
 	],
 })
 export class CreateActionDialogComponent {
 	actionableItemId = new BehaviorSubject<string>('');
 	users = this.userService.usersSorted;
-	actionableItems: Observable<actionableItem[]> =
-		this.actionService.actionableItems.pipe(share());
-	workTypes = this.actionService.workTypes.pipe(
-		tap((types) => {
-			types.forEach((t) => {
-				if (t.name === this.data.defaultWorkType) {
-					this.workType = t;
-					this.data.createBranchDefault = t.createBranchDefault;
-					return;
+	actionableItemsFilter = signal('');
+	actionableItems = toSignal(
+		this.actionService.actionableItems.pipe(
+			tap((items) => {
+				if (items.length === 1) {
+					this._selectActionableItem(items[0]);
 				}
-			});
-		})
+			})
+		)
+	);
+	filteredActionableItems = computed(
+		() =>
+			this.actionableItems()?.filter((wt) =>
+				wt.name
+					.toLowerCase()
+					.includes(this.actionableItemsFilter().toLowerCase())
+			) || []
+	);
+	workTypesFilter = signal('');
+	workTypes = toSignal(
+		this.actionService.workTypes.pipe(
+			tap((types) => {
+				types.forEach((t) => {
+					if (t.name === this.data.defaultWorkType) {
+						this.workType = t;
+						this.data.createBranchDefault = t.createBranchDefault;
+						return;
+					}
+				});
+			})
+		)
+	);
+	filteredWorkTypes = computed(
+		() =>
+			this.workTypes()?.filter((wt) =>
+				wt.name
+					.toLowerCase()
+					.includes(this.workTypesFilter().toLowerCase())
+			) || []
 	);
 	points = this.actionService.getPoints();
 	workType: WorkType = {
@@ -113,11 +147,11 @@ export class CreateActionDialogComponent {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 	featureGroups = this.teamDef.pipe(
-		filter((t) => t !== undefined && t.length > 0),
+		filter((t) => t !== undefined && t !== null && t.length > 0),
 		switchMap((teams) => this.actionService.getFeatureGroups(teams[0].id))
 	);
 	sprints = this.teamDef.pipe(
-		filter((t) => t !== undefined && t.length > 0),
+		filter((t) => t !== undefined && t !== null && t.length > 0),
 		switchMap((teams) => this.actionService.getSprints(teams[0].id))
 	);
 	private _priorityKeys = Object.keys(PRIORITIES);
@@ -139,15 +173,24 @@ export class CreateActionDialogComponent {
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
-	selectActionableItem() {
-		this.actionableItemId.next(this.data.actionableItem.id);
+	selectActionableItem(selection: MatAutocompleteSelectedEvent) {
+		this._selectActionableItem(selection.option.value);
 	}
 
-	selectWorkType(selection: MatSelectChange) {
-		this.workType = selection.value;
+	private _selectActionableItem(ai: actionableItem) {
+		this.data.actionableItem = ai;
+		this.actionableItemId.next(ai.id);
+	}
+
+	selectWorkType(selection: MatAutocompleteSelectedEvent) {
+		this._selectWorkType(selection.option.value);
+	}
+
+	private _selectWorkType(workType: WorkType) {
+		this.workType = workType;
 		this.actionService.workTypeValue = this.workType.name;
 		this.data.createBranchDefault = this.workType.createBranchDefault;
-		this.data.actionableItem = new actionableItem();
+		this._selectActionableItem(new actionableItem());
 	}
 
 	selectAssignees(selection: MatSelectChange) {
@@ -157,5 +200,36 @@ export class CreateActionDialogComponent {
 
 	compareUsers(user1: user, user2: user) {
 		return user1.id === user2.id;
+	}
+
+	clearWorkType(event: Event) {
+		event.stopPropagation();
+		this.workTypesFilter.set('');
+		this._selectWorkType({
+			name: '',
+			humanReadableName: '',
+			description: '',
+			createBranchDefault: false,
+		});
+	}
+
+	clearActionableItem(event: Event) {
+		event.stopPropagation();
+		this.actionableItemsFilter.set('');
+		this._selectActionableItem(new actionableItem());
+	}
+
+	updateWorkTypeFilter(event: Event) {
+		const value = (event.target as HTMLInputElement).value;
+		this.workTypesFilter.set(value);
+	}
+
+	updateActionableItemsFilter(event: Event) {
+		const value = (event.target as HTMLInputElement).value;
+		this.actionableItemsFilter.set(value);
+	}
+
+	displayFn(val: WorkType | actionableItem) {
+		return val?.name;
 	}
 }

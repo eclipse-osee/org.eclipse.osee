@@ -15,7 +15,12 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { user } from '@osee/shared/types/auth';
 import { apiURL } from '@osee/environments';
-import { NamedId, response, transitionResponse } from '@osee/shared/types';
+import {
+	HttpParamsType,
+	NamedId,
+	response,
+	transitionResponse,
+} from '@osee/shared/types';
 import {
 	actionableItem,
 	teamWorkflow,
@@ -27,6 +32,7 @@ import {
 	WorkType,
 	CreateActionField,
 } from '@osee/shared/types/configuration-management';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -37,10 +43,14 @@ export class ActionService {
 	public get users(): Observable<user[]> {
 		return this.http.get<user[]>(apiURL + '/ats/user?active=Active');
 	}
-	public getActionableItems(workType: string): Observable<actionableItem[]> {
-		return this.http.get<actionableItem[]>(
-			apiURL + `/ats/ai/worktype/${workType}`
-		);
+	public getActionableItems(workType?: string): Observable<actionableItem[]> {
+		let params: HttpParamsType = { orderByName: true };
+		if (workType) {
+			params = { ...params, workType: workType };
+		}
+		return this.http.get<actionableItem[]>(apiURL + `/ats/ai/all`, {
+			params: params,
+		});
 	}
 	public getWorkTypes() {
 		return this.http.get<WorkType[]>(apiURL + `/ats/workType`);
