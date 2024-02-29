@@ -1,3 +1,5 @@
+![osee.jpg](/docs/images/osee.jpg "osee.jpg")
+
 OSEE was designed from the ground up to be a single tool that captures
 all artifacts through-out the life-cycle of engineering. Since the
 original OSEE project use was DoD, very strict guidelines are placed on
@@ -19,7 +21,7 @@ leading software languages, Java, and it was made open-source so that
 others could easily continue its development even if the existing
 program moved to a different solution.
 
-You can learn more about OSEE at <http://www.eclipse.org/osee>
+You can learn more about OSEE on our [project website](https://eclipse.dev/osee/).
 
 # What is OSEE
 
@@ -40,18 +42,18 @@ work flow standardization and early defect detection.
 
 # OSEE can be used for
 
-`  - Configuration Managed Requirements Development`
-`  - Multiple dynamically configured Problem-Change-Request (PCR) systems`
-`  - Product Unit and Integration Testing`
-`  - Publishing deliverable documents`
-`  - Full traceability from high-level customer requirements to decomposed lower level requirements and even code, test and output files.`
-`  - Full Level A, B and C coverage tracking and reporting`
-`  - Agile Software Development`
-`  - Peer Reviews`
-`  - Process management`
-`  - Linking in other tools / databases`
-`  - Support for system safety tracking/reporting`
-`  - And any other use cases that need to be developed`
+- Configuration Managed Requirements Development
+- Multiple dynamically configured Problem-Change-Request (PCR) systems
+- Product Unit and Integration Testing
+- Publishing deliverable documents
+- Full traceability from high-level customer requirements to decomposed lower level requirements and even code, test and output files.
+- Full Level A, B and C coverage tracking and reporting
+- Agile Software Development
+- Peer Reviews
+- Process management
+- Linking in other tools / databases
+- Support for system safety tracking/reporting
+- And any other use cases that need to be developed
 
 # The major features of OSEE include
 
@@ -126,7 +128,7 @@ Different portions of OSEE are in different stages of maturity. In addition, all
 
 # Contact
 
-More information about OSEE can be obtained by visiting our Eclipse
-website <http://www.eclipse.org/osee> or by contacting one of the team
+More information about OSEE can be obtained by visiting our [Eclipse
+website](https://eclipse.dev/osee/) or by contacting one of the team
 leads: Ryan Brooks (ryan.d.brooks AT boeing.com) or Don Dunne
 (donald.g.dunne AT boeing.com)
