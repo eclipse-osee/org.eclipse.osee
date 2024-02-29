@@ -1,3 +1,11 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.authentication.ldap",
+    visibility = ["//visibility:public"]
+)
+
 java_library(
         name = "org.eclipse.osee.authentication.ldap",
         resources = ["x_files"],
@@ -12,6 +20,7 @@ filegroup(
           [
             "OSGI-INF/ldap.authentication.provider.xml",
             "OSGI-INF/metatype/ldap.authentication.provider.metatypes.xml",
+	    "META-INF/MANIFEST.MF"
            ]
   ,
     visibility = ["//visibility:public"]

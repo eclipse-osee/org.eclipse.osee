@@ -3,6 +3,7 @@ load("//:osgi.bzl", "osgi_jar_converter")
 osgi_jar_converter(
     name = "osgi_jar",
     arg = "org.eclipse.osee.framework.jdk.core",
+    visibility = ["//visibility:public"]
 )
 
 
@@ -11,7 +12,7 @@ java_library(
 	resources = ["txt_files"],
 	srcs = glob(["**/*.java"]),	
 	deps = ["java_deps"],
-    visibility = ["//visibility:public"]
+        visibility = ["//visibility:public"]
 
 )
         
@@ -38,4 +39,5 @@ java_library(
 		"@maven//:org_apache_poi_poi",
 		"@maven//:org_apache_poi_poi_ooxml"
                 ],
+	 visibility = ["//visibility:public"]
 )
