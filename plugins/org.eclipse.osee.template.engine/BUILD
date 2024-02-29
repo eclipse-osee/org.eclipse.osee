@@ -1,3 +1,11 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.template.engine",
+    visibility = ["//visibility:public"]
+)
+
 
 java_library(
         name = "org.eclipse.osee.template.engine",
@@ -15,6 +23,7 @@ filegroup(
 	    "OSGI-INF/jaxrs.mvc.page.factory.resolver.xml",
 	    "OSGI-INF/jaxrs.template.admin.application.xml",
 	    "OSGI-INF/template.registry.xml",
+	    "META-INF/MANIFEST.MF",
 	    "src/org/eclipse/osee/template/engine/css/built-editor.css",
 	    "src/org/eclipse/osee/template/engine/html/exception.html",
 	    "src/org/eclipse/osee/template/engine/html/pageDeclaration.html",

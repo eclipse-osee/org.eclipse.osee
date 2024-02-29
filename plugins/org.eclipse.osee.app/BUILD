@@ -1,3 +1,12 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.app",
+    visibility = ["//visibility:public"]
+)
+
+
 
 java_library(
         name = "org.eclipse.osee.app",
@@ -25,7 +34,8 @@ filegroup(
 	   "src/org/eclipse/osee/app/html/oseeApplet.html",
 	   "src/org/eclipse/osee/app/html/oseeApplet.js",
 	   "OSEE-INF/oseeApp/css/app.css",
-	   "OSGI-INF/app.application.xml"
+	   "OSGI-INF/app.application.xml",
+	   "META-INF/MANIFEST.MF"
 	]
 
   ,

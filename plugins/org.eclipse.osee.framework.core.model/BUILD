@@ -3,6 +3,7 @@ load("//:osgi.bzl", "osgi_jar_converter")
 osgi_jar_converter(
     name = "osgi_jar",
     arg = "org.eclipse.osee.framework.core.model",
+    visibility = ["//visibility:public"]
 )
 
 java_library(

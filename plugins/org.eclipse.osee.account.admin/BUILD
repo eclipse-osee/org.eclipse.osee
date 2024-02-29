@@ -1,3 +1,11 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.account.admin",
+    visibility = ["//visibility:public"],
+)
+
 java_library(
         name = "org.eclipse.osee.account.admin",
         resources = ["x_files"],
@@ -14,6 +22,7 @@ filegroup(
           [
             "OSGI-INF/account.admin.xml",
             "OSGI-INF/subscriptions.admin.xml",
+	    "META-INF/MANIFEST.MF"
            ]
   ,
     visibility = ["//visibility:public"]

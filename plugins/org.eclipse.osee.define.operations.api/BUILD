@@ -1,8 +1,16 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.define.operations.api",
+    visibility = ["//visibility:public"]
+)
 
 java_library(
-   name       = "org.eclipse.osee.define.operations.api",
-   srcs       = glob(["**/*.java"]),
-   deps       = [ 
+    name       = "org.eclipse.osee.define.operations.api",
+    resources  = ["manifest"],
+    srcs       = glob(["**/*.java"]),
+    deps       = [ 
                    "java_deps", 
                    "//framework_core_packages",
                    "//org.eclipse.osee.jdbc",
@@ -12,10 +20,16 @@ java_library(
                    "//org.eclipse.osee.activity.api",
 		   "//org.eclipse.osee.define.rest.api"
                 ],
-   visibility = [
+    visibility = [
                    "//visibility:public"
                 ]
 )
+
+filegroup(
+   name = "manifest",
+   srcs = ["META-INF/MANIFEST.MF"]
+)
+
 
 java_library(
    name       = "java_deps",

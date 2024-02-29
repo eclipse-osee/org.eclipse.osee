@@ -1,3 +1,11 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.authorization.admin",
+    visibility = ["//visibility:public"]
+)
+
 java_library(
         name = "org.eclipse.osee.authorization.admin",
         resources = ["x_files"],
@@ -12,6 +20,7 @@ filegroup(
           [
             "OSGI-INF/authorization.admin.xml",
             "OSGI-INF/none.authorization.provider.xml",
+	    "META-INF/MANIFEST.MF"
            ]
   ,
 )

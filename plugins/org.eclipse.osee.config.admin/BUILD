@@ -1,3 +1,11 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.config.admin",
+    visibility = ["//visibility:public"]
+)
+
 java_library(
         name = "org.eclipse.osee.config.admin",
         resources = ["x_files"],
@@ -13,6 +21,7 @@ filegroup(
           [
             "OSGI-INF/metatype/config.manager.metatypes.xml",
             "OSGI-INF/config.manager.xml",
+	    "META-INF/MANIFEST.MF"
            ]
   ,
 )

@@ -1,3 +1,10 @@
+load("//:osgi.bzl", "osgi_jar_converter")
+
+osgi_jar_converter(
+    name = "osgi_jar",
+    arg = "org.eclipse.osee.ats.rest",
+    visibility = ["//visibility:public"]
+)
 
 java_library(
         name = "org.eclipse.osee.ats.rest",
@@ -33,7 +40,8 @@ filegroup(
     name = "html_page",
     srcs =
   [
-	"src/org/eclipse/osee/ats/rest/internal/agile/html/sprintTemplate.html"
+	"src/org/eclipse/osee/ats/rest/internal/agile/html/sprintTemplate.html",
+	"META-INF/MANIFEST.MF"
   ]
     ,
 )
