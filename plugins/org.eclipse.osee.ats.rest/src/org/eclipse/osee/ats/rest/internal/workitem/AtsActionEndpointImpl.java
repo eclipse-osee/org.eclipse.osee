@@ -818,7 +818,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (attributes.size() > 0) {
          ActionOperations ops = new ActionOperations(workItem, atsApi, orcsApi);
          //if any of the attributes are empty, return false
-         return attributes.stream().map(
+         return attributes.stream().filter(attr -> attr.isValid()).map(
             attribute -> ops.getActionAttributeValues(attribute, workItem).getValues().isEmpty()).filter(
                empty -> empty).collect(Collectors.toList()).size() == 0;
       }
