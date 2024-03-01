@@ -12,17 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { iif, of, combineLatest, BehaviorSubject } from 'rxjs';
-import {
-	filter,
-	switchMap,
-	repeatWhen,
-	share,
-	shareReplay,
-	take,
-	tap,
-	map,
-	distinctUntilChanged,
-} from 'rxjs/operators';
+import { switchMap, shareReplay, take, tap, map } from 'rxjs/operators';
 import {
 	ActionService,
 	BranchInfoService,
@@ -37,7 +27,6 @@ import {
 	transitionAction,
 	CreateAction,
 	CreateNewAction,
-	workType,
 } from '@osee/shared/types/configuration-management';
 
 @Injectable({
