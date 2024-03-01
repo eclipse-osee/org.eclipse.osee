@@ -11,7 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { Observable, combineLatest, iif, merge, of } from 'rxjs';
+import {
+	BehaviorSubject,
+	Observable,
+	combineLatest,
+	iif,
+	merge,
+	of,
+} from 'rxjs';
 import {
 	take,
 	map,
@@ -19,13 +26,14 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	shareReplay,
+	tap,
 } from 'rxjs/operators';
 import { BranchInfoService, WorktypeService } from '@osee/shared/services';
 import { UiService } from '@osee/shared/services';
 import { BranchCategoryService } from './branch-category.service';
-import { BranchFilterService } from './branch-filter.service';
 import { BranchPageService } from './branch-page.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { branch } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -36,10 +44,13 @@ export class BranchListService {
 			type === 'baseline' ? '2' : type == 'working' ? '0' : '-1'
 		)
 	);
+
+	private _branchFilter = new BehaviorSubject<string>('');
+
 	private _branches = combineLatest([
 		this._type,
 		this.categoryService.branchCategory,
-		this.filterService.filter,
+		this._branchFilter,
 		this.workTypeService.workType,
 	]).pipe(
 		switchMap(([type, category, filter, workType]) =>
@@ -61,16 +72,16 @@ export class BranchListService {
 			iif(
 				() => id !== '' && id !== '-1' && id !== '0',
 				this.branchService.getBranch(id),
-				of()
+				of({ name: '' } as branch)
 			)
 		)
 	);
-	private _currentBranchName = this._currentBranch.pipe(map((br) => br.name));
+	private _currentBranchName = this._currentBranch.pipe(
+		map((br) => br.name),
+		tap((name) => (this.filter = name))
+	);
 
-	private _filter = merge(
-		this._currentBranchName,
-		this.filterService.filter
-	).pipe(
+	private _filter = merge(this._currentBranchName, this._branchFilter).pipe(
 		distinctUntilChanged(),
 		debounceTime(500),
 		shareReplay({ bufferSize: 1, refCount: true }),
@@ -80,7 +91,6 @@ export class BranchListService {
 		private branchService: BranchInfoService,
 		private ui: UiService,
 		private categoryService: BranchCategoryService,
-		private filterService: BranchFilterService,
 		private workTypeService: WorktypeService,
 		private pageSizeService: BranchPageService
 	) {}
@@ -96,7 +106,7 @@ export class BranchListService {
 	}
 
 	set filter(value: string) {
-		this.filterService.filter = value;
+		this._branchFilter.next(value);
 	}
 
 	getFilteredPaginatedBranches(pageNum: string | number, filter?: string) {

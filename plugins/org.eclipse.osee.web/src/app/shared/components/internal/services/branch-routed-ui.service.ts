@@ -33,6 +33,7 @@ export class BranchRoutedUIService {
 			baseUrl = this.router.url;
 		}
 		this.branchService.typeValue = value;
+		this.branchService.idValue = '';
 		this.router.navigate([baseUrl, value]);
 	}
 	get type() {

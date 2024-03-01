@@ -127,8 +127,6 @@ export class ArtifactExplorerTabService {
 	getTabIconClass(tab: tab) {
 		if (tab.tabType === 'Artifact') {
 			return this.getIconClass(tab.artifact.icon);
-		} else if (tab.tabType === 'ChangeReport') {
-			return 'tw-text-success-600';
 		}
 		return '';
 	}
