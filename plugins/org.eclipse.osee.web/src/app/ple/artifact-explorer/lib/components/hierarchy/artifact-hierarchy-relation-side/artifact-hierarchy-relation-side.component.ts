@@ -13,8 +13,6 @@
 import {
 	Component,
 	Input,
-	OnChanges,
-	SimpleChanges,
 	computed,
 	forwardRef,
 	inject,
@@ -33,7 +31,6 @@ import {
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { BehaviorSubject } from 'rxjs';
-import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',

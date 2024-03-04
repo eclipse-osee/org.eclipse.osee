@@ -153,18 +153,24 @@
 											*ngFor="let art of arts"
 											class="tw-h-auto tw-px-0 tw-py-1">
 											<div
-												class="tw-flex tw-items-center">
-												<mat-icon
-													[class]="
-														getIconClasses(art.icon)
-													">
-													{{ art.icon.icon }}
-												</mat-icon>
-												<div class="tw-pl-2">
-													{{ art.name }}
-												</div>
+												class="tw-flex tw-items-center tw-justify-between hover:tw-text-primary">
 												<button
-													class="tw-ml-auto tw-mr-4 tw-flex tw-transform tw-text-warning tw-transition-transform tw-duration-200 tw-ease-in-out hover:tw-rotate-180"
+													(click)="addTab(art)"
+													class="tw-flex tw-items-center">
+													<mat-icon
+														[class]="
+															getIconClasses(
+																art.icon
+															)
+														">
+														{{ art.icon.icon }}
+													</mat-icon>
+													<div class="tw-pl-2">
+														{{ art.name }}
+													</div>
+												</button>
+												<button
+													class="tw-px-4"
 													(click)="
 														editable
 															? deleteRelation(
@@ -175,6 +181,7 @@
 															: ''
 													">
 													<mat-icon
+														class="tw-transform tw-text-warning tw-transition-transform tw-duration-200 tw-ease-in-out hover:tw-rotate-180"
 														>remove_circle_outline</mat-icon
 													>
 												</button>

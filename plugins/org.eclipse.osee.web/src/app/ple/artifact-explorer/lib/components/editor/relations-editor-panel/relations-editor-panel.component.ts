@@ -280,4 +280,15 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	relationSideOpen(index: number, relationSide: relationSide) {
 		return relationSide.name;
 	}
+
+	addTab(artifact: artifact) {
+		this.tabService.addArtifactTabOnBranch(
+			{
+				...artifact,
+				editable: this._editable.getValue(),
+			},
+			this._branchId.getValue(),
+			this._viewId.getValue()
+		);
+	}
 }
