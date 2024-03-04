@@ -469,8 +469,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public ValidateCommitResult validateCommitBranch(BranchId branch, BranchId destinationBranch,
-      BranchCommitOptions options) {
+   public ValidateCommitResult validateCommitBranch(BranchId branch, BranchId destinationBranch) {
       return CommitBranchUtil.validateCommitBranch(orcsApi, branch, destinationBranch);
    }
 
