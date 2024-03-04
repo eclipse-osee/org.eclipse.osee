@@ -49,25 +49,35 @@ export class ArtifactExplorerTabService {
 	}
 
 	addArtifactTab(artifact: artifact) {
+		this.addArtifactTabOnBranch(artifact, this.branchId(), this.viewId());
+	}
+
+	addArtifactTabOnBranch(
+		artifact: artifact,
+		branchId: string,
+		viewId: string
+	) {
 		// don't open a tab for the same artifact on the same branch
-		if (
-			!this.tabs().some(
-				(existingTab) =>
-					existingTab.branchId === this.uiService.id.value &&
-					existingTab.artifact?.id === artifact.id
-			)
-		)
+		const currentIndex = this.tabs().findIndex(
+			(existingTab) =>
+				existingTab.branchId === this.uiService.id.value &&
+				existingTab.artifact?.id === artifact.id
+		);
+		if (currentIndex === -1) {
 			this.tabs.update((rows) => [
 				...rows,
 				{
 					tabType: 'Artifact',
 					tabTitle: artifact.name,
 					artifact: artifact,
-					branchId: this.branchId(),
-					viewId: this.viewId(),
+					branchId: branchId,
+					viewId: viewId,
 				},
 			]);
-		this.SelectedIndex = this.tabs().length - 1;
+			this.SelectedIndex = this.tabs().length - 1;
+		} else {
+			this.SelectedIndex = currentIndex;
+		}
 	}
 
 	removeTab(index: number) {
