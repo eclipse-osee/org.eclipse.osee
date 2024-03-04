@@ -39,6 +39,8 @@ public class OseeServerProperties {
 
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
 
+   private static final String OSEE_APPLICATION_SERVER_WSSO_URI = "osee.application.server.wsso.uri";
+
    private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
 
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
@@ -55,6 +57,28 @@ public class OseeServerProperties {
 
    public static String getAuthenticationProtocol() {
       return System.getProperty(OSEE_AUTHENTICATION_PROTOCOL, "");
+   }
+
+   /**
+    * Gets the system property for the OSEE application server URL.
+    *
+    * @return when the property is set an {@link Optional} with the system property value; otherwise, an empty
+    * {@link Optional}.
+    */
+
+   public static Optional<String> getOseeApplicationServer() {
+      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER));
+   }
+
+   /**
+    * Gets the system property for the OSEE application server data directory.
+    *
+    * @return when the property is set an {@link Optional} with the system property value; otherwise, an empty
+    * {@link Optional}.
+    */
+
+   public static Optional<String> getOseeApplicationServerData() {
+      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER_DATA));
    }
 
    /**
@@ -79,28 +103,6 @@ public class OseeServerProperties {
          }
       }
       return toReturn;
-   }
-
-   /**
-    * Gets the system property for the OSEE application server URL.
-    *
-    * @return when the property is set an {@link Optional} with the system property value; otherwise, an empty
-    * {@link Optional}.
-    */
-
-   public static Optional<String> getOseeApplicationServer() {
-      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER));
-   }
-
-   /**
-    * Gets the system property for the OSEE application server data directory.
-    *
-    * @return when the property is set an {@link Optional} with the system property value; otherwise, an empty
-    * {@link Optional}.
-    */
-
-   public static Optional<String> getOseeApplicationServerData() {
-      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER_DATA));
    }
 
    /**
@@ -129,6 +131,17 @@ public class OseeServerProperties {
          toReturn = "http";
       }
       return toReturn;
+   }
+
+   /**
+    * Gets the Web Single Sign On URI for the OSEE application server.
+    *
+    * @return when the property is set an {@link Optional} with the system property value; otherwise, an empty
+    * {@link Optional}.
+    */
+
+   public static Optional<String> getOseeApplicationServerWssoUri() {
+      return Optional.ofNullable(System.getProperty(OseeServerProperties.OSEE_APPLICATION_SERVER_WSSO_URI));
    }
 
    /**
