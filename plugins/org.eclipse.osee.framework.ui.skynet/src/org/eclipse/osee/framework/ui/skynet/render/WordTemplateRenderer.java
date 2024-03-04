@@ -256,8 +256,7 @@ public class WordTemplateRenderer extends FileSystemRenderer {
       WordTemplateRenderer.imageDescriptor =
          ImageManager.getProgramImageDescriptor(WordTemplateRenderer.PROGRAM_EXTENSION_WORD);
 
-      WordTemplateRenderer.wordApplication =
-         Program.findProgram(WordTemplateRenderer.PROGRAM_EXTENSION_WORD);
+      WordTemplateRenderer.wordApplication = Program.findProgram(WordTemplateRenderer.PROGRAM_EXTENSION_WORD);
 
       //@formatter:off
       WordTemplateRenderer.menuCommandDefinitions =
@@ -460,7 +459,8 @@ public class WordTemplateRenderer extends FileSystemRenderer {
     */
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, RendererMap rendererOptions) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact,
+      RendererMap rendererOptions) {
 
       var rating = this.getBaseApplicabilityRating(presentationType, artifact, rendererOptions);
 
@@ -557,8 +557,6 @@ public class WordTemplateRenderer extends FileSystemRenderer {
          (
             presentationType,
             ValueType.PARAMETER,
-            MarkdownRenderer.class.getName(),
-            "getRenderInputStream",
             "presentationType",
             "must be non-null",
             Objects::isNull,
@@ -569,13 +567,9 @@ public class WordTemplateRenderer extends FileSystemRenderer {
          (
             artifacts,
             ValueType.PARAMETER,
-            MarkdownRenderer.class.getName(),
-            "getRenderInputStream",
             "artifacts",
-            "must be non-null and non-empty",
-            Conditions.or( Objects::isNull, Collection::isEmpty ),
-            "must not contain null elements",
-            Conditions::collectionContainsNull,
+            "must be non-null and and not contain null elements",
+            Conditions.or( Objects::isNull, Conditions::collectionContainsNull ),
             IllegalArgumentException::new
          );
       //@formatter:on
@@ -684,8 +678,6 @@ public class WordTemplateRenderer extends FileSystemRenderer {
          (
             presentationType,
             ValueType.PARAMETER,
-            MarkdownRenderer.class.getName(),
-            "getRenderInputStream",
             "presentationType",
             "must be non-null",
             Objects::isNull,
@@ -696,13 +688,9 @@ public class WordTemplateRenderer extends FileSystemRenderer {
          (
             artifacts,
             ValueType.PARAMETER,
-            MarkdownRenderer.class.getName(),
-            "getRenderInputStream",
             "artifacts",
-            "must be non-null and non-empty",
-            Conditions.or( Objects::isNull, Collection::isEmpty ),
-            "must not contain null elements",
-            Conditions::collectionContainsNull,
+            "must be non-null and not contain null elements",
+            Conditions.or( Objects::isNull, Conditions::collectionContainsNull ),
             IllegalArgumentException::new
          );
       //@formatter:on

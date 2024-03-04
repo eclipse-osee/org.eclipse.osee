@@ -99,7 +99,7 @@ public class ResourcesOperationsImpl implements ResourcesOperations {
 
       this.publishingDownloadUrl =
          OseeServerProperties
-            .getOseeApplicationServer()
+            .getOseeApplicationServerWssoUri()
             .map( ( urlRoot ) -> urlRoot + ResourcesOperationsImpl.publishingDownloadUrlSubPath );
       //@formatter:on
    }
