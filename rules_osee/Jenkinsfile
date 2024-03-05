@@ -7,6 +7,10 @@ apiVersion: v1
 kind: Pod
 spec:
   containers:
+  - name: jnlp
+    volumeMounts:
+    - name: volume-known-hosts
+      mountPath: /home/jenkins/.ssh
   - name: bazel
     image: gcr.io/bazel-public/bazel:latest
     tty: true
@@ -41,15 +45,6 @@ spec:
 
   stages {
   
-    // stage('test') {
-    //   steps {
-    //     container('bazel') {
-    //       dir('rules_osee/example') {
-    //         sh 'bazel test //:applic_test'
-    //       }
-    //     }
-    //   }
-    // }
     stage('Build release') {
       steps {
         container('bazel') {
