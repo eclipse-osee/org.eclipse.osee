@@ -47,7 +47,6 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
-import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
@@ -237,18 +236,7 @@ public class LisFileParser implements DispoImporterApi {
             if (uncovered.contains(discrepancy.getLocation())) {
                DispoAnnotationData uncoveredAnnotation = matchOldAnnotation(discrepancy, prevItems, item);
                if (uncoveredAnnotation != null) {
-                  if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution)) {
-                     uncoveredAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
-                     addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
-                        uncoveredAnnotation.getLastResolution());
-                  } else if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
-                     DispoStrings.Exception_Handling_Resolution)) {
-                     uncoveredAnnotation.setLastResolution("Exception_Handling");
-                     addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
-                        uncoveredAnnotation.getLastResolution());
-                  } else {
-                     keepExistingAnnotation(item, uncoveredAnnotation);
-                  }
+                  keepExistingAnnotation(item, uncoveredAnnotation);
                } else {
                   addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(), "N/A");
                }
