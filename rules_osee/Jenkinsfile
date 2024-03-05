@@ -62,7 +62,7 @@ spec:
             sh '''
               ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.1.0
               ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.1.0
-              scp -o BatchMode=yes -r ./output_rules_osee_bazel/execroot/_main/bazel-out/k8-fastbuild/bin/release/rules_osee-0.1.0.tar.gz genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.1.0
+              scp -o BatchMode=yes -r ./output_rules_osee_bazel/execroot/_main/bazel-out/k8-fastbuild/bin/release/rules-osee-0.1.0.tar.gz genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.1.0
             '''
           }
         }
