@@ -558,7 +558,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       timetag.setValidationSize(validationSize);
       timetag.setShouldValidate(shouldValidate);
       timetag.setDescription("Indicates the time that the message was prepared for transmission.");
-      timetag.setInterfaceElementAlterable(false);
+      timetag.setInterfaceElementAlterable(true);
       elements.add(timetag);
 
       // Message number
@@ -606,7 +606,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             structuresType);
          if (!structuresType.getInterfacePlatformTypeMinval().equals(structuresType.getInterfacePlatformTypeMaxval())) {
             element.setInterfaceElementAlterable(true);
-            timetag.setInterfaceElementAlterable(true);
          }
          element.setValidationSize(validationSize);
          element.setShouldValidate(shouldValidate);
