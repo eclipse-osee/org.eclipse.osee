@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.config;
 
+import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
 import org.eclipse.osee.ats.api.util.SkipAtsConfigJsonWriter;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
@@ -128,6 +130,18 @@ public interface AtsConfigEndpointApi {
    @Path("version/{verId}")
    @Produces(MediaType.APPLICATION_JSON)
    public Version getVersion(@PathParam("verId") ArtifactId verId);
+
+   @GET
+   @SkipAtsConfigJsonWriter
+   @Path("parallel/{verId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<IAtsVersion> getParallelVersions(@PathParam("verId") ArtifactId verId);
+
+   @GET
+   @SkipAtsConfigJsonWriter
+   @Path("parallel/{verId}/all")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<IAtsVersion> getAllParallelVersions(@PathParam("verId") ArtifactId verId);
 
    @GET
    @SkipAtsConfigJsonWriter
