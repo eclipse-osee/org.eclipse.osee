@@ -23,10 +23,12 @@
 		<osee-branch-picker></osee-branch-picker>
 		<div class="tw-flex tw-pt-4">
 			<osee-view-selector />
-			<div
-				class="tw-flex tw-w-full tw-items-center tw-justify-center tw-px-2">
-				<osee-action-dropdown />
-			</div>
+			@if ((branchId | async) !== '') {
+				<div
+					class="tw-flex tw-w-full tw-items-center tw-justify-center tw-px-2">
+					<osee-action-dropdown />
+				</div>
+			}
 		</div>
 	</div>
 	<osee-artifact-search-panel></osee-artifact-search-panel>

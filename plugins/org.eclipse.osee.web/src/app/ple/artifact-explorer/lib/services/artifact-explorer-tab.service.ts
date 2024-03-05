@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject, signal } from '@angular/core';
-import { UiService } from '@osee/shared/services';
+import { BranchCommitEventService, UiService } from '@osee/shared/services';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
 	tab,
@@ -33,6 +33,14 @@ export class ArtifactExplorerTabService {
 	private uiService = inject(UiService);
 	branchId = toSignal(this.uiService.id, { initialValue: '' });
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
+
+	constructor(private eventService: BranchCommitEventService) {
+		this.eventService.events.subscribe((id) => {
+			this.tabs.update((current) =>
+				current.filter((tab) => tab.branchId !== id)
+			);
+		});
+	}
 
 	addTab(tabType: TabType, tabTitle: string) {
 		this.tabs.update((rows) => [

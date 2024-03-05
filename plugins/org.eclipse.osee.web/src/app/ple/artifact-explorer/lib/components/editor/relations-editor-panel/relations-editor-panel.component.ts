@@ -18,7 +18,6 @@ import {
 	Input,
 	SimpleChanges,
 	computed,
-	effect,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,7 +35,6 @@ import {
 	combineLatest,
 	filter,
 	switchMap,
-	repeat,
 	shareReplay,
 	take,
 	of,
@@ -124,9 +122,7 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	]).pipe(
 		filter(([branch, view, artifact]) => branch != '' && artifact != ''),
 		switchMap(([branch, view, artifact]) =>
-			this.artExpHttpService
-				.getDirectRelations(branch, artifact, view)
-				.pipe(repeat({ delay: () => this.uiService.update }))
+			this.artExpHttpService.getDirectRelations(branch, artifact, view)
 		),
 		shareReplay({ bufferSize: 1, refCount: true }),
 		takeUntilDestroyed()
