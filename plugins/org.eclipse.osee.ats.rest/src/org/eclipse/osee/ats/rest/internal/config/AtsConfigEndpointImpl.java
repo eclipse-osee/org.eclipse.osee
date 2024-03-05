@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.rest.internal.config;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,6 +38,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.ColumnType;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
@@ -236,6 +238,17 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Version getVersion(ArtifactId verId) {
       return atsApi.getVersionService().getVersionById(verId);
+   }
+
+   @Override
+   public Collection<IAtsVersion> getParallelVersions(ArtifactId verId) {
+      Version ver = getVersion(verId);
+      return atsApi.getVersionService().getParallelVersions(ver);
+   }
+
+   @Override
+   public Collection<IAtsVersion> getAllParallelVersions(ArtifactId verId) {
+      return atsApi.getVersionService().getParallelVersionsRecursive(verId);
    }
 
    @Override

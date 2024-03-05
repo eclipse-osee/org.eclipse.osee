@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -506,6 +507,24 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       for (IAtsVersion pVersion : getParallelVersions(version)) {
          if (!configItems.contains(new CommitConfigItem(pVersion, atsApi))) {
             getParallelVersions(pVersion, configItems);
+         }
+      }
+   }
+
+   @Override
+   public Collection<IAtsVersion> getParallelVersionsRecursive(ArtifactId versionId) {
+      Version ver = getVersionById(versionId);
+      Map<ArtifactId, IAtsVersion> parallelVersions = new HashMap<>();
+      parallelVersions.put(ver.getArtifactId(), ver);
+      getParallelVersionsRecursive(ver, parallelVersions);
+      return parallelVersions.values();
+   }
+
+   private void getParallelVersionsRecursive(IAtsVersion version, Map<ArtifactId, IAtsVersion> parallelVersions) {
+      for (IAtsVersion v : getParallelVersions(version)) {
+         if (parallelVersions.get(v.getArtifactId()) == null) {
+            parallelVersions.put(v.getArtifactId(), v);
+            getParallelVersionsRecursive(v, parallelVersions);
          }
       }
    }

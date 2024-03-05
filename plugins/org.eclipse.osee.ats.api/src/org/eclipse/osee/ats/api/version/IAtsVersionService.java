@@ -77,9 +77,11 @@ public interface IAtsVersionService {
 
    IAtsVersion getVersion(IAtsTeamDefinition teamDef, String name);
 
-   Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType);
+   Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType,
+      VersionLockedType lockedType);
 
-   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef, VersionReleaseType releaseType, VersionLockedType lockedType);
+   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(IAtsTeamDefinition teamDef,
+      VersionReleaseType releaseType, VersionLockedType lockedType);
 
    Collection<IAtsVersion> getVersionsLocked(IAtsTeamDefinition teamDef, VersionLockedType lockType);
 
@@ -104,6 +106,8 @@ public interface IAtsVersionService {
    List<IAtsVersion> getParallelVersions(IAtsVersion version);
 
    void getParallelVersions(IAtsVersion version, Set<CommitConfigItem> commitConfigItems);
+
+   Collection<IAtsVersion> getParallelVersionsRecursive(ArtifactId versionId);
 
    Version getVersionById(IAtsVersion versionId);
 
