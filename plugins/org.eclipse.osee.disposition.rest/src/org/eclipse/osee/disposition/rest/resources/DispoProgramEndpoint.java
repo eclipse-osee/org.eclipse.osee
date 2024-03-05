@@ -234,8 +234,10 @@ public class DispoProgramEndpoint {
       }
       if (!sourceSet.isEmpty()) {
          String sourceSetId;
+         BranchToken sourceProgramId = programId;
          if (!sourceProgram.isEmpty()) {
-            BranchToken sourceProgramId = dispoApi.getDispoProgramIdByName(sourceProgram);
+            sourceProgram = String.format("(DISPO)%s", sourceProgram);
+            sourceProgramId = dispoApi.getDispoProgramIdByName(sourceProgram);
             sourceSetId = dispoApi.getDispoSetIdByName(sourceProgramId, sourceSet);
          } else {
             sourceSetId = dispoApi.getDispoSetIdByName(programId, sourceSet);
@@ -244,7 +246,7 @@ public class DispoProgramEndpoint {
          if (sourceSetId != null) {
             CopySetParams params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
                CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
-            dispoApi.copyDispoSet(programId, setId, programId, sourceSetId, params);
+            dispoApi.copyDispoSet(programId, setId, sourceProgramId, sourceSetId, params);
          } else {
             return Response.status(Status.PRECONDITION_FAILED).entity(String.format(
                "Data Import Successful. Failed to import manual dispositions from [%s].", sourceSet)).build();
