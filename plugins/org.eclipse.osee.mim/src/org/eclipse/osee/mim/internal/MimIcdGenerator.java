@@ -869,7 +869,7 @@ public class MimIcdGenerator {
          "Ending Word",
          "Ending Byte",
          "Type",
-         "Element Name",
+         "Attribute Name",
          "Units",
          "Valid Range",
          "Alterable After Creation",
