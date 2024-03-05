@@ -25,6 +25,7 @@ import {
 import { branch } from '@osee/shared/types';
 import { BranchInfoService } from '../http/branch-info.service';
 import { UiService } from '../ui/ui.service';
+import { BranchCommitEventService } from '../ui/event/branch-commit-event.service';
 
 export class branchImpl implements branch {
 	associatedArtifact = '-1';
@@ -66,7 +67,8 @@ export class CurrentBranchInfoService {
 	);
 	constructor(
 		private _branchService: BranchInfoService,
-		private _uiService: UiService
+		private _uiService: UiService,
+		private eventService: BranchCommitEventService
 	) {}
 
 	get currentBranch() {
@@ -75,7 +77,6 @@ export class CurrentBranchInfoService {
 
 	get parentBranch() {
 		return this.currentBranch.pipe(
-			//take(1),
 			map((branches) => branches.parentBranch.id)
 		);
 	}
@@ -92,9 +93,11 @@ export class CurrentBranchInfoService {
 						.commitBranch(detail.id, detail.parentBranch.id, body)
 						.pipe(
 							tap((val) => {
-								if (val.results.results.length > 0) {
+								if (!val.success) {
 									this._uiService.ErrorText =
-										val.results.results[0];
+										'Error committing branch';
+								} else {
+									this.eventService.sendEvent(detail.id);
 								}
 							})
 						),

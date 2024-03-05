@@ -16,6 +16,7 @@ export * from './ple_aware/http/branch-info.service';
 export * from './ple_aware/http/difference-report.service';
 export * from './ple_aware/http/files.service';
 export * from './ple_aware/httpui/artifact-ui.service';
+export * from './ple_aware/ui/event/branch-commit-event.service';
 export * from './ple_aware/ui/header.service';
 export * from './ple_aware/ui/ui.service';
 export * from './ple_aware/httpui/current-branch-info.service';

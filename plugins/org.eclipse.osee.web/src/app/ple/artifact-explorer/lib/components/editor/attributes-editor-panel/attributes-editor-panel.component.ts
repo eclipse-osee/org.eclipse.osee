@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, Output, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TransactionService } from '@osee/shared/transactions';
 import { attributeType, modifyArtifact, transaction } from '@osee/shared/types';
@@ -21,7 +21,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
-import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { attribute, tab } from '../../../types/artifact-explorer.data';
 import { AttributesEditorComponent } from '../attributes-editor/attributes-editor.component';

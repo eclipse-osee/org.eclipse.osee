@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed, effect } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +21,7 @@ import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-edit
 import { ArtifactInfoPanelComponent } from '../editor/artifact-info-panel/artifact-info-panel.component';
 import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/relations-editor-panel.component';
 import { ChangeReportTableComponent } from '../change-report-table/change-report-table.component';
-import { artifactTypeIcon, tab } from '../../types/artifact-explorer.data';
+import { tab } from '../../types/artifact-explorer.data';
 
 @Component({
 	selector: 'osee-artifact-tab-group',

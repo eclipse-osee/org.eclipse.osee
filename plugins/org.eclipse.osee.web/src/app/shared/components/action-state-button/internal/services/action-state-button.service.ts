@@ -28,7 +28,6 @@ import {
 	CreateAction,
 	CreateNewAction,
 	teamWorkflowState,
-	workType,
 } from '@osee/shared/types/configuration-management';
 
 @Injectable({

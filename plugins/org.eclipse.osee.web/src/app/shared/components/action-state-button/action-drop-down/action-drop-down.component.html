@@ -29,7 +29,9 @@
 		}}<mat-icon iconPositionEnd>expand_more</mat-icon>
 	</button>
 }
-<mat-menu #stateMenu="matMenu">
+<mat-menu
+	#stateMenu="matMenu"
+	class="[&>div>div]: tw-max-w-none">
 	@for (state of previousStates | async; track state.state) {
 		<ng-container
 			[ngTemplateOutlet]="transitionButton"
@@ -66,24 +68,27 @@
 	) {
 		<button
 			mat-menu-item
-			(click)="transition(ctx.state)">
-			Transition to
-			<span
-				class="-tw-py-1 tw-rounded-md tw-px-4 tw-text-background dark:tw-text-foreground"
-				[ngClass]="{
-					'tw-bg-primary dark:tw-bg-primary-700':
-						ctx.state.state === 'Completed',
-					'tw-bg-warning dark:tw-bg-warning-700':
-						ctx.state.state === 'Cancelled',
-					'tw-bg-accent-800 dark:tw-bg-accent-700':
-						ctx.state.state === 'Review',
-					'tw-bg-foreground dark:tw-bg-background':
-						ctx.state.state !== 'Completed' &&
-						ctx.state.state !== 'Cancelled' &&
-						ctx.state.state !== 'Review'
-				}"
-				>{{ ctx.state.state }}</span
-			>
+			(click)="transition(ctx.state)"
+			class="tw-w-full [&>span]:tw-w-full">
+			<div class="tw-grid tw-grid-cols-2 tw-items-center tw-gap-2">
+				<span>Transition to</span>
+				<span
+					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
+					[ngClass]="{
+						'tw-bg-primary dark:tw-bg-primary-700':
+							ctx.state.state === 'Completed',
+						'tw-bg-warning dark:tw-bg-warning-700':
+							ctx.state.state === 'Cancelled',
+						'tw-bg-accent-800 dark:tw-bg-accent-700':
+							ctx.state.state === 'Review',
+						'tw-bg-foreground dark:tw-bg-background':
+							ctx.state.state !== 'Completed' &&
+							ctx.state.state !== 'Cancelled' &&
+							ctx.state.state !== 'Review'
+					}">
+					{{ ctx.state.state }}
+				</span>
+			</div>
 		</button>
 	} @else if (
 		(isApproved | async) === 'true' &&
@@ -92,24 +97,27 @@
 	) {
 		<button
 			mat-menu-item
-			(click)="commitBranch()">
-			Commit Branch
-			<span
-				[ngClass]="{
-					'tw-bg-primary dark:tw-bg-primary-700':
-						ctx.state.state === 'Completed',
-					'tw-bg-warning dark:tw-bg-warning-700':
-						ctx.state.state === 'Cancelled',
-					'tw-bg-accent-800 dark:tw-bg-accent-700':
-						ctx.state.state === 'Review',
-					'tw-bg-foreground dark:tw-bg-background':
-						ctx.state.state !== 'Completed' &&
-						ctx.state.state !== 'Cancelled' &&
-						ctx.state.state !== 'Review'
-				}"
-				class="-tw-py-1 tw-rounded-md tw-px-4 tw-text-background dark:tw-text-foreground"
-				>{{ ctx.state.state }}</span
-			>
+			(click)="commitBranch()"
+			class="tw-w-full [&>span]:tw-w-full">
+			<div class="tw-grid tw-grid-cols-2 tw-items-center tw-gap-2">
+				<span>Commit Branch</span>
+				<span
+					[ngClass]="{
+						'tw-bg-primary dark:tw-bg-primary-700':
+							ctx.state.state === 'Completed',
+						'tw-bg-warning dark:tw-bg-warning-700':
+							ctx.state.state === 'Cancelled',
+						'tw-bg-accent-800 dark:tw-bg-accent-700':
+							ctx.state.state === 'Review',
+						'tw-bg-foreground dark:tw-bg-background':
+							ctx.state.state !== 'Completed' &&
+							ctx.state.state !== 'Cancelled' &&
+							ctx.state.state !== 'Review'
+					}"
+					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
+					>{{ ctx.state.state }}</span
+				>
+			</div>
 		</button>
 	} @else if (
 		(isTeamLead | async) === true &&
@@ -119,31 +127,35 @@
 	) {
 		<button
 			mat-menu-item
-			(click)="approveBranch()">
-			Approve Transition to
-			<span
-				[ngClass]="{
-					'tw-bg-primary dark:tw-bg-primary-700':
-						ctx.state.state === 'Completed',
-					'tw-bg-warning dark:tw-bg-warning-700':
-						ctx.state.state === 'Cancelled',
-					'tw-bg-accent-800 dark:tw-bg-accent-700':
-						ctx.state.state === 'Review',
-					'tw-bg-foreground dark:tw-bg-background':
-						ctx.state.state !== 'Completed' &&
-						ctx.state.state !== 'Cancelled' &&
-						ctx.state.state !== 'Review'
-				}"
-				class="-tw-py-1 tw-rounded-md tw-px-4 tw-text-background dark:tw-text-foreground"
-				>{{ ctx.state.state }}</span
-			>
+			(click)="approveBranch()"
+			class="tw-w-full [&>span]:tw-w-full">
+			<div class="tw-grid tw-grid-cols-2 tw-items-center tw-gap-2">
+				<span>Approve Transition to</span>
+				<span
+					[ngClass]="{
+						'tw-bg-primary dark:tw-bg-primary-700':
+							ctx.state.state === 'Completed',
+						'tw-bg-warning dark:tw-bg-warning-700':
+							ctx.state.state === 'Cancelled',
+						'tw-bg-accent-800 dark:tw-bg-accent-700':
+							ctx.state.state === 'Review',
+						'tw-bg-foreground dark:tw-bg-background':
+							ctx.state.state !== 'Completed' &&
+							ctx.state.state !== 'Cancelled' &&
+							ctx.state.state !== 'Review'
+					}"
+					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
+					>{{ ctx.state.state }}</span
+				>
+			</div>
 		</button>
 	} @else if (
 		(isApproved | async) === 'true' && ctx.state.state === 'Completed'
 	) {
 		<button
 			mat-menu-item
-			(click)="commitBranch()">
+			(click)="commitBranch()"
+			class="tw-w-full tw-text-center [&>span]:tw-w-full">
 			Commit Branch
 		</button>
 	}
