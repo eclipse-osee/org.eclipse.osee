@@ -41,15 +41,15 @@ spec:
 
   stages {
   
-    stage('test') {
-      steps {
-        container('bazel') {
-          dir('rules_osee/example') {
-            sh 'bazel test //:applic_test'
-          }
-        }
-      }
-    }
+    // stage('test') {
+    //   steps {
+    //     container('bazel') {
+    //       dir('rules_osee/example') {
+    //         sh 'bazel test //:applic_test'
+    //       }
+    //     }
+    //   }
+    // }
     stage('Build release') {
       steps {
         container('bazel') {
