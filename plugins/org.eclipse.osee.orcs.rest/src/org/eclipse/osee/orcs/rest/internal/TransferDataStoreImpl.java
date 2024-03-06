@@ -13,7 +13,8 @@
 package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,6 +58,7 @@ public class TransferDataStoreImpl {
    private final TupleQuery tupleQuery;
    private final TransactionEndpointImpl transEndpoint;
    private final TransactionTransferManifest transferManifest = new TransactionTransferManifest();
+   public static String transferDir = "transfers";
    private final boolean debug = true;
    public TransferDataStoreImpl(TransactionEndpointImpl transEndpoint, OrcsApi orcsApi) {
       this.transEndpoint = transEndpoint;
@@ -66,7 +68,7 @@ public class TransferDataStoreImpl {
    public final XResultData transferTransactions(TransactionId exportId, XResultData results) {
       List<TransactionReadable> txrs = new ArrayList<>();
       List<BranchLocation> branchLocations = branchLocations(exportId);
-      String currentTransferDirectory = transferDirectoryHelper();
+      String currentTransferDirectory = transferDirectoryHelper(exportId);
       int errorCount = results.getErrorCount();
       TransactionId maxTransactionNum = TransactionId.SENTINEL;
       if (!branchLocations.isEmpty()) {
@@ -111,7 +113,7 @@ public class TransferDataStoreImpl {
             buildManifestFileHelper(currentTransferDirectory, buildId, exportId, results, maxTransactionNum);
             
             try {
-          	  String osee = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + "transfers" + File.separator;
+          	  String osee = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + transferDir + File.separator;
           	  File directoryPath = new File(currentTransferDirectory);    	  
           	  Path pathTest = Paths.get(currentTransferDirectory);
           	  String zipTarget = osee + currentTransferDirectory.replace(osee, "").replace("\\", "") + ".zip";
@@ -226,15 +228,16 @@ public class TransferDataStoreImpl {
       }
       return true;
    }
-   private String transferDirectoryHelper() {
+   private String transferDirectoryHelper(TransactionId exportId) {
       // Transfer File Naming Convention: OSEETransfer-YYYYMMDDhhmmss-#### where #### is a random to make the file unique.
       Random rand = new Random();
       String randomFour = String.format("%04d", rand.nextInt(10000));
       SimpleDateFormat formatter = new SimpleDateFormat("YYYYMMddHHmmss");
       Date transferDateAndTime = new Date();
       String osee = orcsApi.getSystemProperties().getValue(
-         OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + "transfers" + File.separator;
-      return osee + "OSEETransfer-" + formatter.format(transferDateAndTime) + "-" + randomFour + File.separator;
+         OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + transferDir + File.separator;
+      
+      return osee + "OSEETransfer-" + exportId.toString() + "-" + formatter.format(transferDateAndTime) + "-" + randomFour + File.separator;
    }
    private XResultData buildJSONExportDataHelper(List<TransactionReadable> txrs, BranchLocation branchLoc,
       TransactionId lastTx, BranchId branchId, String transferDirectory, XResultData results)

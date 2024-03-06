@@ -19,9 +19,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -173,8 +175,8 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          return example;
       }
 
-      //Verify export id. Destination db accepts only on export id
       if (data.getTransferDBType().equals(TransferDBType.DESTINATION)) {
+         //Verify export id. Destination db accepts only on export id
          List<TransactionId> exportIdList = new ArrayList<>();
          int intDbType = TransferDBType.DESTINATION.ordinal();
          tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
@@ -183,11 +185,24 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          for (TransactionId id : exportIdList) {
             if (id.equals(data.getExportId())) {
                throw new OseeCoreException(
-                  String.format("The export Id %s was initialized.", data.getExportId().toString()));
+                  String.format("The export Id %s was already initialized.", data.getExportId().toString()));
             }
             throw new OseeCoreException(
                String.format("Another export Id, %s, was initialized. This database does not accept this export id %s.",
                   id.toString(), data.getExportId().toString()));
+         }
+      } else if (data.getTransferDBType().equals(TransferDBType.SOURCE)) {
+         //Verify export id. Destination db accepts only on export id
+         List<TransactionId> exportIdList = new ArrayList<>();
+         int intDbType = TransferDBType.SOURCE.ordinal();
+         tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
+            Long.valueOf(intDbType), exportIdList::add);
+
+         for (TransactionId id : exportIdList) {
+            if (id.equals(data.getExportId())) {
+               throw new OseeCoreException(
+                  String.format("The export Id %s was already initialized.", data.getExportId().toString()));
+            }
          }
       }
 
@@ -308,6 +323,87 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
 
       return results;
+   }
+
+   @Override
+   public XResultData getTransferFileList(String strexportId) {
+      XResultData results = new XResultData();
+      try {
+         String transferPath = orcsApi.getSystemProperties().getValue(
+            OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + TransferDataStoreImpl.transferDir + File.separator;
+
+         File directoryPath = new File(transferPath);
+         FilenameFilter filefilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+               String lowercaseName = name.toLowerCase();
+               if (!lowercaseName.endsWith(".zip")) {
+                  return false;
+               }
+
+               if (strexportId == null) {
+                  return true;
+               }
+
+               if (lowercaseName.contains(strexportId)) {
+                  return true;
+               }
+               return false;
+            }
+         };
+
+         List<String> filelist = Arrays.asList(directoryPath.list(filefilter));
+         if (filelist.size() > 0) {
+            results.setInfoCount(filelist.size());
+            results.setIds(filelist);
+         }
+
+      } catch (Exception ex) {
+         results.error(ex.getMessage());
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData getExportIdList() {
+      XResultData results = new XResultData();
+      try {
+         List<TransactionId> exportIdList = new ArrayList<>();
+         int intDbType = TransferDBType.SOURCE.ordinal();
+         tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
+            Long.valueOf(intDbType), exportIdList::add);
+
+         List<String> idlist = new ArrayList<String>();
+         for (TransactionId transId : exportIdList) {
+            idlist.add(transId.getIdString());
+         }
+
+         if (exportIdList.size() > 0) {
+            results.setInfoCount(exportIdList.size());
+            results.setIds(idlist);
+         }
+      } catch (Exception ex) {
+         results.error(ex.getMessage());
+      }
+      return results;
+   }
+   
+   @Override
+   public Response downloadTransferFile(String filename) {
+      String transferPath = orcsApi.getSystemProperties().getValue(
+         OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + TransferDataStoreImpl.transferDir;
+
+      File downloadZip = new File(String.format("%s%s%s", transferPath, File.separator, filename));
+
+      if (downloadZip.exists()) {
+         try {
+            return Response.ok(Files.readAllBytes(downloadZip.toPath())).type("application/zip").header(
+               "Content-Disposition", "attachment; filename=\"" + filename + "\"").build();
+         } catch (IOException ex) {
+            return Response.serverError().build();
+         }
+      }
+      return Response.noContent().build();
    }
 
    private String unzipTransferFile(InputStream zip) throws IOException {
