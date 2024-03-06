@@ -113,7 +113,24 @@ public interface TransactionEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces(MediaType.APPLICATION_JSON)
    XResultData applyTransferFile(@QueryParam("location") String location);
-
+   
+   @GET
+   @Path("xfer/list")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData getTransferFileList(@QueryParam("exportId") String exportId);
+   
+   @GET
+   @Path("xfer/exportIdlist")
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces({MediaType.APPLICATION_JSON})
+   XResultData getExportIdList();
+   
+   @GET
+   @Path("xfer/download")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response downloadTransferFile(@QueryParam("filename") String filename);
+   
    /**
     * Makes a request to lock down transfers for the given export ID. This will set the lock that identifies the
     * transfer as in progress This is a utility for checking the state of transfers externally, and should not be used
