@@ -15,9 +15,16 @@ import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import {
 	HttpParamsType,
+	mergeConflict,
+	validateCommitResult,
 	branch,
 	commitResponse,
 	response,
+	mergeData,
+	viewedId,
+	ConflictUpdateData,
+	CreateBranchDetails,
+	CreateBranchResponse,
 } from '@osee/shared/types';
 import { workType } from '@osee/shared/types/configuration-management';
 
@@ -89,6 +96,14 @@ export class BranchInfoService {
 			body
 		);
 	}
+
+	public createBranch(body: CreateBranchDetails) {
+		return this.http.post<CreateBranchResponse>(
+			apiURL + `/orcs/branches`,
+			body
+		);
+	}
+
 	public setBranchCategory(
 		branchId: string | number | undefined,
 		category: string
@@ -96,6 +111,49 @@ export class BranchInfoService {
 		return this.http.post<response>(
 			`${apiURL}/orcs/branches/${branchId}/category/${category}`,
 			null
+		);
+	}
+
+	public validateCommit(branchId: string, parentBranchId: string) {
+		return this.http.get<validateCommitResult>(
+			apiURL +
+				`/orcs/branches/${branchId}/commit/${parentBranchId}/validate`
+		);
+	}
+
+	public loadMergeConflicts(branchId: string, parentBranchId: string) {
+		return this.http.post<mergeConflict[]>(
+			apiURL + `/orcs/branches/${branchId}/conflicts/${parentBranchId}`,
+			null,
+			{
+				params: {
+					load: true,
+				},
+			}
+		);
+	}
+
+	public getMergeData(branchId: string) {
+		return this.http.get<mergeData[]>(
+			apiURL + `/orcs/branches/${branchId}/mergedata`
+		);
+	}
+
+	public getMergeBranchId(branchId: string, parentBranchId: string) {
+		return this.http.get<viewedId>(
+			apiURL + `/orcs/branches/${branchId}/mergebranch/${parentBranchId}`
+		);
+	}
+
+	public updateMergeConflicts(
+		branchId: string,
+		parentBranchId: string,
+		data: ConflictUpdateData[]
+	) {
+		return this.http.put<number>(
+			apiURL +
+				`/orcs/branches/${branchId}/updateconflicts/${parentBranchId}`,
+			data
 		);
 	}
 }

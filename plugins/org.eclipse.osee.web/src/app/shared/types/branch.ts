@@ -29,3 +29,19 @@ export interface branchInfo extends branchHeader {
 	name: string;
 }
 export interface branchHeader extends viewedId {}
+
+export const branchSentinel: branch = {
+	id: '-1',
+	idIntValue: -1,
+	name: '',
+	associatedArtifact: '-1',
+	baselineTx: '-1',
+	parentTx: '-1',
+	parentBranch: { id: '-1', viewId: '-1' },
+	branchState: '',
+	branchType: '',
+	inheritAccessControl: false,
+	archived: false,
+	shortName: '',
+	viewId: '-1',
+};

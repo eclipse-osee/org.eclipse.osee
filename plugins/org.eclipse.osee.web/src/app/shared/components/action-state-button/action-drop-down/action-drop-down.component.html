@@ -70,8 +70,10 @@
 			mat-menu-item
 			(click)="transition(ctx.state)"
 			class="tw-w-full [&>span]:tw-w-full">
-			<div class="tw-grid tw-grid-cols-2 tw-items-center tw-gap-2">
+			<div
+				class="tw-grid tw-grid-cols-[2fr_1fr_2fr] tw-items-center tw-gap-2">
 				<span>Transition to</span>
+				<mat-icon>east</mat-icon>
 				<span
 					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
 					[ngClass]="{

@@ -16,6 +16,7 @@ import { TestScheduler } from 'rxjs/testing';
 import {
 	ActionService,
 	BranchInfoService,
+	CommitBranchService,
 	UiService,
 } from '@osee/shared/services';
 import { CreateAction } from '@osee/shared/types/configuration-management';
@@ -30,8 +31,8 @@ import {
 	MockUserResponse,
 	testnewActionResponse,
 	testCommitResponse,
-	MockXResultData,
 	testDataTransitionResponse,
+	commitBranchServiceMock,
 } from '@osee/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 
@@ -53,6 +54,10 @@ describe('ActionStateButtonService', () => {
 				{
 					provide: BranchRoutedUIService,
 					useValue: branchRoutedUiServiceMock,
+				},
+				{
+					provide: CommitBranchService,
+					useValue: commitBranchServiceMock,
 				},
 			],
 		});

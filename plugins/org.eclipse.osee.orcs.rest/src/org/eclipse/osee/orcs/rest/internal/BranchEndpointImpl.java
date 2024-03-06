@@ -498,6 +498,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public BranchId getMergeBranchId(BranchId branch, BranchId destinationBranch) {
+      return CommitBranchUtil.getMergeBranchId(orcsApi, branch, destinationBranch);
+   }
+
+   @Override
    public List<MergeData> getMergeData(BranchId mergeBranch) {
       return CommitBranchUtil.getMergeData(mergeBranch, orcsApi.getJdbcService().getClient(), orcsApi.tokenService());
    }

@@ -13,79 +13,75 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.enums.ConflictStatus;
-import org.eclipse.osee.framework.core.enums.ConflictType;
-
 public class AttributeMergeData {
-   private AttributeTypeToken attrType;
-   private AttributeId attrId;
-   private String[] values;
-   private String[] uris;
-   private ConflictType conflictType;
-   private ConflictStatus conflictStatus;
-   private Long conflictId;
-   public AttributeMergeData(Long conflictId, ConflictType conflictType, ConflictStatus conflictStatus, AttributeTypeToken attrType, AttributeId attrId, String[] values, String[] uris) {
-      this.setConflictId(conflictId);
-      this.setConflictType(conflictType);
-      this.setConflictStatus(conflictStatus);
-      this.setAttrType(attrType);
-      this.setAttrId(attrId);
-      this.setValues(values);
+   private final AttributeTypeToken attrType;
+   private final AttributeId attrId;
+   private final String attrTypeName;
+   private final String sourceValue;
+   private final String mergeValue;
+   private final String destValue;
+   private final String sourceUri;
+   private final String mergeUri;
+   private final String destUri;
+   private final String sourceGammaId;
+   private final String destGammaId;
+
+   public AttributeMergeData(AttributeTypeToken attrType, AttributeId attrId, String sourceValue, String mergeValue, String destValue, String sourceUri, String mergeUri, String destUri, String sourceGammaId, String destGammaId) {
+      this.attrType = attrType;
+      this.attrId = attrId;
+      this.attrTypeName = attrType.getName();
+      this.sourceValue = sourceValue;
+      this.mergeValue = mergeValue;
+      this.destValue = destValue;
+      this.sourceUri = sourceUri;
+      this.mergeUri = mergeUri;
+      this.destUri = destUri;
+      this.sourceGammaId = sourceGammaId;
+      this.destGammaId = destGammaId;
    }
 
    public AttributeTypeToken getAttrType() {
       return attrType;
    }
 
-   public void setAttrType(AttributeTypeToken attrType) {
-      this.attrType = attrType;
-   }
-
    public AttributeId getAttrId() {
       return attrId;
    }
 
-   public void setAttrId(AttributeId attrId) {
-      this.attrId = attrId;
+   public String getAttrTypeName() {
+      return attrTypeName;
    }
 
-   public String[] getValues() {
-      return values;
+   public String getSourceValue() {
+      return sourceValue;
    }
 
-   public void setValues(String[] values) {
-      this.values = values;
+   public String getMergeValue() {
+      return mergeValue;
    }
 
-   public ConflictType getConflictType() {
-      return conflictType;
+   public String getDestValue() {
+      return destValue;
    }
 
-   public void setConflictType(ConflictType conflictType) {
-      this.conflictType = conflictType;
+   public String getSourceUri() {
+      return sourceUri;
    }
 
-   public ConflictStatus getConflictStatus() {
-      return conflictStatus;
+   public String getMergeUri() {
+      return mergeUri;
    }
 
-   public void setConflictStatus(ConflictStatus conflictStatus) {
-      this.conflictStatus = conflictStatus;
+   public String getDestUri() {
+      return destUri;
    }
 
-   public Long getConflictId() {
-      return conflictId;
+   public String getSourceGammaId() {
+      return sourceGammaId;
    }
 
-   public void setConflictId(Long conflictId) {
-      this.conflictId = conflictId;
+   public String getDestGammaId() {
+      return destGammaId;
    }
 
-   public String[] getUris() {
-      return uris;
-   }
-
-   public void setUris(String[] uris) {
-      this.uris = uris;
-   }
 }

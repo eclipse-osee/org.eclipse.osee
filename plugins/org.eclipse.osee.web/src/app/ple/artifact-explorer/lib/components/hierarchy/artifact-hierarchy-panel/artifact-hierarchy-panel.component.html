@@ -12,7 +12,7 @@
  -->
 <div class="tw-max-h-94vh">
 	<div class="tw-relative tw-py-2">
-		@if ((branchId | async) && (branchType | async)) {
+		@if (branchId() && branchType()) {
 			<button
 				class="tw-absolute tw-right-0 tw-top-0 tw-pr-4 tw-pt-3 hover:tw-text-primary"
 				(click)="openChangeReport()"
@@ -21,13 +21,10 @@
 			</button>
 		}
 		<osee-branch-picker></osee-branch-picker>
-		<div class="tw-flex tw-pt-4">
+		<div class="tw-flex tw-w-full tw-items-center tw-gap-2 tw-pr-2 tw-pt-4">
 			<osee-view-selector />
-			@if ((branchId | async) !== '') {
-				<div
-					class="tw-flex tw-w-full tw-items-center tw-justify-center tw-px-2">
-					<osee-action-dropdown />
-				</div>
+			@if (branchId() !== '' && branchId() !== '570') {
+				<osee-action-dropdown />
 			}
 		</div>
 	</div>
@@ -48,7 +45,7 @@
 		</mat-expansion-panel-header>
 
 		<div class="tw-pt-2">
-			@if (changedBranchId() && (branchType | async)) {
+			@if (branchIdValid() && branchType()) {
 				<div class="tw-flex tw-w-full tw-justify-end tw-px-2">
 					<osee-artifact-hierarchy-options />
 				</div>

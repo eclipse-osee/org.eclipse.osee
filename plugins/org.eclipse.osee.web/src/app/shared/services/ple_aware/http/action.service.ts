@@ -32,7 +32,6 @@ import {
 	WorkType,
 	CreateActionField,
 } from '@osee/shared/types/configuration-management';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -82,6 +81,9 @@ export class ActionService {
 		return this.http.get<targetedVersion[]>(
 			apiURL + '/ats/teamwf/' + arbId + '/version?sort=true'
 		);
+	}
+	public getAllParallelVersions(versionId: string) {
+		return this.http.get(apiURL + `ats/config/parallel/${versionId}/all`);
 	}
 	public getTeamDef(actionableItemId: string) {
 		return this.http.get<NamedId[]>(
