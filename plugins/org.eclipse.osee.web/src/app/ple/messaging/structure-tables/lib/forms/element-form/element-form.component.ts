@@ -138,6 +138,7 @@ export class ElementFormComponent implements OnInit, OnChanges {
 		undefined
 	);
 
+	elementExample: WritableSignal<string[]> = signal([]);
 	arrayExample: WritableSignal<string[]> = signal([]);
 
 	protected _typeState = new BehaviorSubject<platformTypeStates>('SELECT');
@@ -440,13 +441,19 @@ export class ElementFormComponent implements OnInit, OnChanges {
 	}
 
 	updateArrayExample() {
-		let examples: string[] = [];
+		let elementExamples: string[] = [];
+		let arrayExamples: string[] = [];
 		const d1 = this.data.element.interfaceElementArrayIndexDelimiterOne;
 		const d2 = this.data.element.interfaceElementArrayIndexDelimiterTwo;
 		if (
 			this.data.element.interfaceElementArrayIndexOrder === 'INNER_OUTER'
 		) {
-			examples = [
+			elementExamples = [
+				'ElementName' + d2 + 1,
+				'ElementName' + d2 + 2,
+				'ElementName' + d2 + 3,
+			];
+			arrayExamples = [
 				'ElementName' + d1 + 1 + d2 + 1,
 				'ElementName' + d1 + 2 + d2 + 1,
 				'ElementName' + d1 + 3 + d2 + 1,
@@ -455,7 +462,12 @@ export class ElementFormComponent implements OnInit, OnChanges {
 				'ElementName' + d1 + 3 + d2 + 2,
 			];
 		} else {
-			examples = [
+			elementExamples = [
+				'ElementName' + d1 + 1,
+				'ElementName' + d1 + 2,
+				'ElementName' + d1 + 3,
+			];
+			arrayExamples = [
 				'ElementName' + d1 + 1 + d2 + 1,
 				'ElementName' + d1 + 1 + d2 + 2,
 				'ElementName' + d1 + 1 + d2 + 3,
@@ -464,6 +476,7 @@ export class ElementFormComponent implements OnInit, OnChanges {
 				'ElementName' + d1 + 2 + d2 + 3,
 			];
 		}
-		this.arrayExample.set(examples);
+		this.elementExample.set(elementExamples);
+		this.arrayExample.set(arrayExamples);
 	}
 }

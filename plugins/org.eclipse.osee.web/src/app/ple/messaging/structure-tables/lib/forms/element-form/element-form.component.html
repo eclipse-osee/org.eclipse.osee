@@ -262,8 +262,8 @@
 	</mat-slide-toggle>
 	@if (!data.element.interfaceElementWriteArrayHeaderName) {
 		<br />
-		<div class="tw-flex tw-w-full tw-justify-between tw-gap-4">
-			<div class="tw-flex tw-w-full tw-flex-col tw-gap-2">
+		<div class="tw-flex tw-w-full tw-gap-12">
+			<div class="tw-flex tw-w-80 tw-flex-col tw-gap-2">
 				<mat-form-field subscriptSizing="dynamic">
 					<mat-label>Array Index Order</mat-label>
 					<mat-select
@@ -307,10 +307,18 @@
 						data-cy="field-delimiter-two"></textarea>
 				</mat-form-field>
 			</div>
-			<div class="tw-w-full tw-whitespace-pre">
-				<mat-label>Example:</mat-label>
+			<div class="tw-whitespace-pre">
+				<mat-label>Array Example:</mat-label>
 				<ul>
 					@for (example of arrayExample(); track $index) {
+						<li>{{ example }}</li>
+					}
+				</ul>
+			</div>
+			<div class="tw-whitespace-pre">
+				<mat-label>Element Example:</mat-label>
+				<ul>
+					@for (example of elementExample(); track $index) {
 						<li>{{ example }}</li>
 					}
 				</ul>

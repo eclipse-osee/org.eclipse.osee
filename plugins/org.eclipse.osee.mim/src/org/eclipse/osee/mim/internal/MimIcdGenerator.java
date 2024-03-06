@@ -413,8 +413,6 @@ public class MimIcdGenerator {
 
       Long queryBranch = working ? branch.getParentBranch().getId() : branch.getId();
 
-      String ordering =
-         orcsApi.getJdbcService().getClient().getDbType().isPaginationOrderingSupported() ? "ORDER BY time DESC" : "";
       //@formatter:off
       String query ="WITH "+orcsApi.getJdbcService().getClient().getDbType().getPostgresRecurse()+" rootArtTime(time) AS ( SELECT min(time) FROM  osee_txs txs, osee_tx_details txd, osee_artifact art " + //
          "WHERE  txs.branch_id IN (?,?) " + //branch,queryBranch
@@ -1176,6 +1174,22 @@ public class MimIcdGenerator {
             rowIndex.getAndAdd(1);
          }
       } else {
+         if (elementToken.getInterfaceElementArrayHeader() && !elementToken.getInterfaceElementWriteArrayHeaderName()) {
+            String elementName = elementToken.getName();
+            String[] split = elementToken.getName().split(" ");
+            String elementIndex = split[split.length - 1];
+            if (Strings.isNumeric(elementIndex)) {
+               elementName = elementName.substring(0, elementName.length() - (elementIndex.length() + 1)).trim();
+               if (elementToken.getInterfaceElementArrayIndexOrder().equals(
+                  ElementArrayIndexOrder.INNER_OUTER.toString())) {
+                  elementName += elementToken.getInterfaceElementArrayIndexDelimiterTwo() + elementIndex;
+               } else {
+                  elementName += elementToken.getInterfaceElementArrayIndexDelimiterOne() + elementIndex;
+               }
+            }
+            values[6] = elementName;
+         }
+
          //@formatter:off
          writer.writeCell(rowIndex.get(), 0, values[0], byteStyle);
          writer.writeCell(rowIndex.get(), 1, values[1], byteStyle);
