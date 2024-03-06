@@ -23,7 +23,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { filter, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
