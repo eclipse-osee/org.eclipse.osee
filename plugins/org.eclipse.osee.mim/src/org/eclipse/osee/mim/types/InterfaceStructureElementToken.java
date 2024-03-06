@@ -88,9 +88,9 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
       this.setInterfaceElementArrayIndexOrder(art.getSoleAttributeValue(
          CoreAttributeTypes.InterfaceElementArrayIndexOrder, ElementArrayIndexOrder.OUTER_INNER.toString()));
       this.setInterfaceElementArrayIndexDelimiterOne(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, " "));
+         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, ""));
       this.setInterfaceElementArrayIndexDelimiterTwo(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, " "));
+         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, ""));
       ArtifactReadable pTypeArt =
          art.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(
             ArtifactReadable.SENTINEL);
