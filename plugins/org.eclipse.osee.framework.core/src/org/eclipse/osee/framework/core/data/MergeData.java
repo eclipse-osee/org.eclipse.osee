@@ -13,44 +13,54 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.enums.ConflictType;
 
 public class MergeData {
-   private ArtifactId artId;
-   private ArtifactTypeToken artType;
-   private String name;
-   private List<AttributeMergeData> attrs = new ArrayList<>();
-   public ArtifactId getArtId() {
-      return artId;
+   private final ArtifactId artId;
+   private final ArtifactTypeToken artType;
+   private final String name;
+   private final ConflictType conflictType;
+   private final ConflictStatus conflictStatus;
+   private final Long conflictId;
+   private final AttributeMergeData attrMergeData;
+
+   public MergeData(ArtifactId artId, ArtifactTypeToken artType, String name, ConflictType conflictType, ConflictStatus conflictStatus, Long conflictId, AttributeMergeData attrMergeData) {
+      this.artId = artId;
+      this.artType = artType;
+      this.name = name;
+      this.conflictType = conflictType;
+      this.conflictStatus = conflictStatus;
+      this.conflictId = conflictId;
+      this.attrMergeData = attrMergeData;
    }
 
-   public void setArtId(ArtifactId artId) {
-      this.artId = artId;
+   public ArtifactId getArtId() {
+      return artId;
    }
 
    public ArtifactTypeToken getArtType() {
       return artType;
    }
 
-   public void setArtType(ArtifactTypeToken artType) {
-      this.artType = artType;
-   }
-
-   public List<AttributeMergeData> getAttrs() {
-      return attrs;
-   }
-
-   public void setAttrs(List<AttributeMergeData> attrs) {
-      this.attrs = attrs;
-   }
-
    public String getName() {
       return name;
    }
 
-   public void setName(String name) {
-      this.name = name;
+   public ConflictType getConflictType() {
+      return conflictType;
+   }
+
+   public ConflictStatus getConflictStatus() {
+      return conflictStatus;
+   }
+
+   public Long getConflictId() {
+      return conflictId;
+   }
+
+   public AttributeMergeData getAttrMergeData() {
+      return attrMergeData;
    }
 
 }

@@ -174,9 +174,15 @@ public interface BranchEndpoint {
       @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
 
    @GET
-   @Path("{branch}/validate_commit/{destination-branch}")
+   @Path("{branch}/commit/{destination-branch}/validate")
    @Produces({MediaType.APPLICATION_JSON})
    ValidateCommitResult validateCommitBranch(@PathParam("branch") BranchId branch,
+      @PathParam("destination-branch") BranchId destinationBranch);
+
+   @GET
+   @Path("{branch}/mergebranch/{destination-branch}")
+   @Produces({MediaType.APPLICATION_JSON})
+   BranchId getMergeBranchId(@PathParam("branch") BranchId branch,
       @PathParam("destination-branch") BranchId destinationBranch);
 
    @GET

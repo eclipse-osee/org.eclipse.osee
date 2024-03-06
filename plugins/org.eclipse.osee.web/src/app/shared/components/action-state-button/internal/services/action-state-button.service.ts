@@ -16,6 +16,7 @@ import { switchMap, shareReplay, take, tap, map } from 'rxjs/operators';
 import {
 	ActionService,
 	BranchInfoService,
+	CommitBranchService,
 	CurrentActionService,
 	CurrentBranchInfoService,
 	UiService,
@@ -29,6 +30,8 @@ import {
 	CreateNewAction,
 	teamWorkflowState,
 } from '@osee/shared/types/configuration-management';
+import { MatDialog } from '@angular/material/dialog';
+import { MergeManagerDialogComponent } from '../../../merge-manager-dialog/merge-manager-dialog.component';
 
 @Injectable({
 	providedIn: 'root',
@@ -36,6 +39,7 @@ import {
 export class ActionStateButtonService {
 	private _workType = new BehaviorSubject<string>('');
 	constructor(
+		public dialog: MatDialog,
 		private uiService: UiService,
 		private actionService: ActionService,
 		private branchService: BranchInfoService,
@@ -43,7 +47,8 @@ export class ActionStateButtonService {
 		private accountService: UserDataAccountService,
 		private branchedRouter: BranchRoutedUIService,
 		private branchCategoryService: BranchCategoryService,
-		private currentActionService: CurrentActionService
+		private currentActionService: CurrentActionService,
+		private commitBranchService: CommitBranchService
 	) {}
 
 	set category(category: string) {
@@ -294,79 +299,110 @@ export class ActionStateButtonService {
 		)
 	);
 	private _doCommitBranch = combineLatest([
+		this.branchState,
 		this.branchAction,
 		this.user,
 	]).pipe(
 		take(1),
-		switchMap(([actions, user]) =>
-			iif(
-				() => actions.length > 0 && user.name.length > 0,
-				this.commitBranch({
-					committer: user.id,
-					archive: 'false',
-				}).pipe(
-					switchMap((commitObs) =>
-						iif(
-							() => commitObs.success,
-							this.actionService
-								.validateTransitionAction(
-									new transitionAction(
-										'Completed',
-										'Transition to Completed',
-										actions,
-										user
-									)
-								)
-								.pipe(
-									switchMap((validateObs) =>
+		switchMap(([currentBranch, actions, user]) =>
+			this.branchService.getBranch(currentBranch.parentBranch.id).pipe(
+				switchMap((parentBranch) =>
+					this.commitBranchService.validateCommit(currentBranch).pipe(
+						switchMap((validateResults) => {
+							if (validateResults.conflictCount > 0) {
+								return this.dialog
+									.open(MergeManagerDialogComponent, {
+										data: {
+											sourceBranch: currentBranch,
+											parentBranch: parentBranch,
+											validateResults: validateResults,
+										},
+										minWidth: '60%',
+									})
+									.afterClosed()
+									.pipe(take(1));
+							}
+							return of(true);
+						}),
+						switchMap((commit) =>
+							iif(
+								() =>
+									commit === true &&
+									actions.length > 0 &&
+									user.name.length > 0,
+								this.commitBranch({
+									committer: user.id,
+									archive: 'false',
+								}).pipe(
+									switchMap((commitObs) =>
 										iif(
-											() =>
-												validateObs.results.length ===
-												0,
+											() => commitObs.success,
 											this.actionService
-												.transitionAction(
+												.validateTransitionAction(
 													new transitionAction(
 														'Completed',
-														'Transition To Completed',
+														'Transition to Completed',
 														actions,
 														user
 													)
 												)
 												.pipe(
-													tap(
-														(
-															transitionResponse
-														) => {
-															if (
-																transitionResponse
+													switchMap((validateObs) =>
+														iif(
+															() =>
+																validateObs
 																	.results
-																	.length > 0
-															) {
-																this.uiService.ErrorText =
-																	transitionResponse.results[0];
-															} else {
-																this.uiService.updated =
-																	true;
-																this.branchedRouter.position =
-																	{
-																		type: 'baseline',
-																		id: commitObs
-																			.tx
-																			.branchId,
-																	};
-															}
-														}
+																	.length ===
+																0,
+															this.actionService
+																.transitionAction(
+																	new transitionAction(
+																		'Completed',
+																		'Transition To Completed',
+																		actions,
+																		user
+																	)
+																)
+																.pipe(
+																	tap(
+																		(
+																			transitionResponse
+																		) => {
+																			if (
+																				transitionResponse
+																					.results
+																					.length >
+																				0
+																			) {
+																				this.uiService.ErrorText =
+																					transitionResponse.results[0];
+																			} else {
+																				this.uiService.updated =
+																					true;
+																				this.branchedRouter.position =
+																					{
+																						type: 'baseline',
+																						id: commitObs
+																							.tx
+																							.branchId,
+																					};
+																			}
+																		}
+																	)
+																),
+															of() // @todo replace with a false response
+														)
 													)
 												),
 											of() // @todo replace with a false response
 										)
 									)
 								),
-							of() // @todo replace with a false response
+								of() // @todo replace with a false response
+							)
 						)
 					)
-				),
-				of() // @todo replace with a false response
+				)
 			)
 		)
 	);
@@ -418,42 +454,33 @@ export class ActionStateButtonService {
 		if (typeof value?.description === 'undefined') {
 			return of(); // @todo replace with a false response
 		}
-		return this._user.pipe(
-			take(1),
-			switchMap((user) =>
+		if (!value.createBranchDefault) {
+			return this.actionService.createAction(new CreateNewAction(value));
+		}
+		return this.actionService.createBranch(new CreateNewAction(value)).pipe(
+			switchMap((branchResponse) =>
 				iif(
-					() => value.createBranchDefault === true,
-					this.actionService
-						.createBranch(new CreateNewAction(value))
-						.pipe(
-							switchMap((branchResponse) =>
-								iif(
-									() => category !== '0',
-									this.branchService.setBranchCategory(
-										branchResponse.workingBranchId.id,
-										category
-									),
-									of(branchResponse)
-								).pipe(
-									map(() => branchResponse),
-									tap((resp) => {
-										this.uiService.updated = true;
-										if (resp.results.success) {
-											const _branchType =
-												resp.workingBranchId
-													.branchType === '2'
-													? 'baseline'
-													: 'working';
-											this.branchedRouter.position = {
-												type: _branchType,
-												id: resp.workingBranchId.id,
-											};
-										}
-									})
-								)
-							)
-						),
-					this.actionService.createAction(new CreateNewAction(value))
+					() => category !== '0',
+					this.branchService.setBranchCategory(
+						branchResponse.workingBranchId.id,
+						category
+					),
+					of(branchResponse)
+				).pipe(
+					map(() => branchResponse),
+					tap((resp) => {
+						this.uiService.updated = true;
+						if (resp.results.success) {
+							const _branchType =
+								resp.workingBranchId.branchType === '2'
+									? 'baseline'
+									: 'working';
+							this.branchedRouter.position = {
+								type: _branchType,
+								id: resp.workingBranchId.id,
+							};
+						}
+					})
 				)
 			)
 		);

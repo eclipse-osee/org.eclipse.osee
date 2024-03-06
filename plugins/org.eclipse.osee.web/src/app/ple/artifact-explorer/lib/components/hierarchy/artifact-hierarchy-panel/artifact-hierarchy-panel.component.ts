@@ -50,21 +50,21 @@ import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-
 })
 export class ArtifactHierarchyPanelComponent {
 	private uiService = inject(UiService);
-	protected branchType = this.uiService.type;
-	protected branchId = this.uiService.id;
+	protected branchType = toSignal(this.uiService.type, { initialValue: '' });
+	protected branchId = toSignal(this.uiService.id, { initialValue: '' });
 	protected paths = this.artHierPathService.getPaths();
+
 	branchName = toSignal(
 		this.currentBranchService.currentBranch.pipe(
 			map((branch) => branch.name)
 		)
 	);
 
-	_branchId = toSignal(this.branchId, { initialValue: '' });
-	changedBranchId = computed(
+	branchIdValid = computed(
 		() =>
-			this._branchId() !== '' &&
-			this._branchId() !== '-1' &&
-			this._branchId() !== '0'
+			this.branchId() !== '' &&
+			this.branchId() !== '-1' &&
+			this.branchId() !== '0'
 	);
 
 	constructor(

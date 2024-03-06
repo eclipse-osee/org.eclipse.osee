@@ -14,7 +14,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
-import { attribute } from '../../../../ple/artifact-explorer/lib/types/artifact-explorer.data';
 
 @Injectable({
 	providedIn: 'root',

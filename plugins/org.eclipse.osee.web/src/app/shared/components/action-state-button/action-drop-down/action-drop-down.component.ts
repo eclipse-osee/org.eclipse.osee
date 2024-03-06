@@ -20,7 +20,7 @@ import {
 } from '@osee/shared/types/configuration-management';
 import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
-import { AsyncPipe, NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -36,7 +36,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		MatButtonModule,
 		MatIconModule,
@@ -45,6 +44,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 		MatTooltipModule,
 		MatFormFieldModule,
 		MatMenuModule,
+		MatIconModule,
 		NgClass,
 		NgTemplateOutlet,
 	],

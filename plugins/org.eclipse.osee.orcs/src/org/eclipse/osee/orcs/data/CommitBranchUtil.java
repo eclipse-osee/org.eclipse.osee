@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -105,36 +104,39 @@ public class CommitBranchUtil {
       "UPDATE osee_conflict SET status = ? WHERE source_gamma_id = ? AND dest_gamma_id = ? AND merge_branch_id = ?";
 
    private static final String getMergeData =
-      "select c.conflict_type, art.art_id, art.art_type_id, nameAttr.value art_name, src_item.attr_type_id item_type_id, src_item.attr_id item_id, " + //
+      "select c.conflict_type, c.source_gamma_id, c.dest_gamma_id, art.art_id, art.art_type_id, nameAttr.value art_name, src_item.attr_type_id item_type_id, src_item.attr_id item_id, " + //
          "src_item.value src_item_value, dest_item.value dest_item_value, merge_item.value merge_item_value,  " + //
          "src_item.uri src_uri, dest_item.uri dest_uri, merge_item.uri merge_uri, " + //
          "1 src_app_id, 1 dest_app_id, 1 merge_app_id, c.conflict_id, c.status conflict_status " + //
          "from osee_attribute src_item, osee_attribute dest_item, osee_conflict c, osee_txs txs, osee_attribute merge_item, " + //
          "osee_artifact art, osee_txs artTxs, osee_attribute nameAttr, osee_txs attrTxs " + //
-         "where src_item.gamma_id = c.source_gamma_id and dest_item.gamma_id = c.dest_gamma_id " + //
+         "where c.merge_branch_id = ? and src_item.gamma_id = c.source_gamma_id and dest_item.gamma_id = c.dest_gamma_id " + //
          "and txs.branch_id = ? and txs.gamma_id = merge_item.gamma_id and txs.tx_current = 1 and " + //
          "merge_item.attr_type_id = src_item.attr_type_id and merge_item.art_id = src_item.art_id  " + //
          "and src_item.attr_id = dest_item.attr_id and src_item.attr_id = merge_item.attr_id " + //
          "and artTxs.branch_id = ? and artTxs.gamma_id = art.gamma_id and artTxs.tx_current = 1 and art.art_id = src_item.art_id " + //
          "and attrTxs.branch_id = ? and attrTxs.gamma_id = nameAttr.gamma_id and attrTxs.tx_current = 1 and nameAttr.art_id = src_item.art_id and nameAttr.attr_type_id = ? " + //
          "union " + //
-         "select c.conflict_type, src_item.art_id, src_item.art_type_id, nameAttr.value art_name, src_item.art_type_id item_type_id, src_item.art_id item_id, " + //
+         "select c.conflict_type, c.source_gamma_id, c.dest_gamma_id, src_item.art_id, src_item.art_type_id, nameAttr.value art_name, src_item.art_type_id item_type_id, src_item.art_id item_id, " + //
          "'na' src_item_value, 'na' dest_item_value, 'na' merge_item_value, 'na' src_uri, 'na' dest_uri, 'na' merge_uri,  " + //
          "1 src_app_id, 1 dest_app_id, 1 merge_app_id, c.conflict_id, c.status conflict_status " + //
          "from osee_artifact src_item, osee_artifact dest_item, osee_conflict c, osee_txs txs, osee_artifact merge_item, " + //
          "osee_attribute nameAttr, osee_txs attrTxs " + //
-         "where src_item.gamma_id = c.source_gamma_id and dest_item.gamma_id = c.dest_gamma_id " + //
+         "where c.merge_branch_id = ? and src_item.gamma_id = c.source_gamma_id and dest_item.gamma_id = c.dest_gamma_id " + //
          "and txs.branch_id = ? and txs.gamma_id = merge_item.gamma_id and txs.tx_current = 1 and merge_item.art_id = src_item.art_id " + //
          "and attrTxs.branch_id = ? and attrTxs.gamma_id = nameAttr.gamma_id and attrTxs.tx_current = 1 and nameAttr.art_id = src_item.art_id and nameAttr.attr_type_id = ? " + //
          "order by 2"; //order by art_id
 
+   private static final String getMergeBranchId =
+      "select merge_branch_id from osee_merge where source_branch_id = ? and dest_branch_id = ?";
+
    public static List<MergeData> getMergeData(BranchId mergeBranchId, JdbcClient jdbcClient,
       OrcsTokenService tokenService) {
-      String json = "";
       List<MergeData> mergeData = new ArrayList<>();
       try (JdbcStatement stmt = jdbcClient.getStatement()) {
-         stmt.runPreparedQuery(getMergeData, mergeBranchId, mergeBranchId, mergeBranchId,
-            CoreAttributeTypes.Name.getId(), mergeBranchId, mergeBranchId, CoreAttributeTypes.Name.getId()); //passing name attr_type_id to retrieve name in this query instead of having to query for the token separately
+         stmt.runPreparedQuery(getMergeData, mergeBranchId, mergeBranchId, mergeBranchId, mergeBranchId,
+            CoreAttributeTypes.Name.getId(), mergeBranchId, mergeBranchId, mergeBranchId,
+            CoreAttributeTypes.Name.getId()); //passing name attr_type_id to retrieve name in this query instead of having to query for the token separately
          while (stmt.next()) {
             ConflictType conflictType = ConflictType.valueOf(stmt.getInt("conflict_type"));
             ConflictStatus conflictStatus = ConflictStatus.valueOf(stmt.getInt("conflict_status"));
@@ -150,31 +152,40 @@ public class CommitBranchUtil {
             String srcItemUri = stmt.getString("src_uri");
             String destItemUri = stmt.getString("dest_uri");
             String mergeItemUri = stmt.getString("merge_uri");
+            String srcGammaId = stmt.getString("source_gamma_id");
+            String destGammaId = stmt.getString("dest_gamma_id");
+            @SuppressWarnings("unused")
             String srcItemAppId = stmt.getString("src_app_id");
+            @SuppressWarnings("unused")
             String destItemAppId = stmt.getString("dest_app_id");
+            @SuppressWarnings("unused")
             String mergeItemAppId = stmt.getString("merge_app_id");
-            String[] values = {srcItemValue, mergeItemValue, destItemValue};
-            String[] uris = {srcItemUri, mergeItemUri, destItemUri};
-            Optional<MergeData> artData =
-               mergeData.stream().filter(a -> a.getArtId().getId().equals(artId.getId())).findAny();
-            if (artData.isPresent()) {
-               if (conflictType.equals(ConflictType.ATTRIBUTE)) {
-                  artData.get().getAttrs().add(new AttributeMergeData(conflictId, conflictType, conflictStatus,
-                     tokenService.getAttributeType(itemTypeId), AttributeId.valueOf(itemId), values, uris));
-               }
-            } else {
-               MergeData md = new MergeData();
-               md.setArtId(artId);
-               md.setArtType(tokenService.getArtifactType(artTypeId));
-               md.setName(name);
-               md.getAttrs().add(new AttributeMergeData(conflictId, conflictType, conflictStatus,
-                  tokenService.getAttributeType(itemTypeId), AttributeId.valueOf(itemId), values, uris));
-               mergeData.add(md);
+
+            AttributeMergeData attrMergeData = null;
+            if (conflictType.equals(ConflictType.ATTRIBUTE)) {
+               attrMergeData = new AttributeMergeData(tokenService.getAttributeType(itemTypeId),
+                  AttributeId.valueOf(itemId), srcItemValue, mergeItemValue, destItemValue, srcItemUri, mergeItemUri,
+                  destItemUri, srcGammaId, destGammaId);
             }
+            MergeData md = new MergeData(artId, tokenService.getArtifactType(artTypeId), name, conflictType,
+               conflictStatus, conflictId, attrMergeData);
+            mergeData.add(md);
          }
          stmt.close();
       }
       return mergeData;
+   }
+
+   public static BranchId getMergeBranchId(OrcsApi orcsApi, BranchId sourceBranch, BranchId destBranch) {
+      BranchId mergeBranchId = BranchId.SENTINEL;
+      try (JdbcStatement stmt = orcsApi.getJdbcService().getClient().getStatement()) {
+         stmt.runPreparedQuery(getMergeBranchId, sourceBranch, destBranch);
+         if (stmt.next()) {
+            mergeBranchId = BranchId.valueOf(stmt.getLong("merge_branch_id"));
+         }
+         stmt.close();
+      }
+      return mergeBranchId;
    }
 
    public static TransactionToken getCommitTransaction(OrcsApi orcsApi, BranchId sourceBranch, BranchId destBranch) {
