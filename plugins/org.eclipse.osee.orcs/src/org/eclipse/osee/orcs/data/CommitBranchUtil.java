@@ -172,6 +172,7 @@ public class CommitBranchUtil {
                mergeData.add(md);
             }
          }
+         stmt.close();
       }
       return mergeData;
    }
@@ -183,6 +184,7 @@ public class CommitBranchUtil {
          if (stmt.next()) {
             transactionId = TransactionToken.valueOf(stmt.getLong("tx_id"), destBranch);
          }
+         stmt.close();
       }
       return transactionId;
    }
@@ -304,6 +306,7 @@ public class CommitBranchUtil {
                   }
                }
             }
+            stmt.close();
          }
       }
       if (validateCommit.getSourceBranch().isValid() && validateCommit.getDestinationBranch().isValid() && !validateCommit.getTx().isValid() && (validateCommit.getConflictCount() == 0 || validateCommit.getConflictCount() == validateCommit.getConflictsResolved())) {
@@ -362,7 +365,7 @@ public class CommitBranchUtil {
                workingModType, workingGammaId, currentDestTx, currentDestTxCurrent, currentDestModType,
                currentDestGammaId, baselineTxTx, baselineTxTxCurrent, baselineTxModType, baselineTxGammaId));
          }
-
+         stmt.close();
       }
       return conflicts;
    }
