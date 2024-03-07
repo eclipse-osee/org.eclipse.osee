@@ -3246,12 +3246,17 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    @Override
    public String getBazelBuildFile() {
-      return "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "filegroup(\r\n" + "    name = \"srcs\",\r\n" + "    srcs = [\r\n" + "        \"BUILD\",\r\n" + "        \"WORKSPACE\",\r\n" + "        \"//platforms/configurations:srcs\",\r\n" + "        \"//platforms/configuration-groups:srcs\",\r\n" + "        \"//configurations:srcs\",\r\n" + "        \"//features:srcs\",\r\n" + "    ],\r\n" + ")";
+      return "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "filegroup(\r\n" + "    name = \"srcs\",\r\n" + "    srcs = [\r\n" + "        \"BUILD.bazel\",\r\n" + "        \"WORKSPACE\",\r\n" + "        \"//platforms/configurations:BUILD.bazel\",\r\n" + "        \"//platforms/configuration-groups:BUILD.bazel\",\r\n" + "        \"//configurations:BUILD.bazel\",\r\n" + "        \"//features:BUILD.bazel\",\r\n" + "    ],\r\n" + ")";
    }
 
    @Override
    public String getBazelWorkspaceFile() {
-      return "workspace(name = \"osee_applicability\")";
+      return "workspace(name = \"osee_applicability\") \r\n load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\") \r\n" + "http_archive(\r\n" + "    name = \"bazel_skylib\",\r\n" + "    sha256 = \"cd55a062e763b9349921f0f5db8c3933288dc8ba4f76dd9416aac68acee3cb94\",\r\n" + "    urls = [\r\n" + "        \"https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.5.0/bazel-skylib-1.5.0.tar.gz\",\r\n" + "        \"https://github.com/bazelbuild/bazel-skylib/releases/download/1.5.0/bazel-skylib-1.5.0.tar.gz\",\r\n" + "    ],\r\n" + ")\r\n\r\n" + "load(\"@bazel_skylib//:workspace.bzl\", \"bazel_skylib_workspace\") +\r\n bazel_skylib_workspace()";
+   }
+
+   @Override
+   public String getBazelModuleFile() {
+      return "module(name = \"osee_applicability\"," + "version = \"1.0.0\", bazel_compatibility = [\">=7.0.0\"], compatibility_level =1,) \r\n\r\n bazel_dep(name = \"bazel_skylib\", version = \"1.5.0\")";
    }
 
    @Override
@@ -3273,5 +3278,110 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             "_") + "\",\r\n" + "    constraint_setting = \":configuration\",\r\n" + ")\r\n";
       }
       return prefix + content;
+   }
+
+   @Override
+   public String getBatConfigurationFile(BranchId branchId, ArtifactReadable art) {
+      /**
+       * @TODO implement groups once supported in BAT tool
+       */
+      String content = "[{";
+      content = content + " \"normalizedName\": \"" + art.getName().replace(" ", "_") + "\",";
+      content = content + " \"features\":[";
+      Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
+      Map<String, List<String>> namedViewApplicabilityMap =
+         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
+      branchViewsMap.put(art, namedViewApplicabilityMap);
+      List<ArtifactReadable> featureArts =
+         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
+      Iterator<ArtifactReadable> featureIter = featureArts.iterator();
+      while (featureIter.hasNext()) {
+         ArtifactReadable featureArt = featureIter.next();
+         FeatureDefinition fDef = getFeatureDefinition(featureArt);
+         content = content + "\"" + fDef.getName() + "=" + getViewToFeatureValue(ArtifactId.valueOf(art.getId()), fDef,
+            branchViewsMap) + "\"";
+         if (featureIter.hasNext()) {
+            content = content + ",";
+         }
+      }
+      content = content + "]";
+      content = content + "}]";
+      return content;
+   }
+
+   @Override
+   public String getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art) {
+      String content = "[{";
+      content = content + " \"normalizedName\": \"" + art.getName().replace(" ", "_") + "\",";
+      content = content + " \"features\":[";
+      Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
+      Map<String, List<String>> namedViewApplicabilityMap =
+         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
+      branchViewsMap.put(art, namedViewApplicabilityMap);
+      List<ArtifactReadable> featureArts =
+         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
+      Iterator<ArtifactReadable> featureIter = featureArts.iterator();
+      while (featureIter.hasNext()) {
+         ArtifactReadable featureArt = featureIter.next();
+         FeatureDefinition fDef = getFeatureDefinition(featureArt);
+         content = content + "\"" + fDef.getName() + "=" + getViewToFeatureValue(ArtifactId.valueOf(art.getId()), fDef,
+            branchViewsMap) + "\"";
+         if (featureIter.hasNext()) {
+            content = content + ",";
+         }
+      }
+      content = content + "]";
+      content = content + "}]";
+      return content;
+   }
+
+   @Override
+   public String getBazelConfigFileBuildFile(List<ArtifactReadable> arts) {
+      String content = "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "exports_files([";
+      Iterator<ArtifactReadable> artIter = arts.iterator();
+      while (artIter.hasNext()) {
+         content += "\"" + artIter.next().getName().replace(" ", "_") + ".json" + "\"";
+         if (artIter.hasNext()) {
+            content += ",";
+         }
+      }
+      content += "]) \r\n";
+      Iterator<ArtifactReadable> artIter2 = arts.iterator();
+      content += "filegroup(\r\n name=\"resolved_config\",\r\n srcs=select({\r\n";
+      while (artIter2.hasNext()) {
+         ArtifactReadable next = artIter2.next();
+         if (next.getArtifactType().equals(CoreArtifactTypes.GroupArtifact)) {
+            content += "\"//configurations:config_group_" + next.getName().replace(" ",
+               "_") + "\":[\":" + next.getName().replace(" ", "_") + ".json" + "\"]";
+         } else if (next.getArtifactType().equals(CoreArtifactTypes.BranchView)) {
+            content += "\"//configurations:config_" + next.getName().replace(" ",
+               "_") + "\":[\":" + next.getName().replace(" ", "_") + ".json" + "\"]";
+         }
+         if (artIter2.hasNext()) {
+            content += ",\r\n";
+         }
+      }
+      content += "\r\n }) \r\n )\r\n";
+
+      return content;
+
+   }
+
+   @Override
+   public String getBazelConfigFileDefsFile(List<ArtifactReadable> arts) {
+
+      String content = "AVAILABLE_PLATFORMS = {";
+      Iterator<ArtifactReadable> artIter = arts.iterator();
+      while (artIter.hasNext()) {
+         ArtifactReadable next = artIter.next();
+         content += "\"" + next.getName().replace(" ", "_") + "\":";
+         content += "\"" + next.getName().replace(" ", "_") + ".json" + "\"";
+         if (artIter.hasNext()) {
+            content += ",";
+         }
+      }
+      content += "}";
+      return content;
+
    }
 }

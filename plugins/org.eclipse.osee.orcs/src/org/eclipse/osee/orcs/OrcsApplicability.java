@@ -174,4 +174,20 @@ public interface OrcsApplicability {
    String getBazelBuildFile();
 
    String getBazelWorkspaceFile();
+
+   String getBazelModuleFile();
+
+   String getBazelConfigFileBuildFile(List<ArtifactReadable> arts);
+
+   String getBazelConfigFileDefsFile(List<ArtifactReadable> arts);
+
+   /**
+    * see cli/applic_config.rs for definition
+    */
+   String getBatConfigurationFile(BranchId branchId, ArtifactReadable art);
+
+   /**
+    * see cli/applic_config.rs for definition
+    */
+   String getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art);
 }
