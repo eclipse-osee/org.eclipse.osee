@@ -25,7 +25,8 @@ pkg_files(
         "//:BUILD",
         "//:WORKSPACE",
         "//:MODULE.bazel",
-        "//bat:files_to_release"
+        "//bat:files_to_release",
+        "//plconfig:files_to_release"
     ],
     strip_prefix = strip_prefix.from_root(),
 )

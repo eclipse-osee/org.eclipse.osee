@@ -25,8 +25,20 @@ local_path_override(
     path = "../"
 )
 
-bat = use_extension("@rules_osee//:extensions.bzl","bat")
+bat = use_extension("@rules_osee//bat:extensions.bzl","bat")
 bat.toolchain()
+
+plconfig = use_extension("@rules_osee//plconfig:extensions.bzl","plconfig")
+plconfig.config(
+    name="my_product_line",            
+    osee_url="http://localhost:8089",
+    branch_id="8",
+    sha256="E2B4B141504947A152618288DE5B58BCAFFA7B48A6D27494F1BF821338BA059C")
+
+use_repo(
+    plconfig,
+    "my_product_line"
+)
 
 # If you wanted to vendor the Bat tool, call it similarly to this::
 # register_toolchains("//:my_bat")

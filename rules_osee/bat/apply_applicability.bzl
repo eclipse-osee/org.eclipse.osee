@@ -16,7 +16,17 @@ _ATTRS = {
     "srcs": attr.label_list(
         allow_files = True,
     ),
-    "applic_config": attr.label(allow_single_file = True,)
+    "applic_config": attr.label(allow_single_file = True,),
+    "begin_comment_syntax":attr.string_list(doc="""
+     This field is optional.
+     This field is for setting the begin comment syntax to parse files with.
+     The PLE/BAT tool has built in defaults for some popular file extensions.
+     """),
+    "end_comment_syntax":attr.string_list(doc="""
+     This field is optional.
+     This field is for setting the end comment syntax to parse files with.
+     The PLE/BAT tool has built in defaults for some popular file extensions.
+     """),
 }
 def _create_config_directory(ctx,file):
     path = "%s/%s" % ("/".join(["config",file.basename.removesuffix(".json")]), "marker")
@@ -35,6 +45,10 @@ def _apply_applicability_impl(ctx):
     tool_path = ctx.toolchains["@rules_osee//bat:toolchain_type"].batinfo.target_tool_path
     tool_files = ctx.toolchains["@rules_osee//bat:toolchain_type"].batinfo.tool_files
     input_files = []
+    if(len(ctx.attr.begin_comment_syntax)>1):
+        fail("Length of begin comment syntax is too long")
+    if(len(ctx.attr.end_comment_syntax)>1):
+        fail("Length of end comment syntax is too long")
     output_dir = _create_config_directory(ctx,ctx.file.applic_config)
     outputs = []
     for src in ctx.attr.srcs:
@@ -45,6 +59,10 @@ def _apply_applicability_impl(ctx):
             outputs.append(output)
             args.add("-s",file)
             args.add("-o",output_dir.files.to_list()[0].root.path)
+            if(len(ctx.attr.begin_comment_syntax)>0):
+                args.add("-b",ctx.attr.begin_comment_syntax[0])
+            if(len(ctx.attr.end_comment_syntax)>0):
+                args.add("-b",ctx.attr.end_comment_syntax[0])
             args.add("--use-direct-output")
             ctx.actions.run(
                 inputs = [file,ctx.file.applic_config],
