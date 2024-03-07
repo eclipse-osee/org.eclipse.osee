@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ApplicabilityTokenWithConstraints;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -49,6 +50,9 @@ import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -648,11 +652,47 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          zipOutputStream.putNextEntry(workspaceFile);
          zipOutputStream.write(ops.getBazelWorkspaceFile().getBytes());
          zipOutputStream.closeEntry();
+         ZipEntry moduleFile = new ZipEntry("MODULE.bazel");
+         moduleFile.setTime(0);
+         zipOutputStream.putNextEntry(moduleFile);
+         zipOutputStream.write(ops.getBazelModuleFile().getBytes());
+         zipOutputStream.closeEntry();
          ZipEntry featureFile = new ZipEntry("features/BUILD.bazel");
          featureFile.setTime(0);
          zipOutputStream.putNextEntry(featureFile);
          zipOutputStream.write(this.getBazelFeatures().getBytes());
          zipOutputStream.closeEntry();
+         List<ArtifactReadable> configurations =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
+         for (ArtifactReadable configuration : configurations) {
+            ZipEntry batFile = new ZipEntry("config_files/" + configuration.getName().replace(" ", "_") + ".json");
+            batFile.setTime(0);
+            zipOutputStream.putNextEntry(batFile);
+            zipOutputStream.write(ops.getBatConfigurationFile(branch, configuration).getBytes());
+            zipOutputStream.closeEntry();
+         }
+         List<ArtifactReadable> configurationGroups =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts();
+         for (ArtifactReadable configurationGroup : configurationGroups) {
+            ZipEntry batFile = new ZipEntry("config_files/" + configurationGroup.getName().replace(" ", "_") + ".json");
+            batFile.setTime(0);
+            zipOutputStream.putNextEntry(batFile);
+            zipOutputStream.write(ops.getBatConfigurationGroupFile(branch, configurationGroup).getBytes());
+            zipOutputStream.closeEntry();
+         }
+         configurations.addAll(configurationGroups);
+         ZipEntry batBuildFile = new ZipEntry("config_files/BUILD.bazel");
+         batBuildFile.setTime(0);
+         zipOutputStream.putNextEntry(batBuildFile);
+         zipOutputStream.write(ops.getBazelConfigFileBuildFile(configurations).getBytes());
+         zipOutputStream.closeEntry();
+         ZipEntry batDefsFile = new ZipEntry("config_files/defs.bzl");
+         batDefsFile.setTime(0);
+         zipOutputStream.putNextEntry(batDefsFile);
+         zipOutputStream.write(ops.getBazelConfigFileDefsFile(configurations).getBytes());
+         zipOutputStream.closeEntry();
+
       } catch (IOException e) {
          e.printStackTrace();
       } finally {
