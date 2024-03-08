@@ -10,5 +10,4 @@
 # Contributors:
 #     Boeing - initial API and implementation
 # 
-try-import %workspace%/bazelrc/.bazelrc
-startup --output_base=$PWD/../../output_rules_osee_bazel
+exports_files(["example_zipped_markdown_files_snapshot.zip"])

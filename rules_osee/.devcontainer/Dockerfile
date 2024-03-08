@@ -17,7 +17,6 @@ FROM ubuntu:22.04
 ARG USERNAME=bazel-runner
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-WORKDIR /workspace
 
 ADD https://github.com/bazelbuild/bazelisk/releases/download/v1.19.0/bazelisk-linux-amd64 /usr/local/bin/bazel
 

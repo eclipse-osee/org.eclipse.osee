@@ -1,0 +1,22 @@
+[
+    {
+        "normalizedName":"PRODUCT_A",
+        "features":["ENGINE_5=A2543","JHU_CONTROLLER=EXCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_A"]
+    },
+    {
+        "normalizedName":"PRODUCT_B",
+        "features":["ENGINE_5=A2543","JHU_CONTROLLER=INCLUDED","ROBOT_ARM_LIGHT=INCLUDED","ROBOT_SPEAKER=SPKR_A"]
+    },
+    {
+        "normalizedName":"abGroup",
+        "features":["ENGINE_5=A2543","JHU_CONTROLLER=INCLUDED","ROBOT_ARM_LIGHT=INCLUDED","ROBOT_SPEAKER=SPKR_A"]
+    },
+    {
+        "normalizedName":"PRODUCT_D",
+        "features":["ENGINE_5=B5543","JHU_CONTROLLER=EXCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_C"]
+    },
+    {
+        "normalizedName":"PRODUCT_C",
+        "features":["ENGINE_5=A2543","JHU_CONTROLLER=INCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_B"]
+    }
+]

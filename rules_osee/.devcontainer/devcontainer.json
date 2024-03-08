@@ -17,13 +17,14 @@
 	"build": {
         // Path is relative to the devcontainer.json file.
         "dockerfile": "Dockerfile"
-    }
+    },
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [8089],
+	"runArgs": ["--network=host","-h 127.0.0.1"]
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "uname -a",
