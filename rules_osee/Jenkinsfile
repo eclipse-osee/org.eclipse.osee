@@ -12,7 +12,7 @@ spec:
     - name: volume-known-hosts
       mountPath: /home/jenkins/.ssh
   - name: bazel
-    image: gcr.io/bazel-public/bazel:latest
+    image: lucianovaglienti/bazelisk_runner
     tty: true
     command:
     - cat
