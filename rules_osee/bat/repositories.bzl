@@ -52,7 +52,7 @@ _ATTRS = {
     ),
 }
 def _download_bat(repository_ctx):
-    host_os = repository_ctx.attr.platform or repository_ctx.name.split("bat_", 1)[1]
+    host_os = repository_ctx.attr.platform or repository_ctx.name.split("_", 1)[1]
     bat_version = repository_ctx.attr.bat_version
     bat_repositories = repository_ctx.attr.bat_repositories
     if not bat_repositories.items():
@@ -123,7 +123,7 @@ bat_toolchain(
     target_tool=":bat_bin"
 )
         """
-        repository_ctx.file("BUILD.bazel",content=build_content)
+    repository_ctx.file("BUILD.bazel",content=build_content)
 
 def bat_register_toolchains(name = DEFAULT_BAT_REPOSITORY, register= True, ** kwargs):
     for platform in BUILT_IN_BAT_PLATFORMS:

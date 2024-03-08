@@ -3438,7 +3438,7 @@
     },
     "@@rules_osee~//bat:extensions.bzl%bat": {
       "general": {
-        "bzlTransitiveDigest": "BDuFatxlTmIS/WGKw4Jlhoh5YM1fXnt9Xia3LTh8JhY=",
+        "bzlTransitiveDigest": "eicsosk95f0iti9dv5+fwSAfaulBY4z1bUHG/8EHCNI=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -3478,7 +3478,7 @@
     },
     "@@rules_osee~//plconfig:extensions.bzl%plconfig": {
       "general": {
-        "bzlTransitiveDigest": "EtWjinAF2bBUWmPNvV7UV4hG6Xc9Qe/Z5xCrT79sBwg=",
+        "bzlTransitiveDigest": "r5uyjm7gSDGOt2f7sWXVwrxrZieXPA8Pi/nIk2D8tyg=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
