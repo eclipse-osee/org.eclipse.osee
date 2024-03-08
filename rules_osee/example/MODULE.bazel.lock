@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "bb95e03e7ae5a3c9c5d3ee24d2113c25963bb4fbf50f13d91941fa63e352c978",
+  "moduleFileHash": "815347a4d239bc06aa011748f69359ab0c61bedf5851fced4c2f28378175706f",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -71,7 +71,7 @@
               "tagName": "config",
               "attributeValues": {
                 "name": "my_product_line",
-                "osee_url": "http://localhost:8089",
+                "osee_url": "http://host.docker.internal:8089",
                 "branch_id": "8",
                 "sha256": "E2B4B141504947A152618288DE5B58BCAFFA7B48A6D27494F1BF821338BA059C"
               },
@@ -3487,7 +3487,7 @@
             "bzlFile": "@@rules_osee~//plconfig:repositories.bzl",
             "ruleClassName": "product_line_config",
             "attributes": {
-              "osee_url": "http://localhost:8089",
+              "osee_url": "http://host.docker.internal:8089",
               "branch_id": "8",
               "sha256": "E2B4B141504947A152618288DE5B58BCAFFA7B48A6D27494F1BF821338BA059C"
             }
