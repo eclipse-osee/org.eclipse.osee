@@ -98,6 +98,12 @@ export class ArtifactSearchComponent {
 
 	allSearchResults = signal<artifactTokenWithIcon[]>([]);
 
+	useCount = toSignal(
+		this.advancedSearchCriteria.pipe(
+			map((criteria) => criteria.artifactTypes.length > 0)
+		)
+	);
+
 	paginatedSearchResults = combineLatest([
 		this.pageNum,
 		this.uiService.id,
@@ -147,6 +153,7 @@ export class ArtifactSearchComponent {
 	]).pipe(
 		filter(
 			([branchId, viewId, filter, criteria, trigger]) =>
+				criteria.artifactTypes.length > 0 &&
 				branchId != '-1' &&
 				branchId != '0' &&
 				branchId != '' &&
