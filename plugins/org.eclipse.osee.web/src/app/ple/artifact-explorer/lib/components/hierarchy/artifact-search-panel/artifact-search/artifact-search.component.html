@@ -111,12 +111,8 @@
 		</mat-form-field>
 	</form>
 	@if ({ count: searchResultsCount | async }; as _count) {
-		@if (paginatedSearchResults | async) {
-			@if (
-				_count !== undefined &&
-				_count.count !== null &&
-				_count.count > 0
-			) {
+		@if (paginatedSearchResults | async; as _currentResults) {
+			@if (!useCount() || _count.count !== null) {
 				<mat-list
 					role="list"
 					class="tw-max-h-80 tw-overflow-auto">
@@ -135,13 +131,24 @@
 								{{ artifact.name }}
 							</button></mat-list-item
 						>
+					} @empty {
+						<div class="tw-px-4 tw-pt-4">
+							<span>No results found</span>
+						</div>
 					}
-					@if (_count.count > allSearchResults().length) {
+					@if (
+						(useCount() &&
+							_count.count !== null &&
+							allSearchResults().length < _count.count) ||
+						(!useCount() && _currentResults.length === pageSize)
+					) {
 						<mat-list-item>
-							<span class="tw-pr-2"
-								>Showing {{ allSearchResults().length }} of
-								{{ _count.count }} results</span
-							>
+							@if (useCount()) {
+								<span class="tw-pr-2"
+									>Showing {{ allSearchResults().length }} of
+									{{ _count.count }} results</span
+								>
+							}
 							<button
 								class="tw-rounded-md tw-border tw-border-primary tw-px-2 tw-py-1 hover:tw-text-primary"
 								(click)="nextPage()">
@@ -150,14 +157,6 @@
 						</mat-list-item>
 					}
 				</mat-list>
-			} @else if (
-				_count !== undefined &&
-				_count.count !== null &&
-				_count.count === 0
-			) {
-				<div class="tw-px-4 tw-pt-4">
-					<span>No results found</span>
-				</div>
 			}
 		}
 	}
