@@ -35,11 +35,11 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this(id, namespace, name, isAbstract, image, null, superTypes);
    }
 
-   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeIcon icon, List<ArtifactTypeToken> superTypes) {
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
       this(id, namespace, name, isAbstract, null, icon, superTypes);
    }
 
-   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, ArtifactTypeIcon icon, List<ArtifactTypeToken> superTypes) {
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
       ArtifactTypeToken artifactType =
          ArtifactTypeToken.create(id, namespace, name, isAbstract, this, image, icon, superTypes);
       this.artifactType = artifactType;
@@ -54,7 +54,7 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this(id, namespace, name, isAbstract, image, Arrays.asList(superTypes));
    }
 
-   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeIcon icon, ArtifactTypeToken... superTypes) {
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, MaterialIcon icon, ArtifactTypeToken... superTypes) {
       this(id, namespace, name, isAbstract, icon, Arrays.asList(superTypes));
    }
 

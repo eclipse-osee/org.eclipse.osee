@@ -118,7 +118,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public OseeImage getImage();
 
-   public ArtifactTypeIcon getIcon();
+   public MaterialIcon getMaterialIcon();
 
    public NamespaceToken getNamespace();
 
@@ -133,12 +133,12 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
-      AttributeMultiplicity attributeTypes, ArtifactTypeIcon icon, List<ArtifactTypeToken> superTypes) {
+      AttributeMultiplicity attributeTypes, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
       return create(id, namespace, name, isAbstract, attributeTypes, null, icon, superTypes);
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
-      AttributeMultiplicity attributeTypes, OseeImage image, ArtifactTypeIcon icon,
+      AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon,
       List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
@@ -147,9 +147,9 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          private final AttributeMultiplicity attributeTypes;
          private final NamespaceToken namespace;
          private final OseeImage image;
-         private ArtifactTypeIcon icon;
+         private MaterialIcon icon;
 
-         public ArtifactTypeTokenImpl(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, OseeImage image, ArtifactTypeIcon icon, List<ArtifactTypeToken> superTypes) {
+         public ArtifactTypeTokenImpl(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
             super(id, name);
             this.isAbstract = isAbstract;
             this.superTypes = superTypes;
@@ -166,8 +166,8 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
                attributeTypes.putAll(((ArtifactTypeTokenImpl) superType).attributeTypes);
                ((ArtifactTypeTokenImpl) superType).addDirectDescendantType(this);
 
-               if (this.icon == null && superType.getIcon() != null) {
-                  this.icon = superType.getIcon();
+               if (this.icon == null && superType.getMaterialIcon() != null) {
+                  this.icon = superType.getMaterialIcon();
                }
             }
          }
@@ -280,7 +280,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          }
 
          @Override
-         public ArtifactTypeIcon getIcon() {
+         public MaterialIcon getMaterialIcon() {
             return icon;
          }
 

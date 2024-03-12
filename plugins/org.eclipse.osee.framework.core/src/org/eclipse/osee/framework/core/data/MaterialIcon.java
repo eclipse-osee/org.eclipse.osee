@@ -12,10 +12,15 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-public class ArtifactTypeIcon {
+/**
+ * Represents a Google Material Icon
+ *
+ * @author Ryan T. Baldwin
+ */
+public class MaterialIcon {
 
-   public static ArtifactTypeIcon SENTINEL =
-      new ArtifactTypeIcon("padding", MaterialColors.NONE, MaterialShades.NONE, MaterialVariant.NONE);
+   public static MaterialIcon SENTINEL =
+      new MaterialIcon("padding", MaterialColors.NONE, MaterialShades.NONE, MaterialVariant.NONE);
 
    private final String icon;
    private final MaterialColors color;
@@ -23,7 +28,7 @@ public class ArtifactTypeIcon {
    private final MaterialShades darkShade;
    private final MaterialVariant variant;
 
-   public ArtifactTypeIcon(String icon) {
+   public MaterialIcon(String icon) {
       this.icon = icon;
       this.color = MaterialColors.NONE;
       this.lightShade = MaterialShades.NONE;
@@ -31,15 +36,15 @@ public class ArtifactTypeIcon {
       this.variant = MaterialVariant.NONE;
    }
 
-   public ArtifactTypeIcon(String icon, MaterialColors color, MaterialShades shade) {
+   public MaterialIcon(String icon, MaterialColors color, MaterialShades shade) {
       this(icon, color, shade, shade, MaterialVariant.NONE);
    }
 
-   public ArtifactTypeIcon(String icon, MaterialColors color, MaterialShades shade, MaterialVariant variant) {
+   public MaterialIcon(String icon, MaterialColors color, MaterialShades shade, MaterialVariant variant) {
       this(icon, color, shade, shade, variant);
    }
 
-   public ArtifactTypeIcon(String icon, MaterialColors color, MaterialShades lightShade, MaterialShades darkShade, MaterialVariant variant) {
+   public MaterialIcon(String icon, MaterialColors color, MaterialShades lightShade, MaterialShades darkShade, MaterialVariant variant) {
       this.icon = icon;
       this.color = color;
       this.lightShade = lightShade;
