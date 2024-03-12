@@ -1,1 +1,1 @@
-try-import %workspace%/bazelrc/.bazelrc
+try-import %workspace%/../bazelrc/.bazelrc
