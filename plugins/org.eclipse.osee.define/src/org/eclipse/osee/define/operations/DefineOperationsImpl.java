@@ -120,7 +120,7 @@ public class DefineOperationsImpl implements DefineOperations {
       var jdbcService = this.orcsApi.getJdbcService();
       var systemProperties = this.orcsApi.getSystemProperties();
 
-      this.gitOperations = new GitOperationsImpl(this.orcsApi, systemProperties);
+      this.gitOperations = new GitOperationsImpl(this.orcsApi, systemProperties, logger);
 
       this.importOperations = new ImportOperationsImpl(this.orcsApi);
 
