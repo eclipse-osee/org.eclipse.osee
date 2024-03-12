@@ -14,7 +14,7 @@
   },
   "localOverrideHashes": {
     "bazel_tools": "1ae69322ac3823527337acf02016e8ee95813d8d356f47060255b8956fa642f0",
-    "rules_osee": "847420a9f1f18a52030a0a8ed638d02d8c2aef881f469ad1bceff7de2796441a"
+    "rules_osee": "43a28d060111781a820ebace5f86b82f50c458da9059e66973c061fb4040981a"
   },
   "moduleDepGraph": {
     "<root>": {
@@ -97,7 +97,7 @@
     },
     "rules_osee@_": {
       "name": "rules_osee",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "key": "rules_osee@_",
       "repoName": "rules_osee",
       "executionPlatformsToRegister": [],
