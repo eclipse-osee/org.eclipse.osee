@@ -123,19 +123,6 @@
 						REQ
 					</button>
 				</ng-container>
-				<ng-container *ngIf="artifact.icdDiff">
-					<br /><button
-						mat-button
-						color="primary"
-						class="tw-underline"
-						(click)="
-							getChangeReport(
-								_link + '/cdbDiff/' + artifact.icdDiff
-							)
-						">
-						ICD
-					</button>
-				</ng-container>
 			</ng-container>
 		</td>
 	</ng-container>
