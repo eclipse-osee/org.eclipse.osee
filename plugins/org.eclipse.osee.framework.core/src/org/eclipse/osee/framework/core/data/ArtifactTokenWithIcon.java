@@ -33,7 +33,7 @@ public class ArtifactTokenWithIcon {
       return token.getIdString();
    }
 
-   public ArtifactTypeIcon getIcon() {
-      return token.getArtifactType().getIcon();
+   public MaterialIcon getMaterialIcon() {
+      return token.getArtifactType().getMaterialIcon();
    }
 }

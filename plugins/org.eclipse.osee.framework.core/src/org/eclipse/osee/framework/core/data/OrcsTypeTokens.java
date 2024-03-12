@@ -151,13 +151,13 @@ public class OrcsTypeTokens {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, image, superTypes);
    }
 
-   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, ArtifactTypeIcon icon,
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, MaterialIcon icon,
       ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, icon, superTypes);
    }
 
    public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, OseeImage image,
-      ArtifactTypeIcon icon, ArtifactTypeToken... superTypes) {
+      MaterialIcon icon, ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, image, icon, Collections.asList(superTypes));
    }
 
