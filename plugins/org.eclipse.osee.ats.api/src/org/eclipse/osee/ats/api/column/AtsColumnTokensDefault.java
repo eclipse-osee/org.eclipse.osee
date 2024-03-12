@@ -83,7 +83,7 @@ public class AtsColumnTokensDefault {
 
    public static CoreCodeColumnTokenDefault ActionableItemsColumn = new CoreCodeColumnTokenDefault("ats.column.actionableItems", "Actionable Item(s)", 80, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault AgileFeatureGroupColumn = new CoreCodeColumnTokenDefault("ats.column.agileFeatureGroup", "Feature Group", 110, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "Agile Feature Group for this Item");
-   public static CoreCodeColumnTokenDefault AgileTeamPointsColumn = new CoreCodeColumnTokenDefault("ats.agileTeam.Points", AtsAttributeTypes.PointsNumeric);
+   public static CoreCodeColumnTokenDefault AgileTeamPointsColumn = new CoreCodeColumnTokenDefault("ats.agileTeam.Points", "Agile Points", 20, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, "");
    public static CoreCodeColumnTokenDefault AssigneeColumn = new CoreCodeColumnTokenDefault("ats.column.assignees", "Assignees", 100, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault AtsIdColumn = new CoreCodeColumnTokenDefault("ats.id", "ATS Id", 75, AtsAttributeTypes.AtsId);
    public static CoreCodeColumnTokenDefault AttachmentsCountColumn = new CoreCodeColumnTokenDefault("ats.column.attachment.count", "Attachment Count", 20, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, "Shows number of attachments.  Double-click to open task.");
