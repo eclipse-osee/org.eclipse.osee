@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.SexFunction;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -114,22 +115,14 @@ public class OrcsTypeTokens {
        * @return a {@link Pair} where the first string is the attribute name and the second string is the attribute
        * description.
        */
-
       Pair<String, String> get();
    }
 
    /**
     * Functional interface for a method to obtain an attribute's display name.
     */
-
    @FunctionalInterface
    public interface AttributeDisplayNameSupplier {
-
-      /**
-       * Gets the attribute's display name.
-       *
-       * @return the attribute's display name.
-       */
 
       String get();
    }
@@ -165,7 +158,7 @@ public class OrcsTypeTokens {
 
    public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, OseeImage image,
       ArtifactTypeIcon icon, ArtifactTypeToken... superTypes) {
-      return new AttributeMultiplicity(id, namespace, name, isAbstract, icon, superTypes);
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, image, icon, Collections.asList(superTypes));
    }
 
    public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract,
