@@ -259,15 +259,18 @@ public final class ArtifactImageManager {
       return ImageManager.setupImageWithOverlay(image, overlay, location).getImageKey();
    }
 
-   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider, ArtifactTypeToken artifactType) {
+   public static void registerOverrideImageProvider(ArtifactImageProvider imageProvider,
+      ArtifactTypeToken artifactType) {
       providersOverrideImageMap.put(artifactType, imageProvider);
    }
 
-   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, OseeImage oseeImage, ArtifactImageProvider provider) {
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, OseeImage oseeImage,
+      ArtifactImageProvider provider) {
       registerBaseImage(artifactType, ImageManager.create(oseeImage), provider);
    }
 
-   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) {
+   public synchronized static void registerBaseImage(ArtifactTypeToken artifactType, KeyedImage oseeImage,
+      ArtifactImageProvider provider) {
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactType);
 
       String providerId = artifactTypeImageProviderMap.get(artifactType);

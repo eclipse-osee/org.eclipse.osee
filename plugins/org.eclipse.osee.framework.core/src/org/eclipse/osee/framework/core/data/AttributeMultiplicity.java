@@ -32,14 +32,16 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
    private final List<ComputedCharacteristicToken<?>> computedCharacteristics = new ArrayList<>();
 
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, List<ArtifactTypeToken> superTypes) {
-      ArtifactTypeToken artifactType =
-         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, image, superTypes);
-      this.artifactType = artifactType;
+      this(id, namespace, name, isAbstract, image, null, superTypes);
    }
 
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeIcon icon, List<ArtifactTypeToken> superTypes) {
+      this(id, namespace, name, isAbstract, null, icon, superTypes);
+   }
+
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, ArtifactTypeIcon icon, List<ArtifactTypeToken> superTypes) {
       ArtifactTypeToken artifactType =
-         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, icon, superTypes);
+         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, image, icon, superTypes);
       this.artifactType = artifactType;
    }
 
