@@ -11,4 +11,4 @@
 #     Boeing - initial API and implementation
 # 
 # Keep in sync with MODULE.bazel
-version = "0.2.2"
+version = "0.2.3"

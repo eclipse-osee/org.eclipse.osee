@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "43a28d060111781a820ebace5f86b82f50c458da9059e66973c061fb4040981a",
+  "moduleFileHash": "f338cd48aa4bda1cf45fd83de481ea4083f890e282d2c7dc5455b0c13724c3c3",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -18,7 +18,7 @@
   "moduleDepGraph": {
     "<root>": {
       "name": "rules_osee",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "key": "<root>",
       "repoName": "rules_osee",
       "executionPlatformsToRegister": [],
