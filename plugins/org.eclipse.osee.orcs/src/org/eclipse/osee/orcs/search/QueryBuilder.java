@@ -136,6 +136,10 @@ public interface QueryBuilder extends Query {
 
    boolean areApplicabilityTokensIncluded();
 
+   QueryBuilder includeTransactionDetails(boolean orderByTime, String direction, Long maxTime);
+
+   boolean areTransactionDetailsIncluded();
+
    QueryBuilder setOrderByAttribute(AttributeTypeToken AttributeTypeToken);
 
    AttributeTypeToken orderByAttribute();

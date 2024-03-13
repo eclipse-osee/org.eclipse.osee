@@ -14,10 +14,10 @@
 package org.eclipse.osee.jdbc;
 
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
-
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 
 /**
@@ -110,27 +110,29 @@ public class JdbcDbType extends BaseId {
    }
 
    public String getRowNum() {
-	   if (matches(postgresql)) {
-		   return "row_number() over ()";
-	   } else {
-		   return "rownum";
-	   }
+      if (matches(postgresql)) {
+         return "row_number() over ()";
+      } else {
+         return "rownum";
+      }
    }
-   
+
    public String getLimitRowsReturned(int limit) {
-	   if (matches(oracle, hsql)) {
-		   return " and rownum < "+limit;
-	   } else {
-		   return " limit "+limit;
-	   }
+      if (matches(oracle, hsql)) {
+         return " and rownum < " + limit;
+      } else {
+         return " limit " + limit;
+      }
    }
+
    public String getExpireDateDays(int expireLengthInDays) {
-	   if (matches(oracle,hsql)) {
-		   return "TRUNC(SYSDATE) - "+expireLengthInDays;
-	   } else {
-		   return "current_timestamp - interval '"+expireLengthInDays+" day'";
-	   }
+      if (matches(oracle, hsql)) {
+         return "TRUNC(SYSDATE) - " + expireLengthInDays;
+      } else {
+         return "current_timestamp - interval '" + expireLengthInDays + " day'";
+      }
    }
+
    public String getInStringSql(String str, String searchString) {
       if (matches(oracle, hsql)) {
          return "instr(" + str + "," + searchString + ")";
@@ -213,4 +215,16 @@ public class JdbcDbType extends BaseId {
       }
       return " ";
    }
+
+   public String getDateToCompare(LocalDateTime ldt) {
+
+      String str = ldt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+      if (matches(oracle)) {
+         return "to_utc_timestamp_tz('" + str + "')";
+      } else {
+         return "'" + str + "'";
+      }
+   }
+
 }

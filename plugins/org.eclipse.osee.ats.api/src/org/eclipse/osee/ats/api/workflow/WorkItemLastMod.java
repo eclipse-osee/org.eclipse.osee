@@ -12,6 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Donald G. Dunne
  */
@@ -20,11 +23,26 @@ public class WorkItemLastMod {
    private String atsId;
    private String id;
    private Long lastmod;
+   private List<String> siblings;
+   private Long opened;
+   private Long closed;
 
    public WorkItemLastMod(String atsId, String id, Long lastmod) {
       this.atsId = atsId;
       this.id = id;
       this.lastmod = lastmod;
+      this.siblings = new ArrayList<>();
+      this.opened = 0L;
+      this.closed = 0L;
+   }
+
+   public WorkItemLastMod(String atsId, String id, Long lastmod, List<String> siblings, Long opened, Long closed) {
+      this.atsId = atsId;
+      this.id = id;
+      this.lastmod = lastmod;
+      this.siblings = siblings;
+      this.setOpened(opened);
+      this.setClosed(closed);
    }
 
    public String getAtsId() {
@@ -49,6 +67,30 @@ public class WorkItemLastMod {
 
    public void setLastmod(Long lastmod) {
       this.lastmod = lastmod;
+   }
+
+   public List<String> getSiblings() {
+      return siblings;
+   }
+
+   public void setSiblings(List<String> siblings) {
+      this.siblings = siblings;
+   }
+
+   public Long getOpened() {
+      return opened;
+   }
+
+   public void setOpened(Long opened) {
+      this.opened = opened;
+   }
+
+   public Long getClosed() {
+      return closed;
+   }
+
+   public void setClosed(Long closed) {
+      this.closed = closed;
    }
 
 }

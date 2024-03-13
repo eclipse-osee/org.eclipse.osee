@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -638,6 +639,11 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
 
    @Override
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public TransactionDetails getTxDetails() {
       throw new UnsupportedOperationException();
    }
 

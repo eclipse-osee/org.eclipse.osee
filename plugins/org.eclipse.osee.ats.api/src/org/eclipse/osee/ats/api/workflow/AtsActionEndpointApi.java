@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -40,6 +41,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -117,6 +119,22 @@ public interface AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public Collection<WorkItemLastMod> queryOpenLastMod(@Context UriInfo uriInfo);
+
+   @Path("query/workitems/count")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   int queryOpenWorkItemsCount(@QueryParam("artType") ArtifactTypeToken artType,
+      @DefaultValue("0") @QueryParam("maxTime") Long maxTime);
+
+   @Path("query/workitems")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   Collection<WorkItemLastMod> queryOpenWorkItems(@QueryParam("artType") ArtifactTypeToken artType,
+      @DefaultValue("1000") @QueryParam("pageSize") int pageSize,
+      @DefaultValue("1") @QueryParam("pageNumber") int pageNumber,
+      @DefaultValue("false") @QueryParam("orderByTime") boolean orderByTime,
+      @DefaultValue("DESC") @QueryParam("orderDirection") String orderDirection,
+      @DefaultValue("0") @QueryParam("maxTime") Long maxTime);
 
    /**
     * @query_string <attr type name>=<value>, <attr type id>=<value>

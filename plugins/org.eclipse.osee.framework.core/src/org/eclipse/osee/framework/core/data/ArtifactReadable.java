@@ -15,11 +15,13 @@ package org.eclipse.osee.framework.core.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -34,11 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 /**
  * @author Megumi Telles
  * @author Roberto E. Escobar
@@ -50,6 +47,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    ArtifactReadable SENTINEL = new ArtifactReadableImpl();
 
    TransactionId getLastModifiedTransaction();
+
+   TransactionDetails getTxDetails();
 
    int getAttributeCount(AttributeTypeToken type);
 
@@ -241,9 +240,9 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
          art.setId(id);
          art.setName(name);
          return art;
-         
+
       }
-      
+
       @Override
       public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
          return null;
@@ -503,6 +502,11 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       @Override
       public ApplicabilityToken getApplicabilityToken() {
          return ApplicabilityToken.BASE;
+      }
+
+      @Override
+      public TransactionDetails getTxDetails() {
+         return new TransactionDetails();
       }
    }
 }

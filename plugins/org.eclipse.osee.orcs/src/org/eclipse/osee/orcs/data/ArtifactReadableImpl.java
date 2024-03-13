@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -67,7 +68,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final ArtifactId view;
    private final QueryFactory queryFactory;
    private final ApplicabilityToken applicability;
-   private final TransactionId txId;
+   private final TransactionDetails txDetails;
    private final ModificationType modType;
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
@@ -76,7 +77,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.branch = branch;
       this.view = view;
       this.applicability = applicability;
-      this.txId = txId;
+      this.txDetails =
+         new TransactionDetails(txId, branch, null, null, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
    }
@@ -87,7 +89,19 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.branch = branch;
       this.view = view;
       this.applicability = ApplicabilityToken.valueOf(applicability.getId(), "");
-      this.txId = txId;
+      this.txDetails =
+         new TransactionDetails(txId, branch, null, null, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+      this.modType = modType;
+      this.queryFactory = queryFactory;
+   }
+
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionDetails txDetails, ModificationType modType, QueryFactory queryFactory) {
+      super(id);
+      this.artifactType = artifactType;
+      this.branch = branch;
+      this.view = view;
+      this.applicability = applicability;
+      this.txDetails = txDetails;
       this.modType = modType;
       this.queryFactory = queryFactory;
    }
@@ -107,7 +121,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public TransactionId getTransaction() {
-      return txId;
+      return txDetails.getTxId();
    }
 
    @Override
@@ -507,5 +521,10 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       return this.attributes;
+   }
+
+   @Override
+   public TransactionDetails getTxDetails() {
+      return txDetails;
    }
 }
