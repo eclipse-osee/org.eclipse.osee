@@ -58,7 +58,8 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.workflow.log,
  org.eclipse.osee.ats.api.workflow.note,
  org.eclipse.osee.ats.api.workflow.state,
- org.eclipse.osee.ats.api.workflow.transition
+ org.eclipse.osee.ats.api.workflow.transition,
+ org.eclipse.osee.ats.api.workflow.world
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
