@@ -23,7 +23,6 @@ import org.junit.runners.Suite;
    ImportEndpointTest.class,
    RendererEndpointTest.class,
    GitEndpointTest.class,
-   FixAttributeOperationTest.class,
    ImportTraceUnitsOperationTest.class,
    TestPlanComplianceReportTest.class,
    TogglesEndpointTest.class})

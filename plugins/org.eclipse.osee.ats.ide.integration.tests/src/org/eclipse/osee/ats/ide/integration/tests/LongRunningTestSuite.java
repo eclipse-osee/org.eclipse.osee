@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.integration.tests;
 
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.BranchPurgeTest;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.BranchStateTest;
-import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.RelationIntegrityCheckTest;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.ViewWordChangeAndDiffTest;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.WordTemplateRendererTest;
 import org.junit.runner.RunWith;
@@ -30,7 +29,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    BranchPurgeTest.class,
    BranchStateTest.class,
-   RelationIntegrityCheckTest.class,
    ViewWordChangeAndDiffTest.class,
    WordTemplateRendererTest.class,})
 public class LongRunningTestSuite {

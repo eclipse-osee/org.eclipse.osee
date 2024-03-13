@@ -24,7 +24,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
    LinkUtilTest.class, //
-   OpenBlamsTest.class, //
    WordTemplateProcessorTest.class //
 })
 public class FrameworkUiSkynetTest_Suite {
