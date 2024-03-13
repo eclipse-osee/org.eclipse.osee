@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,6 +42,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.world.WorldResults;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -184,6 +187,69 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          }
       }
       return myWorldItems;
+   }
+
+   @Override
+   @GET
+   @Path("coll/{collectorId}/json/{customizeGuid}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorldResults getCollectionJsonCustomized(@PathParam("collectorId") ArtifactId collectorId,
+      @PathParam("customizeGuid") String customizeGuid) {
+
+      CustomizeData customization = atsApiServer.getStoreService().getCustomizationByGuid(customizeGuid);
+
+      // get work items
+      ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
+      Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
+
+      WorldResults wr = new WorldResults();
+      XResultData rd = wr.getRd();
+      rd.logf("Collector: %s", collectorArt.toStringWithId());
+
+      if (customization == null) {
+         rd.errorf("Customization %s does not exist", customizeGuid);
+      } else {
+         rd.logf("Customization: %s - %s", customization.getName(), customization.getGuid());
+
+         getCustomizedJsonTable(atsApiServer, customization, collectorItems, wr, rd);
+      }
+      return wr;
+   }
+
+   public static WorldResults getCustomizedJsonTable(AtsApi atsApi, CustomizeData customization,
+      Collection<IAtsWorkItem> workItems, WorldResults wr, XResultData rd) {
+      Conditions.checkNotNull(customization, "Customization " + customization + " ");
+
+      List<XViewerColumn> headers = new ArrayList<>();
+
+      // get column headers
+      for (XViewerColumn col : customization.getColumnData().getColumns()) {
+         if (col.isShow()) {
+            headers.add(col);
+            wr.getOrderedHeaders().add(col.getName());
+         }
+      }
+      wr.getOrderedHeaders().add("ID");
+
+      AtsConfigurations configurations = atsApi.getConfigService().getConfigurations();
+      for (IAtsWorkItem workItem : workItems) {
+
+         Map<String, String> cells = new HashMap<>();
+         wr.getRows().add(cells);
+
+         // create row
+         for (XViewerColumn header : headers) {
+            String text = "";
+            if (Strings.isValid(header.getId())) {
+               text = atsApi.getColumnService().getColumnText(configurations, header.getId(), workItem);
+            }
+            cells.put(header.getName(), text);
+         }
+
+         // add id column on all rows
+         cells.put("ID", workItem.toStringWithId());
+      }
+      return wr;
    }
 
    @Override
