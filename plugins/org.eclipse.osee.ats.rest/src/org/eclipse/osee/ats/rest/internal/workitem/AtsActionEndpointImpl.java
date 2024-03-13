@@ -92,6 +92,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -99,6 +100,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -342,6 +344,53 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                items.add(new WorkItemLastMod(atsId, art.getIdString(), tx.getDate().getTime()));
             }
          }
+      }
+      return items;
+   }
+
+   @Override
+   public int queryOpenWorkItemsCount(ArtifactTypeToken artType, Long maxTime) {
+      QueryBuilder builder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType);
+      if (maxTime > 0L) {
+         builder = builder.includeTransactionDetails(false, "ASC", maxTime);
+      }
+      return builder.getCount();
+   }
+
+   @Override
+   public Collection<WorkItemLastMod> queryOpenWorkItems(ArtifactTypeToken artType, int pageSize, int pageNum,
+      boolean orderByTime, String orderDirection, Long maxTime) {
+      List<WorkItemLastMod> items = new ArrayList<>();
+      QueryBuilder builder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType);
+
+      if (pageSize != 0 && pageNum != 0) {
+         builder = builder.isOnPage(pageNum, pageSize);
+      }
+
+      builder = builder.includeTransactionDetails(orderByTime, orderDirection, maxTime).follow(
+         AtsRelationTypes.ActionToWorkflow_Action).followNoSelect(AtsRelationTypes.ActionToWorkflow_TeamWorkflow,
+            AtsArtifactTypes.TeamWorkflow);
+
+      List<ArtifactReadable> asArtifacts = builder.asArtifacts();
+      for (ArtifactReadable art : asArtifacts) {
+         String atsId = art.getSoleAttributeAsString(AtsAttributeTypes.AtsId);
+         String id = art.getIdString();
+         Long lastmod = art.getTxDetails().getTime().getTime();
+         List<String> siblings = new ArrayList<>();
+         ArtifactReadable parent =
+            art.getRelated(AtsRelationTypes.ActionToWorkflow_Action, DeletionFlag.EXCLUDE_DELETED).get(0);
+         if (parent.isValid()) {
+
+            siblings.addAll(parent.getRelated(AtsRelationTypes.ActionToWorkflow_TeamWorkflow,
+               DeletionFlag.EXCLUDE_DELETED).stream().filter(a -> !a.getArtifactId().equals(art.getArtifactId())).map(
+                  a -> a.getSoleAttributeAsString(AtsAttributeTypes.AtsId)).collect(Collectors.toList()));
+         }
+         Long opened = art.getSoleAttributeValue(AtsAttributeTypes.CreatedDate, DateUtil.getSentinalDate()).getTime();
+         Long closed = art.getSoleAttributeValue(AtsAttributeTypes.CompletedDate, DateUtil.getSentinalDate()).getTime();
+         if (closed == DateUtil.getSentinalDate().getTime()) {
+            closed = 0L;
+         }
+         items.add(new WorkItemLastMod(atsId, id, lastmod, siblings, opened, closed));
       }
       return items;
    }

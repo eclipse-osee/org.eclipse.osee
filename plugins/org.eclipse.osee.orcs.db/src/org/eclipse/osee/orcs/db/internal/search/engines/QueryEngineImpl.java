@@ -14,8 +14,10 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -47,6 +50,7 @@ import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -190,7 +194,8 @@ public class QueryEngineImpl implements QueryEngine {
     */
 
    @Override
-   public Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory, Map<ArtifactId, ArtifactReadable> artifacts) {
+   public Map<ArtifactId, ArtifactReadable> asArtifactMap(QueryData queryData, QueryFactory queryFactory,
+      Map<ArtifactId, ArtifactReadable> artifacts) {
       var artifactsMap =
          Objects.nonNull(artifacts) ? artifacts : new HashMap<ArtifactId, ArtifactReadable>(DefaultMapCapacity);
       loadArtifactsInto(queryData, queryFactory, a -> artifactsMap.put(a, a), DefaultArtifactNum);
@@ -211,7 +216,8 @@ public class QueryEngineImpl implements QueryEngine {
       return artifacts;
    }
 
-   private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory, Consumer<ArtifactReadable> artifactConsumer, int numArtifacts) {
+   private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory,
+      Consumer<ArtifactReadable> artifactConsumer, int numArtifacts) {
       // make the HashMap capacity large enough to accommodate the artifactCount given the default load factor of 75%
       HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>((int) (numArtifacts / 0.75) + 1);
       List<ArtifactId> consumedArts = new LinkedList<>();
@@ -243,6 +249,33 @@ public class QueryEngineImpl implements QueryEngine {
                String applicValue = stmt.getString("app_value");
                artifactMap.get(ArtifactId.valueOf(artId)).getApplicabilityToken().setName(applicValue);
             }
+            String oseeComment = "";
+            Date time = null;
+            int txType = -1;
+            ArtifactId commitArtId = ArtifactId.SENTINEL;
+            Long buildId = -1L;
+            TransactionId txId = TransactionId.valueOf(stmt.getLong("transaction_id"));
+            ArtifactId author = ArtifactId.SENTINEL;
+            if (queryData.mainTableAliasExists(OseeDb.TX_DETAILS_TABLE)) {
+               oseeComment = stmt.getString("osee_comment");
+               try {
+                  time = DateUtil.getDate("yyyyMMddHHmmss", stmt.getString("time"));
+               } catch (ParseException ex) {
+                  time = DateUtil.getSentinalDate();
+               }
+               txType = stmt.getInt("tx_type");
+               commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+               buildId = stmt.getLong("build_id");
+               author = ArtifactId.valueOf(stmt.getLong("author"));
+               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setTime(time);
+               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setAuthor(author);
+               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setOseeComment(oseeComment);
+               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setTxType(txType);
+               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setTxId(txId);
+               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setCommitArtId(commitArtId);
+               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setBuild_id(buildId);
+            }
+
          }
 
          Long typeId = stmt.getLong("type_id");
@@ -285,18 +318,41 @@ public class QueryEngineImpl implements QueryEngine {
       selectiveArtifactLoad(queryData, numArtifacts, jdbcConsumer);
    }
 
-   private ArtifactReadableImpl createArtifact(JdbcStatement stmt, Long artId, Long artifactTypeId, QueryData queryData, QueryFactory queryFactory) {
+   private ArtifactReadableImpl createArtifact(JdbcStatement stmt, Long artId, Long artifactTypeId, QueryData queryData,
+      QueryFactory queryFactory) {
       TransactionId txId = TransactionId.valueOf(stmt.getLong("transaction_id"));
       ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
       ArtifactTypeToken artifactType = tokenService.getArtifactTypeOrCreate(artifactTypeId);
       String appValue = "";
+      String oseeComment = "";
+      Date time = null;
+      int txType = -1;
+      ArtifactId author = ArtifactId.SENTINEL;
+      ArtifactId commitArtId = ArtifactId.SENTINEL;
+      Long buildId = -1L;
       if (queryData.mainTableAliasExists(OseeDb.OSEE_KEY_VALUE_TABLE)) {
          appValue = stmt.getString("app_value");
       }
+      if (queryData.mainTableAliasExists(OseeDb.TX_DETAILS_TABLE)) {
+         oseeComment = stmt.getString("osee_comment");
+         try {
+            time = DateUtil.getDate("yyyyMMddHHmmss", stmt.getString("time"));
+
+         } catch (ParseException ex) {
+            time = DateUtil.getSentinalDate();
+         }
+         txType = stmt.getInt("tx_type");
+         commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+         buildId = stmt.getLong("build_id");
+         author = ArtifactId.valueOf(stmt.getLong("author"));
+      }
       ApplicabilityToken applic = ApplicabilityToken.valueOf(stmt.getLong("app_id"), appValue);
 
-      return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
-         modType, queryFactory);
+      TransactionDetails txDetails =
+         new TransactionDetails(txId, queryData.getBranch(), time, oseeComment, txType, commitArtId, buildId, author);
+
+      return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic,
+         txDetails, modType, queryFactory);
    }
 
    @Override
@@ -330,7 +386,8 @@ public class QueryEngineImpl implements QueryEngine {
       return maps;
    }
 
-   private Map<String, Object> createFieldMap(ArtifactTypeToken artifactType, Long artifactId, Long applicability, HashCollection<AttributeTypeToken, Object> attributes) {
+   private Map<String, Object> createFieldMap(ArtifactTypeToken artifactType, Long artifactId, Long applicability,
+      HashCollection<AttributeTypeToken, Object> attributes) {
       Map<String, Object> map = new LinkedHashMap<>();
       map.put("Name", attributes.getValues(Name));
       map.put("Artifact Type", artifactType.getIdString());

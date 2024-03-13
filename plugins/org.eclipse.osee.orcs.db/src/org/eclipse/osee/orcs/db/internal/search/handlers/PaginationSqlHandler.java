@@ -63,7 +63,8 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
              * relation sorting since HSQL doesn't support row_number() over (ORDER BY x)
              */
             if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains(
-               "ATTRIBUTE") || OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
+               "ATTRIBUTE") || OptionsUtil.getOrderByMechanism(writer.getOptions()).contains(
+                  "RELATION") || OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("TIME")) {
                writer.write("ORDER BY ");
             }
             boolean firstOrderBy = true;
@@ -97,7 +98,11 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
                   writer.write(".rel_order ");
                   firstOrderBy = false;
                }
+            } else if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("TIME")) {
+               writer.write(OptionsUtil.getOrderByMechanism(writer.getOptions()));
+               firstOrderBy = false;
             }
+
             if (firstOrderBy) {
                writer.write("1");
             }

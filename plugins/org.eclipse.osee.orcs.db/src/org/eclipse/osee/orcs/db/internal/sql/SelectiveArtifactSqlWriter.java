@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -258,6 +257,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       if (!rootQueryData.isCountQueryType()) {
          if (parentWriter == null && !rootQueryData.isSelectQueryType()) {
             write(" ORDER BY " + fieldAlias + ".art_id");
+         } else if (this.rootQueryData.orderMechanism().startsWith("TIME")) {
+            write(" order by " + this.rootQueryData.orderMechanism());
          } else if (this.rels2Alias != null) {
             write(" ORDER BY ");
             write(fieldAlias + ".top desc");
@@ -421,6 +422,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             txAlias, "mod_type", txAlias, "tx_current");
          if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
             writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
+         }
+         if (OptionsUtil.getIncludeTransactionDetails(rootQueryData.getOptions())) {
+            String txdAlias = getMainTableAlias(OseeDb.TX_DETAILS_TABLE);
+            writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias,
+               "commit_art_id", txdAlias, "build_id");
+            write(", to_char(" + txdAlias + ".time,'yyyyMMddHHmiss') time");
          }
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");

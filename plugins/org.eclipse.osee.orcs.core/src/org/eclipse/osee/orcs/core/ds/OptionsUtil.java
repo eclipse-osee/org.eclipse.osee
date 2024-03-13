@@ -42,6 +42,8 @@ public final class OptionsUtil {
    private static final String FOLLOW_SEARCH_IN_PROGRESS = "follow.search.in.progress";
    private static final String SINGLE_LEVEL_RELATIONS_SEARCH = "single.level.relations.search";
    private static final String BRANCH_ORDER = "branch.order";
+   private static final String INCLUDE_TRANSACTION_DETAILS = "include.transaction.details";
+   private static final String MAX_TIME = "max.time";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -51,7 +53,9 @@ public final class OptionsUtil {
       setIncludeDeletedRelations(options, false);
       setLoadLevel(options, LoadLevel.ARTIFACT_DATA);
       setIncludeApplicabilityTokens(options, false);
+      setIncludeTransactionDetails(options, false);
       setBranchOrder(options, "id");
+      setMaxTime(options, 0L);
       return options;
    }
 
@@ -74,8 +78,10 @@ public final class OptionsUtil {
       setLoadLevel(options, LoadLevel.ALL);
       setFromBranchView(options, ArtifactId.SENTINEL);
       setIncludeApplicabilityTokens(options, false);
+      setIncludeTransactionDetails(options, false);
       setSingleLevelRelationsSearch(options, false);
       setOrderByAttributeDirection(options, SortOrder.ASCENDING);
+      setMaxTime(options, 0L);
    }
 
    public static boolean isCacheIncluded(Options options) {
@@ -146,6 +152,14 @@ public final class OptionsUtil {
       options.put(LOAD_LEVEL, loadLevel.name());
    }
 
+   public static void setMaxTime(Options options, Long maxTime) {
+      options.put(MAX_TIME, maxTime);
+   }
+
+   public static Long getMaxTime(Options options) {
+      return options.getLong(MAX_TIME);
+   }
+
    public static void setFromTransaction(Options options, TransactionId transactionId) {
       options.put(FROM_TRANSACTION, transactionId);
    }
@@ -196,6 +210,14 @@ public final class OptionsUtil {
 
    public static boolean getIncludeApplicabilityTokens(Options options) {
       return options.getBoolean(INCLUDE_APPLICABILITY_TOKENS);
+   }
+
+   public static void setIncludeTransactionDetails(Options options, boolean enabled) {
+      options.put(INCLUDE_TRANSACTION_DETAILS, enabled);
+   }
+
+   public static boolean getIncludeTransactionDetails(Options options) {
+      return options.getBoolean(INCLUDE_TRANSACTION_DETAILS);
    }
 
    /**

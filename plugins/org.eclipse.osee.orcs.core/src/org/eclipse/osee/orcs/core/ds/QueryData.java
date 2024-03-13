@@ -323,8 +323,29 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder includeTransactionDetails(boolean orderByTime, String direction, Long maxTime) {
+      OptionsUtil.setIncludeTransactionDetails(getOptions(), true);
+      if (maxTime > 0) {
+         OptionsUtil.setMaxTime(getOptions(), maxTime);
+      }
+      if (orderByTime) {
+         if (!direction.isBlank() && direction.equals("DESC")) {
+            setOrderMechanism("TIME DESC");
+         } else {
+            setOrderMechanism("TIME");
+         }
+      }
+      return this;
+   }
+
+   @Override
    public boolean areApplicabilityTokensIncluded() {
       return OptionsUtil.getIncludeApplicabilityTokens(getOptions());
+   }
+
+   @Override
+   public boolean areTransactionDetailsIncluded() {
+      return OptionsUtil.getIncludeTransactionDetails(getOptions());
    }
 
    @Override
