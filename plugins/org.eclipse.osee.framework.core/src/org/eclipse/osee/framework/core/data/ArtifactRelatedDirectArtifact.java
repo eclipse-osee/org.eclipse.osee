@@ -53,7 +53,7 @@ public class ArtifactRelatedDirectArtifact {
       return this.artRead.getArtifactType().getName();
    }
 
-   public MaterialIcon getMaterialIcon() {
-      return this.artRead.getArtifactType().getMaterialIcon();
+   public MaterialIcon getIcon() {
+      return this.artRead.getArtifactType().getIcon();
    }
 }

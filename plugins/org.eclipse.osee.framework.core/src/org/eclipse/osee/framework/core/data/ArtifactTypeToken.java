@@ -118,7 +118,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public OseeImage getImage();
 
-   public MaterialIcon getMaterialIcon();
+   public MaterialIcon getIcon();
 
    public NamespaceToken getNamespace();
 
@@ -138,8 +138,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
-      AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon,
-      List<ArtifactTypeToken> superTypes) {
+      AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
          private final List<ArtifactTypeToken> superTypes;
@@ -166,8 +165,8 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
                attributeTypes.putAll(((ArtifactTypeTokenImpl) superType).attributeTypes);
                ((ArtifactTypeTokenImpl) superType).addDirectDescendantType(this);
 
-               if (this.icon == null && superType.getMaterialIcon() != null) {
-                  this.icon = superType.getMaterialIcon();
+               if (this.icon == null && superType.getIcon() != null) {
+                  this.icon = superType.getIcon();
                }
             }
          }
@@ -280,7 +279,7 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          }
 
          @Override
-         public MaterialIcon getMaterialIcon() {
+         public MaterialIcon getIcon() {
             return icon;
          }
 
