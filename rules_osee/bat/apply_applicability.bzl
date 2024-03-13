@@ -58,7 +58,7 @@ def _apply_applicability_impl(ctx):
             output = ctx.actions.declare_file(file.path,sibling=output_dir.files.to_list()[0])
             outputs.append(output)
             args.add("-s",file)
-            args.add("-o",output_dir.files.to_list()[0].root.path)
+            args.add("-o",output_dir.files.to_list()[0].dirname+"/../../")
             if(len(ctx.attr.begin_comment_syntax)>0):
                 args.add("-b",ctx.attr.begin_comment_syntax[0])
             if(len(ctx.attr.end_comment_syntax)>0):
