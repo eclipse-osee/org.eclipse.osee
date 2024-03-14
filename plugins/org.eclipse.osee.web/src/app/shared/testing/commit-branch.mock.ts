@@ -32,6 +32,7 @@ export const mergeDataMock: mergeData[] = [
 			destUri: '',
 			sourceGammaId: '5678',
 			destGammaId: '8765',
+			storeType: 'Integer',
 		},
 	},
 ];

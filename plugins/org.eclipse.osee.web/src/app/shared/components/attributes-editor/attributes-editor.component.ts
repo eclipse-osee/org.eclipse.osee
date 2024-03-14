@@ -10,33 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	AfterViewInit,
-	Component,
-	Input,
-	OnChanges,
-	Optional,
-	Output,
-	SimpleChanges,
-	ViewChild,
-} from '@angular/core';
+import { Component, Input, Optional, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
-import { attribute } from '../../../types/artifact-explorer.data';
-import { AttributeEnumsDropdownComponent } from '../attribute-enums-dropdown/attribute-enums-dropdown.component';
+import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attribute-enums-dropdown.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {
-	ControlContainer,
-	FormBuilder,
-	FormGroup,
-	FormsModule,
-	NgForm,
-} from '@angular/forms';
+import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormDirective } from '@osee/shared/directives';
+import { attribute } from '@osee/shared/types';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;

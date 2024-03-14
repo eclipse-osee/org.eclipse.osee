@@ -22,4 +22,5 @@ export * from './header-detail';
 export * from './http-params';
 export * from './navigation-element';
 export * from './help';
+export * from './attribute';
 export * from './tw-colors';

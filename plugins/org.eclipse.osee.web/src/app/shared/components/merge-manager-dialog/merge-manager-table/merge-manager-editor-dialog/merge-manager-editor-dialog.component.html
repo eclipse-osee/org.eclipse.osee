@@ -1,0 +1,37 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1 mat-dialog-title>Edit Merge Value</h1>
+<div mat-dialog-content>
+	@if (attributes | async; as _attributes) {
+		<osee-attributes-editor
+			[attributes]="_attributes"
+			[editable]="true"
+			(updatedAttributes)="handleUpdatedAttributes($event)" />
+	}
+	<div
+		mat-dialog-actions
+		align="end">
+		<button
+			mat-button
+			mat-dialog-close="">
+			Cancel
+		</button>
+		<button
+			mat-button
+			cdkFocusInitial
+			class="tw-bg-primary tw-text-background-background"
+			[mat-dialog-close]="data">
+			Ok
+		</button>
+	</div>
+</div>

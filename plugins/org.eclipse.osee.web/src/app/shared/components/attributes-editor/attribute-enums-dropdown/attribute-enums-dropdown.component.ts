@@ -19,17 +19,8 @@ import {
 	Output,
 	SimpleChanges,
 	OnChanges,
-	ViewChild,
-	OnInit,
 } from '@angular/core';
-import {
-	ControlContainer,
-	FormBuilder,
-	FormGroup,
-	FormsModule,
-	NgForm,
-	Validators,
-} from '@angular/forms';
+import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -40,8 +31,8 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { NamedId } from '@osee/shared/types';
+import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
+import { AttributeValue, NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -52,8 +43,7 @@ import {
 	auditTime,
 	filter,
 } from 'rxjs';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { AttributeValue } from '../../../types/artifact-explorer.data';
+import { ArtifactUiService } from '@osee/shared/services';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -90,7 +80,7 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 	@Input() attributeId!: string;
 	private _attributeId = new BehaviorSubject<string>('');
 
-	private _artExpHttpService = inject(ArtifactExplorerHttpService);
+	private artifactUiService = inject(ArtifactUiService);
 
 	private _typeAhead = new BehaviorSubject<string>('');
 	private _openAutoComplete = new ReplaySubject<void>();
@@ -118,7 +108,7 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 		distinctUntilChanged(),
 		switchMap((_) => this._attributeId),
 		switchMap((attributeId) =>
-			this._artExpHttpService.getAttributeEnums(attributeId)
+			this.artifactUiService.getAttributeEnums(attributeId)
 		)
 	);
 

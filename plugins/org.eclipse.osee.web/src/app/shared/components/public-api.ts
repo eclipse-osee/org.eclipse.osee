@@ -22,3 +22,4 @@ export * from './view-selector/view-selector.component';
 export * from './action-state-button/internal/services/action-state-button.service'; /* still need to find a good place for this to live */
 export * from './animated-expand-button/animated-expand-button.component';
 export * from './merge-manager-dialog/merge-manager-dialog.component';
+export * from './attributes-editor/attributes-editor.component';

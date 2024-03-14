@@ -26,6 +26,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuModule } from '@angular/material/menu';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { iif, of } from 'rxjs';
+import { MergeManagerDialogComponent } from '../../merge-manager-dialog/merge-manager-dialog.component';
+import { BranchInfoService, CommitBranchService } from '@osee/shared/services';
 
 /**
  * Allows users to create and manage the state of a branch from within a page.
@@ -90,11 +93,46 @@ export class ActionDropDownComponent implements OnChanges {
 
 	doApproveBranch = this.actionService.doApproveBranch;
 
-	doCommitBranch = this.actionService.doCommitBranch;
+	doCommitBranch = this.actionService.branchState.pipe(
+		take(1),
+		switchMap((currentBranch) =>
+			this.branchService.getBranch(currentBranch.parentBranch.id).pipe(
+				switchMap((parentBranch) =>
+					this.commitBranchService.validateCommit(currentBranch).pipe(
+						switchMap((validateResults) => {
+							if (validateResults.conflictCount > 0) {
+								return this.dialog
+									.open(MergeManagerDialogComponent, {
+										data: {
+											sourceBranch: currentBranch,
+											parentBranch: parentBranch,
+											validateResults: validateResults,
+										},
+										minWidth: '60%',
+									})
+									.afterClosed()
+									.pipe(take(1));
+							}
+							return of(true);
+						}),
+						switchMap((commit) =>
+							iif(
+								() => commit === true,
+								this.actionService.doCommitBranch,
+								of()
+							)
+						)
+					)
+				)
+			)
+		)
+	);
 
 	constructor(
 		private actionService: ActionStateButtonService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private commitBranchService: CommitBranchService,
+		private branchService: BranchInfoService
 	) {}
 	ngOnChanges(changes: SimpleChanges): void {
 		this.actionService.category = this.category;

@@ -18,9 +18,8 @@ import {
 	artifact,
 	artifactTokenWithIcon,
 	artifactWithDirectRelations,
-	attribute,
 } from '../types/artifact-explorer.data';
-import { HttpParamsType } from '@osee/shared/types';
+import { HttpParamsType, attribute } from '@osee/shared/types';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
 
 @Injectable({
@@ -44,12 +43,6 @@ export class ArtifactExplorerHttpService {
 			{
 				params: { viewId: viewId },
 			}
-		);
-	}
-
-	public getAttributeEnums(attributeId: string): Observable<string[]> {
-		return this.http.get<string[]>(
-			apiURL + '/orcs/types/attribute/' + attributeId + '/enums'
 		);
 	}
 

@@ -13,9 +13,9 @@
 
 @if (_attributes | async; as attributes) {
 	@for (attribute of attributes; track attribute) {
-		<div class="tw-flex tw-justify-between">
+		<div class="tw-flex tw-items-center tw-justify-between">
 			<div
-				class="tw-flex tw-w-1/6 tw-items-center tw-pl-4 tw-font-bold"
+				class="tw-w-1/6 tw-pl-4 tw-font-bold"
 				[ngClass]="
 					isRequired(attribute) && attribute.value === ''
 						? 'tw-text-warning'
@@ -36,7 +36,9 @@
 						}
 					}
 					@case ('String') {
-						<mat-form-field class="tw-w-full">
+						<mat-form-field
+							class="tw-w-full"
+							subscriptSizing="dynamic">
 							<textarea
 								[disabled]="
 									!editable || attribute.name === 'Id'
@@ -51,7 +53,9 @@
 						</mat-form-field>
 					}
 					@case ('Boolean') {
-						<mat-form-field class="tw-w-full">
+						<mat-form-field
+							class="tw-w-full"
+							subscriptSizing="dynamic">
 							<mat-select
 								[disabled]="!editable"
 								[name]="'attrBoolean' + attribute.typeId"
@@ -67,7 +71,9 @@
 						</mat-form-field>
 					}
 					@case ('Date') {
-						<mat-form-field class="tw-w-full">
+						<mat-form-field
+							class="tw-w-full"
+							subscriptSizing="dynamic">
 							<input
 								matInput
 								[matDatepicker]="picker"
@@ -76,6 +82,7 @@
 								[(ngModel)]="attribute.value"
 								(ngModelChange)="emitUpdatedAttributes()"
 								[required]="isRequired(attribute)"
+								readonly
 								[disabled]="!editable" />
 							<mat-datepicker-toggle
 								matSuffix
@@ -84,7 +91,9 @@
 						</mat-form-field>
 					}
 					@case ('Integer') {
-						<mat-form-field class="tw-w-full">
+						<mat-form-field
+							class="tw-w-full"
+							subscriptSizing="dynamic">
 							<textarea
 								[disabled]="!editable"
 								matInput
@@ -97,7 +106,9 @@
 						</mat-form-field>
 					}
 					@case ('Long') {
-						<mat-form-field class="tw-w-full">
+						<mat-form-field
+							class="tw-w-full"
+							subscriptSizing="dynamic">
 							<textarea
 								[disabled]="!editable"
 								matInput

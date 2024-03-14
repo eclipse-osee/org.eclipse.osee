@@ -28,10 +28,7 @@ import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {
-	artifactToCreate,
-	attribute,
-} from '../../../types/artifact-explorer.data';
+import { artifactToCreate } from '../../../types/artifact-explorer.data';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { MatListModule } from '@angular/material/list';
 import {
@@ -43,14 +40,16 @@ import {
 	map,
 	switchMap,
 } from 'rxjs';
-import { NamedId } from '@osee/shared/types';
+import { NamedId, attribute } from '@osee/shared/types';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
+import {
+	AttributesEditorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
 import { MatIconModule } from '@angular/material/icon';
-import { AttributesEditorComponent } from '../../editor/attributes-editor/attributes-editor.component';
 import { FormDirective } from '@osee/shared/directives';
-import { ArtifactService } from '../../../../../../shared/services/ple_aware/http/artifact.service';
+import { ArtifactUiService } from '@osee/shared/services';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -100,7 +99,7 @@ export class CreateChildArtifactDialogComponent {
 	private _openAutoComplete = new ReplaySubject<void>();
 	private _isOpen = new BehaviorSubject<boolean>(false);
 	private _artExpHttpService = inject(ArtifactExplorerHttpService);
-	private _artHttpService = inject(ArtifactService);
+	private _artUiService = inject(ArtifactUiService);
 
 	protected _artifactTypes = this._openAutoComplete.pipe(
 		debounceTime(500),
@@ -110,7 +109,7 @@ export class CreateChildArtifactDialogComponent {
 				distinctUntilChanged(),
 				debounceTime(500),
 				switchMap((filter) =>
-					this._artHttpService.getArtifactTypes(filter)
+					this._artUiService.getArtifactTypes(filter)
 				)
 			)
 		)

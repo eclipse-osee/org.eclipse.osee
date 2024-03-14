@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
+import { storeType } from './attribute';
 import { branch } from './branch';
 
 export type validateCommitResult = {
@@ -60,6 +61,7 @@ export type attrMergeData = {
 	destUri: string;
 	sourceGammaId: string;
 	destGammaId: string;
+	storeType: storeType;
 };
 
 export type ConflictUpdateData = {

@@ -15,6 +15,18 @@ import { NamedId } from '@osee/shared/types';
 import { of } from 'rxjs';
 
 export const artifactUiServiceMock: Partial<ArtifactUiService> = {
+	getArtifactTypes(filter: string) {
+		return of([
+			{
+				id: '1',
+				name: 'Artifact Type 1',
+			},
+			{
+				id: '2',
+				name: 'Artifact Type 2',
+			},
+		]);
+	},
 	getAttributeTypes(artifactTypes: NamedId[]) {
 		return of([
 			{
@@ -27,7 +39,7 @@ export const artifactUiServiceMock: Partial<ArtifactUiService> = {
 			},
 		]);
 	},
-	get artifactTypes() {
+	get allArtifactTypes() {
 		return of([
 			{
 				id: '1',

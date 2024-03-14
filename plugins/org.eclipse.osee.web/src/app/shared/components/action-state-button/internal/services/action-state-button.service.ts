@@ -299,110 +299,79 @@ export class ActionStateButtonService {
 		)
 	);
 	private _doCommitBranch = combineLatest([
-		this.branchState,
 		this.branchAction,
 		this.user,
 	]).pipe(
 		take(1),
-		switchMap(([currentBranch, actions, user]) =>
-			this.branchService.getBranch(currentBranch.parentBranch.id).pipe(
-				switchMap((parentBranch) =>
-					this.commitBranchService.validateCommit(currentBranch).pipe(
-						switchMap((validateResults) => {
-							if (validateResults.conflictCount > 0) {
-								return this.dialog
-									.open(MergeManagerDialogComponent, {
-										data: {
-											sourceBranch: currentBranch,
-											parentBranch: parentBranch,
-											validateResults: validateResults,
-										},
-										minWidth: '60%',
-									})
-									.afterClosed()
-									.pipe(take(1));
-							}
-							return of(true);
-						}),
-						switchMap((commit) =>
-							iif(
-								() =>
-									commit === true &&
-									actions.length > 0 &&
-									user.name.length > 0,
-								this.commitBranch({
-									committer: user.id,
-									archive: 'false',
-								}).pipe(
-									switchMap((commitObs) =>
+		switchMap(([actions, user]) =>
+			iif(
+				() => actions.length > 0 && user.name.length > 0,
+				this.commitBranch({
+					committer: user.id,
+					archive: 'false',
+				}).pipe(
+					switchMap((commitObs) =>
+						iif(
+							() => commitObs.success,
+							this.actionService
+								.validateTransitionAction(
+									new transitionAction(
+										'Completed',
+										'Transition to Completed',
+										actions,
+										user
+									)
+								)
+								.pipe(
+									switchMap((validateObs) =>
 										iif(
-											() => commitObs.success,
+											() =>
+												validateObs.results.length ===
+												0,
 											this.actionService
-												.validateTransitionAction(
+												.transitionAction(
 													new transitionAction(
 														'Completed',
-														'Transition to Completed',
+														'Transition To Completed',
 														actions,
 														user
 													)
 												)
 												.pipe(
-													switchMap((validateObs) =>
-														iif(
-															() =>
-																validateObs
+													tap(
+														(
+															transitionResponse
+														) => {
+															if (
+																transitionResponse
 																	.results
-																	.length ===
-																0,
-															this.actionService
-																.transitionAction(
-																	new transitionAction(
-																		'Completed',
-																		'Transition To Completed',
-																		actions,
-																		user
-																	)
-																)
-																.pipe(
-																	tap(
-																		(
-																			transitionResponse
-																		) => {
-																			if (
-																				transitionResponse
-																					.results
-																					.length >
-																				0
-																			) {
-																				this.uiService.ErrorText =
-																					transitionResponse.results[0];
-																			} else {
-																				this.uiService.updated =
-																					true;
-																				this.branchedRouter.position =
-																					{
-																						type: 'baseline',
-																						id: commitObs
-																							.tx
-																							.branchId,
-																					};
-																			}
-																		}
-																	)
-																),
-															of() // @todo replace with a false response
-														)
+																	.length > 0
+															) {
+																this.uiService.ErrorText =
+																	transitionResponse.results[0];
+															} else {
+																this.uiService.updated =
+																	true;
+																this.branchedRouter.position =
+																	{
+																		type: 'baseline',
+																		id: commitObs
+																			.tx
+																			.branchId,
+																	};
+															}
+														}
 													)
 												),
 											of() // @todo replace with a false response
 										)
 									)
 								),
-								of() // @todo replace with a false response
-							)
+							of() // @todo replace with a false response
 						)
 					)
-				)
+				),
+				of() // @todo replace with a false response
 			)
 		)
 	);
