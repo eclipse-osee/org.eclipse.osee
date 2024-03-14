@@ -11,28 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ActionService } from '@osee/shared/services';
+import {
+	ActionService,
+	BranchInfoService,
+	CommitBranchService,
+} from '@osee/shared/services';
 import { ActionDropDownComponent } from './action-drop-down.component';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
-import {
-	actionStateButtonServiceMock,
-	actionStateButtonServiceMockApprove,
-	actionStateButtonServiceMockCommit,
-} from '../internal/services/action-state-button.service.mock';
-import { MatButtonHarness } from '@angular/material/button/testing';
-import { CreateAction } from '@osee/shared/types/configuration-management';
+import { actionStateButtonServiceMock } from '../internal/services/action-state-button.service.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { MockActionUserService } from '../internal/services/action-user.service.mock';
 import { UserDataAccountService } from '@osee/auth';
-import { actionServiceMock, MockUserResponse } from '@osee/shared/testing';
+import {
+	BranchInfoServiceMock,
+	actionServiceMock,
+	commitBranchServiceMock,
+} from '@osee/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 describe('ActionDropDownComponent', () => {
@@ -61,6 +62,14 @@ describe('ActionDropDownComponent', () => {
 								branchType: 'all',
 							}),
 						},
+					},
+					{
+						provide: CommitBranchService,
+						useValue: commitBranchServiceMock,
+					},
+					{
+						provide: BranchInfoService,
+						useValue: BranchInfoServiceMock,
 					},
 				],
 			},

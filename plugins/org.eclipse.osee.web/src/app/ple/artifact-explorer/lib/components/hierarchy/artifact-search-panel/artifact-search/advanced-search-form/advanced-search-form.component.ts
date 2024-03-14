@@ -51,7 +51,7 @@ export class AdvancedSearchFormComponent {
 
 	constructor(private artifactService: ArtifactUiService) {}
 
-	artifactTypes = toSignal(this.artifactService.artifactTypes);
+	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
 	filteredArtTypes = computed(

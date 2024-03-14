@@ -20,11 +20,19 @@ import { NamedId } from '@osee/shared/types';
 export class ArtifactUiService {
 	constructor(private artifactService: ArtifactService) {}
 
+	getArtifactTypes(filter: string) {
+		return this.artifactService.getArtifactTypes(filter);
+	}
+
 	getAttributeTypes(artifactTypes: NamedId[]) {
 		return this.artifactService.getAttributeTypes(artifactTypes);
 	}
 
-	get artifactTypes() {
+	getAttributeEnums(attributeId: string) {
+		return this.artifactService.getAttributeEnums(attributeId);
+	}
+
+	get allArtifactTypes() {
 		return this.artifactService.getArtifactTypes('');
 	}
 

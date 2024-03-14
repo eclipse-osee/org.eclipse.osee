@@ -13,7 +13,12 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TransactionService } from '@osee/shared/transactions';
-import { attributeType, modifyArtifact, transaction } from '@osee/shared/types';
+import {
+	attribute,
+	attributeType,
+	modifyArtifact,
+	transaction,
+} from '@osee/shared/types';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -23,9 +28,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { attribute, tab } from '../../../types/artifact-explorer.data';
-import { AttributesEditorComponent } from '../attributes-editor/attributes-editor.component';
+import { tab } from '../../../types/artifact-explorer.data';
 import { FormDirective } from '@osee/shared/directives';
+import { AttributesEditorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',

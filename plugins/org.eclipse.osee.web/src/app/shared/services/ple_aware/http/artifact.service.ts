@@ -43,4 +43,10 @@ export class ArtifactService {
 			params: params,
 		});
 	}
+
+	public getAttributeEnums(attributeId: string) {
+		return this.http.get<string[]>(
+			apiURL + '/orcs/types/attribute/' + attributeId + '/enums'
+		);
+	}
 }

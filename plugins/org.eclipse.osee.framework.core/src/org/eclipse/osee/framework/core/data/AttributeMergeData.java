@@ -84,4 +84,8 @@ public class AttributeMergeData {
       return destGammaId;
    }
 
+   public String getStoreType() {
+      return attrType.getStoreType();
+   }
+
 }

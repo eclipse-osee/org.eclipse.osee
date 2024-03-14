@@ -89,7 +89,13 @@ export class MergeManagerDialogComponent implements OnInit {
 
 	mergeData = this.mergeBranchId.pipe(
 		filter((id) => id !== '' && id !== '-1'),
-		switchMap((id) => this.commitBranchService.getMergeData(id)),
+		switchMap((id) =>
+			this.commitBranchService.getMergeData(id).pipe(
+				repeat({
+					delay: () => this.commitBranchService.updatedMergeData,
+				})
+			)
+		),
 		takeUntilDestroyed(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);

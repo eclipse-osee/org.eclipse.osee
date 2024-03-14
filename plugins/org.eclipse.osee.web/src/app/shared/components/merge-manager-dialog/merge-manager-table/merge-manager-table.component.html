@@ -58,7 +58,11 @@
 							data.conflictStatus !== 'UNTOUCHED'
 					}"
 					(click)="selectSourceValue(data)">
-					{{ data.attrMergeData[header] }}
+					@if (data.attrMergeData.storeType === 'Date') {
+						{{ data.attrMergeData[header] | date: 'mediumDate' }}
+					} @else {
+						{{ data.attrMergeData[header] }}
+					}
 				</td>
 			}
 			@if (header === 'destValue') {
@@ -73,7 +77,11 @@
 							data.conflictStatus !== 'UNTOUCHED'
 					}"
 					(click)="selectDestValue(data)">
-					{{ data.attrMergeData[header] }}
+					@if (data.attrMergeData.storeType === 'Date') {
+						{{ data.attrMergeData[header] | date: 'mediumDate' }}
+					} @else {
+						{{ data.attrMergeData[header] }}
+					}
 				</td>
 			}
 			@if (header === 'mergeValue') {
@@ -87,7 +95,17 @@
 						'tw-bg-warning-200 dark:tw-bg-warning-400':
 							data.conflictStatus !== 'RESOLVED'
 					}">
-					{{ data.attrMergeData[header] }}
+					<button
+						class="tw-w-full"
+						(click)="openEditDialog(data)">
+						@if (data.attrMergeData.storeType === 'Date') {
+							{{
+								data.attrMergeData[header] | date: 'mediumDate'
+							}}
+						} @else {
+							{{ data.attrMergeData[header] }}
+						}
+					</button>
 				</td>
 			}
 		</ng-container>

@@ -1,5 +1,3 @@
-import { iconVariant, twColor, twShade } from '@osee/shared/types';
-
 /*********************************************************************
  * Copyright (c) 2023 Boeing
  *
@@ -12,6 +10,8 @@ import { iconVariant, twColor, twShade } from '@osee/shared/types';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
+
 export const DEFAULT_HIERARCHY_ARTIFACT_ID: `${number}` = '197818';
 
 export interface artifactWithDirectRelations {
@@ -54,17 +54,6 @@ export interface artifact {
 	attributes: attribute[];
 	editable: boolean;
 }
-
-export interface attribute {
-	name: string;
-	value: AttributeValue;
-	typeId: string;
-	id: string;
-	storeType: string;
-	multiplicityId: string;
-}
-
-export type AttributeValue = string | Date;
 
 export type artifactTypeIcon = {
 	icon: string;
@@ -119,6 +108,4 @@ export const artifactSentinel: artifact = {
 	editable: false,
 };
 
-export const TABTYPES = ['Artifact', 'ChangeReport'] as const;
-
-export type TabType = (typeof TABTYPES)[number];
+export type TabType = 'Artifact' | 'ChangeReport';

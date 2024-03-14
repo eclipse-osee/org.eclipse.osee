@@ -12,41 +12,33 @@
  **********************************************************************/
 import {
 	Component,
-	EventEmitter,
 	Input,
 	OnChanges,
-	Output,
 	SimpleChanges,
-	ViewChild,
 	computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
 	BehaviorSubject,
-	Observable,
-	OperatorFunction,
 	combineLatest,
 	filter,
 	map,
 	of,
 	switchMap,
 	take,
-	tap,
 } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateChildArtifactDialogComponent } from '../create-child-artifact-dialog/create-child-artifact-dialog.component';
 import { MatMenuModule } from '@angular/material/menu';
-import {
-	artifactToCreate,
-	attribute,
-} from '../../../types/artifact-explorer.data';
+import { artifactToCreate } from '../../../types/artifact-explorer.data';
 import { UiService } from '@osee/shared/services';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { TransactionService } from '@osee/shared/transactions';
 import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
+import { attribute } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-artifact-options-context-menu',

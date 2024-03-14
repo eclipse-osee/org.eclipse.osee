@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -27,7 +26,6 @@ import { tab } from '../../types/artifact-explorer.data';
 	selector: 'osee-artifact-tab-group',
 	standalone: true,
 	imports: [
-		CommonModule,
 		MatTabsModule,
 		MatIconModule,
 		MatButtonModule,

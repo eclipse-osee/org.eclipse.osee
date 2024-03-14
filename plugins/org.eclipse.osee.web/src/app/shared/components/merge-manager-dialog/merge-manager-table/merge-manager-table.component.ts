@@ -16,9 +16,12 @@ import { attrMergeData, mergeData } from '@osee/shared/types';
 import { CommitBranchService, HeaderService } from '@osee/shared/services';
 import { mergeManagerHeaderDetails } from './merge-manager-table-headers';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { MergeManagerEditorDialogComponent } from './merge-manager-editor-dialog/merge-manager-editor-dialog.component';
+import { of, switchMap, take } from 'rxjs';
 
 @Component({
 	selector: 'osee-merge-manager-table',
@@ -26,6 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 	imports: [
 		AsyncPipe,
 		NgClass,
+		DatePipe,
 		MatTableModule,
 		MatTooltipModule,
 		MatMenuModule,
@@ -57,6 +61,7 @@ export class MergeManagerTableComponent {
 	};
 
 	constructor(
+		public dialog: MatDialog,
 		private headerService: HeaderService,
 		private commitBranchService: CommitBranchService
 	) {}
@@ -96,6 +101,36 @@ export class MergeManagerTableComponent {
 				this.mergeBranchId,
 				this.branchId,
 				this.parentBranchId
+			)
+			.subscribe();
+	}
+
+	openEditDialog(data: mergeData) {
+		this.dialog
+			.open(MergeManagerEditorDialogComponent, {
+				minWidth: '50%',
+				data: { ...structuredClone(data), conflictStatus: 'RESOLVED' },
+			})
+			.afterClosed()
+			.pipe(
+				take(1),
+				switchMap((updatedData) => {
+					if (
+						updatedData === undefined ||
+						updatedData === null ||
+						updatedData == '' ||
+						updatedData.attrMergeData.mergeValue ===
+							data.attrMergeData.mergeValue
+					) {
+						return of();
+					}
+					return this.commitBranchService.updateMergeConflicts(
+						updatedData,
+						this.mergeBranchId,
+						this.branchId,
+						this.parentBranchId
+					);
+				})
 			)
 			.subscribe();
 	}
