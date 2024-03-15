@@ -125,23 +125,23 @@
 				}
 			</mat-select>
 		</mat-form-field>
+		<mat-form-field class="tw-w-full">
+			<mat-label>Targeted Version</mat-label>
+			<mat-select
+				[(ngModel)]="data.targetedVersion"
+				[required]="data.createBranchDefault"
+				data-cy="select-targeted-version">
+				@for (item of targetedVersions | async; track $index) {
+					<mat-option
+						[value]="item"
+						[attr.data-cy]="'option-' + item.name">
+						{{ item.name }}
+					</mat-option>
+				}
+			</mat-select>
+		</mat-form-field>
 		@for (field of additionalFields | async; track $index) {
-			@if (field.name === 'Targeted Version') {
-				<mat-form-field class="tw-w-full">
-					<mat-label>Targeted Version</mat-label>
-					<mat-select
-						[(ngModel)]="data.targetedVersion"
-						data-cy="select-targeted-version">
-						@for (item of targetedVersions | async; track $index) {
-							<mat-option
-								[value]="item"
-								[attr.data-cy]="'option-' + item.name">
-								{{ item.name }}
-							</mat-option>
-						}
-					</mat-select>
-				</mat-form-field>
-			} @else if (field.name === 'Originator') {
+			@if (field.name === 'Originator') {
 				<mat-form-field class="tw-w-full">
 					<mat-label>{{ field.name }}</mat-label>
 					<mat-select
@@ -287,7 +287,8 @@
 			data.actionableItem.id.length === 0 ||
 			data.originator.id.length === 0 ||
 			data.changeType.id.length === 0 ||
-			data.changeType.id === '-1'
+			data.changeType.id === '-1' ||
+			(data.createBranchDefault && data.targetedVersion.id === -1)
 		"
 		data-cy="submit-btn">
 		Create Action
